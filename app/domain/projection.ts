@@ -1,4 +1,4 @@
-import { CrawlerEvent, CrawlerState, Snapshot } from './types.ts';
+import type { CrawlerEvent, CrawlerState, Snapshot } from './types.ts';
 
 export function createInitialState(): CrawlerState {
   return {

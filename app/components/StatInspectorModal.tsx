@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { StatBreakdown } from '../domain/stats';
+import type { StatBreakdown } from '../domain/stats';
 
 interface StatInspectorModalProps {
   breakdown: StatBreakdown;

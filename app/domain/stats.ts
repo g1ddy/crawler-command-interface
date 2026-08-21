@@ -1,4 +1,4 @@
-import { AttributeName, CrawlerState } from './types.ts';
+import type { AttributeName, CrawlerState } from './types.ts';
 
 export interface StatBreakdown {
   statName: string;

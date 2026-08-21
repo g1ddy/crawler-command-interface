@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { CrawlerEvent, InventoryItem, ItemHistoryEntry } from '../domain/types';
+import type { CrawlerEvent, InventoryItem, ItemHistoryEntry } from '../domain/types';
 
 interface ItemProvenanceDrawerProps {
   item: InventoryItem;

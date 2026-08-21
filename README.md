@@ -1,15 +1,57 @@
-# vinext-starter
+# Crawler Command Interface
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+A replayable dungeon-crawler command interface with one browser application and
+two deployment adapters. The ChatGPT live app continues to run as a
+[vinext](https://github.com/cloudflare/vinext) Cloudflare Worker, while a static
+Vite bundle can be hosted on GitHub Pages.
 
 ## Prerequisites
 
 - Node.js `>=22.13.0`
 - Linux with `flock`, `curl`, and GNU `timeout`
 
-## Sites Lifecycle
+## Local development
+
+```bash
+npm ci
+npm run dev
+```
+
+`npm run dev` runs the ChatGPT live-app adapter. To preview the Pages adapter,
+run `npx vite --config vite.pages.config.ts`; its default base URL is
+`/crawler-command-interface/`.
+
+## Architecture and build targets
+
+- `src/CrawlerApp.tsx` is the shared, browser-only React application.
+- `app/page.tsx` is the deliberately thin ChatGPT Sites/Vinext adapter.
+- `src/main.pages.tsx` and `index.html` mount the same application as a static
+  client-side Vite app.
+- `npm run build:live` produces the Worker-compatible live-app artifact in
+  `dist/`.
+- `npm run build:pages` produces the static Pages artifact in `dist-pages/`.
+- `npm run build` remains an alias for `build:live`, preserving the existing
+  ChatGPT hosting contract.
+- `npm run verify` runs lint, domain unit tests, and both production builds.
+
+The Pages base defaults to `/crawler-command-interface/`. Set
+`PAGES_BASE_PATH=/` when building for a custom domain or user/organization Pages
+site. The current UI has no client-side routes, so GitHub Pages does not require
+a `404.html` fallback; add one before introducing history-based routes.
+
+## Continuous integration and deployment
+
+Pull requests and pushes to `main` run `.github/workflows/ci.yml`, which verifies
+both targets from the same checkout. Pushes to `main` also run
+`.github/workflows/deploy-pages.yml`, upload `dist-pages/` as a Pages artifact,
+and deploy it with GitHub's official Pages Actions. In the repository settings,
+set **Pages → Build and deployment → Source** to **GitHub Actions**.
+
+The workflow does not alter the existing ChatGPT release mechanism. Build the
+live app from the same reviewed `main` commit with `npm run build:live`, and
+record that commit SHA in the live-app release or deployment metadata.
+
+## Sites lifecycle
 
 The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
 
@@ -88,11 +130,13 @@ or enforce explicit server-side membership or allowlist checks.
 Use SIWC for account pages, user-specific dashboards, saved records, and write
 actions tied to the current ChatGPT user. Leave public content anonymous.
 
-## Diagnostic Commands
+## Diagnostic commands
 
 - `npm run install:ci`: perform the one bounded lockfile install
 - `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build the deployable Sites artifact
+- `npm run build` / `npm run build:live`: build the deployable Sites artifact
+- `npm run build:pages`: build the static GitHub Pages artifact
+- `npm run verify`: lint, run unit tests, and build both deployment targets
 - `npm run start`: start the built Vinext application
 - `npm test`: build and verify the rendered development-preview metadata
 - `npm run db:generate`: generate Drizzle migrations after schema changes
