@@ -54,14 +54,14 @@ This roadmap is intentionally ordered around making the interface a believable, 
 
 ## 6. Dual build and deployment targets
 
-- [ ] Keep one shared browser application under `src/` (UI, event projection, fixtures, and styles) with no host-specific imports.
-- [ ] Keep `app/page.tsx` as the thin ChatGPT Sites/Vinext entry point that renders the shared app and preserves the current live-app build.
-- [ ] Add a standalone static entry point such as `src/main.pages.tsx` plus `vite.pages.config.ts` for GitHub Pages.
-- [ ] Add `npm run build:live` for the existing Worker-compatible ChatGPT build and `npm run build:pages` for the static GitHub Pages bundle.
-- [ ] Configure the Pages build base path for `/crawler-command-interface/` so routes and static assets work on the project Pages URL.
+- [x] Keep one shared browser application under `src/` (UI, event projection, fixtures, and styles) with no host-specific imports.
+- [x] Keep `app/page.tsx` as the thin ChatGPT Sites/Vinext entry point that renders the shared app and preserves the current live-app build.
+- [x] Add a standalone static entry point such as `src/main.pages.tsx` plus `vite.pages.config.ts` for GitHub Pages.
+- [x] Add `npm run build:live` for the existing Worker-compatible ChatGPT build and `npm run build:pages` for the static GitHub Pages bundle.
+- [x] Configure the Pages build base path for `/crawler-command-interface/` so routes and static assets work on the project Pages URL.
 - [ ] Ensure client-side routing has a static fallback strategy before adding multiple standalone routes.
-- [ ] Add a single verification command that lint-checks and builds both targets from the same commit.
-- [ ] Use GitHub Actions to verify both builds on pull requests and deploy the static `build:pages` output from `main` through GitHub Pages Actions—not a generated `gh-pages` branch.
+- [x] Add a single verification command that lint-checks and builds both targets from the same commit.
+- [x] Use GitHub Actions to verify both builds on pull requests and deploy the static `build:pages` output from `main` through GitHub Pages Actions—not a generated `gh-pages` branch.
 - [ ] Keep the ChatGPT live-app deployment as a second release target built from the same reviewed `main` commit; record the deployed commit SHA in release notes or deployment metadata.
 - [ ] Keep Pages and the live app free of production-only configuration differences unless a capability truly requires it; document any intentional difference in the README.
 

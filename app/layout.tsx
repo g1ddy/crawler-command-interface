@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../src/styles.css";
 
 export const metadata: Metadata = {
   title: "Crawler Command Interface",
   description: "A live interactive dungeon crawler command interface prototype.",
+  other: {
+    "codex-preview": "development",
+  },
   openGraph: {
     title: "Crawler Command Interface",
     description: "Survival is optional.",

@@ -1,8 +1,36 @@
-# vinext-starter
+# Crawler Command Interface
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+A browser-first dungeon crawler command interface with two compatible delivery
+targets: the ChatGPT live app on [vinext](https://github.com/cloudflare/vinext)
+and a static GitHub Pages application. Both entries render the same React UI
+from `src/CrawlerApp.tsx`.
+
+## Local development and builds
+
+```bash
+npm ci
+npm run dev          # ChatGPT Sites/Vinext development server
+npm run build:live   # Worker-compatible live-app artifact in dist/
+npm run build:pages  # Static GitHub Pages artifact in dist-pages/
+npm run verify       # Lint and build both delivery targets
+```
+
+The existing `npm run build` command remains an alias for `build:live` so the
+ChatGPT Sites builder continues to use its standard contract. The Pages build
+uses `/crawler-command-interface/` as its asset base. Set
+`PAGES_BASE_PATH=/` when building for a custom domain or user/organization
+Pages site.
+
+## Deployment
+
+The `Verify and deploy` GitHub Actions workflow runs the shared verification
+command for pull requests and pushes to `main`. On a `main` push it uploads
+`dist-pages/` and deploys it with GitHub Pages Actions. Configure the repository
+Pages source as **GitHub Actions**; no generated `gh-pages` branch is used.
+
+The ChatGPT live-app release remains independent and consumes `npm run build`
+from the same reviewed commit. The static target has no server APIs, account,
+Cloudflare bindings, or host-specific runtime imports.
 
 ## Prerequisites
 
