@@ -34,6 +34,11 @@ run `npx vite --config vite.pages.config.ts`; its default base URL is
   ChatGPT hosting contract.
 - `npm run verify` runs lint, domain unit tests, and both production builds.
 
+The domain tests import the TypeScript source directly. Their npm scripts pass
+Node's `--experimental-strip-types` flag explicitly so they also work on the
+documented minimum Node.js 22.13 release; type stripping did not become enabled
+by default until later Node.js 22 releases.
+
 The Pages base defaults to `/crawler-command-interface/`. Set
 `PAGES_BASE_PATH=/` when building for a custom domain or user/organization Pages
 site. The current UI has no client-side routes, so GitHub Pages does not require

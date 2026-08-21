@@ -12,7 +12,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Exercise the oldest Node release supported by package.json. TypeScript
+          # stripping is opt-in on this release, as configured by the test scripts.
+          node-version: 22.13.0
           cache: npm
       - run: npm ci
       - run: npm run verify
