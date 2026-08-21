@@ -1,4 +1,4 @@
-import { CrawlerEvent, Snapshot } from '../types.ts';
+import type { CrawlerEvent, Snapshot } from '../types.ts';
 import { projectState } from '../projection.ts';
 
 export const floor6Events: CrawlerEvent[] = [

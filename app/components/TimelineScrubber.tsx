@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { CrawlerEvent, EventCategory } from '../domain/types';
+import type { CrawlerEvent, EventCategory } from '../domain/types';
 
 interface TimelineScrubberProps {
   events: CrawlerEvent[];
