@@ -1,46 +1,906 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { floor6Events, floor6Snapshots } from "./domain/fixtures/floor6";
+import { projectState } from "./domain/projection";
+import { getStatBreakdown, StatBreakdown } from "./domain/stats";
+import { CrawlerEvent, CrawlerState, InventoryItem } from "./domain/types";
+import { TimelineScrubber } from "./components/TimelineScrubber";
+import { StatInspectorModal } from "./components/StatInspectorModal";
+import { ItemProvenanceDrawer } from "./components/ItemProvenanceDrawer";
 
 type View = "crawler" | "inventory" | "skills" | "journal";
-const items = [
-  ["Healing vial","🧪","uncommon",8],["Blast shell","💣","rare",3],["Flash cylinder","🔦","common",12],["Void crystal","🔮","epic",3],["Echo ring","💍","legendary",1],["Floor keycard","▣","rare",4],
-  ["Verdant shard","◆","uncommon",6],["Shadowweave vest","◈","epic",1],["Ward scroll","▤","rare",2],["Drive gear","⚙","common",7],["Pulse core","◉","rare",3],["Tracker boots","▰","epic",1],
-  ["Fuel canister","▥","uncommon",9],["Vampire band","◌","epic",1],["Sentry kit","▦","common",2],["Blood crystal","♦","rare",4],["Ice cube","◇","uncommon",6],["Watcher orb","◉","rare",8],
-] as const;
-const skillData = [
- ["Plasma Burst","✦","RANK 3","A bolt of plasma that explodes on impact.","6 SEC","combat"],["Phase Dash","➟","RANK 2","Blink through a short enemy line.","8 SEC","utility"],["Adaptive Armor","⬡","RANK 4","Reduces incoming damage at low health.","PASSIVE","passive"],["Tactical Override","⌘","RANK 2","Hack battlefield systems to control the field.","READY","utility"],["Shrapnel Grenade","✹","RANK 1","Throw a grenade that bursts into shrapnel.","12 SEC","combat"],["Situational Awareness","◉","RANK 3","Increases critical chance against flanked targets.","PASSIVE","passive"],["Medical Nanites","✚","RANK 2","Deploy nanites that heal allies.","15 SEC","utility"],["Systems Exploit","☠","RANK 1","A chance to inflict Glitch.","PASSIVE","passive"],
-] as const;
 
-function Panel({title,children,className=""}:{title:string;children:React.ReactNode;className?:string}){return <article className={"panel "+className}><h2>{title}</h2>{children}</article>}
-function Nav({active,set}:{active:View;set:(v:View)=>void}){return <nav className="nav"><b><span>WORLD DUNGEON</span> AUTHORITY</b>{(["crawler","inventory","skills","journal"] as View[]).map(v=><button key={v} className={active===v?"active":""} onClick={()=>set(v)}>{v==="crawler"?"CRAWLER":v.toUpperCase()}</button>)}</nav>}
-function Crawler(){
- const [points,setPoints]=useState(4);const [mode,setMode]=useState("OVERVIEW");
- return <section className="view"><div className="subnav">{["OVERVIEW","ACHIEVEMENTS","BROADCAST"].map(x=><button className={mode===x?"on":""} key={x} onClick={()=>setMode(x)}>{x}</button>)}</div>
- {mode==="OVERVIEW"&&<><header className="profile"><div className="portrait">C</div><div><p className="eyebrow">ACTIVE CRAWLER</p><h1>CARL G.</h1><i>LEVEL 42</i><i>RACE: PRIMAL</i><i>CLASS: SCOUT</i></div><div className="xp"><span>EXPERIENCE&nbsp; <b>24,680 / 74,000</b></span><em><b/></em></div></header><div className="two-col"><Panel title="ATTRIBUTES"><div className="stats">{[["Strength",24,"red"],["Dexterity",36,"green"],["Constitution",31,"yellow"],["Intelligence",18,"blue"],["Charisma",22,"purple"]].map(([n,v,c])=><p key={String(n)}><span>{n}</span><b>{v}</b><em><i className={String(c)} style={{width:Number(v)*2+"%"}}/></em></p>)}</div><button className="outline" onClick={()=>setPoints(Math.max(0,points-1))}>ASSIGN POINTS ({points})</button></Panel><Panel title="CURRENT CONDITION"><div className="meters"><Meter name="HEALTH" value="3,281 / 4,200" pct={78} c="red"/><Meter name="MANA" value="892 / 1,360" pct={66} c="blue"/><Meter name="STAMINA" value="220 / 280" pct={78} c="yellow"/></div><div className="effects"><p className="good">↑ FLEET FOOTED <b>42m</b><small>+15% movement speed</small></p><p className="good">◇ STONE SKIN <b>28m</b><small>+20% physical resistance</small></p><p className="bad">△ BLEEDING <b>1m 12s</b><small>-2% health per second</small></p></div></Panel><Panel title="EQUIPPED · READ ONLY"><div className="gear"><div>◉</div><p>Rogue's Hood <b>78%</b></p><p>Shadowweave Vest <b>64%</b></p><p>Tracker Boots <b>81%</b></p><button>Manage in Inventory →</button></div></Panel><Panel title="BROADCAST STATUS"><div className="broadcast"><p><span>VIEWERS</span><b>48,219</b><em>▲ 12%</em></p><p><span>FOLLOWERS</span><b>3,842</b></p><p><span>FAME RANK</span><b>#17</b></p><p className="sponsor">● Sponsor interest detected</p></div></Panel></div></>}
- {mode==="ACHIEVEMENTS"&&<Achievements/>}{mode==="BROADCAST"&&<Broadcast/>}</section>}
-function Meter({name,value,pct,c}:{name:string;value:string;pct:number;c:string}){return <p className="meter"><span>{name}</span><b>{value}</b><em><i className={c} style={{width:pct+"%"}}/></em></p>}
-function Inventory(){
-  const [selected,setSelected]=useState(0);const [filter,setFilter]=useState("ALL ITEMS");const [slot,setSlot]=useState("TORSO");
-  const shown=useMemo(()=>filter==="ALL ITEMS"?items:items.filter((_,i)=>filter==="EQUIPMENT"?i%5===1:filter==="CONSUMABLES"?i%5===0:i%4===0),[filter]);const item=items[selected];
-  const categories=["ALL ITEMS","EQUIPMENT","CONSUMABLES","QUEST ITEMS","CRAFTING","JUNK"];
-  return <section className="view"><header className="title"><div><p className="eyebrow">STORAGE SYSTEM</p><h1>INVENTORY</h1></div><b>CAPACITY 62 / 100</b></header>
-    <div className="inventory"><Panel title="CATEGORIES"><div className="categories">{categories.map(x=><button className={filter===x?"on":""} onClick={()=>setFilter(x)} key={x}>{x}<b>{x==="ALL ITEMS"?62:12}</b></button>)}</div></Panel>
-    {filter!=="EQUIPMENT"?<><Panel title={filter}><div className="tools"><input placeholder="Search items…"/><button>SORT: NEWEST⌄</button></div><div className="grid">{shown.map(x=>{const idx=items.indexOf(x);return <button className={"item "+x[2]+(idx===selected?" selected":"")} key={x[0]} onClick={()=>setSelected(idx)}><i>{x[1]}</i><b>{x[3]}</b><small>{x[0]}</small></button>})}</div></Panel><div className="right"><Panel title="EQUIPPED GEAR"><div className="compact">HOOD <b>◉</b> VEST <b>◌</b> BOOTS</div><button className="link" onClick={()=>setFilter("EQUIPMENT")}>Open equipment comparison →</button></Panel><ItemInspector item={item} selected={selected}/></div></>
-    :<EquipmentView slot={slot} setSlot={setSlot} selected={selected} setSelected={setSelected}/>}</div>
-  </section>
+export default function Home() {
+  const [events, setEvents] = useState<CrawlerEvent[]>(floor6Events);
+  const maxSeq = events[events.length - 1]?.sequence ?? 1;
+
+  const [isLive, setIsLive] = useState<boolean>(true);
+  const [selectedSeq, setSelectedSeq] = useState<number>(maxSeq);
+
+  const [view, setView] = useState<View>("crawler");
+  const [time, setTime] = useState<number>(4 * 3600 + 17 * 60 + 32);
+  const [notes, setNotes] = useState<boolean>(false);
+
+  const [inspectStat, setInspectStat] = useState<string | null>(null);
+  const [provenanceItem, setProvenanceItem] = useState<InventoryItem | null>(null);
+  const [showJsonModal, setShowJsonModal] = useState<boolean>(false);
+  const [jsonText, setJsonText] = useState<string>("");
+
+  // Keep selected sequence aligned with maxSeq when live
+  useEffect(() => {
+    if (isLive) {
+      setSelectedSeq(maxSeq);
+    }
+  }, [isLive, maxSeq]);
+
+  // Floor collapse countdown timer
+  useEffect(() => {
+    const timer = setInterval(() => setTime((x) => Math.max(0, x - 1)), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const projectedState: CrawlerState = useMemo(() => {
+    return projectState(events, isLive ? maxSeq : selectedSeq, floor6Snapshots);
+  }, [events, isLive, selectedSeq, maxSeq]);
+
+  const statBreakdown: StatBreakdown | null = useMemo(() => {
+    if (!inspectStat) return null;
+    return getStatBreakdown(projectedState, inspectStat);
+  }, [projectedState, inspectStat]);
+
+  const h = String(Math.floor(time / 3600)).padStart(2, "0");
+  const m = String(Math.floor((time % 3600) / 60)).padStart(2, "0");
+  const s = String(time % 60).padStart(2, "0");
+
+  const handleExportJson = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(events, null, 2));
+    const downloadAnchor = document.createElement("a");
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `crawler-timeline-seq-${projectedState.sequence}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  const handleImportJson = () => {
+    try {
+      const parsed = JSON.parse(jsonText);
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].sequence) {
+        setEvents(parsed);
+        setIsLive(true);
+        setShowJsonModal(false);
+      } else {
+        alert("Invalid event array format.");
+      }
+    } catch {
+      alert("Failed to parse JSON.");
+    }
+  };
+
+  return (
+    <main>
+      <div className="timer">
+        <span>FLOOR 6</span>
+        <b>LEVEL COLLAPSE IN {h}:{m}:{s}</b>
+        <span>● LIVE · {projectedState.broadcast.viewers.toLocaleString()} VIEWERS</span>
+      </div>
+
+      {!isLive && (
+        <div className="replay-banner">
+          <span>HISTORICAL VIEW · REPLAYING SEQUENCE #{projectedState.sequence} ({projectedState.occurredAt})</span>
+          <button onClick={() => setIsLive(true)}>RETURN TO LIVE ⚡</button>
+        </div>
+      )}
+
+      <Nav active={view} set={setView} onOpenJsonModal={() => setShowJsonModal(true)} />
+
+      <button className="bell" onClick={() => setNotes(!notes)}>
+        ◔<b>{projectedState.recentLogs.length > 0 ? projectedState.recentLogs.length : 3}</b>
+      </button>
+
+      {notes && (
+        <aside className="notices">
+          <button onClick={() => setNotes(false)}>×</button>
+          <p className="eyebrow">SYSTEM LOG NOTICE</p>
+          {projectedState.recentLogs.slice(0, 3).map((log) => (
+            <div key={log.sequence}>
+              <b>[{log.timestamp}] {log.category.toUpperCase()}</b>
+              <span>{log.message}</span>
+              <hr />
+            </div>
+          ))}
+        </aside>
+      )}
+
+      <div className="view">
+        <TimelineScrubber
+          events={events}
+          selectedSequence={isLive ? maxSeq : selectedSeq}
+          onSelectSequence={(seq) => {
+            setSelectedSeq(seq);
+            setIsLive(seq === maxSeq);
+          }}
+          isLive={isLive}
+          onToggleLive={() => setIsLive(!isLive)}
+        />
+
+        {view === "crawler" ? (
+          <Crawler
+            state={projectedState}
+            onInspectStat={(stat) => setInspectStat(stat)}
+            onNavigateView={(v) => setView(v)}
+          />
+        ) : view === "inventory" ? (
+          <Inventory
+            state={projectedState}
+            events={events}
+            provenanceItem={provenanceItem}
+            setProvenanceItem={setProvenanceItem}
+            onNavigateToSequence={(seq) => {
+              setSelectedSeq(seq);
+              setIsLive(seq === maxSeq);
+            }}
+          />
+        ) : view === "skills" ? (
+          <Skills state={projectedState} />
+        ) : (
+          <Journal
+            state={projectedState}
+            onNavigateToSequence={(seq) => {
+              setSelectedSeq(seq);
+              setIsLive(seq === maxSeq);
+            }}
+          />
+        )}
+      </div>
+
+      {statBreakdown && (
+        <StatInspectorModal
+          breakdown={statBreakdown}
+          onClose={() => setInspectStat(null)}
+        />
+      )}
+
+      {showJsonModal && (
+        <div className="modal-backdrop" onClick={() => setShowJsonModal(false)}>
+          <div className="modal-content panel" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <p className="eyebrow">PORTABLE TIMELINE</p>
+                <h2>IMPORT / EXPORT CRAWLER EVENTS</h2>
+              </div>
+              <button className="close-btn" onClick={() => setShowJsonModal(false)}>✕</button>
+            </div>
+            <p style={{ fontSize: "11px", color: "#a4b7bf" }}>
+              Export current crawler timeline fixture as JSON or import a custom sequence stream.
+            </p>
+            <div className="actions" style={{ marginBottom: "12px" }}>
+              <button onClick={handleExportJson}>DOWNLOAD JSON TIMELINE</button>
+            </div>
+            <textarea
+              rows={8}
+              style={{
+                width: "100%",
+                background: "#060e15",
+                color: "#9be2f3",
+                border: "1px solid #1f3e4d",
+                fontSize: "10px",
+                padding: "8px",
+                fontFamily: "monospace",
+              }}
+              placeholder="Paste JSON events array here to import..."
+              value={jsonText}
+              onChange={(e) => setJsonText(e.target.value)}
+            />
+            <div className="modal-footer" style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
+              <button className="outline" onClick={handleImportJson}>IMPORT JSON STREAM</button>
+              <button className="outline" onClick={() => setShowJsonModal(false)}>CANCEL</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
 }
-function ItemInspector({item,selected}:{item:readonly [string,string,string,number];selected:number}){return <Panel title="ITEM INSPECTOR"><div className={"large-icon "+item[2]}>{item[1]}</div><h2>{item[0].toUpperCase()}</h2><p className="rarity">{item[2]}</p><p>A recovered dungeon item with a dangerous and useful purpose. Inspect limits before relying on it.</p><dl><div><dt>VALUE</dt><dd>125 ⊙</dd></div><div><dt>STACK</dt><dd>{item[3]} / 20</dd></div><div><dt>TYPE</dt><dd>{selected%2?"EQUIPMENT":"CONSUMABLE"}</dd></div><div><dt>RANGE</dt><dd>5m</dd></div></dl><div className="actions"><button>USE</button><button>LOCK</button><button>DROP</button></div></Panel>}
-function EquipmentView({slot,setSlot,selected,setSelected}:{slot:string;setSlot:(v:string)=>void;selected:number;setSelected:(n:number)=>void}){
- const slots=[["HEAD","◉","Rogue's Hood"],["FACE","◌","—"],["NECK","◇","Echo Charm"],["TORSO","◈","Shadowweave Vest"],["WRISTS","▱","Kinetic Bracers"],["RING","◌","Vampire Band"],["WAIST","▰","—"],["LEGS","╿","—"],["FEET","▰","Tracker Boots"],["SPECIAL","✦","—"]];
- const candidates=[items[7],items[11],items[13],items[17],items[4],items[5]];
- const equipped=slots.find(x=>x[0]===slot)??slots[3]; const candidate=candidates[selected%candidates.length];
- return <div className="equipment-workspace"><Panel title="ADAPTIVE LOADOUT · PRIMAL"><p className="slot-note">Slots change with race, class, transformations, and body modifications.</p><div className="loadout-diagram"><div className="body-core">◉</div>{slots.map(([name,icon,label],i)=><button key={name} className={"body-slot s"+i+(slot===name?" selected":"")} onClick={()=>setSlot(name)}><i>{icon}</i><span>{name}</span><small>{label}</small></button>)}</div><div className="slot-legend"><span>◉ occupied</span><span>◇ special</span><span>— unavailable / empty</span></div></Panel>
- <Panel title="EQUIPMENT CANDIDATES"><div className="candidate-grid">{candidates.map(x=>{const index=items.indexOf(x);return <button key={x[0]} className={"candidate "+x[2]+(index===selected?" selected":"")} onClick={()=>setSelected(index)}><i>{x[1]}</i><span>{x[0]}</span><b>{x[2]}</b></button>})}</div></Panel>
- <Panel title="COMPARE · EQUIPPED VS CANDIDATE" className="compare"><div className="comparison"><div><p className="eyebrow">EQUIPPED · {slot}</p><i>{equipped[1]}</i><h2>{equipped[2]}</h2><p>Armor 115<br/>Durability 64 / 100<br/>+8 constitution</p></div><b>⇄</b><div className={"candidate-preview "+candidate[2]}><p className="eyebrow">CANDIDATE</p><i>{candidate[1]}</i><h2>{candidate[0]}</h2><p>Armor 128<br/>Durability 100 / 100<br/>+10 constitution</p></div></div><div className="actions"><button>EQUIP</button><button>LOCK</button><button>REPAIR</button></div></Panel></div>
+
+function Panel({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
+  return (
+    <article className={"panel " + className}>
+      <h2>{title}</h2>
+      {children}
+    </article>
+  );
 }
-function Skills(){const [selected,setSelected]=useState(3);const [filter,setFilter]=useState("ALL SKILLS");const [hot,setHot]=useState([0,1,4,3,6,-1,-1,-1,5,-1]);const shown=skillData.filter(s=>filter==="ALL SKILLS"||s[5].toUpperCase()===filter||(filter==="ACTIVE"&&s[4]!=="PASSIVE"));const s=skillData[selected];return <section className="view"><header className="title"><div><p className="eyebrow">ABILITY MANAGEMENT</p><h1>SKILLS</h1></div><b>96 ABILITIES DISCOVERED</b></header><div className="skills"><Panel title="ABILITY TYPE"><div className="categories">{["ALL SKILLS","ACTIVE","PASSIVE","COMBAT","UTILITY","CLASS","ITEM GRANTED"].map(x=><button className={filter===x?"on":""} onClick={()=>setFilter(x)} key={x}>{x}<b>{x==="ALL SKILLS"?96:18}</b></button>)}</div></Panel><Panel title="SKILL LIBRARY"><div className="skill-list">{shown.map(x=>{const idx=skillData.indexOf(x);return <button className={idx===selected?"selected":""} key={x[0]} onClick={()=>setSelected(idx)}><i>{x[1]}</i><span><b>{x[0]}</b><small>{x[3]}</small></span><em>{x[4]}</em></button>})}</div></Panel><Panel title="SKILL INSPECTOR"><div className="hero">{s[1]}</div><h1>{s[0].toUpperCase()}</h1><i>{s[2]}</i><i className="active-tag">{s[4]==="PASSIVE"?"PASSIVE":"ACTIVE"} ABILITY</i><dl className="details"><div><dt>EFFECT</dt><dd>{s[3]}</dd></div><div><dt>REQUIREMENTS</dt><dd>30 Intelligence</dd></div><div><dt>COOLDOWN</dt><dd>{s[4]==="PASSIVE"?"None":"30 seconds"}</dd></div><div><dt>RESOURCE COST</dt><dd>40 mana</dd></div><div><dt>SYNERGIES</dt><dd>Phase Dash · Systems Exploit</dd></div></dl></Panel></div><Panel title="QUICK HOTLIST" className="hotlist"><div>{hot.map((entry,i)=><button className={entry===selected?"selected":""} onClick={()=>setHot(hot.map((x,k)=>k===i?selected:x))} key={i}><b>{i+1}</b><span>{entry<0?"+":skillData[entry][1]}</span><small>{entry<0?"EMPTY":skillData[entry][0]}</small></button>)}</div></Panel></section>}
-function Journal(){const [tab,setTab]=useState("ACTIVE");return <section className="view"><header className="title"><div><p className="eyebrow">OBJECTIVES & SYSTEM RECORDS</p><h1>JOURNAL</h1></div><div className="subnav">{["ACTIVE","FLOOR RULES","LOG"].map(x=><button className={tab===x?"on":""} onClick={()=>setTab(x)} key={x}>{x}</button>)}</div></header>{tab==="ACTIVE"?<div className="journal"><div><Quest title="Tutorial: Reach the Stairs" urgency="URGENT" goals={["Find the emergency stairwell","Bypass the security lockdown"]} rewards="150 XP · Bronze Box"/><Quest title="Extermination Protocol" urgency="STANDARD" goals={["Kill 10 grunts (10/10)","Defeat the Broodmother (0/1)"]} rewards="500 XP · Skill Point"/></div><Panel title="RECENT PROGRESS"><div className="achievement"><span>☠</span><div><p className="eyebrow">NEW ACHIEVEMENT UNLOCKED</p><h1>BARELY SCRAPING BY</h1><p>Survive an encounter below 5% health.</p><b>+250 XP · +50 FAME</b></div></div><div className="log"><p>● Floor 6 safe room discovered</p><p>● New follower: Aris the Indefatigable</p><p>● Party member health critical</p></div></Panel></div>:<Panel title={tab==="LOG"?"SYSTEM EVENT LOG":"FLOOR 6 · CLOCKWORK CATACOMBS"}><div className="log">{(tab==="LOG"?["Achievement processed: Barely Scraping By","Inventory changed: Healing vial used","New quest: Extermination Protocol","Viewer count crossed 48,000","Party channel message received"]:["LEVEL COLLAPSE: Remaining structures compress at zero.","SAFETY ROOMS: Marked on discovered map tiles only.","VIEWER EVENT: Audience favorites may receive sponsor attention."]).map((x,i)=><p key={x}><span>{tab==="LOG"?"0"+(i+1)+":42":"RULE"}</span>{x}</p>)}</div></Panel>}</section>}
-function Quest({title,urgency,goals,rewards}:{title:string;urgency:string;goals:string[];rewards:string}){return <article className="quest"><header><h2>{title}</h2><i>{urgency}</i></header><p>Dungeon conditions are unstable. Complete this before failure becomes permanent.</p><ul>{goals.map(x=><li key={x}>{x}</li>)}</ul><footer>REWARDS <b>{rewards}</b></footer></article>}
-function Achievements(){return <div className="achievements"><div className="achievement"><span>☠</span><div><p className="eyebrow">NEW ACHIEVEMENT UNLOCKED</p><h1>BARELY SCRAPING BY</h1><p>Survive an encounter below 5% health.</p><b>+250 XP · +50 FAME · TITLE: UNBREAKABLE</b></div></div><div className="award-grid">{["Dungeon King","Team Player","Monster Hunter","Deep Runner","First Steps","Pyromaniac"].map((x,i)=><article key={x}><i>{["♛","♜","☠","↥","➟","♨"][i]}</i><h2>{x}</h2><p>{i%2?"IN PROGRESS":"UNLOCKED"}</p></article>)}</div></div>}
-function Broadcast(){return <div className="broadcast-page"><Panel title="LIVE BROADCAST"><div className="viewer"><span>● LIVE</span><h1>48,219</h1><p>CURRENT VIEWERS</p><b>▲ 12% this encounter</b></div></Panel><Panel title="AUDIENCE RESPONSE"><div className="audience"><p><b>3,842</b> Followers</p><p><b>17</b> Floor Rank</p><p><b>6</b> Active Favorites</p><p>● Sponsor interest detected</p></div></Panel><Panel title="RECENT EVENTS"><div className="log"><p><span>NOW</span>Your desperation spike is trending.</p><p><span>02m</span>A sponsor bookmarked your stream.</p><p><span>07m</span>Achievement replay earned a viewer surge.</p></div></Panel></div>}
-export default function Home(){const [view,setView]=useState<View>("crawler");const [time,setTime]=useState(4*3600+17*60+32);const [notes,setNotes]=useState(false);useEffect(()=>{const n=setInterval(()=>setTime(x=>Math.max(0,x-1)),1000);return()=>clearInterval(n)},[]);const h=String(Math.floor(time/3600)).padStart(2,"0"),m=String(Math.floor(time%3600/60)).padStart(2,"0"),s=String(time%60).padStart(2,"0");return <main><div className="timer"><span>FLOOR 6</span><b>LEVEL COLLAPSE IN {h}:{m}:{s}</b><span>● LIVE · 48,219 VIEWERS</span></div><Nav active={view} set={setView}/><button className="bell" onClick={()=>setNotes(!notes)}>◔<b>3</b></button>{notes&&<aside className="notices"><button onClick={()=>setNotes(false)}>×</button><p className="eyebrow">SYSTEM NOTICE</p><b>New achievement unlocked</b><span>Barely Scraping By · +250 XP</span><hr/><b>Party message</b><span>Donut: “CARL, THE TIMER!”</span></aside>}{view==="crawler"?<Crawler/>:view==="inventory"?<Inventory/>:view==="skills"?<Skills/>:<Journal/>}</main>}
+
+function Nav({ active, set, onOpenJsonModal }: { active: View; set: (v: View) => void; onOpenJsonModal: () => void }) {
+  return (
+    <nav className="nav">
+      <b><span>WORLD DUNGEON</span> AUTHORITY</b>
+      {(["crawler", "inventory", "skills", "journal"] as View[]).map((v) => (
+        <button key={v} className={active === v ? "active" : ""} onClick={() => set(v)}>
+          {v === "crawler" ? "CRAWLER" : v.toUpperCase()}
+        </button>
+      ))}
+      <button style={{ marginLeft: "auto", border: "1px solid #1f4252", padding: "6px 10px" }} onClick={onOpenJsonModal}>
+        ⚙ JSON
+      </button>
+    </nav>
+  );
+}
+
+function Crawler({
+  state,
+  onInspectStat,
+  onNavigateView,
+}: {
+  state: CrawlerState;
+  onInspectStat: (stat: string) => void;
+  onNavigateView: (v: View) => void;
+}) {
+  const [mode, setMode] = useState<string>("OVERVIEW");
+
+  const c = state.crawler;
+  const xpPct = Math.min(100, Math.round((c.xp / c.maxXp) * 100));
+  const hpPct = Math.min(100, Math.round((c.condition.currentHealth / c.condition.maxHealth) * 100));
+  const mpPct = Math.min(100, Math.round((c.condition.currentMana / c.condition.maxMana) * 100));
+  const stPct = Math.min(100, Math.round((c.condition.currentStamina / c.condition.maxStamina) * 100));
+
+  const equippedCount = Object.values(state.equippedSlots).filter(Boolean).length;
+
+  return (
+    <section className="view-content">
+      <div className="subnav">
+        {["OVERVIEW", "ACHIEVEMENTS", "BROADCAST"].map((x) => (
+          <button className={mode === x ? "on" : ""} key={x} onClick={() => setMode(x)}>
+            {x}
+          </button>
+        ))}
+      </div>
+
+      {mode === "OVERVIEW" && (
+        <>
+          <header className="profile">
+            <div className="portrait">C</div>
+            <div>
+              <p className="eyebrow">ACTIVE CRAWLER</p>
+              <h1>{c.name}</h1>
+              <i>LEVEL {c.level}</i>
+              <i>RACE: {c.race}</i>
+              <i>CLASS: {c.class}</i>
+            </div>
+            <div className="xp">
+              <span>
+                EXPERIENCE&nbsp; <b>{c.xp.toLocaleString()} / {c.maxXp.toLocaleString()}</b>
+              </span>
+              <em>
+                <b style={{ width: `${xpPct}%` }} />
+              </em>
+            </div>
+          </header>
+
+          <div className="two-col">
+            <Panel title="ATTRIBUTES · CLICK TO INSPECT PROVENANCE">
+              <div className="stats">
+                {[
+                  ["Strength", c.attributes.Strength, "red"],
+                  ["Dexterity", c.attributes.Dexterity, "green"],
+                  ["Constitution", c.attributes.Constitution, "yellow"],
+                  ["Intelligence", c.attributes.Intelligence, "blue"],
+                  ["Charisma", c.attributes.Charisma, "purple"],
+                ].map(([n, v, color]) => (
+                  <p key={String(n)} className="stat-clickable" onClick={() => onInspectStat(String(n))}>
+                    <span>{n} 🔍</span>
+                    <b>{v}</b>
+                    <em>
+                      <i className={String(color)} style={{ width: Number(v) * 2 + "%" }} />
+                    </em>
+                  </p>
+                ))}
+              </div>
+              <button className="outline">AVAILABLE POINTS ({c.availableAttributePoints})</button>
+            </Panel>
+
+            <Panel title="CURRENT CONDITION">
+              <div className="meters">
+                <Meter name="HEALTH" value={`${c.condition.currentHealth.toLocaleString()} / ${c.condition.maxHealth.toLocaleString()}`} pct={hpPct} c="red" />
+                <Meter name="MANA" value={`${c.condition.currentMana.toLocaleString()} / ${c.condition.maxMana.toLocaleString()}`} pct={mpPct} c="blue" />
+                <Meter name="STAMINA" value={`${c.condition.currentStamina.toLocaleString()} / ${c.condition.maxStamina.toLocaleString()}`} pct={stPct} c="yellow" />
+              </div>
+              <div className="effects">
+                {state.effects.length > 0 ? (
+                  state.effects.map((eff) => (
+                    <p key={eff.effectId} className={eff.type}>
+                      {eff.icon} {eff.name} <b>{eff.durationSeconds}s</b>
+                      <small>{eff.description}</small>
+                    </p>
+                  ))
+                ) : (
+                  <p className="good">NO ACTIVE STATUS EFFECTS</p>
+                )}
+              </div>
+            </Panel>
+
+            <Panel title="EQUIPPED GEAR">
+              <div className="gear">
+                <div>◉</div>
+                <p>Equipped Slots: <b>{equippedCount} / 10</b></p>
+                <p>Active Gear Items: <b>{equippedCount} Items</b></p>
+                <button onClick={() => onNavigateView("inventory")}>Manage in Inventory →</button>
+              </div>
+            </Panel>
+
+            <Panel title="BROADCAST STATUS">
+              <div className="broadcast">
+                <p>
+                  <span>VIEWERS</span>
+                  <b>{state.broadcast.viewers.toLocaleString()}</b>
+                  <em>{state.broadcast.viewerDelta}</em>
+                </p>
+                <p>
+                  <span>FOLLOWERS</span>
+                  <b>{state.broadcast.followers.toLocaleString()}</b>
+                </p>
+                <p>
+                  <span>FAME RANK</span>
+                  <b>{state.broadcast.fameRank}</b>
+                </p>
+                {state.broadcast.sponsorInterest && (
+                  <p className="sponsor">● Sponsor interest detected</p>
+                )}
+              </div>
+            </Panel>
+          </div>
+        </>
+      )}
+
+      {mode === "ACHIEVEMENTS" && <Achievements achievements={state.achievements} />}
+      {mode === "BROADCAST" && <Broadcast broadcast={state.broadcast} logs={state.recentLogs} />}
+    </section>
+  );
+}
+
+function Meter({ name, value, pct, c }: { name: string; value: string; pct: number; c: string }) {
+  return (
+    <p className="meter">
+      <span>{name}</span>
+      <b>{value}</b>
+      <em>
+        <i className={c} style={{ width: pct + "%" }} />
+      </em>
+    </p>
+  );
+}
+
+function Inventory({
+  state,
+  events,
+  provenanceItem,
+  setProvenanceItem,
+  onNavigateToSequence,
+}: {
+  state: CrawlerState;
+  events: CrawlerEvent[];
+  provenanceItem: InventoryItem | null;
+  setProvenanceItem: (item: InventoryItem | null) => void;
+  onNavigateToSequence: (seq: number) => void;
+}) {
+  const [selectedIdx, setSelectedIdx] = useState<number>(0);
+  const [filter, setFilter] = useState<string>("ALL ITEMS");
+  const [slot, setSlot] = useState<string>("TORSO");
+  const [search, setSearch] = useState<string>("");
+
+  const items = state.inventory;
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
+      const matchesCategory =
+        filter === "ALL ITEMS"
+          ? true
+          : filter === "EQUIPMENT"
+          ? item.category === "EQUIPMENT"
+          : filter === "CONSUMABLES"
+          ? item.category === "CONSUMABLES"
+          : filter === "QUEST ITEMS"
+          ? item.category === "QUEST ITEMS"
+          : filter === "CRAFTING"
+          ? item.category === "CRAFTING"
+          : true;
+
+      const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [items, filter, search]);
+
+  const selectedItem = filteredItems[selectedIdx] || filteredItems[0] || items[0];
+
+  const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING"];
+
+  return (
+    <section className="view-content">
+      <header className="title">
+        <div>
+          <p className="eyebrow">STORAGE SYSTEM</p>
+          <h1>INVENTORY</h1>
+        </div>
+        <b>CAPACITY {items.length} / 100</b>
+      </header>
+
+      <div className="inventory">
+        <Panel title="CATEGORIES">
+          <div className="categories">
+            {categories.map((x) => (
+              <button className={filter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
+                {x}
+                <b>
+                  {x === "ALL ITEMS"
+                    ? items.length
+                    : items.filter((i) => i.category === x).length}
+                </b>
+              </button>
+            ))}
+          </div>
+        </Panel>
+
+        {filter !== "EQUIPMENT" ? (
+          <>
+            <Panel title={filter}>
+              <div className="tools">
+                <input
+                  placeholder="Search items…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <button>SORT: NEWEST⌄</button>
+              </div>
+
+              {filteredItems.length > 0 ? (
+                <div className="grid">
+                  {filteredItems.map((x, idx) => (
+                    <button
+                      className={`item ${x.rarity} ${selectedItem?.instanceId === x.instanceId ? "selected" : ""}`}
+                      key={x.instanceId}
+                      onClick={() => setSelectedIdx(idx)}
+                    >
+                      <i>{x.icon}</i>
+                      <b>{x.quantity}</b>
+                      <small>{x.name}</small>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: "11px", color: "#8fa1aa" }}>No items match current filter.</p>
+              )}
+            </Panel>
+
+            <div className="right">
+              <Panel title="EQUIPPED GEAR SLOTS">
+                <div className="compact">
+                  HOOD <b>◉</b> VEST <b>◈</b> BOOTS <b>▰</b>
+                </div>
+                <button className="link" onClick={() => setFilter("EQUIPMENT")}>
+                  Open equipment slot matrix →
+                </button>
+              </Panel>
+
+              {selectedItem && (
+                <Panel title="ITEM INSPECTOR">
+                  <div className={`large-icon ${selectedItem.rarity}`}>{selectedItem.icon}</div>
+                  <h2>{selectedItem.name.toUpperCase()}</h2>
+                  <p className="rarity">{selectedItem.rarity}</p>
+                  <p>{selectedItem.description}</p>
+                  <dl>
+                    <div>
+                      <dt>VALUE</dt>
+                      <dd>{selectedItem.value} ⊙</dd>
+                    </div>
+                    <div>
+                      <dt>STACK</dt>
+                      <dd>{selectedItem.quantity} / {selectedItem.maxStack}</dd>
+                    </div>
+                    <div>
+                      <dt>TYPE</dt>
+                      <dd>{selectedItem.category}</dd>
+                    </div>
+                    <div>
+                      <dt>ACQUIRED</dt>
+                      <dd>SEQ #{selectedItem.acquiredAtSequence}</dd>
+                    </div>
+                  </dl>
+
+                  <div className="actions">
+                    <button onClick={() => setProvenanceItem(selectedItem)}>
+                      PROVENANCE LIFECYCLE 🔍
+                    </button>
+                  </div>
+                </Panel>
+              )}
+
+              {provenanceItem && (
+                <ItemProvenanceDrawer
+                  item={provenanceItem}
+                  events={events}
+                  onClose={() => setProvenanceItem(null)}
+                  onNavigateToSequence={onNavigateToSequence}
+                />
+              )}
+            </div>
+          </>
+        ) : (
+          <EquipmentView state={state} slot={slot} setSlot={setSlot} />
+        )}
+      </div>
+    </section>
+  );
+}
+
+function EquipmentView({
+  state,
+  slot,
+  setSlot,
+}: {
+  state: CrawlerState;
+  slot: string;
+  setSlot: (v: string) => void;
+}) {
+  const slots = [
+    ["HEAD", "◉", "Rogue's Hood"],
+    ["FACE", "◌", "—"],
+    ["NECK", "◇", "—"],
+    ["TORSO", "◈", "Shadowweave Vest"],
+    ["WRISTS", "▱", "—"],
+    ["RING", "💍", "Echo Ring"],
+    ["WAIST", "▰", "—"],
+    ["LEGS", "╿", "—"],
+    ["FEET", "▰", "Tracker Boots"],
+    ["SPECIAL", "✦", "—"],
+  ];
+
+  const equippedInstanceId = state.equippedSlots[slot];
+  const equippedItem = state.inventory.find((i) => i.instanceId === equippedInstanceId);
+
+  return (
+    <div className="equipment-workspace">
+      <Panel title="ADAPTIVE LOADOUT · PRIMAL">
+        <p className="slot-note">Slots change with race, class, transformations, and body modifications.</p>
+        <div className="loadout-diagram">
+          <div className="body-core">◉</div>
+          {slots.map(([name, icon], i) => {
+            const occupantId = state.equippedSlots[name];
+            const occupant = state.inventory.find((item) => item.instanceId === occupantId);
+            return (
+              <button
+                key={name}
+                className={`body-slot s${i} ${slot === name ? "selected" : ""}`}
+                onClick={() => setSlot(name)}
+              >
+                <i>{icon}</i>
+                <span>{name}</span>
+                <small>{occupant ? occupant.name : "—"}</small>
+              </button>
+            );
+          })}
+        </div>
+        <div className="slot-legend">
+          <span>◉ occupied</span>
+          <span>◇ special</span>
+          <span>— empty slot</span>
+        </div>
+      </Panel>
+
+      <Panel title={`SLOT INSPECTOR · ${slot}`}>
+        {equippedItem ? (
+          <div>
+            <p className="eyebrow">EQUIPPED ITEM</p>
+            <h2>{equippedItem.name}</h2>
+            <p className="rarity">{equippedItem.rarity}</p>
+            <p>{equippedItem.description}</p>
+            {equippedItem.stats && (
+              <div style={{ marginTop: "10px", fontSize: "11px", color: "#6fe8f7" }}>
+                {Object.entries(equippedItem.stats).map(([k, v]) => (
+                  <p key={k}>
+                    + {v} {k}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <p style={{ color: "#7fa0ac", fontSize: "11px" }}>No gear equipped in slot {slot}.</p>
+        )}
+      </Panel>
+    </div>
+  );
+}
+
+function Skills({ state }: { state: CrawlerState }) {
+  const [selectedIdx, setSelectedIdx] = useState<number>(0);
+  const [filter, setFilter] = useState<string>("ALL SKILLS");
+
+  const skills = state.skills;
+  const shown = skills.filter((s) => {
+    if (filter === "ALL SKILLS") return true;
+    if (filter === "ACTIVE") return s.category !== "passive";
+    if (filter === "PASSIVE") return s.category === "passive";
+    return s.category.toUpperCase() === filter;
+  });
+
+  const selectedSkill = shown[selectedIdx] || shown[0] || skills[0];
+
+  return (
+    <section className="view-content">
+      <header className="title">
+        <div>
+          <p className="eyebrow">ABILITY MANAGEMENT</p>
+          <h1>SKILLS</h1>
+        </div>
+        <b>{skills.length} ABILITIES DISCOVERED</b>
+      </header>
+
+      <div className="skills">
+        <Panel title="ABILITY TYPE">
+          <div className="categories">
+            {["ALL SKILLS", "ACTIVE", "PASSIVE", "COMBAT", "UTILITY"].map((x) => (
+              <button className={filter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
+                {x}
+                <b>{x === "ALL SKILLS" ? skills.length : 2}</b>
+              </button>
+            ))}
+          </div>
+        </Panel>
+
+        <Panel title="SKILL LIBRARY">
+          <div className="skill-list">
+            {shown.map((x, idx) => (
+              <button
+                className={selectedSkill?.skillId === x.skillId ? "selected" : ""}
+                key={x.skillId}
+                onClick={() => setSelectedIdx(idx)}
+              >
+                <i>{x.icon}</i>
+                <span>
+                  <b>{x.name}</b>
+                  <small>{x.description}</small>
+                </span>
+                <em>{x.cooldown}</em>
+              </button>
+            ))}
+          </div>
+        </Panel>
+
+        {selectedSkill && (
+          <Panel title="SKILL INSPECTOR">
+            <div className="hero">{selectedSkill.icon}</div>
+            <h1>{selectedSkill.name.toUpperCase()}</h1>
+            <i>{selectedSkill.rank}</i>
+            <i className="active-tag">{selectedSkill.category.toUpperCase()} ABILITY</i>
+            <dl className="details">
+              <div>
+                <dt>EFFECT</dt>
+                <dd>{selectedSkill.description}</dd>
+              </div>
+              <div>
+                <dt>COOLDOWN</dt>
+                <dd>{selectedSkill.cooldown}</dd>
+              </div>
+              {selectedSkill.cost && (
+                <div>
+                  <dt>RESOURCE COST</dt>
+                  <dd>{selectedSkill.cost}</dd>
+                </div>
+              )}
+            </dl>
+          </Panel>
+        )}
+      </div>
+
+      <Panel title="QUICK HOTLIST" className="hotlist">
+        <div>
+          {Array.from({ length: 10 }).map((_, i) => {
+            const skillId = state.hotlist[i];
+            const skill = skills.find((s) => s.skillId === skillId);
+            return (
+              <button key={i}>
+                <b>{i + 1}</b>
+                <span>{skill ? skill.icon : "+"}</span>
+                <small>{skill ? skill.name : "EMPTY"}</small>
+              </button>
+            );
+          })}
+        </div>
+      </Panel>
+    </section>
+  );
+}
+
+function Journal({
+  state,
+  onNavigateToSequence,
+}: {
+  state: CrawlerState;
+  onNavigateToSequence: (seq: number) => void;
+}) {
+  const [tab, setTab] = useState<string>("ACTIVE");
+
+  return (
+    <section className="view-content">
+      <header className="title">
+        <div>
+          <p className="eyebrow">OBJECTIVES & SYSTEM RECORDS</p>
+          <h1>JOURNAL</h1>
+        </div>
+        <div className="subnav">
+          {["ACTIVE", "FLOOR RULES", "LOG"].map((x) => (
+            <button className={tab === x ? "on" : ""} onClick={() => setTab(x)} key={x}>
+              {x}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      {tab === "ACTIVE" ? (
+        <div className="journal">
+          <div>
+            {state.quests.map((q) => (
+              <Quest key={q.questId} title={q.title} urgency={q.urgency} goals={q.goals} rewards={q.rewards} />
+            ))}
+          </div>
+
+          <Panel title="RECENT PROGRESS & ACHIEVEMENTS">
+            {state.achievements.map((ach) => (
+              <div className="achievement" key={ach.achievementId}>
+                <span>{ach.icon}</span>
+                <div>
+                  <p className="eyebrow">ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
+                  <h1>{ach.title}</h1>
+                  <p>{ach.description}</p>
+                  <b>{ach.rewards}</b>
+                </div>
+              </div>
+            ))}
+
+            <div className="log">
+              {state.recentLogs.slice(0, 5).map((l) => (
+                <p
+                  key={l.sequence}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onNavigateToSequence(l.sequence)}
+                  title="Click to jump timeline sequence"
+                >
+                  <span>SEQ #{l.sequence}</span> {l.message}
+                </p>
+              ))}
+            </div>
+          </Panel>
+        </div>
+      ) : (
+        <Panel title={tab === "LOG" ? "SYSTEM EVENT LOG" : "FLOOR 6 · CLOCKWORK CATACOMBS"}>
+          <div className="log">
+            {tab === "LOG" ? (
+              state.recentLogs.map((l) => (
+                <p
+                  key={l.sequence}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onNavigateToSequence(l.sequence)}
+                >
+                  <span>SEQ #{l.sequence}</span> [{l.timestamp}] {l.message}
+                </p>
+              ))
+            ) : (
+              [
+                "LEVEL COLLAPSE: Remaining structures compress at zero.",
+                "SAFETY ROOMS: Marked on discovered map tiles only.",
+                "VIEWER EVENT: Audience favorites may receive sponsor attention.",
+              ].map((x) => (
+                <p key={x}>
+                  <span>RULE</span> {x}
+                </p>
+              ))
+            )}
+          </div>
+        </Panel>
+      )}
+    </section>
+  );
+}
+
+function Quest({
+  title,
+  urgency,
+  goals,
+  rewards,
+}: {
+  title: string;
+  urgency: string;
+  goals: string[];
+  rewards: string;
+}) {
+  return (
+    <article className="quest">
+      <header>
+        <h2>{title}</h2>
+        <i>{urgency}</i>
+      </header>
+      <p>Dungeon conditions are unstable. Complete this before failure becomes permanent.</p>
+      <ul>
+        {goals.map((x) => (
+          <li key={x}>{x}</li>
+        ))}
+      </ul>
+      <footer>
+        REWARDS <b>{rewards}</b>
+      </footer>
+    </article>
+  );
+}
+
+function Achievements({ achievements }: { achievements: CrawlerState["achievements"] }) {
+  return (
+    <div className="achievements">
+      {achievements.map((ach) => (
+        <div className="achievement" key={ach.achievementId}>
+          <span>{ach.icon}</span>
+          <div>
+            <p className="eyebrow">ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
+            <h1>{ach.title}</h1>
+            <p>{ach.description}</p>
+            <b>{ach.rewards}</b>
+          </div>
+        </div>
+      ))}
+
+      <div className="award-grid">
+        {["Dungeon King", "Team Player", "Monster Hunter", "Deep Runner", "First Steps", "Pyromaniac"].map(
+          (x, i) => (
+            <article key={x}>
+              <i>{["♛", "♜", "☠", "↥", "➟", "♨"][i]}</i>
+              <h2>{x}</h2>
+              <p>{i % 2 === 0 ? "UNLOCKED" : "IN PROGRESS"}</p>
+            </article>
+          )
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Broadcast({
+  broadcast,
+  logs,
+}: {
+  broadcast: CrawlerState["broadcast"];
+  logs: CrawlerState["recentLogs"];
+}) {
+  return (
+    <div className="broadcast-page">
+      <Panel title="LIVE BROADCAST">
+        <div className="viewer">
+          <span>● LIVE AUDIENCE</span>
+          <h1>{broadcast.viewers.toLocaleString()}</h1>
+          <p>CURRENT VIEWERS</p>
+          <b>{broadcast.viewerDelta} this encounter</b>
+        </div>
+      </Panel>
+
+      <Panel title="AUDIENCE RESPONSE">
+        <div className="audience">
+          <p>
+            <b>{broadcast.followers.toLocaleString()}</b> Followers
+          </p>
+          <p>
+            <b>{broadcast.fameRank}</b> Floor Rank
+          </p>
+          {broadcast.sponsorInterest && <p className="sponsor">● Sponsor interest detected</p>}
+        </div>
+      </Panel>
+
+      <Panel title="RECENT EVENT STREAM">
+        <div className="log">
+          {logs.slice(0, 5).map((l) => (
+            <p key={l.sequence}>
+              <span>SEQ #{l.sequence}</span> {l.message}
+            </p>
+          ))}
+        </div>
+      </Panel>
+    </div>
+  );
+}
