@@ -534,3 +534,52 @@ test("floor endpoint follows appended events instead of a stale compiled segment
   assert.equal(getFloorEndSequence(events, 1, 19), 20);
   assert.equal(getFloorEndSequence(events, 2, 19), 19);
 });
+
+test("AttributeModified event allocates attribute points correctly", () => {
+  let state = createInitialState();
+  assert.equal(state.crawler.availableAttributePoints, 5);
+  assert.equal(state.crawler.attributes.Strength, 24);
+
+  state = projectState(
+    [
+      {
+        id: "evt-attr-1",
+        sequence: 1,
+        type: "AttributeModified",
+        attribute: "Strength",
+        source: "allocation",
+        delta: 1,
+        summary: "Allocated +1 point to Strength",
+      },
+    ],
+    1,
+    [],
+    state
+  );
+
+  assert.equal(state.crawler.attributes.Strength, 25);
+  assert.equal(state.crawler.availableAttributePoints, 4);
+});
+
+test("HotlistUpdated event modifies hotlist skill slots", () => {
+  let state = createInitialState();
+  assert.ok(Array.isArray(state.hotlist));
+
+  state = projectState(
+    [
+      {
+        id: "evt-hotlist-1",
+        sequence: 1,
+        type: "HotlistUpdated",
+        index: 2,
+        skillId: "sk-custom-fireball",
+        summary: "Assigned Fireball to hotlist slot 3",
+      },
+    ],
+    1,
+    [],
+    state
+  );
+
+  assert.equal(state.hotlist[2], "sk-custom-fireball");
+});

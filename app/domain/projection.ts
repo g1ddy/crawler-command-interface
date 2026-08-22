@@ -114,7 +114,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
       class: crawler?.class || 'SCOUT',
       xp: crawler?.xp ?? 21500,
       maxXp: crawler?.maxXp ?? 74000,
-      availableAttributePoints: 0,
+    availableAttributePoints: (crawler as { availableAttributePoints?: number } | undefined)?.availableAttributePoints ?? 5,
       attributes,
       permanentAttributeModifiers: {
         Strength: 0,
@@ -423,11 +423,24 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     case 'AttributeModified': {
       const attr = event.attribute as AttributeName;
       if (attr in state.crawler.attributes) {
+        const delta = Number(event.delta || 0);
         if (event.source === 'allocation') {
-          state.crawler.attributes[attr] += Number(event.delta || 0);
+          state.crawler.attributes[attr] += delta;
+          state.crawler.availableAttributePoints = Math.max(0, state.crawler.availableAttributePoints - delta);
         } else if (event.source === 'permanent_modifier') {
-          state.crawler.permanentAttributeModifiers[attr] += Number(event.delta || 0);
+          state.crawler.permanentAttributeModifiers[attr] += delta;
         }
+      }
+      break;
+    }
+
+    case 'HotlistUpdated': {
+      if (Array.isArray(event.hotlist)) {
+        state.hotlist = (event.hotlist as string[]).slice(0, 10);
+      } else if (typeof event.index === 'number' && typeof event.skillId === 'string') {
+        const newHotlist = [...state.hotlist];
+        newHotlist[event.index] = event.skillId;
+        state.hotlist = newHotlist;
       }
       break;
     }

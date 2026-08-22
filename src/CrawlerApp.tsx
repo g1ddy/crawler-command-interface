@@ -45,6 +45,20 @@ export default function CrawlerApp() {
   const [jsonText, setJsonText] = useState<string>("");
   const [importError, setImportError] = useState<string | null>(null);
 
+  // Navigation context state for equipment/inventory deep-linking
+  const [inventoryFilter, setInventoryFilter] = useState<string>("ALL ITEMS");
+  const [equipmentSlot, setEquipmentSlot] = useState<string>("TORSO");
+
+  // Toast feedback notifications
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  useEffect(() => {
+    if (!toastMessage) return;
+    const t = setTimeout(() => setToastMessage(null), 3500);
+    return () => clearTimeout(t);
+  }, [toastMessage]);
+
+  const showToast = (msg: string) => setToastMessage(msg);
+
   // Floor collapse countdown timer
   useEffect(() => {
     const timer = setInterval(() => setTime((x) => Math.max(0, x - 1)), 1000);
@@ -127,17 +141,19 @@ export default function CrawlerApp() {
       const liveState = projectState(timelineDoc, maxSeq);
       const item = liveState.inventory.find((candidate) => candidate.instanceId === eventData.itemInstanceId);
       if (!item || !checkItemRequirements(liveState.crawler, item.requirements).met) {
+        showToast("⚠️ Cannot equip: Requirements not met!");
         return;
       }
     }
 
     const nextSeq = maxSeq + 1;
+    const summaryText = eventData.summary || `Recorded ${eventData.type}`;
     const newEvent: CrawlerEvent = {
       id: `evt-user-${Date.now()}`,
       sequence: nextSeq,
       occurred_at: projectedState.occurredAt,
       type: eventData.type || 'ItemEquipped',
-      summary: eventData.summary || `Recorded ${eventData.type}`,
+      summary: summaryText,
       category: eventData.category || 'system',
       position: { floor: latestFloor, elapsedSeconds: 0 },
       evidence: [{ sourceId: 'src-wda-system-log', confidence: 'confirmed' }],
@@ -157,10 +173,58 @@ export default function CrawlerApp() {
     setTimelineDoc(updatedDoc as CrawlerTimelineDocument);
     setSelectedSeq(nextSeq);
     setIsLive(true);
+    showToast(`⚡ ${summaryText}`);
   };
+
+  const handleNavigateToEquipmentSlot = (slot: string) => {
+    setView("inventory");
+    setInventoryFilter("EQUIPMENT");
+    setEquipmentSlot(slot);
+  };
+
+  // Keyboard Navigation Support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept typing in input or textarea
+      const targetTag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+      if (targetTag === "input" || targetTag === "textarea" || targetTag === "select") {
+        return;
+      }
+
+      if (e.key === "Escape") {
+        if (inspectStat) setInspectStat(null);
+        else if (provenanceItem) setProvenanceItem(null);
+        else if (showJsonModal) setShowJsonModal(false);
+        else if (notes) setNotes(false);
+        return;
+      }
+
+      if (e.key === "1") setView("crawler");
+      if (e.key === "2") setView("inventory");
+      if (e.key === "3") setView("skills");
+      if (e.key === "4") setView("journal");
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [inspectStat, provenanceItem, showJsonModal, notes]);
 
   return (
     <main>
+      {/* Mobile Compact Persistent HUD Header */}
+      <div className="mobile-status-bar">
+        <div className="mobile-crawler-info">
+          <b>{projectedState.crawler.name}</b> (LVL {projectedState.crawler.level} {projectedState.crawler.class})
+        </div>
+        <div className="mobile-meters">
+          <span className="hp-mini">HP {projectedState.crawler.condition.currentHealth}/{projectedState.crawler.condition.maxHealth}</span>
+          <span className="mp-mini">MP {projectedState.crawler.condition.currentMana}/{projectedState.crawler.condition.maxMana}</span>
+        </div>
+        <div className="mobile-mode">
+          {isLive ? <span className="live-pill">● LIVE</span> : <span className="replay-pill">↺ SEQ #{projectedState.sequence}</span>}
+        </div>
+      </div>
+
       <div className="timer">
         <span>{floorHudTitle.toUpperCase()}</span>
         <b>LEVEL COLLAPSE IN {h}:{m}:{s}</b>
@@ -176,7 +240,13 @@ export default function CrawlerApp() {
 
       <Nav active={view} set={setView} onOpenJsonModal={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }} />
 
-      <button className="bell" onClick={() => setNotes(!notes)}>
+      {toastMessage && (
+        <div className="toast-notification" role="status" aria-live="polite">
+          {toastMessage}
+        </div>
+      )}
+
+      <button className="bell" onClick={() => setNotes(!notes)} aria-label="Toggle system notices">
         ◔<b>{projectedState.recentLogs.length > 0 ? projectedState.recentLogs.length : 3}</b>
       </button>
 
@@ -220,6 +290,8 @@ export default function CrawlerApp() {
             state={projectedState}
             onInspectStat={(stat) => setInspectStat(stat)}
             onNavigateView={(v) => setView(v)}
+            onNavigateToEquipmentSlot={handleNavigateToEquipmentSlot}
+            onEmitEvent={handleEmitEvent}
           />
         ) : view === "inventory" ? (
           <Inventory
@@ -227,6 +299,10 @@ export default function CrawlerApp() {
             events={events}
             provenanceItem={provenanceItem}
             setProvenanceItem={setProvenanceItem}
+            filter={inventoryFilter}
+            setFilter={setInventoryFilter}
+            slot={equipmentSlot}
+            setSlot={setEquipmentSlot}
             onNavigateToSequence={(seq) => {
               setSelectedSeq(seq);
               setIsLive(seq === maxSeq);
@@ -234,7 +310,7 @@ export default function CrawlerApp() {
             onEmitEvent={handleEmitEvent}
           />
         ) : view === "skills" ? (
-          <Skills state={projectedState} />
+          <Skills state={projectedState} onEmitEvent={handleEmitEvent} />
         ) : (
           <Journal
             state={projectedState}
@@ -332,14 +408,23 @@ function Panel({ title, children, className = "" }: { title: string; children: R
 
 function Nav({ active, set, onOpenJsonModal }: { active: View; set: (v: View) => void; onOpenJsonModal: () => void }) {
   return (
-    <nav className="nav">
+    <nav className="nav" aria-label="Main Navigation">
       <b><span>WORLD DUNGEON</span> AUTHORITY</b>
       {(["crawler", "inventory", "skills", "journal"] as View[]).map((v) => (
-        <button key={v} className={active === v ? "active" : ""} onClick={() => set(v)}>
+        <button
+          key={v}
+          className={active === v ? "active" : ""}
+          onClick={() => set(v)}
+          aria-pressed={active === v}
+        >
           {v === "crawler" ? "CRAWLER" : v.toUpperCase()}
         </button>
       ))}
-      <button style={{ marginLeft: "auto", border: "1px solid #1f4252", padding: "6px 10px" }} onClick={onOpenJsonModal}>
+      <button
+        style={{ marginLeft: "auto", border: "1px solid #1f4252", padding: "6px 10px" }}
+        onClick={onOpenJsonModal}
+        aria-label="Import/Export JSON Timeline"
+      >
         ⚙ JSON
       </button>
     </nav>
@@ -350,10 +435,14 @@ function Crawler({
   state,
   onInspectStat,
   onNavigateView,
+  onNavigateToEquipmentSlot,
+  onEmitEvent,
 }: {
   state: CrawlerState;
   onInspectStat: (stat: string) => void;
   onNavigateView: (v: View) => void;
+  onNavigateToEquipmentSlot: (slot: string) => void;
+  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
 }) {
   const [mode, setMode] = useState<string>("OVERVIEW");
 
@@ -405,17 +494,48 @@ function Crawler({
                   ["Constitution", c.attributes.Constitution, "yellow"],
                   ["Intelligence", c.attributes.Intelligence, "blue"],
                   ["Charisma", c.attributes.Charisma, "purple"],
-                ].map(([n, v, color]) => (
-                  <p key={String(n)} className="stat-clickable" onClick={() => onInspectStat(String(n))}>
-                    <span>{n} 🔍</span>
-                    <b>{v}</b>
-                    <em>
-                      <i className={String(color)} style={{ width: Number(v) * 2 + "%" }} />
-                    </em>
-                  </p>
-                ))}
+                ].map(([n, v, color]) => {
+                  const attrName = String(n);
+                  const canAllocate = c.availableAttributePoints > 0;
+                  return (
+                    <div key={attrName} className="stat-row">
+                      <p className="stat-clickable" onClick={() => onInspectStat(attrName)}>
+                        <span>{attrName} 🔍</span>
+                        <b>{v}</b>
+                        <em>
+                          <i className={String(color)} style={{ width: Math.min(100, Number(v) * 2) + "%" }} />
+                        </em>
+                      </p>
+                      <div className="attr-actions">
+                        <button
+                          className="attr-btn add"
+                          disabled={!canAllocate}
+                          title={canAllocate ? `Allocate +1 to ${attrName}` : "No attribute points available"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!canAllocate) return;
+                            onEmitEvent({
+                              type: "AttributeModified",
+                              attribute: attrName,
+                              source: "allocation",
+                              delta: 1,
+                              summary: `Allocated +1 point to ${attrName}`,
+                            });
+                          }}
+                        >
+                          +1
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <button className="outline">AVAILABLE POINTS ({c.availableAttributePoints})</button>
+              <div className="points-banner">
+                <span>AVAILABLE POINTS</span>
+                <b className={c.availableAttributePoints > 0 ? "has-points" : ""}>
+                  {c.availableAttributePoints}
+                </b>
+              </div>
             </Panel>
 
             <Panel title="CURRENT CONDITION">
@@ -443,6 +563,28 @@ function Crawler({
                 <div>◉</div>
                 <p>Equipped Slots: <b>{equippedCount} / 10</b></p>
                 <p>Active Gear Items: <b>{equippedCount} Items</b></p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", margin: "10px 0" }}>
+                  {Object.entries(state.equippedSlots).map(([sName, instId]) => {
+                    const eqItem = state.inventory.find((i) => i.instanceId === instId);
+                    return (
+                      <button
+                        key={sName}
+                        style={{
+                          fontSize: "9px",
+                          padding: "3px 7px",
+                          background: eqItem ? "#0d2633" : "#09141c",
+                          border: `1px solid ${eqItem ? "#1bd9ff" : "#1a3542"}`,
+                          color: eqItem ? "#7ee5ff" : "#7c97a2",
+                          borderRadius: "3px",
+                        }}
+                        onClick={() => onNavigateToEquipmentSlot(sName)}
+                        title={`Go to equipment matrix for ${sName}`}
+                      >
+                        {sName}: {eqItem ? eqItem.name : "EMPTY"}
+                      </button>
+                    );
+                  })}
+                </div>
                 <button onClick={() => onNavigateView("inventory")}>Manage in Inventory →</button>
               </div>
             </Panel>
@@ -494,6 +636,10 @@ function Inventory({
   events,
   provenanceItem,
   setProvenanceItem,
+  filter,
+  setFilter,
+  slot,
+  setSlot,
   onNavigateToSequence,
   onEmitEvent,
 }: {
@@ -501,36 +647,63 @@ function Inventory({
   events: CrawlerEvent[];
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
+  filter: string;
+  setFilter: (f: string) => void;
+  slot: string;
+  setSlot: (s: string) => void;
   onNavigateToSequence: (seq: number) => void;
   onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
 }) {
-  const [selectedIdx, setSelectedIdx] = useState<number>(0);
-  const [filter, setFilter] = useState<string>("ALL ITEMS");
-  const [slot, setSlot] = useState<string>("TORSO");
+  const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<string>("newest");
   const [search, setSearch] = useState<string>("");
 
   const items = state.inventory;
   const filteredItems = useMemo(() => {
-    return items.filter((item) => {
+    const rarityRank: Record<string, number> = {
+      celestial: 6,
+      legendary: 5,
+      epic: 4,
+      rare: 3,
+      uncommon: 2,
+      common: 1,
+    };
+
+    const matched = items.filter((item) => {
       const matchesCategory =
         filter === "ALL ITEMS"
           ? true
           : filter === "EQUIPMENT"
-          ? item.category === "EQUIPMENT"
+          ? item.category === "EQUIPMENT" || item.category === "equipment"
           : filter === "CONSUMABLES"
-          ? item.category === "CONSUMABLES"
+          ? item.category === "CONSUMABLES" || item.category === "consumable"
           : filter === "QUEST ITEMS"
-          ? item.category === "QUEST ITEMS"
+          ? item.category === "QUEST ITEMS" || item.category === "quest-item"
           : filter === "CRAFTING"
-          ? item.category === "CRAFTING"
+          ? item.category === "CRAFTING" || item.category === "crafting"
           : true;
 
       const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [items, filter, search]);
 
-  const selectedItem = filteredItems[selectedIdx] || filteredItems[0] || items[0];
+    return matched.sort((a, b) => {
+      if (sortOrder === "newest") return b.acquiredAtSequence - a.acquiredAtSequence;
+      if (sortOrder === "oldest") return a.acquiredAtSequence - b.acquiredAtSequence;
+      if (sortOrder === "rarity") return (rarityRank[b.rarity] || 0) - (rarityRank[a.rarity] || 0);
+      if (sortOrder === "value") return b.value - a.value;
+      if (sortOrder === "name") return a.name.localeCompare(b.name);
+      return 0;
+    });
+  }, [items, filter, search, sortOrder]);
+
+  const selectedItem = useMemo(() => {
+    if (selectedInstanceId) {
+      const found = filteredItems.find((i) => i.instanceId === selectedInstanceId);
+      if (found) return found;
+    }
+    return filteredItems[0] || items[0];
+  }, [filteredItems, selectedInstanceId, items]);
   const selectedItemRequirements = useMemo(
     () => checkItemRequirements(state.crawler, selectedItem?.requirements),
     [state.crawler, selectedItem]
@@ -570,19 +743,39 @@ function Inventory({
               <div className="tools">
                 <input
                   placeholder="Search items…"
+                  aria-label="Search items"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-                <button>SORT: NEWEST⌄</button>
+                <select
+                  aria-label="Sort items"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  style={{
+                    border: "1px solid #294650",
+                    background: "#09141d",
+                    color: "#b8ced5",
+                    padding: "9px",
+                    fontSize: "10px",
+                    borderRadius: "3px",
+                  }}
+                >
+                  <option value="newest">SORT: NEWEST ⌄</option>
+                  <option value="oldest">SORT: OLDEST ⌄</option>
+                  <option value="rarity">SORT: RARITY ⌄</option>
+                  <option value="value">SORT: VALUE ⌄</option>
+                  <option value="name">SORT: NAME ⌄</option>
+                </select>
               </div>
 
               {filteredItems.length > 0 ? (
                 <div className="grid">
-                  {filteredItems.map((x, idx) => (
+                  {filteredItems.map((x) => (
                     <button
                       className={`item ${x.rarity} ${selectedItem?.instanceId === x.instanceId ? "selected" : ""}`}
                       key={x.instanceId}
-                      onClick={() => setSelectedIdx(idx)}
+                      onClick={() => setSelectedInstanceId(x.instanceId)}
+                      aria-label={`${x.name} (${x.rarity})`}
                     >
                       <i>{x.icon}</i>
                       <b>{x.quantity}</b>
@@ -1081,19 +1274,40 @@ function EquipmentView({
   );
 }
 
-function Skills({ state }: { state: CrawlerState }) {
+function Skills({
+  state,
+  onEmitEvent,
+}: {
+  state: CrawlerState;
+  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
+}) {
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [filter, setFilter] = useState<string>("ALL SKILLS");
 
   const skills = state.skills;
-  const shown = skills.filter((s) => {
-    if (filter === "ALL SKILLS") return true;
-    if (filter === "ACTIVE") return s.category !== "passive";
-    if (filter === "PASSIVE") return s.category === "passive";
-    return s.category.toUpperCase() === filter;
-  });
+  const shown = useMemo(() => {
+    return skills.filter((s) => {
+      if (filter === "ALL SKILLS") return true;
+      if (filter === "ACTIVE") return s.category !== "passive";
+      if (filter === "PASSIVE") return s.category === "passive";
+      return s.category.toUpperCase() === filter;
+    });
+  }, [skills, filter]);
 
   const selectedSkill = shown[selectedIdx] || shown[0] || skills[0];
+
+  const handleAssignHotlist = (hotlistIndex: number) => {
+    if (!selectedSkill) return;
+    const currentHotlist = [...state.hotlist];
+    currentHotlist[hotlistIndex] = selectedSkill.skillId;
+    onEmitEvent({
+      type: "HotlistUpdated",
+      hotlist: currentHotlist,
+      index: hotlistIndex,
+      skillId: selectedSkill.skillId,
+      summary: `Assigned ${selectedSkill.name} to hotlist slot #${hotlistIndex + 1}`,
+    });
+  };
 
   return (
     <section className="view-content">
@@ -1158,17 +1372,44 @@ function Skills({ state }: { state: CrawlerState }) {
                 </div>
               )}
             </dl>
+
+            <div style={{ marginTop: "14px" }}>
+              <p className="eyebrow">ASSIGN TO HOTLIST SLOT</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <button
+                    key={i}
+                    style={{
+                      padding: "5px 9px",
+                      fontSize: "9px",
+                      background: state.hotlist[i] === selectedSkill.skillId ? "#0e3443" : "#09141d",
+                      border: `1px solid ${state.hotlist[i] === selectedSkill.skillId ? "#1bd9ff" : "#244452"}`,
+                      color: state.hotlist[i] === selectedSkill.skillId ? "#1bd9ff" : "#8ca8b3",
+                    }}
+                    onClick={() => handleAssignHotlist(i)}
+                  >
+                    Slot #{i + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
           </Panel>
         )}
       </div>
 
-      <Panel title="QUICK HOTLIST" className="hotlist">
+      <Panel title="QUICK HOTLIST · CLICK TO ASSIGN SELECTED SKILL" className="hotlist">
         <div>
           {Array.from({ length: 10 }).map((_, i) => {
             const skillId = state.hotlist[i];
             const skill = skills.find((s) => s.skillId === skillId);
+            const isSelectedSkillAssigned = selectedSkill && skillId === selectedSkill.skillId;
             return (
-              <button key={i}>
+              <button
+                key={i}
+                className={isSelectedSkillAssigned ? "selected" : ""}
+                onClick={() => handleAssignHotlist(i)}
+                title={skill ? `Slot ${i + 1}: ${skill.name}` : `Slot ${i + 1}: Empty (Click to assign ${selectedSkill?.name || 'skill'})`}
+              >
                 <b>{i + 1}</b>
                 <span>{skill ? skill.icon : "+"}</span>
                 <small>{skill ? skill.name : "EMPTY"}</small>

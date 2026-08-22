@@ -38,11 +38,15 @@ This roadmap is intentionally ordered around making the interface a believable, 
 
 ## 4. Interaction polish
 
-- [ ] Implement real attribute assignment: choose an attribute, validate available points, emit an event, and update the derived stat.
-- [ ] Connect “Manage in Inventory” to the Equipment view and preselect the relevant body slot.
-- [ ] Add item search, sorting, filters with real counts, keyboard navigation, and a stable inspector selection.
-- [ ] Add tooltips and descriptive labels for icon-only controls.
-- [ ] Design a responsive layout: compact persistent HUD, drawer navigation, and a bottom-sheet inspector on mobile.
+- [x] Implement real attribute assignment: choose an attribute, validate available points, emit an event, and update the derived stat.
+- [x] Connect “Manage in Inventory” to the Equipment view and preselect the relevant body slot.
+- [x] Add item search, sorting, filters with real counts, keyboard navigation, and a stable inspector selection.
+- [x] Add tooltips and descriptive labels for icon-only controls.
+- [x] Design a responsive layout: compact persistent HUD, drawer navigation, and a bottom-sheet inspector on mobile.
+
+### Follow-up Workflow Polish Tasks
+- [ ] Add drag-and-drop reordering for skill hotlist slots on desktop.
+- [ ] Add Playwright browser E2E tests covering keyboard shortcuts (`1`-`4`, `Esc`) and mobile bottom-sheet gestures.
 
 ## 5. Application architecture
 
