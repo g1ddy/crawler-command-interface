@@ -80,3 +80,94 @@ export function getStatBreakdown(state: CrawlerState, statName: string): StatBre
     totalValue,
   };
 }
+
+export interface StatDelta {
+  statName: string;
+  equippedValue: number;
+  candidateValue: number;
+  delta: number;
+}
+
+export function compareGearStats(
+  equippedItem?: { stats?: Record<string, number> },
+  candidateItem?: { stats?: Record<string, number> }
+): StatDelta[] {
+  const equippedStats = equippedItem?.stats || {};
+  const candidateStats = candidateItem?.stats || {};
+
+  const allStatNames = Array.from(
+    new Set([...Object.keys(equippedStats), ...Object.keys(candidateStats)])
+  );
+
+  return allStatNames.map((statName) => {
+    const equippedValue = equippedStats[statName] || 0;
+    const candidateValue = candidateStats[statName] || 0;
+    const delta = candidateValue - equippedValue;
+
+    return {
+      statName,
+      equippedValue,
+      candidateValue,
+      delta,
+    };
+  });
+}
+
+export interface RequirementDetail {
+  key: string;
+  required: string | number;
+  current: string | number;
+  met: boolean;
+}
+
+export interface RequirementResult {
+  met: boolean;
+  details: RequirementDetail[];
+}
+
+export function checkItemRequirements(
+  crawler: CrawlerState['crawler'],
+  requirements?: Record<string, number | string>
+): RequirementResult {
+  if (!requirements || Object.keys(requirements).length === 0) {
+    return { met: true, details: [] };
+  }
+
+  const details: RequirementDetail[] = [];
+  let allMet = true;
+
+  for (const [key, required] of Object.entries(requirements)) {
+    let current: string | number = 'N/A';
+    let isMet = true;
+
+    const lowerKey = key.toLowerCase();
+    if (lowerKey === 'level') {
+      current = crawler.level;
+      isMet = crawler.level >= Number(required);
+    } else if (lowerKey === 'class') {
+      current = crawler.class;
+      isMet = String(crawler.class).toLowerCase() === String(required).toLowerCase();
+    } else if (lowerKey === 'race') {
+      current = crawler.race;
+      isMet = String(crawler.race).toLowerCase() === String(required).toLowerCase();
+    } else if (key in crawler.attributes) {
+      const attrKey = key as AttributeName;
+      current = crawler.attributes[attrKey];
+      isMet = crawler.attributes[attrKey] >= Number(required);
+    }
+
+    if (!isMet) allMet = false;
+
+    details.push({
+      key,
+      required,
+      current,
+      met: isMet,
+    });
+  }
+
+  return {
+    met: allMet,
+    details,
+  };
+}

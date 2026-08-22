@@ -79,7 +79,9 @@ export interface TimelineItem {
   slot?: string;
   description?: string;
   stats?: Record<string, number>;
+  requirements?: Record<string, number | string>;
   sourceDescription?: string;
+  durability?: { current: number; max: number };
 }
 
 export interface RewardSpec {
@@ -325,6 +327,7 @@ export interface InventoryItem {
   maxStack: number;
   value: number;
   stats?: Record<string, number>;
+  requirements?: Record<string, number | string>;
   description: string;
   durability?: { current: number; max: number };
   acquiredAtSequence: number;

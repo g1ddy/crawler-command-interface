@@ -19,14 +19,30 @@ export function ItemProvenanceDrawer({
   const itemEvents: ItemHistoryEntry[] = events
     .filter((e) => {
       const payload = e as Record<string, unknown>;
-      return payload.itemInstanceId === item.instanceId;
+      const itemPayload = payload.item as Record<string, unknown> | undefined;
+      return (
+        payload.itemInstanceId === item.instanceId ||
+        itemPayload?.instanceId === item.instanceId ||
+        itemPayload?.itemInstanceId === item.instanceId ||
+        payload.instanceId === item.instanceId
+      );
     })
-    .map((e) => ({
-      sequence: e.sequence,
-      occurredAt: e.occurred_at,
-      eventType: e.type,
-      description: e.summary,
-    }));
+    .map((e) => {
+      const pos = e.position as { elapsedSeconds?: number } | undefined;
+      const timeStr =
+        typeof e.occurred_at === 'string'
+          ? e.occurred_at
+          : pos && typeof pos.elapsedSeconds === 'number'
+          ? formatElapsedSeconds(pos.elapsedSeconds)
+          : '04:00:00';
+
+      return {
+        sequence: e.sequence,
+        occurredAt: timeStr,
+        eventType: e.type,
+        description: e.summary,
+      };
+    });
 
   return (
     <aside className="item-provenance-drawer panel">
@@ -44,14 +60,30 @@ export function ItemProvenanceDrawer({
         <p>
           <strong>INSTANCE ID:</strong> {item.instanceId}
         </p>
-
+        <p>
+          <strong>ITEM ID:</strong> {item.itemId}
+        </p>
+        <p>
+          <strong>CATEGORY / SLOT:</strong> {item.category} {item.slot ? `(${item.slot})` : ''}
+        </p>
         <p>
           <strong>ACQUISITION SOURCE:</strong> {item.source} (Seq #{item.acquiredAtSequence})
         </p>
-
         {item.durability && (
           <p>
             <strong>DURABILITY:</strong> {item.durability.current} / {item.durability.max}
+          </p>
+        )}
+        <p>
+          <strong>STATUS:</strong> {item.isEquipped ? 'EQUIPPED' : 'IN STORAGE'}{' '}
+          {item.isLocked ? '· 🔒 LOCKED' : ''}
+        </p>
+        {item.stats && (
+          <p>
+            <strong>STATS:</strong>{' '}
+            {Object.entries(item.stats)
+              .map(([k, v]) => `+${v} ${k}`)
+              .join(', ')}
           </p>
         )}
       </div>

@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { floor6Events, floor6Snapshots, floor6Timeline } from "../app/domain/fixtures/floor6.ts";
 import { projectState, createInitialState } from "../app/domain/projection.ts";
 import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/validation.ts";
-import { getStatBreakdown } from "../app/domain/stats.ts";
+import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats.ts";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
 import { compileFloorFiles } from "../app/domain/compiler.ts";
 
@@ -306,4 +306,211 @@ test("compiled timeline can be exported and re-imported with equivalent projecte
   assert.equal(reimportedState.sequence, origState.sequence);
   assert.equal(reimportedState.inventory.length, origState.inventory.length);
   assert.equal(reimportedState.achievements.length, origState.achievements.length);
+});
+
+test("ItemEquipped and ItemUnequipped correctly manage equipped slot state and isEquipped flags", () => {
+  let state = createInitialState();
+
+  // Acquire two ring items
+  state = projectState(
+    [
+      {
+        id: "evt-ring1",
+        sequence: 1,
+        type: "ItemAcquired",
+        summary: "Acquired Ring 1",
+        item: {
+          instanceId: "inst-ring-1",
+          itemId: "item-ring-1",
+          name: "Ring of Might",
+          category: "equipment",
+          slot: "RING",
+          quantity: 1,
+          stats: { Strength: 5 },
+        },
+      },
+      {
+        id: "evt-ring2",
+        sequence: 2,
+        type: "ItemAcquired",
+        summary: "Acquired Ring 2",
+        item: {
+          instanceId: "inst-ring-2",
+          itemId: "item-ring-2",
+          name: "Ring of Wisdom",
+          category: "equipment",
+          slot: "RING",
+          quantity: 1,
+          stats: { Intelligence: 10 },
+        },
+      },
+    ],
+    2,
+    [],
+    state
+  );
+
+  assert.equal(state.inventory.length, 2);
+
+  // Equip Ring 1
+  state = projectState(
+    [
+      {
+        id: "evt-equip1",
+        sequence: 3,
+        type: "ItemEquipped",
+        itemInstanceId: "inst-ring-1",
+        slot: "RING",
+        summary: "Equipped Ring of Might",
+      },
+    ],
+    3,
+    [],
+    state
+  );
+
+  assert.equal(state.equippedSlots["RING"], "inst-ring-1");
+  assert.equal(state.inventory.find((i) => i.instanceId === "inst-ring-1")?.isEquipped, true);
+
+  // Equip Ring 2 into same slot (should unequip Ring 1)
+  state = projectState(
+    [
+      {
+        id: "evt-equip2",
+        sequence: 4,
+        type: "ItemEquipped",
+        itemInstanceId: "inst-ring-2",
+        slot: "RING",
+        summary: "Equipped Ring of Wisdom",
+      },
+    ],
+    4,
+    [],
+    state
+  );
+
+  assert.equal(state.equippedSlots["RING"], "inst-ring-2");
+  assert.equal(state.inventory.find((i) => i.instanceId === "inst-ring-1")?.isEquipped, false);
+  assert.equal(state.inventory.find((i) => i.instanceId === "inst-ring-2")?.isEquipped, true);
+
+  // Unequip Ring 2
+  state = projectState(
+    [
+      {
+        id: "evt-unequip",
+        sequence: 5,
+        type: "ItemUnequipped",
+        itemInstanceId: "inst-ring-2",
+        slot: "RING",
+        summary: "Unequipped Ring of Wisdom",
+      },
+    ],
+    5,
+    [],
+    state
+  );
+
+  assert.equal(state.equippedSlots["RING"], null);
+  assert.equal(state.inventory.find((i) => i.instanceId === "inst-ring-2")?.isEquipped, false);
+});
+
+test("ItemLocked, ItemUnlocked, ItemLockToggled, and ItemRepaired modify item state", () => {
+  let state = createInitialState();
+
+  state = projectState(
+    [
+      {
+        id: "evt-shield",
+        sequence: 1,
+        type: "ItemAcquired",
+        summary: "Acquired Shield",
+        item: {
+          instanceId: "inst-shield-1",
+          itemId: "item-shield",
+          name: "Kite Shield",
+          category: "equipment",
+          slot: "SPECIAL",
+          quantity: 1,
+          durability: { current: 50, max: 100 },
+        },
+      },
+    ],
+    1,
+    [],
+    state
+  );
+
+  let shield = state.inventory.find((i) => i.instanceId === "inst-shield-1");
+  assert.ok(shield);
+  assert.equal(shield.isLocked, false);
+  assert.equal(shield.durability?.current, 50);
+
+  // Lock shield
+  state = projectState(
+    [
+      { id: "evt-lock", sequence: 2, type: "ItemLocked", itemInstanceId: "inst-shield-1", summary: "Locked Shield" },
+    ],
+    2,
+    [],
+    state
+  );
+  shield = state.inventory.find((i) => i.instanceId === "inst-shield-1");
+  assert.equal(shield?.isLocked, true);
+
+  // Toggle lock shield (unlock)
+  state = projectState(
+    [
+      { id: "evt-toggle", sequence: 3, type: "ItemLockToggled", itemInstanceId: "inst-shield-1", summary: "Unlocked Shield" },
+    ],
+    3,
+    [],
+    state
+  );
+  shield = state.inventory.find((i) => i.instanceId === "inst-shield-1");
+  assert.equal(shield?.isLocked, false);
+
+  // Repair shield
+  state = projectState(
+    [
+      { id: "evt-repair", sequence: 4, type: "ItemRepaired", itemInstanceId: "inst-shield-1", amount: 30, summary: "Repaired Shield" },
+    ],
+    4,
+    [],
+    state
+  );
+  shield = state.inventory.find((i) => i.instanceId === "inst-shield-1");
+  assert.equal(shield?.durability?.current, 80);
+});
+
+test("compareGearStats and checkItemRequirements evaluate gear deltas and requirements", () => {
+  const crawler = {
+    name: "CARL G.",
+    level: 42,
+    race: "PRIMAL",
+    class: "SCOUT",
+    attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 },
+  };
+
+  const equippedItem = { stats: { Dexterity: 4, Armor: 15 } };
+  const candidateItem = { stats: { Dexterity: 10, Armor: 10, Strength: 5 } };
+
+  const deltas = compareGearStats(equippedItem, candidateItem);
+  const dexDelta = deltas.find((d) => d.statName === "Dexterity");
+  const armorDelta = deltas.find((d) => d.statName === "Armor");
+  const strDelta = deltas.find((d) => d.statName === "Strength");
+
+  assert.equal(dexDelta?.delta, 6);
+  assert.equal(armorDelta?.delta, -5);
+  assert.equal(strDelta?.delta, 5);
+
+  // Check valid requirements
+  const validReqs = { level: 40, Strength: 20, class: "SCOUT" };
+  const validResult = checkItemRequirements(crawler, validReqs);
+  assert.equal(validResult.met, true);
+
+  // Check failing requirements
+  const failReqs = { level: 50, Strength: 30 };
+  const failResult = checkItemRequirements(crawler, failReqs);
+  assert.equal(failResult.met, false);
+  assert.equal(failResult.details.filter((d) => !d.met).length, 2);
 });
