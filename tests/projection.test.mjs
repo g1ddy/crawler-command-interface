@@ -7,6 +7,7 @@ import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/val
 import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats.ts";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
 import { compileFloorFiles } from "../app/domain/compiler.ts";
+import { getFloorEndSequence } from "../app/domain/floors.ts";
 
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 
@@ -513,4 +514,23 @@ test("compareGearStats and checkItemRequirements evaluate gear deltas and requir
   const failResult = checkItemRequirements(crawler, failReqs);
   assert.equal(failResult.met, false);
   assert.equal(failResult.details.filter((d) => !d.met).length, 2);
+
+  // Attribute names are normalized, and unknown requirements fail closed.
+  assert.equal(checkItemRequirements(crawler, { strength: 24 }).met, true);
+  const unknownRequirement = checkItemRequirements(crawler, { strength: 999, agility: 1 });
+  assert.equal(unknownRequirement.met, false);
+  assert.equal(unknownRequirement.details.find((d) => d.key === "strength")?.current, 24);
+  assert.equal(unknownRequirement.details.find((d) => d.key === "agility")?.current, "N/A");
+  assert.equal(unknownRequirement.details.find((d) => d.key === "agility")?.met, false);
+});
+
+test("floor endpoint follows appended events instead of a stale compiled segment", () => {
+  const events = [
+    { sequence: 1, position: { floor: 1 } },
+    { sequence: 19, position: { floor: 1 } },
+    { sequence: 20, position: { floor: 1 } },
+  ];
+
+  assert.equal(getFloorEndSequence(events, 1, 19), 20);
+  assert.equal(getFloorEndSequence(events, 2, 19), 19);
 });

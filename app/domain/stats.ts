@@ -138,7 +138,7 @@ export function checkItemRequirements(
 
   for (const [key, required] of Object.entries(requirements)) {
     let current: string | number = 'N/A';
-    let isMet = true;
+    let isMet = false;
 
     const lowerKey = key.toLowerCase();
     if (lowerKey === 'level') {
@@ -150,10 +150,14 @@ export function checkItemRequirements(
     } else if (lowerKey === 'race') {
       current = crawler.race;
       isMet = String(crawler.race).toLowerCase() === String(required).toLowerCase();
-    } else if (key in crawler.attributes) {
-      const attrKey = key as AttributeName;
-      current = crawler.attributes[attrKey];
-      isMet = crawler.attributes[attrKey] >= Number(required);
+    } else {
+      const attributeKey = Object.keys(crawler.attributes).find(
+        (attribute) => attribute.toLowerCase() === lowerKey
+      ) as AttributeName | undefined;
+      if (attributeKey) {
+        current = crawler.attributes[attributeKey];
+        isMet = crawler.attributes[attributeKey] >= Number(required);
+      }
     }
 
     if (!isMet) allMet = false;

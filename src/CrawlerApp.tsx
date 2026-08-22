@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
 import { projectState } from "../app/domain/projection";
+import { getFloorEndSequence } from "../app/domain/floors";
 import { validateCrawlerTimeline } from "../app/domain/validation";
 import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats";
 import type { StatBreakdown } from "../app/domain/stats";
@@ -114,13 +115,22 @@ export default function CrawlerApp() {
     if (ordinal !== 'all') {
       const floorSeg = timelineDoc.floors?.find((f) => f.ordinal === ordinal);
       if (floorSeg) {
-        setSelectedSeq(floorSeg.endSequence);
-        setIsLive(floorSeg.endSequence === maxSeq);
+        const floorEndSequence = getFloorEndSequence(timelineDoc.events, ordinal, floorSeg.endSequence);
+        setSelectedSeq(floorEndSequence);
+        setIsLive(floorEndSequence === maxSeq);
       }
     }
   };
 
   const handleEmitEvent = (eventData: Partial<CrawlerEvent>) => {
+    if (eventData.type === 'ItemEquipped') {
+      const liveState = projectState(timelineDoc, maxSeq);
+      const item = liveState.inventory.find((candidate) => candidate.instanceId === eventData.itemInstanceId);
+      if (!item || !checkItemRequirements(liveState.crawler, item.requirements).met) {
+        return;
+      }
+    }
+
     const nextSeq = maxSeq + 1;
     const newEvent: CrawlerEvent = {
       id: `evt-user-${Date.now()}`,
@@ -137,6 +147,11 @@ export default function CrawlerApp() {
     const updatedDoc = {
       ...timelineDoc,
       events: [...timelineDoc.events, newEvent],
+      floors: timelineDoc.floors?.map((floor) =>
+        floor.ordinal === latestFloor
+          ? { ...floor, endSequence: Math.max(floor.endSequence, nextSeq) }
+          : floor
+      ),
     };
 
     setTimelineDoc(updatedDoc as CrawlerTimelineDocument);
@@ -516,6 +531,10 @@ function Inventory({
   }, [items, filter, search]);
 
   const selectedItem = filteredItems[selectedIdx] || filteredItems[0] || items[0];
+  const selectedItemRequirements = useMemo(
+    () => checkItemRequirements(state.crawler, selectedItem?.requirements),
+    [state.crawler, selectedItem]
+  );
 
   const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING"];
 
@@ -646,18 +665,33 @@ function Inventory({
 
                     {(selectedItem.category === "EQUIPMENT" || selectedItem.category === "equipment") && (
                       <button
-                        style={selectedItem.isEquipped ? { background: "#2a0e12", borderColor: "#d5555e", color: "#ff8a80" } : { background: "#0e3a24", borderColor: "#2de079", color: "#62ef98" }}
-                        onClick={() =>
+                        style={selectedItem.isEquipped
+                          ? { background: "#2a0e12", borderColor: "#d5555e", color: "#ff8a80" }
+                          : selectedItemRequirements.met
+                          ? { background: "#0e3a24", borderColor: "#2de079", color: "#62ef98" }
+                          : { background: "#2a1818", borderColor: "#633030", color: "#8a5858", cursor: "not-allowed" }}
+                        disabled={!selectedItem.isEquipped && !selectedItemRequirements.met}
+                        onClick={() => {
+                          if (!selectedItem.isEquipped && !selectedItemRequirements.met) return;
                           onEmitEvent({
                             type: selectedItem.isEquipped ? "ItemUnequipped" : "ItemEquipped",
                             itemInstanceId: selectedItem.instanceId,
                             slot: selectedItem.slot || "SPECIAL",
                             summary: `${selectedItem.isEquipped ? "Unequipped" : "Equipped"} ${selectedItem.name}`,
-                          })
-                        }
+                          });
+                        }}
                       >
                         {selectedItem.isEquipped ? "UNEQUIP GEAR ✕" : "EQUIP GEAR ⚔"}
                       </button>
+                    )}
+
+                    {!selectedItem.isEquipped && !selectedItemRequirements.met && (
+                      <p style={{ width: "100%", margin: 0, color: "#ff737d", fontSize: "9px" }}>
+                        Requirements unmet: {selectedItemRequirements.details
+                          .filter((detail) => !detail.met)
+                          .map((detail) => `${detail.key} ${detail.required} (current: ${detail.current})`)
+                          .join(", ")}
+                      </p>
                     )}
 
                     <button
