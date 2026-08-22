@@ -9,6 +9,15 @@ interface ItemProvenanceDrawerProps {
   onNavigateToSequence?: (seq: number) => void;
 }
 
+function formatElapsedSeconds(seconds?: number): string {
+  if (seconds === undefined) return '04:00:00';
+  const total = 4 * 3600 + seconds;
+  const h = String(Math.floor(total / 3600)).padStart(2, '0');
+  const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+  const s = String(total % 60).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
 export function ItemProvenanceDrawer({
   item,
   events,
