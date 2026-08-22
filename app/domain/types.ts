@@ -148,6 +148,11 @@ export interface ItemAcquiredEvent extends TimelineEventBase {
   item: TimelineItem;
 }
 
+export interface ItemCraftedEvent extends TimelineEventBase {
+  type: 'ItemCrafted';
+  item: TimelineItem;
+}
+
 export interface ItemConsumedEvent extends TimelineEventBase {
   type: 'ItemConsumed';
   itemInstanceId: string;
@@ -177,6 +182,7 @@ export interface NarrativeEvent extends TimelineEventBase {
 export type TimelineEvent =
   | AchievementUnlockedEvent
   | ItemAcquiredEvent
+  | ItemCraftedEvent
   | ItemConsumedEvent
   | ItemEquippedEvent
   | PermanentEntitlementGrantedEvent

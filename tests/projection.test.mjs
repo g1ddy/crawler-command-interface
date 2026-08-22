@@ -261,9 +261,11 @@ test("ItemCrafted events project crafted items into inventory", () => {
   });
 
   const compiled = compileFloorFiles([doc]);
+  assert.equal(compiled.events.at(-1).type, "ItemCrafted");
   const state = projectState(compiled, compiled.events.length);
   const craftedItem = state.inventory.find((i) => i.instanceId === "inst-f1-crafted-bomb");
   assert.ok(craftedItem, "Crafted item should be present in projected inventory");
+  assert.equal(state.recentLogs[0].category, "loot");
 });
 
 test("cross-floor item provenance is preserved when replaying later events", () => {
