@@ -1,24 +1,103 @@
-import type { CrawlerEvent, CrawlerState, Snapshot } from './types.ts';
+import type {
+  AttributeName,
+  CrawlerEvent,
+  CrawlerState,
+  CrawlerTimelineDocument,
+  EventCategory,
+  InventoryItem,
+  ItemCategory,
+  ItemRarity,
+  Quest,
+  Skill,
+  Snapshot,
+  TimelineEvent,
+  TimelineItem,
+  TimelineState,
+} from './types.ts';
 
-export function createInitialState(): CrawlerState {
+const defaultFloor6Quests: Quest[] = [
+  {
+    questId: 'q-stairwell',
+    title: 'Tutorial: Reach the Stairs',
+    urgency: 'URGENT',
+    goals: ['Find the emergency stairwell', 'Bypass the security lockdown'],
+    rewards: '150 XP · Bronze Box',
+    status: 'active',
+  },
+];
+
+export function createInitialState(timelineState?: TimelineState): CrawlerState {
+  const crawler = timelineState?.crawler;
+
+  const attributes: Record<AttributeName, number> = {
+    Strength: crawler?.attributes?.Strength ?? 24,
+    Dexterity: crawler?.attributes?.Dexterity ?? 34,
+    Constitution: crawler?.attributes?.Constitution ?? 30,
+    Intelligence: crawler?.attributes?.Intelligence ?? 18,
+    Charisma: crawler?.attributes?.Charisma ?? 20,
+  };
+
+  const condition = {
+    currentHealth: crawler?.condition?.currentHealth ?? 3100,
+    maxHealth: crawler?.condition?.maxHealth ?? 4200,
+    currentMana: crawler?.condition?.currentMana ?? 800,
+    maxMana: crawler?.condition?.maxMana ?? 1360,
+    currentStamina: crawler?.condition?.currentStamina ?? 200,
+    maxStamina: crawler?.condition?.maxStamina ?? 280,
+  };
+
+  const inventory: InventoryItem[] = (timelineState?.inventory || []).map((i: TimelineItem) => {
+    const normCategory = mapSchemaCategoryToUi(i.category);
+    return {
+      instanceId: i.instanceId,
+      itemId: i.itemId || i.instanceId,
+      name: i.name,
+      icon: getItemIcon(normCategory, i.slot),
+      rarity: (i.rarity || 'common') as ItemRarity,
+      category: normCategory,
+      slot: i.slot,
+      quantity: i.quantity,
+      maxStack: i.maxStack || 1,
+      value: 100,
+      stats: i.stats,
+      description: i.description || '',
+      acquiredAtSequence: 0,
+      source: i.sourceDescription || 'Initial State',
+      isLocked: false,
+      isEquipped: false,
+    };
+  });
+
+  const achievements = (timelineState?.achievements || []).map((a) => ({
+    achievementId: a.id,
+    title: a.title,
+    description: a.description || '',
+    rewards: a.sourceTitle || '',
+    icon: '☠',
+    unlockedAtSequence: 0,
+  }));
+
+  const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
+  const quests = timelineState
+    ? ((timelineState.quests as Quest[]) || []).map((q) => ({ ...q }))
+    : defaultFloor6Quests;
+
+  const broadcast = timelineState
+    ? { viewers: 0, viewerDelta: '+0%', followers: 0, fameRank: '#-', sponsorInterest: false }
+    : { viewers: 42100, viewerDelta: '+0%', followers: 3520, fameRank: '#21', sponsorInterest: false };
+
   return {
     sequence: 0,
     occurredAt: '04:00:00',
     crawler: {
-      name: 'CARL G.',
-      level: 42,
-      race: 'PRIMAL',
-      class: 'SCOUT',
-      xp: 21500,
-      maxXp: 74000,
+      name: crawler?.name || 'CARL G.',
+      level: crawler?.level || 42,
+      race: crawler?.race || 'PRIMAL',
+      class: crawler?.class || 'SCOUT',
+      xp: crawler?.xp ?? 21500,
+      maxXp: crawler?.maxXp ?? 74000,
       availableAttributePoints: 0,
-      attributes: {
-        Strength: 24,
-        Dexterity: 34,
-        Constitution: 30,
-        Intelligence: 18,
-        Charisma: 20,
-      },
+      attributes,
       permanentAttributeModifiers: {
         Strength: 0,
         Dexterity: 0,
@@ -26,16 +105,9 @@ export function createInitialState(): CrawlerState {
         Intelligence: 0,
         Charisma: 0,
       },
-      condition: {
-        currentHealth: 3100,
-        maxHealth: 4200,
-        currentMana: 800,
-        maxMana: 1360,
-        currentStamina: 200,
-        maxStamina: 280,
-      },
+      condition,
     },
-    inventory: [],
+    inventory,
     equippedSlots: {
       HEAD: null,
       FACE: null,
@@ -49,60 +121,120 @@ export function createInitialState(): CrawlerState {
       SPECIAL: null,
     },
     effects: [],
-    skills: [],
-    hotlist: [],
-    quests: [],
-    achievements: [],
-    broadcast: {
-      viewers: 42100,
-      viewerDelta: '+0%',
-      followers: 3520,
-      fameRank: '#21',
-      sponsorInterest: false,
-    },
+    skills,
+    hotlist: skills.map((s) => s.skillId).slice(0, 10),
+    quests,
+    achievements,
+    broadcast,
     recentLogs: [],
   };
 }
 
-export function applyEvent(currentState: CrawlerState, event: CrawlerEvent): CrawlerState {
-  // Deep clone state to ensure pure transformation
+function mapSchemaCategoryToUi(cat: string): ItemCategory {
+  const lower = cat.toLowerCase();
+  if (lower === 'equipment') return 'EQUIPMENT';
+  if (lower === 'consumable' || lower === 'consumables') return 'CONSUMABLES';
+  if (lower === 'quest-item' || lower === 'quest items') return 'QUEST ITEMS';
+  if (lower === 'crafting') return 'CRAFTING';
+  return 'JUNK';
+}
+
+function getItemIcon(category: ItemCategory, slot?: string): string {
+  if (slot === 'HEAD') return '◉';
+  if (slot === 'TORSO') return '◈';
+  if (slot === 'FEET') return '▰';
+  if (slot === 'RING') return '💍';
+  if (category === 'CONSUMABLES') return '🧪';
+  if (category === 'QUEST ITEMS') return '▣';
+  if (category === 'CRAFTING') return '◆';
+  return '📦';
+}
+
+function formatElapsedSeconds(seconds?: number): string {
+  if (seconds === undefined) return '04:00:00';
+  const total = 4 * 3600 + seconds;
+  const h = String(Math.floor(total / 3600)).padStart(2, '0');
+  const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+  const s = String(total % 60).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+export function applyEvent(currentState: CrawlerState, rawEvent: unknown): CrawlerState {
   const state: CrawlerState = JSON.parse(JSON.stringify(currentState));
-  state.sequence = event.sequence;
-  state.occurredAt = event.occurred_at;
+  const event = rawEvent as Record<string, unknown>;
+
+  const pos = event.position as { elapsedSeconds?: number } | undefined;
+  const sequence = Number(event.sequence ?? state.sequence + 1);
+  state.sequence = sequence;
+
+  const occurredAt =
+    typeof event.occurred_at === 'string'
+      ? event.occurred_at
+      : pos && typeof pos.elapsedSeconds === 'number'
+      ? formatElapsedSeconds(pos.elapsedSeconds)
+      : state.occurredAt;
+  state.occurredAt = occurredAt;
+
+  const category: EventCategory =
+    (event.category as EventCategory) ||
+    (event.type === 'ItemAcquired'
+      ? 'loot'
+      : event.type === 'ItemConsumed'
+      ? 'combat'
+      : event.type === 'ItemEquipped'
+      ? 'system'
+      : event.type === 'AchievementUnlocked'
+      ? 'levelup'
+      : event.type === 'PermanentEntitlementGranted'
+      ? 'levelup'
+      : 'system');
+
+  const summary = typeof event.summary === 'string' ? event.summary : 'Event recorded';
 
   // Add log entry
   state.recentLogs = [
     {
-      sequence: event.sequence,
-      timestamp: event.occurred_at,
-      message: event.summary,
-      category: event.category,
+      sequence,
+      timestamp: occurredAt,
+      message: summary,
+      category,
     },
     ...state.recentLogs,
   ].slice(0, 30);
 
   switch (event.type) {
     case 'ItemAcquired': {
-      const existing = state.inventory.find((i) => i.instanceId === event.itemInstanceId);
+      // Schema event has event.item, legacy event has item fields directly
+      const itemData = ((event.item as Record<string, unknown>) || event) as Record<string, unknown>;
+      const instanceId = String(itemData.instanceId || itemData.itemInstanceId);
+      const existing = state.inventory.find((i) => i.instanceId === instanceId);
+
+      const quantity = Number(itemData.quantity ?? 1);
       if (existing) {
-        existing.quantity += event.quantity;
+        existing.quantity += quantity;
       } else {
+        const rawCategory = String(itemData.category || 'equipment');
+        const uiCategory = mapSchemaCategoryToUi(rawCategory);
+        const slotVal = typeof itemData.slot === 'string' ? itemData.slot : undefined;
+        const statsVal = itemData.stats as Record<string, number> | undefined;
+        const durVal = itemData.durability as { current: number; max: number } | undefined;
+
         state.inventory.push({
-          instanceId: event.itemInstanceId,
-          itemId: event.itemId,
-          name: event.name,
-          icon: event.icon,
-          rarity: event.rarity,
-          category: event.category,
-          slot: event.slot,
-          quantity: event.quantity,
-          maxStack: event.maxStack,
-          value: event.value,
-          stats: event.stats,
-          description: event.description,
-          durability: event.durability,
-          acquiredAtSequence: event.sequence,
-          source: event.source,
+          instanceId,
+          itemId: String(itemData.itemId || instanceId),
+          name: String(itemData.name || 'Unknown Item'),
+          icon: typeof itemData.icon === 'string' ? itemData.icon : getItemIcon(uiCategory, slotVal),
+          rarity: (String(itemData.rarity || 'common')).toLowerCase() as ItemRarity,
+          category: uiCategory,
+          slot: slotVal,
+          quantity,
+          maxStack: Number(itemData.maxStack ?? 1),
+          value: Number(itemData.value ?? 100),
+          stats: statsVal,
+          description: String(itemData.description || ''),
+          durability: durVal,
+          acquiredAtSequence: sequence,
+          source: String(itemData.sourceDescription || itemData.source || 'Discovered'),
           isLocked: false,
           isEquipped: false,
         });
@@ -111,26 +243,29 @@ export function applyEvent(currentState: CrawlerState, event: CrawlerEvent): Cra
     }
 
     case 'ItemQuantityChanged': {
-      const item = state.inventory.find((i) => i.instanceId === event.itemInstanceId);
+      const instanceId = String(event.itemInstanceId);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
       if (item) {
-        item.quantity += event.delta;
+        item.quantity += Number(event.delta || 0);
         if (item.quantity <= 0) {
-          state.inventory = state.inventory.filter((i) => i.instanceId !== event.itemInstanceId);
+          state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
         }
       }
       break;
     }
 
     case 'ItemEquipped': {
-      // Unequip current slot occupant if present
-      const currentEquippedId = state.equippedSlots[event.slot];
+      const slot = String(event.slot || 'SPECIAL').toUpperCase();
+      const instanceId = String(event.itemInstanceId);
+
+      const currentEquippedId = state.equippedSlots[slot];
       if (currentEquippedId) {
         const currentItem = state.inventory.find((i) => i.instanceId === currentEquippedId);
         if (currentItem) currentItem.isEquipped = false;
       }
 
-      state.equippedSlots[event.slot] = event.itemInstanceId;
-      const targetItem = state.inventory.find((i) => i.instanceId === event.itemInstanceId);
+      state.equippedSlots[slot] = instanceId;
+      const targetItem = state.inventory.find((i) => i.instanceId === instanceId);
       if (targetItem) {
         targetItem.isEquipped = true;
       }
@@ -138,10 +273,12 @@ export function applyEvent(currentState: CrawlerState, event: CrawlerEvent): Cra
     }
 
     case 'ItemUnequipped': {
-      if (state.equippedSlots[event.slot] === event.itemInstanceId) {
-        state.equippedSlots[event.slot] = null;
+      const slot = String(event.slot || 'SPECIAL').toUpperCase();
+      const instanceId = String(event.itemInstanceId);
+      if (state.equippedSlots[slot] === instanceId) {
+        state.equippedSlots[slot] = null;
       }
-      const item = state.inventory.find((i) => i.instanceId === event.itemInstanceId);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
       if (item) {
         item.isEquipped = false;
       }
@@ -149,106 +286,132 @@ export function applyEvent(currentState: CrawlerState, event: CrawlerEvent): Cra
     }
 
     case 'ItemConsumed': {
-      const item = state.inventory.find((i) => i.instanceId === event.itemInstanceId);
+      const instanceId = String(event.itemInstanceId);
+      const consumedQty = Number(event.quantity ?? 1);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
       if (item) {
-        item.quantity -= 1;
+        item.quantity -= consumedQty;
         if (item.quantity <= 0) {
-          state.inventory = state.inventory.filter((i) => i.instanceId !== event.itemInstanceId);
+          state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
         }
       }
       if (event.healthRestored) {
         state.crawler.condition.currentHealth = Math.min(
           state.crawler.condition.maxHealth,
-          state.crawler.condition.currentHealth + event.healthRestored
+          state.crawler.condition.currentHealth + Number(event.healthRestored)
         );
       }
       if (event.manaRestored) {
         state.crawler.condition.currentMana = Math.min(
           state.crawler.condition.maxMana,
-          state.crawler.condition.currentMana + event.manaRestored
+          state.crawler.condition.currentMana + Number(event.manaRestored)
         );
       }
       break;
     }
 
     case 'ItemDiscarded': {
-      state.inventory = state.inventory.filter((i) => i.instanceId !== event.itemInstanceId);
+      const instanceId = String(event.itemInstanceId);
+      state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
       for (const slot in state.equippedSlots) {
-        if (state.equippedSlots[slot] === event.itemInstanceId) {
+        if (state.equippedSlots[slot] === instanceId) {
           state.equippedSlots[slot] = null;
         }
       }
       break;
     }
 
-    case 'AttributeModified': {
-      if (event.source === 'allocation') {
-        state.crawler.attributes[event.attribute] += event.delta;
-      } else if (event.source === 'permanent_modifier') {
-        state.crawler.permanentAttributeModifiers[event.attribute] += event.delta;
+    case 'AchievementUnlocked': {
+      const ach = ((event.achievement as Record<string, unknown>) || event) as Record<string, unknown>;
+      const achId = String(ach.id || ach.achievementId);
+      if (!state.achievements.some((a) => a.achievementId === achId)) {
+        state.achievements.push({
+          achievementId: achId,
+          title: String(ach.title || 'Achievement Unlocked'),
+          description: String(ach.description || ''),
+          rewards: String(ach.rewards || ach.sourceTitle || ''),
+          icon: String(ach.icon || '☠'),
+          unlockedAtSequence: sequence,
+        });
       }
       break;
     }
 
-    case 'EffectApplied': {
-      // Remove previous effect with same id if replacing
-      state.effects = state.effects.filter((e) => e.effectId !== event.effectId);
-      state.effects.push({
-        effectId: event.effectId,
-        name: event.name,
-        type: event.effectType,
-        icon: event.icon,
-        durationSeconds: event.durationSeconds,
-        appliedAtSequence: event.sequence,
-        description: event.description,
-        statModifiers: event.statModifiers,
-      });
+    case 'PermanentEntitlementGranted': {
+      // Entitlement handled via logs or custom state additions
       break;
     }
 
-    case 'EffectExpired': {
-      state.effects = state.effects.filter((e) => e.effectId !== event.effectId);
+    case 'NarrativeEvent': {
+      // Log entry already recorded above
       break;
     }
 
-    case 'SkillGranted': {
-      if (!state.skills.some((s) => s.skillId === event.skillId)) {
-        state.skills.push({
-          skillId: event.skillId,
-          name: event.name,
-          icon: event.icon,
-          rank: event.rank,
-          description: event.description,
-          cooldown: event.cooldown,
-          category: event.category,
-          cost: event.cost,
-          synergies: event.synergies,
-        });
-        if (state.hotlist.length < 10) {
-          state.hotlist.push(event.skillId);
+    case 'AttributeModified': {
+      const attr = event.attribute as AttributeName;
+      if (attr in state.crawler.attributes) {
+        if (event.source === 'allocation') {
+          state.crawler.attributes[attr] += Number(event.delta || 0);
+        } else if (event.source === 'permanent_modifier') {
+          state.crawler.permanentAttributeModifiers[attr] += Number(event.delta || 0);
         }
       }
       break;
     }
 
-    case 'XpAwarded': {
-      state.crawler.xp = event.newTotalXp;
-      if (event.levelUp) {
-        state.crawler.level = event.levelUp;
-        state.crawler.availableAttributePoints += 5;
+    case 'EffectApplied': {
+      const effectId = String(event.effectId);
+      state.effects = state.effects.filter((e) => e.effectId !== effectId);
+      state.effects.push({
+        effectId,
+        name: String(event.name || ''),
+        type: (event.effectType as 'good' | 'bad') || 'good',
+        icon: String(event.icon || '✦'),
+        durationSeconds: Number(event.durationSeconds || 0),
+        appliedAtSequence: sequence,
+        description: String(event.description || ''),
+        statModifiers: event.statModifiers as Record<string, number> | undefined,
+      });
+      break;
+    }
+
+    case 'EffectExpired': {
+      const effectId = String(event.effectId);
+      state.effects = state.effects.filter((e) => e.effectId !== effectId);
+      break;
+    }
+
+    case 'SkillGranted': {
+      const skillId = String(event.skillId);
+      if (!state.skills.some((s) => s.skillId === skillId)) {
+        state.skills.push({
+          skillId,
+          name: String(event.name || ''),
+          icon: String(event.icon || '✦'),
+          rank: String(event.rank || 'RANK 1'),
+          description: String(event.description || ''),
+          cooldown: String(event.cooldown || 'READY'),
+          category: (event.category as 'combat' | 'utility' | 'passive') || 'combat',
+          cost: typeof event.cost === 'string' ? event.cost : undefined,
+          synergies: Array.isArray(event.synergies) ? (event.synergies as string[]) : undefined,
+        });
+        if (state.hotlist.length < 10) {
+          state.hotlist.push(skillId);
+        }
       }
       break;
     }
 
     case 'QuestUpdated': {
-      const questIndex = state.quests.findIndex((q) => q.questId === event.questId);
-      const updatedQuest = {
-        questId: event.questId,
-        title: event.title,
-        urgency: event.urgency,
-        goals: event.goals,
-        rewards: event.rewards,
-        status: event.status,
+      const questId = String(event.questId);
+      const questIndex = state.quests.findIndex((q) => q.questId === questId);
+      const updatedQuest: Quest = {
+        questId,
+        title: String(event.title || ''),
+        urgency: (event.urgency as 'URGENT' | 'STANDARD' | 'COMPLETED') || 'STANDARD',
+        goals: Array.isArray(event.goals) ? (event.goals as string[]) : [],
+        rewards: String(event.rewards || ''),
+        status: (event.status as 'active' | 'completed' | 'failed') || 'active',
       };
       if (questIndex >= 0) {
         state.quests[questIndex] = updatedQuest;
@@ -258,38 +421,24 @@ export function applyEvent(currentState: CrawlerState, event: CrawlerEvent): Cra
       break;
     }
 
-    case 'AchievementUnlocked': {
-      if (!state.achievements.some((a) => a.achievementId === event.achievementId)) {
-        state.achievements.push({
-          achievementId: event.achievementId,
-          title: event.title,
-          description: event.description,
-          rewards: event.rewards,
-          icon: event.icon,
-          unlockedAtSequence: event.sequence,
-        });
-      }
-      break;
-    }
-
     case 'BroadcastUpdated': {
       state.broadcast = {
-        viewers: event.viewers,
-        viewerDelta: event.viewerDelta,
-        followers: event.followers,
-        fameRank: event.fameRank,
-        sponsorInterest: event.sponsorInterest,
+        viewers: Number(event.viewers ?? state.broadcast.viewers),
+        viewerDelta: String(event.viewerDelta ?? state.broadcast.viewerDelta),
+        followers: Number(event.followers ?? state.broadcast.followers),
+        fameRank: String(event.fameRank ?? state.broadcast.fameRank),
+        sponsorInterest: Boolean(event.sponsorInterest ?? state.broadcast.sponsorInterest),
       };
       break;
     }
 
     case 'ConditionChanged': {
-      if (event.currentHealth !== undefined) state.crawler.condition.currentHealth = event.currentHealth;
-      if (event.maxHealth !== undefined) state.crawler.condition.maxHealth = event.maxHealth;
-      if (event.currentMana !== undefined) state.crawler.condition.currentMana = event.currentMana;
-      if (event.maxMana !== undefined) state.crawler.condition.maxMana = event.maxMana;
-      if (event.currentStamina !== undefined) state.crawler.condition.currentStamina = event.currentStamina;
-      if (event.maxStamina !== undefined) state.crawler.condition.maxStamina = event.maxStamina;
+      if (event.currentHealth !== undefined) state.crawler.condition.currentHealth = Number(event.currentHealth);
+      if (event.maxHealth !== undefined) state.crawler.condition.maxHealth = Number(event.maxHealth);
+      if (event.currentMana !== undefined) state.crawler.condition.currentMana = Number(event.currentMana);
+      if (event.maxMana !== undefined) state.crawler.condition.maxMana = Number(event.maxMana);
+      if (event.currentStamina !== undefined) state.crawler.condition.currentStamina = Number(event.currentStamina);
+      if (event.maxStamina !== undefined) state.crawler.condition.maxStamina = Number(event.maxStamina);
       break;
     }
   }
@@ -298,21 +447,47 @@ export function applyEvent(currentState: CrawlerState, event: CrawlerEvent): Cra
 }
 
 export function projectState(
-  events: CrawlerEvent[],
+  docOrEvents: CrawlerTimelineDocument | CrawlerEvent[] | unknown,
   targetSequence: number,
-  snapshots: Snapshot[] = []
+  snapshots: Snapshot[] = [],
+  customInitialState?: CrawlerState
 ): CrawlerState {
-  if (events.length === 0) return createInitialState();
+  let events: (TimelineEvent | CrawlerEvent)[] = [];
+  let baseInitialState: CrawlerState;
+  let activeSnapshots: Snapshot[] = snapshots;
 
-  const minSeq = events[0].sequence;
-  const maxSeq = events[events.length - 1].sequence;
+  if (docOrEvents && typeof docOrEvents === 'object' && 'schemaVersion' in (docOrEvents as object)) {
+    const doc = docOrEvents as CrawlerTimelineDocument;
+    events = doc.events || [];
+    baseInitialState = createInitialState(doc.initialState);
+
+    // Map doc.snapshots if available
+    if (Array.isArray(doc.snapshots)) {
+      activeSnapshots = doc.snapshots.map((snap) => ({
+        sequence: snap.sequence,
+        state: createInitialState(snap.state),
+      }));
+    } else {
+      activeSnapshots = [];
+    }
+  } else if (Array.isArray(docOrEvents)) {
+    events = docOrEvents;
+    baseInitialState = customInitialState || createInitialState();
+  } else {
+    baseInitialState = customInitialState || createInitialState();
+  }
+
+  if (events.length === 0) return baseInitialState;
+
+  const minSeq = events[0].sequence ?? 1;
+  const maxSeq = events[events.length - 1].sequence ?? 1;
   const clampedTarget = Math.max(minSeq, Math.min(targetSequence, maxSeq));
 
-  // Find nearest snapshot <= targetSequence
-  let baseState: CrawlerState = createInitialState();
+  let baseState: CrawlerState = baseInitialState;
   let startSequence = minSeq;
 
-  const validSnapshots = snapshots
+  // Filter valid snapshots <= targetSequence
+  const validSnapshots = activeSnapshots
     .filter((s) => s.sequence <= clampedTarget)
     .sort((a, b) => b.sequence - a.sequence);
 
@@ -321,10 +496,9 @@ export function projectState(
     startSequence = validSnapshots[0].sequence + 1;
   }
 
-  // Replay events from startSequence to clampedTarget
   let currentState = baseState;
   const eventsToApply = events.filter(
-    (e) => e.sequence >= startSequence && e.sequence <= clampedTarget
+    (e) => (e.sequence ?? 1) >= startSequence && (e.sequence ?? 1) <= clampedTarget
   );
 
   for (const event of eventsToApply) {
