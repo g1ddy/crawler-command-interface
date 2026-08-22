@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-timeline.v1.schema.json",
-  "title": "Crawler Timeline v1",
-  "description": "Portable, evidence-backed timeline for a crawler storyline. Snapshots are caches and never an independent source of truth.",
+  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-timeline.v2.schema.json",
+  "title": "Crawler Timeline v2",
+  "description": "Portable, evidence-backed timeline for a crawler storyline with floor segment index support.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "timeline", "sources", "initialState", "events"],
   "properties": {
-    "schemaVersion": { "const": "crawler-timeline/v1" },
+    "schemaVersion": { "enum": ["crawler-timeline/v1", "crawler-timeline/v2"] },
     "timeline": {
       "type": "object",
       "additionalProperties": false,
@@ -28,6 +28,10 @@
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" }
       }
+    },
+    "floors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/floorSegment" }
     },
     "sources": {
       "type": "array",
@@ -52,7 +56,38 @@
       "pattern": "^[a-z][a-z0-9-]{1,100}$"
     },
     "nonNegativeInteger": { "type": "integer", "minimum": 0 },
-    "quantity": { "type": "integer", "minimum": 1 },
+    "positiveInteger": { "type": "integer", "minimum": 1 },
+    "quantity": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["known"],
+          "properties": {
+            "known": { "type": "boolean" },
+            "value": { "$ref": "#/$defs/positiveInteger" },
+            "minimum": { "$ref": "#/$defs/positiveInteger" },
+            "unit": { "type": "string" },
+            "note": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "floorSegment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ordinal", "title", "startSequence", "endSequence"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "ordinal": { "$ref": "#/$defs/positiveInteger" },
+        "title": { "type": "string", "minLength": 1 },
+        "book": { "$ref": "#/$defs/positiveInteger" },
+        "bookTitle": { "type": "string" },
+        "startSequence": { "$ref": "#/$defs/positiveInteger" },
+        "endSequence": { "$ref": "#/$defs/positiveInteger" }
+      }
+    },
     "spoilerScope": {
       "type": "object",
       "additionalProperties": false,
@@ -111,8 +146,8 @@
         "elapsedSeconds": { "$ref": "#/$defs/nonNegativeInteger" }
       }
     },
-    "rarity": { "enum": ["common", "uncommon", "rare", "epic", "legendary", "celestial", "unknown"] },
-    "itemCategory": { "enum": ["equipment", "consumable", "quest-item", "crafting", "box", "weapon", "tool", "document", "miscellaneous"] },
+    "rarity": { "enum": ["common", "uncommon", "rare", "epic", "legendary", "celestial", "bronze", "silver", "gold", "platinum", "unknown"] },
+    "itemCategory": { "enum": ["equipment", "consumable", "quest-item", "crafting", "box", "weapon", "tool", "document", "vehicle", "miscellaneous"] },
     "item": {
       "type": "object",
       "additionalProperties": false,
@@ -124,11 +159,24 @@
         "category": { "$ref": "#/$defs/itemCategory" },
         "rarity": { "$ref": "#/$defs/rarity" },
         "quantity": { "$ref": "#/$defs/quantity" },
-        "maxStack": { "$ref": "#/$defs/quantity" },
+        "maxStack": { "type": "integer", "minimum": 1 },
         "slot": { "type": "string" },
         "description": { "type": "string" },
         "stats": { "type": "object", "additionalProperties": { "type": "number" } },
         "sourceDescription": { "type": "string" }
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["box", "item", "xp", "entitlement", "feature", "other"] },
+        "boxType": { "type": "string" },
+        "rarity": { "$ref": "#/$defs/rarity" },
+        "itemId": { "$ref": "#/$defs/id" },
+        "amount": { "$ref": "#/$defs/nonNegativeInteger" },
+        "description": { "type": "string" }
       }
     },
     "achievement": {
@@ -140,7 +188,8 @@
         "title": { "type": "string", "minLength": 1 },
         "sourceTitle": { "type": "string" },
         "description": { "type": "string" },
-        "repeatCount": { "type": "integer", "minimum": 1 }
+        "repeatCount": { "type": "integer", "minimum": 1 },
+        "reward": { "type": "array", "items": { "$ref": "#/$defs/reward" } }
       }
     },
     "state": {
@@ -209,7 +258,7 @@
               "additionalProperties": false,
               "required": ["id", "sequence", "type", "position", "summary", "evidence", "item"],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "ItemAcquired" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["ItemAcquired", "ItemCrafted"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
                 "item": { "$ref": "#/$defs/item" }
               }
             }
@@ -221,10 +270,10 @@
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId", "quantity"],
+              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId"],
               "properties": {
                 "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "ItemConsumed" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "itemInstanceId": { "$ref": "#/$defs/id" }, "quantity": { "$ref": "#/$defs/quantity" }, "outcome": { "type": "string" }
+                "itemInstanceId": { "$ref": "#/$defs/id" }, "quantity": { "$ref": "#/$defs/quantity" }, "outcome": { "type": "string" }, "healthRestored": { "type": "number" }, "manaRestored": { "type": "number" }
               }
             }
           ]
@@ -235,10 +284,24 @@
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId", "slot"],
+              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId"],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "ItemEquipped" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "itemInstanceId": { "$ref": "#/$defs/id" }, "slot": { "type": "string", "minLength": 1 }
+                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["ItemEquipped", "ItemUnequipped", "ItemDiscarded"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+                "itemInstanceId": { "$ref": "#/$defs/id" }, "slot": { "type": "string" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/eventBase" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId", "delta"],
+              "properties": {
+                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "ItemQuantityChanged" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+                "itemInstanceId": { "$ref": "#/$defs/id" }, "delta": { "type": "integer" }
               }
             }
           ]
@@ -266,8 +329,21 @@
               "required": ["id", "sequence", "type", "position", "summary", "evidence", "kind"],
               "properties": {
                 "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "NarrativeEvent" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "kind": { "enum": ["floor-entered", "encounter-started", "encounter-resolved", "location-discovered", "dialogue", "choice-made", "transformation", "party-changed", "other"] },
+                "kind": { "enum": ["floor-entered", "floor-exited", "encounter-started", "encounter-resolved", "location-discovered", "dialogue", "choice-made", "transformation", "party-changed", "other"] },
                 "entities": { "type": "array", "items": { "$ref": "#/$defs/id" } }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/eventBase" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "sequence", "type", "position", "summary", "evidence"],
+              "properties": {
+                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["AttributeModified", "EffectApplied", "EffectExpired", "SkillGranted", "QuestUpdated", "BroadcastUpdated", "ConditionChanged"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
               }
             }
           ]

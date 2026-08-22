@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json",
+  "title": "Crawler Floor Authoring v2",
+  "description": "A floor-scoped source document. Floor documents are compiled into the portable crawler-timeline runtime artifact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["authoringVersion", "storyId", "floor", "sources", "catalog", "events"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "authoringVersion": { "const": "crawler-floor/v2" },
+    "storyId": { "$ref": "#/$defs/id" },
+    "floor": { "$ref": "#/$defs/floor" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "catalog": { "$ref": "#/$defs/catalog" },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/event" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,100}$"
+    },
+    "nonNegativeInteger": { "type": "integer", "minimum": 0 },
+    "positiveInteger": { "type": "integer", "minimum": 1 },
+    "floor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ordinal", "title", "book", "continuity", "coverage"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "ordinal": { "$ref": "#/$defs/positiveInteger" },
+        "title": { "type": "string", "minLength": 1 },
+        "book": { "$ref": "#/$defs/positiveInteger" },
+        "bookTitle": { "type": "string", "minLength": 1 },
+        "continuity": { "enum": ["canonical", "adaptation", "alternate", "unknown"] },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "statement", "completeness"],
+          "properties": {
+            "kind": { "enum": ["complete", "curated-critical", "curated", "partial"] },
+            "statement": { "type": "string", "minLength": 1 },
+            "completeness": { "enum": ["complete", "partial", "seed"] }
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "trust", "title", "url"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["official-text", "official-audio", "official-preview", "wiki", "fan-compendium", "discussion", "editorial"] },
+        "trust": { "enum": ["primary", "corroborating", "candidate"] },
+        "title": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" },
+        "citationStyle": { "type": "string", "minLength": 1 },
+        "accessedAt": { "type": "string", "format": "date-time" },
+        "revision": { "type": "string", "minLength": 1 }
+      }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "book": { "$ref": "#/$defs/positiveInteger" },
+        "chapter": { "$ref": "#/$defs/positiveInteger" },
+        "section": { "type": "string", "minLength": 1 },
+        "timestamp": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceId", "confidence"],
+      "properties": {
+        "sourceId": { "$ref": "#/$defs/id" },
+        "locator": { "$ref": "#/$defs/locator" },
+        "note": { "type": "string", "maxLength": 1000 },
+        "confidence": { "enum": ["confirmed", "corroborated", "candidate", "disputed"] }
+      }
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["floor"],
+      "properties": {
+        "floor": { "$ref": "#/$defs/positiveInteger" },
+        "book": { "$ref": "#/$defs/positiveInteger" },
+        "chapter": { "$ref": "#/$defs/positiveInteger" },
+        "scene": { "$ref": "#/$defs/positiveInteger" },
+        "elapsedSeconds": { "$ref": "#/$defs/nonNegativeInteger" }
+      }
+    },
+    "quantity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["known"],
+      "properties": {
+        "known": { "type": "boolean" },
+        "value": { "$ref": "#/$defs/positiveInteger" },
+        "minimum": { "$ref": "#/$defs/positiveInteger" },
+        "unit": { "type": "string", "minLength": 1 },
+        "note": { "type": "string", "maxLength": 500 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "known": { "const": true } }, "required": ["known"] },
+          "then": { "required": ["value"] }
+        },
+        {
+          "if": { "properties": { "known": { "const": false } }, "required": ["known"] },
+          "then": { "not": { "required": ["value"] } }
+        }
+      ]
+    },
+    "catalogItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "category", "persistent"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "category": { "enum": ["equipment", "consumable", "quest-item", "crafting", "box", "weapon", "tool", "document", "vehicle", "miscellaneous"] },
+        "slot": { "type": "string", "minLength": 1 },
+        "rarity": { "enum": ["common", "uncommon", "rare", "epic", "legendary", "celestial", "unknown"] },
+        "persistent": { "type": "boolean" },
+        "description": { "type": "string", "maxLength": 4000 },
+        "stats": { "type": "object", "additionalProperties": { "type": "number" } }
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["box", "item", "xp", "entitlement", "feature", "other"] },
+        "boxType": { "type": "string", "minLength": 1 },
+        "rarity": { "enum": ["common", "uncommon", "rare", "epic", "legendary", "celestial", "bronze", "silver", "gold", "platinum", "unknown"] },
+        "itemId": { "$ref": "#/$defs/id" },
+        "amount": { "$ref": "#/$defs/nonNegativeInteger" },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "catalogAchievement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "reward"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "maxLength": 4000 },
+        "reward": { "type": "array", "items": { "$ref": "#/$defs/reward" } }
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "achievements"],
+      "properties": {
+        "items": { "type": "array", "items": { "$ref": "#/$defs/catalogItem" } },
+        "achievements": { "type": "array", "items": { "$ref": "#/$defs/catalogAchievement" } }
+      }
+    },
+    "eventBase": {
+      "type": "object",
+      "required": ["id", "order", "type", "position", "summary", "evidence"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "order": { "$ref": "#/$defs/positiveInteger" },
+        "type": { "type": "string" },
+        "position": { "$ref": "#/$defs/position" },
+        "summary": { "type": "string", "minLength": 1 },
+        "correlationId": { "$ref": "#/$defs/id" },
+        "causationId": { "$ref": "#/$defs/id" },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+      }
+    },
+    "event": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "kind", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "NarrativeEvent" }, "kind": { "enum": ["floor-entered", "floor-exited", "encounter-started", "encounter-resolved", "location-discovered", "dialogue", "choice-made", "transformation", "party-changed", "other"] }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "achievementId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "AchievementUnlocked" }, "achievementId": { "$ref": "#/$defs/id" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "item", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "enum": ["ItemAcquired", "ItemCrafted"] }, "item": { "type": "object", "additionalProperties": false, "required": ["instanceId", "itemId", "quantity"], "properties": { "instanceId": { "$ref": "#/$defs/id" }, "itemId": { "$ref": "#/$defs/id" }, "quantity": { "$ref": "#/$defs/quantity" } } }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "entitlement", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "PermanentEntitlementGranted" }, "entitlement": { "type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": { "id": { "$ref": "#/$defs/id" }, "name": { "type": "string", "minLength": 1 }, "location": { "type": "string", "minLength": 1 }, "description": { "type": "string", "maxLength": 4000 } } }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        }
+      ]
+    }
+  }
+}

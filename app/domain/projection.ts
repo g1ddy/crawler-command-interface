@@ -7,6 +7,7 @@ import type {
   InventoryItem,
   ItemCategory,
   ItemRarity,
+  QuantityObject,
   Quest,
   Skill,
   Snapshot,
@@ -25,6 +26,21 @@ const defaultFloor6Quests: Quest[] = [
     status: 'active',
   },
 ];
+
+function parseQuantity(rawQty: unknown): { numericQuantity: number; qtyObject?: QuantityObject } {
+  if (typeof rawQty === 'number') {
+    return { numericQuantity: rawQty };
+  }
+  if (rawQty && typeof rawQty === 'object') {
+    const qObj = rawQty as QuantityObject;
+    if (qObj.known) {
+      return { numericQuantity: qObj.value ?? 1, qtyObject: qObj };
+    } else {
+      return { numericQuantity: qObj.minimum ?? 1, qtyObject: qObj };
+    }
+  }
+  return { numericQuantity: 1 };
+}
 
 export function createInitialState(timelineState?: TimelineState): CrawlerState {
   const crawler = timelineState?.crawler;
@@ -48,6 +64,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
 
   const inventory: InventoryItem[] = (timelineState?.inventory || []).map((i: TimelineItem) => {
     const normCategory = mapSchemaCategoryToUi(i.category);
+    const { numericQuantity, qtyObject } = parseQuantity(i.quantity);
     return {
       instanceId: i.instanceId,
       itemId: i.itemId || i.instanceId,
@@ -56,7 +73,8 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
       rarity: (i.rarity || 'common') as ItemRarity,
       category: normCategory,
       slot: i.slot,
-      quantity: i.quantity,
+      quantity: numericQuantity,
+      quantityObject: qtyObject,
       maxStack: i.maxStack || 1,
       value: 100,
       stats: i.stats,
@@ -209,9 +227,10 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const instanceId = String(itemData.instanceId || itemData.itemInstanceId);
       const existing = state.inventory.find((i) => i.instanceId === instanceId);
 
-      const quantity = Number(itemData.quantity ?? 1);
+      const { numericQuantity, qtyObject } = parseQuantity(itemData.quantity);
+
       if (existing) {
-        existing.quantity += quantity;
+        existing.quantity += numericQuantity;
       } else {
         const rawCategory = String(itemData.category || 'equipment');
         const uiCategory = mapSchemaCategoryToUi(rawCategory);
@@ -227,7 +246,8 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
           rarity: (String(itemData.rarity || 'common')).toLowerCase() as ItemRarity,
           category: uiCategory,
           slot: slotVal,
-          quantity,
+          quantity: numericQuantity,
+          quantityObject: qtyObject,
           maxStack: Number(itemData.maxStack ?? 1),
           value: Number(itemData.value ?? 100),
           stats: statsVal,
@@ -287,10 +307,10 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
 
     case 'ItemConsumed': {
       const instanceId = String(event.itemInstanceId);
-      const consumedQty = Number(event.quantity ?? 1);
+      const { numericQuantity } = parseQuantity(event.quantity);
       const item = state.inventory.find((i) => i.instanceId === instanceId);
       if (item) {
-        item.quantity -= consumedQty;
+        item.quantity -= numericQuantity;
         if (item.quantity <= 0) {
           state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
         }
@@ -325,11 +345,17 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const ach = ((event.achievement as Record<string, unknown>) || event) as Record<string, unknown>;
       const achId = String(ach.id || ach.achievementId);
       if (!state.achievements.some((a) => a.achievementId === achId)) {
+        let rewardsStr = String(ach.rewards || ach.sourceTitle || '');
+        if (!rewardsStr && Array.isArray(ach.reward)) {
+          rewardsStr = ach.reward
+            .map((r: Record<string, unknown>) => r.description || `${r.kind} reward`)
+            .join(' · ');
+        }
         state.achievements.push({
           achievementId: achId,
           title: String(ach.title || 'Achievement Unlocked'),
           description: String(ach.description || ''),
-          rewards: String(ach.rewards || ach.sourceTitle || ''),
+          rewards: rewardsStr,
           icon: String(ach.icon || '☠'),
           unlockedAtSequence: sequence,
         });

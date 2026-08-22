@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { floor6Events, floor6Snapshots, floor6Timeline } from "../app/domain/fixtures/floor6.ts";
 import { projectState, createInitialState } from "../app/domain/projection.ts";
-import { validateCrawlerTimeline } from "../app/domain/validation.ts";
+import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/validation.ts";
 import { getStatBreakdown } from "../app/domain/stats.ts";
+import { floor1AuthoredDoc, floor6AuthoredDoc, compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
+import { compileFloorFiles } from "../app/domain/compiler.ts";
 
 test("initial state has default crawler stats", () => {
   const state = createInitialState();
@@ -178,4 +180,76 @@ test("minimal non-Floor-6 document does not inherit Floor 6 state, inventory, qu
   assert.equal(projected.quests.length, 0);
   assert.equal(projected.achievements.length, 0);
   assert.equal(projected.broadcast.viewers, 0);
+});
+
+// MULTI-FLOOR & AUTHORING TESTS
+
+test("floor-1.json validates successfully against crawler-floor/v2 schema", () => {
+  const validation = validateCrawlerFloor(floor1AuthoredDoc);
+  assert.equal(validation.valid, true, `Floor 1 validation errors: ${validation.errors.join('; ')}`);
+});
+
+test("compiler produces a valid deterministic runtime timeline document from floor files", () => {
+  const doc = compileFloorFiles([floor1AuthoredDoc, floor6AuthoredDoc]);
+  const validation = validateCrawlerTimeline(doc);
+  assert.equal(validation.valid, true, `Compiled timeline validation errors: ${validation.errors.join('; ')}`);
+  assert.equal(doc.schemaVersion, "crawler-timeline/v2");
+  assert.ok(Array.isArray(doc.floors));
+  assert.equal(doc.floors.length, 2);
+  assert.equal(doc.floors[0].ordinal, 1);
+  assert.equal(doc.floors[1].ordinal, 6);
+});
+
+test("cross-floor item provenance is preserved when replaying later floor events", () => {
+  // Sequence 5 acquires Crude Goblin Dagger on Floor 1
+  // Sequence 14 is on Floor 6
+  const stateAtSeq14 = projectState(compiledTimeline, 14);
+  const dagger = stateAtSeq14.inventory.find((i) => i.itemId === "item-goblin-dagger");
+  assert.ok(dagger, "Item acquired on Floor 1 should persist in inventory on Floor 6");
+  assert.equal(dagger.source, "Floor 1: World Dungeon Entry");
+});
+
+test("achievement reward correlation chain links achievement, box, and acquired item", () => {
+  // In Floor 1:
+  // Event 3: FIRST BLOOD (ach-first-kill)
+  // Event 4: UNBOXING THE APOCALYPSE (ach-reward-box-opened) correlated to ach-first-kill
+  // Event 5: ItemAcquired Crude Goblin Dagger caused by ach-reward-box-opened and correlated to ach-first-kill
+  const events = compiledTimeline.events;
+  const itemAcquiredEvent = events.find((e) => e.id === "evt-f1-5");
+  assert.ok(itemAcquiredEvent);
+  assert.equal(itemAcquiredEvent.causationId, "ach-reward-box-opened");
+  assert.equal(itemAcquiredEvent.correlationId, "ach-first-kill");
+});
+
+test("compiler rejects floor files with missing item or achievement catalog references", () => {
+  const badFloorDoc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  badFloorDoc.events.push({
+    id: "evt-f1-bad-ref",
+    order: 7,
+    type: "ItemAcquired",
+    position: { floor: 1 },
+    summary: "Acquired uncatalogued item",
+    item: { instanceId: "inst-bad", itemId: "non-existent-catalog-item-id", quantity: { known: true, value: 1 } },
+    evidence: [{ sourceId: "src-wda-log-f1", confidence: "confirmed" }],
+  });
+
+  assert.throws(
+    () => compileFloorFiles([badFloorDoc]),
+    /not found in floor catalog|unmapped item/
+  );
+});
+
+test("compiled timeline can be exported and re-imported with equivalent projected state", () => {
+  const exported = JSON.stringify(compiledTimeline);
+  const reimported = JSON.parse(exported);
+  const validation = validateCrawlerTimeline(reimported);
+  assert.equal(validation.valid, true);
+
+  const endSeq = compiledTimeline.events[compiledTimeline.events.length - 1].sequence;
+  const origState = projectState(compiledTimeline, endSeq);
+  const reimportedState = projectState(reimported, endSeq);
+
+  assert.equal(reimportedState.sequence, origState.sequence);
+  assert.equal(reimportedState.inventory.length, origState.inventory.length);
+  assert.equal(reimportedState.achievements.length, origState.achievements.length);
 });

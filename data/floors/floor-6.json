@@ -1,0 +1,70 @@
+{
+  "$schema": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json",
+  "authoringVersion": "crawler-floor/v2",
+  "storyId": "st-dungeon-crawler",
+  "floor": {
+    "id": "floor-6",
+    "ordinal": 6,
+    "title": "Floor 6: Clockwork Catacombs",
+    "book": 1,
+    "bookTitle": "Dungeon Crawler Carl",
+    "continuity": "canonical",
+    "coverage": {
+      "kind": "curated-critical",
+      "statement": "Floor 6 Clockwork Catacombs main event stream",
+      "completeness": "partial"
+    }
+  },
+  "sources": [
+    {
+      "id": "src-wda-system-log",
+      "kind": "official-text",
+      "trust": "primary",
+      "title": "World Dungeon Authority System Log",
+      "url": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json"
+    }
+  ],
+  "catalog": {
+    "items": [
+      { "id": "item-hood", "name": "Rogue's Hood", "category": "equipment", "slot": "HEAD", "rarity": "rare", "persistent": true, "description": "A dark, lightweight hood favored by dungeon scouts.", "stats": { "Dexterity": 4, "Armor": 15 } },
+      { "id": "item-vest", "name": "Shadowweave Vest", "category": "equipment", "slot": "TORSO", "rarity": "epic", "persistent": true, "description": "Woven with void threads that dampen kinetic force.", "stats": { "Constitution": 8, "Armor": 115 } },
+      { "id": "item-boots", "name": "Tracker Boots", "category": "equipment", "slot": "FEET", "rarity": "epic", "persistent": true, "description": "Reinforced boots tuned for rapid floor navigation.", "stats": { "Dexterity": 6 } },
+      { "id": "item-heal-vial", "name": "Healing vial", "category": "consumable", "rarity": "uncommon", "persistent": false, "description": "Restores 500 health points upon ingestion." },
+      { "id": "item-flash", "name": "Flash cylinder", "category": "consumable", "rarity": "common", "persistent": false, "description": "Blinds mechanical enemies for 4 seconds." },
+      { "id": "item-blast", "name": "Blast shell", "category": "consumable", "rarity": "rare", "persistent": false, "description": "High-explosive charge against armored targets." },
+      { "id": "item-keycard", "name": "Floor keycard", "category": "quest-item", "rarity": "rare", "persistent": false, "description": "Security bypass passkey for Floor 6 doors." },
+      { "id": "item-verdant", "name": "Verdant shard", "category": "crafting", "rarity": "uncommon", "persistent": false, "description": "Crystallized bio-energy used in gear enhancement." },
+      { "id": "item-void-crystal", "name": "Void crystal", "category": "crafting", "rarity": "epic", "persistent": false, "description": "Pulsing core of dark power." },
+      { "id": "item-echo-ring", "name": "Echo ring", "category": "equipment", "slot": "RING", "rarity": "legendary", "persistent": true, "description": "Resonates with ancient spellcasting frequencies.", "stats": { "Intelligence": 10, "Mana": 200 } },
+      { "id": "item-ward", "name": "Ward scroll", "category": "consumable", "rarity": "rare", "persistent": false, "description": "Creates a temporary protective barrier absorbs 400 dmg." },
+      { "id": "item-drive-gear", "name": "Drive gear", "category": "crafting", "rarity": "common", "persistent": false, "description": "Precision mechanical components for workshop repairs." },
+      { "id": "item-pulse-core", "name": "Pulse core", "category": "crafting", "rarity": "rare", "persistent": false, "description": "High-density energy battery." },
+      { "id": "item-vamp-band", "name": "Vampire band", "category": "equipment", "slot": "RING", "rarity": "epic", "persistent": true, "description": "Siphons life energy on critical hits.", "stats": { "Strength": 4, "Constitution": 4 } },
+      { "id": "item-sentry-kit", "name": "Sentry kit", "category": "consumable", "rarity": "common", "persistent": false, "description": "Deploys a miniature auto-turret for 20 seconds." },
+      { "id": "item-blood-crystal", "name": "Blood crystal", "category": "crafting", "rarity": "rare", "persistent": false, "description": "Crystallized essence of fallen dungeon beasts." },
+      { "id": "item-ice-cube", "name": "Ice cube", "category": "consumable", "rarity": "uncommon", "persistent": false, "description": "Chills target and cures Overheat status." },
+      { "id": "item-watcher-orb", "name": "Watcher orb", "category": "quest-item", "rarity": "rare", "persistent": false, "description": "Scouting lens used to map hidden catacomb chambers." },
+      { "id": "item-fuel-canister", "name": "Fuel canister", "category": "crafting", "rarity": "uncommon", "persistent": false, "description": "Refined volatile fuel for flamethrowers and generators." }
+    ],
+    "achievements": [
+      {
+        "id": "ach-barely",
+        "title": "BARELY SCRAPING BY",
+        "description": "Survive an encounter below 5% health.",
+        "reward": [
+          { "kind": "xp", "amount": 250, "description": "+250 XP · +50 FAME · TITLE: UNBREAKABLE" }
+        ]
+      }
+    ]
+  },
+  "events": [
+    { "id": "evt-f6-1", "order": 1, "type": "NarrativeEvent", "kind": "floor-entered", "position": { "floor": 6, "elapsedSeconds": 0 }, "summary": "Entered Floor 6: Clockwork Catacombs", "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] },
+    { "id": "evt-f6-2", "order": 2, "type": "NarrativeEvent", "kind": "encounter-started", "position": { "floor": 6, "elapsedSeconds": 75 }, "summary": "Extermination Protocol initiated by Dungeon Authority", "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] },
+    { "id": "evt-f6-3", "order": 3, "type": "ItemAcquired", "position": { "floor": 6, "elapsedSeconds": 150 }, "summary": "Acquired Rogue’s Hood from Floor 5 cache", "item": { "instanceId": "inst-hood-1", "itemId": "item-hood", "quantity": { "known": true, "value": 1 } }, "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] },
+    { "id": "evt-f6-4", "order": 4, "type": "ItemAcquired", "position": { "floor": 6, "elapsedSeconds": 190 }, "summary": "Acquired Shadowweave Vest", "item": { "instanceId": "inst-vest-1", "itemId": "item-vest", "quantity": { "known": true, "value": 1 } }, "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] },
+    { "id": "evt-f6-5", "order": 5, "type": "ItemAcquired", "position": { "floor": 6, "elapsedSeconds": 240 }, "summary": "Acquired Tracker Boots", "item": { "instanceId": "inst-boots-1", "itemId": "item-boots", "quantity": { "known": true, "value": 1 } }, "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] },
+    { "id": "evt-f6-6", "order": 6, "type": "ItemAcquired", "position": { "floor": 6, "elapsedSeconds": 300 }, "summary": "Stocked Healing Vials (x8)", "item": { "instanceId": "inst-heal-vial", "itemId": "item-heal-vial", "quantity": { "known": true, "value": 8 } }, "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] },
+    { "id": "evt-f6-7", "order": 7, "type": "AchievementUnlocked", "position": { "floor": 6, "elapsedSeconds": 845 }, "summary": "Unlocked Achievement: BARELY SCRAPING BY", "achievementId": "ach-barely", "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] },
+    { "id": "evt-f6-8", "order": 8, "type": "ItemAcquired", "position": { "floor": 6, "elapsedSeconds": 920 }, "summary": "Looted Echo Ring from Centurion Core", "item": { "instanceId": "inst-echo-ring", "itemId": "item-echo-ring", "quantity": { "known": true, "value": 1 } }, "evidence": [{ "sourceId": "src-wda-system-log", "confidence": "confirmed" }] }
+  ]
+}
