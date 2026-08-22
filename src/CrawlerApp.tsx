@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
 import { projectState } from "../app/domain/projection";
 import { validateCrawlerTimeline } from "../app/domain/validation";
-import { getStatBreakdown } from "../app/domain/stats";
+import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats";
 import type { StatBreakdown } from "../app/domain/stats";
 import type { CrawlerEvent, CrawlerState, CrawlerTimelineDocument, InventoryItem } from "../app/domain/types";
 import { TimelineScrubber } from "../app/components/TimelineScrubber";
@@ -120,6 +120,30 @@ export default function CrawlerApp() {
     }
   };
 
+  const handleEmitEvent = (eventData: Partial<CrawlerEvent>) => {
+    const nextSeq = maxSeq + 1;
+    const newEvent: CrawlerEvent = {
+      id: `evt-user-${Date.now()}`,
+      sequence: nextSeq,
+      occurred_at: projectedState.occurredAt,
+      type: eventData.type || 'ItemEquipped',
+      summary: eventData.summary || `Recorded ${eventData.type}`,
+      category: eventData.category || 'system',
+      position: { floor: latestFloor, elapsedSeconds: 0 },
+      evidence: [{ sourceId: 'src-wda-system-log', confidence: 'confirmed' }],
+      ...eventData,
+    } as CrawlerEvent;
+
+    const updatedDoc = {
+      ...timelineDoc,
+      events: [...timelineDoc.events, newEvent],
+    };
+
+    setTimelineDoc(updatedDoc as CrawlerTimelineDocument);
+    setSelectedSeq(nextSeq);
+    setIsLive(true);
+  };
+
   return (
     <main>
       <div className="timer">
@@ -192,6 +216,7 @@ export default function CrawlerApp() {
               setSelectedSeq(seq);
               setIsLive(seq === maxSeq);
             }}
+            onEmitEvent={handleEmitEvent}
           />
         ) : view === "skills" ? (
           <Skills state={projectedState} />
@@ -455,12 +480,14 @@ function Inventory({
   provenanceItem,
   setProvenanceItem,
   onNavigateToSequence,
+  onEmitEvent,
 }: {
   state: CrawlerState;
   events: CrawlerEvent[];
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
   onNavigateToSequence: (seq: number) => void;
+  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
 }) {
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [filter, setFilter] = useState<string>("ALL ITEMS");
@@ -563,7 +590,7 @@ function Inventory({
                 <Panel title="ITEM INSPECTOR">
                   <div className={`large-icon ${selectedItem.rarity}`}>{selectedItem.icon}</div>
                   <h2>{selectedItem.name.toUpperCase()}</h2>
-                  <p className="rarity">{selectedItem.rarity}</p>
+                  <p className="rarity">{selectedItem.rarity} {selectedItem.isEquipped ? "· EQUIPPED" : ""}</p>
                   <p>{selectedItem.description}</p>
                   <dl>
                     <div>
@@ -582,12 +609,94 @@ function Inventory({
                       <dt>ACQUIRED</dt>
                       <dd>SEQ #{selectedItem.acquiredAtSequence}</dd>
                     </div>
+                    {selectedItem.durability && (
+                      <div>
+                        <dt>DURABILITY</dt>
+                        <dd>{selectedItem.durability.current} / {selectedItem.durability.max}</dd>
+                      </div>
+                    )}
                   </dl>
 
-                  <div className="actions">
+                  {selectedItem.stats && (
+                    <div style={{ marginBottom: "12px", fontSize: "10px", color: "#6fe8f7" }}>
+                      <strong>ITEM STATS:</strong>
+                      {Object.entries(selectedItem.stats).map(([k, v]) => (
+                        <p key={k} style={{ margin: "2px 0" }}>+ {v} {k}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="actions" style={{ flexWrap: "wrap", gap: "6px" }}>
+                    {(selectedItem.category === "CONSUMABLES" || selectedItem.category === "consumable") && (
+                      <button
+                        style={{ background: "#0e3a24", borderColor: "#2de079", color: "#62ef98" }}
+                        onClick={() =>
+                          onEmitEvent({
+                            type: "ItemConsumed",
+                            itemInstanceId: selectedItem.instanceId,
+                            quantity: 1,
+                            healthRestored: selectedItem.name.toLowerCase().includes("health") ? 500 : undefined,
+                            summary: `Consumed ${selectedItem.name}`,
+                          })
+                        }
+                      >
+                        USE CONSUMABLE 🧪
+                      </button>
+                    )}
+
+                    {(selectedItem.category === "EQUIPMENT" || selectedItem.category === "equipment") && (
+                      <button
+                        style={selectedItem.isEquipped ? { background: "#2a0e12", borderColor: "#d5555e", color: "#ff8a80" } : { background: "#0e3a24", borderColor: "#2de079", color: "#62ef98" }}
+                        onClick={() =>
+                          onEmitEvent({
+                            type: selectedItem.isEquipped ? "ItemUnequipped" : "ItemEquipped",
+                            itemInstanceId: selectedItem.instanceId,
+                            slot: selectedItem.slot || "SPECIAL",
+                            summary: `${selectedItem.isEquipped ? "Unequipped" : "Equipped"} ${selectedItem.name}`,
+                          })
+                        }
+                      >
+                        {selectedItem.isEquipped ? "UNEQUIP GEAR ✕" : "EQUIP GEAR ⚔"}
+                      </button>
+                    )}
+
+                    <button
+                      style={{ background: "#0e2330", borderColor: "#30729e", color: "#86cbff" }}
+                      onClick={() =>
+                        onEmitEvent({
+                          type: "ItemLockToggled",
+                          itemInstanceId: selectedItem.instanceId,
+                          summary: `${selectedItem.isLocked ? "Unlocked" : "Locked"} ${selectedItem.name}`,
+                        })
+                      }
+                    >
+                      {selectedItem.isLocked ? "UNLOCK 🔒" : "LOCK 🔓"}
+                    </button>
+
                     <button onClick={() => setProvenanceItem(selectedItem)}>
                       PROVENANCE LIFECYCLE 🔍
                     </button>
+
+                    {!selectedItem.isEquipped && (
+                      <button
+                        style={{
+                          background: selectedItem.isLocked ? "#201214" : "#2e1215",
+                          borderColor: selectedItem.isLocked ? "#4d2226" : "#d14b54",
+                          color: selectedItem.isLocked ? "#6e4246" : "#ff8a90",
+                          cursor: selectedItem.isLocked ? "not-allowed" : "pointer",
+                        }}
+                        disabled={selectedItem.isLocked}
+                        onClick={() =>
+                          onEmitEvent({
+                            type: "ItemDiscarded",
+                            itemInstanceId: selectedItem.instanceId,
+                            summary: `Discarded ${selectedItem.name}`,
+                          })
+                        }
+                      >
+                        DISCARD 🗑️
+                      </button>
+                    )}
                   </div>
                 </Panel>
               )}
@@ -603,7 +712,13 @@ function Inventory({
             </div>
           </>
         ) : (
-          <EquipmentView state={state} slot={slot} setSlot={setSlot} />
+          <EquipmentView
+            state={state}
+            slot={slot}
+            setSlot={setSlot}
+            onEmitEvent={onEmitEvent}
+            onOpenProvenance={(item) => setProvenanceItem(item)}
+          />
         )}
       </div>
     </section>
@@ -614,31 +729,63 @@ function EquipmentView({
   state,
   slot,
   setSlot,
+  onEmitEvent,
+  onOpenProvenance,
 }: {
   state: CrawlerState;
   slot: string;
   setSlot: (v: string) => void;
+  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
+  onOpenProvenance: (item: InventoryItem) => void;
 }) {
   const slots = [
-    ["HEAD", "◉", "Rogue's Hood"],
-    ["FACE", "◌", "—"],
-    ["NECK", "◇", "—"],
-    ["TORSO", "◈", "Shadowweave Vest"],
-    ["WRISTS", "▱", "—"],
-    ["RING", "💍", "Echo Ring"],
-    ["WAIST", "▰", "—"],
-    ["LEGS", "╿", "—"],
-    ["FEET", "▰", "Tracker Boots"],
-    ["SPECIAL", "✦", "—"],
+    ["HEAD", "◉", "Headgear"],
+    ["FACE", "◌", "Visor/Mask"],
+    ["NECK", "◇", "Amulet/Necklace"],
+    ["TORSO", "◈", "Body Armor/Vest"],
+    ["WRISTS", "▱", "Bracers"],
+    ["RING", "💍", "Finger Ring"],
+    ["WAIST", "▰", "Belt/Waistband"],
+    ["LEGS", "╿", "Leg Armor"],
+    ["FEET", "▰", "Footwear/Boots"],
+    ["SPECIAL", "✦", "Relic/Special"],
   ];
 
   const equippedInstanceId = state.equippedSlots[slot];
   const equippedItem = state.inventory.find((i) => i.instanceId === equippedInstanceId);
 
+  const slotCandidates = useMemo(() => {
+    return state.inventory.filter((item) => {
+      const isEquipCat = item.category === "EQUIPMENT" || item.category === "equipment";
+      if (!isEquipCat) return false;
+      if (slot === "SPECIAL") return true;
+      return item.slot === slot || !item.slot;
+    });
+  }, [state.inventory, slot]);
+
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
+
+  const activeCandidate = useMemo(() => {
+    if (selectedCandidateId) {
+      const found = slotCandidates.find((c) => c.instanceId === selectedCandidateId);
+      if (found) return found;
+    }
+    return slotCandidates.find((c) => c.instanceId !== equippedInstanceId) || slotCandidates[0] || equippedItem;
+  }, [slotCandidates, selectedCandidateId, equippedInstanceId, equippedItem]);
+
+  const reqResult = useMemo(() => {
+    if (!activeCandidate) return { met: true, details: [] };
+    return checkItemRequirements(state.crawler, activeCandidate.requirements);
+  }, [state.crawler, activeCandidate]);
+
+  const statDeltas = useMemo(() => {
+    return compareGearStats(equippedItem, activeCandidate);
+  }, [equippedItem, activeCandidate]);
+
   return (
     <div className="equipment-workspace">
       <Panel title="ADAPTIVE LOADOUT · PRIMAL">
-        <p className="slot-note">Slots change with race, class, transformations, and body modifications.</p>
+        <p className="slot-note">Click a body slot to inspect equipped gear, compare inventory candidates, and evaluate stat deltas.</p>
         <div className="loadout-diagram">
           <div className="body-core">◉</div>
           {slots.map(([name, icon], i) => {
@@ -648,43 +795,254 @@ function EquipmentView({
               <button
                 key={name}
                 className={`body-slot s${i} ${slot === name ? "selected" : ""}`}
-                onClick={() => setSlot(name)}
+                onClick={() => {
+                  setSlot(name);
+                  setSelectedCandidateId(null);
+                }}
               >
                 <i>{icon}</i>
                 <span>{name}</span>
-                <small>{occupant ? occupant.name : "—"}</small>
+                <small>{occupant ? occupant.name : "— Empty Slot"}</small>
               </button>
             );
           })}
         </div>
         <div className="slot-legend">
-          <span>◉ occupied</span>
-          <span>◇ special</span>
-          <span>— empty slot</span>
+          <span>◉ Occupied</span>
+          <span>◇ Special</span>
+          <span>— Empty Slot</span>
         </div>
       </Panel>
 
-      <Panel title={`SLOT INSPECTOR · ${slot}`}>
-        {equippedItem ? (
-          <div>
-            <p className="eyebrow">EQUIPPED ITEM</p>
-            <h2>{equippedItem.name}</h2>
-            <p className="rarity">{equippedItem.rarity}</p>
-            <p>{equippedItem.description}</p>
-            {equippedItem.stats && (
-              <div style={{ marginTop: "10px", fontSize: "11px", color: "#6fe8f7" }}>
-                {Object.entries(equippedItem.stats).map(([k, v]) => (
-                  <p key={k}>
-                    + {v} {k}
-                  </p>
-                ))}
+      <div style={{ display: "grid", gap: "18px" }}>
+        <Panel title={`SLOT INSPECTOR · ${slot}`}>
+          {equippedItem ? (
+            <div style={{ marginBottom: "14px", paddingBottom: "12px", borderBottom: "1px solid #1f3e4d" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <p className="eyebrow">CURRENTLY EQUIPPED IN {slot}</p>
+                  <h2>{equippedItem.name.toUpperCase()}</h2>
+                </div>
+                <button
+                  style={{
+                    background: "#2a0e12",
+                    border: "1px solid #d5555e",
+                    color: "#ff8a80",
+                    fontSize: "9px",
+                    padding: "6px 10px",
+                  }}
+                  onClick={() =>
+                    onEmitEvent({
+                      type: "ItemUnequipped",
+                      itemInstanceId: equippedItem.instanceId,
+                      slot,
+                      summary: `Unequipped ${equippedItem.name} from ${slot} slot`,
+                    })
+                  }
+                >
+                  UNEQUIP ✕
+                </button>
               </div>
-            )}
-          </div>
-        ) : (
-          <p style={{ color: "#7fa0ac", fontSize: "11px" }}>No gear equipped in slot {slot}.</p>
+              <p className="rarity">{equippedItem.rarity}</p>
+              <p style={{ fontSize: "11px", color: "#a5b9c0" }}>{equippedItem.description}</p>
+              {equippedItem.durability && (
+                <p style={{ fontSize: "10px", color: "#f3cc52", marginTop: "4px" }}>
+                  DURABILITY: {equippedItem.durability.current} / {equippedItem.durability.max}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: "#7fa0ac", fontSize: "11px", marginBottom: "14px" }}>
+              No gear currently equipped in {slot} slot.
+            </p>
+          )}
+
+          <p className="eyebrow" style={{ marginTop: "10px" }}>
+            CANDIDATE GEAR IN INVENTORY ({slotCandidates.length})
+          </p>
+          {slotCandidates.length > 0 ? (
+            <div className="candidate-grid">
+              {slotCandidates.map((cand) => (
+                <button
+                  key={cand.instanceId}
+                  className={`candidate ${cand.rarity} ${
+                    activeCandidate?.instanceId === cand.instanceId ? "selected" : ""
+                  }`}
+                  onClick={() => setSelectedCandidateId(cand.instanceId)}
+                >
+                  <i>{cand.icon}</i>
+                  <span>{cand.name}</span>
+                  <b>
+                    {cand.isEquipped
+                      ? "EQUIPPED"
+                      : cand.isLocked
+                      ? "🔒 LOCKED"
+                      : cand.rarity.toUpperCase()}
+                  </b>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: "11px", color: "#7fa0ac" }}>
+              No alternative gear in inventory compatible with {slot} slot.
+            </p>
+          )}
+        </Panel>
+
+        {activeCandidate && (
+          <Panel title={`GEAR STAT COMPARISON & DELTAS`}>
+            <div className="comparison" style={{ marginBottom: "14px" }}>
+              <div className="candidate-preview">
+                <p className="eyebrow">EQUIPPED ({equippedItem ? slot : "NONE"})</p>
+                <h2>{equippedItem ? equippedItem.name : "EMPTY"}</h2>
+                <p>{equippedItem ? equippedItem.description : "No item equipped"}</p>
+              </div>
+              <b>➔</b>
+              <div className="candidate-preview">
+                <p className="eyebrow">CANDIDATE</p>
+                <h2>{activeCandidate.name}</h2>
+                <p>{activeCandidate.description}</p>
+              </div>
+            </div>
+
+            <div style={{ background: "#08131a", padding: "12px", border: "1px solid #1d3e4c", marginBottom: "14px" }}>
+              <p className="eyebrow">STAT DELTA BREAKDOWN</p>
+              {statDeltas.length > 0 ? (
+                <div style={{ display: "grid", gap: "6px", fontSize: "11px", marginTop: "8px" }}>
+                  {statDeltas.map((d) => (
+                    <div
+                      key={d.statName}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "4px 8px",
+                        background: "#0c1b26",
+                        borderLeft: `3px solid ${
+                          d.delta > 0 ? "#4ee88a" : d.delta < 0 ? "#ff5868" : "#3b5866"
+                        }`,
+                      }}
+                    >
+                      <span>{d.statName}</span>
+                      <span>
+                        {d.equippedValue} ➔ {d.candidateValue}{" "}
+                        <strong
+                          style={{
+                            color: d.delta > 0 ? "#4ee88a" : d.delta < 0 ? "#ff5868" : "#8fa8b2",
+                            marginLeft: "6px",
+                          }}
+                        >
+                          ({d.delta >= 0 ? `+${d.delta}` : d.delta})
+                        </strong>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: "10px", color: "#8fa8b2" }}>No direct stat modifiers recorded on either item.</p>
+              )}
+            </div>
+
+            {/* Item Requirements */}
+            <div style={{ marginBottom: "14px", fontSize: "10px", color: "#a5b9c0" }}>
+              {reqResult.met ? (
+                <p style={{ color: "#62ef98" }}>✓ ITEM REQUIREMENTS MET</p>
+              ) : (
+                <div style={{ color: "#ff737d" }}>
+                  <p>❌ REQUIREMENTS UNMET:</p>
+                  {reqResult.details
+                    .filter((d) => !d.met)
+                    .map((d) => (
+                      <span key={d.key} style={{ display: "block", marginLeft: "10px" }}>
+                        • Requires {d.key}: {d.required} (Current: {d.current})
+                      </span>
+                    ))}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="actions" style={{ flexWrap: "wrap", gap: "6px" }}>
+              {activeCandidate.instanceId !== equippedItem?.instanceId && (
+                <button
+                  style={{
+                    background: reqResult.met ? "#0e3a24" : "#2a1818",
+                    borderColor: reqResult.met ? "#2de079" : "#633030",
+                    color: reqResult.met ? "#62ef98" : "#8a5858",
+                    cursor: reqResult.met ? "pointer" : "not-allowed",
+                  }}
+                  disabled={!reqResult.met}
+                  onClick={() =>
+                    onEmitEvent({
+                      type: "ItemEquipped",
+                      itemInstanceId: activeCandidate.instanceId,
+                      slot,
+                      summary: `Equipped ${activeCandidate.name} to ${slot} slot`,
+                    })
+                  }
+                >
+                  EQUIP GEAR ⚔
+                </button>
+              )}
+
+              {activeCandidate.durability && activeCandidate.durability.current < activeCandidate.durability.max && (
+                <button
+                  style={{ background: "#212d12", borderColor: "#86c934", color: "#bcf26d" }}
+                  onClick={() =>
+                    onEmitEvent({
+                      type: "ItemRepaired",
+                      itemInstanceId: activeCandidate.instanceId,
+                      summary: `Repaired ${activeCandidate.name} to full durability`,
+                    })
+                  }
+                >
+                  REPAIR 🛠
+                </button>
+              )}
+
+              <button
+                style={{ background: "#0e2330", borderColor: "#30729e", color: "#86cbff" }}
+                onClick={() =>
+                  onEmitEvent({
+                    type: "ItemLockToggled",
+                    itemInstanceId: activeCandidate.instanceId,
+                    summary: `${activeCandidate.isLocked ? "Unlocked" : "Locked"} ${activeCandidate.name}`,
+                  })
+                }
+              >
+                {activeCandidate.isLocked ? "UNLOCK 🔒" : "LOCK 🔓"}
+              </button>
+
+              <button
+                style={{ background: "#0c1b26", borderColor: "#2d5266", color: "#a1d4e6" }}
+                onClick={() => onOpenProvenance(activeCandidate)}
+              >
+                PROVENANCE 🔍
+              </button>
+
+              {!activeCandidate.isEquipped && (
+                <button
+                  style={{
+                    background: activeCandidate.isLocked ? "#201214" : "#2e1215",
+                    borderColor: activeCandidate.isLocked ? "#4d2226" : "#d14b54",
+                    color: activeCandidate.isLocked ? "#6e4246" : "#ff8a90",
+                    cursor: activeCandidate.isLocked ? "not-allowed" : "pointer",
+                  }}
+                  disabled={activeCandidate.isLocked}
+                  onClick={() =>
+                    onEmitEvent({
+                      type: "ItemDiscarded",
+                      itemInstanceId: activeCandidate.instanceId,
+                      summary: `Discarded ${activeCandidate.name}`,
+                    })
+                  }
+                >
+                  DISCARD 🗑️
+                </button>
+              )}
+            </div>
+          </Panel>
         )}
-      </Panel>
+      </div>
     </div>
   );
 }

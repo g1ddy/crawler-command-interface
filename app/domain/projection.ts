@@ -237,6 +237,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
         const uiCategory = mapSchemaCategoryToUi(rawCategory);
         const slotVal = typeof itemData.slot === 'string' ? itemData.slot : undefined;
         const statsVal = itemData.stats as Record<string, number> | undefined;
+        const reqsVal = itemData.requirements as Record<string, number | string> | undefined;
         const durVal = itemData.durability as { current: number; max: number } | undefined;
 
         state.inventory.push({
@@ -252,6 +253,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
           maxStack: Number(itemData.maxStack ?? 1),
           value: Number(itemData.value ?? 100),
           stats: statsVal,
+          requirements: reqsVal,
           description: String(itemData.description || ''),
           durability: durVal,
           acquiredAtSequence: sequence,
@@ -279,6 +281,13 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const slot = String(event.slot || 'SPECIAL').toUpperCase();
       const instanceId = String(event.itemInstanceId);
 
+      // Clear instanceId if it was equipped in another slot
+      for (const s in state.equippedSlots) {
+        if (state.equippedSlots[s] === instanceId) {
+          state.equippedSlots[s] = null;
+        }
+      }
+
       const currentEquippedId = state.equippedSlots[slot];
       if (currentEquippedId) {
         const currentItem = state.inventory.find((i) => i.instanceId === currentEquippedId);
@@ -289,6 +298,43 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const targetItem = state.inventory.find((i) => i.instanceId === instanceId);
       if (targetItem) {
         targetItem.isEquipped = true;
+      }
+      break;
+    }
+
+    case 'ItemLocked': {
+      const instanceId = String(event.itemInstanceId);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
+      if (item) {
+        item.isLocked = true;
+      }
+      break;
+    }
+
+    case 'ItemUnlocked': {
+      const instanceId = String(event.itemInstanceId);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
+      if (item) {
+        item.isLocked = false;
+      }
+      break;
+    }
+
+    case 'ItemLockToggled': {
+      const instanceId = String(event.itemInstanceId);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
+      if (item) {
+        item.isLocked = !item.isLocked;
+      }
+      break;
+    }
+
+    case 'ItemRepaired': {
+      const instanceId = String(event.itemInstanceId);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
+      if (item && item.durability) {
+        const amount = Number(event.amount ?? (item.durability.max - item.durability.current));
+        item.durability.current = Math.min(item.durability.max, item.durability.current + amount);
       }
       break;
     }

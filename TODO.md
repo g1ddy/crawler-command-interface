@@ -30,11 +30,11 @@ This roadmap is intentionally ordered around making the interface a believable, 
 
 ## 3. Inventory, gear, and provenance
 
-- [ ] Give each non-stackable item a stable `itemInstanceId`; retain its acquisition source, modification history, durability, and final disposition.
-- [ ] Track stack quantities with explicit quantity-change events instead of overwriting a total.
-- [ ] Make equipment candidates slot-aware and show compatibility, stat deltas, durability, requirements, and item provenance.
-- [ ] Make **Use**, **Equip**, **Unequip**, **Lock**, **Repair**, and **Drop** write state-changing events.
-- [ ] Show an item’s personal timeline: acquired → equipped → repaired/upgraded → consumed/discarded.
+- [x] Give each non-stackable item a stable `itemInstanceId`; retain its acquisition source, modification history, durability, and final disposition.
+- [x] Track stack quantities with explicit quantity-change events instead of overwriting a total.
+- [x] Make equipment candidates slot-aware and show compatibility, stat deltas, durability, requirements, and item provenance.
+- [x] Make **Use**, **Equip**, **Unequip**, **Lock**, **Repair**, and **Drop** write state-changing events.
+- [x] Show an item’s personal timeline: acquired → equipped → repaired/upgraded → consumed/discarded.
 
 ## 4. Interaction polish
 
