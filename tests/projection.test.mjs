@@ -1,9 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import fs from "node:fs";
 import { floor6Events, floor6Snapshots, floor6Timeline } from "../app/domain/fixtures/floor6.ts";
 import { projectState, createInitialState } from "../app/domain/projection.ts";
-import { validateCrawlerTimeline } from "../app/domain/validation.ts";
+import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/validation.ts";
 import { getStatBreakdown } from "../app/domain/stats.ts";
+import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
+import { compileFloorFiles } from "../app/domain/compiler.ts";
+
+const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 
 test("initial state has default crawler stats", () => {
   const state = createInitialState();
@@ -178,4 +183,127 @@ test("minimal non-Floor-6 document does not inherit Floor 6 state, inventory, qu
   assert.equal(projected.quests.length, 0);
   assert.equal(projected.achievements.length, 0);
   assert.equal(projected.broadcast.viewers, 0);
+});
+
+// MULTI-FLOOR & AUTHORING TESTS
+
+test("floor-1.json validates successfully against crawler-floor/v2 schema", () => {
+  const validation = validateCrawlerFloor(floor1AuthoredDoc);
+  assert.equal(validation.valid, true, `Floor 1 validation errors: ${validation.errors.join('; ')}`);
+});
+
+test("compiler produces a valid deterministic runtime timeline document from floor files", () => {
+  const doc = compileFloorFiles([floor1AuthoredDoc]);
+  const validation = validateCrawlerTimeline(doc);
+  assert.equal(validation.valid, true, `Compiled timeline validation errors: ${validation.errors.join('; ')}`);
+  assert.equal(doc.schemaVersion, "crawler-timeline/v2");
+  assert.ok(Array.isArray(doc.floors));
+  assert.equal(doc.floors.length, 1);
+  assert.equal(doc.floors[0].ordinal, 1);
+  assert.equal(doc.sources.find((s) => s.id === "src-book-1")?.citationStyle, "Chapter {chapter}");
+  // Position metadata check
+  assert.equal(doc.events[0].position.chapter, 1);
+});
+
+test("compiler rejects floor files with conflicting item definitions", () => {
+  const docA = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  const docB = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  docB.floor.id = "floor-2";
+  docB.floor.ordinal = 2;
+  docB.events.forEach((e) => {
+    e.position.floor = 2;
+  });
+  docB.catalog.items[0].slot = "HEAD"; // Conflicting slot with docA
+
+  assert.throws(
+    () => compileFloorFiles([docA, docB]),
+    /Conflicting catalog item definition/
+  );
+});
+
+test("compiler rejects floor files with mismatched storyId", () => {
+  const docA = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  const docB = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  docB.floor.id = "floor-2";
+  docB.floor.ordinal = 2;
+  docB.storyId = "other-story";
+
+  assert.throws(
+    () => compileFloorFiles([docA, docB]),
+    /Mismatched storyId across floor files/
+  );
+});
+
+test("floor validator rejects achievement rewards with uncatalogued item references", () => {
+  const badDoc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  badDoc.catalog.achievements[0].reward.push({
+    kind: "item",
+    itemId: "uncatalogued-reward-item",
+  });
+
+  const validation = validateCrawlerFloor(badDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(
+    validation.errors.some((e) => e.includes("reward references itemId \"uncatalogued-reward-item\" not found"))
+  );
+});
+
+test("ItemCrafted events project crafted items into inventory", () => {
+  const doc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  doc.events.push({
+    id: "evt-f1-craft-bomb",
+    order: 20,
+    type: "ItemCrafted",
+    position: { floor: 1, book: 1, chapter: 30 },
+    summary: "Carl crafts a goblin explosive",
+    item: { instanceId: "inst-f1-crafted-bomb", itemId: "item-goblin-copper-chopper", quantity: { known: true, value: 1 } },
+    evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+  });
+
+  const compiled = compileFloorFiles([doc]);
+  assert.equal(compiled.events.at(-1).type, "ItemCrafted");
+  const state = projectState(compiled, compiled.events.length);
+  const craftedItem = state.inventory.find((i) => i.instanceId === "inst-f1-crafted-bomb");
+  assert.ok(craftedItem, "Crafted item should be present in projected inventory");
+  assert.equal(state.recentLogs[0].category, "loot");
+});
+
+test("cross-floor item provenance is preserved when replaying later events", () => {
+  const stateAtEnd = projectState(compiledTimeline, 19);
+  const shirt = stateAtEnd.inventory.find((i) => i.itemId === "item-trollskin-shirt-of-pummeling");
+  assert.ok(shirt, "Item acquired on Floor 1 should persist in inventory");
+  assert.equal(shirt.source, "First Floor");
+});
+
+test("compiler rejects floor files with missing item or achievement catalog references", () => {
+  const badFloorDoc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  badFloorDoc.events.push({
+    id: "evt-f1-bad-ref",
+    order: 20,
+    type: "ItemAcquired",
+    position: { floor: 1 },
+    summary: "Acquired uncatalogued item",
+    item: { instanceId: "inst-bad", itemId: "non-existent-catalog-item-id", quantity: { known: true, value: 1 } },
+    evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+  });
+
+  assert.throws(
+    () => compileFloorFiles([badFloorDoc]),
+    /not found in floor catalog|unmapped item/
+  );
+});
+
+test("compiled timeline can be exported and re-imported with equivalent projected state", () => {
+  const exported = JSON.stringify(compiledTimeline);
+  const reimported = JSON.parse(exported);
+  const validation = validateCrawlerTimeline(reimported);
+  assert.equal(validation.valid, true);
+
+  const endSeq = compiledTimeline.events[compiledTimeline.events.length - 1].sequence;
+  const origState = projectState(compiledTimeline, endSeq);
+  const reimportedState = projectState(reimported, endSeq);
+
+  assert.equal(reimportedState.sequence, origState.sequence);
+  assert.equal(reimportedState.inventory.length, origState.inventory.length);
+  assert.equal(reimportedState.achievements.length, origState.achievements.length);
 });

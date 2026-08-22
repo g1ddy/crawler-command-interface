@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import { floor6Timeline } from "../app/domain/fixtures/floor6";
+import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
 import { projectState } from "../app/domain/projection";
 import { validateCrawlerTimeline } from "../app/domain/validation";
 import { getStatBreakdown } from "../app/domain/stats";
@@ -13,13 +13,26 @@ import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
 type View = "crawler" | "inventory" | "skills" | "journal";
 
 export default function CrawlerApp() {
-  const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(floor6Timeline);
+  const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(compiledTimeline);
   const events: CrawlerEvent[] = timelineDoc.events as unknown as CrawlerEvent[];
 
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
 
+  const latestFloor = useMemo(() => {
+    return events[events.length - 1]?.position?.floor ?? timelineDoc.floors?.slice(-1)[0]?.ordinal ?? 1;
+  }, [events, timelineDoc]);
+
+  const defaultFloor = timelineDoc.floors?.slice(-1)[0]?.ordinal ?? latestFloor;
+  const [selectedFloorOrdinal, setSelectedFloorOrdinal] = useState<number | 'all'>(defaultFloor);
+
   const [isLive, setIsLive] = useState<boolean>(true);
   const [selectedSeq, setSelectedSeq] = useState<number>(maxSeq);
+
+  const handleReturnToLive = () => {
+    setIsLive(true);
+    setSelectedSeq(maxSeq);
+    setSelectedFloorOrdinal(latestFloor);
+  };
 
   const [view, setView] = useState<View>("crawler");
   const [time, setTime] = useState<number>(4 * 3600 + 17 * 60 + 32);
@@ -52,11 +65,22 @@ export default function CrawlerApp() {
   const m = String(Math.floor((time % 3600) / 60)).padStart(2, "0");
   const s = String(time % 60).padStart(2, "0");
 
+  const currentFloorSegment = useMemo(() => {
+    if (selectedFloorOrdinal === 'all') return null;
+    return timelineDoc.floors?.find((f) => f.ordinal === selectedFloorOrdinal);
+  }, [timelineDoc, selectedFloorOrdinal]);
+
+  const floorHudTitle = currentFloorSegment
+    ? `FLOOR ${currentFloorSegment.ordinal}: ${currentFloorSegment.title}`
+    : selectedFloorOrdinal === 'all'
+    ? 'ALL FLOORS (WHOLE STORY)'
+    : `FLOOR ${selectedFloorOrdinal}`;
+
   const handleExportJson = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(timelineDoc, null, 2));
     const downloadAnchor = document.createElement("a");
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `crawler-timeline-v1-seq-${projectedState.sequence}.json`);
+    downloadAnchor.setAttribute("download", `crawler-timeline-v2-seq-${projectedState.sequence}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -65,12 +89,16 @@ export default function CrawlerApp() {
   const handleImportJson = () => {
     setImportError(null);
     try {
-      const parsed = JSON.parse(jsonText);
+      const parsed = JSON.parse(jsonText) as CrawlerTimelineDocument;
       const validation = validateCrawlerTimeline(parsed);
       if (validation.valid) {
-        setTimelineDoc(parsed as CrawlerTimelineDocument);
+        setTimelineDoc(parsed);
         setIsLive(true);
-        setSelectedSeq((parsed as CrawlerTimelineDocument).events.slice(-1)[0]?.sequence ?? 1);
+        const importedEvents = parsed.events || [];
+        const lastSeq = importedEvents.slice(-1)[0]?.sequence ?? 1;
+        const importedFloor = importedEvents.slice(-1)[0]?.position?.floor ?? parsed.floors?.slice(-1)[0]?.ordinal ?? 1;
+        setSelectedSeq(lastSeq);
+        setSelectedFloorOrdinal(importedFloor);
         setShowJsonModal(false);
       } else {
         setImportError(validation.errors.join("\n"));
@@ -81,10 +109,21 @@ export default function CrawlerApp() {
     }
   };
 
+  const handleSelectFloorOrdinal = (ordinal: number | 'all') => {
+    setSelectedFloorOrdinal(ordinal);
+    if (ordinal !== 'all') {
+      const floorSeg = timelineDoc.floors?.find((f) => f.ordinal === ordinal);
+      if (floorSeg) {
+        setSelectedSeq(floorSeg.endSequence);
+        setIsLive(floorSeg.endSequence === maxSeq);
+      }
+    }
+  };
+
   return (
     <main>
       <div className="timer">
-        <span>FLOOR {timelineDoc.timeline?.story?.spoilerScope?.floor ?? 6}</span>
+        <span>{floorHudTitle.toUpperCase()}</span>
         <b>LEVEL COLLAPSE IN {h}:{m}:{s}</b>
         <span>● LIVE · {projectedState.broadcast.viewers.toLocaleString()} VIEWERS</span>
       </div>
@@ -92,7 +131,7 @@ export default function CrawlerApp() {
       {!isLive && (
         <div className="replay-banner">
           <span>HISTORICAL VIEW · REPLAYING SEQUENCE #{projectedState.sequence} ({projectedState.occurredAt})</span>
-          <button onClick={() => setIsLive(true)}>RETURN TO LIVE ⚡</button>
+          <button onClick={handleReturnToLive}>RETURN TO LIVE ⚡</button>
         </div>
       )}
 
@@ -119,6 +158,9 @@ export default function CrawlerApp() {
       <div className="view">
         <TimelineScrubber
           events={events}
+          floors={timelineDoc.floors}
+          selectedFloorOrdinal={selectedFloorOrdinal}
+          onSelectFloorOrdinal={handleSelectFloorOrdinal}
           selectedSequence={isLive ? maxSeq : selectedSeq}
           onSelectSequence={(seq) => {
             setSelectedSeq(seq);
@@ -126,8 +168,11 @@ export default function CrawlerApp() {
           }}
           isLive={isLive}
           onToggleLive={() => {
-            if (isLive) setSelectedSeq(maxSeq);
-            setIsLive(!isLive);
+            if (!isLive) {
+              handleReturnToLive();
+            } else {
+              setIsLive(false);
+            }
           }}
         />
 
@@ -173,13 +218,13 @@ export default function CrawlerApp() {
           <div className="modal-content panel" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>
-                <p className="eyebrow">PORTABLE CRAWLER TIMELINE (V1)</p>
+                <p className="eyebrow">PORTABLE CRAWLER TIMELINE (V1/V2)</p>
                 <h2>IMPORT / EXPORT CRAWLER TIMELINE</h2>
               </div>
               <button className="close-btn" onClick={() => setShowJsonModal(false)}>✕</button>
             </div>
             <p style={{ fontSize: "11px", color: "#a4b7bf" }}>
-              Export current versioned crawler-timeline/v1 JSON document or import a validated timeline envelope.
+              Export current versioned crawler-timeline JSON document or import a validated timeline envelope.
             </p>
             <div className="actions" style={{ marginBottom: "12px" }}>
               <button onClick={handleExportJson}>DOWNLOAD TIMELINE JSON</button>
@@ -218,7 +263,7 @@ export default function CrawlerApp() {
                 padding: "8px",
                 fontFamily: "monospace",
               }}
-              placeholder="Paste crawler-timeline/v1 document JSON here to import..."
+              placeholder="Paste crawler-timeline document JSON here to import..."
               value={jsonText}
               onChange={(e) => {
                 setJsonText(e.target.value);
@@ -805,7 +850,7 @@ function Journal({
           </Panel>
         </div>
       ) : (
-        <Panel title={tab === "LOG" ? "SYSTEM EVENT LOG" : "FLOOR 6 · CLOCKWORK CATACOMBS"}>
+        <Panel title={tab === "LOG" ? "SYSTEM EVENT LOG" : "FLOOR RULES & DIRECTIVES"}>
           <div className="log">
             {tab === "LOG" ? (
               state.recentLogs.map((l) => (

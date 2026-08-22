@@ -1,6 +1,6 @@
 export type EventCategory = 'loot' | 'combat' | 'skills' | 'quest' | 'levelup' | 'system';
 
-export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'celestial' | 'unknown';
+export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'celestial' | 'bronze' | 'silver' | 'gold' | 'platinum' | 'unknown';
 export type ItemCategory =
   | 'EQUIPMENT'
   | 'CONSUMABLES'
@@ -15,6 +15,7 @@ export type ItemCategory =
   | 'weapon'
   | 'tool'
   | 'document'
+  | 'vehicle'
   | 'miscellaneous';
 
 export type AttributeName = 'Strength' | 'Dexterity' | 'Constitution' | 'Intelligence' | 'Charisma';
@@ -31,6 +32,7 @@ export interface TimelineSource {
   trust: 'primary' | 'corroborating' | 'candidate';
   title: string;
   url: string;
+  citationStyle?: string;
   accessedAt?: string;
   revision?: string;
 }
@@ -56,18 +58,37 @@ export interface TimelinePosition {
   elapsedSeconds?: number;
 }
 
+export interface QuantityObject {
+  known: boolean;
+  value?: number;
+  minimum?: number;
+  unit?: string;
+  note?: string;
+}
+
+export type QuantityValue = number | QuantityObject;
+
 export interface TimelineItem {
   instanceId: string;
   itemId?: string;
   name: string;
-  category: 'equipment' | 'consumable' | 'quest-item' | 'crafting' | 'box' | 'weapon' | 'tool' | 'document' | 'miscellaneous';
+  category: 'equipment' | 'consumable' | 'quest-item' | 'crafting' | 'box' | 'weapon' | 'tool' | 'document' | 'vehicle' | 'miscellaneous';
   rarity?: ItemRarity;
-  quantity: number;
+  quantity: QuantityValue;
   maxStack?: number;
   slot?: string;
   description?: string;
   stats?: Record<string, number>;
   sourceDescription?: string;
+}
+
+export interface RewardSpec {
+  kind: 'box' | 'item' | 'xp' | 'entitlement' | 'feature' | 'other';
+  boxType?: string;
+  rarity?: ItemRarity;
+  itemId?: string;
+  amount?: number;
+  description?: string;
 }
 
 export interface TimelineAchievement {
@@ -76,11 +97,13 @@ export interface TimelineAchievement {
   sourceTitle?: string;
   description?: string;
   repeatCount?: number;
+  reward?: RewardSpec[];
 }
 
 export interface TimelineEntitlement {
   id: string;
   name: string;
+  location?: string;
   description?: string;
 }
 
@@ -116,7 +139,8 @@ export interface TimelineEventBase {
 
 export interface AchievementUnlockedEvent extends TimelineEventBase {
   type: 'AchievementUnlocked';
-  achievement: TimelineAchievement;
+  achievementId?: string;
+  achievement?: TimelineAchievement;
 }
 
 export interface ItemAcquiredEvent extends TimelineEventBase {
@@ -124,17 +148,24 @@ export interface ItemAcquiredEvent extends TimelineEventBase {
   item: TimelineItem;
 }
 
+export interface ItemCraftedEvent extends TimelineEventBase {
+  type: 'ItemCrafted';
+  item: TimelineItem;
+}
+
 export interface ItemConsumedEvent extends TimelineEventBase {
   type: 'ItemConsumed';
   itemInstanceId: string;
-  quantity: number;
+  quantity?: QuantityValue;
   outcome?: string;
+  healthRestored?: number;
+  manaRestored?: number;
 }
 
 export interface ItemEquippedEvent extends TimelineEventBase {
   type: 'ItemEquipped';
   itemInstanceId: string;
-  slot: string;
+  slot?: string;
 }
 
 export interface PermanentEntitlementGrantedEvent extends TimelineEventBase {
@@ -144,17 +175,19 @@ export interface PermanentEntitlementGrantedEvent extends TimelineEventBase {
 
 export interface NarrativeEvent extends TimelineEventBase {
   type: 'NarrativeEvent';
-  kind: 'floor-entered' | 'encounter-started' | 'encounter-resolved' | 'location-discovered' | 'dialogue' | 'choice-made' | 'transformation' | 'party-changed' | 'other';
+  kind: 'floor-entered' | 'floor-exited' | 'encounter-started' | 'encounter-resolved' | 'location-discovered' | 'dialogue' | 'choice-made' | 'transformation' | 'party-changed' | 'other';
   entities?: string[];
 }
 
 export type TimelineEvent =
   | AchievementUnlockedEvent
   | ItemAcquiredEvent
+  | ItemCraftedEvent
   | ItemConsumedEvent
   | ItemEquippedEvent
   | PermanentEntitlementGrantedEvent
-  | NarrativeEvent;
+  | NarrativeEvent
+  | TimelineEventBase;
 
 export interface TimelineSnapshot {
   sequence: number;
@@ -162,8 +195,18 @@ export interface TimelineSnapshot {
   generatedFromEventHash?: string;
 }
 
+export interface FloorSegment {
+  id: string;
+  ordinal: number;
+  title: string;
+  book?: number;
+  bookTitle?: string;
+  startSequence: number;
+  endSequence: number;
+}
+
 export interface CrawlerTimelineDocument {
-  schemaVersion: 'crawler-timeline/v1';
+  schemaVersion: 'crawler-timeline/v1' | 'crawler-timeline/v2';
   timeline: {
     id: string;
     title: string;
@@ -175,10 +218,78 @@ export interface CrawlerTimelineDocument {
     createdAt?: string;
     updatedAt?: string;
   };
+  floors?: FloorSegment[];
   sources: TimelineSource[];
   initialState: TimelineState;
   events: TimelineEvent[];
   snapshots?: TimelineSnapshot[];
+}
+
+// Authoring Schema v2 Types
+export interface CatalogItem {
+  id: string;
+  name: string;
+  category: 'equipment' | 'consumable' | 'quest-item' | 'crafting' | 'box' | 'weapon' | 'tool' | 'document' | 'vehicle' | 'miscellaneous';
+  slot?: string;
+  rarity?: ItemRarity;
+  persistent: boolean;
+  description?: string;
+  stats?: Record<string, number>;
+}
+
+export interface CatalogAchievement {
+  id: string;
+  title: string;
+  description?: string;
+  reward: RewardSpec[];
+}
+
+export interface FloorHeader {
+  id: string;
+  ordinal: number;
+  title: string;
+  book: number;
+  bookTitle?: string;
+  continuity: 'canonical' | 'adaptation' | 'alternate' | 'unknown';
+  coverage: {
+    kind: 'complete' | 'curated-critical' | 'curated' | 'partial';
+    statement: string;
+    completeness: 'complete' | 'partial' | 'seed';
+  };
+}
+
+export interface FloorEventItemRef {
+  instanceId: string;
+  itemId: string;
+  quantity: QuantityObject;
+}
+
+export interface FloorEventBase {
+  id: string;
+  order: number;
+  type: string;
+  position: TimelinePosition;
+  summary: string;
+  correlationId?: string;
+  causationId?: string;
+  evidence: TimelineEvidence[];
+  kind?: string;
+  achievementId?: string;
+  item?: FloorEventItemRef;
+  entitlement?: TimelineEntitlement;
+}
+
+export interface CrawlerFloorDocument {
+  $schema?: string;
+  authoringVersion: 'crawler-floor/v2';
+  storyId: string;
+  floor: FloorHeader;
+  sources: TimelineSource[];
+  catalog: {
+    items: CatalogItem[];
+    achievements: CatalogAchievement[];
+  };
+  events: FloorEventBase[];
 }
 
 // UI State Types
@@ -195,6 +306,7 @@ export interface BaseEvent {
 export interface CrawlerEventAdapter extends BaseEvent {
   id?: string;
   type: string;
+  position?: TimelinePosition;
   [key: string]: unknown;
 }
 
@@ -209,6 +321,7 @@ export interface InventoryItem {
   category: ItemCategory;
   slot?: string;
   quantity: number;
+  quantityObject?: QuantityObject;
   maxStack: number;
   value: number;
   stats?: Record<string, number>;
