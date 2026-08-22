@@ -1,10 +1,11 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
-import { floor6Events, floor6Snapshots } from "../app/domain/fixtures/floor6";
+import React, { useState, useMemo, useEffect } from "react";
+import { floor6Timeline } from "../app/domain/fixtures/floor6";
 import { projectState } from "../app/domain/projection";
+import { validateCrawlerTimeline } from "../app/domain/validation";
 import { getStatBreakdown } from "../app/domain/stats";
 import type { StatBreakdown } from "../app/domain/stats";
-import type { CrawlerEvent, CrawlerState, InventoryItem } from "../app/domain/types";
+import type { CrawlerEvent, CrawlerState, CrawlerTimelineDocument, InventoryItem } from "../app/domain/types";
 import { TimelineScrubber } from "../app/components/TimelineScrubber";
 import { StatInspectorModal } from "../app/components/StatInspectorModal";
 import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
@@ -12,7 +13,9 @@ import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
 type View = "crawler" | "inventory" | "skills" | "journal";
 
 export default function CrawlerApp() {
-  const [events, setEvents] = useState<CrawlerEvent[]>(floor6Events);
+  const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(floor6Timeline);
+  const events: CrawlerEvent[] = timelineDoc.events as unknown as CrawlerEvent[];
+
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
 
   const [isLive, setIsLive] = useState<boolean>(true);
@@ -26,6 +29,7 @@ export default function CrawlerApp() {
   const [provenanceItem, setProvenanceItem] = useState<InventoryItem | null>(null);
   const [showJsonModal, setShowJsonModal] = useState<boolean>(false);
   const [jsonText, setJsonText] = useState<string>("");
+  const [importError, setImportError] = useState<string | null>(null);
 
   // Floor collapse countdown timer
   useEffect(() => {
@@ -33,9 +37,11 @@ export default function CrawlerApp() {
     return () => clearInterval(timer);
   }, []);
 
+  const currentSeq = isLive ? maxSeq : selectedSeq;
+
   const projectedState: CrawlerState = useMemo(() => {
-    return projectState(events, isLive ? maxSeq : selectedSeq, floor6Snapshots);
-  }, [events, isLive, selectedSeq, maxSeq]);
+    return projectState(timelineDoc, currentSeq);
+  }, [timelineDoc, currentSeq]);
 
   const statBreakdown: StatBreakdown | null = useMemo(() => {
     if (!inspectStat) return null;
@@ -47,34 +53,38 @@ export default function CrawlerApp() {
   const s = String(time % 60).padStart(2, "0");
 
   const handleExportJson = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(events, null, 2));
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(timelineDoc, null, 2));
     const downloadAnchor = document.createElement("a");
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `crawler-timeline-seq-${projectedState.sequence}.json`);
+    downloadAnchor.setAttribute("download", `crawler-timeline-v1-seq-${projectedState.sequence}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
   };
 
   const handleImportJson = () => {
+    setImportError(null);
     try {
       const parsed = JSON.parse(jsonText);
-      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].sequence) {
-        setEvents(parsed);
+      const validation = validateCrawlerTimeline(parsed);
+      if (validation.valid) {
+        setTimelineDoc(parsed as CrawlerTimelineDocument);
         setIsLive(true);
+        setSelectedSeq((parsed as CrawlerTimelineDocument).events.slice(-1)[0]?.sequence ?? 1);
         setShowJsonModal(false);
       } else {
-        alert("Invalid event array format.");
+        setImportError(validation.errors.join("\n"));
       }
-    } catch {
-      alert("Failed to parse JSON.");
+    } catch (e: unknown) {
+      const err = e as Error;
+      setImportError(`JSON syntax error: ${err.message}`);
     }
   };
 
   return (
     <main>
       <div className="timer">
-        <span>FLOOR 6</span>
+        <span>FLOOR {timelineDoc.timeline?.story?.spoilerScope?.floor ?? 6}</span>
         <b>LEVEL COLLAPSE IN {h}:{m}:{s}</b>
         <span>● LIVE · {projectedState.broadcast.viewers.toLocaleString()} VIEWERS</span>
       </div>
@@ -86,7 +96,7 @@ export default function CrawlerApp() {
         </div>
       )}
 
-      <Nav active={view} set={setView} onOpenJsonModal={() => setShowJsonModal(true)} />
+      <Nav active={view} set={setView} onOpenJsonModal={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }} />
 
       <button className="bell" onClick={() => setNotes(!notes)}>
         ◔<b>{projectedState.recentLogs.length > 0 ? projectedState.recentLogs.length : 3}</b>
@@ -163,17 +173,40 @@ export default function CrawlerApp() {
           <div className="modal-content panel" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>
-                <p className="eyebrow">PORTABLE TIMELINE</p>
-                <h2>IMPORT / EXPORT CRAWLER EVENTS</h2>
+                <p className="eyebrow">PORTABLE CRAWLER TIMELINE (V1)</p>
+                <h2>IMPORT / EXPORT CRAWLER TIMELINE</h2>
               </div>
               <button className="close-btn" onClick={() => setShowJsonModal(false)}>✕</button>
             </div>
             <p style={{ fontSize: "11px", color: "#a4b7bf" }}>
-              Export current crawler timeline fixture as JSON or import a custom sequence stream.
+              Export current versioned crawler-timeline/v1 JSON document or import a validated timeline envelope.
             </p>
             <div className="actions" style={{ marginBottom: "12px" }}>
-              <button onClick={handleExportJson}>DOWNLOAD JSON TIMELINE</button>
+              <button onClick={handleExportJson}>DOWNLOAD TIMELINE JSON</button>
             </div>
+
+            {importError && (
+              <div
+                className="import-error-box"
+                style={{
+                  background: "#2a0808",
+                  border: "1px solid #e53935",
+                  color: "#ff8a80",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  fontSize: "10px",
+                  fontFamily: "monospace",
+                  whiteSpace: "pre-wrap",
+                  marginBottom: "12px",
+                  maxHeight: "120px",
+                  overflowY: "auto",
+                }}
+              >
+                <strong>VALIDATION FAILED:</strong>
+                {"\n" + importError}
+              </div>
+            )}
+
             <textarea
               rows={8}
               style={{
@@ -185,12 +218,15 @@ export default function CrawlerApp() {
                 padding: "8px",
                 fontFamily: "monospace",
               }}
-              placeholder="Paste JSON events array here to import..."
+              placeholder="Paste crawler-timeline/v1 document JSON here to import..."
               value={jsonText}
-              onChange={(e) => setJsonText(e.target.value)}
+              onChange={(e) => {
+                setJsonText(e.target.value);
+                setImportError(null);
+              }}
             />
             <div className="modal-footer" style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
-              <button className="outline" onClick={handleImportJson}>IMPORT JSON STREAM</button>
+              <button className="outline" onClick={handleImportJson}>IMPORT TIMELINE ENVELOPE</button>
               <button className="outline" onClick={() => setShowJsonModal(false)}>CANCEL</button>
             </div>
           </div>
@@ -237,10 +273,10 @@ function Crawler({
   const [mode, setMode] = useState<string>("OVERVIEW");
 
   const c = state.crawler;
-  const xpPct = Math.min(100, Math.round((c.xp / c.maxXp) * 100));
-  const hpPct = Math.min(100, Math.round((c.condition.currentHealth / c.condition.maxHealth) * 100));
-  const mpPct = Math.min(100, Math.round((c.condition.currentMana / c.condition.maxMana) * 100));
-  const stPct = Math.min(100, Math.round((c.condition.currentStamina / c.condition.maxStamina) * 100));
+  const xpPct = Math.min(100, Math.round((c.xp / (c.maxXp || 1)) * 100));
+  const hpPct = Math.min(100, Math.round((c.condition.currentHealth / (c.condition.maxHealth || 1)) * 100));
+  const mpPct = Math.min(100, Math.round((c.condition.currentMana / (c.condition.maxMana || 1)) * 100));
+  const stPct = Math.min(100, Math.round((c.condition.currentStamina / (c.condition.maxStamina || 1)) * 100));
 
   const equippedCount = Object.values(state.equippedSlots).filter(Boolean).length;
 
