@@ -10,6 +10,22 @@ import type {
   TimelineSource,
 } from './types.ts';
 
+function areItemsIdentical(a: CatalogItem, b: CatalogItem): boolean {
+  if (
+    a.name !== b.name ||
+    a.category !== b.category ||
+    a.slot !== b.slot ||
+    a.rarity !== b.rarity ||
+    a.persistent !== b.persistent ||
+    a.description !== b.description
+  ) {
+    return false;
+  }
+  const statsA = JSON.stringify(a.stats || {});
+  const statsB = JSON.stringify(b.stats || {});
+  return statsA === statsB;
+}
+
 export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTimelineDocument {
   if (!Array.isArray(floorDocs) || floorDocs.length === 0) {
     throw new Error('Compiler error: No floor documents provided to compile.');
@@ -17,6 +33,16 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
 
   // 1. Sort floors deterministically by floor.ordinal ascending
   const sortedDocs = [...floorDocs].sort((a, b) => (a.floor?.ordinal ?? 0) - (b.floor?.ordinal ?? 0));
+
+  // Validate storyId consistency
+  const primaryStoryId = sortedDocs[0].storyId;
+  for (const doc of sortedDocs) {
+    if (doc.storyId !== primaryStoryId) {
+      throw new Error(
+        `Compiler error: Mismatched storyId across floor files ("${primaryStoryId}" vs "${doc.storyId}").`
+      );
+    }
+  }
 
   // 2. Validate every floor file
   for (const doc of sortedDocs) {
@@ -39,13 +65,17 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
     for (const src of doc.sources) {
       if (sourcesMap.has(src.id)) {
         const existing = sourcesMap.get(src.id)!;
-        if (existing.title !== src.title || existing.url !== src.url) {
+        if (
+          existing.title !== src.title ||
+          existing.url !== src.url ||
+          existing.citationStyle !== src.citationStyle
+        ) {
           throw new Error(
             `Compiler error: Conflicting source definition for source ID "${src.id}" across floors.`
           );
         }
       } else {
-        sourcesMap.set(src.id, src);
+        sourcesMap.set(src.id, { ...src });
       }
     }
 
@@ -53,7 +83,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
     for (const item of doc.catalog.items) {
       if (itemsCatalog.has(item.id)) {
         const existing = itemsCatalog.get(item.id)!;
-        if (existing.name !== item.name) {
+        if (!areItemsIdentical(existing, item)) {
           throw new Error(
             `Compiler error: Conflicting catalog item definition for item ID "${item.id}" across floors.`
           );
@@ -95,7 +125,9 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
       const seq = globalSequence++;
       const pos = {
         floor: doc.floor.ordinal,
-        book: doc.floor.book,
+        book: rawEv.position.book ?? doc.floor.book,
+        chapter: rawEv.position.chapter,
+        scene: rawEv.position.scene,
         elapsedSeconds: rawEv.position.elapsedSeconds,
       };
 

@@ -32,6 +32,7 @@ export interface TimelineSource {
   trust: 'primary' | 'corroborating' | 'candidate';
   title: string;
   url: string;
+  citationStyle?: string;
   accessedAt?: string;
   revision?: string;
 }
@@ -102,6 +103,7 @@ export interface TimelineAchievement {
 export interface TimelineEntitlement {
   id: string;
   name: string;
+  location?: string;
   description?: string;
 }
 

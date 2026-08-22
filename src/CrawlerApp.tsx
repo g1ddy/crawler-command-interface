@@ -18,11 +18,21 @@ export default function CrawlerApp() {
 
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
 
-  const defaultFloor = timelineDoc.floors?.slice(-1)[0]?.ordinal ?? 6;
+  const latestFloor = useMemo(() => {
+    return events[events.length - 1]?.position?.floor ?? timelineDoc.floors?.slice(-1)[0]?.ordinal ?? 1;
+  }, [events, timelineDoc]);
+
+  const defaultFloor = timelineDoc.floors?.slice(-1)[0]?.ordinal ?? latestFloor;
   const [selectedFloorOrdinal, setSelectedFloorOrdinal] = useState<number | 'all'>(defaultFloor);
 
   const [isLive, setIsLive] = useState<boolean>(true);
   const [selectedSeq, setSelectedSeq] = useState<number>(maxSeq);
+
+  const handleReturnToLive = () => {
+    setIsLive(true);
+    setSelectedSeq(maxSeq);
+    setSelectedFloorOrdinal(latestFloor);
+  };
 
   const [view, setView] = useState<View>("crawler");
   const [time, setTime] = useState<number>(4 * 3600 + 17 * 60 + 32);
@@ -79,12 +89,16 @@ export default function CrawlerApp() {
   const handleImportJson = () => {
     setImportError(null);
     try {
-      const parsed = JSON.parse(jsonText);
+      const parsed = JSON.parse(jsonText) as CrawlerTimelineDocument;
       const validation = validateCrawlerTimeline(parsed);
       if (validation.valid) {
-        setTimelineDoc(parsed as CrawlerTimelineDocument);
+        setTimelineDoc(parsed);
         setIsLive(true);
-        setSelectedSeq((parsed as CrawlerTimelineDocument).events.slice(-1)[0]?.sequence ?? 1);
+        const importedEvents = parsed.events || [];
+        const lastSeq = importedEvents.slice(-1)[0]?.sequence ?? 1;
+        const importedFloor = importedEvents.slice(-1)[0]?.position?.floor ?? parsed.floors?.slice(-1)[0]?.ordinal ?? 1;
+        setSelectedSeq(lastSeq);
+        setSelectedFloorOrdinal(importedFloor);
         setShowJsonModal(false);
       } else {
         setImportError(validation.errors.join("\n"));
@@ -117,7 +131,7 @@ export default function CrawlerApp() {
       {!isLive && (
         <div className="replay-banner">
           <span>HISTORICAL VIEW · REPLAYING SEQUENCE #{projectedState.sequence} ({projectedState.occurredAt})</span>
-          <button onClick={() => setIsLive(true)}>RETURN TO LIVE ⚡</button>
+          <button onClick={handleReturnToLive}>RETURN TO LIVE ⚡</button>
         </div>
       )}
 
@@ -154,8 +168,11 @@ export default function CrawlerApp() {
           }}
           isLive={isLive}
           onToggleLive={() => {
-            if (isLive) setSelectedSeq(maxSeq);
-            setIsLive(!isLive);
+            if (!isLive) {
+              handleReturnToLive();
+            } else {
+              setIsLive(false);
+            }
           }}
         />
 

@@ -221,7 +221,8 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
   ].slice(0, 30);
 
   switch (event.type) {
-    case 'ItemAcquired': {
+    case 'ItemAcquired':
+    case 'ItemCrafted': {
       // Schema event has event.item, legacy event has item fields directly
       const itemData = ((event.item as Record<string, unknown>) || event) as Record<string, unknown>;
       const instanceId = String(itemData.instanceId || itemData.itemInstanceId);

@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import fs from "node:fs";
 import { floor6Events, floor6Snapshots, floor6Timeline } from "../app/domain/fixtures/floor6.ts";
 import { projectState, createInitialState } from "../app/domain/projection.ts";
 import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/validation.ts";
 import { getStatBreakdown } from "../app/domain/stats.ts";
-import { floor1AuthoredDoc, floor6AuthoredDoc, compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
+import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
 import { compileFloorFiles } from "../app/domain/compiler.ts";
+
+const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 
 test("initial state has default crawler stats", () => {
   const state = createInitialState();
@@ -190,47 +193,96 @@ test("floor-1.json validates successfully against crawler-floor/v2 schema", () =
 });
 
 test("compiler produces a valid deterministic runtime timeline document from floor files", () => {
-  const doc = compileFloorFiles([floor1AuthoredDoc, floor6AuthoredDoc]);
+  const doc = compileFloorFiles([floor1AuthoredDoc]);
   const validation = validateCrawlerTimeline(doc);
   assert.equal(validation.valid, true, `Compiled timeline validation errors: ${validation.errors.join('; ')}`);
   assert.equal(doc.schemaVersion, "crawler-timeline/v2");
   assert.ok(Array.isArray(doc.floors));
-  assert.equal(doc.floors.length, 2);
+  assert.equal(doc.floors.length, 1);
   assert.equal(doc.floors[0].ordinal, 1);
-  assert.equal(doc.floors[1].ordinal, 6);
+  assert.equal(doc.sources.find((s) => s.id === "src-book-1")?.citationStyle, "Chapter {chapter}");
+  // Position metadata check
+  assert.equal(doc.events[0].position.chapter, 1);
 });
 
-test("cross-floor item provenance is preserved when replaying later floor events", () => {
-  // Sequence 5 acquires Crude Goblin Dagger on Floor 1
-  // Sequence 14 is on Floor 6
-  const stateAtSeq14 = projectState(compiledTimeline, 14);
-  const dagger = stateAtSeq14.inventory.find((i) => i.itemId === "item-goblin-dagger");
-  assert.ok(dagger, "Item acquired on Floor 1 should persist in inventory on Floor 6");
-  assert.equal(dagger.source, "Floor 1: World Dungeon Entry");
+test("compiler rejects floor files with conflicting item definitions", () => {
+  const docA = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  const docB = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  docB.floor.id = "floor-2";
+  docB.floor.ordinal = 2;
+  docB.events.forEach((e) => {
+    e.position.floor = 2;
+  });
+  docB.catalog.items[0].slot = "HEAD"; // Conflicting slot with docA
+
+  assert.throws(
+    () => compileFloorFiles([docA, docB]),
+    /Conflicting catalog item definition/
+  );
 });
 
-test("achievement reward correlation chain links achievement, box, and acquired item", () => {
-  // In Floor 1:
-  // Event 3: FIRST BLOOD (ach-first-kill)
-  // Event 4: UNBOXING THE APOCALYPSE (ach-reward-box-opened) correlated to ach-first-kill
-  // Event 5: ItemAcquired Crude Goblin Dagger caused by ach-reward-box-opened and correlated to ach-first-kill
-  const events = compiledTimeline.events;
-  const itemAcquiredEvent = events.find((e) => e.id === "evt-f1-5");
-  assert.ok(itemAcquiredEvent);
-  assert.equal(itemAcquiredEvent.causationId, "ach-reward-box-opened");
-  assert.equal(itemAcquiredEvent.correlationId, "ach-first-kill");
+test("compiler rejects floor files with mismatched storyId", () => {
+  const docA = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  const docB = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  docB.floor.id = "floor-2";
+  docB.floor.ordinal = 2;
+  docB.storyId = "other-story";
+
+  assert.throws(
+    () => compileFloorFiles([docA, docB]),
+    /Mismatched storyId across floor files/
+  );
+});
+
+test("floor validator rejects achievement rewards with uncatalogued item references", () => {
+  const badDoc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  badDoc.catalog.achievements[0].reward.push({
+    kind: "item",
+    itemId: "uncatalogued-reward-item",
+  });
+
+  const validation = validateCrawlerFloor(badDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(
+    validation.errors.some((e) => e.includes("reward references itemId \"uncatalogued-reward-item\" not found"))
+  );
+});
+
+test("ItemCrafted events project crafted items into inventory", () => {
+  const doc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  doc.events.push({
+    id: "evt-f1-craft-bomb",
+    order: 20,
+    type: "ItemCrafted",
+    position: { floor: 1, book: 1, chapter: 30 },
+    summary: "Carl crafts a goblin explosive",
+    item: { instanceId: "inst-f1-crafted-bomb", itemId: "item-goblin-copper-chopper", quantity: { known: true, value: 1 } },
+    evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+  });
+
+  const compiled = compileFloorFiles([doc]);
+  const state = projectState(compiled, compiled.events.length);
+  const craftedItem = state.inventory.find((i) => i.instanceId === "inst-f1-crafted-bomb");
+  assert.ok(craftedItem, "Crafted item should be present in projected inventory");
+});
+
+test("cross-floor item provenance is preserved when replaying later events", () => {
+  const stateAtEnd = projectState(compiledTimeline, 19);
+  const shirt = stateAtEnd.inventory.find((i) => i.itemId === "item-trollskin-shirt-of-pummeling");
+  assert.ok(shirt, "Item acquired on Floor 1 should persist in inventory");
+  assert.equal(shirt.source, "First Floor");
 });
 
 test("compiler rejects floor files with missing item or achievement catalog references", () => {
   const badFloorDoc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
   badFloorDoc.events.push({
     id: "evt-f1-bad-ref",
-    order: 7,
+    order: 20,
     type: "ItemAcquired",
     position: { floor: 1 },
     summary: "Acquired uncatalogued item",
     item: { instanceId: "inst-bad", itemId: "non-existent-catalog-item-id", quantity: { known: true, value: 1 } },
-    evidence: [{ sourceId: "src-wda-log-f1", confidence: "confirmed" }],
+    evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
   });
 
   assert.throws(

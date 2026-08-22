@@ -1,159 +1,334 @@
 {
-  "$schema": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json",
   "authoringVersion": "crawler-floor/v2",
-  "storyId": "st-dungeon-crawler",
+  "storyId": "dungeon-crawler-carl",
   "floor": {
     "id": "floor-1",
     "ordinal": 1,
-    "title": "Floor 1: World Dungeon Entry",
+    "title": "First Floor",
     "book": 1,
     "bookTitle": "Dungeon Crawler Carl",
     "continuity": "canonical",
     "coverage": {
       "kind": "curated-critical",
-      "statement": "First floor entry, initial tutorial survival, and bronze prize box achievement rewards.",
+      "statement": "Tracks Carl's consequential, persistent equipment, tattoos, vehicle, and high-value achievement chains. It intentionally omits routine loot, most consumables, and unresolved quantities.",
       "completeness": "partial"
     }
   },
   "sources": [
     {
-      "id": "src-wda-log-f1",
+      "id": "src-book-1",
       "kind": "official-text",
       "trust": "primary",
-      "title": "World Dungeon Authority System Log - Floor 1",
-      "url": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json"
+      "title": "Dungeon Crawler Carl, Book 1",
+      "url": "https://www.mattdinniman.com/",
+      "citationStyle": "Chapter {chapter}"
+    },
+    {
+      "id": "src-wiki-carl-floor-1",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Floor 1",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_1"
+    },
+    {
+      "id": "src-wiki-floor-1-achievements",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Floor 1 Achievements",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_1_Achievements"
+    },
+    {
+      "id": "src-wiki-carl-inventory",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Inventory",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+    },
+    {
+      "id": "src-reddit-inventory-list",
+      "kind": "discussion",
+      "trust": "candidate",
+      "title": "Carl's inventory list discussion",
+      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1togyb2/carls_inventory_list/"
     }
   ],
   "catalog": {
     "items": [
       {
-        "id": "item-leather-jacket",
-        "name": "Heavy Leather Jacket",
+        "id": "item-trollskin-shirt-of-pummeling",
+        "name": "Enchanted Trollskin Shirt of Pummeling",
         "category": "equipment",
-        "slot": "TORSO",
-        "rarity": "common",
-        "persistent": true,
-        "description": "Sturdy leather jacket retrieved during the initial collapse.",
-        "stats": { "Armor": 25, "Constitution": 2 }
+        "slot": "UNDERSHIRT",
+        "persistent": true
       },
       {
-        "id": "item-goblin-dagger",
-        "name": "Crude Goblin Dagger",
-        "category": "weapon",
-        "slot": "SPECIAL",
-        "rarity": "common",
-        "persistent": true,
-        "description": "Rough iron blade taken from a Floor 1 scout.",
-        "stats": { "Dexterity": 2 }
+        "id": "item-nightgaunt-cloak-of-stoutness",
+        "name": "Enchanted Nightgaunt Cloak of Stoutness",
+        "category": "equipment",
+        "slot": "NECK",
+        "persistent": true
       },
       {
-        "id": "item-health-potion-f1",
-        "name": "Minor Health Potion",
-        "category": "consumable",
-        "rarity": "common",
-        "persistent": false,
-        "description": "Restores minor health points."
+        "id": "item-toe-ring-of-splatter-skunk",
+        "name": "Enchanted Toe Ring of the Splatter Skunk",
+        "category": "equipment",
+        "slot": "FEET",
+        "persistent": true
+      },
+      {
+        "id": "item-silver-ring-plus-1-con",
+        "name": "Silver Ring of +1 CON",
+        "category": "equipment",
+        "slot": "RING",
+        "persistent": true,
+        "stats": { "Constitution": 1 }
+      },
+      {
+        "id": "item-spiked-kneepads-shade-gnoll",
+        "name": "Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces",
+        "category": "equipment",
+        "slot": "KNEES",
+        "persistent": true
+      },
+      {
+        "id": "item-goblin-copper-chopper",
+        "name": "Goblin Copper Chopper",
+        "category": "vehicle",
+        "persistent": true
+      },
+      {
+        "id": "item-silver-ring-plus-2-con",
+        "name": "Silver Ring of +2 CON",
+        "category": "equipment",
+        "slot": "RING",
+        "persistent": true,
+        "stats": { "Constitution": 2 }
+      },
+      {
+        "id": "item-war-gauntlet-exalted-grull",
+        "name": "Enchanted War Gauntlet of the Exalted Grull",
+        "category": "equipment",
+        "slot": "WRISTS",
+        "persistent": true
       }
     ],
     "achievements": [
       {
-        "id": "ach-first-kill",
-        "title": "FIRST BLOOD",
-        "description": "Slay your first enemy in the World Dungeon.",
-        "reward": [
-          {
-            "kind": "box",
-            "boxType": "Bronze Prize Box",
-            "rarity": "bronze",
-            "description": "A standard WDA reward box containing starter gear."
-          },
-          {
-            "kind": "xp",
-            "amount": 100,
-            "description": "100 Bonus XP"
-          }
-        ]
+        "id": "achievement-empty-pockets",
+        "title": "Empty Pockets Achievement",
+        "reward": [{ "kind": "box", "boxType": "adventurer", "rarity": "bronze" }]
       },
       {
-        "id": "ach-reward-box-opened",
-        "title": "UNBOXING THE APOCALYPSE",
-        "description": "Open a reward box awarded by the Dungeon Authority.",
-        "reward": [
-          {
-            "kind": "item",
-            "itemId": "item-goblin-dagger",
-            "amount": 1,
-            "description": "Yielded Crude Goblin Dagger from Bronze Prize Box"
-          }
-        ]
+        "id": "achievement-why-no-pants",
+        "title": "Why Aren't You Wearing Pants? Achievement",
+        "reward": [{ "kind": "box", "boxType": "apparel", "rarity": "gold" }]
+      },
+      {
+        "id": "achievement-unarmed-combat",
+        "title": "Unarmed Combat Achievement",
+        "reward": [{ "kind": "box", "boxType": "weapon", "rarity": "bronze" }]
+      },
+      {
+        "id": "achievement-oooh-magic",
+        "title": "Oooh, Magic Achievement",
+        "reward": [{ "kind": "box", "boxType": "adventurer", "rarity": "bronze" }]
+      },
+      {
+        "id": "achievement-boom",
+        "title": "Boom! Achievement",
+        "reward": [{ "kind": "box", "boxType": "goblin", "rarity": "silver" }]
+      },
+      {
+        "id": "achievement-podophilia",
+        "title": "Podophilia! Achievement",
+        "reward": [{ "kind": "box", "boxType": "shoe", "rarity": "gold" }]
+      },
+      {
+        "id": "achievement-battlefield-construction",
+        "title": "Battlefield Construction Achievement",
+        "reward": [{ "kind": "box", "boxType": "mechanic", "rarity": "silver" }]
       }
     ]
   },
   "events": [
     {
-      "id": "evt-f1-1",
+      "id": "evt-f1-001-entered",
       "order": 1,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
-      "position": { "floor": 1, "elapsedSeconds": 0 },
-      "summary": "Entered Floor 1: World Dungeon Entry",
-      "evidence": [{ "sourceId": "src-wda-log-f1", "confidence": "confirmed" }]
+      "position": { "floor": 1, "book": 1, "chapter": 1 },
+      "summary": "Carl enters the First Floor with Donut.",
+      "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 1 }, "confidence": "confirmed" }]
     },
     {
-      "id": "evt-f1-2",
+      "id": "evt-f1-002-empty-pockets",
       "order": 2,
-      "type": "ItemAcquired",
-      "position": { "floor": 1, "elapsedSeconds": 120 },
-      "summary": "Retrieved Heavy Leather Jacket",
-      "item": {
-        "instanceId": "inst-leather-jacket",
-        "itemId": "item-leather-jacket",
-        "quantity": { "known": true, "value": 1 }
-      },
-      "evidence": [{ "sourceId": "src-wda-log-f1", "confidence": "confirmed" }]
+      "type": "AchievementUnlocked",
+      "position": { "floor": 1, "book": 1, "chapter": 2 },
+      "achievementId": "achievement-empty-pockets",
+      "summary": "Carl receives the Empty Pockets Achievement.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Entering the Dungeon" }, "confidence": "corroborated" }]
     },
     {
-      "id": "evt-f1-3",
+      "id": "evt-f1-003-no-pants",
       "order": 3,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "elapsedSeconds": 300 },
-      "summary": "Unlocked Achievement: FIRST BLOOD",
-      "achievementId": "ach-first-kill",
-      "evidence": [{ "sourceId": "src-wda-log-f1", "confidence": "confirmed" }]
+      "position": { "floor": 1, "book": 1, "chapter": 2 },
+      "achievementId": "achievement-why-no-pants",
+      "summary": "Carl receives the Why Aren't You Wearing Pants? Achievement.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Entering the Dungeon" }, "confidence": "corroborated" }]
     },
     {
-      "id": "evt-f1-4",
+      "id": "evt-f1-004-unarmed-combat",
       "order": 4,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "elapsedSeconds": 310 },
-      "summary": "Opened Bronze Prize Box yielding Crude Goblin Dagger",
-      "achievementId": "ach-reward-box-opened",
-      "correlationId": "ach-first-kill",
-      "evidence": [{ "sourceId": "src-wda-log-f1", "confidence": "confirmed" }]
+      "position": { "floor": 1, "book": 1, "chapter": 2 },
+      "achievementId": "achievement-unarmed-combat",
+      "summary": "Carl receives the Unarmed Combat Achievement.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Entering the Dungeon" }, "confidence": "corroborated" }]
     },
     {
-      "id": "evt-f1-5",
+      "id": "evt-f1-005-goblin-pass",
       "order": 5,
-      "type": "ItemAcquired",
-      "position": { "floor": 1, "elapsedSeconds": 312 },
-      "summary": "Looted Crude Goblin Dagger from Bronze Prize Box",
-      "item": {
-        "instanceId": "inst-goblin-dagger-1",
-        "itemId": "item-goblin-dagger",
-        "quantity": { "known": true, "value": 1 }
+      "type": "PermanentEntitlementGranted",
+      "position": { "floor": 1, "book": 1, "chapter": 5 },
+      "entitlement": {
+        "id": "entitlement-goblin-pass-tattoo",
+        "name": "Goblin Pass Tattoo",
+        "location": "left inner forearm"
       },
-      "causationId": "ach-reward-box-opened",
-      "correlationId": "ach-first-kill",
-      "evidence": [{ "sourceId": "src-wda-log-f1", "confidence": "confirmed" }]
+      "summary": "Carl receives the Goblin Pass Tattoo.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
     },
     {
-      "id": "evt-f1-6",
+      "id": "evt-f1-006-trollskin-shirt",
       "order": 6,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 6 },
+      "item": { "instanceId": "inst-f1-trollskin-shirt", "itemId": "item-trollskin-shirt-of-pummeling", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires the Enchanted Trollskin Shirt of Pummeling.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-007-nightgaunt-cloak",
+      "order": 7,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 6 },
+      "item": { "instanceId": "inst-f1-nightgaunt-cloak", "itemId": "item-nightgaunt-cloak-of-stoutness", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires the Enchanted Nightgaunt Cloak of Stoutness.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-008-toe-ring",
+      "order": 8,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 6 },
+      "item": { "instanceId": "inst-f1-toe-ring", "itemId": "item-toe-ring-of-splatter-skunk", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires the Enchanted Toe Ring of the Splatter Skunk.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-009-first-magic-gear",
+      "order": 9,
+      "type": "AchievementUnlocked",
+      "position": { "floor": 1, "book": 1, "chapter": 6 },
+      "achievementId": "achievement-oooh-magic",
+      "summary": "Carl earns Oooh, Magic after first equipping magical gear.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Dungeon Crawling" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-010-silver-ring-plus-1-con",
+      "order": 10,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 9 },
+      "item": { "instanceId": "inst-f1-silver-ring-plus-1-con", "itemId": "item-silver-ring-plus-1-con", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires a Silver Ring of +1 CON.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-011-shade-gnoll-kneepads",
+      "order": 11,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 12 },
+      "item": { "instanceId": "inst-f1-shade-gnoll-kneepads", "itemId": "item-spiked-kneepads-shade-gnoll", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires the Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces after the Hoarder battle.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-012-goblin-copper-chopper",
+      "order": 12,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 17 },
+      "item": { "instanceId": "inst-f1-goblin-copper-chopper", "itemId": "item-goblin-copper-chopper", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires the Goblin Copper Chopper.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-013-desperado-pass",
+      "order": 13,
+      "type": "PermanentEntitlementGranted",
+      "position": { "floor": 1, "book": 1, "chapter": 19 },
+      "entitlement": {
+        "id": "entitlement-desperado-pass-tattoo",
+        "name": "Desperado Pass Tattoo",
+        "location": "neck"
+      },
+      "summary": "Carl receives the Desperado Pass Tattoo.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-014-silver-ring-plus-2-con",
+      "order": 14,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 19 },
+      "item": { "instanceId": "inst-f1-silver-ring-plus-2-con", "itemId": "item-silver-ring-plus-2-con", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires a Silver Ring of +2 CON.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-015-boom",
+      "order": 15,
+      "type": "AchievementUnlocked",
+      "position": { "floor": 1, "book": 1, "chapter": 19 },
+      "achievementId": "achievement-boom",
+      "summary": "Carl earns Boom! for his first explosion.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Combat" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-016-war-gauntlet",
+      "order": 16,
+      "type": "ItemAcquired",
+      "position": { "floor": 1, "book": 1, "chapter": 25 },
+      "item": { "instanceId": "inst-f1-war-gauntlet", "itemId": "item-war-gauntlet-exalted-grull", "quantity": { "known": true, "value": 1 } },
+      "summary": "Carl acquires the Enchanted War Gauntlet of the Exalted Grull.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-017-podophilia",
+      "order": 17,
+      "type": "AchievementUnlocked",
+      "position": { "floor": 1, "book": 1, "chapter": 25 },
+      "achievementId": "achievement-podophilia",
+      "summary": "Carl earns Podophilia! for crushing an opponent with his bare feet.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Combat" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-018-battlefield-construction",
+      "order": 18,
+      "type": "AchievementUnlocked",
+      "position": { "floor": 1, "book": 1, "chapter": 30 },
+      "achievementId": "achievement-battlefield-construction",
+      "summary": "Carl earns Battlefield Construction for deploying a crafted structure in battle.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Combat" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f1-019-exit",
+      "order": 19,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
-      "position": { "floor": 1, "elapsedSeconds": 3600 },
-      "summary": "Descended stairwell from Floor 1",
-      "evidence": [{ "sourceId": "src-wda-log-f1", "confidence": "confirmed" }]
+      "position": { "floor": 1, "book": 1 },
+      "summary": "Carl reaches the stairs and completes the First Floor.",
+      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Dungeon Crawling" }, "confidence": "corroborated" }]
     }
   ]
 }

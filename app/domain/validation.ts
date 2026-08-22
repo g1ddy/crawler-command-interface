@@ -67,7 +67,9 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
       if (Array.isArray(ach.reward)) {
         for (const r of ach.reward) {
           if (r.kind === 'item' && r.itemId && !catalogItemIds.has(r.itemId)) {
-            // Note: will also check item exists if added before or after
+            errors.push(
+              `Domain error: Achievement "${ach.id}" reward references itemId "${r.itemId}" not found in floor catalog.`
+            );
           }
         }
       }
