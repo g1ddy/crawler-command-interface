@@ -195,7 +195,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
 
   const category: EventCategory =
     (event.category as EventCategory) ||
-    (event.type === 'ItemAcquired'
+    (event.type === 'ItemAcquired' || event.type === 'ItemCrafted'
       ? 'loot'
       : event.type === 'ItemConsumed'
       ? 'combat'

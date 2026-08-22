@@ -217,7 +217,11 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
       }
 
       // Item history & reference checks
-      if (event.type === 'ItemAcquired' && 'item' in event && event.item?.instanceId) {
+      if (
+        (event.type === 'ItemAcquired' || event.type === 'ItemCrafted') &&
+        'item' in event &&
+        event.item?.instanceId
+      ) {
         knownItemInstanceIds.add(event.item.instanceId);
       } else if (
         (event.type === 'ItemConsumed' || event.type === 'ItemEquipped' || event.type === 'ItemUnequipped' || event.type === 'ItemDiscarded' || event.type === 'ItemQuantityChanged') &&

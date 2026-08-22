@@ -178,14 +178,14 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
         compiledEvents.push({
           id: rawEv.id,
           sequence: seq,
-          type: rawEv.type as 'ItemAcquired' | 'ItemCrafted',
+          type: rawEv.type,
           position: pos,
           summary: rawEv.summary,
           correlationId: rawEv.correlationId,
           causationId: rawEv.causationId,
           evidence: rawEv.evidence,
           item: itemObj,
-        } as TimelineEvent);
+        });
       } else if (rawEv.type === 'PermanentEntitlementGranted') {
         compiledEvents.push({
           id: rawEv.id,
