@@ -1,4 +1,5 @@
 {
+  "$schema": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json",
   "authoringVersion": "crawler-floor/v2",
   "storyId": "dungeon-crawler-carl",
   "floor": {
