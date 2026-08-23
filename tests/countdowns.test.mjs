@@ -19,7 +19,7 @@ test("formatCountdownDuration formats exact and estimated durations properly", (
   assert.equal(formatCountdownDuration(0, true), "~0s left");
 });
 
-test("Floor 1's two authored collapse-clock references are visible at their exact sequences", () => {
+test("Floor 1's authored collapse-clock references are visible at their exact sequences", () => {
   // Exact reference 1 at sequence 4
   const stateSeq4 = projectCountdownState(compiledDoc, 4, 1);
   assert.ok(stateSeq4);
@@ -30,7 +30,14 @@ test("Floor 1's two authored collapse-clock references are visible at their exac
   assert.equal(stateSeq4.referencePoints.length, 1);
   assert.equal(stateSeq4.referencePoints[0].sequence, 4);
 
-  // Exact reference 2 at sequence 15
+  // Exact reference 2 at sequence 11
+  const stateSeq11 = projectCountdownState(compiledDoc, 11, 1);
+  assert.ok(stateSeq11);
+  assert.equal(stateSeq11.status, "stated");
+  assert.equal(stateSeq11.remainingSeconds, 266400);
+  assert.equal(stateSeq11.referencePoints[0].sequence, 11);
+
+  // Exact reference at sequence 15
   const stateSeq15 = projectCountdownState(compiledDoc, 15, 1);
   assert.ok(stateSeq15);
   assert.equal(stateSeq15.status, "stated");
@@ -46,17 +53,39 @@ test("timeline shows an estimate only between stated references and not before o
   assert.equal(projectCountdownState(compiledDoc, 1, 1), null);
   assert.equal(projectCountdownState(compiledDoc, 3, 1), null);
 
-  // Between references (seq 10)
+  // Between references (seq 10, bounded by the newly authored seq 11 reference)
   const stateSeq10 = projectCountdownState(compiledDoc, 10, 1);
   assert.ok(stateSeq10);
   assert.equal(stateSeq10.status, "estimated");
   assert.equal(stateSeq10.referencePoints.length, 2);
   assert.equal(stateSeq10.referencePoints[0].sequence, 4);
-  assert.equal(stateSeq10.referencePoints[1].sequence, 15);
+  assert.equal(stateSeq10.referencePoints[1].sequence, 11);
 
-  // After last reference (seq 16, 17, 18, 19)
-  assert.equal(projectCountdownState(compiledDoc, 16, 1), null);
+  // Sequence 16 is now an exact reference; only sequences after it lack a supported estimate.
+  const stateSeq16 = projectCountdownState(compiledDoc, 16, 1);
+  assert.ok(stateSeq16);
+  assert.equal(stateSeq16.status, "stated");
+  assert.equal(stateSeq16.remainingSeconds, 169200);
   assert.equal(projectCountdownState(compiledDoc, 19, 1), null);
+});
+
+test("Floor 2's authored collapse-clock references are monotonic", () => {
+  const stateSeq20 = projectCountdownState(compiledDoc, 20, 2);
+  assert.ok(stateSeq20);
+  assert.equal(stateSeq20.status, "stated");
+  assert.equal(stateSeq20.remainingSeconds, 536400);
+
+  const stateSeq23 = projectCountdownState(compiledDoc, 23, 2);
+  assert.ok(stateSeq23);
+  assert.equal(stateSeq23.status, "stated");
+  assert.equal(stateSeq23.remainingSeconds, 360000);
+
+  const estimatedState = projectCountdownState(compiledDoc, 22, 2);
+  assert.ok(estimatedState);
+  assert.equal(estimatedState.status, "estimated");
+  assert.ok(estimatedState.remainingSeconds < stateSeq20.remainingSeconds);
+  assert.ok(estimatedState.remainingSeconds > stateSeq23.remainingSeconds);
+  assert.equal(projectCountdownState(compiledDoc, 28, 2), null);
 });
 
 test("prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence", () => {
