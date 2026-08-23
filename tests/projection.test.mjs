@@ -299,6 +299,17 @@ test("the checked-in runtime fixture includes Floor 2 and preserves Floor 1 inve
   assert.ok(endOfFloor2.inventory.some((item) => item.itemId === "item-enchanted-bigboi-boxers"));
 });
 
+test("projection preserves unknown quantity state for Floor 2 proximity trigger", () => {
+  const floor2 = compiledTimeline.floors?.find((floor) => floor.ordinal === 2);
+  assert.ok(floor2);
+  const stateAtFloor2End = projectState(compiledTimeline, floor2.endSequence);
+  const triggerItem = stateAtFloor2End.inventory.find((item) => item.instanceId === "inst-f2-proximity-trigger");
+  assert.ok(triggerItem, "Proximity Trigger should be in inventory at end of Floor 2");
+  assert.equal(triggerItem.quantity, 0, "Numeric quantity fallback without a minimum should be 0, not 1");
+  assert.ok(triggerItem.quantityObject, "quantityObject should be preserved on inventory item");
+  assert.equal(triggerItem.quantityObject.known, false, "quantityObject.known should remain false");
+});
+
 test("compiler rejects floor files with missing item or achievement catalog references", () => {
   const badFloorDoc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
   badFloorDoc.events.push({
