@@ -112,12 +112,6 @@
           "remainingSeconds": 360000,
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining.",
           "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Levels & Stats" }, "confidence": "corroborated" }]
-        },
-        {
-          "anchorOrder": 9,
-          "remainingSeconds": 410400,
-          "note": "A documented audience snapshot at 4 days and 18 hours remaining.",
-          "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Ratings" }, "confidence": "corroborated" }]
         }
       ]
     }
