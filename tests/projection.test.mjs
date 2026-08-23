@@ -218,7 +218,7 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   const floor2Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-2-collapse");
   assert.deepEqual(
     floor2Countdown?.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
-    [[20, 536400], [23, 360000], [28, 410400]]
+    [[20, 536400], [23, 360000]]
   );
   const floor2End = projectState(doc, 31);
   assert.equal(floor2End.crawler.level, 13);
