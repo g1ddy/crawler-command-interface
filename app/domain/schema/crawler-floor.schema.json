@@ -244,6 +244,38 @@
           "properties": {
             "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "PermanentEntitlementGranted" }, "entitlement": { "type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": { "id": { "$ref": "#/$defs/id" }, "name": { "type": "string", "minLength": 1 }, "location": { "type": "string", "minLength": 1 }, "description": { "type": "string", "maxLength": 4000 } } }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "itemInstanceId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "enum": ["ItemEquipped", "ItemUnequipped"] }, "itemInstanceId": { "$ref": "#/$defs/id" }, "slot": { "type": "string", "minLength": 1 }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "level", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "LevelChanged" }, "level": { "$ref": "#/$defs/positiveInteger" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "skillId", "name", "rank", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "SkillGranted" }, "skillId": { "$ref": "#/$defs/id" }, "name": { "type": "string", "minLength": 1 }, "rank": { "type": "string", "minLength": 1 }, "icon": { "type": "string" }, "description": { "type": "string" }, "cooldown": { "type": "string" }, "category": { "enum": ["combat", "utility", "passive"] }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "viewers", "followers", "fameRank", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "BroadcastUpdated" }, "viewers": { "$ref": "#/$defs/nonNegativeInteger" }, "viewerDelta": { "type": "string" }, "followers": { "$ref": "#/$defs/nonNegativeInteger" }, "fameRank": { "type": "string", "minLength": 1 }, "sponsorInterest": { "type": "boolean" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
         }
       ]
     }

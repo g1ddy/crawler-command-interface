@@ -201,6 +201,48 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           evidence: rawEv.evidence,
           entitlement: rawEv.entitlement!,
         });
+      } else if (
+        rawEv.type === 'ItemEquipped' ||
+        rawEv.type === 'ItemUnequipped' ||
+        rawEv.type === 'LevelChanged' ||
+        rawEv.type === 'SkillGranted' ||
+        rawEv.type === 'EffectApplied' ||
+        rawEv.type === 'BroadcastUpdated'
+      ) {
+        const statePayload = Object.fromEntries(
+          Object.entries({
+            itemInstanceId: rawEv.itemInstanceId,
+            slot: rawEv.slot,
+            level: rawEv.level,
+            skillId: rawEv.skillId,
+            name: rawEv.name,
+            icon: rawEv.icon,
+            rank: rawEv.rank,
+            description: rawEv.description,
+            cooldown: rawEv.cooldown,
+            category: rawEv.category,
+            effectId: rawEv.effectId,
+            effectType: rawEv.effectType,
+            durationSeconds: rawEv.durationSeconds,
+            statModifiers: rawEv.statModifiers,
+            viewers: rawEv.viewers,
+            viewerDelta: rawEv.viewerDelta,
+            followers: rawEv.followers,
+            fameRank: rawEv.fameRank,
+            sponsorInterest: rawEv.sponsorInterest,
+          }).filter(([, value]) => value !== undefined)
+        );
+        compiledEvents.push({
+          id: rawEv.id,
+          sequence: seq,
+          type: rawEv.type,
+          position: pos,
+          summary: rawEv.summary,
+          correlationId: rawEv.correlationId,
+          causationId: rawEv.causationId,
+          evidence: rawEv.evidence,
+          ...statePayload,
+        });
       } else {
         compiledEvents.push({
           id: rawEv.id,

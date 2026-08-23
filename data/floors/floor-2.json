@@ -11,8 +11,8 @@
     "continuity": "canonical",
     "coverage": {
       "kind": "curated-critical",
-      "statement": "Tracks consequential, persistent Carl inventory and entitlement changes plus party milestones needed to understand the transition to Floor 3. It intentionally omits routine drops, temporary combat consumables, and unverified reward contents.",
-      "completeness": "seed"
+      "statement": "Tracks consequential, persistent Carl inventory, milestone progression, broadcast snapshots, and party changes needed to understand the transition to Floor 3. It intentionally omits routine drops, temporary combat consumables, and unresolved quantities.",
+      "completeness": "partial"
     }
   },
   "sources": [
@@ -60,7 +60,8 @@
         "name": "Enchanted Pedicure Kit of the Sylph",
         "category": "tool",
         "persistent": true,
-        "description": "A limited-use kit that temporarily improves bare-foot attacks and grants trap protection."
+        "description": "A limited-use kit that adds 15% bare-foot attack damage, makes Carl's feet unbreakable, and warns of foot-triggered traps five seconds before activation.",
+        "stats": { "Barefoot Attack Damage Percent": 15 }
       },
       {
         "id": "item-enchanted-bigboi-boxers",
@@ -68,7 +69,8 @@
         "category": "equipment",
         "slot": "LEGS",
         "persistent": true,
-        "description": "Enchanted boxers that increase Constitution and can cast Protective Shell."
+        "description": "Enchanted boxers that add 2 Constitution and grant the Protective Shell spell.",
+        "stats": { "Constitution": 2 }
       },
       {
         "id": "item-proximity-trigger",
@@ -86,13 +88,40 @@
         "reward": [{ "kind": "other", "description": "The Ghost of Steve Irwin smiles down upon you." }]
       },
       {
-        "id": "achievement-jug-o-boom",
-        "title": "Carl's Jug O' Boom",
-        "description": "Carl's improvised incendiary is recognized as an invention.",
+        "id": "achievement-dungeonpreneur",
+        "title": "Dungeonpreneur",
+        "description": "Carl's improvised incendiary, Carl's Jug O' Boom, is recognized as a stackable dungeon invention.",
         "reward": [{ "kind": "entitlement", "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers." }]
       }
     ]
   },
+  "countdowns": [
+    {
+      "id": "countdown-floor-2-collapse",
+      "title": "Second Floor Collapse",
+      "target": "floor-collapse",
+      "references": [
+        {
+          "anchorOrder": 1,
+          "remainingSeconds": 536400,
+          "note": "Carl's documented Second Floor baseline: 6 days and 5 hours remaining.",
+          "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Levels & Stats" }, "confidence": "corroborated" }]
+        },
+        {
+          "anchorOrder": 4,
+          "remainingSeconds": 360000,
+          "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining.",
+          "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Levels & Stats" }, "confidence": "corroborated" }]
+        },
+        {
+          "anchorOrder": 10,
+          "remainingSeconds": 165600,
+          "note": "A documented audience snapshot at 4 days and 18 hours remaining.",
+          "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Ratings" }, "confidence": "corroborated" }]
+        }
+      ]
+    }
+  ],
   "events": [
     {
       "id": "evt-f2-001-entered",
@@ -144,8 +173,8 @@
       "order": 6,
       "type": "AchievementUnlocked",
       "position": { "floor": 2, "book": 1, "chapter": 33 },
-      "achievementId": "achievement-jug-o-boom",
-      "summary": "Carl's moonshine incendiary is named Carl's Jug O' Boom and earns its royalty entitlement.",
+      "achievementId": "achievement-dungeonpreneur",
+      "summary": "Carl earns Dungeonpreneur for inventing Carl's Jug O' Boom, which grants a royalty entitlement.",
       "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 33 }, "confidence": "confirmed" }]
     },
     {
@@ -176,11 +205,31 @@
       "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 40 }, "confidence": "confirmed" }]
     },
     {
-      "id": "evt-f2-010-exit",
+      "id": "evt-f2-010-broadcast-snapshot",
       "order": 10,
+      "type": "BroadcastUpdated",
+      "position": { "floor": 2, "book": 1, "chapter": 39 },
+      "viewers": 212000000000,
+      "followers": 4400000000,
+      "fameRank": "#-",
+      "summary": "The Royal Court reaches 212 billion views and 4.4 billion followers.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Ratings" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f2-011-level-13",
+      "order": 11,
+      "type": "LevelChanged",
+      "level": 13,
+      "position": { "floor": 2, "book": 1, "chapter": 47 },
+      "summary": "Carl reaches Level 13 before leaving the Second Floor.",
+      "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Levels & Stats" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f2-012-exit",
+      "order": 12,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
-      "position": { "floor": 2, "book": 1 },
+      "position": { "floor": 2, "book": 1, "chapter": 47 },
       "summary": "Carl, Donut, and Mongo descend to the Third Floor.",
       "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Floor Exit" }, "confidence": "corroborated" }]
     }

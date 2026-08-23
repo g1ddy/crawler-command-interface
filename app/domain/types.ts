@@ -181,6 +181,11 @@ export interface NarrativeEvent extends TimelineEventBase {
   entities?: string[];
 }
 
+export interface LevelChangedEvent extends TimelineEventBase {
+  type: 'LevelChanged';
+  level: number;
+}
+
 export type TimelineEvent =
   | AchievementUnlockedEvent
   | ItemAcquiredEvent
@@ -189,6 +194,7 @@ export type TimelineEvent =
   | ItemEquippedEvent
   | PermanentEntitlementGrantedEvent
   | NarrativeEvent
+  | LevelChangedEvent
   | TimelineEventBase;
 
 export interface TimelineSnapshot {
@@ -310,6 +316,25 @@ export interface FloorEventBase {
   achievementId?: string;
   item?: FloorEventItemRef;
   entitlement?: TimelineEntitlement;
+  itemInstanceId?: string;
+  slot?: string;
+  level?: number;
+  skillId?: string;
+  name?: string;
+  icon?: string;
+  rank?: string;
+  description?: string;
+  cooldown?: string;
+  category?: 'combat' | 'utility' | 'passive';
+  effectId?: string;
+  effectType?: 'good' | 'bad';
+  durationSeconds?: number;
+  statModifiers?: Record<string, number>;
+  viewers?: number;
+  viewerDelta?: string;
+  followers?: number;
+  fameRank?: string;
+  sponsorInterest?: boolean;
 }
 
 export interface FloorCountdownReference {

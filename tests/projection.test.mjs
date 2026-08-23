@@ -213,8 +213,16 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   assert.ok(floor1Countdown);
   assert.deepEqual(
     floor1Countdown.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
-    [[4, 417600], [15, 169200]]
+    [[4, 417600], [15, 169200], [11, 266400], [13, 237600], [16, 169200]]
   );
+  const floor2Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-2-collapse");
+  assert.deepEqual(
+    floor2Countdown?.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
+    [[20, 536400], [23, 360000], [29, 165600]]
+  );
+  const floor2End = projectState(doc, 31);
+  assert.equal(floor2End.crawler.level, 13);
+  assert.equal(floor2End.broadcast.viewers, 212000000000);
   assert.equal(doc.sources.find((s) => s.id === "src-book-1")?.citationStyle, "Chapter {chapter}");
   // Position metadata check
   assert.equal(doc.events[0].position.chapter, 1);
