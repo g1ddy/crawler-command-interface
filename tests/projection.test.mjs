@@ -728,3 +728,38 @@ test("QuestUpdated event updates quest status and filtering excludes non-active 
   assert.equal(failedQuests.length, 1);
   assert.equal(failedQuests[0].questId, "q-defend");
 });
+
+test("createInitialState normalizes quests without a status to active", () => {
+  const customState = {
+    crawler: {
+      name: "CARL G.",
+      level: 42,
+      attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 },
+      condition: { currentHealth: 3100, maxHealth: 4200, currentMana: 800, maxMana: 1360, currentStamina: 200, maxStamina: 280 },
+    },
+    quests: [
+      { questId: "q-nostatus", title: "Quest Without Status", urgency: "STANDARD", goals: ["Do something"], rewards: "100 XP" },
+    ],
+  };
+
+  const state = createInitialState(customState);
+  assert.equal(state.quests.length, 1);
+  assert.equal(state.quests[0].status, "active");
+});
+
+test("filtering preserves quests without a status as active", () => {
+  const quests = [
+    { questId: "q-1", title: "Active Quest", status: "active" },
+    { questId: "q-2", title: "Statusless Quest" },
+    { questId: "q-3", title: "Completed Quest", status: "completed" },
+  ];
+
+  const activeQuests = quests.filter((q) => !q.status || q.status === "active");
+  const completedQuests = quests.filter((q) => q.status === "completed");
+  const failedQuests = quests.filter((q) => q.status === "failed");
+
+  assert.equal(activeQuests.length, 2);
+  assert.deepEqual(activeQuests.map((q) => q.questId), ["q-1", "q-2"]);
+  assert.equal(completedQuests.length, 1);
+  assert.equal(failedQuests.length, 0);
+});

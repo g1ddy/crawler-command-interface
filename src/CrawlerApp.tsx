@@ -1452,7 +1452,7 @@ function Journal({
 }) {
   const [tab, setTab] = useState<string>("ACTIVE");
 
-  const activeQuests = useMemo(() => state.quests.filter((q) => q.status === "active"), [state.quests]);
+  const activeQuests = useMemo(() => state.quests.filter((q) => !q.status || q.status === "active"), [state.quests]);
   const completedQuests = useMemo(() => state.quests.filter((q) => q.status === "completed"), [state.quests]);
   const failedQuests = useMemo(() => state.quests.filter((q) => q.status === "failed"), [state.quests]);
 
