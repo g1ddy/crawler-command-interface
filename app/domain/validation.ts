@@ -164,7 +164,7 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
       const hasPhaseBreak = floorDoc.events.some(
         (event) =>
           event.order > previous.anchorOrder &&
-          event.order < current.anchorOrder &&
+          event.order <= current.anchorOrder &&
           isCountdownPhaseBreakEvent(event)
       );
       if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
@@ -354,7 +354,7 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
       const hasPhaseBreak = timelineDoc.events.some(
         (event) =>
           event.sequence > previous.sequence &&
-          event.sequence < current.sequence &&
+          event.sequence <= current.sequence &&
           isCountdownPhaseBreakEvent(event)
       );
       if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {

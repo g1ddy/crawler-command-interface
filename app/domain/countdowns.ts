@@ -148,7 +148,7 @@ export function projectCountdownState(
   }
 
   // Check if events between r1 and r2 contain countdown pause/resume/reset/phase change events
-  const intermediateEvents = events.filter((e) => e.sequence > r1!.sequence && e.sequence < r2!.sequence);
+  const intermediateEvents = events.filter((e) => e.sequence > r1!.sequence && e.sequence <= r2!.sequence);
   const hasPhaseBreak = intermediateEvents.some(isCountdownPhaseBreakEvent);
 
   if (hasPhaseBreak) {
