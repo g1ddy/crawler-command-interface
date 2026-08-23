@@ -71,6 +71,10 @@ export default function CrawlerApp() {
     return projectState(timelineDoc, currentSeq);
   }, [timelineDoc, currentSeq]);
 
+  const liveState: CrawlerState = useMemo(() => {
+    return projectState(timelineDoc, maxSeq);
+  }, [timelineDoc, maxSeq]);
+
   const statBreakdown: StatBreakdown | null = useMemo(() => {
     if (!inspectStat) return null;
     return getStatBreakdown(projectedState, inspectStat);
@@ -303,6 +307,7 @@ export default function CrawlerApp() {
         ) : view === "inventory" ? (
           <Inventory
             state={projectedState}
+            liveState={liveState}
             events={events}
             provenanceItem={provenanceItem}
             setProvenanceItem={setProvenanceItem}
@@ -640,6 +645,7 @@ function Meter({ name, value, pct, c }: { name: string; value: string; pct: numb
 
 function Inventory({
   state,
+  liveState,
   events,
   provenanceItem,
   setProvenanceItem,
@@ -651,6 +657,7 @@ function Inventory({
   onEmitEvent,
 }: {
   state: CrawlerState;
+  liveState: CrawlerState;
   events: CrawlerEvent[];
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
@@ -712,8 +719,8 @@ function Inventory({
     return filteredItems[0] || items[0];
   }, [filteredItems, selectedInstanceId, items]);
   const selectedItemRequirements = useMemo(
-    () => checkItemRequirements(state.crawler, selectedItem?.requirements),
-    [state.crawler, selectedItem]
+    () => checkItemRequirements(liveState.crawler, selectedItem?.requirements),
+    [liveState.crawler, selectedItem]
   );
 
   const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING"];
@@ -948,6 +955,7 @@ function Inventory({
         ) : (
           <EquipmentView
             state={state}
+            liveState={liveState}
             slot={slot}
             setSlot={setSlot}
             onEmitEvent={onEmitEvent}
@@ -961,12 +969,14 @@ function Inventory({
 
 function EquipmentView({
   state,
+  liveState,
   slot,
   setSlot,
   onEmitEvent,
   onOpenProvenance,
 }: {
   state: CrawlerState;
+  liveState: CrawlerState;
   slot: string;
   setSlot: (v: string) => void;
   onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
@@ -1009,8 +1019,8 @@ function EquipmentView({
 
   const reqResult = useMemo(() => {
     if (!activeCandidate) return { met: true, details: [] };
-    return checkItemRequirements(state.crawler, activeCandidate.requirements);
-  }, [state.crawler, activeCandidate]);
+    return checkItemRequirements(liveState.crawler, activeCandidate.requirements);
+  }, [liveState.crawler, activeCandidate]);
 
   const statDeltas = useMemo(() => {
     return compareGearStats(equippedItem, activeCandidate);
