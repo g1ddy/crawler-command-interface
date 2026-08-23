@@ -78,6 +78,17 @@
         }
       ]
     },
+    "patron": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "tier": { "type": "string", "minLength": 1 },
+        "contribution": { "type": "string", "minLength": 1 }
+      }
+    },
     "floorSegment": {
       "type": "object",
       "additionalProperties": false,
@@ -315,7 +326,7 @@
               "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId"],
               "properties": {
                 "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["ItemEquipped", "ItemUnequipped", "ItemDiscarded"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "itemInstanceId": { "$ref": "#/$defs/id" }, "slot": { "type": "string" }
+                "itemInstanceId": { "$ref": "#/$defs/id" }, "slot": { "type": "string" }, "quantity": { "$ref": "#/$defs/quantity" }, "reason": { "type": "string" }
               }
             }
           ]
@@ -329,7 +340,7 @@
               "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId", "delta"],
               "properties": {
                 "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "ItemQuantityChanged" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "itemInstanceId": { "$ref": "#/$defs/id" }, "delta": { "type": "integer" }
+                "itemInstanceId": { "$ref": "#/$defs/id" }, "delta": { "type": "integer" }, "quantity": { "$ref": "#/$defs/quantity" }, "reason": { "type": "string" }
               }
             }
           ]
@@ -371,7 +382,15 @@
               "additionalProperties": false,
               "required": ["id", "sequence", "type", "position", "summary", "evidence"],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["AttributeModified", "EffectApplied", "EffectExpired", "SkillGranted", "QuestUpdated", "BroadcastUpdated", "ConditionChanged", "LevelChanged"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "level": { "type": "integer", "minimum": 1 }, "skillId": { "$ref": "#/$defs/id" }, "name": { "type": "string" }, "icon": { "type": "string" }, "rank": { "type": "string" }, "description": { "type": "string" }, "cooldown": { "type": "string" }, "category": { "enum": ["combat", "utility", "passive"] }, "effectId": { "$ref": "#/$defs/id" }, "effectType": { "enum": ["good", "bad"] }, "durationSeconds": { "type": "number", "minimum": 0 }, "statModifiers": { "type": "object", "additionalProperties": { "type": "number" } }, "viewers": { "type": "number", "minimum": 0 }, "viewerDelta": { "type": "string" }, "followers": { "type": "number", "minimum": 0 }, "fameRank": { "type": "string" }, "sponsorInterest": { "type": "boolean" }
+                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["AttributeModified", "EffectApplied", "EffectExpired", "SkillGranted", "QuestUpdated", "BroadcastUpdated", "ConditionChanged", "LevelChanged", "XPChanged", "CountdownReset", "CountdownPaused", "CountdownResumed", "CountdownPhaseChanged"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+                "level": { "type": "integer", "minimum": 1 }, "previousLevel": { "type": "integer", "minimum": 1 }, "skillId": { "$ref": "#/$defs/id" }, "name": { "type": "string" }, "icon": { "type": "string" }, "rank": { "type": "string" }, "description": { "type": "string" }, "cooldown": { "type": "string" }, "category": { "enum": ["combat", "utility", "passive"] }, "effectId": { "$ref": "#/$defs/id" }, "effectType": { "enum": ["good", "bad"] }, "durationSeconds": { "type": "number", "minimum": 0 }, "statModifiers": { "type": "object", "additionalProperties": { "type": "number" } }, "viewers": { "type": "number", "minimum": 0 }, "viewerDelta": { "type": "string" }, "followers": { "type": "number", "minimum": 0 }, "fameRank": { "type": "string" }, "sponsorInterest": { "type": "boolean" },
+                "patrons": { "type": "array", "items": { "$ref": "#/$defs/patron" } }, "favorites": { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/patron" }] } }, "metrics": { "type": "object", "additionalProperties": true },
+                "attribute": { "enum": ["Strength", "Dexterity", "Constitution", "Intelligence", "Charisma"] }, "delta": { "type": "integer" }, "source": { "type": "string" }, "reason": { "type": "string" }, "isAllocation": { "type": "boolean" },
+                "currentHealth": { "type": "integer", "minimum": 0 }, "maxHealth": { "type": "integer", "minimum": 1 }, "healthDelta": { "type": "integer" }, "currentMana": { "type": "integer", "minimum": 0 }, "maxMana": { "type": "integer", "minimum": 1 }, "manaDelta": { "type": "integer" }, "currentStamina": { "type": "integer", "minimum": 0 }, "maxStamina": { "type": "integer", "minimum": 1 }, "staminaDelta": { "type": "integer" },
+                "xp": { "type": "integer", "minimum": 0 }, "xpDelta": { "type": "integer" }, "maxXp": { "type": "integer", "minimum": 1 },
+                "questId": { "$ref": "#/$defs/id" }, "title": { "type": "string" }, "urgency": { "enum": ["URGENT", "STANDARD", "COMPLETED"] }, "goals": { "type": "array", "items": { "type": "string" } }, "rewards": { "type": "string" }, "status": { "enum": ["active", "completed", "failed"] },
+                "hotlist": { "type": "array", "items": { "type": "string" } }, "index": { "type": "integer", "minimum": 0 },
+                "countdownId": { "$ref": "#/$defs/id" }, "newRemainingSeconds": { "type": "integer", "minimum": 0 }, "phase": { "type": "string" }, "fromPhase": { "type": "string" }, "toPhase": { "type": "string" }
               }
             }
           ]

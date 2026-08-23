@@ -127,6 +127,17 @@
         }
       ]
     },
+    "patron": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "tier": { "type": "string", "minLength": 1 },
+        "contribution": { "type": "string", "minLength": 1 }
+      }
+    },
     "catalogItem": {
       "type": "object",
       "additionalProperties": false,
@@ -258,7 +269,7 @@
           "additionalProperties": false,
           "required": ["id", "order", "type", "level", "position", "summary", "evidence"],
           "properties": {
-            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "LevelChanged" }, "level": { "$ref": "#/$defs/positiveInteger" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "LevelChanged" }, "level": { "$ref": "#/$defs/positiveInteger" }, "previousLevel": { "$ref": "#/$defs/positiveInteger" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
           }
         },
         {
@@ -280,9 +291,113 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["id", "order", "type", "viewers", "followers", "fameRank", "position", "summary", "evidence"],
+          "required": ["id", "order", "type", "attribute", "delta", "position", "summary", "evidence"],
           "properties": {
-            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "BroadcastUpdated" }, "viewers": { "$ref": "#/$defs/nonNegativeInteger" }, "viewerDelta": { "type": "string" }, "followers": { "$ref": "#/$defs/nonNegativeInteger" }, "fameRank": { "type": "string", "minLength": 1 }, "sponsorInterest": { "type": "boolean" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "AttributeModified" }, "attribute": { "enum": ["Strength", "Dexterity", "Constitution", "Intelligence", "Charisma"] }, "delta": { "type": "integer" }, "source": { "type": "string" }, "reason": { "type": "string" }, "isAllocation": { "type": "boolean" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "ConditionChanged" }, "currentHealth": { "$ref": "#/$defs/nonNegativeInteger" }, "maxHealth": { "$ref": "#/$defs/positiveInteger" }, "healthDelta": { "type": "integer" }, "currentMana": { "$ref": "#/$defs/nonNegativeInteger" }, "maxMana": { "$ref": "#/$defs/positiveInteger" }, "manaDelta": { "type": "integer" }, "currentStamina": { "$ref": "#/$defs/nonNegativeInteger" }, "maxStamina": { "$ref": "#/$defs/positiveInteger" }, "staminaDelta": { "type": "integer" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "XPChanged" }, "xp": { "$ref": "#/$defs/nonNegativeInteger" }, "xpDelta": { "type": "integer" }, "maxXp": { "$ref": "#/$defs/positiveInteger" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "itemInstanceId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "ItemConsumed" }, "itemInstanceId": { "$ref": "#/$defs/id" }, "quantity": { "$ref": "#/$defs/quantity" }, "outcome": { "type": "string" }, "healthRestored": { "type": "number" }, "manaRestored": { "type": "number" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "itemInstanceId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "ItemDiscarded" }, "itemInstanceId": { "$ref": "#/$defs/id" }, "quantity": { "$ref": "#/$defs/quantity" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "itemInstanceId", "delta", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "ItemQuantityChanged" }, "itemInstanceId": { "$ref": "#/$defs/id" }, "delta": { "type": "integer" }, "quantity": { "$ref": "#/$defs/quantity" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "questId", "status", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "QuestUpdated" }, "questId": { "$ref": "#/$defs/id" }, "title": { "type": "string" }, "urgency": { "enum": ["URGENT", "STANDARD", "COMPLETED"] }, "goals": { "type": "array", "items": { "type": "string" } }, "rewards": { "type": "string" }, "status": { "enum": ["active", "completed", "failed"] }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "HotlistUpdated" }, "hotlist": { "type": "array", "items": { "type": "string" } }, "skillId": { "$ref": "#/$defs/id" }, "index": { "$ref": "#/$defs/nonNegativeInteger" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "effectId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "EffectExpired" }, "effectId": { "$ref": "#/$defs/id" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "countdownId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "CountdownReset" }, "countdownId": { "$ref": "#/$defs/id" }, "newRemainingSeconds": { "$ref": "#/$defs/nonNegativeInteger" }, "phase": { "type": "string" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "countdownId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "CountdownPaused" }, "countdownId": { "$ref": "#/$defs/id" }, "phase": { "type": "string" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "countdownId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "CountdownResumed" }, "countdownId": { "$ref": "#/$defs/id" }, "phase": { "type": "string" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "countdownId", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "CountdownPhaseChanged" }, "countdownId": { "$ref": "#/$defs/id" }, "fromPhase": { "type": "string" }, "toPhase": { "type": "string" }, "newRemainingSeconds": { "$ref": "#/$defs/nonNegativeInteger" }, "reason": { "type": "string" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "order", "type", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "BroadcastUpdated" }, "viewers": { "$ref": "#/$defs/nonNegativeInteger" }, "viewerDelta": { "type": "string" }, "followers": { "$ref": "#/$defs/nonNegativeInteger" }, "fameRank": { "type": "string", "minLength": 1 }, "sponsorInterest": { "type": "boolean" }, "patrons": { "type": "array", "items": { "$ref": "#/$defs/patron" } }, "favorites": { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/patron" }] } }, "metrics": { "type": "object", "additionalProperties": true }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
           }
         }
       ]
