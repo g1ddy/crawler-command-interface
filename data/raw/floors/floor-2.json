@@ -1,0 +1,440 @@
+{
+  "$schema": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json",
+  "authoringVersion": "crawler-floor-raw/v1",
+  "storyId": "dungeon-crawler-carl",
+  "floor": {
+    "id": "floor-2",
+    "ordinal": 2,
+    "title": "Second Floor",
+    "book": 1,
+    "bookTitle": "Dungeon Crawler Carl",
+    "continuity": "canonical",
+    "coverage": {
+      "kind": "curated-critical",
+      "statement": "Tracks consequential, persistent Carl inventory, milestone progression, broadcast snapshots, and party changes needed to understand the transition to Floor 3. It intentionally omits routine drops, temporary combat consumables, and unresolved quantities.",
+      "completeness": "partial"
+    }
+  },
+  "sources": [
+    {
+      "id": "src-book-1",
+      "kind": "official-text",
+      "trust": "primary",
+      "title": "Dungeon Crawler Carl, Book 1",
+      "url": "https://www.mattdinniman.com/",
+      "citationStyle": "Chapter {chapter}"
+    },
+    {
+      "id": "src-wiki-carl-floor-2",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Floor 2",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_2"
+    },
+    {
+      "id": "src-wiki-floor-2-achievements",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Floor 2 Achievements",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_2_Achievements"
+    },
+    {
+      "id": "src-wiki-carl-inventory",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Inventory",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+    }
+  ],
+  "catalog": {
+    "items": [
+      {
+        "id": "item-goo-inator-3000",
+        "name": "Goo-Inator 3000",
+        "category": "tool",
+        "persistent": true,
+        "description": "A shaping tool that can be used at a workbench."
+      },
+      {
+        "id": "item-enchanted-pedicure-kit-of-sylph",
+        "name": "Enchanted Pedicure Kit of the Sylph",
+        "category": "tool",
+        "persistent": true,
+        "description": "A limited-use kit that adds 15% bare-foot attack damage, makes Carl's feet unbreakable, and warns of foot-triggered traps five seconds before activation.",
+        "stats": {
+          "Barefoot Attack Damage Percent": 15
+        }
+      },
+      {
+        "id": "item-enchanted-bigboi-boxers",
+        "name": "Enchanted BigBoi Boxers",
+        "category": "equipment",
+        "slot": "LEGS",
+        "persistent": true,
+        "description": "Enchanted boxers that add 2 Constitution and grant the Protective Shell spell.",
+        "stats": {
+          "Constitution": 2
+        }
+      },
+      {
+        "id": "item-proximity-trigger",
+        "name": "Proximity Trigger",
+        "category": "crafting",
+        "persistent": false,
+        "description": "A Sapper's-table component that can be attached to a non-static trap."
+      }
+    ],
+    "achievements": [
+      {
+        "id": "achievement-peta-enthusiast",
+        "title": "PETA Enthusiast",
+        "description": "Carl earns the achievement after freeing the dingos.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "The Ghost of Steve Irwin smiles down upon you."
+          }
+        ]
+      },
+      {
+        "id": "achievement-dungeonpreneur",
+        "title": "Dungeonpreneur",
+        "description": "Carl's improvised incendiary, Carl's Jug O' Boom, is recognized as a stackable dungeon invention.",
+        "reward": [
+          {
+            "kind": "entitlement",
+            "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+          }
+        ]
+      }
+    ]
+  },
+  "countdowns": [
+    {
+      "id": "countdown-floor-2-collapse",
+      "title": "Second Floor Collapse",
+      "target": "floor-collapse"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-f2-001-entered",
+      "order": 1,
+      "type": "NarrativeEvent",
+      "kind": "floor-entered",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Carl and Donut enter the Second Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-002-goo-inator",
+      "order": 2,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "item": {
+        "instanceId": "inst-f2-goo-inator-3000",
+        "itemId": "item-goo-inator-3000",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Goo-Inator 3000.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-003-pedicure-kit",
+      "order": 3,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "item": {
+        "instanceId": "inst-f2-pedicure-kit",
+        "itemId": "item-enchanted-pedicure-kit-of-sylph",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Enchanted Pedicure Kit of the Sylph.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-004-bigboi-boxers",
+      "order": 4,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "item": {
+        "instanceId": "inst-f2-bigboi-boxers",
+        "itemId": "item-enchanted-bigboi-boxers",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Enchanted BigBoi Boxers.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-005-dungeon-book-club",
+      "order": 5,
+      "type": "NarrativeEvent",
+      "kind": "party-changed",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Donut joins the Dungeon Book of the Floor Club and receives Second Chance.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-006-jug-o-boom",
+      "order": 6,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 33
+      },
+      "achievementId": "achievement-dungeonpreneur",
+      "summary": "Carl earns Dungeonpreneur for inventing Carl's Jug O' Boom, which grants a royalty entitlement.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 33
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-007-proximity-trigger",
+      "order": 7,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 34
+      },
+      "item": {
+        "instanceId": "inst-f2-proximity-trigger",
+        "itemId": "item-proximity-trigger",
+        "quantity": {
+          "known": false,
+          "note": "The source confirms acquisition but not a stable count."
+        }
+      },
+      "summary": "Carl acquires a Proximity Trigger for use with non-static traps.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-008-peta-enthusiast",
+      "order": 8,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 35
+      },
+      "achievementId": "achievement-peta-enthusiast",
+      "summary": "Carl earns PETA Enthusiast for freeing the dingos.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-009-broadcast-snapshot",
+      "order": 9,
+      "type": "BroadcastUpdated",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 39
+      },
+      "viewers": 212000000000,
+      "followers": 4400000000,
+      "fameRank": "#-",
+      "summary": "The Royal Court reaches 212 billion views and 4.4 billion followers.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Ratings"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-010-mongo-bonded",
+      "order": 10,
+      "type": "NarrativeEvent",
+      "kind": "party-changed",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 40
+      },
+      "summary": "Mongo bonds to Donut and joins the Royal Court.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 40
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-011-level-13",
+      "order": 11,
+      "type": "LevelChanged",
+      "level": 13,
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "summary": "Carl reaches Level 13 before leaving the Second Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Levels & Stats"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-012-exit",
+      "order": 12,
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "summary": "Carl, Donut, and Mongo descend to the Third Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Floor Exit"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "id": "obs-countdown-floor-2-collapse-f2-001-entered",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f2-001-entered",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 536400,
+      "note": "Carl's documented Second Floor baseline: 6 days and 5 hours remaining.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Levels & Stats"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-f2-004-bigboi-boxers",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f2-004-bigboi-boxers",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 360000,
+      "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Levels & Stats"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    }
+  ]
+}
+
