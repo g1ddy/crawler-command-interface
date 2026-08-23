@@ -80,3 +80,28 @@ test("raw countdown observations reject missing event IDs and increasing values"
   assert.equal(legacyValidation.valid, false);
   assert.ok(legacyValidation.errors.some((error) => error.includes("increases from")));
 });
+
+test("countdown phase breaks permit a later reset observation without interpolation", () => {
+  const resetCountdown = JSON.parse(JSON.stringify(rawFloor2));
+  const resetEvent = resetCountdown.events[1];
+  resetCountdown.events[1] = {
+    id: resetEvent.id,
+    order: resetEvent.order,
+    type: "NarrativeEvent",
+    kind: "other",
+    position: resetEvent.position,
+    summary: "The countdown reset before the next phase.",
+    evidence: resetEvent.evidence,
+  };
+  resetCountdown.observations[1].remainingSeconds = 600000;
+
+  const validation = validateRawCrawlerFloor(resetCountdown);
+  assert.equal(validation.valid, true, validation.errors.join("; "));
+
+  const compiled = compileRawFloorFiles([resetCountdown]);
+  assert.equal(projectCountdownState(compiled, 2, 2), null, "a phase boundary must not be interpolated across");
+  const resetReference = projectCountdownState(compiled, 4, 2);
+  assert.ok(resetReference);
+  assert.equal(resetReference.status, "stated");
+  assert.equal(resetReference.remainingSeconds, 600000);
+});
