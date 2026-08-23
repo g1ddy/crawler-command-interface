@@ -197,6 +197,21 @@ export interface TimelineSnapshot {
   generatedFromEventHash?: string;
 }
 
+export interface CountdownReference {
+  sequence: number;
+  remainingSeconds: number;
+  evidence: TimelineEvidence[];
+  note?: string;
+}
+
+export interface TimelineCountdown {
+  id: string;
+  title: string;
+  floor: number;
+  target: 'floor-collapse';
+  references: CountdownReference[];
+}
+
 export interface FloorSegment {
   id: string;
   ordinal: number;
@@ -224,6 +239,7 @@ export interface CrawlerTimelineDocument {
   sources: TimelineSource[];
   initialState: TimelineState;
   events: TimelineEvent[];
+  countdowns?: TimelineCountdown[];
   snapshots?: TimelineSnapshot[];
 }
 
@@ -281,6 +297,20 @@ export interface FloorEventBase {
   entitlement?: TimelineEntitlement;
 }
 
+export interface FloorCountdownReference {
+  anchorOrder: number;
+  remainingSeconds: number;
+  evidence: TimelineEvidence[];
+  note?: string;
+}
+
+export interface FloorCountdown {
+  id: string;
+  title: string;
+  target: 'floor-collapse';
+  references: FloorCountdownReference[];
+}
+
 export interface CrawlerFloorDocument {
   $schema?: string;
   authoringVersion: 'crawler-floor/v2';
@@ -291,6 +321,7 @@ export interface CrawlerFloorDocument {
     items: CatalogItem[];
     achievements: CatalogAchievement[];
   };
+  countdowns?: FloorCountdown[];
   events: FloorEventBase[];
 }
 

@@ -130,6 +130,24 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
     }
   }
 
+  const countdownIds = new Set<string>();
+  for (const countdown of floorDoc.countdowns || []) {
+    if (countdownIds.has(countdown.id)) {
+      errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in floor document.`);
+    }
+    countdownIds.add(countdown.id);
+    for (const reference of countdown.references) {
+      if (reference.anchorOrder > floorDoc.events.length) {
+        errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor order #${reference.anchorOrder}.`);
+      }
+      for (const evidence of reference.evidence) {
+        if (!sourceIds.has(evidence.sourceId)) {
+          errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in floor sources catalog.`);
+        }
+      }
+    }
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -232,6 +250,24 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
           errors.push(
             `Domain error: ${eventRef} references itemInstanceId "${event.itemInstanceId}" which was not acquired prior to or at this sequence.`
           );
+        }
+      }
+    }
+  }
+
+  const countdownIds = new Set<string>();
+  for (const countdown of timelineDoc.countdowns || []) {
+    if (countdownIds.has(countdown.id)) {
+      errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in timeline document.`);
+    }
+    countdownIds.add(countdown.id);
+    for (const reference of countdown.references) {
+      if (!timelineDoc.events.some((event) => event.sequence === reference.sequence)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" references missing event sequence #${reference.sequence}.`);
+      }
+      for (const evidence of reference.evidence) {
+        if (!sourceIds.has(evidence.sourceId)) {
+          errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in sources catalog.`);
         }
       }
     }

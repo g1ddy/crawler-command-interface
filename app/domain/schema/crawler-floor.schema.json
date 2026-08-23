@@ -17,6 +17,10 @@
       "items": { "$ref": "#/$defs/source" }
     },
     "catalog": { "$ref": "#/$defs/catalog" },
+    "countdowns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/countdown" }
+    },
     "events": {
       "type": "array",
       "minItems": 1,
@@ -169,6 +173,28 @@
       "properties": {
         "items": { "type": "array", "items": { "$ref": "#/$defs/catalogItem" } },
         "achievements": { "type": "array", "items": { "$ref": "#/$defs/catalogAchievement" } }
+      }
+    },
+    "countdownReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anchorOrder", "remainingSeconds", "evidence"],
+      "properties": {
+        "anchorOrder": { "$ref": "#/$defs/positiveInteger" },
+        "remainingSeconds": { "$ref": "#/$defs/nonNegativeInteger" },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "countdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "target", "references"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "target": { "const": "floor-collapse" },
+        "references": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/countdownReference" } }
       }
     },
     "eventBase": {

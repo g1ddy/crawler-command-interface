@@ -8,6 +8,7 @@ import type {
   TimelineEvent,
   TimelineItem,
   TimelineSource,
+  TimelineCountdown,
 } from './types.ts';
 
 function areItemsIdentical(a: CatalogItem, b: CatalogItem): boolean {
@@ -59,6 +60,8 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
   const itemsCatalog = new Map<string, CatalogItem>();
   const achCatalog = new Map<string, CatalogAchievement>();
   const globalEventIds = new Set<string>();
+  const countdowns: TimelineCountdown[] = [];
+  const countdownIds = new Set<string>();
 
   for (const doc of sortedDocs) {
     // Sources
@@ -223,6 +226,25 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
       startSequence,
       endSequence,
     });
+
+    for (const countdown of doc.countdowns || []) {
+      if (countdownIds.has(countdown.id)) {
+        throw new Error(`Compiler error: Duplicate countdown ID "${countdown.id}" across floor files.`);
+      }
+      countdownIds.add(countdown.id);
+      countdowns.push({
+        id: countdown.id,
+        title: countdown.title,
+        floor: doc.floor.ordinal,
+        target: countdown.target,
+        references: countdown.references.map((reference) => ({
+          sequence: startSequence + reference.anchorOrder - 1,
+          remainingSeconds: reference.remainingSeconds,
+          evidence: reference.evidence,
+          note: reference.note,
+        })),
+      });
+    }
   }
 
   const firstFloor = sortedDocs[0].floor;
@@ -275,6 +297,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
       entitlements: [],
     },
     events: compiledEvents,
+    countdowns: countdowns.length > 0 ? countdowns : undefined,
   };
 
   const runtimeValidation = validateCrawlerTimeline(compiledDoc);

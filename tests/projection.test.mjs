@@ -10,6 +10,7 @@ import { compileFloorFiles } from "../app/domain/compiler.ts";
 import { getFloorEndSequence } from "../app/domain/floors.ts";
 
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
+const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));
 
 test("initial state has default crawler stats", () => {
   const state = createInitialState();
@@ -193,14 +194,27 @@ test("floor-1.json validates successfully against crawler-floor/v2 schema", () =
   assert.equal(validation.valid, true, `Floor 1 validation errors: ${validation.errors.join('; ')}`);
 });
 
-test("compiler produces a valid deterministic runtime timeline document from floor files", () => {
-  const doc = compileFloorFiles([floor1AuthoredDoc]);
+test("floor-2.json validates successfully against crawler-floor/v2 schema", () => {
+  const validation = validateCrawlerFloor(floor2AuthoredDoc);
+  assert.equal(validation.valid, true, `Floor 2 validation errors: ${validation.errors.join('; ')}`);
+});
+
+test("compiler produces a valid runtime timeline document from authored floor files", () => {
+  const doc = compileFloorFiles([floor1AuthoredDoc, floor2AuthoredDoc]);
   const validation = validateCrawlerTimeline(doc);
   assert.equal(validation.valid, true, `Compiled timeline validation errors: ${validation.errors.join('; ')}`);
   assert.equal(doc.schemaVersion, "crawler-timeline/v2");
   assert.ok(Array.isArray(doc.floors));
-  assert.equal(doc.floors.length, 1);
+  assert.equal(doc.floors.length, 2);
   assert.equal(doc.floors[0].ordinal, 1);
+  assert.equal(doc.floors[1].ordinal, 2);
+  assert.equal(doc.floors[0].endSequence + 1, doc.floors[1].startSequence);
+  const floor1Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-1-collapse");
+  assert.ok(floor1Countdown);
+  assert.deepEqual(
+    floor1Countdown.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
+    [[4, 417600], [15, 169200]]
+  );
   assert.equal(doc.sources.find((s) => s.id === "src-book-1")?.citationStyle, "Chapter {chapter}");
   // Position metadata check
   assert.equal(doc.events[0].position.chapter, 1);
@@ -270,10 +284,19 @@ test("ItemCrafted events project crafted items into inventory", () => {
 });
 
 test("cross-floor item provenance is preserved when replaying later events", () => {
-  const stateAtEnd = projectState(compiledTimeline, 19);
+  const stateAtEnd = projectState(compiledTimeline, 29);
   const shirt = stateAtEnd.inventory.find((i) => i.itemId === "item-trollskin-shirt-of-pummeling");
   assert.ok(shirt, "Item acquired on Floor 1 should persist in inventory");
   assert.equal(shirt.source, "First Floor");
+});
+
+test("the checked-in runtime fixture includes Floor 2 and preserves Floor 1 inventory", () => {
+  assert.equal(compiledTimeline.floors?.length, 2);
+  const floor2 = compiledTimeline.floors?.find((floor) => floor.ordinal === 2);
+  assert.ok(floor2);
+  const endOfFloor2 = projectState(compiledTimeline, floor2.endSequence);
+  assert.ok(endOfFloor2.inventory.some((item) => item.itemId === "item-trollskin-shirt-of-pummeling"));
+  assert.ok(endOfFloor2.inventory.some((item) => item.itemId === "item-enchanted-bigboi-boxers"));
 });
 
 test("compiler rejects floor files with missing item or achievement catalog references", () => {
