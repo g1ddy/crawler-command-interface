@@ -437,6 +437,14 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       break;
     }
 
+    case 'LevelChanged': {
+      const level = Number(event.level);
+      if (Number.isInteger(level) && level > 0) {
+        state.crawler.level = level;
+      }
+      break;
+    }
+
     case 'HotlistUpdated': {
       if (Array.isArray(event.hotlist)) {
         state.hotlist = (event.hotlist as string[]).slice(0, 10);
