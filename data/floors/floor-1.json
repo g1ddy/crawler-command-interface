@@ -11,7 +11,7 @@
     "continuity": "canonical",
     "coverage": {
       "kind": "curated-critical",
-      "statement": "Tracks Carl's consequential, persistent equipment, tattoos, vehicle, and high-value achievement chains. It intentionally omits routine loot, most consumables, and unresolved quantities.",
+      "statement": "Tracks Carl's consequential, persistent equipment, tattoos, vehicle, and high-value achievement chains. Its stable item and entitlement IDs are preserved by the compiler for later-floor replay. It intentionally omits routine loot, most consumables, and unresolved quantities.",
       "completeness": "partial"
     }
   },
@@ -60,21 +60,24 @@
         "name": "Enchanted Trollskin Shirt of Pummeling",
         "category": "equipment",
         "slot": "UNDERSHIRT",
-        "persistent": true
+        "persistent": true,
+        "description": "A regenerating enchanted undershirt that resists several disruptive combat effects."
       },
       {
         "id": "item-nightgaunt-cloak-of-stoutness",
         "name": "Enchanted Nightgaunt Cloak of Stoutness",
         "category": "equipment",
         "slot": "NECK",
-        "persistent": true
+        "persistent": true,
+        "description": "A cloak that increases Constitution and provides poison, ice, and piercing protection."
       },
       {
         "id": "item-toe-ring-of-splatter-skunk",
         "name": "Enchanted Toe Ring of the Splatter Skunk",
         "category": "equipment",
         "slot": "FEET",
-        "persistent": true
+        "persistent": true,
+        "description": "A toe ring that improves Strength and Powerful Strike."
       },
       {
         "id": "item-silver-ring-plus-1-con",
@@ -89,13 +92,15 @@
         "name": "Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces",
         "category": "equipment",
         "slot": "KNEES",
-        "persistent": true
+        "persistent": true,
+        "description": "Spiked kneepads that reflect a portion of damage and cancel momentum-based attacks."
       },
       {
         "id": "item-goblin-copper-chopper",
         "name": "Goblin Copper Chopper",
         "category": "vehicle",
-        "persistent": true
+        "persistent": true,
+        "description": "A goblin-built chopper used for traversal and battlefield construction."
       },
       {
         "id": "item-silver-ring-plus-2-con",
@@ -110,7 +115,8 @@
         "name": "Enchanted War Gauntlet of the Exalted Grull",
         "category": "equipment",
         "slot": "WRISTS",
-        "persistent": true
+        "persistent": true,
+        "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist."
       }
     ],
     "achievements": [
