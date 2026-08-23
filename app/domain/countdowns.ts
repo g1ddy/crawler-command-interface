@@ -32,6 +32,25 @@ export function formatCountdownDuration(remainingSeconds: number, isEstimated: b
   return isEstimated ? `~${formatted}` : formatted;
 }
 
+/**
+ * A phase break makes adjacent countdown observations incomparable. Keep this
+ * shared with authoring validation so accepted source data and UI projection
+ * follow the same boundary rules.
+ */
+export function isCountdownPhaseBreakEvent(event: { summary?: string; type?: string }): boolean {
+  const summary = event.summary?.toLowerCase() || '';
+  return (
+    summary.includes('countdown paused') ||
+    summary.includes('countdown resumed') ||
+    summary.includes('countdown reset') ||
+    summary.includes('phase change') ||
+    event.type === 'CountdownPaused' ||
+    event.type === 'CountdownResumed' ||
+    event.type === 'CountdownReset' ||
+    event.type === 'CountdownPhaseChanged'
+  );
+}
+
 export function projectCountdownState(
   docOrEvents: CrawlerTimelineDocument | CrawlerEvent[] | { countdowns?: TimelineCountdown[]; events?: CrawlerEvent[] } | unknown,
   targetSequence: number,
@@ -130,18 +149,7 @@ export function projectCountdownState(
 
   // Check if events between r1 and r2 contain countdown pause/resume/reset/phase change events
   const intermediateEvents = events.filter((e) => e.sequence > r1!.sequence && e.sequence < r2!.sequence);
-  const hasPhaseBreak = intermediateEvents.some((ev) => {
-    const summary = ev.summary?.toLowerCase() || '';
-    const type = ev.type || '';
-    return (
-      summary.includes('countdown paused') ||
-      summary.includes('countdown resumed') ||
-      summary.includes('countdown reset') ||
-      summary.includes('phase change') ||
-      type === 'CountdownPaused' ||
-      type === 'CountdownResumed'
-    );
-  });
+  const hasPhaseBreak = intermediateEvents.some(isCountdownPhaseBreakEvent);
 
   if (hasPhaseBreak) {
     return null;
