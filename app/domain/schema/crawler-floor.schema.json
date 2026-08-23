@@ -272,6 +272,14 @@
         {
           "type": "object",
           "additionalProperties": false,
+          "required": ["id", "order", "type", "effectId", "name", "effectType", "durationSeconds", "position", "summary", "evidence"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "EffectApplied" }, "effectId": { "$ref": "#/$defs/id" }, "name": { "type": "string", "minLength": 1 }, "effectType": { "enum": ["good", "bad"] }, "icon": { "type": "string" }, "durationSeconds": { "$ref": "#/$defs/nonNegativeInteger" }, "description": { "type": "string", "maxLength": 4000 }, "statModifiers": { "type": "object", "additionalProperties": { "type": "number" } }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
           "required": ["id", "order", "type", "viewers", "followers", "fameRank", "position", "summary", "evidence"],
           "properties": {
             "id": { "$ref": "#/$defs/id" }, "order": { "$ref": "#/$defs/positiveInteger" }, "type": { "const": "BroadcastUpdated" }, "viewers": { "$ref": "#/$defs/nonNegativeInteger" }, "viewerDelta": { "type": "string" }, "followers": { "$ref": "#/$defs/nonNegativeInteger" }, "fameRank": { "type": "string", "minLength": 1 }, "sponsorInterest": { "type": "boolean" }, "position": { "$ref": "#/$defs/position" }, "summary": { "type": "string", "minLength": 1 }, "correlationId": { "$ref": "#/$defs/id" }, "causationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
