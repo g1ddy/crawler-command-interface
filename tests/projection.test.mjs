@@ -606,3 +606,66 @@ test("HotlistUpdated event modifies hotlist skill slots", () => {
 
   assert.equal(state.hotlist[2], "sk-custom-fireball");
 });
+
+test("QuestUpdated event updates quest status and filtering excludes non-active quests from active tab", () => {
+  let state = createInitialState();
+
+  state = projectState(
+    [
+      {
+        id: "evt-quest-complete",
+        sequence: 1,
+        type: "QuestUpdated",
+        questId: "q-stairwell",
+        title: "Tutorial: Reach the Stairs",
+        urgency: "COMPLETED",
+        goals: ["Find the emergency stairwell"],
+        rewards: "150 XP",
+        status: "completed",
+        summary: "Completed Tutorial: Reach the Stairs",
+      },
+      {
+        id: "evt-quest-fail",
+        sequence: 2,
+        type: "QuestUpdated",
+        questId: "q-defend",
+        title: "Defend Outpost",
+        urgency: "STANDARD",
+        goals: ["Hold the line"],
+        rewards: "None",
+        status: "failed",
+        summary: "Failed Defend Outpost",
+      },
+      {
+        id: "evt-quest-active",
+        sequence: 3,
+        type: "QuestUpdated",
+        questId: "q-boss",
+        title: "Defeat Boss",
+        urgency: "URGENT",
+        goals: ["Defeat Dungeon Boss"],
+        rewards: "Legendary Chest",
+        status: "active",
+        summary: "Started Defeat Boss quest",
+      },
+    ],
+    3,
+    [],
+    state
+  );
+
+  assert.equal(state.quests.length, 3);
+
+  const activeQuests = state.quests.filter((q) => q.status === "active");
+  const completedQuests = state.quests.filter((q) => q.status === "completed");
+  const failedQuests = state.quests.filter((q) => q.status === "failed");
+
+  assert.equal(activeQuests.length, 1);
+  assert.equal(activeQuests[0].questId, "q-boss");
+
+  assert.equal(completedQuests.length, 1);
+  assert.equal(completedQuests[0].questId, "q-stairwell");
+
+  assert.equal(failedQuests.length, 1);
+  assert.equal(failedQuests[0].questId, "q-defend");
+});
