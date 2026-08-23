@@ -3,6 +3,7 @@ import addFormats from 'ajv-formats';
 import timelineSchema from './schema/crawler-timeline.schema.json' with { type: 'json' };
 import floorSchema from './schema/crawler-floor.schema.json' with { type: 'json' };
 import rawFloorSchema from './schema/crawler-floor-raw.schema.json' with { type: 'json' };
+import { isCountdownPhaseBreakEvent } from './countdowns.ts';
 import { adaptRawFloorDocument } from './raw-adapter.ts';
 import type { CrawlerFloorDocument, CrawlerTimelineDocument, RawCrawlerFloorDocument } from './types.ts';
 
@@ -160,7 +161,13 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
     for (let i = 1; i < referencesByOrder.length; i++) {
       const previous = referencesByOrder[i - 1];
       const current = referencesByOrder[i];
-      if (current.remainingSeconds > previous.remainingSeconds) {
+      const hasPhaseBreak = floorDoc.events.some(
+        (event) =>
+          event.order > previous.anchorOrder &&
+          event.order < current.anchorOrder &&
+          isCountdownPhaseBreakEvent(event)
+      );
+      if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
         errors.push(
           `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at order #${previous.anchorOrder} to ${current.remainingSeconds}s at order #${current.anchorOrder}. Model an explicit reset before increasing remaining time.`
         );
@@ -344,7 +351,13 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
     for (let i = 1; i < referencesBySequence.length; i++) {
       const previous = referencesBySequence[i - 1];
       const current = referencesBySequence[i];
-      if (current.remainingSeconds > previous.remainingSeconds) {
+      const hasPhaseBreak = timelineDoc.events.some(
+        (event) =>
+          event.sequence > previous.sequence &&
+          event.sequence < current.sequence &&
+          isCountdownPhaseBreakEvent(event)
+      );
+      if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
         errors.push(
           `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at sequence #${previous.sequence} to ${current.remainingSeconds}s at sequence #${current.sequence}. Model an explicit reset before increasing remaining time.`
         );
