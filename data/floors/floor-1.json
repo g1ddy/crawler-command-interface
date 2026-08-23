@@ -69,7 +69,8 @@
         "category": "equipment",
         "slot": "NECK",
         "persistent": true,
-        "description": "A cloak that increases Constitution and provides poison, ice, and piercing protection."
+        "description": "A cloak that adds 4 Constitution and provides poison, ice, and anti-piercing protection.",
+        "stats": { "Constitution": 4 }
       },
       {
         "id": "item-toe-ring-of-splatter-skunk",
@@ -77,7 +78,8 @@
         "category": "equipment",
         "slot": "FEET",
         "persistent": true,
-        "description": "A toe ring that improves Strength and Powerful Strike."
+        "description": "A toe ring that adds 3 Strength and improves Powerful Strike.",
+        "stats": { "Strength": 3 }
       },
       {
         "id": "item-silver-ring-plus-1-con",
@@ -93,7 +95,8 @@
         "category": "equipment",
         "slot": "KNEES",
         "persistent": true,
-        "description": "Spiked kneepads that reflect a portion of damage and cancel momentum-based attacks."
+        "description": "Spiked kneepads that reflect 10% of damage and cancel momentum-based attacks.",
+        "stats": { "Damage Reflect Percent": 10 }
       },
       {
         "id": "item-goblin-copper-chopper",
@@ -116,7 +119,8 @@
         "category": "equipment",
         "slot": "WRISTS",
         "persistent": true,
-        "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist."
+        "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist, adding 1 Dexterity and 3 Strength in fist mode.",
+        "stats": { "Dexterity": 1, "Strength (Fist Mode)": 3 }
       }
     ],
     "achievements": [
@@ -174,6 +178,24 @@
           "remainingSeconds": 169200,
           "note": "The closest currently authored event to the stated stairwell-search reference: 47 hours remain.",
           "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 20 }, "confidence": "confirmed" }]
+        },
+        {
+          "anchorOrder": 11,
+          "remainingSeconds": 266400,
+          "note": "Carl punches a slime with 3 days and 2 hours remaining; the slime destroys his glove and the right arm of his jacket.",
+          "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+        },
+        {
+          "anchorOrder": 13,
+          "remainingSeconds": 237600,
+          "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining.",
+          "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+        },
+        {
+          "anchorOrder": 16,
+          "remainingSeconds": 169200,
+          "note": "The War Gauntlet is received with just under two days remaining; this is retained as an approximate anchor until a primary-text timestamp is verified.",
+          "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "candidate" }]
         }
       ]
     }
@@ -354,7 +376,7 @@
       "order": 19,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
-      "position": { "floor": 1, "book": 1 },
+      "position": { "floor": 1, "book": 1, "chapter": 30 },
       "summary": "Carl reaches the stairs and completes the First Floor.",
       "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Dungeon Crawling" }, "confidence": "corroborated" }]
     }
