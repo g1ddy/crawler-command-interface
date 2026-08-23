@@ -543,7 +543,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
   return state;
 }
 
-export { projectCountdownState, formatCountdownDuration } from './countdowns.ts';
+export { projectCountdownState, formatCountdownDuration, isCountdownPhaseBreakEvent } from './countdowns.ts';
 
 export function projectState(
   docOrEvents: CrawlerTimelineDocument | CrawlerEvent[] | unknown,

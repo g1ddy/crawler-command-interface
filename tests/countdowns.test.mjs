@@ -4,6 +4,7 @@ import fs from "node:fs";
 import { compileFloorFiles } from "../app/domain/compiler.ts";
 import { projectCountdownState, formatCountdownDuration } from "../app/domain/projection.ts";
 import { getFloorEndSequence } from "../app/domain/floors.ts";
+import { validateCrawlerFloor, validateCrawlerTimeline } from "../app/domain/validation.ts";
 
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));
@@ -232,4 +233,103 @@ test("live-action appends extend floor end sequence and preserve historical coun
   assert.ok(stateSeq4);
   assert.equal(stateSeq4.status, "stated");
   assert.equal(stateSeq4.remainingSeconds, 417600);
+});
+
+test("phase-aware countdown monotonicity accepts legitimate reset boundaries and rejects intra-phase increases", () => {
+  // 1. Floor validation with explicit reset event
+  const floorWithReset = {
+    $schema: "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json",
+    authoringVersion: "crawler-floor/v2",
+    storyId: "dungeon-crawler-carl",
+    floor: {
+      id: "floor-reset-test",
+      ordinal: 1,
+      title: "Reset Floor",
+      book: 1,
+      bookTitle: "Book 1",
+      continuity: "canonical",
+      coverage: {
+        kind: "curated-critical",
+        statement: "Test floor coverage",
+        completeness: "partial",
+      },
+    },
+    sources: [{ id: "src-1", kind: "official-text", trust: "primary", title: "S1", url: "https://example.com" }],
+    catalog: { items: [], achievements: [] },
+    events: [
+      { id: "e1", order: 1, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Initial observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "e2", order: 2, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "System countdown reset for phase 2", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "e3", order: 3, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Phase 2 observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+    ],
+    countdowns: [
+      {
+        id: "cd-reset",
+        title: "Phase Reset Countdown",
+        target: "floor-collapse",
+        references: [
+          { anchorOrder: 1, remainingSeconds: 100, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorOrder: 2, remainingSeconds: 500000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorOrder: 3, remainingSeconds: 400000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+        ],
+      },
+    ],
+  };
+
+  const validFloorResult = validateCrawlerFloor(floorWithReset);
+  assert.equal(validFloorResult.valid, true, validFloorResult.errors.join("; "));
+
+  // 2. Intra-phase increase without reset fails floor validation
+  const floorWithoutReset = JSON.parse(JSON.stringify(floorWithReset));
+  floorWithoutReset.events[1].type = "NarrativeEvent";
+  floorWithoutReset.events[1].summary = "Normal event without reset";
+
+  const invalidFloorResult = validateCrawlerFloor(floorWithoutReset);
+  assert.equal(invalidFloorResult.valid, false);
+  assert.ok(invalidFloorResult.errors.some((err) => err.includes("increases from 100s at order #1 to 500000s at order #2")));
+
+  // 3. Intra-phase increase following a reset fails floor validation
+  const floorWithSecondIncrease = JSON.parse(JSON.stringify(floorWithReset));
+  floorWithSecondIncrease.countdowns[0].references[2].remainingSeconds = 600000;
+
+  const invalidSecondIncreaseResult = validateCrawlerFloor(floorWithSecondIncrease);
+  assert.equal(invalidSecondIncreaseResult.valid, false);
+  assert.ok(invalidSecondIncreaseResult.errors.some((err) => err.includes("increases from 500000s at order #2 to 600000s at order #3")));
+
+  // 4. Timeline validation with explicit reset event
+  const timelineWithReset = {
+    schemaVersion: "crawler-timeline/v2",
+    timeline: { id: "tl-reset-test", title: "Reset Timeline", story: { id: "dungeon-crawler-carl", title: "Story" } },
+    sources: [{ id: "src-1", kind: "official-text", trust: "primary", title: "S1", url: "https://example.com" }],
+    initialState: { crawler: { name: "CARL", level: 1, attributes: {}, condition: {} } },
+    events: [
+      { id: "te1", sequence: 10, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Initial observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "te2", sequence: 20, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Countdown reset by system", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "te3", sequence: 30, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Subsequent observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+    ],
+    countdowns: [
+      {
+        id: "cd-tl-reset",
+        title: "Timeline Reset Countdown",
+        floor: 1,
+        target: "floor-collapse",
+        references: [
+          { sequence: 10, remainingSeconds: 200, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { sequence: 20, remainingSeconds: 600000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { sequence: 30, remainingSeconds: 500000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+        ],
+      },
+    ],
+  };
+
+  const validTimelineResult = validateCrawlerTimeline(timelineWithReset);
+  assert.equal(validTimelineResult.valid, true, validTimelineResult.errors.join("; "));
+
+  // 5. Timeline intra-phase increase without reset fails validation
+  const timelineWithoutReset = JSON.parse(JSON.stringify(timelineWithReset));
+  timelineWithoutReset.events[1].type = "NarrativeEvent";
+  timelineWithoutReset.events[1].summary = "Normal event without reset";
+
+  const invalidTimelineResult = validateCrawlerTimeline(timelineWithoutReset);
+  assert.equal(invalidTimelineResult.valid, false);
+  assert.ok(invalidTimelineResult.errors.some((err) => err.includes("increases from 200s at sequence #10 to 600000s at sequence #20")));
 });
