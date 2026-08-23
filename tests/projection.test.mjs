@@ -218,7 +218,7 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   const floor2Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-2-collapse");
   assert.deepEqual(
     floor2Countdown?.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
-    [[20, 536400], [23, 360000], [29, 165600]]
+    [[20, 536400], [23, 360000], [28, 410400]]
   );
   const floor2End = projectState(doc, 31);
   assert.equal(floor2End.crawler.level, 13);
@@ -242,6 +242,30 @@ test("compiler rejects floor files with conflicting item definitions", () => {
     () => compileFloorFiles([docA, docB]),
     /Conflicting catalog item definition/
   );
+});
+
+test("floor authoring supports replayable EffectApplied events", () => {
+  const doc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
+  doc.events.push({
+    id: "evt-f1-020-effect",
+    order: 20,
+    type: "EffectApplied",
+    effectId: "effect-f1-test",
+    name: "Test Effect",
+    effectType: "good",
+    durationSeconds: 60,
+    description: "A schema and compiler regression test.",
+    statModifiers: { Strength: 1 },
+    position: { floor: 1, book: 1, chapter: 30 },
+    summary: "Carl receives a test effect.",
+    evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+  });
+
+  assert.equal(validateCrawlerFloor(doc).valid, true);
+  const compiled = compileFloorFiles([doc]);
+  const state = projectState(compiled, 20);
+  assert.equal(state.effects[0]?.effectId, "effect-f1-test");
+  assert.equal(state.effects[0]?.statModifiers?.Strength, 1);
 });
 
 test("compiler rejects floor files with mismatched storyId", () => {
