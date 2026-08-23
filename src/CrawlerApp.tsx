@@ -792,7 +792,7 @@ function Inventory({
                       aria-label={`${x.name} (${x.rarity})`}
                     >
                       <i>{x.icon}</i>
-                      <b>{x.quantity}</b>
+                      <b>{x.quantityObject && !x.quantityObject.known ? (x.quantityObject.minimum ? `≥${x.quantityObject.minimum}` : "?") : x.quantity}</b>
                       <small>{x.name}</small>
                     </button>
                   ))}
@@ -825,7 +825,11 @@ function Inventory({
                     </div>
                     <div>
                       <dt>STACK</dt>
-                      <dd>{selectedItem.quantity} / {selectedItem.maxStack}</dd>
+                      <dd>
+                        {selectedItem.quantityObject && !selectedItem.quantityObject.known
+                          ? (selectedItem.quantityObject.minimum ? `≥${selectedItem.quantityObject.minimum} / ${selectedItem.maxStack} (Unknown)` : `Unknown / ${selectedItem.maxStack}`)
+                          : `${selectedItem.quantity} / ${selectedItem.maxStack}`}
+                      </dd>
                     </div>
                     <div>
                       <dt>TYPE</dt>

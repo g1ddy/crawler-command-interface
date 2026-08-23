@@ -36,7 +36,7 @@ function parseQuantity(rawQty: unknown): { numericQuantity: number; qtyObject?: 
     if (qObj.known) {
       return { numericQuantity: qObj.value ?? 1, qtyObject: qObj };
     } else {
-      return { numericQuantity: qObj.minimum ?? 1, qtyObject: qObj };
+      return { numericQuantity: qObj.minimum ?? 0, qtyObject: qObj };
     }
   }
   return { numericQuantity: 1 };
