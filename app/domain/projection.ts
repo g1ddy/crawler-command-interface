@@ -97,7 +97,10 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
 
   const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
   const quests = timelineState
-    ? ((timelineState.quests as Quest[]) || []).map((q) => ({ ...q }))
+    ? ((timelineState.quests as Quest[]) || []).map((q) => ({
+        ...q,
+        status: q.status || 'active',
+      }))
     : defaultFloor6Quests;
 
   const broadcast = timelineState
