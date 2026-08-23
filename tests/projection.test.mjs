@@ -607,6 +607,54 @@ test("HotlistUpdated event modifies hotlist skill slots", () => {
   assert.equal(state.hotlist[2], "sk-custom-fireball");
 });
 
+test("item requirement evaluation against live state vs historical state during timeline replay", () => {
+  const events = [
+    {
+      id: "evt-acq-sword",
+      sequence: 1,
+      type: "ItemAcquired",
+      summary: "Acquired Heavy Greatsword",
+      item: {
+        instanceId: "inst-greatsword",
+        itemId: "item-greatsword",
+        name: "Heavy Greatsword",
+        category: "equipment",
+        slot: "SPECIAL",
+        quantity: 1,
+        requirements: { Strength: 25 },
+      },
+    },
+    {
+      id: "evt-attr-up",
+      sequence: 2,
+      type: "AttributeModified",
+      attribute: "Strength",
+      source: "allocation",
+      delta: 1,
+      summary: "Allocated +1 point to Strength",
+    },
+  ];
+
+  // At sequence 1 (replay view), historical strength is 24 (default initial strength)
+  const historicalState = projectState(events, 1);
+  assert.equal(historicalState.crawler.attributes.Strength, 24);
+
+  // At sequence 2 (live state), live strength is 25
+  const liveState = projectState(events, 2);
+  assert.equal(liveState.crawler.attributes.Strength, 25);
+
+  const item = historicalState.inventory.find((i) => i.instanceId === "inst-greatsword");
+  assert.ok(item);
+
+  // Evaluating requirements against historical crawler state fails
+  const historicalReqs = checkItemRequirements(historicalState.crawler, item.requirements);
+  assert.equal(historicalReqs.met, false);
+
+  // Evaluating requirements against live crawler state succeeds (matching emission guard)
+  const liveReqs = checkItemRequirements(liveState.crawler, item.requirements);
+  assert.equal(liveReqs.met, true);
+});
+
 test("QuestUpdated event updates quest status and filtering excludes non-active quests from active tab", () => {
   let state = createInitialState();
 
