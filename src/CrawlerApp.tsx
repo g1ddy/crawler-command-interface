@@ -1448,6 +1448,19 @@ function Journal({
 }) {
   const [tab, setTab] = useState<string>("ACTIVE");
 
+  const activeQuests = useMemo(() => state.quests.filter((q) => q.status === "active"), [state.quests]);
+  const completedQuests = useMemo(() => state.quests.filter((q) => q.status === "completed"), [state.quests]);
+  const failedQuests = useMemo(() => state.quests.filter((q) => q.status === "failed"), [state.quests]);
+
+  const displayedQuests =
+    tab === "ACTIVE"
+      ? activeQuests
+      : tab === "COMPLETED"
+      ? completedQuests
+      : tab === "FAILED"
+      ? failedQuests
+      : [];
+
   return (
     <section className="view-content">
       <header className="title">
@@ -1456,20 +1469,40 @@ function Journal({
           <h1>JOURNAL</h1>
         </div>
         <div className="subnav">
-          {["ACTIVE", "FLOOR RULES", "LOG"].map((x) => (
+          {["ACTIVE", "COMPLETED", "FAILED", "FLOOR RULES", "LOG"].map((x) => (
             <button className={tab === x ? "on" : ""} onClick={() => setTab(x)} key={x}>
               {x}
+              {x === "ACTIVE" && ` (${activeQuests.length})`}
+              {x === "COMPLETED" && ` (${completedQuests.length})`}
+              {x === "FAILED" && ` (${failedQuests.length})`}
             </button>
           ))}
         </div>
       </header>
 
-      {tab === "ACTIVE" ? (
+      {tab === "ACTIVE" || tab === "COMPLETED" || tab === "FAILED" ? (
         <div className="journal">
           <div>
-            {state.quests.map((q) => (
-              <Quest key={q.questId} title={q.title} urgency={q.urgency} goals={q.goals} rewards={q.rewards} />
-            ))}
+            {displayedQuests.length > 0 ? (
+              displayedQuests.map((q) => (
+                <Quest
+                  key={q.questId}
+                  title={q.title}
+                  urgency={q.urgency}
+                  goals={q.goals}
+                  rewards={q.rewards}
+                  status={q.status}
+                />
+              ))
+            ) : (
+              <p style={{ fontSize: "11px", color: "#8fa1aa", padding: "12px 0" }}>
+                {tab === "ACTIVE"
+                  ? "No active quests."
+                  : tab === "COMPLETED"
+                  ? "No completed quests."
+                  : "No failed quests."}
+              </p>
+            )}
           </div>
 
           <Panel title="RECENT PROGRESS & ACHIEVEMENTS">
@@ -1535,17 +1568,37 @@ function Quest({
   urgency,
   goals,
   rewards,
+  status = "active",
 }: {
   title: string;
   urgency: string;
   goals: string[];
   rewards: string;
+  status?: string;
 }) {
   return (
-    <article className="quest">
+    <article className={`quest ${status}`}>
       <header>
         <h2>{title}</h2>
-        <i>{urgency}</i>
+        <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+          <i
+            style={{
+              fontStyle: "normal",
+              fontSize: "9px",
+              padding: "5px",
+              background:
+                status === "completed" ? "#133822" : status === "failed" ? "#4a1215" : "#103242",
+              color:
+                status === "completed" ? "#6bf1b1" : status === "failed" ? "#ff8a90" : "#86cbff",
+              border: `1px solid ${
+                status === "completed" ? "#288e58" : status === "failed" ? "#9e2d35" : "#1f5873"
+              }`,
+            }}
+          >
+            {status.toUpperCase()}
+          </i>
+          <i>{urgency}</i>
+        </div>
       </header>
       <p>Dungeon conditions are unstable. Complete this before failure becomes permanent.</p>
       <ul>
