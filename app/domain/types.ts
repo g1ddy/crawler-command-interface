@@ -164,8 +164,29 @@ export interface ItemConsumedEvent extends TimelineEventBase {
   manaRestored?: number;
 }
 
+export interface ItemDiscardedEvent extends TimelineEventBase {
+  type: 'ItemDiscarded';
+  itemInstanceId: string;
+  quantity?: QuantityValue;
+  reason?: string;
+}
+
+export interface ItemQuantityChangedEvent extends TimelineEventBase {
+  type: 'ItemQuantityChanged';
+  itemInstanceId: string;
+  delta: number;
+  quantity?: QuantityValue;
+  reason?: string;
+}
+
 export interface ItemEquippedEvent extends TimelineEventBase {
   type: 'ItemEquipped';
+  itemInstanceId: string;
+  slot?: string;
+}
+
+export interface ItemUnequippedEvent extends TimelineEventBase {
+  type: 'ItemUnequipped';
   itemInstanceId: string;
   slot?: string;
 }
@@ -184,6 +205,112 @@ export interface NarrativeEvent extends TimelineEventBase {
 export interface LevelChangedEvent extends TimelineEventBase {
   type: 'LevelChanged';
   level: number;
+  previousLevel?: number;
+  reason?: string;
+}
+
+export interface AttributeModifiedEvent extends TimelineEventBase {
+  type: 'AttributeModified';
+  attribute: AttributeName | string;
+  delta: number;
+  source?: string;
+  reason?: string;
+  isAllocation?: boolean;
+}
+
+export interface ConditionChangedEvent extends TimelineEventBase {
+  type: 'ConditionChanged';
+  currentHealth?: number;
+  maxHealth?: number;
+  healthDelta?: number;
+  currentMana?: number;
+  maxMana?: number;
+  manaDelta?: number;
+  currentStamina?: number;
+  maxStamina?: number;
+  staminaDelta?: number;
+  reason?: string;
+}
+
+export interface XPChangedEvent extends TimelineEventBase {
+  type: 'XPChanged';
+  xp?: number;
+  xpDelta?: number;
+  maxXp?: number;
+  reason?: string;
+}
+
+export interface QuestUpdatedEvent extends TimelineEventBase {
+  type: 'QuestUpdated';
+  questId: string;
+  title?: string;
+  urgency?: 'URGENT' | 'STANDARD' | 'COMPLETED';
+  goals?: string[];
+  rewards?: string;
+  status: 'active' | 'completed' | 'failed';
+}
+
+export interface HotlistUpdatedEvent extends TimelineEventBase {
+  type: 'HotlistUpdated';
+  hotlist?: string[];
+  skillId?: string;
+  index?: number;
+}
+
+export interface EffectExpiredEvent extends TimelineEventBase {
+  type: 'EffectExpired';
+  effectId: string;
+  reason?: string;
+}
+
+export interface CountdownResetEvent extends TimelineEventBase {
+  type: 'CountdownReset';
+  countdownId: string;
+  newRemainingSeconds?: number;
+  phase?: string;
+  reason?: string;
+}
+
+export interface CountdownPausedEvent extends TimelineEventBase {
+  type: 'CountdownPaused';
+  countdownId: string;
+  phase?: string;
+  reason?: string;
+}
+
+export interface CountdownResumedEvent extends TimelineEventBase {
+  type: 'CountdownResumed';
+  countdownId: string;
+  phase?: string;
+  reason?: string;
+}
+
+export interface CountdownPhaseChangedEvent extends TimelineEventBase {
+  type: 'CountdownPhaseChanged';
+  countdownId: string;
+  fromPhase?: string;
+  toPhase?: string;
+  newRemainingSeconds?: number;
+  reason?: string;
+}
+
+export interface PatronInfo {
+  id: string;
+  name: string;
+  tier?: string;
+  contribution?: string;
+}
+
+export interface BroadcastUpdatedEvent extends TimelineEventBase {
+  type: 'BroadcastUpdated';
+  viewers?: number;
+  viewerDelta?: string;
+  followers?: number;
+  fameRank?: string;
+  sponsorInterest?: boolean;
+  patrons?: PatronInfo[];
+  favorites?: (string | PatronInfo)[];
+  metrics?: Record<string, unknown>;
 }
 
 export type TimelineEvent =
@@ -191,10 +318,24 @@ export type TimelineEvent =
   | ItemAcquiredEvent
   | ItemCraftedEvent
   | ItemConsumedEvent
+  | ItemDiscardedEvent
+  | ItemQuantityChangedEvent
   | ItemEquippedEvent
+  | ItemUnequippedEvent
   | PermanentEntitlementGrantedEvent
   | NarrativeEvent
   | LevelChangedEvent
+  | AttributeModifiedEvent
+  | ConditionChangedEvent
+  | XPChangedEvent
+  | QuestUpdatedEvent
+  | HotlistUpdatedEvent
+  | EffectExpiredEvent
+  | CountdownResetEvent
+  | CountdownPausedEvent
+  | CountdownResumedEvent
+  | CountdownPhaseChangedEvent
+  | BroadcastUpdatedEvent
   | TimelineEventBase;
 
 export interface TimelineSnapshot {
@@ -319,6 +460,7 @@ export interface FloorEventBase {
   itemInstanceId?: string;
   slot?: string;
   level?: number;
+  previousLevel?: number;
   skillId?: string;
   name?: string;
   icon?: string;
@@ -335,6 +477,43 @@ export interface FloorEventBase {
   followers?: number;
   fameRank?: string;
   sponsorInterest?: boolean;
+  attribute?: string;
+  delta?: number;
+  source?: string;
+  reason?: string;
+  isAllocation?: boolean;
+  currentHealth?: number;
+  maxHealth?: number;
+  healthDelta?: number;
+  currentMana?: number;
+  maxMana?: number;
+  manaDelta?: number;
+  currentStamina?: number;
+  maxStamina?: number;
+  staminaDelta?: number;
+  xp?: number;
+  xpDelta?: number;
+  maxXp?: number;
+  quantity?: QuantityValue;
+  outcome?: string;
+  healthRestored?: number;
+  manaRestored?: number;
+  questId?: string;
+  title?: string;
+  urgency?: 'URGENT' | 'STANDARD' | 'COMPLETED';
+  goals?: string[];
+  rewards?: string;
+  status?: 'active' | 'completed' | 'failed';
+  hotlist?: string[];
+  index?: number;
+  countdownId?: string;
+  newRemainingSeconds?: number;
+  phase?: string;
+  fromPhase?: string;
+  toPhase?: string;
+  patrons?: PatronInfo[];
+  favorites?: (string | PatronInfo)[];
+  metrics?: Record<string, unknown>;
 }
 
 export interface FloorCountdownReference {

@@ -80,6 +80,48 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
     }
   }
 
+  // Countdowns set
+  const countdownIds = new Set<string>();
+  for (const countdown of floorDoc.countdowns || []) {
+    if (countdownIds.has(countdown.id)) {
+      errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in floor document.`);
+    }
+    countdownIds.add(countdown.id);
+
+    const anchorOrders = new Set<number>();
+    for (const reference of countdown.references) {
+      if (!floorDoc.events.some((event) => event.order === reference.anchorOrder)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor order #${reference.anchorOrder}.`);
+      }
+      if (anchorOrders.has(reference.anchorOrder)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate anchor order #${reference.anchorOrder}.`);
+      }
+      anchorOrders.add(reference.anchorOrder);
+      for (const evidence of reference.evidence) {
+        if (!sourceIds.has(evidence.sourceId)) {
+          errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in floor sources catalog.`);
+        }
+      }
+    }
+
+    const referencesByOrder = [...countdown.references].sort((a, b) => a.anchorOrder - b.anchorOrder);
+    for (let i = 1; i < referencesByOrder.length; i++) {
+      const previous = referencesByOrder[i - 1];
+      const current = referencesByOrder[i];
+      const hasPhaseBreak = floorDoc.events.some(
+        (event) =>
+          event.order > previous.anchorOrder &&
+          event.order <= current.anchorOrder &&
+          isCountdownPhaseBreakEvent(event)
+      );
+      if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
+        errors.push(
+          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at order #${previous.anchorOrder} to ${current.remainingSeconds}s at order #${current.anchorOrder}. Model an explicit reset before increasing remaining time.`
+        );
+      }
+    }
+  }
+
   // c) Event IDs uniqueness, contiguous floor-local order, source & position checks
   const eventIds = new Set<string>();
   let expectedOrder = 1;
@@ -131,45 +173,10 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
           `Domain error: ${eventRef} references itemId "${event.item.itemId}" not found in floor catalog.`
         );
       }
-    }
-  }
 
-  const countdownIds = new Set<string>();
-  for (const countdown of floorDoc.countdowns || []) {
-    if (countdownIds.has(countdown.id)) {
-      errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in floor document.`);
-    }
-    countdownIds.add(countdown.id);
-
-    const anchorOrders = new Set<number>();
-    for (const reference of countdown.references) {
-      if (!floorDoc.events.some((event) => event.order === reference.anchorOrder)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor order #${reference.anchorOrder}.`);
-      }
-      if (anchorOrders.has(reference.anchorOrder)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate anchor order #${reference.anchorOrder}.`);
-      }
-      anchorOrders.add(reference.anchorOrder);
-      for (const evidence of reference.evidence) {
-        if (!sourceIds.has(evidence.sourceId)) {
-          errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in floor sources catalog.`);
-        }
-      }
-    }
-
-    const referencesByOrder = [...countdown.references].sort((a, b) => a.anchorOrder - b.anchorOrder);
-    for (let i = 1; i < referencesByOrder.length; i++) {
-      const previous = referencesByOrder[i - 1];
-      const current = referencesByOrder[i];
-      const hasPhaseBreak = floorDoc.events.some(
-        (event) =>
-          event.order > previous.anchorOrder &&
-          event.order <= current.anchorOrder &&
-          isCountdownPhaseBreakEvent(event)
-      );
-      if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
+      if (event.countdownId && !countdownIds.has(event.countdownId)) {
         errors.push(
-          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at order #${previous.anchorOrder} to ${current.remainingSeconds}s at order #${current.anchorOrder}. Model an explicit reset before increasing remaining time.`
+          `Domain error: ${eventRef} references countdownId "${event.countdownId}" not found in floor countdowns.`
         );
       }
     }
@@ -255,6 +262,47 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
     }
   }
 
+  const countdownIds = new Set<string>();
+  for (const countdown of timelineDoc.countdowns || []) {
+    if (countdownIds.has(countdown.id)) {
+      errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in timeline document.`);
+    }
+    countdownIds.add(countdown.id);
+
+    const referenceSequences = new Set<number>();
+    for (const reference of countdown.references) {
+      if (!timelineDoc.events.some((event) => event.sequence === reference.sequence)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" references missing event sequence #${reference.sequence}.`);
+      }
+      if (referenceSequences.has(reference.sequence)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate reference sequence #${reference.sequence}.`);
+      }
+      referenceSequences.add(reference.sequence);
+      for (const evidence of reference.evidence) {
+        if (!sourceIds.has(evidence.sourceId)) {
+          errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in sources catalog.`);
+        }
+      }
+    }
+
+    const referencesBySequence = [...countdown.references].sort((a, b) => a.sequence - b.sequence);
+    for (let i = 1; i < referencesBySequence.length; i++) {
+      const previous = referencesBySequence[i - 1];
+      const current = referencesBySequence[i];
+      const hasPhaseBreak = timelineDoc.events.some(
+        (event) =>
+          event.sequence > previous.sequence &&
+          event.sequence <= current.sequence &&
+          isCountdownPhaseBreakEvent(event)
+      );
+      if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
+        errors.push(
+          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at sequence #${previous.sequence} to ${current.remainingSeconds}s at sequence #${current.sequence}. Model an explicit reset before increasing remaining time.`
+        );
+      }
+    }
+  }
+
   // b) Event IDs uniqueness, sequence order, evidence source checks, item lifecycle
   const eventIds = new Set<string>();
   let lastSequence = 0;
@@ -303,6 +351,15 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
         }
       }
 
+      // Countdown reference check
+      if ('countdownId' in event && typeof event.countdownId === 'string' && event.countdownId) {
+        if (!countdownIds.has(event.countdownId)) {
+          errors.push(
+            `Domain error: ${eventRef} references countdownId "${event.countdownId}" not found in countdowns catalog.`
+          );
+        }
+      }
+
       // Item history & reference checks
       if (
         (event.type === 'ItemAcquired' || event.type === 'ItemCrafted') &&
@@ -320,47 +377,6 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
             `Domain error: ${eventRef} references itemInstanceId "${event.itemInstanceId}" which was not acquired prior to or at this sequence.`
           );
         }
-      }
-    }
-  }
-
-  const countdownIds = new Set<string>();
-  for (const countdown of timelineDoc.countdowns || []) {
-    if (countdownIds.has(countdown.id)) {
-      errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in timeline document.`);
-    }
-    countdownIds.add(countdown.id);
-
-    const referenceSequences = new Set<number>();
-    for (const reference of countdown.references) {
-      if (!timelineDoc.events.some((event) => event.sequence === reference.sequence)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" references missing event sequence #${reference.sequence}.`);
-      }
-      if (referenceSequences.has(reference.sequence)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate reference sequence #${reference.sequence}.`);
-      }
-      referenceSequences.add(reference.sequence);
-      for (const evidence of reference.evidence) {
-        if (!sourceIds.has(evidence.sourceId)) {
-          errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in sources catalog.`);
-        }
-      }
-    }
-
-    const referencesBySequence = [...countdown.references].sort((a, b) => a.sequence - b.sequence);
-    for (let i = 1; i < referencesBySequence.length; i++) {
-      const previous = referencesBySequence[i - 1];
-      const current = referencesBySequence[i];
-      const hasPhaseBreak = timelineDoc.events.some(
-        (event) =>
-          event.sequence > previous.sequence &&
-          event.sequence <= current.sequence &&
-          isCountdownPhaseBreakEvent(event)
-      );
-      if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
-        errors.push(
-          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at sequence #${previous.sequence} to ${current.remainingSeconds}s at sequence #${current.sequence}. Model an explicit reset before increasing remaining time.`
-        );
       }
     }
   }

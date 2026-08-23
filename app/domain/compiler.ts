@@ -5,6 +5,7 @@ import type {
   CrawlerFloorDocument,
   CrawlerTimelineDocument,
   FloorSegment,
+  NarrativeEventKind,
   TimelineEvent,
   TimelineItem,
   TimelineSource,
@@ -201,49 +202,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           evidence: rawEv.evidence,
           entitlement: rawEv.entitlement!,
         });
-      } else if (
-        rawEv.type === 'ItemEquipped' ||
-        rawEv.type === 'ItemUnequipped' ||
-        rawEv.type === 'LevelChanged' ||
-        rawEv.type === 'SkillGranted' ||
-        rawEv.type === 'EffectApplied' ||
-        rawEv.type === 'BroadcastUpdated'
-      ) {
-        const statePayload = Object.fromEntries(
-          Object.entries({
-            itemInstanceId: rawEv.itemInstanceId,
-            slot: rawEv.slot,
-            level: rawEv.level,
-            skillId: rawEv.skillId,
-            name: rawEv.name,
-            icon: rawEv.icon,
-            rank: rawEv.rank,
-            description: rawEv.description,
-            cooldown: rawEv.cooldown,
-            category: rawEv.category,
-            effectId: rawEv.effectId,
-            effectType: rawEv.effectType,
-            durationSeconds: rawEv.durationSeconds,
-            statModifiers: rawEv.statModifiers,
-            viewers: rawEv.viewers,
-            viewerDelta: rawEv.viewerDelta,
-            followers: rawEv.followers,
-            fameRank: rawEv.fameRank,
-            sponsorInterest: rawEv.sponsorInterest,
-          }).filter(([, value]) => value !== undefined)
-        );
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: rawEv.type,
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          ...statePayload,
-        });
-      } else {
+      } else if (rawEv.type === 'NarrativeEvent') {
         compiledEvents.push({
           id: rawEv.id,
           sequence: seq,
@@ -255,6 +214,20 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           causationId: rawEv.causationId,
           evidence: rawEv.evidence,
         });
+      } else {
+        // Preserve all structured event properties losslessly
+        const { id, order, position, ...payload } = rawEv;
+        compiledEvents.push({
+          id: rawEv.id,
+          sequence: seq,
+          type: rawEv.type,
+          position: pos,
+          summary: rawEv.summary,
+          correlationId: rawEv.correlationId,
+          causationId: rawEv.causationId,
+          evidence: rawEv.evidence,
+          ...payload,
+        } as TimelineEvent);
       }
     }
 
@@ -351,15 +324,3 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
 
   return compiledDoc;
 }
-
-type NarrativeEventKind =
-  | 'floor-entered'
-  | 'floor-exited'
-  | 'encounter-started'
-  | 'encounter-resolved'
-  | 'location-discovered'
-  | 'dialogue'
-  | 'choice-made'
-  | 'transformation'
-  | 'party-changed'
-  | 'other';

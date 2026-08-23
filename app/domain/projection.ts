@@ -200,14 +200,16 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     (event.category as EventCategory) ||
     (event.type === 'ItemAcquired' || event.type === 'ItemCrafted'
       ? 'loot'
-      : event.type === 'ItemConsumed'
+      : event.type === 'ItemConsumed' || event.type === 'ItemDiscarded' || event.type === 'ItemQuantityChanged'
       ? 'combat'
-      : event.type === 'ItemEquipped'
+      : event.type === 'ItemEquipped' || event.type === 'ItemUnequipped'
       ? 'system'
-      : event.type === 'AchievementUnlocked'
+      : event.type === 'AchievementUnlocked' || event.type === 'LevelChanged' || event.type === 'XPChanged'
       ? 'levelup'
-      : event.type === 'PermanentEntitlementGranted'
-      ? 'levelup'
+      : event.type === 'QuestUpdated'
+      ? 'quest'
+      : event.type === 'SkillGranted' || event.type === 'HotlistUpdated'
+      ? 'skills'
       : 'system');
 
   const summary = typeof event.summary === 'string' ? event.summary : 'Event recorded';
@@ -382,7 +384,20 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
 
     case 'ItemDiscarded': {
       const instanceId = String(event.itemInstanceId);
-      state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
+      const item = state.inventory.find((i) => i.instanceId === instanceId);
+      if (item) {
+        if (event.quantity !== undefined) {
+          const { numericQuantity } = parseQuantity(event.quantity);
+          item.quantity -= numericQuantity;
+          if (item.quantity <= 0) {
+            state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
+          }
+        } else {
+          state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
+        }
+      } else {
+        state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
+      }
       for (const slot in state.equippedSlots) {
         if (state.equippedSlots[slot] === instanceId) {
           state.equippedSlots[slot] = null;
@@ -427,11 +442,13 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const attr = event.attribute as AttributeName;
       if (attr in state.crawler.attributes) {
         const delta = Number(event.delta || 0);
-        if (event.source === 'allocation') {
+        if (event.source === 'allocation' || event.isAllocation) {
           state.crawler.attributes[attr] += delta;
           state.crawler.availableAttributePoints = Math.max(0, state.crawler.availableAttributePoints - delta);
         } else if (event.source === 'permanent_modifier') {
           state.crawler.permanentAttributeModifiers[attr] += delta;
+        } else {
+          state.crawler.attributes[attr] += delta;
         }
       }
       break;
@@ -441,6 +458,16 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const level = Number(event.level);
       if (Number.isInteger(level) && level > 0) {
         state.crawler.level = level;
+      }
+      break;
+    }
+
+    case 'XPChanged': {
+      if (event.maxXp !== undefined) state.crawler.maxXp = Number(event.maxXp);
+      if (event.xp !== undefined) {
+        state.crawler.xp = Number(event.xp);
+      } else if (event.xpDelta !== undefined) {
+        state.crawler.xp = Math.max(0, state.crawler.xp + Number(event.xpDelta));
       }
       break;
     }
@@ -530,12 +557,44 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     }
 
     case 'ConditionChanged': {
-      if (event.currentHealth !== undefined) state.crawler.condition.currentHealth = Number(event.currentHealth);
       if (event.maxHealth !== undefined) state.crawler.condition.maxHealth = Number(event.maxHealth);
-      if (event.currentMana !== undefined) state.crawler.condition.currentMana = Number(event.currentMana);
+      if (event.currentHealth !== undefined) {
+        state.crawler.condition.currentHealth = Number(event.currentHealth);
+        if (state.crawler.condition.currentHealth > state.crawler.condition.maxHealth) {
+          state.crawler.condition.maxHealth = state.crawler.condition.currentHealth;
+        }
+      } else if (event.healthDelta !== undefined) {
+        state.crawler.condition.currentHealth = Math.min(
+          state.crawler.condition.maxHealth,
+          Math.max(0, state.crawler.condition.currentHealth + Number(event.healthDelta))
+        );
+      }
+
       if (event.maxMana !== undefined) state.crawler.condition.maxMana = Number(event.maxMana);
-      if (event.currentStamina !== undefined) state.crawler.condition.currentStamina = Number(event.currentStamina);
+      if (event.currentMana !== undefined) {
+        state.crawler.condition.currentMana = Number(event.currentMana);
+        if (state.crawler.condition.currentMana > state.crawler.condition.maxMana) {
+          state.crawler.condition.maxMana = state.crawler.condition.currentMana;
+        }
+      } else if (event.manaDelta !== undefined) {
+        state.crawler.condition.currentMana = Math.min(
+          state.crawler.condition.maxMana,
+          Math.max(0, state.crawler.condition.currentMana + Number(event.manaDelta))
+        );
+      }
+
       if (event.maxStamina !== undefined) state.crawler.condition.maxStamina = Number(event.maxStamina);
+      if (event.currentStamina !== undefined) {
+        state.crawler.condition.currentStamina = Number(event.currentStamina);
+        if (state.crawler.condition.currentStamina > state.crawler.condition.maxStamina) {
+          state.crawler.condition.maxStamina = state.crawler.condition.currentStamina;
+        }
+      } else if (event.staminaDelta !== undefined) {
+        state.crawler.condition.currentStamina = Math.min(
+          state.crawler.condition.maxStamina,
+          Math.max(0, state.crawler.condition.currentStamina + Number(event.staminaDelta))
+        );
+      }
       break;
     }
   }
