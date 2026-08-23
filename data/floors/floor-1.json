@@ -157,6 +157,27 @@
       }
     ]
   },
+  "countdowns": [
+    {
+      "id": "countdown-floor-1-collapse",
+      "title": "First Floor Collapse",
+      "target": "floor-collapse",
+      "references": [
+        {
+          "anchorOrder": 4,
+          "remainingSeconds": 417600,
+          "note": "The closest currently authored event to the stated post-tutorial reference: 4 days and 20 hours remain.",
+          "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 4 }, "confidence": "confirmed" }]
+        },
+        {
+          "anchorOrder": 15,
+          "remainingSeconds": 169200,
+          "note": "The closest currently authored event to the stated stairwell-search reference: 47 hours remain.",
+          "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 20 }, "confidence": "confirmed" }]
+        }
+      ]
+    }
+  ],
   "events": [
     {
       "id": "evt-f1-001-entered",
