@@ -44,6 +44,10 @@
       "minItems": 1,
       "items": { "$ref": "#/$defs/event" }
     },
+    "countdowns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/countdown" }
+    },
     "snapshots": {
       "description": "Optional projection caches. Regenerate after changing initialState or events.",
       "type": "array",
@@ -145,6 +149,29 @@
         "chapter": { "type": "integer", "minimum": 1 },
         "scene": { "type": "integer", "minimum": 1 },
         "elapsedSeconds": { "$ref": "#/$defs/nonNegativeInteger" }
+      }
+    },
+    "countdownReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "remainingSeconds", "evidence"],
+      "properties": {
+        "sequence": { "$ref": "#/$defs/positiveInteger" },
+        "remainingSeconds": { "$ref": "#/$defs/nonNegativeInteger" },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "countdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "floor", "target", "references"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "floor": { "$ref": "#/$defs/positiveInteger" },
+        "target": { "const": "floor-collapse" },
+        "references": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/countdownReference" } }
       }
     },
     "rarity": { "enum": ["common", "uncommon", "rare", "epic", "legendary", "celestial", "bronze", "silver", "gold", "platinum", "unknown"] },
