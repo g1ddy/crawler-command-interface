@@ -1506,17 +1506,19 @@ function Journal({
           </div>
 
           <Panel title="RECENT PROGRESS & ACHIEVEMENTS">
-            {state.achievements.map((ach) => (
-              <div className="achievement" key={ach.achievementId}>
-                <span>{ach.icon}</span>
-                <div>
-                  <p className="eyebrow">ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
-                  <h1>{ach.title}</h1>
-                  <p>{ach.description}</p>
-                  <b>{ach.rewards}</b>
+            {[...state.achievements]
+              .sort((a, b) => b.unlockedAtSequence - a.unlockedAtSequence)
+              .map((ach) => (
+                <div className="achievement" key={ach.achievementId}>
+                  <span>{ach.icon}</span>
+                  <div>
+                    <p className="eyebrow">ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
+                    <h1>{ach.title}</h1>
+                    <p>{ach.description}</p>
+                    <b>{ach.rewards}</b>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
 
             <div className="log">
               {state.recentLogs.slice(0, 5).map((l) => (
@@ -1614,9 +1616,13 @@ function Quest({
 }
 
 function Achievements({ achievements }: { achievements: CrawlerState["achievements"] }) {
+  const sortedAchievements = [...achievements].sort(
+    (a, b) => b.unlockedAtSequence - a.unlockedAtSequence
+  );
+
   return (
     <div className="achievements">
-      {achievements.map((ach) => (
+      {sortedAchievements.map((ach) => (
         <div className="achievement" key={ach.achievementId}>
           <span>{ach.icon}</span>
           <div>
