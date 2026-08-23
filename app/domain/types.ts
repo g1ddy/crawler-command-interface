@@ -212,6 +212,21 @@ export interface TimelineCountdown {
   references: CountdownReference[];
 }
 
+export interface ActiveCountdownState {
+  id: string;
+  title: string;
+  floor: number;
+  target: 'floor-collapse';
+  remainingSeconds: number;
+  status: 'stated' | 'estimated';
+  basis: 'exact-reference' | 'elapsed-duration' | 'sequence-position';
+  confidence: 'confirmed' | 'corroborated' | 'candidate' | 'disputed' | 'low-confidence';
+  formattedTime: string;
+  formattedLabel: string;
+  referencePoints: CountdownReference[];
+  note?: string;
+}
+
 export interface FloorSegment {
   id: string;
   ordinal: number;

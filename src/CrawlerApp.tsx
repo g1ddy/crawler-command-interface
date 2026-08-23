@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
-import { projectState } from "../app/domain/projection";
+import { projectState, projectCountdownState } from "../app/domain/projection";
 import { getFloorEndSequence } from "../app/domain/floors";
 import { validateCrawlerTimeline } from "../app/domain/validation";
 import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats";
@@ -84,6 +84,10 @@ export default function CrawlerApp() {
     if (selectedFloorOrdinal === 'all') return null;
     return timelineDoc.floors?.find((f) => f.ordinal === selectedFloorOrdinal);
   }, [timelineDoc, selectedFloorOrdinal]);
+
+  const activeCountdown = useMemo(() => {
+    return projectCountdownState(timelineDoc, currentSeq, selectedFloorOrdinal);
+  }, [timelineDoc, currentSeq, selectedFloorOrdinal]);
 
   const floorHudTitle = currentFloorSegment
     ? `FLOOR ${currentFloorSegment.ordinal}: ${currentFloorSegment.title}`
@@ -227,7 +231,9 @@ export default function CrawlerApp() {
 
       <div className="timer">
         <span>{floorHudTitle.toUpperCase()}</span>
-        <b>LEVEL COLLAPSE IN {h}:{m}:{s}</b>
+        <b>
+          LEVEL COLLAPSE IN {activeCountdown ? activeCountdown.formattedTime.toUpperCase() : `${h}:${m}:${s}`}
+        </b>
         <span>● LIVE · {projectedState.broadcast.viewers.toLocaleString()} VIEWERS</span>
       </div>
 
@@ -268,6 +274,7 @@ export default function CrawlerApp() {
         <TimelineScrubber
           events={events}
           floors={timelineDoc.floors}
+          countdowns={timelineDoc.countdowns}
           selectedFloorOrdinal={selectedFloorOrdinal}
           onSelectFloorOrdinal={handleSelectFloorOrdinal}
           selectedSequence={isLive ? maxSeq : selectedSeq}

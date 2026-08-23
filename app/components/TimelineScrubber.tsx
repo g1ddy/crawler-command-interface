@@ -1,10 +1,13 @@
 "use client";
 import React, { useState } from 'react';
-import type { CrawlerEvent, EventCategory, FloorSegment } from '../domain/types';
+import type { CrawlerEvent, EventCategory, FloorSegment, TimelineCountdown } from '../domain/types';
+import { getFloorEndSequence } from '../domain/floors';
+import { projectCountdownState, formatCountdownDuration } from '../domain/countdowns';
 
 interface TimelineScrubberProps {
   events: CrawlerEvent[];
   floors?: FloorSegment[];
+  countdowns?: TimelineCountdown[];
   selectedFloorOrdinal: number | 'all';
   onSelectFloorOrdinal: (ordinal: number | 'all') => void;
   selectedSequence: number;
@@ -16,6 +19,7 @@ interface TimelineScrubberProps {
 export function TimelineScrubber({
   events,
   floors = [],
+  countdowns = [],
   selectedFloorOrdinal,
   onSelectFloorOrdinal,
   selectedSequence,
@@ -25,28 +29,43 @@ export function TimelineScrubber({
 }: TimelineScrubberProps) {
   const [filterCategory, setFilterCategory] = useState<EventCategory | 'all'>('all');
   const [hoveredEvent, setHoveredEvent] = useState<CrawlerEvent | null>(null);
+  const [showCountdownDetails, setShowCountdownDetails] = useState<boolean>(false);
 
-  // Derive floor list if floors prop not explicitly passed
+  // Derive floor list and ensure derived endSequence is applied to every floor segment
   const availableFloors = React.useMemo(() => {
-    if (floors.length > 0) return floors;
-    const map = new Map<number, FloorSegment>();
-    for (const e of events) {
-      const fNum = e.position?.floor ?? 6;
-      if (!map.has(fNum)) {
-        map.set(fNum, {
-          id: `floor-${fNum}`,
-          ordinal: fNum,
-          title: `Floor ${fNum}`,
-          startSequence: e.sequence,
-          endSequence: e.sequence,
-        });
-      } else {
-        const seg = map.get(fNum)!;
-        seg.endSequence = e.sequence;
+    let baseFloors: FloorSegment[] = [];
+    if (floors.length > 0) {
+      baseFloors = floors;
+    } else {
+      const map = new Map<number, FloorSegment>();
+      for (const e of events) {
+        const fNum = e.position?.floor ?? 1;
+        if (!map.has(fNum)) {
+          map.set(fNum, {
+            id: `floor-${fNum}`,
+            ordinal: fNum,
+            title: `Floor ${fNum}`,
+            startSequence: e.sequence,
+            endSequence: e.sequence,
+          });
+        } else {
+          const seg = map.get(fNum)!;
+          seg.endSequence = Math.max(seg.endSequence, e.sequence);
+        }
       }
+      baseFloors = Array.from(map.values()).sort((a, b) => a.ordinal - b.ordinal);
     }
-    return Array.from(map.values()).sort((a, b) => a.ordinal - b.ordinal);
+
+    return baseFloors.map((f) => ({
+      ...f,
+      endSequence: getFloorEndSequence(events, f.ordinal, f.endSequence),
+    }));
   }, [floors, events]);
+
+  // Compute active countdown projection for the selected sequence and floor
+  const activeCountdown = React.useMemo(() => {
+    return projectCountdownState({ events, countdowns }, selectedSequence, selectedFloorOrdinal);
+  }, [events, countdowns, selectedSequence, selectedFloorOrdinal]);
 
   // Events filtered by selected floor
   const floorEvents = React.useMemo(() => {
@@ -111,6 +130,7 @@ export function TimelineScrubber({
           paddingBottom: '10px',
           marginBottom: '10px',
           borderBottom: '1px solid #1f3e4d',
+          flexWrap: 'wrap',
         }}
       >
         <div style={{ fontSize: '11px', color: '#ffb74d', fontWeight: 'bold' }}>
@@ -123,6 +143,7 @@ export function TimelineScrubber({
             if (currentFloorIdx > 0) {
               const prevFloor = availableFloors[currentFloorIdx - 1];
               onSelectFloorOrdinal(prevFloor.ordinal);
+              onSelectSequence(prevFloor.endSequence);
             }
           }}
           title="Previous Floor Context"
@@ -134,6 +155,12 @@ export function TimelineScrubber({
           onChange={(e) => {
             const val = e.target.value === 'all' ? 'all' : Number(e.target.value);
             onSelectFloorOrdinal(val);
+            if (val !== 'all') {
+              const selectedSeg = availableFloors.find((f) => f.ordinal === val);
+              if (selectedSeg) {
+                onSelectSequence(selectedSeg.endSequence);
+              }
+            }
           }}
           style={{
             background: '#06131c',
@@ -159,12 +186,50 @@ export function TimelineScrubber({
             if (currentFloorIdx < availableFloors.length - 1) {
               const nextFloor = availableFloors[currentFloorIdx + 1];
               onSelectFloorOrdinal(nextFloor.ordinal);
+              onSelectSequence(nextFloor.endSequence);
             }
           }}
           title="Next Floor Context"
         >
           NEXT FLOOR ►
         </button>
+
+        {activeCountdown && (
+          <div
+            className="countdown-hud-readout"
+            style={{
+              marginLeft: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: '#081720',
+              border: '1px solid #1a475c',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              fontSize: '11px',
+              fontFamily: 'monospace',
+            }}
+          >
+            <span style={{ color: '#ffb74d', fontWeight: 'bold' }}>⏱ COUNTDOWN:</span>
+            <button
+              className={`countdown-pill ${activeCountdown.status}`}
+              onClick={() => setShowCountdownDetails(true)}
+              style={{
+                background: activeCountdown.status === 'stated' ? '#0d364a' : '#0c2230',
+                border: `1px solid ${activeCountdown.status === 'stated' ? '#32c1e8' : '#1c6585'}`,
+                color: '#ffffff',
+                borderRadius: '3px',
+                padding: '2px 8px',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+              title="Click to view countdown basis and reference points"
+            >
+              {activeCountdown.formattedLabel} ℹ️
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="timeline-header">
@@ -283,6 +348,89 @@ export function TimelineScrubber({
           </div>
         )}
       </div>
+
+      {showCountdownDetails && activeCountdown && (
+        <div className="modal-backdrop" onClick={() => setShowCountdownDetails(false)}>
+          <div className="modal-content panel" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <div>
+                <p className="eyebrow">COUNTDOWN ESTIMATE & PROVENANCE</p>
+                <h2>{activeCountdown.title.toUpperCase()} (FLOOR {activeCountdown.floor})</h2>
+              </div>
+              <button className="close-btn" onClick={() => setShowCountdownDetails(false)}>✕</button>
+            </div>
+
+            <div style={{ background: '#06131c', padding: '12px', border: '1px solid #1f4252', borderRadius: '4px', marginBottom: '12px' }}>
+              <p style={{ margin: '0 0 6px 0', fontSize: '14px', color: '#ffb74d' }}>
+                <strong>REMAINING TIME:</strong> {activeCountdown.formattedLabel}
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '11px', color: '#a4b7bf' }}>
+                <div>STATUS: <strong style={{ color: '#fff' }}>{activeCountdown.status.toUpperCase()}</strong></div>
+                <div>CALCULATION BASIS: <strong style={{ color: '#fff' }}>{activeCountdown.basis}</strong></div>
+                <div>CONFIDENCE LEVEL: <strong style={{ color: '#fff' }}>{activeCountdown.confidence}</strong></div>
+                <div>RAW REMAINING SECONDS: <strong style={{ color: '#fff' }}>{activeCountdown.remainingSeconds.toLocaleString()}s</strong></div>
+              </div>
+              {activeCountdown.note && (
+                <p style={{ margin: '8px 0 0 0', fontSize: '10px', color: '#88a3b0', fontStyle: 'italic' }}>
+                  Note: {activeCountdown.note}
+                </p>
+              )}
+            </div>
+
+            <p className="eyebrow" style={{ marginTop: '10px' }}>COUNTDOWN REFERENCE POINTS ({activeCountdown.referencePoints.length})</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
+              {activeCountdown.referencePoints.map((ref, idx) => (
+                <div
+                  key={ref.sequence}
+                  style={{
+                    background: '#091924',
+                    border: '1px solid #1d3e4e',
+                    borderRadius: '4px',
+                    padding: '8px 12px',
+                    fontSize: '11px',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <strong>
+                      Reference #{idx + 1}: Sequence #{ref.sequence}
+                    </strong>
+                    <button
+                      style={{
+                        background: '#0f3142',
+                        border: '1px solid #1f5b7a',
+                        color: '#8be5ff',
+                        fontSize: '10px',
+                        padding: '2px 8px',
+                        borderRadius: '3px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        onSelectSequence(ref.sequence);
+                        setShowCountdownDetails(false);
+                      }}
+                    >
+                      JUMP TO SEQ #{ref.sequence} ➔
+                    </button>
+                  </div>
+                  <p style={{ margin: '4px 0', color: '#68d4f0' }}>
+                    Stated Remaining Time: {formatCountdownDuration(ref.remainingSeconds, false)} ({ref.remainingSeconds.toLocaleString()}s)
+                  </p>
+                  {ref.note && <p style={{ margin: '2px 0', fontSize: '10px', color: '#9db8c7' }}>{ref.note}</p>}
+                  {ref.evidence && ref.evidence.length > 0 && (
+                    <p style={{ margin: '2px 0', fontSize: '9px', color: '#6e8a99' }}>
+                      Evidence: Source {ref.evidence[0].sourceId} {ref.evidence[0].locator?.chapter ? `(Chapter ${ref.evidence[0].locator.chapter})` : ''} [{ref.evidence[0].confidence || 'confirmed'}]
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="modal-footer" style={{ marginTop: '12px' }}>
+              <button className="outline" onClick={() => setShowCountdownDetails(false)}>CLOSE</button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
