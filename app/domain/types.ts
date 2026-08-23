@@ -365,6 +365,30 @@ export interface CrawlerFloorDocument {
   events: FloorEventBase[];
 }
 
+// Raw authoring v1 keeps sourced observations separate from the compatibility
+// shape consumed by the current timeline compiler and interface.
+export interface RawCountdownObservation {
+  id: string;
+  kind: 'countdown-remaining';
+  eventId: string;
+  countdownId: string;
+  remainingSeconds: number;
+  evidence: TimelineEvidence[];
+  note?: string;
+}
+
+export interface RawFloorCountdown {
+  id: string;
+  title: string;
+  target: 'floor-collapse';
+}
+
+export interface RawCrawlerFloorDocument extends Omit<CrawlerFloorDocument, 'authoringVersion' | 'countdowns'> {
+  authoringVersion: 'crawler-floor-raw/v1';
+  countdowns?: RawFloorCountdown[];
+  observations?: RawCountdownObservation[];
+}
+
 // UI State Types
 export interface BaseEvent {
   sequence: number;
