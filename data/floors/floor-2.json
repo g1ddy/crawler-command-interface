@@ -114,8 +114,8 @@
           "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Levels & Stats" }, "confidence": "corroborated" }]
         },
         {
-          "anchorOrder": 10,
-          "remainingSeconds": 165600,
+          "anchorOrder": 9,
+          "remainingSeconds": 410400,
           "note": "A documented audience snapshot at 4 days and 18 hours remaining.",
           "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Ratings" }, "confidence": "corroborated" }]
         }
@@ -196,17 +196,8 @@
       "evidence": [{ "sourceId": "src-wiki-floor-2-achievements", "locator": { "section": "Achievements for Dungeon Crawling" }, "confidence": "corroborated" }]
     },
     {
-      "id": "evt-f2-009-mongo-bonded",
+      "id": "evt-f2-009-broadcast-snapshot",
       "order": 9,
-      "type": "NarrativeEvent",
-      "kind": "party-changed",
-      "position": { "floor": 2, "book": 1, "chapter": 40 },
-      "summary": "Mongo bonds to Donut and joins the Royal Court.",
-      "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 40 }, "confidence": "confirmed" }]
-    },
-    {
-      "id": "evt-f2-010-broadcast-snapshot",
-      "order": 10,
       "type": "BroadcastUpdated",
       "position": { "floor": 2, "book": 1, "chapter": 39 },
       "viewers": 212000000000,
@@ -214,6 +205,15 @@
       "fameRank": "#-",
       "summary": "The Royal Court reaches 212 billion views and 4.4 billion followers.",
       "evidence": [{ "sourceId": "src-wiki-carl-floor-2", "locator": { "section": "Ratings" }, "confidence": "corroborated" }]
+    },
+    {
+      "id": "evt-f2-010-mongo-bonded",
+      "order": 10,
+      "type": "NarrativeEvent",
+      "kind": "party-changed",
+      "position": { "floor": 2, "book": 1, "chapter": 40 },
+      "summary": "Mongo bonds to Donut and joins the Royal Court.",
+      "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 40 }, "confidence": "confirmed" }]
     },
     {
       "id": "evt-f2-011-level-13",
