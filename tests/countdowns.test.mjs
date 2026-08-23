@@ -69,6 +69,25 @@ test("timeline shows an estimate only between stated references and not before o
   assert.equal(projectCountdownState(compiledDoc, 19, 1), null);
 });
 
+test("Floor 2's authored collapse-clock references are monotonic", () => {
+  const stateSeq20 = projectCountdownState(compiledDoc, 20, 2);
+  assert.ok(stateSeq20);
+  assert.equal(stateSeq20.status, "stated");
+  assert.equal(stateSeq20.remainingSeconds, 536400);
+
+  const stateSeq23 = projectCountdownState(compiledDoc, 23, 2);
+  assert.ok(stateSeq23);
+  assert.equal(stateSeq23.status, "stated");
+  assert.equal(stateSeq23.remainingSeconds, 360000);
+
+  const estimatedState = projectCountdownState(compiledDoc, 22, 2);
+  assert.ok(estimatedState);
+  assert.equal(estimatedState.status, "estimated");
+  assert.ok(estimatedState.remainingSeconds < stateSeq20.remainingSeconds);
+  assert.ok(estimatedState.remainingSeconds > stateSeq23.remainingSeconds);
+  assert.equal(projectCountdownState(compiledDoc, 28, 2), null);
+});
+
 test("prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence", () => {
   const docWithElapsed = {
     schemaVersion: "crawler-timeline/v2",
