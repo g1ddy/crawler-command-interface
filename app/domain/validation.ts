@@ -2,7 +2,9 @@ import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import timelineSchema from './schema/crawler-timeline.schema.json' with { type: 'json' };
 import floorSchema from './schema/crawler-floor.schema.json' with { type: 'json' };
-import type { CrawlerFloorDocument, CrawlerTimelineDocument } from './types.ts';
+import rawFloorSchema from './schema/crawler-floor-raw.schema.json' with { type: 'json' };
+import { adaptRawFloorDocument } from './raw-adapter.ts';
+import type { CrawlerFloorDocument, CrawlerTimelineDocument, RawCrawlerFloorDocument } from './types.ts';
 
 export interface ValidationResult {
   valid: boolean;
@@ -13,6 +15,7 @@ const ajv = new Ajv2020({ allErrors: true, verbose: true });
 addFormats(ajv);
 const validateTimelineSchema = ajv.compile(timelineSchema);
 const validateFloorSchema = ajv.compile(floorSchema);
+const validateRawFloorSchema = ajv.compile(rawFloorSchema);
 
 export function validateCrawlerFloor(doc: unknown): ValidationResult {
   const errors: string[] = [];
@@ -136,14 +139,31 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
       errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in floor document.`);
     }
     countdownIds.add(countdown.id);
+
+    const anchorOrders = new Set<number>();
     for (const reference of countdown.references) {
-      if (reference.anchorOrder > floorDoc.events.length) {
+      if (!floorDoc.events.some((event) => event.order === reference.anchorOrder)) {
         errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor order #${reference.anchorOrder}.`);
       }
+      if (anchorOrders.has(reference.anchorOrder)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate anchor order #${reference.anchorOrder}.`);
+      }
+      anchorOrders.add(reference.anchorOrder);
       for (const evidence of reference.evidence) {
         if (!sourceIds.has(evidence.sourceId)) {
           errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in floor sources catalog.`);
         }
+      }
+    }
+
+    const referencesByOrder = [...countdown.references].sort((a, b) => a.anchorOrder - b.anchorOrder);
+    for (let i = 1; i < referencesByOrder.length; i++) {
+      const previous = referencesByOrder[i - 1];
+      const current = referencesByOrder[i];
+      if (current.remainingSeconds > previous.remainingSeconds) {
+        errors.push(
+          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at order #${previous.anchorOrder} to ${current.remainingSeconds}s at order #${current.anchorOrder}. Model an explicit reset before increasing remaining time.`
+        );
       }
     }
   }
@@ -152,6 +172,48 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
     valid: errors.length === 0,
     errors,
   };
+}
+
+/**
+ * Validates raw authoring and then validates its deterministic legacy adapter
+ * output. This keeps Phase 1 source documents compatible with the current UI
+ * contract without allowing two independently authored representations.
+ */
+export function validateRawCrawlerFloor(doc: unknown): ValidationResult {
+  const errors: string[] = [];
+
+  if (!doc || typeof doc !== 'object') {
+    return { valid: false, errors: ['Input raw document must be a non-null JSON object.'] };
+  }
+
+  const isSchemaValid = validateRawFloorSchema(doc);
+  if (!isSchemaValid && validateRawFloorSchema.errors) {
+    for (const err of validateRawFloorSchema.errors) {
+      const instancePath = err.instancePath || '/';
+      errors.push(`Raw schema error at ${instancePath}: ${err.message || 'invalid'}`);
+    }
+    return { valid: false, errors };
+  }
+
+  const rawDoc = doc as RawCrawlerFloorDocument;
+  const observationIds = new Set<string>();
+  for (const observation of rawDoc.observations || []) {
+    if (observationIds.has(observation.id)) {
+      errors.push(`Raw domain error: Duplicate observation ID "${observation.id}".`);
+    }
+    observationIds.add(observation.id);
+  }
+
+  try {
+    const compatibilityValidation = validateCrawlerFloor(adaptRawFloorDocument(rawDoc));
+    for (const error of compatibilityValidation.errors) {
+      errors.push(`Raw compatibility error: ${error}`);
+    }
+  } catch (error) {
+    errors.push(error instanceof Error ? error.message : String(error));
+  }
+
+  return { valid: errors.length === 0, errors };
 }
 
 export function validateCrawlerTimeline(doc: unknown): ValidationResult {
@@ -261,14 +323,31 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
       errors.push(`Domain error: Duplicate countdown ID "${countdown.id}" in timeline document.`);
     }
     countdownIds.add(countdown.id);
+
+    const referenceSequences = new Set<number>();
     for (const reference of countdown.references) {
       if (!timelineDoc.events.some((event) => event.sequence === reference.sequence)) {
         errors.push(`Domain error: Countdown "${countdown.id}" references missing event sequence #${reference.sequence}.`);
       }
+      if (referenceSequences.has(reference.sequence)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate reference sequence #${reference.sequence}.`);
+      }
+      referenceSequences.add(reference.sequence);
       for (const evidence of reference.evidence) {
         if (!sourceIds.has(evidence.sourceId)) {
           errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in sources catalog.`);
         }
+      }
+    }
+
+    const referencesBySequence = [...countdown.references].sort((a, b) => a.sequence - b.sequence);
+    for (let i = 1; i < referencesBySequence.length; i++) {
+      const previous = referencesBySequence[i - 1];
+      const current = referencesBySequence[i];
+      if (current.remainingSeconds > previous.remainingSeconds) {
+        errors.push(
+          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at sequence #${previous.sequence} to ${current.remainingSeconds}s at sequence #${current.sequence}. Model an explicit reset before increasing remaining time.`
+        );
       }
     }
   }
