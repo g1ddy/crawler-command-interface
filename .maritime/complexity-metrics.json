@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 706,
     "instability": 0,
-    "fanIn": 14,
+    "fanIn": 13,
     "fanOut": 0,
     "scanned": true
   },
@@ -74,8 +74,8 @@
   "app/domain/validation.ts": {
     "complexity": 58,
     "loc": 400,
-    "instability": 0.67,
-    "fanIn": 4,
+    "instability": 0.73,
+    "fanIn": 3,
     "fanOut": 8,
     "scanned": true
   },
@@ -119,14 +119,6 @@
     "fanOut": 2,
     "scanned": true
   },
-  "app/domain/persistence.ts": {
-    "complexity": 8,
-    "loc": 187,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
-    "scanned": true
-  },
   "app/layout.tsx": {
     "complexity": 1,
     "loc": 38,
@@ -145,10 +137,10 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 27,
-    "loc": 1735,
-    "instability": 0.86,
+    "loc": 1698,
+    "instability": 0.85,
     "fanIn": 2,
-    "fanOut": 12,
+    "fanOut": 11,
     "scanned": true
   },
   "src/main.pages.tsx": {
