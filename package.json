@@ -14,7 +14,7 @@
     "verify": "npm run lint && npm run test:unit && npm run build:live && npm run test:rendered && npm run build:pages && npm run test:artifacts",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run build:live && npm run test:unit && npm run test:rendered",
-    "test:unit": "node --experimental-strip-types --test tests/countdowns.test.mjs tests/projection.test.mjs tests/raw-floor-adapter.test.mjs tests/persistence.test.mjs",
+    "test:unit": "node --experimental-strip-types --test tests/countdowns.test.mjs tests/projection.test.mjs tests/raw-floor-adapter.test.mjs tests/persistence.test.mjs tests/validation-worker-safety.test.mjs",
     "test:rendered": "node --experimental-strip-types --test tests/rendered-html.test.mjs",
     "test:artifacts": "node --test tests/build-targets.test.mjs",
     "test:pages:custom-base": "npm run build:live && PAGES_BASE_PATH=/ npm run build:pages && PAGES_BASE_PATH=/ npm run test:artifacts && npm run build:pages && npm run test:artifacts",
