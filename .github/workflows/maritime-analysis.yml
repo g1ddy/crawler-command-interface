@@ -65,7 +65,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: crawler
         run: |
-          if git diff --quiet -- .maritime; then
+          if [ -z "$(git status --porcelain -- .maritime)" ]; then
             echo "Maritime analysis is already current."
             exit 0
           fi
