@@ -87,8 +87,9 @@ test("countdown phase breaks permit a later reset observation without interpolat
   resetCountdown.events[1] = {
     id: resetEvent.id,
     order: resetEvent.order,
-    type: "NarrativeEvent",
-    kind: "other",
+    type: "CountdownReset",
+    countdownId: "countdown-floor-2-collapse",
+    newRemainingSeconds: 600000,
     position: resetEvent.position,
     summary: "The countdown reset before the next phase.",
     evidence: resetEvent.evidence,
