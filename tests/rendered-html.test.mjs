@@ -14,31 +14,39 @@ test("renders development preview metadata", async (t) => {
 
   const workerUrl = new URL(workerPath.href);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
+  const originalFunction = globalThis.Function;
+  globalThis.Function = function WorkerSafeFunction() {
+    throw new Error("Code generation from strings disallowed for this context");
+  };
 
-  const response = await worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
+  try {
+    const { default: worker } = await import(workerUrl.href);
+    const response = await worker.fetch(
+      new Request("http://localhost/", {
+        headers: { accept: "text/html" },
+      }),
+      {
+        ASSETS: {
+          fetch: async () => new Response("Not found", { status: 404 }),
+        },
       },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+      {
+        waitUntil() {},
+        passThroughOnException() {},
+      },
+    );
 
-  assert.equal(response.status, 200);
-  assert.match(
-    response.headers.get("content-type") ?? "",
-    /^text\/html\b/i,
-  );
-  const html = await response.text();
-  assert.match(html, developmentPreviewMeta);
-  assert.match(html, /FLOOR NAVIGATOR:/);
-  assert.match(html, /SELECTED TIMELINE SEQUENCE/);
-  assert.match(html, /type="range"/);
+    assert.equal(response.status, 200);
+    assert.match(
+      response.headers.get("content-type") ?? "",
+      /^text\/html\b/i,
+    );
+    const html = await response.text();
+    assert.match(html, developmentPreviewMeta);
+    assert.match(html, /FLOOR NAVIGATOR:/);
+    assert.match(html, /SELECTED TIMELINE SEQUENCE/);
+    assert.match(html, /type="range"/);
+  } finally {
+    globalThis.Function = originalFunction;
+  }
 });
