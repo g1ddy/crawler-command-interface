@@ -17,6 +17,7 @@
     "test:unit": "node --experimental-strip-types --test tests/countdowns.test.mjs tests/projection.test.mjs tests/raw-floor-adapter.test.mjs tests/persistence.test.mjs",
     "test:rendered": "node --experimental-strip-types --test tests/rendered-html.test.mjs",
     "test:artifacts": "node --test tests/build-targets.test.mjs",
+    "test:pages:custom-base": "npm run build:live && PAGES_BASE_PATH=/ npm run build:pages && PAGES_BASE_PATH=/ npm run test:artifacts && npm run build:pages && npm run test:artifacts",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern dist-pages --ignore-pattern .next",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
     "analyze:architecture": "maritime analyze --source app --source src --output .maritime"
