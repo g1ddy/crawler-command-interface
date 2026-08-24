@@ -5,6 +5,7 @@ import { projectState, projectCountdownState } from "../app/domain/projection";
 import { getFloorEndSequence } from "../app/domain/floors";
 import { validateCrawlerTimeline } from "../app/domain/validation";
 import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats";
+import { LocalDeviceStorageAdapter } from "../app/domain/persistence";
 import type { StatBreakdown } from "../app/domain/stats";
 import type { CrawlerEvent, CrawlerState, CrawlerTimelineDocument, InventoryItem } from "../app/domain/types";
 import { TimelineScrubber } from "../app/components/TimelineScrubber";
@@ -14,7 +15,23 @@ import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
 type View = "crawler" | "inventory" | "skills" | "journal";
 
 export default function CrawlerApp() {
-  const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(compiledTimeline);
+  const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
+
+  // Hydrate persisted timeline from device local storage on initial state creation
+  const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(() => {
+    if (typeof window !== 'undefined') {
+      const adapter = new LocalDeviceStorageAdapter();
+      const loaded = adapter.loadTimeline();
+      if (loaded) return loaded;
+    }
+    return compiledTimeline;
+  });
+
+  const updateTimeline = (newDoc: CrawlerTimelineDocument) => {
+    setTimelineDoc(newDoc);
+    storageAdapter.saveTimeline(newDoc);
+  };
+
   const events: CrawlerEvent[] = timelineDoc.events as unknown as CrawlerEvent[];
 
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
@@ -115,7 +132,7 @@ export default function CrawlerApp() {
       const parsed = JSON.parse(jsonText) as CrawlerTimelineDocument;
       const validation = validateCrawlerTimeline(parsed);
       if (validation.valid) {
-        setTimelineDoc(parsed);
+        updateTimeline(parsed);
         setIsLive(true);
         const importedEvents = parsed.events || [];
         const lastSeq = importedEvents.slice(-1)[0]?.sequence ?? 1;
@@ -123,6 +140,7 @@ export default function CrawlerApp() {
         setSelectedSeq(lastSeq);
         setSelectedFloorOrdinal(importedFloor);
         setShowJsonModal(false);
+        showToast("✓ Imported timeline successfully");
       } else {
         setImportError(validation.errors.join("\n"));
       }
@@ -130,6 +148,19 @@ export default function CrawlerApp() {
       const err = e as Error;
       setImportError(`JSON syntax error: ${err.message}`);
     }
+  };
+
+  const handleResetToDefaultFixture = () => {
+    storageAdapter.clearTimeline();
+    setTimelineDoc(compiledTimeline);
+    const compiledEvents = compiledTimeline.events || [];
+    const lastSeq = compiledEvents.slice(-1)[0]?.sequence ?? 1;
+    const defaultFloorOrdinal = compiledEvents.slice(-1)[0]?.position?.floor ?? compiledTimeline.floors?.slice(-1)[0]?.ordinal ?? 1;
+    setSelectedSeq(lastSeq);
+    setSelectedFloorOrdinal(defaultFloorOrdinal);
+    setIsLive(true);
+    setShowJsonModal(false);
+    showToast("🔄 Reset timeline to default fixture");
   };
 
   const handleSelectFloorOrdinal = (ordinal: number | 'all') => {
@@ -178,7 +209,7 @@ export default function CrawlerApp() {
       ),
     };
 
-    setTimelineDoc(updatedDoc as CrawlerTimelineDocument);
+    updateTimeline(updatedDoc as CrawlerTimelineDocument);
     setSelectedSeq(nextSeq);
     setIsLive(true);
     showToast(`⚡ ${summaryText}`);
@@ -354,8 +385,14 @@ export default function CrawlerApp() {
             <p style={{ fontSize: "11px", color: "#a4b7bf" }}>
               Export current versioned crawler-timeline JSON document or import a validated timeline envelope.
             </p>
-            <div className="actions" style={{ marginBottom: "12px" }}>
+            <div className="actions" style={{ marginBottom: "12px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button onClick={handleExportJson}>DOWNLOAD TIMELINE JSON</button>
+              <button
+                style={{ background: "#2a1518", borderColor: "#7a2a30", color: "#ff8a90" }}
+                onClick={handleResetToDefaultFixture}
+              >
+                RESET TO DEFAULT FIXTURE 🔄
+              </button>
             </div>
 
             {importError && (

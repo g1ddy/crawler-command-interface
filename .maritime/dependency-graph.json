@@ -159,6 +159,7 @@
         "app/domain/raw-compiler.ts",
         "app/domain/fixtures/floor6.ts",
         "app/domain/projection.ts",
+        "app/domain/persistence.ts",
         "src/CrawlerApp.tsx"
       ],
       "orphan": false
@@ -565,6 +566,7 @@
       "dependents": [
         "app/domain/compiler.ts",
         "app/domain/raw-compiler.ts",
+        "app/domain/persistence.ts",
         "src/CrawlerApp.tsx"
       ],
       "orphan": false
@@ -965,6 +967,51 @@
       "orphan": false
     },
     {
+      "source": "app/domain/persistence.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./validation.ts",
+          "resolved": "app/domain/validation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "app/layout.tsx",
       "valid": true,
       "dependencies": [
@@ -1154,6 +1201,23 @@
           "moduleSystem": "es6",
           "module": "../app/domain/floors",
           "resolved": "app/domain/floors.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../app/domain/persistence",
+          "resolved": "app/domain/persistence.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -1366,8 +1430,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 32,
-    "totalDependenciesCruised": 54,
+    "totalCruised": 33,
+    "totalDependenciesCruised": 57,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
