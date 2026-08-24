@@ -47,9 +47,13 @@ jobs:
         working-directory: crawler
         run: npm run analyze:architecture
 
+      - name: Inspect Maritime outputs
+        run: find crawler/.maritime -maxdepth 1 -type f -print
+
       - name: Upload Maritime analysis
         uses: actions/upload-artifact@v4
         with:
           name: maritime-analysis
           path: crawler/.maritime/
           if-no-files-found: error
+          include-hidden-files: true
