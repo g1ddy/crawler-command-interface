@@ -10,7 +10,13 @@ const rootDirectory = path.resolve(
 );
 const pagesDirectory = path.join(rootDirectory, "dist-pages");
 const liveDirectory = path.join(rootDirectory, "dist");
-const pagesBasePath = "/crawler-command-interface/";
+// Keep this in lockstep with vite.pages.config.ts. GitHub project Pages uses
+// the repository path by default, while a custom domain uses PAGES_BASE_PATH=/.
+const configuredPagesBasePath =
+  process.env.PAGES_BASE_PATH ?? "/crawler-command-interface/";
+const pagesBasePath = configuredPagesBasePath.endsWith("/")
+  ? configuredPagesBasePath
+  : `${configuredPagesBasePath}/`;
 
 function readRequiredFile(filePath) {
   assert.ok(fs.existsSync(filePath), `Expected build artifact: ${filePath}`);
