@@ -42,8 +42,9 @@ by default until later Node.js 22 releases.
 
 The Pages base defaults to `/crawler-command-interface/`. Set
 `PAGES_BASE_PATH=/` when building for a custom domain or user/organization Pages
-site. The current UI has no client-side routes, so GitHub Pages does not require
-a `404.html` fallback; add one before introducing history-based routes.
+site. CI builds and validates both base-path modes. The current UI has no
+client-side routes, so GitHub Pages does not require a `404.html` fallback; add
+one before introducing history-based routes.
 
 ## Continuous integration and deployment
 
@@ -147,6 +148,7 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 - `npm run build` / `npm run build:live`: build the deployable Sites artifact
 - `npm run build:pages`: build the static GitHub Pages artifact
 - `npm run test:artifacts`: verify the generated Pages and live-app artifact contracts
+- `npm run test:pages:custom-base`: verify the custom-domain Pages base and restore the default Pages artifact
 - `npm run verify`: lint, run unit tests, build both deployment targets, and verify both artifacts
 - `npm run start`: start the built Vinext application
 - `npm test`: build and verify the rendered development-preview metadata
