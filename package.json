@@ -17,7 +17,8 @@
     "test:unit": "node --experimental-strip-types --test tests/countdowns.test.mjs tests/projection.test.mjs tests/raw-floor-adapter.test.mjs",
     "test:rendered": "node --experimental-strip-types --test tests/rendered-html.test.mjs",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern dist-pages --ignore-pattern .next",
-    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "analyze:architecture": "maritime analyze --source app --output .maritime"
   },
   "dependencies": {
     "ajv": "^8.20.0",
