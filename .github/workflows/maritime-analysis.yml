@@ -1,0 +1,53 @@
+name: Maritime Architecture Analysis
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Crawler
+        uses: actions/checkout@v4
+        with:
+          path: crawler
+
+      - name: Checkout Dependency Maritime
+        uses: actions/checkout@v4
+        with:
+          repository: g1ddy/dependency-maritime
+          ref: 0c2e9369356edb32f04ffb261c3705e0c23cd08b
+          path: maritime
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+
+      - name: Build and pack Maritime
+        working-directory: maritime
+        run: |
+          npm ci
+          npm run build:cli
+          npm pack --pack-destination ../packages
+
+      - name: Install Crawler and packed Maritime CLI
+        working-directory: crawler
+        run: |
+          npm ci
+          npm install --no-save ../packages/dependency-maritime-cli-0.0.0.tgz
+
+      - name: Analyze Crawler architecture
+        working-directory: crawler
+        run: npm run analyze:architecture
+
+      - name: Upload Maritime analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: maritime-analysis
+          path: crawler/.maritime/
+          if-no-files-found: error
