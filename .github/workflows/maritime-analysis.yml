@@ -33,13 +33,15 @@ jobs:
         run: |
           npm ci
           npm run build:cli
+          mkdir -p ../packages
           npm pack --pack-destination ../packages
 
       - name: Install Crawler and packed Maritime CLI
         working-directory: crawler
         run: |
           npm ci
-          npm install --no-save ../packages/dependency-maritime-cli-0.0.0.tgz
+          TARBALL=$(ls ../packages/dependency-maritime-cli-*.tgz | head -n1)
+          npm install --no-save "$TARBALL"
 
       - name: Analyze Crawler architecture
         working-directory: crawler
