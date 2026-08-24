@@ -1,5 +1,6 @@
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
+import type { ValidateFunction } from 'ajv';
 import timelineSchema from './schema/crawler-timeline.schema.json' with { type: 'json' };
 import floorSchema from './schema/crawler-floor.schema.json' with { type: 'json' };
 import rawFloorSchema from './schema/crawler-floor-raw.schema.json' with { type: 'json' };
@@ -12,14 +13,36 @@ export interface ValidationResult {
   errors: string[];
 }
 
-const ajv = new Ajv2020({ allErrors: true, verbose: true });
-addFormats(ajv);
-const validateTimelineSchema = ajv.compile(timelineSchema);
-const validateFloorSchema = ajv.compile(floorSchema);
-const validateRawFloorSchema = ajv.compile(rawFloorSchema);
+/**
+ * Ajv generates validator functions with `new Function` when a schema is
+ * compiled. Cloudflare Workers disallow that operation during SSR, while the
+ * browser still needs the full validator for imports and local persistence.
+ *
+ * Keep compilation lazy so merely importing the UI's domain modules remains
+ * safe in the Worker render path. Validation is invoked only by browser-side
+ * persistence/import interactions (or Node-based authoring tests).
+ */
+let validateTimelineSchema: ValidateFunction | undefined;
+let validateFloorSchema: ValidateFunction | undefined;
+let validateRawFloorSchema: ValidateFunction | undefined;
+
+function getValidators() {
+  if (validateTimelineSchema && validateFloorSchema && validateRawFloorSchema) {
+    return { validateTimelineSchema, validateFloorSchema, validateRawFloorSchema };
+  }
+
+  const ajv = new Ajv2020({ allErrors: true, verbose: true });
+  addFormats(ajv);
+  validateTimelineSchema = ajv.compile(timelineSchema);
+  validateFloorSchema = ajv.compile(floorSchema);
+  validateRawFloorSchema = ajv.compile(rawFloorSchema);
+
+  return { validateTimelineSchema, validateFloorSchema, validateRawFloorSchema };
+}
 
 export function validateCrawlerFloor(doc: unknown): ValidationResult {
   const errors: string[] = [];
+  const { validateFloorSchema } = getValidators();
 
   if (!doc || typeof doc !== 'object') {
     return { valid: false, errors: ['Input document must be a non-null JSON object.'] };
@@ -195,6 +218,7 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
  */
 export function validateRawCrawlerFloor(doc: unknown): ValidationResult {
   const errors: string[] = [];
+  const { validateRawFloorSchema } = getValidators();
 
   if (!doc || typeof doc !== 'object') {
     return { valid: false, errors: ['Input raw document must be a non-null JSON object.'] };
@@ -232,6 +256,7 @@ export function validateRawCrawlerFloor(doc: unknown): ValidationResult {
 
 export function validateCrawlerTimeline(doc: unknown): ValidationResult {
   const errors: string[] = [];
+  const { validateTimelineSchema } = getValidators();
 
   if (!doc || typeof doc !== 'object') {
     return { valid: false, errors: ['Input document must be a non-null JSON object.'] };

@@ -28,11 +28,12 @@ run `npx vite --config vite.pages.config.ts`; its default base URL is
 - `src/main.pages.tsx` and `index.html` mount the same application as a static
   client-side Vite app.
 - `npm run build:live` produces the Worker-compatible live-app artifact in
-  `dist/`.
+  `dist/`, including a source-commit provenance record.
 - `npm run build:pages` produces the static Pages artifact in `dist-pages/`.
 - `npm run build` remains an alias for `build:live`, preserving the existing
   ChatGPT hosting contract.
-- `npm run verify` runs lint, domain unit tests, and both production builds.
+- `npm run verify` runs lint, domain unit tests, both production builds, and
+  artifact-contract checks for both deployment targets.
 
 The domain tests import the TypeScript source directly. Their npm scripts pass
 Node's `--experimental-strip-types` flag explicitly so they also work on the
@@ -41,20 +42,25 @@ by default until later Node.js 22 releases.
 
 The Pages base defaults to `/crawler-command-interface/`. Set
 `PAGES_BASE_PATH=/` when building for a custom domain or user/organization Pages
-site. The current UI has no client-side routes, so GitHub Pages does not require
-a `404.html` fallback; add one before introducing history-based routes.
+site. CI builds and validates both base-path modes. The current UI has no
+client-side routes, so GitHub Pages does not require a `404.html` fallback; add
+one before introducing history-based routes.
 
 ## Continuous integration and deployment
 
 Pull requests and pushes to `main` run `.github/workflows/ci.yml`, which verifies
 both targets from the same checkout. Pushes to `main` also run
 `.github/workflows/deploy-pages.yml`, upload `dist-pages/` as a Pages artifact,
-and deploy it with GitHub's official Pages Actions. In the repository settings,
+and deploy it with GitHub's official Pages Actions. The Pages workflow runs the
+same verification command before publishing, so a static deployment cannot skip
+the ChatGPT Worker compatibility checks. In the repository settings,
 set **Pages → Build and deployment → Source** to **GitHub Actions**.
 
 The workflow does not alter the existing ChatGPT release mechanism. Build the
 live app from the same reviewed `main` commit with `npm run build:live`, and
-record that commit SHA in the live-app release or deployment metadata.
+record that commit SHA in the live-app release or deployment metadata. Both
+artifacts include `build-provenance.json`; the verification suite rejects a
+build if the two targets were not captured from the same source commit.
 
 ## Sites lifecycle
 
@@ -141,7 +147,9 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 - `npm run dev`: start the Vite/Vinext development server
 - `npm run build` / `npm run build:live`: build the deployable Sites artifact
 - `npm run build:pages`: build the static GitHub Pages artifact
-- `npm run verify`: lint, run unit tests, and build both deployment targets
+- `npm run test:artifacts`: verify the generated Pages and live-app artifact contracts
+- `npm run test:pages:custom-base`: verify the custom-domain Pages base and restore the default Pages artifact
+- `npm run verify`: lint, run unit tests, build both deployment targets, and verify both artifacts
 - `npm run start`: start the built Vinext application
 - `npm test`: build and verify the rendered development-preview metadata
 - `npm run db:generate`: generate Drizzle migrations after schema changes

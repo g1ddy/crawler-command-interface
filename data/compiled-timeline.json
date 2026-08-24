@@ -1,0 +1,1163 @@
+{
+  "schemaVersion": "crawler-timeline/v2",
+  "timeline": {
+    "id": "tl-compiled-dungeon-crawler-carl",
+    "title": "Compiled Crawler Storyline (Floors 1, 2)",
+    "story": {
+      "id": "dungeon-crawler-carl",
+      "title": "World Dungeon Storyline",
+      "spoilerScope": {
+        "book": 1,
+        "floor": 2
+      }
+    },
+    "createdAt": "2026-08-24T16:27:07.434Z",
+    "updatedAt": "2026-08-24T16:27:07.434Z"
+  },
+  "floors": [
+    {
+      "id": "floor-1",
+      "ordinal": 1,
+      "title": "First Floor",
+      "book": 1,
+      "bookTitle": "Dungeon Crawler Carl",
+      "startSequence": 1,
+      "endSequence": 19
+    },
+    {
+      "id": "floor-2",
+      "ordinal": 2,
+      "title": "Second Floor",
+      "book": 1,
+      "bookTitle": "Dungeon Crawler Carl",
+      "startSequence": 20,
+      "endSequence": 31
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-book-1",
+      "kind": "official-text",
+      "trust": "primary",
+      "title": "Dungeon Crawler Carl, Book 1",
+      "url": "https://www.mattdinniman.com/",
+      "citationStyle": "Chapter {chapter}"
+    },
+    {
+      "id": "src-wiki-carl-floor-1",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Floor 1",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_1"
+    },
+    {
+      "id": "src-wiki-floor-1-achievements",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Floor 1 Achievements",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_1_Achievements"
+    },
+    {
+      "id": "src-wiki-carl-inventory",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Inventory",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+    },
+    {
+      "id": "src-reddit-inventory-list",
+      "kind": "discussion",
+      "trust": "candidate",
+      "title": "Carl's inventory list discussion",
+      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1togyb2/carls_inventory_list/"
+    },
+    {
+      "id": "src-wiki-carl-floor-2",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Floor 2",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_2"
+    },
+    {
+      "id": "src-wiki-floor-2-achievements",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Floor 2 Achievements",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_2_Achievements"
+    }
+  ],
+  "initialState": {
+    "crawler": {
+      "name": "CARL G.",
+      "level": 1,
+      "race": "HUMAN",
+      "class": "SCOUT",
+      "xp": 0,
+      "maxXp": 1000,
+      "attributes": {
+        "Strength": 10,
+        "Dexterity": 10,
+        "Constitution": 10,
+        "Intelligence": 10,
+        "Charisma": 10
+      },
+      "condition": {
+        "currentHealth": 100,
+        "maxHealth": 100,
+        "currentMana": 50,
+        "maxMana": 50,
+        "currentStamina": 50,
+        "maxStamina": 50
+      }
+    },
+    "inventory": [],
+    "achievements": [],
+    "skills": [],
+    "quests": [],
+    "entitlements": []
+  },
+  "events": [
+    {
+      "id": "evt-f1-001-entered",
+      "sequence": 1,
+      "type": "NarrativeEvent",
+      "kind": "floor-entered",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 1
+      },
+      "summary": "Carl enters the First Floor with Donut.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 1
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-002-empty-pockets",
+      "sequence": 2,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "Carl receives the Empty Pockets Achievement.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-empty-pockets",
+        "title": "Empty Pockets Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-003-no-pants",
+      "sequence": 3,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "Carl receives the Why Aren't You Wearing Pants? Achievement.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-why-no-pants",
+        "title": "Why Aren't You Wearing Pants? Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "apparel",
+            "rarity": "gold"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-004-unarmed-combat",
+      "sequence": 4,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "Carl receives the Unarmed Combat Achievement.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-unarmed-combat",
+        "title": "Unarmed Combat Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "weapon",
+            "rarity": "bronze"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-005-goblin-pass",
+      "sequence": 5,
+      "type": "PermanentEntitlementGranted",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl receives the Goblin Pass Tattoo.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "entitlement": {
+        "id": "entitlement-goblin-pass-tattoo",
+        "name": "Goblin Pass Tattoo",
+        "location": "left inner forearm"
+      }
+    },
+    {
+      "id": "evt-f1-006-trollskin-shirt",
+      "sequence": 6,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl acquires the Enchanted Trollskin Shirt of Pummeling.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-trollskin-shirt",
+        "itemId": "item-trollskin-shirt-of-pummeling",
+        "name": "Enchanted Trollskin Shirt of Pummeling",
+        "category": "equipment",
+        "slot": "UNDERSHIRT",
+        "rarity": "common",
+        "description": "A regenerating enchanted undershirt that resists several disruptive combat effects.",
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-007-nightgaunt-cloak",
+      "sequence": 7,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl acquires the Enchanted Nightgaunt Cloak of Stoutness.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-nightgaunt-cloak",
+        "itemId": "item-nightgaunt-cloak-of-stoutness",
+        "name": "Enchanted Nightgaunt Cloak of Stoutness",
+        "category": "equipment",
+        "slot": "NECK",
+        "rarity": "common",
+        "description": "A cloak that adds 4 Constitution and provides poison, ice, and anti-piercing protection.",
+        "stats": {
+          "Constitution": 4
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-008-toe-ring",
+      "sequence": 8,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl acquires the Enchanted Toe Ring of the Splatter Skunk.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-toe-ring",
+        "itemId": "item-toe-ring-of-splatter-skunk",
+        "name": "Enchanted Toe Ring of the Splatter Skunk",
+        "category": "equipment",
+        "slot": "FEET",
+        "rarity": "common",
+        "description": "A toe ring that adds 3 Strength and improves Powerful Strike.",
+        "stats": {
+          "Strength": 3
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-009-first-magic-gear",
+      "sequence": 9,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl earns Oooh, Magic after first equipping magical gear.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-oooh-magic",
+        "title": "Oooh, Magic Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-010-silver-ring-plus-1-con",
+      "sequence": 10,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 9
+      },
+      "summary": "Carl acquires a Silver Ring of +1 CON.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-silver-ring-plus-1-con",
+        "itemId": "item-silver-ring-plus-1-con",
+        "name": "Silver Ring of +1 CON",
+        "category": "equipment",
+        "slot": "RING",
+        "rarity": "common",
+        "stats": {
+          "Constitution": 1
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-011-shade-gnoll-kneepads",
+      "sequence": 11,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 12
+      },
+      "summary": "Carl acquires the Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces after the Hoarder battle.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-shade-gnoll-kneepads",
+        "itemId": "item-spiked-kneepads-shade-gnoll",
+        "name": "Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces",
+        "category": "equipment",
+        "slot": "KNEES",
+        "rarity": "common",
+        "description": "Spiked kneepads that reflect 10% of damage and cancel momentum-based attacks.",
+        "stats": {
+          "Damage Reflect Percent": 10
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-012-goblin-copper-chopper",
+      "sequence": 12,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 17
+      },
+      "summary": "Carl acquires the Goblin Copper Chopper.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-goblin-copper-chopper",
+        "itemId": "item-goblin-copper-chopper",
+        "name": "Goblin Copper Chopper",
+        "category": "vehicle",
+        "rarity": "common",
+        "description": "A goblin-built chopper used for traversal and battlefield construction.",
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-013-desperado-pass",
+      "sequence": 13,
+      "type": "PermanentEntitlementGranted",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "summary": "Carl receives the Desperado Pass Tattoo.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "entitlement": {
+        "id": "entitlement-desperado-pass-tattoo",
+        "name": "Desperado Pass Tattoo",
+        "location": "neck"
+      }
+    },
+    {
+      "id": "evt-f1-014-silver-ring-plus-2-con",
+      "sequence": 14,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "summary": "Carl acquires a Silver Ring of +2 CON.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-silver-ring-plus-2-con",
+        "itemId": "item-silver-ring-plus-2-con",
+        "name": "Silver Ring of +2 CON",
+        "category": "equipment",
+        "slot": "RING",
+        "rarity": "common",
+        "stats": {
+          "Constitution": 2
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-015-boom",
+      "sequence": 15,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "summary": "Carl earns Boom! for his first explosion.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-boom",
+        "title": "Boom! Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "goblin",
+            "rarity": "silver"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-016-war-gauntlet",
+      "sequence": 16,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 25
+      },
+      "summary": "Carl acquires the Enchanted War Gauntlet of the Exalted Grull.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f1-war-gauntlet",
+        "itemId": "item-war-gauntlet-exalted-grull",
+        "name": "Enchanted War Gauntlet of the Exalted Grull",
+        "category": "equipment",
+        "slot": "WRISTS",
+        "rarity": "common",
+        "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist, adding 1 Dexterity and 3 Strength in fist mode.",
+        "stats": {
+          "Dexterity": 1,
+          "Strength (Fist Mode)": 3
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "First Floor"
+      }
+    },
+    {
+      "id": "evt-f1-017-podophilia",
+      "sequence": 17,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 25
+      },
+      "summary": "Carl earns Podophilia! for crushing an opponent with his bare feet.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-podophilia",
+        "title": "Podophilia! Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "shoe",
+            "rarity": "gold"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-018-battlefield-construction",
+      "sequence": 18,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl earns Battlefield Construction for deploying a crafted structure in battle.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-battlefield-construction",
+        "title": "Battlefield Construction Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "mechanic",
+            "rarity": "silver"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-019-exit",
+      "sequence": 19,
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl reaches the stairs and completes the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-001-entered",
+      "sequence": 20,
+      "type": "NarrativeEvent",
+      "kind": "floor-entered",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Carl and Donut enter the Second Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-002-goo-inator",
+      "sequence": 21,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Carl acquires the Goo-Inator 3000.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f2-goo-inator-3000",
+        "itemId": "item-goo-inator-3000",
+        "name": "Goo-Inator 3000",
+        "category": "tool",
+        "rarity": "common",
+        "description": "A shaping tool that can be used at a workbench.",
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "Second Floor"
+      }
+    },
+    {
+      "id": "evt-f2-003-pedicure-kit",
+      "sequence": 22,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Carl acquires the Enchanted Pedicure Kit of the Sylph.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f2-pedicure-kit",
+        "itemId": "item-enchanted-pedicure-kit-of-sylph",
+        "name": "Enchanted Pedicure Kit of the Sylph",
+        "category": "tool",
+        "rarity": "common",
+        "description": "A limited-use kit that adds 15% bare-foot attack damage, makes Carl's feet unbreakable, and warns of foot-triggered traps five seconds before activation.",
+        "stats": {
+          "Barefoot Attack Damage Percent": 15
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "Second Floor"
+      }
+    },
+    {
+      "id": "evt-f2-004-bigboi-boxers",
+      "sequence": 23,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Carl acquires the Enchanted BigBoi Boxers.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f2-bigboi-boxers",
+        "itemId": "item-enchanted-bigboi-boxers",
+        "name": "Enchanted BigBoi Boxers",
+        "category": "equipment",
+        "slot": "LEGS",
+        "rarity": "common",
+        "description": "Enchanted boxers that add 2 Constitution and grant the Protective Shell spell.",
+        "stats": {
+          "Constitution": 2
+        },
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "Second Floor"
+      }
+    },
+    {
+      "id": "evt-f2-005-dungeon-book-club",
+      "sequence": 24,
+      "type": "NarrativeEvent",
+      "kind": "party-changed",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Donut joins the Dungeon Book of the Floor Club and receives Second Chance.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-006-jug-o-boom",
+      "sequence": 25,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 33
+      },
+      "summary": "Carl earns Dungeonpreneur for inventing Carl's Jug O' Boom, which grants a royalty entitlement.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 33
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-dungeonpreneur",
+        "title": "Dungeonpreneur",
+        "description": "Carl's improvised incendiary, Carl's Jug O' Boom, is recognized as a stackable dungeon invention.",
+        "reward": [
+          {
+            "kind": "entitlement",
+            "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f2-007-proximity-trigger",
+      "sequence": 26,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 34
+      },
+      "summary": "Carl acquires a Proximity Trigger for use with non-static traps.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f2-proximity-trigger",
+        "itemId": "item-proximity-trigger",
+        "name": "Proximity Trigger",
+        "category": "crafting",
+        "rarity": "common",
+        "description": "A Sapper's-table component that can be attached to a non-static trap.",
+        "quantity": {
+          "known": false,
+          "note": "The source confirms acquisition but not a stable count."
+        },
+        "sourceDescription": "Second Floor"
+      }
+    },
+    {
+      "id": "evt-f2-008-peta-enthusiast",
+      "sequence": 27,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 35
+      },
+      "summary": "Carl earns PETA Enthusiast for freeing the dingos.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-peta-enthusiast",
+        "title": "PETA Enthusiast",
+        "description": "Carl earns the achievement after freeing the dingos.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "The Ghost of Steve Irwin smiles down upon you."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f2-009-broadcast-snapshot",
+      "sequence": 28,
+      "type": "BroadcastUpdated",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 39
+      },
+      "summary": "The Royal Court reaches 212 billion views and 4.4 billion followers.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Ratings"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "viewers": 212000000000,
+      "followers": 4400000000,
+      "fameRank": "#-"
+    },
+    {
+      "id": "evt-f2-010-mongo-bonded",
+      "sequence": 29,
+      "type": "NarrativeEvent",
+      "kind": "party-changed",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 40
+      },
+      "summary": "Mongo bonds to Donut and joins the Royal Court.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 40
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-011-level-13",
+      "sequence": 30,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "summary": "Carl reaches Level 13 before leaving the Second Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Levels & Stats"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 13
+    },
+    {
+      "id": "evt-f2-012-exit",
+      "sequence": 31,
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "summary": "Carl, Donut, and Mongo descend to the Third Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Floor Exit"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    }
+  ],
+  "countdowns": [
+    {
+      "id": "countdown-floor-1-collapse",
+      "title": "First Floor Collapse",
+      "floor": 1,
+      "target": "floor-collapse",
+      "references": [
+        {
+          "sequence": 4,
+          "remainingSeconds": 417600,
+          "evidence": [
+            {
+              "sourceId": "src-book-1",
+              "locator": {
+                "chapter": 4
+              },
+              "confidence": "confirmed"
+            }
+          ],
+          "note": "The closest currently authored event to the stated post-tutorial reference: 4 days and 20 hours remain."
+        },
+        {
+          "sequence": 15,
+          "remainingSeconds": 169200,
+          "evidence": [
+            {
+              "sourceId": "src-book-1",
+              "locator": {
+                "chapter": 20
+              },
+              "confidence": "confirmed"
+            }
+          ],
+          "note": "The closest currently authored event to the stated stairwell-search reference: 47 hours remain."
+        },
+        {
+          "sequence": 11,
+          "remainingSeconds": 266400,
+          "evidence": [
+            {
+              "sourceId": "src-wiki-carl-floor-1",
+              "locator": {
+                "section": "Gear Gained"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Carl punches a slime with 3 days and 2 hours remaining; the slime destroys his glove and the right arm of his jacket."
+        },
+        {
+          "sequence": 13,
+          "remainingSeconds": 237600,
+          "evidence": [
+            {
+              "sourceId": "src-wiki-carl-floor-1",
+              "locator": {
+                "section": "Gear Gained"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining."
+        },
+        {
+          "sequence": 16,
+          "remainingSeconds": 169200,
+          "evidence": [
+            {
+              "sourceId": "src-wiki-carl-floor-1",
+              "locator": {
+                "section": "Gear Gained"
+              },
+              "confidence": "candidate"
+            }
+          ],
+          "note": "The War Gauntlet is received with just under two days remaining; this is retained as an approximate anchor until a primary-text timestamp is verified."
+        }
+      ]
+    },
+    {
+      "id": "countdown-floor-2-collapse",
+      "title": "Second Floor Collapse",
+      "floor": 2,
+      "target": "floor-collapse",
+      "references": [
+        {
+          "sequence": 20,
+          "remainingSeconds": 536400,
+          "evidence": [
+            {
+              "sourceId": "src-wiki-carl-floor-2",
+              "locator": {
+                "section": "Levels & Stats"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Carl's documented Second Floor baseline: 6 days and 5 hours remaining."
+        },
+        {
+          "sequence": 23,
+          "remainingSeconds": 360000,
+          "evidence": [
+            {
+              "sourceId": "src-wiki-carl-floor-2",
+              "locator": {
+                "section": "Levels & Stats"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
+        }
+      ]
+    }
+  ]
+}
