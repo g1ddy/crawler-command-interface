@@ -2,8 +2,7 @@ name: Maritime Architecture Analysis
 
 on:
   pull_request:
-  push:
-    branches: [main]
+    types: [opened, reopened, synchronize, labeled]
   workflow_dispatch:
 
 permissions:
@@ -16,6 +15,7 @@ jobs:
       - name: Checkout Crawler
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
           path: crawler
           fetch-depth: 0
 
@@ -61,17 +61,22 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Commit Maritime analysis on main
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Commit Maritime baseline to labeled PR branch
+        if: >-
+          github.event_name == 'pull_request' &&
+          contains(github.event.pull_request.labels.*.name, 'maritime') &&
+          github.event.pull_request.head.repo.full_name == github.repository
         working-directory: crawler
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
         run: |
           if [ -z "$(git status --porcelain -- .maritime)" ]; then
-            echo "Maritime analysis is already current."
+            echo "Maritime baseline is already current."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .maritime
-          git commit -m "chore: update Maritime architecture analysis [skip ci]"
-          git push origin HEAD:main
+          git commit -m "chore: update Maritime architecture baseline"
+          git push origin "HEAD:${HEAD_BRANCH}"
