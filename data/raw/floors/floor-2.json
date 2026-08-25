@@ -44,6 +44,13 @@
       "trust": "corroborating",
       "title": "Carl/Inventory",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+    },
+    {
+      "id": "src-dcc-database-carl",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "DCC Database: Carl",
+      "url": "https://www.dccdatabase.com/wiki/carl/"
     }
   ],
   "catalog": {
@@ -82,6 +89,13 @@
         "category": "crafting",
         "persistent": false,
         "description": "A Sapper's-table component that can be attached to a non-static trap."
+      },
+      {
+        "id": "item-carls-jug-o-boom",
+        "name": "Carl's Jug O' Boom",
+        "category": "crafting",
+        "persistent": false,
+        "description": "Carl's stackable incendiary dungeon invention."
       }
     ],
     "achievements": [
@@ -244,8 +258,56 @@
       ]
     },
     {
-      "id": "evt-f2-006-jug-o-boom",
+      "id": "evt-f2-level-11",
       "order": 6,
+      "type": "LevelChanged",
+      "level": 11,
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 11.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-jug-o-boom-crafted",
+      "order": 7,
+      "type": "ItemCrafted",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 33
+      },
+      "item": {
+        "instanceId": "inst-f2-carls-jug-o-boom",
+        "itemId": "item-carls-jug-o-boom",
+        "quantity": {
+          "known": false,
+          "note": "The source establishes Carl's invention but not a stable carried quantity."
+        }
+      },
+      "summary": "Carl invents Carl's Jug O' Boom.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 33
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-006-jug-o-boom",
+      "order": 8,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -265,8 +327,33 @@
       ]
     },
     {
+      "id": "evt-f2-dungeonpreneur-royalty",
+      "order": 9,
+      "type": "PermanentEntitlementGranted",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 33
+      },
+      "entitlement": {
+        "id": "entitlement-f2-dungeonpreneur-royalty",
+        "name": "Dungeonpreneur royalty",
+        "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+      },
+      "summary": "Dungeonpreneur grants Carl a royalty entitlement for kills made with his invention.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 33
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-007-proximity-trigger",
-      "order": 7,
+      "order": 10,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -294,7 +381,7 @@
     },
     {
       "id": "evt-f2-008-peta-enthusiast",
-      "order": 8,
+      "order": 11,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -315,7 +402,7 @@
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "order": 9,
+      "order": 12,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -337,7 +424,7 @@
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "order": 10,
+      "order": 13,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -357,8 +444,28 @@
       ]
     },
     {
+      "id": "evt-f2-level-12",
+      "order": 14,
+      "type": "LevelChanged",
+      "level": 12,
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 12.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-011-level-13",
-      "order": 11,
+      "order": 15,
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -379,7 +486,7 @@
     },
     {
       "id": "evt-f2-012-exit",
-      "order": 12,
+      "order": 16,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -433,6 +540,42 @@
           "confidence": "corroborated"
         }
       ]
+    },
+    {
+      "id": "obs-f2-level-11",
+      "kind": "xp-progress",
+      "eventId": "evt-f2-level-11",
+      "level": 11,
+      "evidence": [{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 285)"},"confidence":"corroborated"}]
+    },
+    {
+      "id": "obs-f2-level-12",
+      "kind": "xp-progress",
+      "eventId": "evt-f2-level-12",
+      "level": 12,
+      "evidence": [{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 398)"},"confidence":"corroborated"}]
+    },
+    {
+      "id": "obs-f2-level-13",
+      "kind": "xp-progress",
+      "eventId": "evt-f2-011-level-13",
+      "level": 13,
+      "evidence": [{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 421)"},"confidence":"corroborated"}]
+    },
+    {
+      "id": "obs-f2-attributes-bigboi-boxers",
+      "kind": "crawler-attributes",
+      "eventId": "evt-f2-004-bigboi-boxers",
+      "attributes": {"Strength":9,"Intelligence":3,"Constitution":14,"Dexterity":6,"Charisma":4},
+      "evidence": [{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Stats (page 307)"},"confidence":"corroborated"}]
+    },
+    {
+      "id": "obs-f2-broadcast-ratings",
+      "kind": "broadcast-metrics",
+      "eventId": "evt-f2-009-broadcast-snapshot",
+      "viewers": 212000000000,
+      "followers": 4400000000,
+      "evidence": [{"sourceId":"src-wiki-carl-floor-2","locator":{"section":"Ratings"},"confidence":"corroborated"}]
     }
   ]
 }

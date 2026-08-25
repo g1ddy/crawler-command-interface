@@ -213,14 +213,17 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   assert.ok(floor1Countdown);
   assert.deepEqual(
     floor1Countdown.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
-    [[13, 237600]]
+    [[doc.events.find((event) => event.id === "evt-f1-013-desperado-pass").sequence, 237600]]
   );
   const floor2Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-2-collapse");
   assert.deepEqual(
     floor2Countdown?.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
-    [[20, 536400], [23, 360000]]
+    [
+      [doc.events.find((event) => event.id === "evt-f2-001-entered").sequence, 536400],
+      [doc.events.find((event) => event.id === "evt-f2-004-bigboi-boxers").sequence, 360000],
+    ]
   );
-  const floor2End = projectState(doc, 31);
+  const floor2End = projectState(doc, doc.events.at(-1).sequence);
   assert.equal(floor2End.crawler.level, 13);
   assert.equal(floor2End.broadcast.viewers, 212000000000);
   assert.equal(doc.sources.find((s) => s.id === "src-book-1")?.citationStyle, "Chapter {chapter}");
@@ -241,10 +244,11 @@ test("compiler rejects floor files with conflicting item definitions", () => {
 
 test("floor authoring supports replayable EffectApplied events", () => {
   const doc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
-  doc.events.push({ id: "evt-f1-020-effect", order: 20, type: "EffectApplied", effectId: "effect-f1-test", name: "Test Effect", effectType: "good", durationSeconds: 60, description: "A schema and compiler regression test.", statModifiers: { Strength: 1 }, position: { floor: 1, book: 1, chapter: 30 }, summary: "Carl receives a test effect.", evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }] });
+  const order = doc.events.length + 1;
+  doc.events.push({ id: "evt-f1-effect", order, type: "EffectApplied", effectId: "effect-f1-test", name: "Test Effect", effectType: "good", durationSeconds: 60, description: "A schema and compiler regression test.", statModifiers: { Strength: 1 }, position: { floor: 1, book: 1, chapter: 30 }, summary: "Carl receives a test effect.", evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }] });
   assert.equal(validateCrawlerFloor(doc).valid, true);
   const compiled = compileFloorFiles([doc]);
-  const state = projectState(compiled, 20);
+  const state = projectState(compiled, order);
   assert.equal(state.effects[0]?.effectId, "effect-f1-test");
   assert.equal(state.effects[0]?.statModifiers?.Strength, 1);
 });
@@ -268,7 +272,7 @@ test("floor validator rejects achievement rewards with uncatalogued item referen
 
 test("ItemCrafted events project crafted items into inventory", () => {
   const doc = JSON.parse(JSON.stringify(floor1AuthoredDoc));
-  doc.events.push({ id: "evt-f1-craft-bomb", order: 20, type: "ItemCrafted", position: { floor: 1, book: 1, chapter: 30 }, summary: "Carl crafts a goblin explosive", item: { instanceId: "inst-f1-crafted-bomb", itemId: "item-goblin-copper-chopper", quantity: { known: true, value: 1 } }, evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }] });
+  doc.events.push({ id: "evt-f1-craft-bomb", order: doc.events.length + 1, type: "ItemCrafted", position: { floor: 1, book: 1, chapter: 30 }, summary: "Carl crafts a goblin explosive", item: { instanceId: "inst-f1-crafted-bomb", itemId: "item-goblin-copper-chopper", quantity: { known: true, value: 1 } }, evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }] });
   const compiled = compileFloorFiles([doc]);
   assert.equal(compiled.events.at(-1).type, "ItemCrafted");
   const state = projectState(compiled, compiled.events.length);
