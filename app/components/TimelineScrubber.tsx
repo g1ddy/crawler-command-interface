@@ -129,18 +129,40 @@ export function TimelineScrubber({
     return floorObservations;
   }, [floorObservations, showDiagnostics, showObservationMarkers, feedMode]);
 
-  const currentEvent =
-    events.find((e) => e.sequence === selectedSequence) || events[events.length - 1];
+  const currentEvent = React.useMemo(() => {
+    if (events.length === 0) return undefined;
+    let l = 0;
+    let r = events.length - 1;
+    let found = null;
+    while (l <= r) {
+      const m = Math.floor((l + r) / 2);
+      if (events[m].sequence === selectedSequence) {
+        found = events[m];
+        break;
+      } else if (events[m].sequence < selectedSequence) {
+        l = m + 1;
+      } else {
+        r = m - 1;
+      }
+    }
+    return found || events[events.length - 1];
+  }, [events, selectedSequence]);
 
   // Helper for sparse step navigation
   const findCurrentIndex = () => {
-    const idx = scopedSequences.indexOf(selectedSequence);
-    if (idx !== -1) return idx;
-    // Find closest sequence <= selectedSequence
-    for (let i = scopedSequences.length - 1; i >= 0; i--) {
-      if (scopedSequences[i] <= selectedSequence) return i;
+    let l = 0;
+    let r = scopedSequences.length - 1;
+    let bestIdx = 0;
+    while (l <= r) {
+      const m = Math.floor((l + r) / 2);
+      if (scopedSequences[m] <= selectedSequence) {
+        bestIdx = m;
+        l = m + 1;
+      } else {
+        r = m - 1;
+      }
     }
-    return 0;
+    return bestIdx;
   };
 
   const handlePrevStep = () => {
