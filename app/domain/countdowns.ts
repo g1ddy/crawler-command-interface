@@ -103,6 +103,16 @@ export function projectCountdownState(
   // Extrapolate beyond the final reference from the latest compatible pair so
   // replay keeps a continuous countdown through the floor exit.
   if (targetSequence > lastRef.sequence) {
+    const laterPhaseBreak = events.some(
+      (event) =>
+        event.sequence > lastRef.sequence &&
+        event.sequence <= targetSequence &&
+        isCountdownPhaseBreakEvent(event, activeCountdown.id)
+    );
+    if (laterPhaseBreak) {
+      return null;
+    }
+
     const penultimateRef = references[references.length - 2];
     const hasCompatiblePair =
       penultimateRef &&
@@ -139,6 +149,7 @@ export function projectCountdownState(
         target: activeCountdown.target,
         remainingSeconds,
         status: 'estimated',
+        isStale: false,
         basis,
         confidence: 'low-confidence',
         formattedTime: formatCountdownDuration(remainingSeconds, true),
@@ -160,6 +171,7 @@ export function projectCountdownState(
       target: activeCountdown.target,
       remainingSeconds,
       status: 'stated',
+      isStale: true,
       basis: 'last-known-reference',
       confidence,
       formattedTime,
@@ -182,6 +194,7 @@ export function projectCountdownState(
       target: activeCountdown.target,
       remainingSeconds,
       status: 'stated',
+      isStale: false,
       basis: 'exact-reference',
       confidence,
       formattedTime,
@@ -264,6 +277,7 @@ export function projectCountdownState(
     target: activeCountdown.target,
     remainingSeconds: interpolatedSeconds,
     status: 'estimated',
+    isStale: false,
     basis,
     confidence,
     formattedTime,
