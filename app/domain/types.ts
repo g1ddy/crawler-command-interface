@@ -381,6 +381,37 @@ export interface ProjectedObservationValue {
   referenceObservationIds: string[];
 }
 
+export interface ProjectedItemObservation {
+  itemInstanceId: string;
+  present?: boolean;
+  quantity?: QuantityObject;
+  isEquipped?: boolean;
+  status: 'stated';
+  basis: 'exact-observation';
+  evidence: TimelineEvidence[];
+  referenceObservationIds: string[];
+  sequence: number;
+}
+
+export interface ProjectedEquipmentObservation {
+  slot: string;
+  itemInstanceId: string | null;
+  status: 'stated';
+  basis: 'exact-observation';
+  evidence: TimelineEvidence[];
+  referenceObservationIds: string[];
+  sequence: number;
+}
+
+export interface ProjectedObservationsState {
+  condition: Record<string, ProjectedObservationValue>;
+  attributes: Record<string, ProjectedObservationValue>;
+  xpProgress: Record<string, ProjectedObservationValue>;
+  broadcast: Record<string, ProjectedObservationValue>;
+  inventory: Record<string, ProjectedItemObservation>;
+  equipment: Record<string, ProjectedEquipmentObservation>;
+}
+
 export interface ActiveCountdownState {
   id: string;
   title: string;

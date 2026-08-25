@@ -618,7 +618,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
 }
 
 export { projectCountdownState, formatCountdownDuration, isCountdownPhaseBreakEvent } from './countdowns.ts';
-export { projectObservationValue, projectObservationValues } from './observations.ts';
+export { projectObservationValue, projectObservationValues, projectObservations } from './observations.ts';
 
 export function projectState(
   docOrEvents: CrawlerTimelineDocument | CrawlerEvent[] | unknown,

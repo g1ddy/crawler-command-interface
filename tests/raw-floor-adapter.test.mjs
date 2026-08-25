@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 import { compileFloorFiles } from "../app/domain/compiler.ts";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
-import { projectCountdownState, projectObservationValue, projectState } from "../app/domain/projection.ts";
+import { projectCountdownState, projectObservationValue, projectObservations, projectState } from "../app/domain/projection.ts";
 import { adaptRawFloorDocument, adaptRawFloorObservations } from "../app/domain/raw-adapter.ts";
 import { compileRawFloorFiles } from "../app/domain/raw-compiler.ts";
 import { validateCrawlerFloor, validateRawCrawlerFloor, validateCrawlerTimeline } from "../app/domain/validation.ts";
@@ -486,4 +486,101 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
   const countdownEvent = compiled.events.find((e) => e.type === "CountdownReset");
   assert.ok(countdownEvent);
   assert.equal(countdownEvent.countdownId, "countdown-floor-1-collapse");
+});
+
+test("projectObservations returns latest observations across Floor 1-2 with provenance and boundary rules", () => {
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
+
+  // Test exact anchor observation retrieval and provenance
+  const obsAtSeq = projectObservations(rawTimeline, 5);
+  assert.ok(obsAtSeq.condition);
+  assert.ok(obsAtSeq.attributes);
+  assert.ok(obsAtSeq.xpProgress);
+  assert.ok(obsAtSeq.broadcast);
+  assert.ok(obsAtSeq.inventory);
+  assert.ok(obsAtSeq.equipment);
+
+  // Check discrete scalar behavior (level remains stepwise, non-interpolated)
+  const levelObs = projectObservationValue(rawTimeline, 13, "xp-progress.level");
+  assert.equal(levelObs, null, "discrete levels must not be linearly interpolated between sequence anchors");
+
+  const levelProjected = projectObservations(rawTimeline, 13).xpProgress.level;
+  assert.ok(levelProjected);
+  assert.equal(levelProjected.status, "stated");
+  assert.equal(levelProjected.basis, "exact-observation");
+  assert.equal(levelProjected.value, 3, "stepwise fallback preserves latest stated level of 3");
+
+  // Check boundary rules for interpolation:
+  // Interpolation must not cross floor boundary
+  const crossFloorDoc = JSON.parse(JSON.stringify(rawFloor1));
+  const f2Doc = JSON.parse(JSON.stringify(rawFloor2));
+
+  crossFloorDoc.observations.push({
+    id: "obs-f1-interp-end",
+    kind: "crawler-condition",
+    eventId: crossFloorDoc.events[crossFloorDoc.events.length - 1].id,
+    interpolation: "linear",
+    currentHealth: 1000,
+    evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+  });
+  f2Doc.observations.push({
+    id: "obs-f2-interp-start",
+    kind: "crawler-condition",
+    eventId: f2Doc.events[0].id,
+    interpolation: "linear",
+    currentHealth: 2000,
+    evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+  });
+
+  const compiledCrossFloor = compileRawFloorFiles([crossFloorDoc, f2Doc]);
+  const targetBetweenFloors = crossFloorDoc.events[crossFloorDoc.events.length - 1].sequence;
+  const hpInterp = projectObservationValue(compiledCrossFloor, targetBetweenFloors + 1, "crawler-condition.currentHealth");
+  assert.equal(hpInterp, null, "interpolation must not cross floor boundaries");
+
+  // Interpolation must not cross countdown phase break
+  const phaseBreakDoc = JSON.parse(JSON.stringify(rawFloor1));
+  const eventId1 = phaseBreakDoc.events[0].id;
+  const eventId2 = phaseBreakDoc.events[2].id;
+
+  phaseBreakDoc.observations.push(
+    {
+      id: "obs-p1-start",
+      kind: "crawler-condition",
+      eventId: eventId1,
+      interpolation: "linear",
+      currentMana: 100,
+      evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+    },
+    {
+      id: "obs-p1-end",
+      kind: "crawler-condition",
+      eventId: eventId2,
+      interpolation: "linear",
+      currentMana: 200,
+      evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
+    }
+  );
+
+  // Insert CountdownReset between event 1 and 2
+  phaseBreakDoc.events[1] = {
+    id: phaseBreakDoc.events[1].id,
+    order: phaseBreakDoc.events[1].order,
+    type: "CountdownReset",
+    countdownId: "countdown-floor-1-collapse",
+    newRemainingSeconds: 500000,
+    position: phaseBreakDoc.events[1].position,
+    summary: "Countdown reset event",
+    evidence: phaseBreakDoc.events[1].evidence,
+  };
+
+  const compiledPhaseBreak = compileRawFloorFiles([phaseBreakDoc]);
+  const manaInterp = projectObservationValue(compiledPhaseBreak, phaseBreakDoc.events[1].sequence, "crawler-condition.currentMana");
+  assert.equal(manaInterp, null, "interpolation must not cross countdown phase breaks");
+
+  // Verify that observation projection does not alter causal event state or countdown projection
+  const causalStateBefore = projectState(rawTimeline, 10);
+  const countdownStateBefore = projectCountdownState(rawTimeline, 10, 1);
+  projectObservations(rawTimeline, 10);
+  assert.deepEqual(projectState(rawTimeline, 10), causalStateBefore);
+  assert.deepEqual(projectCountdownState(rawTimeline, 10, 1), countdownStateBefore);
 });
