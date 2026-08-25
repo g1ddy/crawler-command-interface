@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v2.schema.json",
+  "title": "Crawler Raw Floor Authoring v2",
+  "description": "Source-backed floor authoring with heterogeneous point-in-time observations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["authoringVersion", "storyId", "floor", "sources", "catalog", "events"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "authoringVersion": { "enum": ["crawler-floor-raw/v1", "crawler-floor-raw/v2"] },
+    "storyId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+    "floor": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/floor" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/source" }
+    },
+    "catalog": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/catalog" },
+    "countdowns": {
+      "type": "array",
+      "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/countdown" }
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/event" }
+    },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/observation" }
+    }
+  },
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["id", "kind", "eventId", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "type": "string" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" }
+        },
+        "note": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "observation": {
+      "oneOf": [
+        { "$ref": "#/$defs/countdownRemaining" },
+        { "$ref": "#/$defs/crawlerCondition" },
+        { "$ref": "#/$defs/crawlerAttributes" },
+        { "$ref": "#/$defs/xpProgress" },
+        { "$ref": "#/$defs/broadcastMetrics" },
+        { "$ref": "#/$defs/inventoryState" },
+        { "$ref": "#/$defs/equipmentState" }
+      ]
+    },
+    "countdownRemaining": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "countdownId", "remainingSeconds", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "const": "countdown-remaining" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "countdownId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "remainingSeconds": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/nonNegativeInteger" },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "crawlerCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "const": "crawler-condition" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "currentHealth": { "type": "number", "minimum": 0 },
+        "maxHealth": { "type": "number", "minimum": 0 },
+        "currentMana": { "type": "number", "minimum": 0 },
+        "maxMana": { "type": "number", "minimum": 0 },
+        "currentStamina": { "type": "number", "minimum": 0 },
+        "maxStamina": { "type": "number", "minimum": 0 },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      },
+      "anyOf": [
+        { "required": ["currentHealth"] }, { "required": ["maxHealth"] },
+        { "required": ["currentMana"] }, { "required": ["maxMana"] },
+        { "required": ["currentStamina"] }, { "required": ["maxStamina"] }
+      ]
+    },
+    "crawlerAttributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "attributes", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "const": "crawler-attributes" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "attributes": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "number" } },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "xpProgress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "const": "xp-progress" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "xp": { "type": "number", "minimum": 0 },
+        "maxXp": { "type": "number", "minimum": 0 },
+        "level": { "type": "integer", "minimum": 1 },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      },
+      "anyOf": [{ "required": ["xp"] }, { "required": ["maxXp"] }, { "required": ["level"] }]
+    },
+    "broadcastMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "const": "broadcast-metrics" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "viewers": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/nonNegativeInteger" },
+        "followers": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/nonNegativeInteger" },
+        "fameRank": { "type": "string", "minLength": 1 },
+        "sponsorInterest": { "type": "boolean" },
+        "patrons": { "type": "array", "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/patron" } },
+        "favorites": { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/patron" }] } },
+        "metrics": { "type": "object", "minProperties": 1, "additionalProperties": true },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      },
+      "anyOf": [
+        { "required": ["viewers"] }, { "required": ["followers"] }, { "required": ["fameRank"] },
+        { "required": ["sponsorInterest"] }, { "required": ["patrons"] }, { "required": ["favorites"] }, { "required": ["metrics"] }
+      ]
+    },
+    "inventoryState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "itemInstanceId", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "const": "inventory-state" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "itemInstanceId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "present": { "type": "boolean" },
+        "quantity": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/quantity" },
+        "isEquipped": { "type": "boolean" },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      },
+      "anyOf": [{ "required": ["present"] }, { "required": ["quantity"] }, { "required": ["isEquipped"] }]
+    },
+    "equipmentState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "slot", "itemInstanceId", "evidence"],
+      "properties": {
+        "id": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "kind": { "const": "equipment-state" },
+        "eventId": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" },
+        "slot": { "type": "string", "minLength": 1 },
+        "itemInstanceId": { "oneOf": [{ "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/id" }, { "type": "null" }] },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json#/$defs/evidence" } },
+        "note": { "type": "string", "maxLength": 1000 }
+      }
+    }
+  }
+}
