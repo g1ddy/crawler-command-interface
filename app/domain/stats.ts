@@ -11,6 +11,15 @@ export interface StatBreakdown {
 
 export function getStatBreakdown(state: CrawlerState, statName: string): StatBreakdown {
   const isAttr = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Charisma'].includes(statName);
+  const targetLower = statName.toLowerCase();
+
+  function findStatValue(stats: Record<string, number>): number | undefined {
+    if (stats[statName] !== undefined) return stats[statName];
+    for (const key in stats) {
+      if (key.toLowerCase() === targetLower) return stats[key];
+    }
+    return undefined;
+  }
 
   let baseValue = 0;
   let permanentModifiers = 0;
@@ -38,14 +47,12 @@ export function getStatBreakdown(state: CrawlerState, statName: string): StatBre
     if (!item || !item.stats) continue;
 
     // Direct match or attribute match
-    const keyMatch = Object.keys(item.stats).find(
-      (k) => k.toLowerCase() === statName.toLowerCase()
-    );
-    if (keyMatch) {
+    const amount = findStatValue(item.stats);
+    if (amount !== undefined) {
       gearContributions.push({
         itemName: item.name,
         slot,
-        amount: item.stats[keyMatch],
+        amount,
       });
     }
   }
@@ -54,14 +61,12 @@ export function getStatBreakdown(state: CrawlerState, statName: string): StatBre
 
   for (const effect of state.effects) {
     if (!effect.statModifiers) continue;
-    const keyMatch = Object.keys(effect.statModifiers).find(
-      (k) => k.toLowerCase() === statName.toLowerCase()
-    );
-    if (keyMatch) {
+    const amount = findStatValue(effect.statModifiers);
+    if (amount !== undefined) {
       activeEffectContributions.push({
         effectName: effect.name,
         icon: effect.icon,
-        amount: effect.statModifiers[keyMatch],
+        amount,
       });
     }
   }
