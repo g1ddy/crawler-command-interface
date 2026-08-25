@@ -100,9 +100,32 @@ export function projectCountdownState(
   const firstRef = references[0];
   const lastRef = references[references.length - 1];
 
-  // Do not extrapolate before the first or after the last reference
-  if (targetSequence < firstRef.sequence || targetSequence > lastRef.sequence) {
+  // Do not infer a reading before the first supported reference.
+  if (targetSequence < firstRef.sequence) {
     return null;
+  }
+
+  // Keep the latest supported reading visible after its sequence. This is not
+  // an extrapolation: callers can distinguish it from an exact reading via the
+  // `last-known-reference` basis.
+  if (targetSequence > lastRef.sequence) {
+    const remainingSeconds = lastRef.remainingSeconds;
+    const formattedTime = formatCountdownDuration(remainingSeconds, false);
+    const confidence = lastRef.evidence[0]?.confidence || 'confirmed';
+    return {
+      id: activeCountdown.id,
+      title: activeCountdown.title,
+      floor: activeCountdown.floor,
+      target: activeCountdown.target,
+      remainingSeconds,
+      status: 'stated',
+      basis: 'last-known-reference',
+      confidence,
+      formattedTime: `Last known: ${formattedTime}`,
+      formattedLabel: `Last known: ${formattedTime} · stated`,
+      referencePoints: [lastRef],
+      note: lastRef.note,
+    };
   }
 
   // 1. Check exact sequence match
