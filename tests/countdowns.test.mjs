@@ -158,6 +158,7 @@ test("returns null for non-monotonic (incompatible) references or pause/resume/p
       { id: "e1", sequence: 10, type: "NarrativeEvent", position: { floor: 1 }, summary: "Start", evidence: [{ sourceId: "src-1" }] },
       { id: "e2", sequence: 20, type: "CountdownPaused", countdownId: "cd-1", position: { floor: 1 }, summary: "Countdown paused by system", evidence: [{ sourceId: "src-1" }] },
       { id: "e3", sequence: 30, type: "NarrativeEvent", position: { floor: 1 }, summary: "End", evidence: [{ sourceId: "src-1" }] },
+      { id: "e4", sequence: 35, type: "CountdownReset", countdownId: "cd-1", newRemainingSeconds: 5000, position: { floor: 1 }, summary: "Countdown reset by system", evidence: [{ sourceId: "src-1" }] },
     ],
     countdowns: [
       {
