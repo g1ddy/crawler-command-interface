@@ -66,10 +66,14 @@ test("a lifecycle event for one countdown cannot break monotonicity for another 
 
   const boundaryIndex = timeline.events.findIndex((event) => event.id === between.id);
   timeline.events[boundaryIndex] = {
-    ...timeline.events[boundaryIndex],
+    id: between.id,
+    sequence: between.sequence,
     type: "CountdownReset",
     countdownId: other.id,
     newRemainingSeconds: first.remainingSeconds,
+    position: between.position,
+    summary: "Regression countdown reset boundary",
+    evidence: between.evidence,
   };
   target.references[1].remainingSeconds = first.remainingSeconds + 1;
 
