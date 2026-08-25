@@ -24,6 +24,20 @@ If a source establishes that Carl gained 2 Strength, prefer an `AttributeModifie
 
 Use snapshots only when the source actually supports a point-in-time collection of state. Events are preferable for isolated changes.
 
+## Raw-data collection methodology
+
+Collect claims before authoring JSON. Keep a short claim ledger for each floor that records the fact, its source, the exact locator, source tier, and whether it is an event, an observation, or both. Then author only the claims that the source directly supports.
+
+Use sources in this order:
+
+1. **Primary** — published text, licensed audiobook, or an official preview. Use `trust: "primary"` and `confidence: "confirmed"` when the cited passage or timestamp establishes the payload.
+2. **Corroborating** — maintained fan databases and wikis. Use these to find candidate moments and to corroborate a claim, but retain their actual source tier and confidence. Do not upgrade a fan transcription to primary evidence.
+3. **Candidate** — discussions, unverified lists, and search snippets. Use these only to identify material needing verification; do not treat them as a sole basis for a precise state transition.
+
+For every accepted claim, capture the narrowest stable locator available: book and chapter for primary text, timestamp for audio, and a page/section heading or revision marker for community sources. If a source supports only a level change, author a level transition or `xp-progress` level anchor; do not infer numeric XP. If a source supports a single stat, item, or broadcast metric, preserve only that field rather than constructing a complete HUD snapshot.
+
+When a corroborating source supplies a page-derived table, note the page in the locator's `section` text until the evidence schema gains a dedicated page field. Add the source once to the floor's `sources` catalog, reuse its stable ID, and retain each claim's individual locator and confidence. Recheck community-sourced facts against a primary source when one becomes available, updating the evidence rather than silently changing the payload.
+
 ## Evidence is part of the observation
 
 Every authored event should remain traceable to a declared source.

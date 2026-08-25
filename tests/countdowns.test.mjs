@@ -9,6 +9,10 @@ import { validateCrawlerFloor, validateCrawlerTimeline } from "../app/domain/val
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));
 const compiledDoc = compileFloorFiles([floor1AuthoredDoc, floor2AuthoredDoc]);
+const floor1CountdownSequence = compiledDoc.countdowns.find((countdown) => countdown.id === "countdown-floor-1-collapse").references[0].sequence;
+const [floor2EntryCountdownSequence, floor2MidFloorCountdownSequence] = compiledDoc.countdowns
+  .find((countdown) => countdown.id === "countdown-floor-2-collapse")
+  .references.map((reference) => reference.sequence);
 
 test("formatCountdownDuration formats exact and estimated durations properly", () => {
   assert.equal(formatCountdownDuration(417600, false), "4d 20h left");
@@ -21,46 +25,46 @@ test("formatCountdownDuration formats exact and estimated durations properly", (
 });
 
 test("Floor 1's authored collapse-clock reference is visible at its exact sequence", () => {
-  const stateSeq13 = projectCountdownState(compiledDoc, 13, 1);
-  assert.ok(stateSeq13);
-  assert.equal(stateSeq13.status, "stated");
-  assert.equal(stateSeq13.basis, "exact-reference");
-  assert.equal(stateSeq13.remainingSeconds, 237600);
-  assert.equal(stateSeq13.formattedLabel, "2d 18h left · stated");
-  assert.equal(stateSeq13.referencePoints.length, 1);
-  assert.equal(stateSeq13.referencePoints[0].sequence, 13);
+  const state = projectCountdownState(compiledDoc, floor1CountdownSequence, 1);
+  assert.ok(state);
+  assert.equal(state.status, "stated");
+  assert.equal(state.basis, "exact-reference");
+  assert.equal(state.remainingSeconds, 237600);
+  assert.equal(state.formattedLabel, "2d 18h left · stated");
+  assert.equal(state.referencePoints.length, 1);
+  assert.equal(state.referencePoints[0].sequence, floor1CountdownSequence);
 });
 
 test("timeline does not interpolate Floor 1 without two supported stated references", () => {
   assert.equal(projectCountdownState(compiledDoc, 1, 1), null);
-  assert.equal(projectCountdownState(compiledDoc, 12, 1), null);
+  assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence - 1, 1), null);
 
-  const stated = projectCountdownState(compiledDoc, 13, 1);
+  const stated = projectCountdownState(compiledDoc, floor1CountdownSequence, 1);
   assert.ok(stated);
   assert.equal(stated.status, "stated");
   assert.equal(stated.remainingSeconds, 237600);
 
-  assert.equal(projectCountdownState(compiledDoc, 14, 1), null);
-  assert.equal(projectCountdownState(compiledDoc, 19, 1), null);
+  assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence + 1, 1), null);
+  assert.equal(projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 1).endSequence, 1), null);
 });
 
 test("Floor 2's authored collapse-clock references are monotonic", () => {
-  const stateSeq20 = projectCountdownState(compiledDoc, 20, 2);
+  const stateSeq20 = projectCountdownState(compiledDoc, floor2EntryCountdownSequence, 2);
   assert.ok(stateSeq20);
   assert.equal(stateSeq20.status, "stated");
   assert.equal(stateSeq20.remainingSeconds, 536400);
 
-  const stateSeq23 = projectCountdownState(compiledDoc, 23, 2);
+  const stateSeq23 = projectCountdownState(compiledDoc, floor2MidFloorCountdownSequence, 2);
   assert.ok(stateSeq23);
   assert.equal(stateSeq23.status, "stated");
   assert.equal(stateSeq23.remainingSeconds, 360000);
 
-  const estimatedState = projectCountdownState(compiledDoc, 22, 2);
+  const estimatedState = projectCountdownState(compiledDoc, floor2EntryCountdownSequence + 1, 2);
   assert.ok(estimatedState);
   assert.equal(estimatedState.status, "estimated");
   assert.ok(estimatedState.remainingSeconds < stateSeq20.remainingSeconds);
   assert.ok(estimatedState.remainingSeconds > stateSeq23.remainingSeconds);
-  assert.equal(projectCountdownState(compiledDoc, 28, 2), null);
+  assert.equal(projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 2).endSequence, 2), null);
 });
 
 test("prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence", () => {
@@ -196,10 +200,10 @@ test("live-action appends extend floor end sequence and preserve historical coun
   const newEndSeq = getFloorEndSequence(events, 1, 19);
   assert.equal(newEndSeq, appenedSeq);
 
-  const stateSeq13 = projectCountdownState({ events, countdowns: compiledDoc.countdowns }, 13, 1);
-  assert.ok(stateSeq13);
-  assert.equal(stateSeq13.status, "stated");
-  assert.equal(stateSeq13.remainingSeconds, 237600);
+  const state = projectCountdownState({ events, countdowns: compiledDoc.countdowns }, floor1CountdownSequence, 1);
+  assert.ok(state);
+  assert.equal(state.status, "stated");
+  assert.equal(state.remainingSeconds, 237600);
 });
 
 test("phase-aware countdown monotonicity accepts legitimate reset boundaries and rejects intra-phase increases", () => {

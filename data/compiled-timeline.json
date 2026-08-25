@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-24T16:27:07.434Z",
-    "updatedAt": "2026-08-24T16:27:07.434Z"
+    "createdAt": "2026-08-25T05:09:35.375Z",
+    "updatedAt": "2026-08-25T05:09:35.376Z"
   },
   "floors": [
     {
@@ -22,7 +22,7 @@
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
       "startSequence": 1,
-      "endSequence": 19
+      "endSequence": 27
     },
     {
       "id": "floor-2",
@@ -30,8 +30,8 @@
       "title": "Second Floor",
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
-      "startSequence": 20,
-      "endSequence": 31
+      "startSequence": 28,
+      "endSequence": 43
     }
   ],
   "sources": [
@@ -63,6 +63,13 @@
       "trust": "corroborating",
       "title": "Carl/Inventory",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+    },
+    {
+      "id": "src-dcc-database-carl",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "DCC Database: Carl",
+      "url": "https://www.dccdatabase.com/wiki/carl/"
     },
     {
       "id": "src-reddit-inventory-list",
@@ -232,8 +239,28 @@
       }
     },
     {
-      "id": "evt-f1-005-goblin-pass",
+      "id": "evt-f1-level-2",
       "sequence": 5,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 2.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 50)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 2
+    },
+    {
+      "id": "evt-f1-005-goblin-pass",
+      "sequence": 6,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -258,7 +285,7 @@
     },
     {
       "id": "evt-f1-006-trollskin-shirt",
-      "sequence": 6,
+      "sequence": 7,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -292,7 +319,7 @@
     },
     {
       "id": "evt-f1-007-nightgaunt-cloak",
-      "sequence": 7,
+      "sequence": 8,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -329,7 +356,7 @@
     },
     {
       "id": "evt-f1-008-toe-ring",
-      "sequence": 8,
+      "sequence": 9,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -365,8 +392,30 @@
       }
     },
     {
+      "id": "evt-f1-toe-ring-equipped",
+      "sequence": 10,
+      "type": "ItemEquipped",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl equips the Enchanted Toe Ring of the Splatter Skunk.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "itemInstanceId": "inst-f1-toe-ring",
+      "slot": "FEET"
+    },
+    {
       "id": "evt-f1-009-first-magic-gear",
-      "sequence": 9,
+      "sequence": 11,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -396,8 +445,28 @@
       }
     },
     {
+      "id": "evt-f1-level-3",
+      "sequence": 12,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 3.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 78)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 3
+    },
+    {
       "id": "evt-f1-010-silver-ring-plus-1-con",
-      "sequence": 10,
+      "sequence": 13,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -432,8 +501,28 @@
       }
     },
     {
+      "id": "evt-f1-level-5",
+      "sequence": 14,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 5.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 92)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 5
+    },
+    {
       "id": "evt-f1-011-shade-gnoll-kneepads",
-      "sequence": 11,
+      "sequence": 15,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -469,8 +558,48 @@
       }
     },
     {
+      "id": "evt-f1-level-7",
+      "sequence": 16,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 7.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 120)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 7
+    },
+    {
+      "id": "evt-f1-level-8",
+      "sequence": 17,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 8.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 138)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 8
+    },
+    {
       "id": "evt-f1-012-goblin-copper-chopper",
-      "sequence": 12,
+      "sequence": 18,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -503,7 +632,7 @@
     },
     {
       "id": "evt-f1-013-desperado-pass",
-      "sequence": 13,
+      "sequence": 19,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -528,7 +657,7 @@
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
-      "sequence": 14,
+      "sequence": 20,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -564,7 +693,7 @@
     },
     {
       "id": "evt-f1-015-boom",
-      "sequence": 15,
+      "sequence": 21,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -594,8 +723,48 @@
       }
     },
     {
+      "id": "evt-f1-level-9",
+      "sequence": 22,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 9.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 194)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 9
+    },
+    {
+      "id": "evt-f1-level-10",
+      "sequence": 23,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 10.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 218)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 10
+    },
+    {
       "id": "evt-f1-016-war-gauntlet",
-      "sequence": 16,
+      "sequence": 24,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -633,7 +802,7 @@
     },
     {
       "id": "evt-f1-017-podophilia",
-      "sequence": 17,
+      "sequence": 25,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -664,7 +833,7 @@
     },
     {
       "id": "evt-f1-018-battlefield-construction",
-      "sequence": 18,
+      "sequence": 26,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -695,7 +864,7 @@
     },
     {
       "id": "evt-f1-019-exit",
-      "sequence": 19,
+      "sequence": 27,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -716,7 +885,7 @@
     },
     {
       "id": "evt-f2-001-entered",
-      "sequence": 20,
+      "sequence": 28,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -737,7 +906,7 @@
     },
     {
       "id": "evt-f2-002-goo-inator",
-      "sequence": 21,
+      "sequence": 29,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -770,7 +939,7 @@
     },
     {
       "id": "evt-f2-003-pedicure-kit",
-      "sequence": 22,
+      "sequence": 30,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -806,7 +975,7 @@
     },
     {
       "id": "evt-f2-004-bigboi-boxers",
-      "sequence": 23,
+      "sequence": 31,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -843,7 +1012,7 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "sequence": 24,
+      "sequence": 32,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -863,8 +1032,61 @@
       ]
     },
     {
+      "id": "evt-f2-level-11",
+      "sequence": 33,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 11.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 11
+    },
+    {
+      "id": "evt-f2-jug-o-boom-crafted",
+      "sequence": 34,
+      "type": "ItemCrafted",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 33
+      },
+      "summary": "Carl invents Carl's Jug O' Boom.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 33
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f2-carls-jug-o-boom",
+        "itemId": "item-carls-jug-o-boom",
+        "name": "Carl's Jug O' Boom",
+        "category": "crafting",
+        "rarity": "common",
+        "description": "Carl's stackable incendiary dungeon invention.",
+        "quantity": {
+          "known": false,
+          "note": "The source establishes Carl's invention but not a stable carried quantity."
+        },
+        "sourceDescription": "Second Floor"
+      }
+    },
+    {
       "id": "evt-f2-006-jug-o-boom",
-      "sequence": 25,
+      "sequence": 35,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -894,8 +1116,33 @@
       }
     },
     {
+      "id": "evt-f2-dungeonpreneur-royalty",
+      "sequence": 36,
+      "type": "PermanentEntitlementGranted",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 33
+      },
+      "summary": "Dungeonpreneur grants Carl a royalty entitlement for kills made with his invention.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 33
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "entitlement": {
+        "id": "entitlement-f2-dungeonpreneur-royalty",
+        "name": "Dungeonpreneur royalty",
+        "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+      }
+    },
+    {
       "id": "evt-f2-007-proximity-trigger",
-      "sequence": 26,
+      "sequence": 37,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -928,7 +1175,7 @@
     },
     {
       "id": "evt-f2-008-peta-enthusiast",
-      "sequence": 27,
+      "sequence": 38,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -959,7 +1206,7 @@
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "sequence": 28,
+      "sequence": 39,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -977,12 +1224,11 @@
         }
       ],
       "viewers": 212000000000,
-      "followers": 4400000000,
-      "fameRank": "#-"
+      "followers": 4400000000
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "sequence": 29,
+      "sequence": 40,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -1002,8 +1248,28 @@
       ]
     },
     {
+      "id": "evt-f2-level-12",
+      "sequence": 41,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 12.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "level": 12
+    },
+    {
       "id": "evt-f2-011-level-13",
-      "sequence": 30,
+      "sequence": 42,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -1024,7 +1290,7 @@
     },
     {
       "id": "evt-f2-012-exit",
-      "sequence": 31,
+      "sequence": 43,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1052,49 +1318,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "sequence": 4,
-          "remainingSeconds": 417600,
-          "evidence": [
-            {
-              "sourceId": "src-book-1",
-              "locator": {
-                "chapter": 4
-              },
-              "confidence": "confirmed"
-            }
-          ],
-          "note": "The closest currently authored event to the stated post-tutorial reference: 4 days and 20 hours remain."
-        },
-        {
-          "sequence": 15,
-          "remainingSeconds": 169200,
-          "evidence": [
-            {
-              "sourceId": "src-book-1",
-              "locator": {
-                "chapter": 20
-              },
-              "confidence": "confirmed"
-            }
-          ],
-          "note": "The closest currently authored event to the stated stairwell-search reference: 47 hours remain."
-        },
-        {
-          "sequence": 11,
-          "remainingSeconds": 266400,
-          "evidence": [
-            {
-              "sourceId": "src-wiki-carl-floor-1",
-              "locator": {
-                "section": "Gear Gained"
-              },
-              "confidence": "corroborated"
-            }
-          ],
-          "note": "Carl punches a slime with 3 days and 2 hours remaining; the slime destroys his glove and the right arm of his jacket."
-        },
-        {
-          "sequence": 13,
+          "sequence": 19,
           "remainingSeconds": 237600,
           "evidence": [
             {
@@ -1106,20 +1330,6 @@
             }
           ],
           "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining."
-        },
-        {
-          "sequence": 16,
-          "remainingSeconds": 169200,
-          "evidence": [
-            {
-              "sourceId": "src-wiki-carl-floor-1",
-              "locator": {
-                "section": "Gear Gained"
-              },
-              "confidence": "candidate"
-            }
-          ],
-          "note": "The War Gauntlet is received with just under two days remaining; this is retained as an approximate anchor until a primary-text timestamp is verified."
         }
       ]
     },
@@ -1130,7 +1340,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "sequence": 20,
+          "sequence": 28,
           "remainingSeconds": 536400,
           "evidence": [
             {
@@ -1144,7 +1354,7 @@
           "note": "Carl's documented Second Floor baseline: 6 days and 5 hours remaining."
         },
         {
-          "sequence": 23,
+          "sequence": 31,
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -1158,6 +1368,381 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         }
       ]
+    }
+  ],
+  "observations": [
+    {
+      "id": "obs-f1-magic-baseline",
+      "kind": "crawler-condition",
+      "currentMana": 3,
+      "maxMana": 3,
+      "note": "Carl's HUD shows three mana points when the basic healing spell is introduced; no mana-change event is asserted.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "sequence": 7
+    },
+    {
+      "id": "obs-f1-intelligence-baseline",
+      "kind": "crawler-attributes",
+      "attributes": {
+        "Intelligence": 3
+      },
+      "note": "HUD attribute reading, not an attributed Intelligence change.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "sequence": 7
+    },
+    {
+      "id": "obs-f1-toe-ring-equipped",
+      "kind": "equipment-state",
+      "slot": "FEET",
+      "itemInstanceId": "inst-f1-toe-ring",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "sequence": 10
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-f1-013-desperado-pass",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 237600,
+      "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 19
+    },
+    {
+      "id": "obs-f1-level-2",
+      "kind": "xp-progress",
+      "level": 2,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 50)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 5
+    },
+    {
+      "id": "obs-f1-level-3",
+      "kind": "xp-progress",
+      "level": 3,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 78)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 12
+    },
+    {
+      "id": "obs-f1-level-5",
+      "kind": "xp-progress",
+      "level": 5,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 92)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 14
+    },
+    {
+      "id": "obs-f1-level-7",
+      "kind": "xp-progress",
+      "level": 7,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 120)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 16
+    },
+    {
+      "id": "obs-f1-level-8",
+      "kind": "xp-progress",
+      "level": 8,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 138)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 17
+    },
+    {
+      "id": "obs-f1-level-9",
+      "kind": "xp-progress",
+      "level": 9,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 194)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 22
+    },
+    {
+      "id": "obs-f1-level-10",
+      "kind": "xp-progress",
+      "level": 10,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 218)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 23
+    },
+    {
+      "id": "obs-f1-attributes-nightgaunt",
+      "kind": "crawler-attributes",
+      "attributes": {
+        "Strength": 6,
+        "Intelligence": 3,
+        "Constitution": 9,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 56)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 8
+    },
+    {
+      "id": "obs-f1-attributes-toe-ring",
+      "kind": "crawler-attributes",
+      "attributes": {
+        "Strength": 9,
+        "Intelligence": 3,
+        "Constitution": 9,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 59)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 10
+    },
+    {
+      "id": "obs-f1-attributes-ring-plus-1",
+      "kind": "crawler-attributes",
+      "attributes": {
+        "Strength": 9,
+        "Intelligence": 3,
+        "Constitution": 10,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 83)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 13
+    },
+    {
+      "id": "obs-f1-attributes-ring-plus-2",
+      "kind": "crawler-attributes",
+      "attributes": {
+        "Strength": 9,
+        "Intelligence": 3,
+        "Constitution": 12,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 146)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 20
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-f2-001-entered",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 536400,
+      "note": "Carl's documented Second Floor baseline: 6 days and 5 hours remaining.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Levels & Stats"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 28
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-f2-004-bigboi-boxers",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 360000,
+      "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Levels & Stats"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 31
+    },
+    {
+      "id": "obs-f2-level-11",
+      "kind": "xp-progress",
+      "level": 11,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 285)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 33
+    },
+    {
+      "id": "obs-f2-level-12",
+      "kind": "xp-progress",
+      "level": 12,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 398)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 41
+    },
+    {
+      "id": "obs-f2-level-13",
+      "kind": "xp-progress",
+      "level": 13,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 421)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 42
+    },
+    {
+      "id": "obs-f2-attributes-bigboi-boxers",
+      "kind": "crawler-attributes",
+      "attributes": {
+        "Strength": 9,
+        "Intelligence": 3,
+        "Constitution": 14,
+        "Dexterity": 6,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 307)"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 31
+    },
+    {
+      "id": "obs-f2-broadcast-ratings",
+      "kind": "broadcast-metrics",
+      "viewers": 212000000000,
+      "followers": 4400000000,
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Ratings"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 39
     }
   ]
 }

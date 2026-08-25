@@ -61,12 +61,43 @@ test("raw HUD observations are compiled at their event sequences without changin
   const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
   const mana = rawTimeline.observations.find((observation) => observation.id === "obs-f1-magic-baseline");
   assert.ok(mana);
-  assert.equal(mana.sequence, 6);
+  assert.equal(mana.sequence, rawTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence);
   assert.equal(mana.eventId, undefined);
 
-  const projected = projectObservationValue(rawTimeline, 6, "crawler-condition.currentMana");
+  const projected = projectObservationValue(rawTimeline, mana.sequence, "crawler-condition.currentMana");
   assert.deepEqual(projected?.status, "stated");
   assert.equal(projected?.value, 3);
+});
+
+test("Floor 1 and Floor 2 retain sourced progression anchors and supporting transitions", () => {
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
+  const levelEvents = rawTimeline.events.filter((event) => event.type === "LevelChanged");
+  const progressObservations = rawTimeline.observations.filter((observation) => observation.kind === "xp-progress");
+
+  assert.deepEqual(levelEvents.map((event) => event.level), [2, 3, 5, 7, 8, 9, 10, 11, 12, 13]);
+  assert.deepEqual(progressObservations.map((observation) => observation.level), [2, 3, 5, 7, 8, 9, 10, 11, 12, 13]);
+  assert.ok(rawTimeline.events.some((event) => event.id === "evt-f1-toe-ring-equipped" && event.type === "ItemEquipped"));
+  assert.ok(rawTimeline.events.some((event) => event.id === "evt-f2-jug-o-boom-crafted" && event.type === "ItemCrafted"));
+  assert.ok(rawTimeline.events.some((event) => event.id === "evt-f2-dungeonpreneur-royalty" && event.type === "PermanentEntitlementGranted"));
+});
+
+test("PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay", () => {
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
+  const royaltyEvent = rawTimeline.events.find((event) => event.id === "evt-f2-dungeonpreneur-royalty");
+  assert.ok(royaltyEvent);
+
+  const beforeGrant = projectState(rawTimeline, royaltyEvent.sequence - 1);
+  assert.equal(beforeGrant.entitlements.some((entitlement) => entitlement.id === "entitlement-f2-dungeonpreneur-royalty"), false);
+
+  const afterGrant = projectState(rawTimeline, royaltyEvent.sequence + 1);
+  assert.deepEqual(
+    afterGrant.entitlements.find((entitlement) => entitlement.id === "entitlement-f2-dungeonpreneur-royalty"),
+    {
+      id: "entitlement-f2-dungeonpreneur-royalty",
+      name: "Dungeonpreneur royalty",
+      description: "Carl receives a gold-coin royalty for kills made with his invention by other crawlers.",
+    },
+  );
 });
 
 test("numeric HUD readings interpolate only when both evidence anchors opt in", () => {
@@ -77,15 +108,15 @@ test("numeric HUD readings interpolate only when both evidence anchors opt in", 
     { id: "obs-linear-mana-end", kind: "crawler-condition", eventId: "evt-f1-009-first-magic-gear", interpolation: "linear", currentMana: 40, evidence },
   );
   const compiled = compileRawFloorFiles([rawDoc]);
-  const estimated = projectObservationValue(compiled, 8, "crawler-condition.currentMana");
+  const estimated = projectObservationValue(compiled, 9, "crawler-condition.currentMana");
   assert.equal(estimated?.status, "estimated");
   assert.equal(estimated?.basis, "sequence-position");
-  assert.equal(estimated?.value, 30);
+  assert.equal(estimated?.value, 25);
   assert.deepEqual(estimated?.referenceObservationIds, ["obs-linear-mana-start", "obs-linear-mana-end"]);
 
   const discrete = JSON.parse(JSON.stringify(rawDoc));
   delete discrete.observations[discrete.observations.length - 1].interpolation;
-  assert.equal(projectObservationValue(compileRawFloorFiles([discrete]), 8, "crawler-condition.currentMana"), null);
+  assert.equal(projectObservationValue(compileRawFloorFiles([discrete]), 9, "crawler-condition.currentMana"), null);
 });
 
 test("raw countdown observations reject missing event IDs and increasing values", () => {

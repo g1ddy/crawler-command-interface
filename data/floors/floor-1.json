@@ -46,6 +46,13 @@
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
     },
     {
+      "id": "src-dcc-database-carl",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "DCC Database: Carl",
+      "url": "https://www.dccdatabase.com/wiki/carl/"
+    },
+    {
       "id": "src-reddit-inventory-list",
       "kind": "discussion",
       "trust": "candidate",
@@ -70,7 +77,9 @@
         "slot": "NECK",
         "persistent": true,
         "description": "A cloak that adds 4 Constitution and provides poison, ice, and anti-piercing protection.",
-        "stats": { "Constitution": 4 }
+        "stats": {
+          "Constitution": 4
+        }
       },
       {
         "id": "item-toe-ring-of-splatter-skunk",
@@ -79,7 +88,9 @@
         "slot": "FEET",
         "persistent": true,
         "description": "A toe ring that adds 3 Strength and improves Powerful Strike.",
-        "stats": { "Strength": 3 }
+        "stats": {
+          "Strength": 3
+        }
       },
       {
         "id": "item-silver-ring-plus-1-con",
@@ -87,7 +98,9 @@
         "category": "equipment",
         "slot": "RING",
         "persistent": true,
-        "stats": { "Constitution": 1 }
+        "stats": {
+          "Constitution": 1
+        }
       },
       {
         "id": "item-spiked-kneepads-shade-gnoll",
@@ -96,7 +109,9 @@
         "slot": "KNEES",
         "persistent": true,
         "description": "Spiked kneepads that reflect 10% of damage and cancel momentum-based attacks.",
-        "stats": { "Damage Reflect Percent": 10 }
+        "stats": {
+          "Damage Reflect Percent": 10
+        }
       },
       {
         "id": "item-goblin-copper-chopper",
@@ -111,7 +126,9 @@
         "category": "equipment",
         "slot": "RING",
         "persistent": true,
-        "stats": { "Constitution": 2 }
+        "stats": {
+          "Constitution": 2
+        }
       },
       {
         "id": "item-war-gauntlet-exalted-grull",
@@ -120,44 +137,89 @@
         "slot": "WRISTS",
         "persistent": true,
         "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist, adding 1 Dexterity and 3 Strength in fist mode.",
-        "stats": { "Dexterity": 1, "Strength (Fist Mode)": 3 }
+        "stats": {
+          "Dexterity": 1,
+          "Strength (Fist Mode)": 3
+        }
       }
     ],
     "achievements": [
       {
         "id": "achievement-empty-pockets",
         "title": "Empty Pockets Achievement",
-        "reward": [{ "kind": "box", "boxType": "adventurer", "rarity": "bronze" }]
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze"
+          }
+        ]
       },
       {
         "id": "achievement-why-no-pants",
         "title": "Why Aren't You Wearing Pants? Achievement",
-        "reward": [{ "kind": "box", "boxType": "apparel", "rarity": "gold" }]
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "apparel",
+            "rarity": "gold"
+          }
+        ]
       },
       {
         "id": "achievement-unarmed-combat",
         "title": "Unarmed Combat Achievement",
-        "reward": [{ "kind": "box", "boxType": "weapon", "rarity": "bronze" }]
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "weapon",
+            "rarity": "bronze"
+          }
+        ]
       },
       {
         "id": "achievement-oooh-magic",
         "title": "Oooh, Magic Achievement",
-        "reward": [{ "kind": "box", "boxType": "adventurer", "rarity": "bronze" }]
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze"
+          }
+        ]
       },
       {
         "id": "achievement-boom",
         "title": "Boom! Achievement",
-        "reward": [{ "kind": "box", "boxType": "goblin", "rarity": "silver" }]
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "goblin",
+            "rarity": "silver"
+          }
+        ]
       },
       {
         "id": "achievement-podophilia",
         "title": "Podophilia! Achievement",
-        "reward": [{ "kind": "box", "boxType": "shoe", "rarity": "gold" }]
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "shoe",
+            "rarity": "gold"
+          }
+        ]
       },
       {
         "id": "achievement-battlefield-construction",
         "title": "Battlefield Construction Achievement",
-        "reward": [{ "kind": "box", "boxType": "mechanic", "rarity": "silver" }]
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "mechanic",
+            "rarity": "silver"
+          }
+        ]
       }
     ]
   },
@@ -168,34 +230,18 @@
       "target": "floor-collapse",
       "references": [
         {
-          "anchorOrder": 4,
-          "remainingSeconds": 417600,
-          "note": "The closest currently authored event to the stated post-tutorial reference: 4 days and 20 hours remain.",
-          "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 4 }, "confidence": "confirmed" }]
-        },
-        {
-          "anchorOrder": 15,
-          "remainingSeconds": 169200,
-          "note": "The closest currently authored event to the stated stairwell-search reference: 47 hours remain.",
-          "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 20 }, "confidence": "confirmed" }]
-        },
-        {
-          "anchorOrder": 11,
-          "remainingSeconds": 266400,
-          "note": "Carl punches a slime with 3 days and 2 hours remaining; the slime destroys his glove and the right arm of his jacket.",
-          "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
-        },
-        {
-          "anchorOrder": 13,
+          "anchorOrder": 19,
           "remainingSeconds": 237600,
-          "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining.",
-          "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
-        },
-        {
-          "anchorOrder": 16,
-          "remainingSeconds": 169200,
-          "note": "The War Gauntlet is received with just under two days remaining; this is retained as an approximate anchor until a primary-text timestamp is verified.",
-          "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "candidate" }]
+          "evidence": [
+            {
+              "sourceId": "src-wiki-carl-floor-1",
+              "locator": {
+                "section": "Gear Gained"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining."
         }
       ]
     }
@@ -206,179 +252,625 @@
       "order": 1,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
-      "position": { "floor": 1, "book": 1, "chapter": 1 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 1
+      },
       "summary": "Carl enters the First Floor with Donut.",
-      "evidence": [{ "sourceId": "src-book-1", "locator": { "chapter": 1 }, "confidence": "confirmed" }]
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 1
+          },
+          "confidence": "confirmed"
+        }
+      ]
     },
     {
       "id": "evt-f1-002-empty-pockets",
       "order": 2,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "book": 1, "chapter": 2 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
       "achievementId": "achievement-empty-pockets",
       "summary": "Carl receives the Empty Pockets Achievement.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Entering the Dungeon" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-003-no-pants",
       "order": 3,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "book": 1, "chapter": 2 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
       "achievementId": "achievement-why-no-pants",
       "summary": "Carl receives the Why Aren't You Wearing Pants? Achievement.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Entering the Dungeon" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-004-unarmed-combat",
       "order": 4,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "book": 1, "chapter": 2 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
       "achievementId": "achievement-unarmed-combat",
       "summary": "Carl receives the Unarmed Combat Achievement.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Entering the Dungeon" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-2",
+      "order": 5,
+      "type": "LevelChanged",
+      "level": 2,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 2.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 50)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-005-goblin-pass",
-      "order": 5,
+      "order": 6,
       "type": "PermanentEntitlementGranted",
-      "position": { "floor": 1, "book": 1, "chapter": 5 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
       "entitlement": {
         "id": "entitlement-goblin-pass-tattoo",
         "name": "Goblin Pass Tattoo",
         "location": "left inner forearm"
       },
       "summary": "Carl receives the Goblin Pass Tattoo.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-006-trollskin-shirt",
-      "order": 6,
+      "order": 7,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 6 },
-      "item": { "instanceId": "inst-f1-trollskin-shirt", "itemId": "item-trollskin-shirt-of-pummeling", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "item": {
+        "instanceId": "inst-f1-trollskin-shirt",
+        "itemId": "item-trollskin-shirt-of-pummeling",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires the Enchanted Trollskin Shirt of Pummeling.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-007-nightgaunt-cloak",
-      "order": 7,
+      "order": 8,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 6 },
-      "item": { "instanceId": "inst-f1-nightgaunt-cloak", "itemId": "item-nightgaunt-cloak-of-stoutness", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "item": {
+        "instanceId": "inst-f1-nightgaunt-cloak",
+        "itemId": "item-nightgaunt-cloak-of-stoutness",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires the Enchanted Nightgaunt Cloak of Stoutness.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-008-toe-ring",
-      "order": 8,
+      "order": 9,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 6 },
-      "item": { "instanceId": "inst-f1-toe-ring", "itemId": "item-toe-ring-of-splatter-skunk", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "item": {
+        "instanceId": "inst-f1-toe-ring",
+        "itemId": "item-toe-ring-of-splatter-skunk",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires the Enchanted Toe Ring of the Splatter Skunk.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-toe-ring-equipped",
+      "order": 10,
+      "type": "ItemEquipped",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "itemInstanceId": "inst-f1-toe-ring",
+      "slot": "FEET",
+      "summary": "Carl equips the Enchanted Toe Ring of the Splatter Skunk.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ]
     },
     {
       "id": "evt-f1-009-first-magic-gear",
-      "order": 9,
+      "order": 11,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "book": 1, "chapter": 6 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
       "achievementId": "achievement-oooh-magic",
       "summary": "Carl earns Oooh, Magic after first equipping magical gear.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Dungeon Crawling" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-3",
+      "order": 12,
+      "type": "LevelChanged",
+      "level": 3,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 3.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 78)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
-      "order": 10,
+      "order": 13,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 9 },
-      "item": { "instanceId": "inst-f1-silver-ring-plus-1-con", "itemId": "item-silver-ring-plus-1-con", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 9
+      },
+      "item": {
+        "instanceId": "inst-f1-silver-ring-plus-1-con",
+        "itemId": "item-silver-ring-plus-1-con",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires a Silver Ring of +1 CON.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-5",
+      "order": 14,
+      "type": "LevelChanged",
+      "level": 5,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 5.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 92)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-011-shade-gnoll-kneepads",
-      "order": 11,
+      "order": 15,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 12 },
-      "item": { "instanceId": "inst-f1-shade-gnoll-kneepads", "itemId": "item-spiked-kneepads-shade-gnoll", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 12
+      },
+      "item": {
+        "instanceId": "inst-f1-shade-gnoll-kneepads",
+        "itemId": "item-spiked-kneepads-shade-gnoll",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires the Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces after the Hoarder battle.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-7",
+      "order": 16,
+      "type": "LevelChanged",
+      "level": 7,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 7.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 120)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-8",
+      "order": 17,
+      "type": "LevelChanged",
+      "level": 8,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 8.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 138)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
-      "order": 12,
+      "order": 18,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 17 },
-      "item": { "instanceId": "inst-f1-goblin-copper-chopper", "itemId": "item-goblin-copper-chopper", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 17
+      },
+      "item": {
+        "instanceId": "inst-f1-goblin-copper-chopper",
+        "itemId": "item-goblin-copper-chopper",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires the Goblin Copper Chopper.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-013-desperado-pass",
-      "order": 13,
+      "order": 19,
       "type": "PermanentEntitlementGranted",
-      "position": { "floor": 1, "book": 1, "chapter": 19 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
       "entitlement": {
         "id": "entitlement-desperado-pass-tattoo",
         "name": "Desperado Pass Tattoo",
         "location": "neck"
       },
       "summary": "Carl receives the Desperado Pass Tattoo.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
-      "order": 14,
+      "order": 20,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 19 },
-      "item": { "instanceId": "inst-f1-silver-ring-plus-2-con", "itemId": "item-silver-ring-plus-2-con", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "item": {
+        "instanceId": "inst-f1-silver-ring-plus-2-con",
+        "itemId": "item-silver-ring-plus-2-con",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires a Silver Ring of +2 CON.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-015-boom",
-      "order": 15,
+      "order": 21,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "book": 1, "chapter": 19 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
       "achievementId": "achievement-boom",
       "summary": "Carl earns Boom! for his first explosion.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Combat" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-9",
+      "order": 22,
+      "type": "LevelChanged",
+      "level": 9,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 9.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 194)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-10",
+      "order": 23,
+      "type": "LevelChanged",
+      "level": 10,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 10.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 218)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-016-war-gauntlet",
-      "order": 16,
+      "order": 24,
       "type": "ItemAcquired",
-      "position": { "floor": 1, "book": 1, "chapter": 25 },
-      "item": { "instanceId": "inst-f1-war-gauntlet", "itemId": "item-war-gauntlet-exalted-grull", "quantity": { "known": true, "value": 1 } },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 25
+      },
+      "item": {
+        "instanceId": "inst-f1-war-gauntlet",
+        "itemId": "item-war-gauntlet-exalted-grull",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
       "summary": "Carl acquires the Enchanted War Gauntlet of the Exalted Grull.",
-      "evidence": [{ "sourceId": "src-wiki-carl-floor-1", "locator": { "section": "Gear Gained" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-017-podophilia",
-      "order": 17,
+      "order": 25,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "book": 1, "chapter": 25 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 25
+      },
       "achievementId": "achievement-podophilia",
       "summary": "Carl earns Podophilia! for crushing an opponent with his bare feet.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Combat" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-018-battlefield-construction",
-      "order": 18,
+      "order": 26,
       "type": "AchievementUnlocked",
-      "position": { "floor": 1, "book": 1, "chapter": 30 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
       "achievementId": "achievement-battlefield-construction",
       "summary": "Carl earns Battlefield Construction for deploying a crafted structure in battle.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Combat" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f1-019-exit",
-      "order": 19,
+      "order": 27,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
-      "position": { "floor": 1, "book": 1, "chapter": 30 },
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
       "summary": "Carl reaches the stairs and completes the First Floor.",
-      "evidence": [{ "sourceId": "src-wiki-floor-1-achievements", "locator": { "section": "Achievements for Dungeon Crawling" }, "confidence": "corroborated" }]
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     }
   ]
 }
