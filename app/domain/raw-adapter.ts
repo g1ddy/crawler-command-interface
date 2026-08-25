@@ -21,6 +21,10 @@ export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerF
         `Raw adapter error: Observation "${observation.id}" references missing event ID "${observation.eventId}".`
       );
     }
+    // Only countdown observations participate in the legacy countdown
+    // compatibility projection. Other HUD observations remain source facts in
+    // raw authoring until the runtime observation projection is introduced.
+    if (observation.kind !== 'countdown-remaining') continue;
     if (!countdownById.has(observation.countdownId)) {
       throw new Error(
         `Raw adapter error: Observation "${observation.id}" references missing countdown ID "${observation.countdownId}".`
