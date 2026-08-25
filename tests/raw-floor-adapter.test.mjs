@@ -4,7 +4,7 @@ import test from "node:test";
 import { compileFloorFiles } from "../app/domain/compiler.ts";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
 import { projectCountdownState, projectObservationValue, projectState } from "../app/domain/projection.ts";
-import { adaptRawFloorDocument } from "../app/domain/raw-adapter.ts";
+import { adaptRawFloorDocument, adaptRawFloorObservations } from "../app/domain/raw-adapter.ts";
 import { compileRawFloorFiles } from "../app/domain/raw-compiler.ts";
 import { validateCrawlerFloor, validateRawCrawlerFloor, validateCrawlerTimeline } from "../app/domain/validation.ts";
 
@@ -67,6 +67,32 @@ test("raw HUD observations are compiled at their event sequences without changin
   const projected = projectObservationValue(rawTimeline, mana.sequence, "crawler-condition.currentMana");
   assert.deepEqual(projected?.status, "stated");
   assert.equal(projected?.value, 3);
+});
+
+test("raw adapter resolves every supported observation kind without turning evidence into events", () => {
+  const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
+  const eventId = rawDoc.events[0].id;
+  const evidence = [{ sourceId: "src-book-1", confidence: "confirmed" }];
+  rawDoc.observations = [
+    { id: "obs-condition", kind: "crawler-condition", eventId, currentHealth: 1, evidence },
+    { id: "obs-attributes", kind: "crawler-attributes", eventId, attributes: { Strength: 10 }, evidence },
+    { id: "obs-xp", kind: "xp-progress", eventId, level: 2, evidence },
+    { id: "obs-broadcast", kind: "broadcast-metrics", eventId, viewers: 1, evidence },
+    { id: "obs-inventory", kind: "inventory-state", eventId, itemInstanceId: "inst-f1-toe-ring", present: true, evidence },
+    { id: "obs-equipment", kind: "equipment-state", eventId, slot: "ring", itemInstanceId: null, evidence },
+    { id: "obs-countdown", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-1-collapse", remainingSeconds: 1, evidence },
+  ];
+
+  const adapted = adaptRawFloorObservations(rawDoc);
+  assert.deepEqual(adapted.map(({ observation }) => observation.kind), [
+    "crawler-condition", "crawler-attributes", "xp-progress", "broadcast-metrics",
+    "inventory-state", "equipment-state", "countdown-remaining",
+  ]);
+  assert.ok(adapted.every(({ observation, anchorOrder }) => observation.eventId === eventId && anchorOrder === 1));
+
+  const compiled = compileRawFloorFiles([rawDoc]);
+  assert.deepEqual(compiled.observations.map((observation) => observation.kind), adapted.map(({ observation }) => observation.kind));
+  assert.equal(compiled.events.length, rawDoc.events.length);
 });
 
 test("Floor 1 and Floor 2 retain sourced progression anchors and supporting transitions", () => {
