@@ -259,12 +259,16 @@ export function validateRawCrawlerFloor(doc: unknown): ValidationResult {
   }
 
   const rawDoc = doc as RawCrawlerFloorDocument;
+  const rawEventIds = new Set(rawDoc.events.map((event) => event.id));
+  const rawSourceIds = new Set(rawDoc.sources.map((source) => source.id));
   const observationIds = new Set<string>();
   for (const observation of rawDoc.observations || []) {
     if (observationIds.has(observation.id)) {
       errors.push(`Raw domain error: Duplicate observation ID "${observation.id}".`);
     }
     observationIds.add(observation.id);
+    if (!rawEventIds.has(observation.eventId)) errors.push(`Raw domain error: Observation \"${observation.id}\" references missing event ID \"${observation.eventId}\".`);
+    for (const evidence of observation.evidence) if (!rawSourceIds.has(evidence.sourceId)) errors.push(`Raw domain error: Observation \"${observation.id}\" evidence sourceId \"${evidence.sourceId}\" does not exist in floor sources catalog.`);
   }
 
   try {
