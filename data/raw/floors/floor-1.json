@@ -67,6 +67,31 @@
   ],
   "observations": [
     {
+      "id": "obs-f1-magic-baseline",
+      "kind": "crawler-condition",
+      "eventId": "evt-f1-006-trollskin-shirt",
+      "currentMana": 3,
+      "maxMana": 3,
+      "note": "Carl's HUD shows three mana points when the basic healing spell is introduced; no mana-change event is asserted.",
+      "evidence": [{"sourceId":"src-book-1","locator":{"chapter":6},"confidence":"confirmed"}]
+    },
+    {
+      "id": "obs-f1-intelligence-baseline",
+      "kind": "crawler-attributes",
+      "eventId": "evt-f1-006-trollskin-shirt",
+      "attributes": {"Intelligence":3},
+      "note": "HUD attribute reading, not an attributed Intelligence change.",
+      "evidence": [{"sourceId":"src-book-1","locator":{"chapter":6},"confidence":"confirmed"}]
+    },
+    {
+      "id": "obs-f1-toe-ring-equipped",
+      "kind": "equipment-state",
+      "eventId": "evt-f1-009-first-magic-gear",
+      "slot": "FEET",
+      "itemInstanceId": "inst-f1-toe-ring",
+      "evidence": [{"sourceId":"src-book-1","locator":{"chapter":6},"confidence":"confirmed"}]
+    },
+    {
       "id": "obs-countdown-floor-1-collapse-f1-013-desperado-pass",
       "kind": "countdown-remaining",
       "eventId": "evt-f1-013-desperado-pass",
