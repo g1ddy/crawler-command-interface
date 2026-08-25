@@ -419,6 +419,8 @@ export interface ActiveCountdownState {
   target: 'floor-collapse';
   remainingSeconds: number;
   status: 'stated' | 'estimated';
+  /** True when this is the latest source reading, not a time at the selected sequence. */
+  isStale: boolean;
   basis:
     | 'exact-reference'
     | 'last-known-reference'
