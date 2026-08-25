@@ -713,6 +713,7 @@ export interface CrawlerState {
   hotlist: string[]; // skillIds
   quests: Quest[];
   achievements: Achievement[];
+  entitlements: TimelineEntitlement[];
   broadcast: {
     viewers: number;
     viewerDelta: string;

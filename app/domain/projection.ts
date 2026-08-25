@@ -94,6 +94,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     icon: '☠',
     unlockedAtSequence: 0,
   }));
+  const entitlements = (timelineState?.entitlements || []).map((entitlement) => ({ ...entitlement }));
 
   const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
   const quests = timelineState
@@ -146,6 +147,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     hotlist: skills.map((s) => s.skillId).slice(0, 10),
     quests,
     achievements,
+    entitlements,
     broadcast,
     recentLogs: [],
   };
@@ -434,7 +436,15 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     }
 
     case 'PermanentEntitlementGranted': {
-      // Entitlement handled via logs or custom state additions
+      const entitlement = event.entitlement as { id?: unknown; name?: unknown; location?: unknown; description?: unknown } | undefined;
+      if (entitlement?.id && !state.entitlements.some((existing) => existing.id === entitlement.id)) {
+        state.entitlements.push({
+          id: String(entitlement.id),
+          name: String(entitlement.name || 'Permanent entitlement'),
+          ...(typeof entitlement.location === 'string' ? { location: entitlement.location } : {}),
+          ...(typeof entitlement.description === 'string' ? { description: entitlement.description } : {}),
+        });
+      }
       break;
     }
 

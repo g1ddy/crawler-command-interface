@@ -81,6 +81,25 @@ test("Floor 1 and Floor 2 retain sourced progression anchors and supporting tran
   assert.ok(rawTimeline.events.some((event) => event.id === "evt-f2-dungeonpreneur-royalty" && event.type === "PermanentEntitlementGranted"));
 });
 
+test("PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay", () => {
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
+  const royaltyEvent = rawTimeline.events.find((event) => event.id === "evt-f2-dungeonpreneur-royalty");
+  assert.ok(royaltyEvent);
+
+  const beforeGrant = projectState(rawTimeline, royaltyEvent.sequence - 1);
+  assert.equal(beforeGrant.entitlements.some((entitlement) => entitlement.id === "entitlement-f2-dungeonpreneur-royalty"), false);
+
+  const afterGrant = projectState(rawTimeline, royaltyEvent.sequence + 1);
+  assert.deepEqual(
+    afterGrant.entitlements.find((entitlement) => entitlement.id === "entitlement-f2-dungeonpreneur-royalty"),
+    {
+      id: "entitlement-f2-dungeonpreneur-royalty",
+      name: "Dungeonpreneur royalty",
+      description: "Carl receives a gold-coin royalty for kills made with his invention by other crawlers.",
+    },
+  );
+});
+
 test("numeric HUD readings interpolate only when both evidence anchors opt in", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
   const evidence = [{ sourceId: "src-book-1", confidence: "confirmed" }];
