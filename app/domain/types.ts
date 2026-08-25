@@ -419,7 +419,13 @@ export interface ActiveCountdownState {
   target: 'floor-collapse';
   remainingSeconds: number;
   status: 'stated' | 'estimated';
-  basis: 'exact-reference' | 'last-known-reference' | 'elapsed-duration' | 'sequence-position';
+  basis:
+    | 'exact-reference'
+    | 'last-known-reference'
+    | 'elapsed-duration'
+    | 'sequence-position'
+    | 'elapsed-duration-extrapolation'
+    | 'sequence-position-extrapolation';
   confidence: 'confirmed' | 'corroborated' | 'candidate' | 'disputed' | 'low-confidence';
   formattedTime: string;
   formattedLabel: string;
