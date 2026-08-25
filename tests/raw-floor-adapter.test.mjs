@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 import { compileFloorFiles } from "../app/domain/compiler.ts";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
-import { projectCountdownState, projectState } from "../app/domain/projection.ts";
+import { projectCountdownState, projectObservationValue, projectState } from "../app/domain/projection.ts";
 import { adaptRawFloorDocument } from "../app/domain/raw-adapter.ts";
 import { compileRawFloorFiles } from "../app/domain/raw-compiler.ts";
 import { validateCrawlerFloor, validateRawCrawlerFloor, validateCrawlerTimeline } from "../app/domain/validation.ts";
@@ -20,6 +20,12 @@ function stableTimeline(doc) {
   return clone;
 }
 
+function stableLegacyProjection(doc) {
+  const clone = stableTimeline(doc);
+  delete clone.observations;
+  return clone;
+}
+
 test("raw Floor 1 and Floor 2 documents validate and adapt losslessly to the legacy floor contract", () => {
   for (const [raw, legacy] of [[rawFloor1, legacyFloor1], [rawFloor2, legacyFloor2]]) {
     const validation = validateRawCrawlerFloor(raw);
@@ -32,8 +38,8 @@ test("raw adapter preserves every compiled timeline projection and countdown res
   const legacyTimeline = compileFloorFiles([legacyFloor1, legacyFloor2]);
   const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
 
-  assert.deepEqual(stableTimeline(rawTimeline), stableTimeline(legacyTimeline));
-  assert.deepEqual(stableTimeline(compiledTimeline), stableTimeline(rawTimeline));
+  assert.deepEqual(stableLegacyProjection(rawTimeline), stableTimeline(legacyTimeline));
+  assert.deepEqual(stableLegacyProjection(compiledTimeline), stableLegacyProjection(rawTimeline));
 
   for (const event of legacyTimeline.events) {
     assert.deepEqual(
@@ -49,6 +55,37 @@ test("raw adapter preserves every compiled timeline projection and countdown res
       `Countdown state differs at sequence ${event.sequence}`
     );
   }
+});
+
+test("raw HUD observations are compiled at their event sequences without changing legacy state projection", () => {
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
+  const mana = rawTimeline.observations.find((observation) => observation.id === "obs-f1-magic-baseline");
+  assert.ok(mana);
+  assert.equal(mana.sequence, 6);
+  assert.equal(mana.eventId, undefined);
+
+  const projected = projectObservationValue(rawTimeline, 6, "crawler-condition.currentMana");
+  assert.deepEqual(projected?.status, "stated");
+  assert.equal(projected?.value, 3);
+});
+
+test("numeric HUD readings interpolate only when both evidence anchors opt in", () => {
+  const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
+  const evidence = [{ sourceId: "src-book-1", confidence: "confirmed" }];
+  rawDoc.observations.push(
+    { id: "obs-linear-mana-start", kind: "crawler-condition", eventId: "evt-f1-006-trollskin-shirt", interpolation: "linear", currentMana: 10, evidence },
+    { id: "obs-linear-mana-end", kind: "crawler-condition", eventId: "evt-f1-009-first-magic-gear", interpolation: "linear", currentMana: 40, evidence },
+  );
+  const compiled = compileRawFloorFiles([rawDoc]);
+  const estimated = projectObservationValue(compiled, 8, "crawler-condition.currentMana");
+  assert.equal(estimated?.status, "estimated");
+  assert.equal(estimated?.basis, "sequence-position");
+  assert.equal(estimated?.value, 30);
+  assert.deepEqual(estimated?.referenceObservationIds, ["obs-linear-mana-start", "obs-linear-mana-end"]);
+
+  const discrete = JSON.parse(JSON.stringify(rawDoc));
+  delete discrete.observations[discrete.observations.length - 1].interpolation;
+  assert.equal(projectObservationValue(compileRawFloorFiles([discrete]), 8, "crawler-condition.currentMana"), null);
 });
 
 test("raw countdown observations reject missing event IDs and increasing values", () => {
