@@ -49,7 +49,8 @@ export function TimelineScrubber({
 }: TimelineScrubberProps) {
   const [filterCategory, setFilterCategory] = useState<EventCategory | 'all'>('all');
   const [feedMode, setFeedMode] = useState<'all' | 'events-only' | 'telemetry-only'>('all');
-  const [showObservationMarkers, setShowObservationMarkers] = useState<boolean>(true);
+  const [showDiagnostics, setShowDiagnostics] = useState<boolean>(false);
+  const [showObservationMarkers, setShowObservationMarkers] = useState<boolean>(false);
   const [hoveredEvent, setHoveredEvent] = useState<CrawlerEvent | null>(null);
   const [hoveredObservation, setHoveredObservation] = useState<TimelineObservation | null>(null);
   const [showCountdownDetails, setShowCountdownDetails] = useState<boolean>(false);
@@ -124,9 +125,9 @@ export function TimelineScrubber({
 
   // Observations for track display
   const markerObservations = React.useMemo(() => {
-    if (!showObservationMarkers || feedMode === 'events-only') return [];
+    if (!showDiagnostics || !showObservationMarkers || feedMode === 'events-only') return [];
     return floorObservations;
-  }, [floorObservations, showObservationMarkers, feedMode]);
+  }, [floorObservations, showDiagnostics, showObservationMarkers, feedMode]);
 
   const currentEvent =
     events.find((e) => e.sequence === selectedSequence) || events[events.length - 1];
@@ -266,7 +267,7 @@ export function TimelineScrubber({
               }}
               title="Click to view countdown basis and reference points"
             >
-              {activeCountdown.formattedLabel} ℹ️
+              {activeCountdown.formattedTime}
             </button>
           </div>
         )}
@@ -380,7 +381,24 @@ export function TimelineScrubber({
         </div>
       </div>
 
-      <div className="timeline-meta" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '12px' }}>
+      <div style={{ marginTop: '14px', borderTop: '1px solid #183e4d', paddingTop: '10px' }}>
+        <button
+          className="outline"
+          aria-expanded={showDiagnostics}
+          onClick={() => setShowDiagnostics((shown) => !shown)}
+          style={{ fontSize: '10px', color: '#8ca8b3', borderColor: '#294b5a' }}
+        >
+          {showDiagnostics ? '▾ HIDE REPLAY DIAGNOSTICS' : '▸ REPLAY DIAGNOSTICS'}
+        </button>
+        {!showDiagnostics && (
+          <span style={{ marginLeft: '10px', fontSize: '10px', color: '#637f8c' }}>
+            Event markers and telemetry inspection are available when needed.
+          </span>
+        )}
+      </div>
+
+      {showDiagnostics && (
+      <div className="timeline-meta" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '12px', marginTop: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
           <div className="filters">
             <span className="filter-label">EVENT MARKERS:</span>
@@ -459,6 +477,7 @@ export function TimelineScrubber({
           onInspectObservation={onInspectObservation}
         />
       </div>
+      )}
 
       {showCountdownDetails && activeCountdown && (
         <div className="modal-backdrop" onClick={() => setShowCountdownDetails(false)}>
