@@ -1,6 +1,3 @@
- Date: Tue Aug 25 13:02:23 2026 +0900
- 7 files changed, 236 insertions(+), 16 deletions(-)
- create mode 100644 app/domain/observations.ts
 import { compileFloorFiles } from './compiler.ts';
 import { adaptRawFloorDocument } from './raw-adapter.ts';
 import { validateRawCrawlerFloor, validateCrawlerTimeline } from './validation.ts';
