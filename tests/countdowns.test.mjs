@@ -49,7 +49,7 @@ test("timeline retains Floor 1's last known reading without extrapolating it", (
   assert.equal(lastKnown.status, "stated");
   assert.equal(lastKnown.basis, "last-known-reference");
   assert.equal(lastKnown.remainingSeconds, 237600);
-  assert.equal(lastKnown.formattedLabel, "Last known: 2d 18h left · stated");
+  assert.equal(lastKnown.formattedLabel, "2d 18h left · stated (latest source)");
   assert.equal(lastKnown.referencePoints.length, 1);
   assert.equal(lastKnown.referencePoints[0].sequence, floor1CountdownSequence);
 });
@@ -72,9 +72,10 @@ test("Floor 2's authored collapse-clock references are monotonic", () => {
   assert.ok(estimatedState.remainingSeconds > stateSeq23.remainingSeconds);
   const lastKnown = projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 2).endSequence, 2);
   assert.ok(lastKnown);
-  assert.equal(lastKnown.basis, "last-known-reference");
-  assert.equal(lastKnown.remainingSeconds, 360000);
-  assert.equal(lastKnown.formattedTime, "Last known: 4d 4h left");
+  assert.equal(lastKnown.status, "estimated");
+  assert.equal(lastKnown.basis, "sequence-position-extrapolation");
+  assert.ok(lastKnown.remainingSeconds < 360000);
+  assert.equal(lastKnown.formattedTime.startsWith("~"), true);
 });
 
 test("prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence", () => {
