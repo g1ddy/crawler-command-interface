@@ -1,5 +1,5 @@
 import { compileFloorFiles } from './compiler.ts';
-import { adaptRawFloorDocument } from './raw-adapter.ts';
+import { adaptRawFloorDocument, adaptRawFloorObservations } from './raw-adapter.ts';
 import { validateRawCrawlerFloor, validateCrawlerTimeline } from './validation.ts';
 import type { CrawlerTimelineDocument, RawCrawlerFloorDocument, TimelineObservation } from './types.ts';
 
@@ -24,7 +24,7 @@ export function compileRawFloorFiles(rawDocs: RawCrawlerFloorDocument[]): Crawle
   const observations: TimelineObservation[] = [];
 
   for (const rawDoc of rawDocs) {
-    for (const observation of rawDoc.observations || []) {
+    for (const { observation } of adaptRawFloorObservations(rawDoc)) {
       const sequence = sequenceByEventId.get(observation.eventId);
       if (sequence === undefined) {
         throw new Error(
