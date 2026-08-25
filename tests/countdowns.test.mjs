@@ -47,6 +47,7 @@ test("timeline retains Floor 1's last known reading without extrapolating it", (
   const lastKnown = projectCountdownState(compiledDoc, floor1CountdownSequence + 1, 1);
   assert.ok(lastKnown);
   assert.equal(lastKnown.status, "stated");
+  assert.equal(lastKnown.isStale, true);
   assert.equal(lastKnown.basis, "last-known-reference");
   assert.equal(lastKnown.remainingSeconds, 237600);
   assert.equal(lastKnown.formattedLabel, "2d 18h left · stated (latest source)");
@@ -73,6 +74,7 @@ test("Floor 2's authored collapse-clock references are monotonic", () => {
   const lastKnown = projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 2).endSequence, 2);
   assert.ok(lastKnown);
   assert.equal(lastKnown.status, "estimated");
+  assert.equal(lastKnown.isStale, false);
   assert.equal(lastKnown.basis, "sequence-position-extrapolation");
   assert.ok(lastKnown.remainingSeconds < 360000);
   assert.equal(lastKnown.formattedTime.startsWith("~"), true);
@@ -129,6 +131,7 @@ test("returns null for non-monotonic (incompatible) references or pause/resume/p
       { id: "e1", sequence: 10, type: "NarrativeEvent", position: { floor: 1 }, summary: "Start", evidence: [{ sourceId: "src-1" }] },
       { id: "e2", sequence: 20, type: "NarrativeEvent", position: { floor: 1 }, summary: "Mid", evidence: [{ sourceId: "src-1" }] },
       { id: "e3", sequence: 30, type: "NarrativeEvent", position: { floor: 1 }, summary: "End", evidence: [{ sourceId: "src-1" }] },
+      { id: "e4", sequence: 35, type: "CountdownReset", countdownId: "cd-1", newRemainingSeconds: 5000, position: { floor: 1 }, summary: "Countdown reset by system", evidence: [{ sourceId: "src-1" }] },
     ],
     countdowns: [
       {
@@ -172,6 +175,7 @@ test("returns null for non-monotonic (incompatible) references or pause/resume/p
 
   assert.equal(projectCountdownState(pausedDoc, 15, 1), null);
   assert.equal(projectCountdownState(pausedDoc, 25, 1), null);
+  assert.equal(projectCountdownState(pausedDoc, 40, 1), null);
 });
 
 test("imported timeline with no countdowns metadata returns null and handles floor navigation cleanly", () => {
