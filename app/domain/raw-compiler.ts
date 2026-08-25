@@ -1,9 +1,12 @@
+ Date: Tue Aug 25 13:02:23 2026 +0900
+ 7 files changed, 236 insertions(+), 16 deletions(-)
+ create mode 100644 app/domain/observations.ts
 import { compileFloorFiles } from './compiler.ts';
 import { adaptRawFloorDocument } from './raw-adapter.ts';
 import { validateRawCrawlerFloor, validateCrawlerTimeline } from './validation.ts';
 import type { CrawlerTimelineDocument, RawCrawlerFloorDocument, TimelineObservation } from './types.ts';
 
-/** Compiles raw floor documents through the unchanged legacy runtime contract. */
+/** Compiles raw floor documents and preserves their source-backed HUD readings. */
 export function compileRawFloorFiles(rawDocs: RawCrawlerFloorDocument[]): CrawlerTimelineDocument {
   if (!Array.isArray(rawDocs) || rawDocs.length === 0) {
     throw new Error('Raw compiler error: No raw floor documents provided to compile.');
