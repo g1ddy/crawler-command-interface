@@ -583,7 +583,7 @@ function Crawler({
 
   const equipmentSlots = new Set([...Object.keys(state.equippedSlots), ...Object.keys(observations.equipment)]);
   const equippedCount = Array.from(equipmentSlots).filter(
-    (slot) => observations.equipment[slot]?.itemInstanceId ?? state.equippedSlots[slot]
+    (slot) => observations.equipment[slot] ? observations.equipment[slot].itemInstanceId : state.equippedSlots[slot]
   ).length;
 
   return (
@@ -759,7 +759,9 @@ function Crawler({
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", margin: "10px 0" }}>
                   {Array.from(equipmentSlots).map((sName) => {
                     const equipmentObservation = observations.equipment[sName];
-                    const instId = equipmentObservation?.itemInstanceId ?? state.equippedSlots[sName];
+                    // An explicit null is a sourced empty-slot reading, not a
+                    // missing value to be replaced with causal state.
+                    const instId = equipmentObservation ? equipmentObservation.itemInstanceId : state.equippedSlots[sName];
                     const eqItem = state.inventory.find((i) => i.instanceId === instId);
                     return (
                       <button
@@ -967,6 +969,20 @@ function Inventory({
     () => checkItemRequirements(liveState.crawler, selectedItem?.requirements),
     [liveState.crawler, selectedItem]
   );
+  const selectedItemObservation = selectedItem ? observations.inventory[selectedItem.instanceId] : undefined;
+  const selectedItemObservationDetails = selectedItemObservation
+    ? [
+        typeof selectedItemObservation.present === "boolean"
+          ? selectedItemObservation.present ? "PRESENT" : "ABSENT"
+          : null,
+        selectedItemObservation.quantity?.known
+          ? `QTY ${selectedItemObservation.quantity.value}`
+          : null,
+        typeof selectedItemObservation.isEquipped === "boolean"
+          ? selectedItemObservation.isEquipped ? "EQUIPPED" : "UNEQUIPPED"
+          : null,
+      ].filter((detail): detail is string => detail !== null)
+    : [];
 
   const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING"];
 
@@ -1075,12 +1091,9 @@ function Inventory({
                     )}
                   </p>
                   <p>{selectedItem.description}</p>
-                  {observations.inventory[selectedItem.instanceId] && (
+                  {selectedItemObservationDetails.length > 0 && (
                     <p style={{ fontSize: "10px", color: "#7ee5ff" }}>
-                      OBSERVED INVENTORY STATE: {observations.inventory[selectedItem.instanceId].present === false ? "ABSENT" : "PRESENT"}
-                      {observations.inventory[selectedItem.instanceId].quantity?.known
-                        ? ` · QTY ${observations.inventory[selectedItem.instanceId].quantity?.value}`
-                        : ""}
+                      OBSERVED INVENTORY STATE: {selectedItemObservationDetails.join(" · ")}
                     </p>
                   )}
                   <dl>
