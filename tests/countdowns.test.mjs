@@ -169,7 +169,7 @@ test("returns null for non-monotonic (incompatible) references or pause/resume/p
     initialState: { crawler: { name: "CARL", level: 1, attributes: {}, condition: {} } },
     events: [
       { id: "e1", sequence: 10, type: "NarrativeEvent", position: { floor: 1 }, summary: "Start", evidence: [{ sourceId: "src-1" }] },
-      { id: "e2", sequence: 20, type: "NarrativeEvent", position: { floor: 1 }, summary: "Countdown paused by system", evidence: [{ sourceId: "src-1" }] },
+      { id: "e2", sequence: 20, type: "CountdownPaused", countdownId: "cd-1", position: { floor: 1 }, summary: "Countdown paused by system", evidence: [{ sourceId: "src-1" }] },
       { id: "e3", sequence: 30, type: "NarrativeEvent", position: { floor: 1 }, summary: "End", evidence: [{ sourceId: "src-1" }] },
     ],
     countdowns: [
@@ -258,7 +258,7 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
     catalog: { items: [], achievements: [] },
     events: [
       { id: "e1", order: 1, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Initial observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-      { id: "e2", order: 2, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "System countdown reset for phase 2", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "e2", order: 2, type: "CountdownReset", countdownId: "cd-reset", position: { floor: 1 }, summary: "System countdown reset for phase 2", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
       { id: "e3", order: 3, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Phase 2 observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
     ],
     countdowns: [
@@ -281,7 +281,9 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
   // 2. Intra-phase increase without reset fails floor validation
   const floorWithoutReset = JSON.parse(JSON.stringify(floorWithReset));
   floorWithoutReset.events[1].type = "NarrativeEvent";
+  floorWithoutReset.events[1].kind = "other";
   floorWithoutReset.events[1].summary = "Normal event without reset";
+  delete floorWithoutReset.events[1].countdownId;
 
   const invalidFloorResult = validateCrawlerFloor(floorWithoutReset);
   assert.equal(invalidFloorResult.valid, false);
@@ -303,7 +305,7 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
     initialState: { crawler: { name: "CARL", level: 1, attributes: {}, condition: {} } },
     events: [
       { id: "te1", sequence: 10, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Initial observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-      { id: "te2", sequence: 20, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Countdown reset by system", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "te2", sequence: 20, type: "CountdownReset", countdownId: "cd-tl-reset", position: { floor: 1 }, summary: "Countdown reset by system", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
       { id: "te3", sequence: 30, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Subsequent observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
     ],
     countdowns: [
@@ -327,7 +329,9 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
   // 5. Timeline intra-phase increase without reset fails validation
   const timelineWithoutReset = JSON.parse(JSON.stringify(timelineWithReset));
   timelineWithoutReset.events[1].type = "NarrativeEvent";
+  timelineWithoutReset.events[1].kind = "other";
   timelineWithoutReset.events[1].summary = "Normal event without reset";
+  delete timelineWithoutReset.events[1].countdownId;
 
   const invalidTimelineResult = validateCrawlerTimeline(timelineWithoutReset);
   assert.equal(invalidTimelineResult.valid, false);

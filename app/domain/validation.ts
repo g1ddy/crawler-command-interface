@@ -135,7 +135,7 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
         (event) =>
           event.order > previous.anchorOrder &&
           event.order <= current.anchorOrder &&
-          isCountdownPhaseBreakEvent(event)
+          isCountdownPhaseBreakEvent(event, countdown.id)
       );
       if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
         errors.push(
@@ -197,10 +197,35 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
         );
       }
 
-      if (event.countdownId && !countdownIds.has(event.countdownId)) {
+      if (
+        (event.type === 'CountdownReset' ||
+          event.type === 'CountdownPaused' ||
+          event.type === 'CountdownResumed' ||
+          event.type === 'CountdownPhaseChanged')
+      ) {
+        if (!event.countdownId) {
+          errors.push(`Domain error: ${eventRef} (${event.type}) missing required countdownId.`);
+        } else if (!countdownIds.has(event.countdownId)) {
+          errors.push(
+            `Domain error: ${eventRef} references countdownId "${event.countdownId}" not found in floor countdowns.`
+          );
+        }
+      } else if (event.countdownId && !countdownIds.has(event.countdownId)) {
         errors.push(
           `Domain error: ${eventRef} references countdownId "${event.countdownId}" not found in floor countdowns.`
         );
+      }
+
+      if (event.type === 'HotlistUpdated') {
+        const hasHotlist = Array.isArray(event.hotlist);
+        const hasSkillId = typeof event.skillId === 'string' && event.skillId.length > 0;
+        const hasIndex = typeof event.index === 'number';
+
+        if (!hasHotlist && !(hasSkillId && hasIndex)) {
+          errors.push(
+            `Domain error: ${eventRef} (HotlistUpdated) must contain either a full hotlist array or both skillId and index.`
+          );
+        }
       }
     }
   }
@@ -318,7 +343,7 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
         (event) =>
           event.sequence > previous.sequence &&
           event.sequence <= current.sequence &&
-          isCountdownPhaseBreakEvent(event)
+          isCountdownPhaseBreakEvent(event, countdown.id)
       );
       if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
         errors.push(
@@ -376,11 +401,38 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
         }
       }
 
-      // Countdown reference check
-      if ('countdownId' in event && typeof event.countdownId === 'string' && event.countdownId) {
+      // Countdown reference check & lifecycle identity check
+      if (
+        event.type === 'CountdownReset' ||
+        event.type === 'CountdownPaused' ||
+        event.type === 'CountdownResumed' ||
+        event.type === 'CountdownPhaseChanged'
+      ) {
+        const cdId = 'countdownId' in event && typeof event.countdownId === 'string' ? event.countdownId : undefined;
+        if (!cdId) {
+          errors.push(`Domain error: ${eventRef} (${event.type}) missing required countdownId.`);
+        } else if (!countdownIds.has(cdId)) {
+          errors.push(
+            `Domain error: ${eventRef} references countdownId "${cdId}" not found in countdowns catalog.`
+          );
+        }
+      } else if ('countdownId' in event && typeof event.countdownId === 'string' && event.countdownId) {
         if (!countdownIds.has(event.countdownId)) {
           errors.push(
             `Domain error: ${eventRef} references countdownId "${event.countdownId}" not found in countdowns catalog.`
+          );
+        }
+      }
+
+      if (event.type === 'HotlistUpdated') {
+        const evObj = event as Record<string, unknown>;
+        const hasHotlist = Array.isArray(evObj.hotlist);
+        const hasSkillId = typeof evObj.skillId === 'string' && evObj.skillId.length > 0;
+        const hasIndex = typeof evObj.index === 'number';
+
+        if (!hasHotlist && !(hasSkillId && hasIndex)) {
+          errors.push(
+            `Domain error: ${eventRef} (HotlistUpdated) must contain either a full hotlist array or both skillId and index.`
           );
         }
       }

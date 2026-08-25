@@ -37,17 +37,19 @@ export function formatCountdownDuration(remainingSeconds: number, isEstimated: b
  * shared with authoring validation so accepted source data and UI projection
  * follow the same boundary rules.
  */
-export function isCountdownPhaseBreakEvent(event: { summary?: string; type?: string }): boolean {
-  const summary = event.summary?.toLowerCase() || '';
+export function isCountdownPhaseBreakEvent(
+  event: { type?: string; countdownId?: string },
+  targetCountdownId?: string
+): boolean {
+  if (!targetCountdownId) {
+    return false;
+  }
   return (
-    summary.includes('countdown paused') ||
-    summary.includes('countdown resumed') ||
-    summary.includes('countdown reset') ||
-    summary.includes('phase change') ||
-    event.type === 'CountdownPaused' ||
-    event.type === 'CountdownResumed' ||
-    event.type === 'CountdownReset' ||
-    event.type === 'CountdownPhaseChanged'
+    (event.type === 'CountdownPaused' ||
+      event.type === 'CountdownResumed' ||
+      event.type === 'CountdownReset' ||
+      event.type === 'CountdownPhaseChanged') &&
+    event.countdownId === targetCountdownId
   );
 }
 
@@ -149,7 +151,7 @@ export function projectCountdownState(
 
   // Check if events between r1 and r2 contain countdown pause/resume/reset/phase change events
   const intermediateEvents = events.filter((e) => e.sequence > r1!.sequence && e.sequence <= r2!.sequence);
-  const hasPhaseBreak = intermediateEvents.some(isCountdownPhaseBreakEvent);
+  const hasPhaseBreak = intermediateEvents.some((e) => isCountdownPhaseBreakEvent(e, activeCountdown.id));
 
   if (hasPhaseBreak) {
     return null;

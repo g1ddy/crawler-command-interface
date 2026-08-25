@@ -385,22 +385,27 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     case 'ItemDiscarded': {
       const instanceId = String(event.itemInstanceId);
       const item = state.inventory.find((i) => i.instanceId === instanceId);
+      let isFullyRemoved = true;
       if (item) {
         if (event.quantity !== undefined) {
           const { numericQuantity } = parseQuantity(event.quantity);
           item.quantity -= numericQuantity;
           if (item.quantity <= 0) {
             state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
+            item.isEquipped = false;
+          } else {
+            isFullyRemoved = false;
           }
         } else {
           state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
+          item.isEquipped = false;
         }
-      } else {
-        state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
       }
-      for (const slot in state.equippedSlots) {
-        if (state.equippedSlots[slot] === instanceId) {
-          state.equippedSlots[slot] = null;
+      if (isFullyRemoved) {
+        for (const slot in state.equippedSlots) {
+          if (state.equippedSlots[slot] === instanceId) {
+            state.equippedSlots[slot] = null;
+          }
         }
       }
       break;
