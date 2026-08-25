@@ -40,6 +40,11 @@ Node's `--experimental-strip-types` flag explicitly so they also work on the
 documented minimum Node.js 22.13 release; type stripping did not become enabled
 by default until later Node.js 22 releases.
 
+## Replay data and HUD projection
+
+Floor JSON is authored as evidence-backed events and observations, then compiled into the runtime timeline fixture. The HUD is projected in memory at the selected replay sequence instead of storing a snapshot for every slider position. This keeps replay deterministic and prevents later state from leaking into earlier sequences. The authoring and countdown-estimation rules are in [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md).
+
+
 The Pages base defaults to `/crawler-command-interface/`. Set
 `PAGES_BASE_PATH=/` when building for a custom domain or user/organization Pages
 site. CI builds and validates both base-path modes. The current UI has no

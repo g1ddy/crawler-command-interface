@@ -16,6 +16,21 @@ Keep the layers distinct:
 
 Do not reshape source data merely to fit the current UI. Prefer preserving a structured observation and adding projection/UI support deliberately later.
 
+## Scrubbing and projected HUD state
+
+The replay slider selects a timeline sequence; it does not mutate the authored story data. At that sequence, `projectState`, `projectObservations`, and `projectCountdownState` derive the HUD state in memory from the compiled event stream and sourced observations. Moving the slider backward recomputes the same point-in-time state, so a replay cannot accidentally retain a later item, stat, or telemetry value.
+
+The repository stores three different things deliberately:
+
+1. **Raw floor JSON** is the durable authored evidence record.
+2. **Derived JSON and the checked-in runtime fixture** are compile outputs that make the same document available to the browser and Worker without running schema compilation during page import.
+3. **Projected HUD state is not stored.** It is deterministic, sequence-scoped, and cheap to derive in memory. Persisting it would create stale snapshots and duplicate the event/observation interpretation rules.
+
+Events are causal transitions: replay applies them to produce state. Raw observations are sourced readings: projection exposes only what their payload establishes and preserves their evidence. They are not promoted to causal events merely because a widget can display them.
+
+Countdowns are the one visible numeric estimate. At an exact reference the HUD shows its stated value. Between compatible references it interpolates; past a compatible final pair it extrapolates and marks the value with `~`. Details and hover text expose the basis, confidence, and reference points. A lifecycle phase break (`CountdownReset`, `CountdownPaused`, `CountdownResumed`, or `CountdownPhaseChanged`) ends the prior countdown phase: a reading from before that boundary must not be carried into the new phase without a new source.
+
+
 ## Start from the source, not the desired HUD state
 
 Record the smallest claim supported by the evidence.

@@ -100,9 +100,85 @@ export function projectCountdownState(
   const firstRef = references[0];
   const lastRef = references[references.length - 1];
 
-  // Do not extrapolate before the first or after the last reference
-  if (targetSequence < firstRef.sequence || targetSequence > lastRef.sequence) {
-    return null;
+  // Extrapolate beyond the final reference from the latest compatible pair so
+  // replay keeps a continuous countdown through the floor exit.
+  if (targetSequence > lastRef.sequence) {
+    const laterPhaseBreak = events.some(
+      (event) =>
+        event.sequence > lastRef.sequence &&
+        event.sequence <= targetSequence &&
+        isCountdownPhaseBreakEvent(event, activeCountdown.id)
+    );
+    if (laterPhaseBreak) {
+      return null;
+    }
+
+    const penultimateRef = references[references.length - 2];
+    const hasCompatiblePair =
+      penultimateRef &&
+      lastRef.remainingSeconds < penultimateRef.remainingSeconds &&
+      !events
+        .filter((event) => event.sequence > penultimateRef.sequence && event.sequence <= lastRef.sequence)
+        .some((event) => isCountdownPhaseBreakEvent(event, activeCountdown.id));
+
+    if (hasCompatiblePair) {
+      const penultimateEvent = events.find((event) => event.sequence === penultimateRef.sequence);
+      const lastEvent = events.find((event) => event.sequence === lastRef.sequence);
+      const targetEvent = events.find((event) => event.sequence === targetSequence);
+      const penultimateElapsed = penultimateEvent?.position?.elapsedSeconds;
+      const lastElapsed = lastEvent?.position?.elapsedSeconds;
+      const targetElapsed = targetEvent?.position?.elapsedSeconds;
+      const hasElapsedDurations =
+        typeof penultimateElapsed === 'number' &&
+        typeof lastElapsed === 'number' &&
+        typeof targetElapsed === 'number' &&
+        lastElapsed > penultimateElapsed;
+      const fraction = hasElapsedDurations
+        ? (targetElapsed - penultimateElapsed) / (lastElapsed - penultimateElapsed)
+        : (targetSequence - penultimateRef.sequence) / (lastRef.sequence - penultimateRef.sequence);
+      const remainingSeconds = Math.max(
+        0,
+        Math.round(penultimateRef.remainingSeconds + fraction * (lastRef.remainingSeconds - penultimateRef.remainingSeconds))
+      );
+      const basis = hasElapsedDurations ? 'elapsed-duration-extrapolation' : 'sequence-position-extrapolation';
+
+      return {
+        id: activeCountdown.id,
+        title: activeCountdown.title,
+        floor: activeCountdown.floor,
+        target: activeCountdown.target,
+        remainingSeconds,
+        status: 'estimated',
+        isStale: false,
+        basis,
+        confidence: 'low-confidence',
+        formattedTime: formatCountdownDuration(remainingSeconds, true),
+        formattedLabel: `${formatCountdownDuration(remainingSeconds, true)} · estimated`,
+        referencePoints: [penultimateRef, lastRef],
+        note: lastRef.note,
+      };
+    }
+
+    // A single reference cannot yield a rate. Retain it as a clearly sourced
+    // value rather than pretending an estimate exists.
+    const remainingSeconds = lastRef.remainingSeconds;
+    const formattedTime = formatCountdownDuration(remainingSeconds, false);
+    const confidence = lastRef.evidence[0]?.confidence || 'confirmed';
+    return {
+      id: activeCountdown.id,
+      title: activeCountdown.title,
+      floor: activeCountdown.floor,
+      target: activeCountdown.target,
+      remainingSeconds,
+      status: 'stated',
+      isStale: true,
+      basis: 'last-known-reference',
+      confidence,
+      formattedTime,
+      formattedLabel: `${formattedTime} · stated (latest source)`,
+      referencePoints: [lastRef],
+      note: lastRef.note,
+    };
   }
 
   // 1. Check exact sequence match
@@ -118,6 +194,7 @@ export function projectCountdownState(
       target: activeCountdown.target,
       remainingSeconds,
       status: 'stated',
+      isStale: false,
       basis: 'exact-reference',
       confidence,
       formattedTime,
@@ -200,6 +277,7 @@ export function projectCountdownState(
     target: activeCountdown.target,
     remainingSeconds: interpolatedSeconds,
     status: 'estimated',
+    isStale: false,
     basis,
     confidence,
     formattedTime,

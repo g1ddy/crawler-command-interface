@@ -291,8 +291,10 @@ export default function CrawlerApp() {
 
       <div className="timer">
         <span>{floorHudTitle.toUpperCase()}</span>
-        <b>
-          LEVEL COLLAPSE IN {activeCountdown ? activeCountdown.formattedTime.toUpperCase() : `${h}:${m}:${s}`}
+        <b title={activeCountdown ? `${activeCountdown.status} · ${activeCountdown.basis}` : undefined}>
+          {activeCountdown?.isStale
+            ? `LATEST SOURCED COLLAPSE TIME: ${activeCountdown.formattedTime.toUpperCase()}`
+            : `LEVEL COLLAPSE IN ${activeCountdown ? activeCountdown.formattedTime.toUpperCase() : `${h}:${m}:${s}`}`}
         </b>
         <span>● LIVE · {hudViewers.toLocaleString()} VIEWERS</span>
       </div>

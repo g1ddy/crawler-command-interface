@@ -419,7 +419,15 @@ export interface ActiveCountdownState {
   target: 'floor-collapse';
   remainingSeconds: number;
   status: 'stated' | 'estimated';
-  basis: 'exact-reference' | 'elapsed-duration' | 'sequence-position';
+  /** True when this is the latest source reading, not a time at the selected sequence. */
+  isStale: boolean;
+  basis:
+    | 'exact-reference'
+    | 'last-known-reference'
+    | 'elapsed-duration'
+    | 'sequence-position'
+    | 'elapsed-duration-extrapolation'
+    | 'sequence-position-extrapolation';
   confidence: 'confirmed' | 'corroborated' | 'candidate' | 'disputed' | 'low-confidence';
   formattedTime: string;
   formattedLabel: string;
