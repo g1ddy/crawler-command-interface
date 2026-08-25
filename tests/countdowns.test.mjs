@@ -35,7 +35,7 @@ test("Floor 1's authored collapse-clock reference is visible at its exact sequen
   assert.equal(state.referencePoints[0].sequence, floor1CountdownSequence);
 });
 
-test("timeline does not interpolate Floor 1 without two supported stated references", () => {
+test("timeline retains Floor 1's last known reading without extrapolating it", () => {
   assert.equal(projectCountdownState(compiledDoc, 1, 1), null);
   assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence - 1, 1), null);
 
@@ -44,8 +44,14 @@ test("timeline does not interpolate Floor 1 without two supported stated referen
   assert.equal(stated.status, "stated");
   assert.equal(stated.remainingSeconds, 237600);
 
-  assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence + 1, 1), null);
-  assert.equal(projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 1).endSequence, 1), null);
+  const lastKnown = projectCountdownState(compiledDoc, floor1CountdownSequence + 1, 1);
+  assert.ok(lastKnown);
+  assert.equal(lastKnown.status, "stated");
+  assert.equal(lastKnown.basis, "last-known-reference");
+  assert.equal(lastKnown.remainingSeconds, 237600);
+  assert.equal(lastKnown.formattedLabel, "Last known: 2d 18h left · stated");
+  assert.equal(lastKnown.referencePoints.length, 1);
+  assert.equal(lastKnown.referencePoints[0].sequence, floor1CountdownSequence);
 });
 
 test("Floor 2's authored collapse-clock references are monotonic", () => {
@@ -64,7 +70,11 @@ test("Floor 2's authored collapse-clock references are monotonic", () => {
   assert.equal(estimatedState.status, "estimated");
   assert.ok(estimatedState.remainingSeconds < stateSeq20.remainingSeconds);
   assert.ok(estimatedState.remainingSeconds > stateSeq23.remainingSeconds);
-  assert.equal(projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 2).endSequence, 2), null);
+  const lastKnown = projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 2).endSequence, 2);
+  assert.ok(lastKnown);
+  assert.equal(lastKnown.basis, "last-known-reference");
+  assert.equal(lastKnown.remainingSeconds, 360000);
+  assert.equal(lastKnown.formattedTime, "Last known: 4d 4h left");
 });
 
 test("prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence", () => {
