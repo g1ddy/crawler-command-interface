@@ -1,34 +1,57 @@
 "use client";
 import React, { useState } from 'react';
-import type { CrawlerEvent, EventCategory, FloorSegment, TimelineCountdown } from '../domain/types';
+import type {
+  CrawlerEvent,
+  EventCategory,
+  FloorSegment,
+  TimelineCountdown,
+  TimelineObservation,
+  TimelineSource,
+  ProjectedObservationsState,
+  ProjectedObservationValue,
+  ProjectedItemObservation,
+  ProjectedEquipmentObservation,
+} from '../domain/types';
 import { getFloorEndSequence } from '../domain/floors';
 import { projectCountdownState, formatCountdownDuration } from '../domain/countdowns';
+import { TelemetryBadge } from './TelemetryBadge';
 
 interface TimelineScrubberProps {
   events: CrawlerEvent[];
   floors?: FloorSegment[];
   countdowns?: TimelineCountdown[];
+  observations?: TimelineObservation[];
+  sources?: TimelineSource[];
+  projectedObservations?: ProjectedObservationsState;
   selectedFloorOrdinal: number | 'all';
   onSelectFloorOrdinal: (ordinal: number | 'all') => void;
   selectedSequence: number;
   onSelectSequence: (seq: number) => void;
   isLive: boolean;
   onToggleLive: () => void;
+  onInspectObservation?: (obs: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
 }
 
 export function TimelineScrubber({
   events,
   floors = [],
   countdowns = [],
+  observations = [],
+  sources = [],
+  projectedObservations,
   selectedFloorOrdinal,
   onSelectFloorOrdinal,
   selectedSequence,
   onSelectSequence,
   isLive,
   onToggleLive,
+  onInspectObservation,
 }: TimelineScrubberProps) {
   const [filterCategory, setFilterCategory] = useState<EventCategory | 'all'>('all');
+  const [feedMode, setFeedMode] = useState<'all' | 'events-only' | 'telemetry-only'>('all');
+  const [showObservationMarkers, setShowObservationMarkers] = useState<boolean>(true);
   const [hoveredEvent, setHoveredEvent] = useState<CrawlerEvent | null>(null);
+  const [hoveredObservation, setHoveredObservation] = useState<TimelineObservation | null>(null);
   const [showCountdownDetails, setShowCountdownDetails] = useState<boolean>(false);
 
   // Derive floor list and ensure derived endSequence is applied to every floor segment
@@ -73,20 +96,37 @@ export function TimelineScrubber({
     return events.filter((e) => e.position?.floor === selectedFloorOrdinal);
   }, [events, selectedFloorOrdinal]);
 
-  // Non-contiguous sequence array for sparse step navigation
+  // Observations filtered by selected floor
+  const floorObservations = React.useMemo(() => {
+    if (selectedFloorOrdinal === 'all') return observations;
+    const seqs = new Set(floorEvents.map((e) => e.sequence));
+    return observations.filter((o) => seqs.has(o.sequence));
+  }, [observations, floorEvents, selectedFloorOrdinal]);
+
+  // Combined non-contiguous sequence array for sparse step navigation across events and observations
   const scopedSequences = React.useMemo(() => {
-    return floorEvents.map((e) => e.sequence).sort((a, b) => a - b);
-  }, [floorEvents]);
+    const set = new Set<number>();
+    for (const e of floorEvents) set.add(e.sequence);
+    for (const o of floorObservations) set.add(o.sequence);
+    return Array.from(set).sort((a, b) => a - b);
+  }, [floorEvents, floorObservations]);
 
   const minSeq = scopedSequences[0] ?? 1;
   const maxSeq = scopedSequences[scopedSequences.length - 1] ?? 1;
 
   // Category-filtered events for markers display
   const markerEvents = React.useMemo(() => {
+    if (feedMode === 'telemetry-only') return [];
     return floorEvents.filter(
       (e) => filterCategory === 'all' || e.category === filterCategory
     );
-  }, [floorEvents, filterCategory]);
+  }, [floorEvents, filterCategory, feedMode]);
+
+  // Observations for track display
+  const markerObservations = React.useMemo(() => {
+    if (!showObservationMarkers || feedMode === 'events-only') return [];
+    return floorObservations;
+  }, [floorObservations, showObservationMarkers, feedMode]);
 
   const currentEvent =
     events.find((e) => e.sequence === selectedSequence) || events[events.length - 1];
@@ -311,42 +351,113 @@ export function TimelineScrubber({
             const isSelected = ev.sequence === selectedSequence;
             return (
               <button
-                key={ev.sequence}
+                key={`evt-${ev.sequence}`}
                 style={{ left: `${pct}%` }}
                 className={`marker marker-${ev.category} ${isSelected ? 'active' : ''}`}
                 onClick={() => onSelectSequence(ev.sequence)}
                 onMouseEnter={() => setHoveredEvent(ev)}
                 onMouseLeave={() => setHoveredEvent(null)}
-                title={`[Floor ${ev.position?.floor ?? 6} · ${ev.occurred_at}] ${ev.summary}`}
+                title={`[Causal Event · Floor ${ev.position?.floor ?? 1} · ${ev.occurred_at}] ${ev.summary}`}
+              />
+            );
+          })}
+
+          {markerObservations.map((obs) => {
+            const pct = ((obs.sequence - minSeq) / (maxSeq - minSeq || 1)) * 100;
+            const isSelected = obs.sequence === selectedSequence;
+            return (
+              <button
+                key={`obs-${obs.id}`}
+                style={{ left: `${pct}%` }}
+                className={`marker obs-marker ${isSelected ? 'active' : ''}`}
+                onClick={() => onSelectSequence(obs.sequence)}
+                onMouseEnter={() => setHoveredObservation(obs)}
+                onMouseLeave={() => setHoveredObservation(null)}
+                title={`[Sourced Telemetry · Seq #${obs.sequence}] ${obs.kind} (${obs.interpolation || 'exact'})`}
               />
             );
           })}
         </div>
       </div>
 
-      <div className="timeline-meta">
-        <div className="filters">
-          <span className="filter-label">FILTER MARKERS:</span>
-          {(['all', 'loot', 'combat', 'skills', 'quest', 'levelup', 'system'] as const).map((cat) => (
+      <div className="timeline-meta" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+          <div className="filters">
+            <span className="filter-label">EVENT MARKERS:</span>
+            {(['all', 'loot', 'combat', 'skills', 'quest', 'levelup', 'system'] as const).map((cat) => (
+              <button
+                key={cat}
+                className={`filter-chip ${filterCategory === cat ? 'active' : ''}`}
+                onClick={() => setFilterCategory(cat)}
+              >
+                {cat.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="filter-label">FEED MODE:</span>
+            {(['all', 'events-only', 'telemetry-only'] as const).map((mode) => (
+              <button
+                key={mode}
+                className={`filter-chip ${feedMode === mode ? 'active' : ''}`}
+                onClick={() => setFeedMode(mode)}
+              >
+                {mode === 'all' ? 'ALL' : mode === 'events-only' ? 'EVENTS ONLY' : 'TELEMETRY ONLY'}
+              </button>
+            ))}
+
             <button
-              key={cat}
-              className={`filter-chip ${filterCategory === cat ? 'active' : ''}`}
-              onClick={() => setFilterCategory(cat)}
+              className={`filter-chip ${showObservationMarkers ? 'active' : ''}`}
+              style={{
+                marginLeft: '6px',
+                borderColor: showObservationMarkers ? '#1bd9ff' : '#2a4454',
+                color: showObservationMarkers ? '#7ee5ff' : '#88a3af',
+              }}
+              onClick={() => setShowObservationMarkers(!showObservationMarkers)}
             >
-              {cat.toUpperCase()}
+              {showObservationMarkers ? '📡 TELEMETRY MARKERS [ON]' : '📡 TELEMETRY MARKERS [OFF]'}
             </button>
-          ))}
+          </div>
         </div>
 
-        {hoveredEvent && (
-          <div className="event-card-preview">
-            <span className="tag">{hoveredEvent.category.toUpperCase()}</span>
-            <b>
-              FLOOR {hoveredEvent.position?.floor ?? 6} · SEQ #{hoveredEvent.sequence} ({hoveredEvent.occurred_at})
-            </b>
-            <p>{hoveredEvent.summary}</p>
+        {(hoveredEvent || hoveredObservation) && (
+          <div className="event-card-preview" style={{ background: hoveredObservation ? '#07202b' : '#0d1f2b', borderColor: hoveredObservation ? '#1bd9ff' : '#1bd9ff' }}>
+            {hoveredEvent ? (
+              <>
+                <span className="tag">{hoveredEvent.category.toUpperCase()}</span>
+                <b>
+                  ⚡ CAUSAL EVENT · FLOOR {hoveredEvent.position?.floor ?? 1} · SEQ #{hoveredEvent.sequence} ({hoveredEvent.occurred_at})
+                </b>
+                <p>{hoveredEvent.summary}</p>
+              </>
+            ) : hoveredObservation ? (
+              <>
+                <span className="tag" style={{ background: '#0a3a4c', color: '#8de9ff' }}>
+                  📡 SOURCED TELEMETRY
+                </span>
+                <b>
+                  OBSERVATION ({hoveredObservation.kind}) · SEQ #{hoveredObservation.sequence}
+                </b>
+                <p style={{ margin: '4px 0 0 0', color: '#b2e2f0' }}>
+                  Interpolation: {hoveredObservation.interpolation || 'stated exact fact'} · Evidence: {hoveredObservation.evidence[0]?.sourceId || 'Sourced'}
+                  {hoveredObservation.note ? ` — ${hoveredObservation.note}` : ''}
+                </p>
+              </>
+            ) : null}
           </div>
         )}
+
+        {/* Selected Sequence Telemetry & Evidence Inspector */}
+        <SequenceInspector
+          sequence={selectedSequence}
+          events={events}
+          observations={observations}
+          sources={sources}
+          projectedObservations={projectedObservations}
+          feedMode={feedMode}
+          onInspectObservation={onInspectObservation}
+        />
       </div>
 
       {showCountdownDetails && activeCountdown && (
@@ -433,4 +544,191 @@ export function TimelineScrubber({
       )}
     </aside>
   );
+}
+
+function SequenceInspector({
+  sequence,
+  events,
+  observations,
+  projectedObservations,
+  feedMode,
+  onInspectObservation,
+}: {
+  sequence: number;
+  events: CrawlerEvent[];
+  observations: TimelineObservation[];
+  sources?: TimelineSource[];
+  projectedObservations?: ProjectedObservationsState;
+  feedMode: 'all' | 'events-only' | 'telemetry-only';
+  onInspectObservation?: (obs: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
+}) {
+  const currentEvent = events.find((e) => e.sequence === sequence);
+  const currentObservations = observations.filter((o) => o.sequence === sequence);
+
+  const showEvents = feedMode !== 'telemetry-only';
+  const showTelemetry = feedMode !== 'events-only';
+
+  return (
+    <div
+      className="sequence-inspector-card"
+      style={{
+        background: '#06131c',
+        border: '1px solid #1f4252',
+        borderRadius: '4px',
+        padding: '12px',
+        fontSize: '11px',
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <span className="eyebrow" style={{ margin: 0 }}>
+          SEQUENCE #{sequence} STREAM & TELEMETRY DETAIL
+        </span>
+        <span style={{ fontSize: '10px', color: '#7fa0ac', fontFamily: 'monospace' }}>
+          {currentEvent ? `Floor ${currentEvent.position?.floor ?? 1}${currentEvent.occurred_at ? ` · ${currentEvent.occurred_at}` : ''}` : `Seq #${sequence}`}
+        </span>
+      </div>
+
+      {/* Replay Feed Rows */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
+        {showEvents && currentEvent && (
+          <div
+            className="feed-row causal-event-row"
+            style={{
+              background: '#0d1e29',
+              borderLeft: '3px solid #ff7180',
+              padding: '8px 10px',
+              borderRadius: '2px',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+              <strong style={{ color: '#ff8a90', fontSize: '10px', letterSpacing: '0.08em' }}>
+                ⚡ CAUSAL EVENT ({currentEvent.type || 'EVENT'})
+              </strong>
+              <span style={{ fontSize: '9px', color: '#8ca8b3' }}>
+                Category: {currentEvent.category ? currentEvent.category.toUpperCase() : 'SYSTEM'}
+              </span>
+            </div>
+            <p style={{ margin: '2px 0 0 0', color: '#e6f3f7', fontSize: '11px' }}>
+              {currentEvent.summary}
+            </p>
+            {currentEvent.evidence && currentEvent.evidence.length > 0 && (
+              <div style={{ marginTop: '4px', fontSize: '9px', color: '#7fa0ac' }}>
+                Evidence Source: <span style={{ color: '#ffb74d' }}>{currentEvent.evidence[0].sourceId}</span>
+                {currentEvent.evidence[0].locator?.chapter ? ` (Chapter ${currentEvent.evidence[0].locator.chapter})` : ''}
+              </div>
+            )}
+          </div>
+        )}
+
+        {showTelemetry && currentObservations.length > 0 && (
+          currentObservations.map((obs) => (
+            <div
+              key={obs.id}
+              className="feed-row telemetry-row"
+              style={{
+                background: '#07212e',
+                borderLeft: '3px solid #1bd9ff',
+                padding: '8px 10px',
+                borderRadius: '2px',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                <strong style={{ color: '#1bd9ff', fontSize: '10px', letterSpacing: '0.08em' }}>
+                  📡 SOURCED TELEMETRY OBSERVATION ({obs.kind ? obs.kind.toUpperCase() : 'OBSERVATION'})
+                </strong>
+                <span style={{ fontSize: '9px', background: '#0a3447', color: '#7ee5ff', padding: '1px 5px', borderRadius: '3px' }}>
+                  {obs.interpolation === 'linear' ? 'LINEAR ESTIMATE CAPABLE' : 'EXACT STATED FACT'}
+                </span>
+              </div>
+              <p style={{ margin: '2px 0 0 0', color: '#d2f2fa', fontSize: '10px', fontFamily: 'monospace' }}>
+                Observed payload: {formatObservationPayload(obs)}
+              </p>
+              {obs.evidence && obs.evidence.length > 0 && (
+                <div style={{ marginTop: '4px', fontSize: '9px', color: '#88a8b5' }}>
+                  Evidence Source: <span style={{ color: '#ffb74d' }}>{obs.evidence[0].sourceId}</span>
+                  {obs.evidence[0].locator?.section ? ` (${obs.evidence[0].locator.section})` : obs.evidence[0].locator?.chapter ? ` (Chapter ${obs.evidence[0].locator.chapter})` : ''}
+                  {obs.note ? ` — ${obs.note}` : ''}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+
+        {(!currentEvent || !showEvents) && (!showTelemetry || currentObservations.length === 0) && (
+          <p style={{ margin: '4px 0', fontSize: '10px', color: '#6a8592', fontStyle: 'italic' }}>
+            No {feedMode === 'events-only' ? 'causal events' : feedMode === 'telemetry-only' ? 'sourced telemetry' : 'events or telemetry'} directly anchored at Sequence #{sequence}. Showing point-in-time projected state below.
+          </p>
+        )}
+      </div>
+
+      {/* Point-in-time Telemetry Overview */}
+      {projectedObservations && (
+        <div style={{ borderTop: '1px solid #183e4d', paddingTop: '8px' }}>
+          <span className="eyebrow" style={{ fontSize: '8px', color: '#688996' }}>
+            POINT-IN-TIME PROJECTED TELEMETRY AT SEQ #{sequence}
+          </span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '6px' }}>
+            {Object.entries(projectedObservations.condition).map(([k, val]) => (
+              <div key={`cond-${k}`} style={{ background: '#081a26', border: '1px solid #1a3c4c', padding: '3px 7px', borderRadius: '3px', fontSize: '10px' }}>
+                <span style={{ color: '#7f9ea9' }}>HP/MP.{k}: </span>
+                <strong style={{ color: '#fff' }}>{val.value.toLocaleString()}</strong>
+                <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
+              </div>
+            ))}
+
+            {Object.entries(projectedObservations.attributes).map(([k, val]) => (
+              <div key={`attr-${k}`} style={{ background: '#081a26', border: '1px solid #1a3c4c', padding: '3px 7px', borderRadius: '3px', fontSize: '10px' }}>
+                <span style={{ color: '#7f9ea9' }}>Attr.{k}: </span>
+                <strong style={{ color: '#fff' }}>{val.value.toLocaleString()}</strong>
+                <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
+              </div>
+            ))}
+
+            {Object.entries(projectedObservations.xpProgress).map(([k, val]) => (
+              <div key={`xp-${k}`} style={{ background: '#081a26', border: '1px solid #1a3c4c', padding: '3px 7px', borderRadius: '3px', fontSize: '10px' }}>
+                <span style={{ color: '#7f9ea9' }}>XP.{k}: </span>
+                <strong style={{ color: '#fff' }}>{val.value.toLocaleString()}</strong>
+                <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
+              </div>
+            ))}
+
+            {Object.entries(projectedObservations.broadcast).map(([k, val]) => (
+              <div key={`bc-${k}`} style={{ background: '#081a26', border: '1px solid #1a3c4c', padding: '3px 7px', borderRadius: '3px', fontSize: '10px' }}>
+                <span style={{ color: '#7f9ea9' }}>Broadcast.{k}: </span>
+                <strong style={{ color: '#fff' }}>{val.value.toLocaleString()}</strong>
+                <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function formatObservationPayload(obs: TimelineObservation): string {
+  const o = obs as unknown as Record<string, unknown>;
+  if (obs.kind === 'crawler-condition') {
+    return `HP: ${o.currentHealth ?? '—'}/${o.maxHealth ?? '—'}, MP: ${o.currentMana ?? '—'}/${o.maxMana ?? '—'}`;
+  }
+  if (obs.kind === 'crawler-attributes') {
+    const attrs = o.attributes as Record<string, number> | undefined;
+    return attrs ? Object.entries(attrs).map(([k, v]) => `${k}:${v}`).join(', ') : 'Attributes update';
+  }
+  if (obs.kind === 'xp-progress') {
+    return `Level ${o.level ?? '—'}, XP: ${o.xp ?? '—'}/${o.maxXp ?? '—'}`;
+  }
+  if (obs.kind === 'broadcast-metrics') {
+    return `Viewers: ${o.viewers ? Number(o.viewers).toLocaleString() : '—'}, Followers: ${o.followers ? Number(o.followers).toLocaleString() : '—'}`;
+  }
+  if (obs.kind === 'inventory-state') {
+    return `Item ${o.itemInstanceId}: present=${o.present ?? true}, qty=${o.quantity ? JSON.stringify(o.quantity) : '1'}`;
+  }
+  if (obs.kind === 'equipment-state') {
+    return `Slot ${o.slot}: ${o.itemInstanceId || 'EMPTY'}`;
+  }
+  if (obs.kind === 'countdown-remaining') {
+    return `Countdown ${o.countdownId}: ${o.remainingSeconds}s remaining`;
+  }
+  return JSON.stringify(obs);
 }
