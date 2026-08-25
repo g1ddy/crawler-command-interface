@@ -1285,7 +1285,7 @@ function EquipmentView({
   const inventoryMap = useMemo(() => {
     const map = new Map<string, InventoryItem>();
     for (const item of state.inventory) {
-      if (item.instanceId) map.set(item.instanceId, item);
+      if (item.instanceId && !map.has(item.instanceId)) map.set(item.instanceId, item);
     }
     return map;
   }, [state.inventory]);
