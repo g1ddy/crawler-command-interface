@@ -1282,8 +1282,16 @@ function EquipmentView({
     ["SPECIAL", "✦", "Relic/Special"],
   ];
 
+  const inventoryMap = useMemo(() => {
+    const map = new Map<string, InventoryItem>();
+    for (const item of state.inventory) {
+      if (item.instanceId) map.set(item.instanceId, item);
+    }
+    return map;
+  }, [state.inventory]);
+
   const equippedInstanceId = state.equippedSlots[slot];
-  const equippedItem = state.inventory.find((i) => i.instanceId === equippedInstanceId);
+  const equippedItem = equippedInstanceId ? inventoryMap.get(equippedInstanceId) : undefined;
 
   const slotCandidates = useMemo(() => {
     return state.inventory.filter((item) => {
@@ -1321,10 +1329,10 @@ function EquipmentView({
           <div className="body-core">◉</div>
           {slots.map(([name, icon], i) => {
             const occupantId = state.equippedSlots[name];
-            const occupant = state.inventory.find((item) => item.instanceId === occupantId);
+            const occupant = occupantId ? inventoryMap.get(occupantId) : undefined;
             const slotObs = observations.equipment[name];
-            const observedOccupant = slotObs
-              ? state.inventory.find((item) => item.instanceId === slotObs.itemInstanceId)
+            const observedOccupant = slotObs && slotObs.itemInstanceId
+              ? inventoryMap.get(slotObs.itemInstanceId)
               : undefined;
             return (
               <button
