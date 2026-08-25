@@ -1964,44 +1964,24 @@
       ]
     },
     "observation": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "kind",
-        "eventId",
-        "countdownId",
-        "remainingSeconds",
-        "evidence"
-      ],
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "eventId", "evidence"],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "kind": {
-          "const": "countdown-remaining"
-        },
-        "eventId": {
-          "$ref": "#/$defs/id"
-        },
-        "countdownId": {
-          "$ref": "#/$defs/id"
-        },
-        "remainingSeconds": {
-          "$ref": "#/$defs/nonNegativeInteger"
-        },
-        "evidence": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/evidence"
-          }
-        },
-        "note": {
-          "type": "string",
-          "maxLength": 1000
-        }
-      }
+        "id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["countdown-remaining", "crawler-condition", "crawler-attributes", "xp-progress", "broadcast-metrics", "inventory-state", "equipment-state"] }, "eventId": { "$ref": "#/$defs/id" },
+        "countdownId": { "$ref": "#/$defs/id" }, "remainingSeconds": { "$ref": "#/$defs/nonNegativeInteger" },
+        "currentHealth": { "$ref": "#/$defs/nonNegativeInteger" }, "maxHealth": { "$ref": "#/$defs/nonNegativeInteger" }, "currentMana": { "$ref": "#/$defs/nonNegativeInteger" }, "maxMana": { "$ref": "#/$defs/nonNegativeInteger" }, "currentStamina": { "$ref": "#/$defs/nonNegativeInteger" }, "maxStamina": { "$ref": "#/$defs/nonNegativeInteger" },
+        "attributes": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "number" } }, "availableAttributePoints": { "$ref": "#/$defs/nonNegativeInteger" },
+        "xp": { "$ref": "#/$defs/nonNegativeInteger" }, "maxXp": { "$ref": "#/$defs/nonNegativeInteger" }, "level": { "$ref": "#/$defs/positiveInteger" },
+        "viewers": { "$ref": "#/$defs/nonNegativeInteger" }, "followers": { "$ref": "#/$defs/nonNegativeInteger" }, "favorites": { "$ref": "#/$defs/nonNegativeInteger" }, "patrons": { "$ref": "#/$defs/nonNegativeInteger" }, "leaderboardRank": { "$ref": "#/$defs/positiveInteger" }, "bounty": { "$ref": "#/$defs/nonNegativeInteger" },
+        "itemInstanceId": { "type": ["string", "null"] }, "present": { "type": "boolean" }, "quantity": { "$ref": "#/$defs/quantity" }, "isEquipped": { "type": "boolean" }, "slot": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 }
+      },
+      "allOf": [
+        { "if": { "properties": { "kind": { "const": "countdown-remaining" } } }, "then": { "required": ["countdownId", "remainingSeconds"] } },
+        { "if": { "properties": { "kind": { "const": "crawler-attributes" } } }, "then": { "required": ["attributes"] } },
+        { "if": { "properties": { "kind": { "const": "inventory-state" } } }, "then": { "required": ["itemInstanceId"] } },
+        { "if": { "properties": { "kind": { "const": "equipment-state" } } }, "then": { "required": ["slot", "itemInstanceId"] } }
+      ]
     }
   }
 }
