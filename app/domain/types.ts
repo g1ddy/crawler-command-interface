@@ -556,6 +556,14 @@ export interface RawCountdownObservation {
   note?: string;
 }
 
+export interface RawCrawlerConditionObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'crawler-condition'; currentHealth?: number; maxHealth?: number; currentMana?: number; maxMana?: number; currentStamina?: number; maxStamina?: number; }
+export interface RawCrawlerAttributesObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'crawler-attributes'; attributes: Record<string, number>; availableAttributePoints?: number; }
+export interface RawXpProgressObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'xp-progress'; xp?: number; maxXp?: number; level?: number; }
+export interface RawBroadcastMetricsObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'broadcast-metrics'; viewers?: number; followers?: number; favorites?: number; patrons?: number; leaderboardRank?: number; bounty?: number; }
+export interface RawInventoryStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'inventory-state'; itemInstanceId: string; present?: boolean; quantity?: QuantityObject; isEquipped?: boolean; }
+export interface RawEquipmentStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'equipment-state'; slot: string; itemInstanceId: string | null; }
+export type RawObservation = RawCountdownObservation | RawCrawlerConditionObservation | RawCrawlerAttributesObservation | RawXpProgressObservation | RawBroadcastMetricsObservation | RawInventoryStateObservation | RawEquipmentStateObservation;
+
 export interface RawFloorCountdown {
   id: string;
   title: string;
@@ -565,7 +573,7 @@ export interface RawFloorCountdown {
 export interface RawCrawlerFloorDocument extends Omit<CrawlerFloorDocument, 'authoringVersion' | 'countdowns'> {
   authoringVersion: 'crawler-floor-raw/v1';
   countdowns?: RawFloorCountdown[];
-  observations?: RawCountdownObservation[];
+  observations?: RawObservation[];
 }
 
 // UI State Types
