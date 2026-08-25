@@ -37,3 +37,11 @@
   .modal-content{max-width:100%;border-radius:12px 12px 0 0;border-bottom:0;max-height:85vh;overflow-y:auto}
   .item-provenance-drawer{position:fixed;bottom:0;left:0;right:0;z-index:90;border-radius:12px 12px 0 0;margin:0;max-height:80vh;overflow-y:auto}
 }
+
+/* Sourced Telemetry & Observation Styles */
+.marker.obs-marker{background:#00e5ff;border-color:#06131c;border-radius:2px;width:7px;height:7px;top:-8px;scale:0.9;box-shadow:0 0 5px #00e5ff88}
+.marker.obs-marker.active{scale:1.3;box-shadow:0 0 10px #00e5ff}
+.feed-row{transition:background-color .2s}
+.feed-row:hover{background-color:#0b2636!important}
+.telemetry-pill{transition:all .2s;user-select:none}
+.telemetry-pill:hover{scale:1.05;box-shadow:0 0 8px #1bd9ff66}
