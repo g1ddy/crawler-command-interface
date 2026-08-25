@@ -81,6 +81,21 @@ test("raw countdown observations reject missing event IDs and increasing values"
   assert.ok(legacyValidation.errors.some((error) => error.includes("increases from")));
 });
 
+test("raw observations reject unrelated, empty, and nullable inventory payloads", () => {
+  const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
+  const eventId = rawDoc.events[0].id;
+  const evidence = [{ sourceId: "src-book-1", confidence: "confirmed" }];
+
+  rawDoc.observations.push({ id: "obs-invalid-inventory", kind: "inventory-state", eventId, itemInstanceId: null, present: true, evidence });
+  assert.equal(validateRawCrawlerFloor(rawDoc).valid, false, "inventory instance IDs must be concrete IDs");
+
+  rawDoc.observations[rawDoc.observations.length - 1] = { id: "obs-invalid-xp", kind: "xp-progress", eventId, currentHealth: 3, evidence };
+  assert.equal(validateRawCrawlerFloor(rawDoc).valid, false, "XP observations cannot carry condition fields");
+
+  rawDoc.observations[rawDoc.observations.length - 1] = { id: "obs-empty-condition", kind: "crawler-condition", eventId, evidence };
+  assert.equal(validateRawCrawlerFloor(rawDoc).valid, false, "condition observations require at least one reading");
+});
+
 test("countdown phase breaks permit a later reset observation without interpolation", () => {
   const resetCountdown = JSON.parse(JSON.stringify(rawFloor2));
   const resetEvent = resetCountdown.events[1];
