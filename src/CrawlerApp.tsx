@@ -126,6 +126,15 @@ export default function CrawlerApp() {
     return projectCountdownState(timelineDoc, currentSeq, selectedFloorOrdinal);
   }, [timelineDoc, currentSeq, selectedFloorOrdinal]);
 
+  // Persistent HUD chrome must use the same point-in-time telemetry as the
+  // detailed views; otherwise a scrubbed replay presents conflicting values.
+  const hudLevel = projectedObservations.xpProgress.level?.value ?? projectedState.crawler.level;
+  const hudHealth = projectedObservations.condition.currentHealth?.value ?? projectedState.crawler.condition.currentHealth;
+  const hudMaxHealth = projectedObservations.condition.maxHealth?.value ?? projectedState.crawler.condition.maxHealth;
+  const hudMana = projectedObservations.condition.currentMana?.value ?? projectedState.crawler.condition.currentMana;
+  const hudMaxMana = projectedObservations.condition.maxMana?.value ?? projectedState.crawler.condition.maxMana;
+  const hudViewers = projectedObservations.broadcast.viewers?.value ?? projectedState.broadcast.viewers;
+
   const floorHudTitle = currentFloorSegment
     ? `FLOOR ${currentFloorSegment.ordinal}: ${currentFloorSegment.title}`
     : selectedFloorOrdinal === 'all'
@@ -269,11 +278,11 @@ export default function CrawlerApp() {
       {/* Mobile Compact Persistent HUD Header */}
       <div className="mobile-status-bar">
         <div className="mobile-crawler-info">
-          <b>{projectedState.crawler.name}</b> (LVL {projectedState.crawler.level} {projectedState.crawler.class})
+          <b>{projectedState.crawler.name}</b> (LVL {hudLevel} {projectedState.crawler.class})
         </div>
         <div className="mobile-meters">
-          <span className="hp-mini">HP {projectedState.crawler.condition.currentHealth}/{projectedState.crawler.condition.maxHealth}</span>
-          <span className="mp-mini">MP {projectedState.crawler.condition.currentMana}/{projectedState.crawler.condition.maxMana}</span>
+          <span className="hp-mini">HP {hudHealth}/{hudMaxHealth}</span>
+          <span className="mp-mini">MP {hudMana}/{hudMaxMana}</span>
         </div>
         <div className="mobile-mode">
           {isLive ? <span className="live-pill">● LIVE</span> : <span className="replay-pill">↺ SEQ #{projectedState.sequence}</span>}
@@ -285,7 +294,7 @@ export default function CrawlerApp() {
         <b>
           LEVEL COLLAPSE IN {activeCountdown ? activeCountdown.formattedTime.toUpperCase() : `${h}:${m}:${s}`}
         </b>
-        <span>● LIVE · {projectedState.broadcast.viewers.toLocaleString()} VIEWERS</span>
+        <span>● LIVE · {hudViewers.toLocaleString()} VIEWERS</span>
       </div>
 
       {!isLive && (
@@ -572,7 +581,10 @@ function Crawler({
   const followersVal = obsFollowers ? obsFollowers.value : state.broadcast.followers;
   const fameRankVal = obsRank ? `#${obsRank.value}` : state.broadcast.fameRank;
 
-  const equippedCount = Object.values(state.equippedSlots).filter(Boolean).length;
+  const equipmentSlots = new Set([...Object.keys(state.equippedSlots), ...Object.keys(observations.equipment)]);
+  const equippedCount = Array.from(equipmentSlots).filter(
+    (slot) => observations.equipment[slot] ? observations.equipment[slot].itemInstanceId : state.equippedSlots[slot]
+  ).length;
 
   return (
     <section className="view-content">
@@ -745,7 +757,11 @@ function Crawler({
                 <p>Equipped Slots: <b>{equippedCount} / 10</b></p>
                 <p>Active Gear Items: <b>{equippedCount} Items</b></p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", margin: "10px 0" }}>
-                  {Object.entries(state.equippedSlots).map(([sName, instId]) => {
+                  {Array.from(equipmentSlots).map((sName) => {
+                    const equipmentObservation = observations.equipment[sName];
+                    // An explicit null is a sourced empty-slot reading, not a
+                    // missing value to be replaced with causal state.
+                    const instId = equipmentObservation ? equipmentObservation.itemInstanceId : state.equippedSlots[sName];
                     const eqItem = state.inventory.find((i) => i.instanceId === instId);
                     return (
                       <button
@@ -761,7 +777,13 @@ function Crawler({
                         onClick={() => onNavigateToEquipmentSlot(sName)}
                         title={`Go to equipment matrix for ${sName}`}
                       >
-                        {sName}: {eqItem ? eqItem.name : "EMPTY"}
+                        {sName}: {eqItem ? eqItem.name : instId || "EMPTY"}
+                        {equipmentObservation && (
+                          <TelemetryBadge
+                            observation={equipmentObservation}
+                            onClick={() => onInspectObservation(equipmentObservation)}
+                          />
+                        )}
                       </button>
                     );
                   })}
@@ -816,7 +838,14 @@ function Crawler({
       )}
 
       {mode === "ACHIEVEMENTS" && <Achievements achievements={state.achievements} />}
-      {mode === "BROADCAST" && <Broadcast broadcast={state.broadcast} logs={state.recentLogs} />}
+      {mode === "BROADCAST" && (
+        <Broadcast
+          broadcast={state.broadcast}
+          observations={observations.broadcast}
+          logs={state.recentLogs}
+          onInspectObservation={onInspectObservation}
+        />
+      )}
     </section>
   );
 }
@@ -940,6 +969,20 @@ function Inventory({
     () => checkItemRequirements(liveState.crawler, selectedItem?.requirements),
     [liveState.crawler, selectedItem]
   );
+  const selectedItemObservation = selectedItem ? observations.inventory[selectedItem.instanceId] : undefined;
+  const selectedItemObservationDetails = selectedItemObservation
+    ? [
+        typeof selectedItemObservation.present === "boolean"
+          ? selectedItemObservation.present ? "PRESENT" : "ABSENT"
+          : null,
+        selectedItemObservation.quantity?.known
+          ? `QTY ${selectedItemObservation.quantity.value}`
+          : null,
+        typeof selectedItemObservation.isEquipped === "boolean"
+          ? selectedItemObservation.isEquipped ? "EQUIPPED" : "UNEQUIPPED"
+          : null,
+      ].filter((detail): detail is string => detail !== null)
+    : [];
 
   const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING"];
 
@@ -1048,6 +1091,11 @@ function Inventory({
                     )}
                   </p>
                   <p>{selectedItem.description}</p>
+                  {selectedItemObservationDetails.length > 0 && (
+                    <p style={{ fontSize: "10px", color: "#7ee5ff" }}>
+                      OBSERVED INVENTORY STATE: {selectedItemObservationDetails.join(" · ")}
+                    </p>
+                  )}
                   <dl>
                     <div>
                       <dt>VALUE</dt>
@@ -1275,6 +1323,9 @@ function EquipmentView({
             const occupantId = state.equippedSlots[name];
             const occupant = state.inventory.find((item) => item.instanceId === occupantId);
             const slotObs = observations.equipment[name];
+            const observedOccupant = slotObs
+              ? state.inventory.find((item) => item.instanceId === slotObs.itemInstanceId)
+              : undefined;
             return (
               <button
                 key={name}
@@ -1289,7 +1340,7 @@ function EquipmentView({
                   {name}
                   {slotObs && <span style={{ marginLeft: "4px", color: "#1bd9ff" }}>📡</span>}
                 </span>
-                <small>{occupant ? occupant.name : "— Empty Slot"}</small>
+                <small>{slotObs ? (observedOccupant ? observedOccupant.name : slotObs.itemInstanceId || "— Empty Slot") : occupant ? occupant.name : "— Empty Slot"}</small>
               </button>
             );
           })}
@@ -1303,6 +1354,15 @@ function EquipmentView({
 
       <div style={{ display: "grid", gap: "18px" }}>
         <Panel title={`SLOT INSPECTOR · ${slot}`}>
+          {observations.equipment[slot] && (
+            <p style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "10px", color: "#7ee5ff" }}>
+              SOURCED SLOT READING: {observations.equipment[slot].itemInstanceId || "EMPTY"}
+              <TelemetryBadge
+                observation={observations.equipment[slot]}
+                onClick={() => onInspectObservation?.(observations.equipment[slot])}
+              />
+            </p>
+          )}
           {equippedItem ? (
             <div style={{ marginBottom: "14px", paddingBottom: "12px", borderBottom: "1px solid #1f3e4d" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -1832,6 +1892,27 @@ function Journal({
                     </div>
                   )}
                 </div>
+                <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
+                  <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>OBSERVED INVENTORY & EQUIPMENT</h3>
+                  {Object.keys(observations.inventory).length === 0 && Object.keys(observations.equipment).length === 0 ? (
+                    <p style={{ fontSize: "10px", color: "#6a8592" }}>No inventory or equipment observations at this sequence.</p>
+                  ) : (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "6px" }}>
+                      {Object.values(observations.inventory).map((val) => (
+                        <div key={`inventory-${val.itemInstanceId}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
+                          <span>Inventory.{val.itemInstanceId}: <strong style={{ color: "#fff" }}>{val.present === false ? "ABSENT" : "PRESENT"}</strong></span>
+                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
+                        </div>
+                      ))}
+                      {Object.values(observations.equipment).map((val) => (
+                        <div key={`equipment-${val.slot}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
+                          <span>Equipment.{val.slot}: <strong style={{ color: "#fff" }}>{val.itemInstanceId || "EMPTY"}</strong></span>
+                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <p style={{ fontSize: "11px", color: "#8fa1aa" }}>No telemetry projected.</p>
@@ -1955,17 +2036,32 @@ function Achievements({ achievements }: { achievements: CrawlerState["achievemen
 
 function Broadcast({
   broadcast,
+  observations,
   logs,
+  onInspectObservation,
 }: {
   broadcast: CrawlerState["broadcast"];
+  observations: Record<string, ProjectedObservationValue>;
   logs: CrawlerState["recentLogs"];
+  onInspectObservation: (obs: ProjectedObservationValue) => void;
 }) {
+  const viewers = observations.viewers?.value ?? broadcast.viewers;
+  const followers = observations.followers?.value ?? broadcast.followers;
+  const rank = observations.leaderboardRank ? `#${observations.leaderboardRank.value}` : broadcast.fameRank;
+  const metrics = [
+    ["VIEWERS", viewers, observations.viewers],
+    ["FOLLOWERS", followers, observations.followers],
+    ["FLOOR RANK", rank, observations.leaderboardRank],
+    ["FAVORITES", observations.favorites?.value, observations.favorites],
+    ["PATRONS", observations.patrons?.value, observations.patrons],
+    ["BOUNTY", observations.bounty?.value, observations.bounty],
+  ].filter(([, value]) => value !== undefined) as [string, string | number, ProjectedObservationValue | undefined][];
   return (
     <div className="broadcast-page">
       <Panel title="LIVE BROADCAST">
         <div className="viewer">
           <span>● LIVE AUDIENCE</span>
-          <h1>{broadcast.viewers.toLocaleString()}</h1>
+          <h1>{viewers.toLocaleString()}</h1>
           <p>CURRENT VIEWERS</p>
           <b>{broadcast.viewerDelta} this encounter</b>
         </div>
@@ -1974,12 +2070,23 @@ function Broadcast({
       <Panel title="AUDIENCE RESPONSE">
         <div className="audience">
           <p>
-            <b>{broadcast.followers.toLocaleString()}</b> Followers
+            <b>{followers.toLocaleString()}</b> Followers
           </p>
           <p>
-            <b>{broadcast.fameRank}</b> Floor Rank
+            <b>{rank}</b> Floor Rank
           </p>
           {broadcast.sponsorInterest && <p className="sponsor">● Sponsor interest detected</p>}
+        </div>
+      </Panel>
+
+      <Panel title="SOURCED AUDIENCE TELEMETRY">
+        <div className="audience">
+          {metrics.map(([label, value, observation]) => (
+            <p key={label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
+              <span><b>{typeof value === "number" ? value.toLocaleString() : value}</b> {label}</span>
+              <TelemetryBadge observation={observation} causalValue={observation ? undefined : value} onClick={() => observation && onInspectObservation(observation)} />
+            </p>
+          ))}
         </div>
       </Panel>
 
