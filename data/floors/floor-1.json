@@ -487,20 +487,6 @@
             }
           ],
           "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
-        },
-        {
-          "anchorOrder": 45,
-          "remainingSeconds": 0,
-          "evidence": [
-            {
-              "sourceId": "src-dcc-database-floor-1",
-              "locator": {
-                "section": "Floor Timeline & Patch Notes"
-              },
-              "confidence": "corroborated"
-            }
-          ],
-          "note": "The First Floor collapses; 1,292,526 crawlers remain. (0d until floor collapse.)"
         }
       ]
     }
@@ -1470,26 +1456,6 @@
           "confidence": "corroborated"
         }
       ]
-    },
-    {
-      "id": "evt-f1-countdown-collapse",
-      "type": "NarrativeEvent",
-      "kind": "other",
-      "position": {
-        "floor": 1,
-        "book": 1
-      },
-      "summary": "The First Floor collapses; 1,292,526 crawlers remain.",
-      "evidence": [
-        {
-          "sourceId": "src-dcc-database-floor-1",
-          "locator": {
-            "section": "Floor Timeline & Patch Notes"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "order": 45
     }
   ]
 }
