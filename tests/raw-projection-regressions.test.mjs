@@ -53,7 +53,10 @@ test("a lifecycle event for one countdown cannot break monotonicity for another 
 
   const target = timeline.countdowns[0];
   assert.ok(target.references.length >= 2, "fixture needs at least two countdown references");
-  const [first, second] = target.references;
+  const pairIndex = target.references.findIndex((reference, index) => index > 0 && reference.sequence - target.references[index - 1].sequence > 1);
+  assert.ok(pairIndex > 0, "fixture needs a countdown-reference pair separated by an event");
+  const first = target.references[pairIndex - 1];
+  const second = target.references[pairIndex];
   const between = timeline.events.find(
     (event) => event.sequence > first.sequence && event.sequence < second.sequence
   );
@@ -75,7 +78,7 @@ test("a lifecycle event for one countdown cannot break monotonicity for another 
     summary: "Regression countdown reset boundary",
     evidence: between.evidence,
   };
-  target.references[1].remainingSeconds = first.remainingSeconds + 1;
+  target.references[pairIndex].remainingSeconds = first.remainingSeconds + 1;
 
   assertInvalidWith(validateCrawlerTimeline(timeline), "increases from");
 
