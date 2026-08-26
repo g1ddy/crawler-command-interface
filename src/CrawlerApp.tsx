@@ -294,6 +294,8 @@ export default function CrawlerApp() {
         <b title={activeCountdown ? `${activeCountdown.status} · ${activeCountdown.basis}` : undefined}>
           {activeCountdown?.isStale
             ? `LATEST SOURCED COLLAPSE TIME: ${activeCountdown.formattedTime.toUpperCase()}`
+            : activeCountdown?.lifecycleStatus === 'scheduled'
+            ? activeCountdown.formattedTime.toUpperCase()
             : `LEVEL COLLAPSE IN ${activeCountdown ? activeCountdown.formattedTime.toUpperCase() : `${h}:${m}:${s}`}`}
         </b>
         <span>● LIVE · {hudViewers.toLocaleString()} VIEWERS</span>
