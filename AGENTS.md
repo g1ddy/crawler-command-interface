@@ -1,101 +1,65 @@
-# AGENTS.md — Crawler Command Interface
+# AGENTS.md — Repository Operating Guide
 
-## Purpose
+This document is a concise repository map and operating guide for coding agents working in this codebase.
 
-This repository is a replayable Dungeon Crawler Carl HUD. It presents a single
-browser React application through two adapters:
+## Documentation Index
 
-- ChatGPT Sites/Vinext / Cloudflare Worker
-- static GitHub Pages
+Refer to the canonical documentation for detailed guidance:
 
-The UI is a point-in-time replay, not a mutable game simulation. Selecting a
-sequence must reproduce the same HUD state every time.
+- [README.md](README.md) — Concise user-facing introduction, deployment summary, and quick start.
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Local setup (`npm run install:ci`), diagnostic scripts, build targets (`build:live`, `build:pages`), fixture generation, and contribution rules.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Shared browser core (`src/CrawlerApp.tsx`), deployment adapters (`app/page.tsx` and `src/main.pages.tsx`), data flow, and Worker-safe boundaries.
+- [docs/ROADMAP.md](docs/ROADMAP.md) — Authoritative active product backlog, deferred work, and architectural constraints.
+- [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Authoritative raw evidence authoring rules, JSON schemas, countdown lifecycle breaks, scrubbing, and projection semantics.
 
-## Start here
+## Durable Invariants
 
-- [README.md](README.md) — architecture, local development, deployment targets,
-  and the complete verification path.
-- [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — authoritative authoring,
-  evidence, countdown, scrubbing, and projection semantics.
-- [TODO.md](TODO.md) — current product backlog and intentionally deferred work.
-- [CI workflow](.github/workflows/ci.yml) — the exact required CI commands.
-- [Raw Floor 1](data/raw/floors/floor-1.json) and
-  [Raw Floor 2](data/raw/floors/floor-2.json) — current source-of-truth story
-  fixtures.
+Always preserve the following invariants:
 
-## Runtime map
+1. **Deterministic Point-in-Time Replay**: The HUD is a deterministic point-in-time replay, not a mutable game simulation. Selecting a sequence must reconstruct the exact same HUD state without mutating historical sequence states.
+2. **Authoritative Raw Evidence**: Story evidence is authored only in `data/raw/floors/`. Derived floor documents, compiled timelines, and Worker-safe fixtures (`app/domain/fixtures/compiled-timeline.ts`) are generated (`npm run generate:fixture`) rather than hand-edited.
+3. **Worker-Safe Import Boundary**: Runtime imports along the application path (`app/page.tsx`, `src/CrawlerApp.tsx`) must not trigger AJV schema compilation or other Node-only dynamic code generation (`eval`/`new Function`) in the Worker/browser runtime.
+4. **No Evidence Fallback Leakage**: Missing or partial observations must not be inferred from unrelated evidence or silently replaced with later live state. Preserve partial readings as authored.
+5. **Dual Deployment Adapter Compatibility**: Both deployment adapters (ChatGPT Sites/Vinext Worker and GitHub Pages) continue to use the identical browser-first shared core.
 
-| Concern | Primary locations |
+## Repository Map
+
+| Concern | Primary Location |
 | --- | --- |
-| Shared HUD | `src/CrawlerApp.tsx` |
-| Replay controls and countdown details | `app/components/TimelineScrubber.tsx` |
-| ChatGPT Sites adapter | `app/page.tsx` |
-| GitHub Pages adapter | `src/main.pages.tsx`, `index.html`, `vite.pages.config.ts` |
-| Event-state projection | `app/domain/projection.ts` |
-| Observation projection | `app/domain/observations.ts` |
-| Countdown interpolation/extrapolation | `app/domain/countdowns.ts` |
-| Domain types and schemas | `app/domain/types.ts`, `app/domain/schema/` |
-| Raw-to-runtime compilation | `app/domain/raw-compiler.ts`, `app/domain/compiler.ts` |
-| Checked-in Worker-safe runtime fixture | `app/domain/fixtures/compiled-timeline.ts` |
-| Fixture generation | `scripts/sync-derived-fixtures.mjs` |
+| Shared HUD Application | `src/CrawlerApp.tsx` |
+| Timeline Scrubber & Replay Controls | `app/components/TimelineScrubber.tsx` |
+| ChatGPT Sites / Vinext Entry Point | `app/page.tsx` |
+| GitHub Pages Static Entry Point | `src/main.pages.tsx`, `index.html`, `vite.pages.config.ts` |
+| Event State Projection | `app/domain/projection.ts` |
+| Observation Telemetry Projection | `app/domain/observations.ts` |
+| Countdown Engine | `app/domain/countdowns.ts` |
+| Domain Schemas & Types | `app/domain/schema/`, `app/domain/types.ts` |
+| Compiler & Raw Adapter | `app/domain/raw-compiler.ts`, `app/domain/compiler.ts` |
+| Runtime Fixture | `app/domain/fixtures/compiled-timeline.ts` |
+| Fixture Sync Script | `scripts/sync-derived-fixtures.mjs` |
 
-## Data and projection rules
+## Narrow Verification Commands
 
-1. Author story evidence in `data/raw/floors/`; do not edit derived
-   `data/floors/`, `data/compiled-timeline.json`, or the runtime fixture by
-   hand. Run `npm run generate:fixture`.
-2. Events are causal state transitions. Observations are sourced readings.
-   Preserve partial/unknown data; never fill missing fields just to satisfy a
-   widget.
-3. Projection is derived in memory for the selected replay sequence. Do not
-   persist per-sequence HUD state.
-4. Countdown values are exact at a sourced reference, estimated between
-   compatible anchors, and may extrapolate after a compatible final pair.
-   Never cross a lifecycle phase break for that countdown. See the countdown
-   section in [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md).
-5. The checked-in runtime fixture avoids AJV schema compilation during Worker
-   imports. Keep runtime imports on that fixture path; validation and
-   compilation belong in tooling/tests.
-
-## Change workflow
-
-- For UI work, confirm the value is projected at the replay sequence before
-  adding a fallback to current/live state.
-- For a new event or observation kind, update the schema, TypeScript types,
-  compiler, validation, projection (when it has a defined state effect), and
-  focused regression tests together.
-- Keep the two deployment adapters working. Avoid Node-only APIs in browser or
-  Worker import paths.
-- Treat generated build directories and `.sites-runtime/` as disposable.
-
-## Verification
-
-Use the narrowest relevant command while iterating:
+When iterating on changes:
 
 ```bash
+# Sync runtime fixture
 npm run generate:fixture
+
+# Run unit tests
 npm run test:unit
+
+# Build ChatGPT Worker bundle
 npm run build:live
+
+# Build GitHub Pages static bundle
 npm run build:pages
 ```
 
-Before requesting review, run:
+Before requesting review or submitting code, execute the full verification suite:
 
 ```bash
 npm run verify
 ```
 
-`npm run verify` regenerates fixtures, lints, runs the explicit unit-test
-suite, builds both adapters, and verifies the output contracts. The supported
-minimum is Node 22.13, so direct TypeScript tests use
-`--experimental-strip-types`.
-
-## Common pitfalls
-
-- Do not run runtime AJV compilation from `app/page.tsx` or the fixture import
-  chain; Workers prohibit the code generation it relies on.
-- Do not let a replayed HUD field silently use a later live value.
-- Do not infer inventory presence, quantity, equipment, or telemetry from an
-  unrelated partial observation.
-- Do not encode business semantics in narrative summary text; use structured
-  event fields.
+`npm run verify` runs fixture generation, linting, unit tests, both deployment builds, rendered preview tests, and artifact contract checks.

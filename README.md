@@ -1,169 +1,43 @@
 # Crawler Command Interface
 
-A replayable dungeon-crawler command interface with one browser application and
-two deployment adapters. The ChatGPT live app continues to run as a
-[vinext](https://github.com/cloudflare/vinext) Cloudflare Worker, while a static
-Vite bundle can be hosted on GitHub Pages.
+A deterministic, replayable dungeon-crawler command interface with one browser React application and two deployment adapters:
+- **ChatGPT Live App**: Hosted on Cloudflare Workers via [vinext](https://github.com/cloudflare/vinext).
+- **Static Web App**: Hosted on GitHub Pages.
 
-## Prerequisites
+The interface presents a point-in-time state replay of dungeon crawler observations and evidence.
 
+## Quick Start
+
+### Prerequisites
 - Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+- Linux environment with `flock`, `curl`, and GNU `timeout`
 
-## Local development
+### Installation & Local Development
 
 ```bash
-npm ci
+# Initialize locked dependencies
+npm run install:ci
+
+# Start local dev server (ChatGPT live app adapter)
 npm run dev
 ```
 
-`npm run dev` runs the ChatGPT live-app adapter. To preview the Pages adapter,
-run `npx vite --config vite.pages.config.ts`; its default base URL is
-`/crawler-command-interface/`.
-
-## Architecture and build targets
-
-- `src/CrawlerApp.tsx` is the shared, browser-only React application.
-- `app/page.tsx` is the deliberately thin ChatGPT Sites/Vinext adapter.
-- `src/main.pages.tsx` and `index.html` mount the same application as a static
-  client-side Vite app.
-- `npm run build:live` produces the Worker-compatible live-app artifact in
-  `dist/`, including a source-commit provenance record.
-- `npm run build:pages` produces the static Pages artifact in `dist-pages/`.
-- `npm run build` remains an alias for `build:live`, preserving the existing
-  ChatGPT hosting contract.
-- `npm run verify` runs lint, domain unit tests, both production builds, and
-  artifact-contract checks for both deployment targets.
-
-The domain tests import the TypeScript source directly. Their npm scripts pass
-Node's `--experimental-strip-types` flag explicitly so they also work on the
-documented minimum Node.js 22.13 release; type stripping did not become enabled
-by default until later Node.js 22 releases.
-
-## Replay data and HUD projection
-
-Floor JSON is authored as evidence-backed events and observations, then compiled into the runtime timeline fixture. The HUD is projected in memory at the selected replay sequence instead of storing a snapshot for every slider position. This keeps replay deterministic and prevents later state from leaking into earlier sequences. The authoring and countdown-estimation rules are in [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md).
-
-
-The Pages base defaults to `/crawler-command-interface/`. Set
-`PAGES_BASE_PATH=/` when building for a custom domain or user/organization Pages
-site. CI builds and validates both base-path modes. The current UI has no
-client-side routes, so GitHub Pages does not require a `404.html` fallback; add
-one before introducing history-based routes.
-
-## Continuous integration and deployment
-
-Pull requests and pushes to `main` run `.github/workflows/ci.yml`, which verifies
-both targets from the same checkout. Pushes to `main` also run
-`.github/workflows/deploy-pages.yml`, upload `dist-pages/` as a Pages artifact,
-and deploy it with GitHub's official Pages Actions. The Pages workflow runs the
-same verification command before publishing, so a static deployment cannot skip
-the ChatGPT Worker compatibility checks. In the repository settings,
-set **Pages → Build and deployment → Source** to **GitHub Actions**.
-
-The workflow does not alter the existing ChatGPT release mechanism. Build the
-live app from the same reviewed `main` commit with `npm run build:live`, and
-record that commit SHA in the live-app release or deployment metadata. Both
-artifacts include `build-provenance.json`; the verification suite rejects a
-build if the two targets were not captured from the same source commit.
-
-## Sites lifecycle
-
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
-
-This starter does not use `wrangler.jsonc`.
-
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
-
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
-
-## Included Shape
-
-- edit site code under `app/`
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
-
-## Workspace Auth Headers
-
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+To preview the static GitHub Pages adapter locally:
+```bash
+npx vite --config vite.pages.config.ts
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## Supported Deployment Targets
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+- **ChatGPT Live App Worker (`npm run build:live`)**: Produces the Cloudflare Worker bundle in `dist/`.
+- **Static GitHub Pages (`npm run build:pages`)**: Produces the static client bundle in `dist-pages/`.
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+## Documentation Index
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+Each document in this repository serves as the single authoritative home for one concern:
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
-
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
-
-## Diagnostic commands
-
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build` / `npm run build:live`: build the deployable Sites artifact
-- `npm run build:pages`: build the static GitHub Pages artifact
-- `npm run test:artifacts`: verify the generated Pages and live-app artifact contracts
-- `npm run test:pages:custom-base`: verify the custom-domain Pages base and restore the default Pages artifact
-- `npm run verify`: lint, run unit tests, build both deployment targets, and verify both artifacts
-- `npm run start`: start the built Vinext application
-- `npm test`: build and verify the rendered development-preview metadata
-- `npm run db:generate`: generate Drizzle migrations after schema changes
-
-Use build commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
-
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Prerequisites, local environment setup, npm commands, build targets, fixture generation, and verification workflows.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Shared browser core, ChatGPT Sites and GitHub Pages adapters, raw-to-compiled fixture pipeline, and Worker-safe runtime boundaries.
+- [docs/ROADMAP.md](docs/ROADMAP.md) — Product backlog, upcoming milestones, and active architectural constraints.
+- [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Sourced evidence authoring rules, JSON schema validation, countdown anchor semantics, and observation projection interpretations.
+- [AGENTS.md](AGENTS.md) — Repository operating guide and durable invariants for coding agents and contributors.
