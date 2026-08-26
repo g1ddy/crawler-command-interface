@@ -204,13 +204,15 @@ test("countdown phase breaks permit a later reset observation without interpolat
     evidence: resetEvent.evidence,
   };
   resetCountdown.observations[1].remainingSeconds = 600000;
+  delete resetCountdown.observations[1].activationOffset;
 
   const validation = validateRawCrawlerFloor(resetCountdown);
   assert.equal(validation.valid, true, validation.errors.join("; "));
 
   const compiled = compileRawFloorFiles([resetCountdown]);
   assert.equal(projectCountdownState(compiled, 2, 2), null, "a phase boundary must not be interpolated across");
-  const resetReference = projectCountdownState(compiled, 4, 2);
+  const resetSeq = compiled.events.find((e) => e.id === resetCountdown.observations[1].eventId).sequence;
+  const resetReference = projectCountdownState(compiled, resetSeq, 2);
   assert.ok(resetReference);
   assert.equal(resetReference.status, "stated");
   assert.equal(resetReference.remainingSeconds, 600000);

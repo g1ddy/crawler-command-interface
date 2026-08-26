@@ -10,18 +10,71 @@ const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json",
 const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));
 const compiledDoc = compileFloorFiles([floor1AuthoredDoc, floor2AuthoredDoc]);
 const floor1CountdownSequence = compiledDoc.countdowns.find((countdown) => countdown.id === "countdown-floor-1-collapse").references[0].sequence;
-const [floor2EntryCountdownSequence, floor2MidFloorCountdownSequence] = compiledDoc.countdowns
+const floor2References = compiledDoc.countdowns
   .find((countdown) => countdown.id === "countdown-floor-2-collapse")
-  .references.map((reference) => reference.sequence);
+  .references;
+const floor2EntryCountdownSequence = floor2References.find((r) => r.activationOffset === -18000).sequence;
+const floor2MidFloorCountdownSequence = floor2References.find((r) => r.remainingSeconds === 360000).sequence;
 
-test("formatCountdownDuration formats exact and estimated durations properly", () => {
-  assert.equal(formatCountdownDuration(417600, false), "4d 20h left");
-  assert.equal(formatCountdownDuration(417600, true), "~4d 20h left");
+test("formatCountdownDuration formats scheduled, active, and completed durations properly", () => {
+  assert.equal(formatCountdownDuration(518400, false, -7200, "scheduled"), "COUNTDOWN STARTS IN 2h");
+  assert.equal(formatCountdownDuration(518400, true, -7200, "scheduled"), "COUNTDOWN STARTS IN ~2h");
+  assert.equal(formatCountdownDuration(417600, false, undefined, "active"), "4d 20h left");
+  assert.equal(formatCountdownDuration(417600, true, undefined, "active"), "~4d 20h left");
   assert.equal(formatCountdownDuration(169200, false), "1d 23h left");
   assert.equal(formatCountdownDuration(3600, false), "1h left");
   assert.equal(formatCountdownDuration(150, false), "2m 30s left");
   assert.equal(formatCountdownDuration(0, false), "0s left");
   assert.equal(formatCountdownDuration(0, true), "~0s left");
+});
+
+test("projection at pre-activation sequence returns scheduled countdown state with starts-in display", () => {
+  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
+  const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-entered").sequence;
+  const startSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-countdown-start").sequence;
+
+  const earlyAccessState = projectCountdownState(compiledDoc, earlyAccessSeq, 2);
+  assert.ok(earlyAccessState);
+  assert.equal(earlyAccessState.lifecycleStatus, "scheduled");
+  assert.equal(earlyAccessState.status, "stated");
+  assert.equal(earlyAccessState.activationOffset, -25200);
+  assert.equal(earlyAccessState.remainingSeconds, 518400);
+  assert.equal(earlyAccessState.formattedTime, "COUNTDOWN STARTS IN 7h");
+  assert.equal(earlyAccessState.formattedLabel, "COUNTDOWN STARTS IN 7h · scheduled");
+  assert.equal(earlyAccessState.formattedTime.includes("left"), false);
+
+  const arrivalState = projectCountdownState(compiledDoc, enteredSeq, 2);
+  assert.ok(arrivalState);
+  assert.equal(arrivalState.lifecycleStatus, "scheduled");
+  assert.equal(arrivalState.activationOffset, -18000);
+  assert.equal(arrivalState.formattedTime, "COUNTDOWN STARTS IN 5h");
+  assert.equal(arrivalState.formattedTime.includes("left"), false);
+
+  const activeState = projectCountdownState(compiledDoc, startSeq, 2);
+  assert.ok(activeState);
+  assert.equal(activeState.lifecycleStatus, "active");
+  assert.equal(activeState.status, "stated");
+  assert.equal(activeState.activationOffset, 0);
+  assert.equal(activeState.remainingSeconds, 518400);
+  assert.equal(activeState.formattedTime, "6d 0h left");
+  assert.equal(activeState.formattedLabel, "6d 0h left · stated");
+});
+
+test("validation rejects negative remainingSeconds while accepting valid activationOffset", () => {
+  const invalidNegativeRemaining = {
+    $schema: "https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json",
+    authoringVersion: "crawler-floor/v2",
+    storyId: "dungeon-crawler-carl",
+    floor: { id: "floor-neg-test", ordinal: 1, title: "Neg Test", book: 1, continuity: "canonical", coverage: { kind: "partial", statement: "Test", completeness: "partial" } },
+    sources: [{ id: "src-1", kind: "official-text", trust: "primary", title: "S1", url: "https://example.com" }],
+    catalog: { items: [], achievements: [] },
+    events: [{ id: "e1", order: 1, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Obs", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }],
+    countdowns: [{ id: "cd-neg", title: "Neg Countdown", target: "floor-collapse", references: [{ anchorOrder: 1, remainingSeconds: -500, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }] }],
+  };
+
+  const res = validateCrawlerFloor(invalidNegativeRemaining);
+  assert.equal(res.valid, false);
+  assert.ok(res.errors.some((err) => err.includes("must be >= 0") || err.includes("remainingSeconds")));
 });
 
 test("Floor 1's authored collapse-clock reference is visible at its exact sequence", () => {
@@ -59,18 +112,21 @@ test("Floor 2's authored collapse-clock references are monotonic", () => {
   const stateSeq20 = projectCountdownState(compiledDoc, floor2EntryCountdownSequence, 2);
   assert.ok(stateSeq20);
   assert.equal(stateSeq20.status, "stated");
-  assert.equal(stateSeq20.remainingSeconds, 536400);
+  assert.equal(stateSeq20.lifecycleStatus, "scheduled");
+  assert.equal(stateSeq20.remainingSeconds, 518400);
+  assert.equal(stateSeq20.activationOffset, -18000);
 
   const stateSeq23 = projectCountdownState(compiledDoc, floor2MidFloorCountdownSequence, 2);
   assert.ok(stateSeq23);
   assert.equal(stateSeq23.status, "stated");
+  assert.equal(stateSeq23.lifecycleStatus, "active");
   assert.equal(stateSeq23.remainingSeconds, 360000);
 
   const estimatedState = projectCountdownState(compiledDoc, floor2EntryCountdownSequence + 1, 2);
   assert.ok(estimatedState);
   assert.equal(estimatedState.status, "estimated");
-  assert.ok(estimatedState.remainingSeconds < stateSeq20.remainingSeconds);
-  assert.ok(estimatedState.remainingSeconds > stateSeq23.remainingSeconds);
+  assert.equal(estimatedState.lifecycleStatus, "scheduled");
+
   const lastKnown = projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 2).endSequence, 2);
   assert.ok(lastKnown);
   assert.equal(lastKnown.status, "estimated");

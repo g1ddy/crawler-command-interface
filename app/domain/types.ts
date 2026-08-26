@@ -347,6 +347,7 @@ export interface TimelineSnapshot {
 export interface CountdownReference {
   sequence: number;
   remainingSeconds: number;
+  activationOffset?: number;
   evidence: TimelineEvidence[];
   note?: string;
 }
@@ -417,7 +418,9 @@ export interface ActiveCountdownState {
   title: string;
   floor: number;
   target: 'floor-collapse';
+  lifecycleStatus: 'scheduled' | 'active' | 'completed';
   remainingSeconds: number;
+  activationOffset?: number;
   status: 'stated' | 'estimated';
   /** True when this is the latest source reading, not a time at the selected sequence. */
   isStale: boolean;
@@ -427,7 +430,9 @@ export interface ActiveCountdownState {
     | 'elapsed-duration'
     | 'sequence-position'
     | 'elapsed-duration-extrapolation'
-    | 'sequence-position-extrapolation';
+    | 'sequence-position-extrapolation'
+    | 'activation-reference'
+    | 'activation-extrapolation';
   confidence: 'confirmed' | 'corroborated' | 'candidate' | 'disputed' | 'low-confidence';
   formattedTime: string;
   formattedLabel: string;
@@ -581,6 +586,7 @@ export interface FloorEventBase {
 export interface FloorCountdownReference {
   anchorOrder: number;
   remainingSeconds: number;
+  activationOffset?: number;
   evidence: TimelineEvidence[];
   note?: string;
 }
@@ -614,6 +620,7 @@ export interface RawCountdownObservation {
   eventId: string;
   countdownId: string;
   remainingSeconds: number;
+  activationOffset?: number;
   evidence: TimelineEvidence[];
   note?: string;
 }

@@ -59,6 +59,7 @@ export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerF
     references.push({
       anchorOrder,
       remainingSeconds: observation.remainingSeconds,
+      ...(observation.activationOffset !== undefined ? { activationOffset: observation.activationOffset } : {}),
       evidence: observation.evidence,
       note: observation.note,
     });

@@ -275,11 +275,22 @@ export function TimelineScrubber({
           >
             <span style={{ color: '#ffb74d', fontWeight: 'bold' }}>⏱ COUNTDOWN:</span>
             <button
-              className={`countdown-pill ${activeCountdown.status}`}
+              className={`countdown-pill ${activeCountdown.status} ${activeCountdown.lifecycleStatus}`}
               onClick={() => setShowCountdownDetails(true)}
               style={{
-                background: activeCountdown.status === 'stated' ? '#0d364a' : '#0c2230',
-                border: `1px solid ${activeCountdown.status === 'stated' ? '#32c1e8' : '#1c6585'}`,
+                background:
+                  activeCountdown.lifecycleStatus === 'scheduled'
+                    ? '#382200'
+                    : activeCountdown.status === 'stated'
+                    ? '#0d364a'
+                    : '#0c2230',
+                border: `1px solid ${
+                  activeCountdown.lifecycleStatus === 'scheduled'
+                    ? '#ffb74d'
+                    : activeCountdown.status === 'stated'
+                    ? '#32c1e8'
+                    : '#1c6585'
+                }`,
                 color: '#ffffff',
                 borderRadius: '3px',
                 padding: '2px 8px',
@@ -514,13 +525,15 @@ export function TimelineScrubber({
 
             <div style={{ background: '#06131c', padding: '12px', border: '1px solid #1f4252', borderRadius: '4px', marginBottom: '12px' }}>
               <p style={{ margin: '0 0 6px 0', fontSize: '14px', color: '#ffb74d' }}>
-                <strong>REMAINING TIME:</strong> {activeCountdown.formattedLabel}
+                <strong>COUNTDOWN DISPLAY:</strong> {activeCountdown.formattedLabel}
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '11px', color: '#a4b7bf' }}>
-                <div>STATUS: <strong style={{ color: '#fff' }}>{activeCountdown.status.toUpperCase()}</strong></div>
+                <div>LIFECYCLE STATUS: <strong style={{ color: '#fff' }}>{activeCountdown.lifecycleStatus.toUpperCase()}</strong></div>
+                <div>READING TYPE: <strong style={{ color: '#fff' }}>{activeCountdown.status.toUpperCase()}</strong></div>
                 <div>CALCULATION BASIS: <strong style={{ color: '#fff' }}>{activeCountdown.basis}</strong></div>
                 <div>CONFIDENCE LEVEL: <strong style={{ color: '#fff' }}>{activeCountdown.confidence}</strong></div>
                 <div>RAW REMAINING SECONDS: <strong style={{ color: '#fff' }}>{activeCountdown.remainingSeconds.toLocaleString()}s</strong></div>
+                <div>ACTIVATION OFFSET: <strong style={{ color: '#fff' }}>{activeCountdown.activationOffset !== undefined ? `${activeCountdown.activationOffset}s` : 'N/A'}</strong></div>
               </div>
               {activeCountdown.note && (
                 <p style={{ margin: '8px 0 0 0', fontSize: '10px', color: '#88a3b0', fontStyle: 'italic' }}>
@@ -565,7 +578,7 @@ export function TimelineScrubber({
                     </button>
                   </div>
                   <p style={{ margin: '4px 0', color: '#68d4f0' }}>
-                    Stated Remaining Time: {formatCountdownDuration(ref.remainingSeconds, false)} ({ref.remainingSeconds.toLocaleString()}s)
+                    Stated Reading: {formatCountdownDuration(ref.remainingSeconds, false, ref.activationOffset, ref.activationOffset !== undefined && ref.activationOffset < 0 ? 'scheduled' : 'active')} ({ref.remainingSeconds.toLocaleString()}s remaining{ref.activationOffset !== undefined ? `, offset: ${ref.activationOffset}s` : ''})
                   </p>
                   {ref.note && <p style={{ margin: '2px 0', fontSize: '10px', color: '#9db8c7' }}>{ref.note}</p>}
                   {ref.evidence && ref.evidence.length > 0 && (
@@ -769,7 +782,8 @@ function formatObservationPayload(obs: TimelineObservation): string {
     return `Slot ${o.slot}: ${o.itemInstanceId || 'EMPTY'}`;
   }
   if (obs.kind === 'countdown-remaining') {
-    return `Countdown ${o.countdownId}: ${o.remainingSeconds}s remaining`;
+    const offsetStr = o.activationOffset !== undefined ? `, offset: ${o.activationOffset}s` : '';
+    return `Countdown ${o.countdownId}: ${o.remainingSeconds}s remaining${offsetStr}`;
   }
   return JSON.stringify(obs);
 }

@@ -219,7 +219,9 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   assert.deepEqual(
     floor2Countdown?.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
     [
-      [doc.events.find((event) => event.id === "evt-f2-001-entered").sequence, 536400],
+      [doc.events.find((event) => event.id === "evt-f2-001-early-access").sequence, 518400],
+      [doc.events.find((event) => event.id === "evt-f2-001-entered").sequence, 518400],
+      [doc.events.find((event) => event.id === "evt-f2-001-countdown-start").sequence, 518400],
       [doc.events.find((event) => event.id === "evt-f2-004-bigboi-boxers").sequence, 360000],
     ]
   );
