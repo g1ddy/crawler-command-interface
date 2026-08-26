@@ -191,9 +191,24 @@ export function projectCountdownState(
     }
 
     const penultimateRef = references[references.length - 2];
+    const lastIsScheduled = lastRef.activationOffset !== undefined && lastRef.activationOffset < 0;
+    const penultimateIsScheduled =
+      penultimateRef && penultimateRef.activationOffset !== undefined && penultimateRef.activationOffset < 0;
+
+    const isActivePair =
+      penultimateRef &&
+      !penultimateIsScheduled &&
+      !lastIsScheduled &&
+      lastRef.remainingSeconds < penultimateRef.remainingSeconds;
+    const isScheduledPair =
+      penultimateRef &&
+      penultimateIsScheduled &&
+      lastIsScheduled &&
+      lastRef.activationOffset! > penultimateRef.activationOffset!;
+
     const hasCompatiblePair =
       penultimateRef &&
-      lastRef.remainingSeconds < penultimateRef.remainingSeconds &&
+      (isActivePair || isScheduledPair) &&
       !events
         .filter((event) => event.sequence > penultimateRef.sequence && event.sequence <= lastRef.sequence)
         .some((event) => isCountdownPhaseBreakEvent(event, activeCountdown.id));
@@ -260,86 +275,8 @@ export function projectCountdownState(
     );
   }
 
-  // 1. Pre-activation projection before the first reference
+  // 1. Evidence boundary: return null before the first sourced countdown reference
   if (targetSequence < firstRef.sequence) {
-    const hasPhaseBreak = events.some(
-      (e) =>
-        e.sequence >= targetSequence &&
-        e.sequence <= firstRef.sequence &&
-        isCountdownPhaseBreakEvent(e, activeCountdown.id)
-    );
-    if (hasPhaseBreak) {
-      return null;
-    }
-
-    if (firstRef.activationOffset !== undefined && firstRef.activationOffset < 0) {
-      // Pre-activation countdown reference
-      let estimatedOffset = firstRef.activationOffset;
-      let basis: ActiveCountdownState['basis'] = 'activation-reference';
-
-      if (references.length >= 2 && references[1].activationOffset !== undefined) {
-        const r2 = references[1];
-        const ev1 = events.find((e) => e.sequence === firstRef.sequence);
-        const ev2 = events.find((e) => e.sequence === r2.sequence);
-        const evTarget = events.find((e) => e.sequence === targetSequence);
-        const dur1 = ev1?.position?.elapsedSeconds;
-        const dur2 = ev2?.position?.elapsedSeconds;
-        const durTarget = evTarget?.position?.elapsedSeconds;
-
-        if (
-          typeof dur1 === 'number' &&
-          typeof dur2 === 'number' &&
-          typeof durTarget === 'number' &&
-          dur2 > dur1
-        ) {
-          const fraction = (durTarget - dur1) / (dur2 - dur1);
-          estimatedOffset = Math.round(
-            firstRef.activationOffset + fraction * (r2.activationOffset - firstRef.activationOffset)
-          );
-          basis = 'elapsed-duration';
-        } else {
-          const fraction = (targetSequence - firstRef.sequence) / (r2.sequence - firstRef.sequence);
-          estimatedOffset = Math.round(
-            firstRef.activationOffset + fraction * (r2.activationOffset - firstRef.activationOffset)
-          );
-          basis = 'sequence-position';
-        }
-
-        return makeCountdownState(
-          activeCountdown,
-          firstRef.remainingSeconds,
-          estimatedOffset,
-          'estimated',
-          false,
-          basis,
-          'low-confidence',
-          [firstRef, r2],
-          firstRef.note
-        );
-      }
-
-      const ev1 = events.find((e) => e.sequence === firstRef.sequence);
-      const evTarget = events.find((e) => e.sequence === targetSequence);
-      const dur1 = ev1?.position?.elapsedSeconds;
-      const durTarget = evTarget?.position?.elapsedSeconds;
-      if (typeof dur1 === 'number' && typeof durTarget === 'number' && dur1 >= durTarget) {
-        estimatedOffset = firstRef.activationOffset - (dur1 - durTarget);
-        basis = 'elapsed-duration';
-      }
-
-      return makeCountdownState(
-        activeCountdown,
-        firstRef.remainingSeconds,
-        estimatedOffset,
-        'estimated',
-        false,
-        basis,
-        firstRef.evidence[0]?.confidence || 'confirmed',
-        [firstRef],
-        firstRef.note
-      );
-    }
-
     return null;
   }
 

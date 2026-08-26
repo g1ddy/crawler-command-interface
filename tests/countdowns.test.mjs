@@ -88,6 +88,65 @@ test("Floor 1's authored collapse-clock reference is visible at its exact sequen
   assert.equal(state.referencePoints[0].sequence, floor1CountdownSequence);
 });
 
+test("evidence boundary: returns null before the first sourced countdown reference", () => {
+  // Sequence 1 is before Floor 1's first countdown reference
+  assert.equal(projectCountdownState(compiledDoc, 1, 1), null);
+  assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence - 1, 1), null);
+
+  // Sequence 1 is also before Floor 2's first countdown reference (early access)
+  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
+  assert.equal(projectCountdownState(compiledDoc, earlyAccessSeq - 1, 2), null);
+});
+
+test("scheduled countdown invariant: time until collapse equals active collapse duration", () => {
+  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
+  const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-entered").sequence;
+
+  const earlyAccessState = projectCountdownState(compiledDoc, earlyAccessSeq, 2);
+  assert.ok(earlyAccessState);
+  assert.equal(earlyAccessState.lifecycleStatus, "scheduled");
+  // remainingSeconds (time to collapse) equals 6 days (518400)
+  assert.equal(earlyAccessState.remainingSeconds, 518400);
+
+  const arrivalState = projectCountdownState(compiledDoc, enteredSeq, 2);
+  assert.ok(arrivalState);
+  assert.equal(arrivalState.lifecycleStatus, "scheduled");
+  assert.equal(arrivalState.remainingSeconds, 518400);
+});
+
+test("scheduled after-final extrapolation advances activationOffset toward zero while remainingSeconds remains constant", () => {
+  const docWithScheduledEnd = {
+    schemaVersion: "crawler-timeline/v2",
+    timeline: { id: "tl-scheduled-test", title: "Scheduled Timeline", story: { id: "dungeon-crawler-carl", title: "Story" } },
+    sources: [{ id: "src-1", kind: "official-text", trust: "primary", title: "S1", url: "https://example.com" }],
+    initialState: { crawler: { name: "CARL", level: 1, attributes: {}, condition: {} } },
+    events: [
+      { id: "e1", sequence: 10, type: "NarrativeEvent", position: { floor: 2 }, summary: "First early access", evidence: [{ sourceId: "src-1" }] },
+      { id: "e2", sequence: 20, type: "NarrativeEvent", position: { floor: 2 }, summary: "Second early access", evidence: [{ sourceId: "src-1" }] },
+      { id: "e3", sequence: 30, type: "NarrativeEvent", position: { floor: 2 }, summary: "Later sequence", evidence: [{ sourceId: "src-1" }] },
+    ],
+    countdowns: [
+      {
+        id: "cd-sched",
+        title: "Scheduled Extrapolation Test",
+        floor: 2,
+        target: "floor-collapse",
+        references: [
+          { sequence: 10, remainingSeconds: 518400, activationOffset: -20000, evidence: [{ sourceId: "src-1" }] },
+          { sequence: 20, remainingSeconds: 518400, activationOffset: -10000, evidence: [{ sourceId: "src-1" }] },
+        ],
+      },
+    ],
+  };
+
+  const extrapolated = projectCountdownState(docWithScheduledEnd, 25, 2);
+  assert.ok(extrapolated);
+  assert.equal(extrapolated.lifecycleStatus, "scheduled");
+  assert.equal(extrapolated.status, "estimated");
+  assert.equal(extrapolated.remainingSeconds, 518400); // Collapse duration remains unchanged
+  assert.equal(extrapolated.activationOffset, -5000); // Advanced from -10000 toward 0
+});
+
 test("timeline retains Floor 1's last known reading without extrapolating it", () => {
   assert.equal(projectCountdownState(compiledDoc, 1, 1), null);
   assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence - 1, 1), null);
