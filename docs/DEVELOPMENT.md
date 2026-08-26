@@ -44,6 +44,7 @@ The Pages adapter defaults to base path `/crawler-command-interface/`.
 | `npm run test:artifacts` | Verify build artifact capture contracts and commit provenance matching |
 | `npm run test:pages:custom-base` | Test custom domain Pages build (`PAGES_BASE_PATH=/`) and restore default Pages build |
 | `npm run test:rendered` | Verify development preview metadata rendering |
+| `npm run test:e2e` | Run Playwright browser tests against the GitHub Pages adapter |
 | `npm run verify` | Full verification suite: sync fixtures, lint, run unit tests, build both targets, and test artifacts |
 | `npm run start` | Start built Vinext production server locally |
 | `npm run db:generate` | Generate Drizzle migrations after schema changes |
@@ -101,6 +102,12 @@ npm run verify
 7. `npm run test:artifacts`
 
 Domain unit tests run directly against TypeScript source using Node's `--experimental-strip-types` flag (supported on Node 22.13+).
+
+Playwright tests start the Pages development server with a root base path and cover
+point-in-time replay, floor navigation, live-endpoint mutations, and desktop/mobile
+bundle smoke tests. Install Chromium once with `npx playwright install chromium`,
+then run `npm run test:e2e`. The browser suite is kept separate from `npm run verify`
+so the existing verification command does not implicitly download browser binaries.
 
 ## Contribution Expectations
 
