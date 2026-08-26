@@ -134,7 +134,9 @@ test("numeric HUD readings interpolate only when both evidence anchors opt in", 
     { id: "obs-linear-mana-end", kind: "crawler-condition", eventId: "evt-f1-009-first-magic-gear", interpolation: "linear", currentMana: 40, evidence },
   );
   const compiled = compileRawFloorFiles([rawDoc]);
-  const estimated = projectObservationValue(compiled, 9, "crawler-condition.currentMana");
+  const startSequence = compiled.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence;
+  const endSequence = compiled.events.find((event) => event.id === "evt-f1-009-first-magic-gear").sequence;
+  const estimated = projectObservationValue(compiled, Math.floor((startSequence + endSequence) / 2), "crawler-condition.currentMana");
   assert.equal(estimated?.status, "estimated");
   assert.equal(estimated?.basis, "sequence-position");
   assert.equal(estimated?.value, 25);
@@ -192,8 +194,11 @@ test("raw observations reject unrelated, empty, and nullable inventory payloads"
 
 test("countdown phase breaks permit a later reset observation without interpolation", () => {
   const resetCountdown = JSON.parse(JSON.stringify(rawFloor2));
-  const resetEvent = resetCountdown.events[1];
-  resetCountdown.events[1] = {
+  const resetObservationIndex = resetCountdown.observations.findIndex((observation) => observation.id === "obs-countdown-floor-2-collapse-cascadia-intro");
+  const resetObservation = resetCountdown.observations[resetObservationIndex];
+  const resetEventIndex = resetCountdown.events.findIndex((event) => event.id === "evt-f2-002-goo-inator");
+  const resetEvent = resetCountdown.events[resetEventIndex];
+  resetCountdown.events[resetEventIndex] = {
     id: resetEvent.id,
     order: resetEvent.order,
     type: "CountdownReset",
@@ -203,15 +208,16 @@ test("countdown phase breaks permit a later reset observation without interpolat
     summary: "The countdown reset before the next phase.",
     evidence: resetEvent.evidence,
   };
-  resetCountdown.observations[1].remainingSeconds = 600000;
-  delete resetCountdown.observations[1].activationOffset;
+  resetCountdown.observations[resetObservationIndex].remainingSeconds = 600000;
+  delete resetCountdown.observations[resetObservationIndex].activationOffset;
 
   const validation = validateRawCrawlerFloor(resetCountdown);
   assert.equal(validation.valid, true, validation.errors.join("; "));
 
   const compiled = compileRawFloorFiles([resetCountdown]);
-  assert.equal(projectCountdownState(compiled, 2, 2), null, "a phase boundary must not be interpolated across");
-  const resetSeq = compiled.events.find((e) => e.id === resetCountdown.observations[1].eventId).sequence;
+  const resetEventSequence = compiled.events.find((event) => event.id === resetEvent.id).sequence;
+  assert.equal(projectCountdownState(compiled, resetEventSequence, 2), null, "a phase boundary must not be interpolated across");
+  const resetSeq = compiled.events.find((e) => e.id === resetObservation.eventId).sequence;
   const resetReference = projectCountdownState(compiled, resetSeq, 2);
   assert.ok(resetReference);
   assert.equal(resetReference.status, "stated");
@@ -503,10 +509,12 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   assert.ok(obsAtSeq.equipment);
 
   // Check discrete scalar behavior (level remains stepwise, non-interpolated)
-  const levelObs = projectObservationValue(rawTimeline, 13, "xp-progress.level");
+  const levelThreeSequence = rawTimeline.events.find((event) => event.id === "evt-f1-level-3").sequence;
+  const levelTwoSequence = rawTimeline.events.find((event) => event.id === "evt-f1-level-2").sequence;
+  const levelObs = projectObservationValue(rawTimeline, Math.floor((levelTwoSequence + levelThreeSequence) / 2), "xp-progress.level");
   assert.equal(levelObs, null, "discrete levels must not be linearly interpolated between sequence anchors");
 
-  const levelProjected = projectObservations(rawTimeline, 13).xpProgress.level;
+  const levelProjected = projectObservations(rawTimeline, levelThreeSequence).xpProgress.level;
   assert.ok(levelProjected);
   assert.equal(levelProjected.status, "stated");
   assert.equal(levelProjected.basis, "exact-observation");
