@@ -7,8 +7,8 @@ import {
 } from "../app/domain/observations.ts";
 
 test("projectObservationValue produces exact stated fact when target sequence matches observation", () => {
-  // obs-f1-magic-baseline at sequence 7
-  const projected = projectObservationValue(compiledTimeline, 7, "crawler-condition.currentMana");
+  const magicSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence;
+  const projected = projectObservationValue(compiledTimeline, magicSequence, "crawler-condition.currentMana");
   assert.ok(projected);
   assert.equal(projected.status, "stated");
   assert.equal(projected.value, 3);
@@ -86,14 +86,15 @@ test("absent observation keys return null without inventing values", () => {
 });
 
 test("projectObservations returns exact point-in-time HUD telemetry state when scrubbing forward and backward", () => {
-  const seq10Obs = projectObservations(compiledTimeline, 10);
+  const toeRingSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-toe-ring-equipped").sequence;
+  const seq10Obs = projectObservations(compiledTimeline, toeRingSequence);
   assert.ok(seq10Obs.equipment["FEET"]);
   assert.equal(seq10Obs.equipment["FEET"].itemInstanceId, "inst-f1-toe-ring");
 
-  const seq5Obs = projectObservations(compiledTimeline, 5);
+  const seq5Obs = projectObservations(compiledTimeline, toeRingSequence - 1);
   assert.equal(seq5Obs.equipment["FEET"], undefined, "scrubbing backward clears later observations");
 
-  const seqEndObs = projectObservations(compiledTimeline, 43);
+  const seqEndObs = projectObservations(compiledTimeline, compiledTimeline.events.at(-1).sequence);
   assert.ok(seqEndObs.broadcast["viewers"]);
   assert.equal(seqEndObs.broadcast["viewers"].value, 212000000000);
 });
