@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-26T05:40:48.034Z",
-    "updatedAt": "2026-08-26T05:40:48.034Z"
+    "createdAt": "2026-08-26T11:54:10.435Z",
+    "updatedAt": "2026-08-26T11:54:10.436Z"
   },
   "floors": [
     {
@@ -22,7 +22,7 @@
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
       "startSequence": 1,
-      "endSequence": 27
+      "endSequence": 45
     },
     {
       "id": "floor-2",
@@ -30,8 +30,8 @@
       "title": "Second Floor",
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
-      "startSequence": 28,
-      "endSequence": 45
+      "startSequence": 46,
+      "endSequence": 73
     }
   ],
   "sources": [
@@ -79,6 +79,13 @@
       "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1togyb2/carls_inventory_list/"
     },
     {
+      "id": "src-dcc-database-floor-1",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "DCC Database: First Floor",
+      "url": "https://www.dccdatabase.com/wiki/First_Floor/"
+    },
+    {
       "id": "src-wiki-carl-floor-2",
       "kind": "wiki",
       "trust": "corroborating",
@@ -91,6 +98,13 @@
       "trust": "corroborating",
       "title": "Floor 2 Achievements",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_2_Achievements"
+    },
+    {
+      "id": "src-dcc-database-floor-2",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "DCC Database: Second Floor",
+      "url": "https://www.dccdatabase.com/wiki/Second_Floor/"
     }
   ],
   "initialState": {
@@ -125,8 +139,28 @@
   },
   "events": [
     {
-      "id": "evt-f1-001-entered",
+      "id": "evt-f1-countdown-start",
       "sequence": 1,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The First Floor opens and its five-day collapse countdown is displayed.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-001-entered",
+      "sequence": 2,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -146,8 +180,68 @@
       ]
     },
     {
+      "id": "evt-f1-countdown-tutorial-start",
+      "sequence": 3,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut begin the First Floor tutorial.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-cascadia-announcement",
+      "sequence": 4,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Cascadia issues the First Floor announcement as the surface stairwells close.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-tutorial-complete",
+      "sequence": 5,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut complete the First Floor tutorial.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f1-002-empty-pockets",
-      "sequence": 2,
+      "sequence": 6,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -178,7 +272,7 @@
     },
     {
       "id": "evt-f1-003-no-pants",
-      "sequence": 3,
+      "sequence": 7,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -209,7 +303,7 @@
     },
     {
       "id": "evt-f1-004-unarmed-combat",
-      "sequence": 4,
+      "sequence": 8,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -240,7 +334,7 @@
     },
     {
       "id": "evt-f1-level-2",
-      "sequence": 5,
+      "sequence": 9,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -260,7 +354,7 @@
     },
     {
       "id": "evt-f1-005-goblin-pass",
-      "sequence": 6,
+      "sequence": 10,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -285,7 +379,7 @@
     },
     {
       "id": "evt-f1-006-trollskin-shirt",
-      "sequence": 7,
+      "sequence": 11,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -319,7 +413,7 @@
     },
     {
       "id": "evt-f1-007-nightgaunt-cloak",
-      "sequence": 8,
+      "sequence": 12,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -356,7 +450,7 @@
     },
     {
       "id": "evt-f1-008-toe-ring",
-      "sequence": 9,
+      "sequence": 13,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -393,7 +487,7 @@
     },
     {
       "id": "evt-f1-toe-ring-equipped",
-      "sequence": 10,
+      "sequence": 14,
       "type": "ItemEquipped",
       "position": {
         "floor": 1,
@@ -415,7 +509,7 @@
     },
     {
       "id": "evt-f1-009-first-magic-gear",
-      "sequence": 11,
+      "sequence": 15,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -446,7 +540,7 @@
     },
     {
       "id": "evt-f1-level-3",
-      "sequence": 12,
+      "sequence": 16,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -466,7 +560,7 @@
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
-      "sequence": 13,
+      "sequence": 17,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -502,7 +596,7 @@
     },
     {
       "id": "evt-f1-level-5",
-      "sequence": 14,
+      "sequence": 18,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -521,8 +615,68 @@
       "level": 5
     },
     {
+      "id": "evt-f1-countdown-crawlers-4322395",
+      "sequence": 19,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 4,322,395 crawlers remaining on the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-crawlers-4148111",
+      "sequence": 20,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 4,148,111 crawlers remaining on the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-royal-court-hoarder",
+      "sequence": 21,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The Royal Court confronts the Hoarder.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f1-011-shade-gnoll-kneepads",
-      "sequence": 15,
+      "sequence": 22,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -558,8 +712,48 @@
       }
     },
     {
+      "id": "evt-f1-countdown-episode-1",
+      "sequence": 23,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode one airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-floor-2-stairs",
+      "sequence": 24,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f1-level-7",
-      "sequence": 16,
+      "sequence": 25,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -579,7 +773,7 @@
     },
     {
       "id": "evt-f1-level-8",
-      "sequence": 17,
+      "sequence": 26,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -599,7 +793,7 @@
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
-      "sequence": 18,
+      "sequence": 27,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -631,8 +825,28 @@
       }
     },
     {
+      "id": "evt-f1-countdown-crawlers-3594517",
+      "sequence": 28,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 3,594,517 crawlers remaining on the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f1-013-desperado-pass",
-      "sequence": 19,
+      "sequence": 29,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -657,7 +871,7 @@
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
-      "sequence": 20,
+      "sequence": 30,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -693,7 +907,7 @@
     },
     {
       "id": "evt-f1-015-boom",
-      "sequence": 21,
+      "sequence": 31,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -724,7 +938,7 @@
     },
     {
       "id": "evt-f1-level-9",
-      "sequence": 22,
+      "sequence": 32,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -744,7 +958,7 @@
     },
     {
       "id": "evt-f1-level-10",
-      "sequence": 23,
+      "sequence": 33,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -763,8 +977,48 @@
       "level": 10
     },
     {
+      "id": "evt-f1-countdown-episode-2",
+      "sequence": 34,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode two airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-system-patch",
+      "sequence": 35,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "A First Floor system patch is announced.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f1-016-war-gauntlet",
-      "sequence": 24,
+      "sequence": 36,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -802,7 +1056,7 @@
     },
     {
       "id": "evt-f1-017-podophilia",
-      "sequence": 25,
+      "sequence": 37,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -832,8 +1086,68 @@
       }
     },
     {
+      "id": "evt-f1-countdown-meadow-lark",
+      "sequence": 38,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The Royal Court meets Meadow Lark.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-crawlers-2552085",
+      "sequence": 39,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-system-patch-late",
+      "sequence": 40,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "A late First Floor system patch is announced.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f1-018-battlefield-construction",
-      "sequence": 26,
+      "sequence": 41,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -863,8 +1177,48 @@
       }
     },
     {
+      "id": "evt-f1-countdown-ball-of-swine",
+      "sequence": 42,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut encounter the Ball of Swine.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-floor-2-descent",
+      "sequence": 43,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Crawlers can descend to Floor 2 without the usual six-hour loss.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f1-019-exit",
-      "sequence": 27,
+      "sequence": 44,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -884,8 +1238,28 @@
       ]
     },
     {
+      "id": "evt-f1-countdown-collapse",
+      "sequence": 45,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The First Floor collapses; 1,292,526 crawlers remain.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-001-early-access",
-      "sequence": 28,
+      "sequence": 46,
       "type": "NarrativeEvent",
       "kind": "location-discovered",
       "position": {
@@ -905,8 +1279,50 @@
       ]
     },
     {
+      "id": "evt-f2-001-entered",
+      "sequence": 47,
+      "type": "NarrativeEvent",
+      "kind": "floor-entered",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Carl and Donut enter the Second Floor prior to collapse countdown activation.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-001-countdown-start",
+      "sequence": 48,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "The formal 6-day Second Floor collapse countdown activates.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-002-goo-inator",
-      "sequence": 29,
+      "sequence": 49,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -938,29 +1354,8 @@
       }
     },
     {
-      "id": "evt-f2-001-entered",
-      "sequence": 30,
-      "type": "NarrativeEvent",
-      "kind": "floor-entered",
-      "position": {
-        "floor": 2,
-        "book": 1,
-        "chapter": 31
-      },
-      "summary": "Carl and Donut enter the Second Floor prior to collapse countdown activation.",
-      "evidence": [
-        {
-          "sourceId": "src-book-1",
-          "locator": {
-            "chapter": 31
-          },
-          "confidence": "confirmed"
-        }
-      ]
-    },
-    {
       "id": "evt-f2-003-pedicure-kit",
-      "sequence": 31,
+      "sequence": 50,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -995,29 +1390,88 @@
       }
     },
     {
-      "id": "evt-f2-001-countdown-start",
-      "sequence": 32,
+      "id": "evt-f2-countdown-cascadia-intro",
+      "sequence": 51,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
         "floor": 2,
-        "book": 1,
-        "chapter": 31
+        "book": 1
       },
-      "summary": "The formal 6-day Second Floor collapse countdown activates.",
+      "summary": "Cascadia introduces the Second Floor and ratings become active.",
       "evidence": [
         {
-          "sourceId": "src-book-1",
+          "sourceId": "src-dcc-database-floor-2",
           "locator": {
-            "chapter": 31
+            "section": "Floor Timeline & Patch Notes"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-countdown-crawlers-1033992",
+      "sequence": 52,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "The system reports 1,033,992 crawlers remaining on the Second Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-countdown-episode-5",
+      "sequence": 53,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-countdown-system-patch",
+      "sequence": 54,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "A Second Floor patch announces hedgehogs and the safe-room closure rule.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
         }
       ]
     },
     {
       "id": "evt-f2-004-bigboi-boxers",
-      "sequence": 33,
+      "sequence": 55,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -1054,7 +1508,7 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "sequence": 34,
+      "sequence": 56,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -1075,7 +1529,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "sequence": 35,
+      "sequence": 57,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -1095,7 +1549,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "sequence": 36,
+      "sequence": 58,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -1128,7 +1582,7 @@
     },
     {
       "id": "evt-f2-006-jug-o-boom",
-      "sequence": 37,
+      "sequence": 59,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -1159,7 +1613,7 @@
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "sequence": 38,
+      "sequence": 60,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -1184,7 +1638,7 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "sequence": 39,
+      "sequence": 61,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -1217,7 +1671,7 @@
     },
     {
       "id": "evt-f2-008-peta-enthusiast",
-      "sequence": 40,
+      "sequence": 62,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -1247,8 +1701,48 @@
       }
     },
     {
+      "id": "evt-f2-countdown-episode-6",
+      "sequence": 63,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode six airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-countdown-crawlers-990303",
+      "sequence": 64,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "The system reports 990,303 crawlers remaining in the daily announcement.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-009-broadcast-snapshot",
-      "sequence": 41,
+      "sequence": 65,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -1269,8 +1763,28 @@
       "followers": 4400000000
     },
     {
+      "id": "evt-f2-countdown-episode-7",
+      "sequence": 66,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode seven airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-010-mongo-bonded",
-      "sequence": 42,
+      "sequence": 67,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -1291,7 +1805,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "sequence": 43,
+      "sequence": 68,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -1310,8 +1824,28 @@
       "level": 12
     },
     {
+      "id": "evt-f2-countdown-episode-8",
+      "sequence": 69,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode eight airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-011-level-13",
-      "sequence": 44,
+      "sequence": 70,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -1331,8 +1865,28 @@
       "level": 13
     },
     {
+      "id": "evt-f2-countdown-floor-3-descent",
+      "sequence": 71,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Crawlers can descend to Floor 3 without the usual six-hour loss.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-012-exit",
-      "sequence": 45,
+      "sequence": 72,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1350,6 +1904,26 @@
           "confidence": "corroborated"
         }
       ]
+    },
+    {
+      "id": "evt-f2-countdown-collapse",
+      "sequence": 73,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "The Second Floor collapses.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     }
   ],
   "countdowns": [
@@ -1360,18 +1934,270 @@
       "target": "floor-collapse",
       "references": [
         {
-          "sequence": 19,
-          "remainingSeconds": 237600,
+          "sequence": 1,
+          "remainingSeconds": 432000,
           "evidence": [
             {
-              "sourceId": "src-wiki-carl-floor-1",
+              "sourceId": "src-dcc-database-floor-1",
               "locator": {
-                "section": "Gear Gained"
+                "section": "Floor Timeline & Patch Notes"
               },
               "confidence": "corroborated"
             }
           ],
-          "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining."
+          "note": "The First Floor opens and its five-day collapse countdown is displayed. (5d until floor collapse.)"
+        },
+        {
+          "sequence": 2,
+          "remainingSeconds": 431280,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse."
+        },
+        {
+          "sequence": 3,
+          "remainingSeconds": 429660,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)"
+        },
+        {
+          "sequence": 4,
+          "remainingSeconds": 428400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)"
+        },
+        {
+          "sequence": 5,
+          "remainingSeconds": 417600,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)"
+        },
+        {
+          "sequence": 19,
+          "remainingSeconds": 405420,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)"
+        },
+        {
+          "sequence": 20,
+          "remainingSeconds": 356580,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)"
+        },
+        {
+          "sequence": 21,
+          "remainingSeconds": 345600,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)"
+        },
+        {
+          "sequence": 23,
+          "remainingSeconds": 324000,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)"
+        },
+        {
+          "sequence": 24,
+          "remainingSeconds": 320400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)"
+        },
+        {
+          "sequence": 28,
+          "remainingSeconds": 237600,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)"
+        },
+        {
+          "sequence": 34,
+          "remainingSeconds": 216000,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)"
+        },
+        {
+          "sequence": 35,
+          "remainingSeconds": 212400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)"
+        },
+        {
+          "sequence": 38,
+          "remainingSeconds": 144000,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)"
+        },
+        {
+          "sequence": 39,
+          "remainingSeconds": 108000,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)"
+        },
+        {
+          "sequence": 40,
+          "remainingSeconds": 104400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)"
+        },
+        {
+          "sequence": 42,
+          "remainingSeconds": 23400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)"
+        },
+        {
+          "sequence": 43,
+          "remainingSeconds": 21600,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
+        },
+        {
+          "sequence": 45,
+          "remainingSeconds": 0,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-1",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The First Floor collapses; 1,292,526 crawlers remain. (0d until floor collapse.)"
         }
       ]
     },
@@ -1382,52 +2208,108 @@
       "target": "floor-collapse",
       "references": [
         {
-          "sequence": 28,
-          "remainingSeconds": 518400,
-          "activationOffset": -25200,
+          "sequence": 46,
+          "remainingSeconds": 540000,
+          "activationOffset": -21600,
           "evidence": [
             {
-              "sourceId": "src-book-1",
+              "sourceId": "src-dcc-database-floor-2",
               "locator": {
-                "chapter": 31
+                "section": "Floor Timeline & Patch Notes"
               },
-              "confidence": "confirmed"
+              "confidence": "corroborated"
             }
           ],
-          "note": "Stairwell portal early access: 7 hours before formal 6-day collapse countdown activation."
+          "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse."
         },
         {
-          "sequence": 30,
-          "remainingSeconds": 518400,
-          "activationOffset": -18000,
+          "sequence": 47,
+          "remainingSeconds": 525600,
+          "activationOffset": -7200,
           "evidence": [
             {
-              "sourceId": "src-book-1",
+              "sourceId": "src-dcc-database-floor-2",
               "locator": {
-                "chapter": 31
+                "section": "Floor Timeline & Patch Notes"
               },
-              "confidence": "confirmed"
+              "confidence": "corroborated"
             }
           ],
-          "note": "Carl and Donut arrive on Floor 2: 5 hours before formal 6-day collapse countdown activation (reconciles 6d 5h baseline)."
+          "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse."
         },
         {
-          "sequence": 32,
+          "sequence": 48,
           "remainingSeconds": 518400,
           "activationOffset": 0,
           "evidence": [
             {
-              "sourceId": "src-book-1",
+              "sourceId": "src-dcc-database-floor-2",
               "locator": {
-                "chapter": 31
+                "section": "Floor Timeline & Patch Notes"
               },
-              "confidence": "confirmed"
+              "confidence": "corroborated"
             }
           ],
           "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse."
         },
         {
-          "sequence": 33,
+          "sequence": 51,
+          "remainingSeconds": 514800,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)"
+        },
+        {
+          "sequence": 52,
+          "remainingSeconds": 417600,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)"
+        },
+        {
+          "sequence": 53,
+          "remainingSeconds": 410400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)"
+        },
+        {
+          "sequence": 54,
+          "remainingSeconds": 406800,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
+        },
+        {
+          "sequence": 55,
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -1439,6 +2321,90 @@
             }
           ],
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
+        },
+        {
+          "sequence": 63,
+          "remainingSeconds": 302400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
+        },
+        {
+          "sequence": 64,
+          "remainingSeconds": 298800,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
+        },
+        {
+          "sequence": 66,
+          "remainingSeconds": 194400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
+        },
+        {
+          "sequence": 69,
+          "remainingSeconds": 86400,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
+        },
+        {
+          "sequence": 71,
+          "remainingSeconds": 21600,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
+        },
+        {
+          "sequence": 73,
+          "remainingSeconds": 0,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The Second Floor collapses. (0d until floor collapse.)"
         }
       ]
     }
@@ -1459,7 +2425,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 7
+      "sequence": 11
     },
     {
       "id": "obs-f1-intelligence-baseline",
@@ -1477,7 +2443,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 7
+      "sequence": 11
     },
     {
       "id": "obs-f1-toe-ring-equipped",
@@ -1493,24 +2459,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 10
-    },
-    {
-      "id": "obs-countdown-floor-1-collapse-f1-013-desperado-pass",
-      "kind": "countdown-remaining",
-      "countdownId": "countdown-floor-1-collapse",
-      "remainingSeconds": 237600,
-      "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-carl-floor-1",
-          "locator": {
-            "section": "Gear Gained"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "sequence": 19
+      "sequence": 14
     },
     {
       "id": "obs-f1-level-2",
@@ -1525,7 +2474,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 5
+      "sequence": 9
     },
     {
       "id": "obs-f1-level-3",
@@ -1540,7 +2489,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 12
+      "sequence": 16
     },
     {
       "id": "obs-f1-level-5",
@@ -1555,7 +2504,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 14
+      "sequence": 18
     },
     {
       "id": "obs-f1-level-7",
@@ -1570,7 +2519,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 16
+      "sequence": 25
     },
     {
       "id": "obs-f1-level-8",
@@ -1585,7 +2534,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 17
+      "sequence": 26
     },
     {
       "id": "obs-f1-level-9",
@@ -1600,7 +2549,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 22
+      "sequence": 32
     },
     {
       "id": "obs-f1-level-10",
@@ -1615,7 +2564,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 23
+      "sequence": 33
     },
     {
       "id": "obs-f1-attributes-nightgaunt",
@@ -1636,7 +2585,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 8
+      "sequence": 12
     },
     {
       "id": "obs-f1-attributes-toe-ring",
@@ -1657,7 +2606,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 10
+      "sequence": 14
     },
     {
       "id": "obs-f1-attributes-ring-plus-1",
@@ -1678,7 +2627,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 13
+      "sequence": 17
     },
     {
       "id": "obs-f1-attributes-ring-plus-2",
@@ -1699,43 +2648,366 @@
           "confidence": "corroborated"
         }
       ],
+      "sequence": 30
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-entered",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 431280,
+      "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 2
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-start",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 432000,
+      "note": "The First Floor opens and its five-day collapse countdown is displayed. (5d until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 1
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-tutorial-start",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 429660,
+      "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 3
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-cascadia-announcement",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 428400,
+      "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 4
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-tutorial-complete",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 417600,
+      "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 5
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-4322395",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 405420,
+      "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 19
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-4148111",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 356580,
+      "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
       "sequence": 20
     },
     {
-      "id": "obs-countdown-floor-2-collapse-f2-001-early-access",
+      "id": "obs-countdown-floor-1-collapse-royal-court-hoarder",
       "kind": "countdown-remaining",
-      "countdownId": "countdown-floor-2-collapse",
-      "remainingSeconds": 518400,
-      "activationOffset": -25200,
-      "note": "Stairwell portal early access: 7 hours before formal 6-day collapse countdown activation.",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 345600,
+      "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)",
       "evidence": [
         {
-          "sourceId": "src-book-1",
+          "sourceId": "src-dcc-database-floor-1",
           "locator": {
-            "chapter": 31
+            "section": "Floor Timeline & Patch Notes"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 21
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-episode-1",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 324000,
+      "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 23
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-floor-2-stairs",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 320400,
+      "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 24
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-3594517",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 237600,
+      "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
         }
       ],
       "sequence": 28
     },
     {
+      "id": "obs-countdown-floor-1-collapse-episode-2",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 216000,
+      "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 34
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-system-patch",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 212400,
+      "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 35
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-meadow-lark",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 144000,
+      "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 38
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-2552085",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 108000,
+      "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 39
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-system-patch-late",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 104400,
+      "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 40
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-ball-of-swine",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 23400,
+      "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 42
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-floor-2-descent",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 21600,
+      "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 43
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-collapse",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 0,
+      "note": "The First Floor collapses; 1,292,526 crawlers remain. (0d until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 45
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-f2-001-early-access",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 540000,
+      "activationOffset": -21600,
+      "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 46
+    },
+    {
       "id": "obs-countdown-floor-2-collapse-f2-001-entered",
       "kind": "countdown-remaining",
       "countdownId": "countdown-floor-2-collapse",
-      "remainingSeconds": 518400,
-      "activationOffset": -18000,
-      "note": "Carl and Donut arrive on Floor 2: 5 hours before formal 6-day collapse countdown activation (reconciles 6d 5h baseline).",
+      "remainingSeconds": 525600,
+      "activationOffset": -7200,
+      "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse.",
       "evidence": [
         {
-          "sourceId": "src-book-1",
+          "sourceId": "src-dcc-database-floor-2",
           "locator": {
-            "chapter": 31
+            "section": "Floor Timeline & Patch Notes"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "sequence": 30
+      "sequence": 47
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-countdown-start",
@@ -1746,14 +3018,14 @@
       "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse.",
       "evidence": [
         {
-          "sourceId": "src-book-1",
+          "sourceId": "src-dcc-database-floor-2",
           "locator": {
-            "chapter": 31
+            "section": "Floor Timeline & Patch Notes"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "sequence": 32
+      "sequence": 48
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-004-bigboi-boxers",
@@ -1770,7 +3042,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 33
+      "sequence": 55
     },
     {
       "id": "obs-f2-level-11",
@@ -1785,7 +3057,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 35
+      "sequence": 57
     },
     {
       "id": "obs-f2-level-12",
@@ -1800,7 +3072,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 43
+      "sequence": 68
     },
     {
       "id": "obs-f2-level-13",
@@ -1815,7 +3087,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 44
+      "sequence": 70
     },
     {
       "id": "obs-f2-attributes-bigboi-boxers",
@@ -1836,7 +3108,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 33
+      "sequence": 55
     },
     {
       "id": "obs-f2-broadcast-ratings",
@@ -1852,7 +3124,177 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 41
+      "sequence": 65
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-cascadia-intro",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 514800,
+      "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 51
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-crawlers-1033992",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 417600,
+      "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 52
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-episode-5",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 410400,
+      "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 53
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-system-patch",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 406800,
+      "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 54
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-episode-6",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 302400,
+      "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 63
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-crawlers-990303",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 298800,
+      "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 64
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-episode-7",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 194400,
+      "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 66
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-episode-8",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 86400,
+      "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 69
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-floor-3-descent",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 21600,
+      "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 71
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-collapse",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 0,
+      "note": "The Second Floor collapses. (0d until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 73
     }
   ]
 }
