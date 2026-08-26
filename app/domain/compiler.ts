@@ -255,6 +255,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
         references: countdown.references.map((reference) => ({
           sequence: startSequence + reference.anchorOrder - 1,
           remainingSeconds: reference.remainingSeconds,
+          ...(reference.activationOffset !== undefined ? { activationOffset: reference.activationOffset } : {}),
           evidence: reference.evidence,
           note: reference.note,
         })),

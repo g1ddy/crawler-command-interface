@@ -522,6 +522,9 @@
         "remainingSeconds": {
           "$ref": "#/$defs/nonNegativeInteger"
         },
+        "activationOffset": {
+          "type": "integer"
+        },
         "evidence": {
           "type": "array",
           "minItems": 1,

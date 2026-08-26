@@ -7,8 +7,37 @@ import type {
   TimelineEvent,
 } from './types.ts';
 
-export function formatCountdownDuration(remainingSeconds: number, isEstimated: boolean = false): string {
-  if (remainingSeconds <= 0) {
+export function formatCountdownDuration(
+  remainingSeconds: number,
+  isEstimated: boolean = false,
+  activationOffset?: number,
+  lifecycleStatus?: 'scheduled' | 'active' | 'completed'
+): string {
+  if (lifecycleStatus === 'scheduled' || (activationOffset !== undefined && activationOffset < 0)) {
+    const absOffset = Math.abs(activationOffset ?? 0);
+    if (absOffset <= 0) {
+      return isEstimated ? 'COUNTDOWN STARTS IN ~0s' : 'COUNTDOWN STARTS IN 0s';
+    }
+    const days = Math.floor(absOffset / 86400);
+    const hours = Math.floor((absOffset % 86400) / 3600);
+    const mins = Math.floor((absOffset % 3600) / 60);
+    const secs = absOffset % 60;
+
+    let formatted = '';
+    if (days > 0) {
+      formatted = `${days}d ${hours}h`;
+    } else if (hours > 0) {
+      formatted = mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+    } else if (mins > 0) {
+      formatted = secs > 0 ? `${mins}m ${secs}s` : `${mins}m`;
+    } else {
+      formatted = `${secs}s`;
+    }
+
+    return isEstimated ? `COUNTDOWN STARTS IN ~${formatted}` : `COUNTDOWN STARTS IN ${formatted}`;
+  }
+
+  if (remainingSeconds <= 0 || lifecycleStatus === 'completed') {
     return isEstimated ? '~0s left' : '0s left';
   }
 
@@ -51,6 +80,54 @@ export function isCountdownPhaseBreakEvent(
       event.type === 'CountdownPhaseChanged') &&
     event.countdownId === targetCountdownId
   );
+}
+
+function makeCountdownState(
+  countdown: TimelineCountdown,
+  remainingSeconds: number,
+  activationOffset: number | undefined,
+  status: 'stated' | 'estimated',
+  isStale: boolean,
+  basis: ActiveCountdownState['basis'],
+  confidence: ActiveCountdownState['confidence'],
+  referencePoints: CountdownReference[],
+  note?: string
+): ActiveCountdownState {
+  const lifecycleStatus: 'scheduled' | 'active' | 'completed' =
+    activationOffset !== undefined && activationOffset < 0
+      ? 'scheduled'
+      : remainingSeconds <= 0
+      ? 'completed'
+      : 'active';
+
+  const isEstimated = status === 'estimated';
+  const formattedTime = formatCountdownDuration(remainingSeconds, isEstimated, activationOffset, lifecycleStatus);
+  const labelSuffix = isStale
+    ? 'stated (latest source)'
+    : status === 'estimated'
+    ? 'estimated'
+    : lifecycleStatus === 'scheduled'
+    ? 'scheduled'
+    : 'stated';
+  const formattedLabel = `${formattedTime} · ${labelSuffix}`;
+
+  return {
+    id: countdown.id,
+    title: countdown.title,
+    floor: countdown.floor,
+    target: countdown.target,
+    lifecycleStatus,
+    remainingSeconds,
+    ...(activationOffset !== undefined ? { activationOffset } : {}),
+    status,
+    isStale,
+    basis,
+    confidence,
+    formattedTime,
+    formattedLabel,
+    referencePoints,
+    note,
+  };
 }
 
 export function projectCountdownState(
@@ -142,69 +219,149 @@ export function projectCountdownState(
       );
       const basis = hasElapsedDurations ? 'elapsed-duration-extrapolation' : 'sequence-position-extrapolation';
 
-      return {
-        id: activeCountdown.id,
-        title: activeCountdown.title,
-        floor: activeCountdown.floor,
-        target: activeCountdown.target,
+      let interpolatedOffset: number | undefined;
+      if (lastRef.activationOffset !== undefined) {
+        if (penultimateRef.activationOffset !== undefined) {
+          interpolatedOffset = Math.round(
+            penultimateRef.activationOffset + fraction * (lastRef.activationOffset - penultimateRef.activationOffset)
+          );
+        } else {
+          interpolatedOffset = lastRef.activationOffset;
+        }
+      }
+
+      return makeCountdownState(
+        activeCountdown,
         remainingSeconds,
-        status: 'estimated',
-        isStale: false,
+        interpolatedOffset,
+        'estimated',
+        false,
         basis,
-        confidence: 'low-confidence',
-        formattedTime: formatCountdownDuration(remainingSeconds, true),
-        formattedLabel: `${formatCountdownDuration(remainingSeconds, true)} · estimated`,
-        referencePoints: [penultimateRef, lastRef],
-        note: lastRef.note,
-      };
+        'low-confidence',
+        [penultimateRef, lastRef],
+        lastRef.note
+      );
     }
 
     // A single reference cannot yield a rate. Retain it as a clearly sourced
     // value rather than pretending an estimate exists.
     const remainingSeconds = lastRef.remainingSeconds;
-    const formattedTime = formatCountdownDuration(remainingSeconds, false);
     const confidence = lastRef.evidence[0]?.confidence || 'confirmed';
-    return {
-      id: activeCountdown.id,
-      title: activeCountdown.title,
-      floor: activeCountdown.floor,
-      target: activeCountdown.target,
+    return makeCountdownState(
+      activeCountdown,
       remainingSeconds,
-      status: 'stated',
-      isStale: true,
-      basis: 'last-known-reference',
+      lastRef.activationOffset,
+      'stated',
+      true,
+      'last-known-reference',
       confidence,
-      formattedTime,
-      formattedLabel: `${formattedTime} · stated (latest source)`,
-      referencePoints: [lastRef],
-      note: lastRef.note,
-    };
+      [lastRef],
+      lastRef.note
+    );
   }
 
-  // 1. Check exact sequence match
+  // 1. Pre-activation projection before the first reference
+  if (targetSequence < firstRef.sequence) {
+    const hasPhaseBreak = events.some(
+      (e) =>
+        e.sequence >= targetSequence &&
+        e.sequence <= firstRef.sequence &&
+        isCountdownPhaseBreakEvent(e, activeCountdown.id)
+    );
+    if (hasPhaseBreak) {
+      return null;
+    }
+
+    if (firstRef.activationOffset !== undefined && firstRef.activationOffset < 0) {
+      // Pre-activation countdown reference
+      let estimatedOffset = firstRef.activationOffset;
+      let basis: ActiveCountdownState['basis'] = 'activation-reference';
+
+      if (references.length >= 2 && references[1].activationOffset !== undefined) {
+        const r2 = references[1];
+        const ev1 = events.find((e) => e.sequence === firstRef.sequence);
+        const ev2 = events.find((e) => e.sequence === r2.sequence);
+        const evTarget = events.find((e) => e.sequence === targetSequence);
+        const dur1 = ev1?.position?.elapsedSeconds;
+        const dur2 = ev2?.position?.elapsedSeconds;
+        const durTarget = evTarget?.position?.elapsedSeconds;
+
+        if (
+          typeof dur1 === 'number' &&
+          typeof dur2 === 'number' &&
+          typeof durTarget === 'number' &&
+          dur2 > dur1
+        ) {
+          const fraction = (durTarget - dur1) / (dur2 - dur1);
+          estimatedOffset = Math.round(
+            firstRef.activationOffset + fraction * (r2.activationOffset - firstRef.activationOffset)
+          );
+          basis = 'elapsed-duration';
+        } else {
+          const fraction = (targetSequence - firstRef.sequence) / (r2.sequence - firstRef.sequence);
+          estimatedOffset = Math.round(
+            firstRef.activationOffset + fraction * (r2.activationOffset - firstRef.activationOffset)
+          );
+          basis = 'sequence-position';
+        }
+
+        return makeCountdownState(
+          activeCountdown,
+          firstRef.remainingSeconds,
+          estimatedOffset,
+          'estimated',
+          false,
+          basis,
+          'low-confidence',
+          [firstRef, r2],
+          firstRef.note
+        );
+      }
+
+      const ev1 = events.find((e) => e.sequence === firstRef.sequence);
+      const evTarget = events.find((e) => e.sequence === targetSequence);
+      const dur1 = ev1?.position?.elapsedSeconds;
+      const durTarget = evTarget?.position?.elapsedSeconds;
+      if (typeof dur1 === 'number' && typeof durTarget === 'number' && dur1 >= durTarget) {
+        estimatedOffset = firstRef.activationOffset - (dur1 - durTarget);
+        basis = 'elapsed-duration';
+      }
+
+      return makeCountdownState(
+        activeCountdown,
+        firstRef.remainingSeconds,
+        estimatedOffset,
+        'estimated',
+        false,
+        basis,
+        firstRef.evidence[0]?.confidence || 'confirmed',
+        [firstRef],
+        firstRef.note
+      );
+    }
+
+    return null;
+  }
+
+  // 2. Check exact sequence match
   const exactRef = references.find((r) => r.sequence === targetSequence);
   if (exactRef) {
     const remainingSeconds = exactRef.remainingSeconds;
-    const formattedTime = formatCountdownDuration(remainingSeconds, false);
     const confidence = exactRef.evidence[0]?.confidence || 'confirmed';
-    return {
-      id: activeCountdown.id,
-      title: activeCountdown.title,
-      floor: activeCountdown.floor,
-      target: activeCountdown.target,
+    return makeCountdownState(
+      activeCountdown,
       remainingSeconds,
-      status: 'stated',
-      isStale: false,
-      basis: 'exact-reference',
+      exactRef.activationOffset,
+      'stated',
+      false,
+      'exact-reference',
       confidence,
-      formattedTime,
-      formattedLabel: `${formattedTime} · stated`,
-      referencePoints: [exactRef],
-      note: exactRef.note,
-    };
+      [exactRef],
+      exactRef.note
+    );
   }
 
-  // 2. Find bounding references R1 and R2
+  // 3. Find bounding references R1 and R2
   let r1: CountdownReference | null = null;
   let r2: CountdownReference | null = null;
 
@@ -220,10 +377,22 @@ export function projectCountdownState(
     return null;
   }
 
-  // Check compatibility: Countdown time remaining must strictly decrease as sequence progresses
-  if (r2.remainingSeconds >= r1.remainingSeconds) {
-    // Non-monotonic countdown (reset, paused, or replaced) -> do not interpolate across segment break
-    return null;
+  // Check compatibility:
+  // If both references are active, remainingSeconds must decrease.
+  // If either reference is scheduled, activationOffset must increase towards activation.
+  const r1IsScheduled = r1.activationOffset !== undefined && r1.activationOffset < 0;
+  const r2IsScheduled = r2.activationOffset !== undefined && r2.activationOffset < 0;
+
+  if (!r1IsScheduled && !r2IsScheduled) {
+    if (r2.remainingSeconds >= r1.remainingSeconds) {
+      // Non-monotonic active countdown -> do not interpolate
+      return null;
+    }
+  } else if (r1.activationOffset !== undefined && r2.activationOffset !== undefined) {
+    if (r2.activationOffset <= r1.activationOffset) {
+      // Scheduled activation offset must increase towards activation
+      return null;
+    }
   }
 
   // Check if events between r1 and r2 contain countdown pause/resume/reset/phase change events
@@ -244,45 +413,42 @@ export function projectCountdownState(
   const durTarget = evTarget?.position?.elapsedSeconds;
 
   let interpolatedSeconds = 0;
+  let interpolatedOffset: number | undefined;
   let basis: 'elapsed-duration' | 'sequence-position' = 'sequence-position';
   let confidence: ActiveCountdownState['confidence'] = 'low-confidence';
 
-  if (
+  const hasElapsedBasis =
     typeof dur1 === 'number' &&
     typeof dur2 === 'number' &&
     typeof durTarget === 'number' &&
     dur2 > dur1 &&
     durTarget >= dur1 &&
-    durTarget <= dur2
-  ) {
-    // Elapsed-duration interpolation
-    const fraction = (durTarget - dur1) / (dur2 - dur1);
-    interpolatedSeconds = Math.round(r1.remainingSeconds + fraction * (r2.remainingSeconds - r1.remainingSeconds));
-    basis = 'elapsed-duration';
-    confidence = r1.evidence[0]?.confidence || 'confirmed';
-  } else {
-    // Sequence-position interpolation fallback
-    const fraction = (targetSequence - r1.sequence) / (r2.sequence - r1.sequence);
-    interpolatedSeconds = Math.round(r1.remainingSeconds + fraction * (r2.remainingSeconds - r1.remainingSeconds));
-    basis = 'sequence-position';
-    confidence = 'low-confidence';
+    durTarget <= dur2;
+
+  const fraction = hasElapsedBasis
+    ? (durTarget - dur1) / (dur2 - dur1)
+    : (targetSequence - r1.sequence) / (r2.sequence - r1.sequence);
+
+  interpolatedSeconds = Math.round(r1.remainingSeconds + fraction * (r2.remainingSeconds - r1.remainingSeconds));
+
+  if (r1.activationOffset !== undefined && r2.activationOffset !== undefined) {
+    interpolatedOffset = Math.round(r1.activationOffset + fraction * (r2.activationOffset - r1.activationOffset));
+  } else if (r1.activationOffset !== undefined) {
+    interpolatedOffset = Math.round(r1.activationOffset + fraction * (0 - r1.activationOffset));
   }
 
-  const formattedTime = formatCountdownDuration(interpolatedSeconds, true);
+  basis = hasElapsedBasis ? 'elapsed-duration' : 'sequence-position';
+  confidence = hasElapsedBasis ? (r1.evidence[0]?.confidence || 'confirmed') : 'low-confidence';
 
-  return {
-    id: activeCountdown.id,
-    title: activeCountdown.title,
-    floor: activeCountdown.floor,
-    target: activeCountdown.target,
-    remainingSeconds: interpolatedSeconds,
-    status: 'estimated',
-    isStale: false,
+  return makeCountdownState(
+    activeCountdown,
+    interpolatedSeconds,
+    interpolatedOffset,
+    'estimated',
+    false,
     basis,
     confidence,
-    formattedTime,
-    formattedLabel: `${formattedTime} · estimated`,
-    referencePoints: [r1, r2],
-    note: r1.note || r2.note,
-  };
+    [r1, r2],
+    r1.note || r2.note
+  );
 }

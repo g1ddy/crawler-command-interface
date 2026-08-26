@@ -132,16 +132,16 @@
   ],
   "events": [
     {
-      "id": "evt-f2-001-entered",
+      "id": "evt-f2-001-early-access",
       "order": 1,
       "type": "NarrativeEvent",
-      "kind": "floor-entered",
+      "kind": "location-discovered",
       "position": {
         "floor": 2,
         "book": 1,
         "chapter": 31
       },
-      "summary": "Carl and Donut enter the Second Floor.",
+      "summary": "Early Floor 2 stairwell portal access opens before the formal floor countdown begins.",
       "evidence": [
         {
           "sourceId": "src-book-1",
@@ -181,8 +181,29 @@
       ]
     },
     {
-      "id": "evt-f2-003-pedicure-kit",
+      "id": "evt-f2-001-entered",
       "order": 3,
+      "type": "NarrativeEvent",
+      "kind": "floor-entered",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "Carl and Donut enter the Second Floor prior to collapse countdown activation.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-003-pedicure-kit",
+      "order": 4,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -209,8 +230,29 @@
       ]
     },
     {
+      "id": "evt-f2-001-countdown-start",
+      "order": 5,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "summary": "The formal 6-day Second Floor collapse countdown activates.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-004-bigboi-boxers",
-      "order": 4,
+      "order": 6,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -238,7 +280,7 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "order": 5,
+      "order": 7,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -259,7 +301,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "order": 6,
+      "order": 8,
       "type": "LevelChanged",
       "level": 11,
       "position": {
@@ -279,7 +321,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "order": 7,
+      "order": 9,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -307,7 +349,7 @@
     },
     {
       "id": "evt-f2-006-jug-o-boom",
-      "order": 8,
+      "order": 10,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -328,7 +370,7 @@
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "order": 9,
+      "order": 11,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -353,7 +395,7 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "order": 10,
+      "order": 12,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -381,7 +423,7 @@
     },
     {
       "id": "evt-f2-008-peta-enthusiast",
-      "order": 11,
+      "order": 13,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -402,7 +444,7 @@
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "order": 12,
+      "order": 14,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -424,7 +466,7 @@
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "order": 13,
+      "order": 15,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -445,7 +487,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "order": 14,
+      "order": 16,
       "type": "LevelChanged",
       "level": 12,
       "position": {
@@ -465,7 +507,7 @@
     },
     {
       "id": "evt-f2-011-level-13",
-      "order": 15,
+      "order": 17,
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -486,7 +528,7 @@
     },
     {
       "id": "evt-f2-012-exit",
-      "order": 16,
+      "order": 18,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -508,19 +550,56 @@
   ],
   "observations": [
     {
+      "id": "obs-countdown-floor-2-collapse-f2-001-early-access",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f2-001-early-access",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 518400,
+      "activationOffset": -25200,
+      "note": "Stairwell portal early access: 7 hours before formal 6-day collapse countdown activation.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
       "id": "obs-countdown-floor-2-collapse-f2-001-entered",
       "kind": "countdown-remaining",
       "eventId": "evt-f2-001-entered",
       "countdownId": "countdown-floor-2-collapse",
-      "remainingSeconds": 536400,
-      "note": "Carl's documented Second Floor baseline: 6 days and 5 hours remaining.",
+      "remainingSeconds": 518400,
+      "activationOffset": -18000,
+      "note": "Carl and Donut arrive on Floor 2: 5 hours before formal 6-day collapse countdown activation (reconciles 6d 5h baseline).",
       "evidence": [
         {
-          "sourceId": "src-wiki-carl-floor-2",
+          "sourceId": "src-book-1",
           "locator": {
-            "section": "Levels & Stats"
+            "chapter": 31
           },
-          "confidence": "corroborated"
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-2-collapse-f2-001-countdown-start",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f2-001-countdown-start",
+      "countdownId": "countdown-floor-2-collapse",
+      "remainingSeconds": 518400,
+      "activationOffset": 0,
+      "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 31
+          },
+          "confidence": "confirmed"
         }
       ]
     },
