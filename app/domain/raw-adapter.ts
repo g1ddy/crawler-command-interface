@@ -75,7 +75,9 @@ export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerF
     catalog: rawDoc.catalog,
     countdowns: (rawDoc.countdowns || []).map((countdown) => ({
       ...countdown,
-      references: referencesByCountdown.get(countdown.id) || [],
+      references: (referencesByCountdown.get(countdown.id) || []).sort(
+        (left, right) => left.anchorOrder - right.anchorOrder,
+      ),
     })),
     events: rawDoc.events,
   };

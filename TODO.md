@@ -64,6 +64,13 @@ the implementation that replaced them.
 - [ ] Define a provenance policy for `occurred_at`, `recorded_at`,
   `causation_id`, and `correlation_id` when the authoring sources can
   establish them consistently. Do not invent these values merely to fill fields.
+- [ ] Support globally chronological ordering for overlapping floor transitions.
+  - Floor-local `order` values are currently compiled as contiguous floor
+    segments, so a source-backed event that occurs after entry to the next
+    floor cannot yet be placed in its true global position.
+  - Establish a sourced cross-floor ordering field and compiler interleaving
+    rules before restoring zero-time Floor 1 collapse anchors or similar
+    overlapping-transition events.
 
 ## 3. Inventory, gear, and provenance
 

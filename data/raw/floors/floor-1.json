@@ -16,63 +16,1193 @@
     }
   },
   "sources": [
-    {"id":"src-book-1","kind":"official-text","trust":"primary","title":"Dungeon Crawler Carl, Book 1","url":"https://www.mattdinniman.com/","citationStyle":"Chapter {chapter}"},
-    {"id":"src-wiki-carl-floor-1","kind":"wiki","trust":"corroborating","title":"Carl/Floor 1","url":"https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_1"},
-    {"id":"src-wiki-floor-1-achievements","kind":"wiki","trust":"corroborating","title":"Floor 1 Achievements","url":"https://dungeon-crawler-carl.fandom.com/wiki/Floor_1_Achievements"},
-    {"id":"src-wiki-carl-inventory","kind":"wiki","trust":"corroborating","title":"Carl/Inventory","url":"https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"},
-    {"id":"src-dcc-database-carl","kind":"wiki","trust":"corroborating","title":"DCC Database: Carl","url":"https://www.dccdatabase.com/wiki/carl/"},
-    {"id":"src-reddit-inventory-list","kind":"discussion","trust":"candidate","title":"Carl's inventory list discussion","url":"https://www.reddit.com/r/DungeonCrawlerCarl/comments/1togyb2/carls_inventory_list/"}
+    {
+      "id": "src-book-1",
+      "kind": "official-text",
+      "trust": "primary",
+      "title": "Dungeon Crawler Carl, Book 1",
+      "url": "https://www.mattdinniman.com/",
+      "citationStyle": "Chapter {chapter}"
+    },
+    {
+      "id": "src-wiki-carl-floor-1",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Floor 1",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_1"
+    },
+    {
+      "id": "src-wiki-floor-1-achievements",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Floor 1 Achievements",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_1_Achievements"
+    },
+    {
+      "id": "src-wiki-carl-inventory",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Inventory",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+    },
+    {
+      "id": "src-dcc-database-carl",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "DCC Database: Carl",
+      "url": "https://www.dccdatabase.com/wiki/carl/"
+    },
+    {
+      "id": "src-reddit-inventory-list",
+      "kind": "discussion",
+      "trust": "candidate",
+      "title": "Carl's inventory list discussion",
+      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1togyb2/carls_inventory_list/"
+    },
+    {
+      "id": "src-dcc-database-floor-1",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "DCC Database: First Floor",
+      "url": "https://www.dccdatabase.com/wiki/First_Floor/"
+    }
   ],
   "catalog": {
     "items": [
-      {"id":"item-trollskin-shirt-of-pummeling","name":"Enchanted Trollskin Shirt of Pummeling","category":"equipment","slot":"UNDERSHIRT","persistent":true,"description":"A regenerating enchanted undershirt that resists several disruptive combat effects."},
-      {"id":"item-nightgaunt-cloak-of-stoutness","name":"Enchanted Nightgaunt Cloak of Stoutness","category":"equipment","slot":"NECK","persistent":true,"description":"A cloak that adds 4 Constitution and provides poison, ice, and anti-piercing protection.","stats":{"Constitution":4}},
-      {"id":"item-toe-ring-of-splatter-skunk","name":"Enchanted Toe Ring of the Splatter Skunk","category":"equipment","slot":"FEET","persistent":true,"description":"A toe ring that adds 3 Strength and improves Powerful Strike.","stats":{"Strength":3}},
-      {"id":"item-silver-ring-plus-1-con","name":"Silver Ring of +1 CON","category":"equipment","slot":"RING","persistent":true,"stats":{"Constitution":1}},
-      {"id":"item-spiked-kneepads-shade-gnoll","name":"Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces","category":"equipment","slot":"KNEES","persistent":true,"description":"Spiked kneepads that reflect 10% of damage and cancel momentum-based attacks.","stats":{"Damage Reflect Percent":10}},
-      {"id":"item-goblin-copper-chopper","name":"Goblin Copper Chopper","category":"vehicle","persistent":true,"description":"A goblin-built chopper used for traversal and battlefield construction."},
-      {"id":"item-silver-ring-plus-2-con","name":"Silver Ring of +2 CON","category":"equipment","slot":"RING","persistent":true,"stats":{"Constitution":2}},
-      {"id":"item-war-gauntlet-exalted-grull","name":"Enchanted War Gauntlet of the Exalted Grull","category":"equipment","slot":"WRISTS","persistent":true,"description":"A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist, adding 1 Dexterity and 3 Strength in fist mode.","stats":{"Dexterity":1,"Strength (Fist Mode)":3}}
+      {
+        "id": "item-trollskin-shirt-of-pummeling",
+        "name": "Enchanted Trollskin Shirt of Pummeling",
+        "category": "equipment",
+        "slot": "UNDERSHIRT",
+        "persistent": true,
+        "description": "A regenerating enchanted undershirt that resists several disruptive combat effects."
+      },
+      {
+        "id": "item-nightgaunt-cloak-of-stoutness",
+        "name": "Enchanted Nightgaunt Cloak of Stoutness",
+        "category": "equipment",
+        "slot": "NECK",
+        "persistent": true,
+        "description": "A cloak that adds 4 Constitution and provides poison, ice, and anti-piercing protection.",
+        "stats": {
+          "Constitution": 4
+        }
+      },
+      {
+        "id": "item-toe-ring-of-splatter-skunk",
+        "name": "Enchanted Toe Ring of the Splatter Skunk",
+        "category": "equipment",
+        "slot": "FEET",
+        "persistent": true,
+        "description": "A toe ring that adds 3 Strength and improves Powerful Strike.",
+        "stats": {
+          "Strength": 3
+        }
+      },
+      {
+        "id": "item-silver-ring-plus-1-con",
+        "name": "Silver Ring of +1 CON",
+        "category": "equipment",
+        "slot": "RING",
+        "persistent": true,
+        "stats": {
+          "Constitution": 1
+        }
+      },
+      {
+        "id": "item-spiked-kneepads-shade-gnoll",
+        "name": "Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces",
+        "category": "equipment",
+        "slot": "KNEES",
+        "persistent": true,
+        "description": "Spiked kneepads that reflect 10% of damage and cancel momentum-based attacks.",
+        "stats": {
+          "Damage Reflect Percent": 10
+        }
+      },
+      {
+        "id": "item-goblin-copper-chopper",
+        "name": "Goblin Copper Chopper",
+        "category": "vehicle",
+        "persistent": true,
+        "description": "A goblin-built chopper used for traversal and battlefield construction."
+      },
+      {
+        "id": "item-silver-ring-plus-2-con",
+        "name": "Silver Ring of +2 CON",
+        "category": "equipment",
+        "slot": "RING",
+        "persistent": true,
+        "stats": {
+          "Constitution": 2
+        }
+      },
+      {
+        "id": "item-war-gauntlet-exalted-grull",
+        "name": "Enchanted War Gauntlet of the Exalted Grull",
+        "category": "equipment",
+        "slot": "WRISTS",
+        "persistent": true,
+        "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist, adding 1 Dexterity and 3 Strength in fist mode.",
+        "stats": {
+          "Dexterity": 1,
+          "Strength (Fist Mode)": 3
+        }
+      }
     ],
     "achievements": [
-      {"id":"achievement-empty-pockets","title":"Empty Pockets Achievement","reward":[{"kind":"box","boxType":"adventurer","rarity":"bronze"}]},
-      {"id":"achievement-why-no-pants","title":"Why Aren't You Wearing Pants? Achievement","reward":[{"kind":"box","boxType":"apparel","rarity":"gold"}]},
-      {"id":"achievement-unarmed-combat","title":"Unarmed Combat Achievement","reward":[{"kind":"box","boxType":"weapon","rarity":"bronze"}]},
-      {"id":"achievement-oooh-magic","title":"Oooh, Magic Achievement","reward":[{"kind":"box","boxType":"adventurer","rarity":"bronze"}]},
-      {"id":"achievement-boom","title":"Boom! Achievement","reward":[{"kind":"box","boxType":"goblin","rarity":"silver"}]},
-      {"id":"achievement-podophilia","title":"Podophilia! Achievement","reward":[{"kind":"box","boxType":"shoe","rarity":"gold"}]},
-      {"id":"achievement-battlefield-construction","title":"Battlefield Construction Achievement","reward":[{"kind":"box","boxType":"mechanic","rarity":"silver"}]}
+      {
+        "id": "achievement-empty-pockets",
+        "title": "Empty Pockets Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze"
+          }
+        ]
+      },
+      {
+        "id": "achievement-why-no-pants",
+        "title": "Why Aren't You Wearing Pants? Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "apparel",
+            "rarity": "gold"
+          }
+        ]
+      },
+      {
+        "id": "achievement-unarmed-combat",
+        "title": "Unarmed Combat Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "weapon",
+            "rarity": "bronze"
+          }
+        ]
+      },
+      {
+        "id": "achievement-oooh-magic",
+        "title": "Oooh, Magic Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze"
+          }
+        ]
+      },
+      {
+        "id": "achievement-boom",
+        "title": "Boom! Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "goblin",
+            "rarity": "silver"
+          }
+        ]
+      },
+      {
+        "id": "achievement-podophilia",
+        "title": "Podophilia! Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "shoe",
+            "rarity": "gold"
+          }
+        ]
+      },
+      {
+        "id": "achievement-battlefield-construction",
+        "title": "Battlefield Construction Achievement",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "mechanic",
+            "rarity": "silver"
+          }
+        ]
+      }
     ]
   },
-  "countdowns": [{"id":"countdown-floor-1-collapse","title":"First Floor Collapse","target":"floor-collapse"}],
+  "countdowns": [
+    {
+      "id": "countdown-floor-1-collapse",
+      "title": "First Floor Collapse",
+      "target": "floor-collapse"
+    }
+  ],
   "events": [
-    {"id":"evt-f1-001-entered","order":1,"type":"NarrativeEvent","kind":"floor-entered","position":{"floor":1,"book":1,"chapter":1},"summary":"Carl enters the First Floor with Donut.","evidence":[{"sourceId":"src-book-1","locator":{"chapter":1},"confidence":"confirmed"}]},
-    {"id":"evt-f1-002-empty-pockets","order":2,"type":"AchievementUnlocked","position":{"floor":1,"book":1,"chapter":2},"achievementId":"achievement-empty-pockets","summary":"Carl receives the Empty Pockets Achievement.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Entering the Dungeon"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-003-no-pants","order":3,"type":"AchievementUnlocked","position":{"floor":1,"book":1,"chapter":2},"achievementId":"achievement-why-no-pants","summary":"Carl receives the Why Aren't You Wearing Pants? Achievement.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Entering the Dungeon"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-004-unarmed-combat","order":4,"type":"AchievementUnlocked","position":{"floor":1,"book":1,"chapter":2},"achievementId":"achievement-unarmed-combat","summary":"Carl receives the Unarmed Combat Achievement.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Entering the Dungeon"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-level-2","order":5,"type":"LevelChanged","level":2,"position":{"floor":1,"book":1},"summary":"Carl reaches Level 2.","evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 50)"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-005-goblin-pass","order":6,"type":"PermanentEntitlementGranted","position":{"floor":1,"book":1,"chapter":5},"entitlement":{"id":"entitlement-goblin-pass-tattoo","name":"Goblin Pass Tattoo","location":"left inner forearm"},"summary":"Carl receives the Goblin Pass Tattoo.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-006-trollskin-shirt","order":7,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":6},"item":{"instanceId":"inst-f1-trollskin-shirt","itemId":"item-trollskin-shirt-of-pummeling","quantity":{"known":true,"value":1}},"summary":"Carl acquires the Enchanted Trollskin Shirt of Pummeling.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-007-nightgaunt-cloak","order":8,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":6},"item":{"instanceId":"inst-f1-nightgaunt-cloak","itemId":"item-nightgaunt-cloak-of-stoutness","quantity":{"known":true,"value":1}},"summary":"Carl acquires the Enchanted Nightgaunt Cloak of Stoutness.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-008-toe-ring","order":9,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":6},"item":{"instanceId":"inst-f1-toe-ring","itemId":"item-toe-ring-of-splatter-skunk","quantity":{"known":true,"value":1}},"summary":"Carl acquires the Enchanted Toe Ring of the Splatter Skunk.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-toe-ring-equipped","order":10,"type":"ItemEquipped","position":{"floor":1,"book":1,"chapter":6},"itemInstanceId":"inst-f1-toe-ring","slot":"FEET","summary":"Carl equips the Enchanted Toe Ring of the Splatter Skunk.","evidence":[{"sourceId":"src-book-1","locator":{"chapter":6},"confidence":"confirmed"}]},
-    {"id":"evt-f1-009-first-magic-gear","order":11,"type":"AchievementUnlocked","position":{"floor":1,"book":1,"chapter":6},"achievementId":"achievement-oooh-magic","summary":"Carl earns Oooh, Magic after first equipping magical gear.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Dungeon Crawling"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-level-3","order":12,"type":"LevelChanged","level":3,"position":{"floor":1,"book":1},"summary":"Carl reaches Level 3.","evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 78)"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-010-silver-ring-plus-1-con","order":13,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":9},"item":{"instanceId":"inst-f1-silver-ring-plus-1-con","itemId":"item-silver-ring-plus-1-con","quantity":{"known":true,"value":1}},"summary":"Carl acquires a Silver Ring of +1 CON.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-level-5","order":14,"type":"LevelChanged","level":5,"position":{"floor":1,"book":1},"summary":"Carl reaches Level 5.","evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 92)"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-011-shade-gnoll-kneepads","order":15,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":12},"item":{"instanceId":"inst-f1-shade-gnoll-kneepads","itemId":"item-spiked-kneepads-shade-gnoll","quantity":{"known":true,"value":1}},"summary":"Carl acquires the Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces after the Hoarder battle.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-level-7","order":16,"type":"LevelChanged","level":7,"position":{"floor":1,"book":1},"summary":"Carl reaches Level 7.","evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 120)"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-level-8","order":17,"type":"LevelChanged","level":8,"position":{"floor":1,"book":1},"summary":"Carl reaches Level 8.","evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 138)"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-012-goblin-copper-chopper","order":18,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":17},"item":{"instanceId":"inst-f1-goblin-copper-chopper","itemId":"item-goblin-copper-chopper","quantity":{"known":true,"value":1}},"summary":"Carl acquires the Goblin Copper Chopper.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-013-desperado-pass","order":19,"type":"PermanentEntitlementGranted","position":{"floor":1,"book":1,"chapter":19},"entitlement":{"id":"entitlement-desperado-pass-tattoo","name":"Desperado Pass Tattoo","location":"neck"},"summary":"Carl receives the Desperado Pass Tattoo.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-014-silver-ring-plus-2-con","order":20,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":19},"item":{"instanceId":"inst-f1-silver-ring-plus-2-con","itemId":"item-silver-ring-plus-2-con","quantity":{"known":true,"value":1}},"summary":"Carl acquires a Silver Ring of +2 CON.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-015-boom","order":21,"type":"AchievementUnlocked","position":{"floor":1,"book":1,"chapter":19},"achievementId":"achievement-boom","summary":"Carl earns Boom! for his first explosion.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Combat"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-level-9","order":22,"type":"LevelChanged","level":9,"position":{"floor":1,"book":1},"summary":"Carl reaches Level 9.","evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 194)"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-level-10","order":23,"type":"LevelChanged","level":10,"position":{"floor":1,"book":1},"summary":"Carl reaches Level 10.","evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 218)"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-016-war-gauntlet","order":24,"type":"ItemAcquired","position":{"floor":1,"book":1,"chapter":25},"item":{"instanceId":"inst-f1-war-gauntlet","itemId":"item-war-gauntlet-exalted-grull","quantity":{"known":true,"value":1}},"summary":"Carl acquires the Enchanted War Gauntlet of the Exalted Grull.","evidence":[{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-017-podophilia","order":25,"type":"AchievementUnlocked","position":{"floor":1,"book":1,"chapter":25},"achievementId":"achievement-podophilia","summary":"Carl earns Podophilia! for crushing an opponent with his bare feet.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Combat"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-018-battlefield-construction","order":26,"type":"AchievementUnlocked","position":{"floor":1,"book":1,"chapter":30},"achievementId":"achievement-battlefield-construction","summary":"Carl earns Battlefield Construction for deploying a crafted structure in battle.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Combat"},"confidence":"corroborated"}]},
-    {"id":"evt-f1-019-exit","order":27,"type":"NarrativeEvent","kind":"floor-exited","position":{"floor":1,"book":1,"chapter":30},"summary":"Carl reaches the stairs and completes the First Floor.","evidence":[{"sourceId":"src-wiki-floor-1-achievements","locator":{"section":"Achievements for Dungeon Crawling"},"confidence":"corroborated"}]}
+    {
+      "id": "evt-f1-countdown-start",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The First Floor opens and its five-day collapse countdown is displayed.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 1
+    },
+    {
+      "id": "evt-f1-001-entered",
+      "order": 2,
+      "type": "NarrativeEvent",
+      "kind": "floor-entered",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 1
+      },
+      "summary": "Carl enters the First Floor with Donut.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 1
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-tutorial-start",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut begin the First Floor tutorial.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 3
+    },
+    {
+      "id": "evt-f1-countdown-cascadia-announcement",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Cascadia issues the First Floor announcement as the surface stairwells close.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 4
+    },
+    {
+      "id": "evt-f1-countdown-tutorial-complete",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut complete the First Floor tutorial.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 5
+    },
+    {
+      "id": "evt-f1-002-empty-pockets",
+      "order": 6,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "achievementId": "achievement-empty-pockets",
+      "summary": "Carl receives the Empty Pockets Achievement.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-003-no-pants",
+      "order": 7,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "achievementId": "achievement-why-no-pants",
+      "summary": "Carl receives the Why Aren't You Wearing Pants? Achievement.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-004-unarmed-combat",
+      "order": 8,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "achievementId": "achievement-unarmed-combat",
+      "summary": "Carl receives the Unarmed Combat Achievement.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Entering the Dungeon"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-2",
+      "order": 9,
+      "type": "LevelChanged",
+      "level": 2,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 2.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 50)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-005-goblin-pass",
+      "order": 10,
+      "type": "PermanentEntitlementGranted",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "entitlement": {
+        "id": "entitlement-goblin-pass-tattoo",
+        "name": "Goblin Pass Tattoo",
+        "location": "left inner forearm"
+      },
+      "summary": "Carl receives the Goblin Pass Tattoo.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-006-trollskin-shirt",
+      "order": 11,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "item": {
+        "instanceId": "inst-f1-trollskin-shirt",
+        "itemId": "item-trollskin-shirt-of-pummeling",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Enchanted Trollskin Shirt of Pummeling.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-007-nightgaunt-cloak",
+      "order": 12,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "item": {
+        "instanceId": "inst-f1-nightgaunt-cloak",
+        "itemId": "item-nightgaunt-cloak-of-stoutness",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Enchanted Nightgaunt Cloak of Stoutness.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-008-toe-ring",
+      "order": 13,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "item": {
+        "instanceId": "inst-f1-toe-ring",
+        "itemId": "item-toe-ring-of-splatter-skunk",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Enchanted Toe Ring of the Splatter Skunk.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-toe-ring-equipped",
+      "order": 14,
+      "type": "ItemEquipped",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "itemInstanceId": "inst-f1-toe-ring",
+      "slot": "FEET",
+      "summary": "Carl equips the Enchanted Toe Ring of the Splatter Skunk.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-009-first-magic-gear",
+      "order": 15,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "achievementId": "achievement-oooh-magic",
+      "summary": "Carl earns Oooh, Magic after first equipping magical gear.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-3",
+      "order": 16,
+      "type": "LevelChanged",
+      "level": 3,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 3.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 78)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-010-silver-ring-plus-1-con",
+      "order": 17,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 9
+      },
+      "item": {
+        "instanceId": "inst-f1-silver-ring-plus-1-con",
+        "itemId": "item-silver-ring-plus-1-con",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires a Silver Ring of +1 CON.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-5",
+      "order": 18,
+      "type": "LevelChanged",
+      "level": 5,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 5.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 92)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-crawlers-4322395",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 4,322,395 crawlers remaining on the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 19
+    },
+    {
+      "id": "evt-f1-countdown-crawlers-4148111",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 4,148,111 crawlers remaining on the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 20
+    },
+    {
+      "id": "evt-f1-countdown-royal-court-hoarder",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The Royal Court confronts the Hoarder.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 21
+    },
+    {
+      "id": "evt-f1-011-shade-gnoll-kneepads",
+      "order": 22,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 12
+      },
+      "item": {
+        "instanceId": "inst-f1-shade-gnoll-kneepads",
+        "itemId": "item-spiked-kneepads-shade-gnoll",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces after the Hoarder battle.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-episode-1",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode one airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 23
+    },
+    {
+      "id": "evt-f1-countdown-floor-2-stairs",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 24
+    },
+    {
+      "id": "evt-f1-level-7",
+      "order": 25,
+      "type": "LevelChanged",
+      "level": 7,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 7.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 120)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-8",
+      "order": 26,
+      "type": "LevelChanged",
+      "level": 8,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 8.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 138)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-012-goblin-copper-chopper",
+      "order": 27,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 17
+      },
+      "item": {
+        "instanceId": "inst-f1-goblin-copper-chopper",
+        "itemId": "item-goblin-copper-chopper",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Goblin Copper Chopper.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-crawlers-3594517",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 3,594,517 crawlers remaining on the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 28
+    },
+    {
+      "id": "evt-f1-013-desperado-pass",
+      "order": 29,
+      "type": "PermanentEntitlementGranted",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "entitlement": {
+        "id": "entitlement-desperado-pass-tattoo",
+        "name": "Desperado Pass Tattoo",
+        "location": "neck"
+      },
+      "summary": "Carl receives the Desperado Pass Tattoo.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-014-silver-ring-plus-2-con",
+      "order": 30,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "item": {
+        "instanceId": "inst-f1-silver-ring-plus-2-con",
+        "itemId": "item-silver-ring-plus-2-con",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires a Silver Ring of +2 CON.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-015-boom",
+      "order": 31,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "achievementId": "achievement-boom",
+      "summary": "Carl earns Boom! for his first explosion.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-9",
+      "order": 32,
+      "type": "LevelChanged",
+      "level": 9,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 9.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 194)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-level-10",
+      "order": 33,
+      "type": "LevelChanged",
+      "level": 10,
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl reaches Level 10.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 218)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-episode-2",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode two airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 34
+    },
+    {
+      "id": "evt-f1-countdown-system-patch",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "A First Floor system patch is announced.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 35
+    },
+    {
+      "id": "evt-f1-016-war-gauntlet",
+      "order": 36,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 25
+      },
+      "item": {
+        "instanceId": "inst-f1-war-gauntlet",
+        "itemId": "item-war-gauntlet-exalted-grull",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl acquires the Enchanted War Gauntlet of the Exalted Grull.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-1",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-017-podophilia",
+      "order": 37,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 25
+      },
+      "achievementId": "achievement-podophilia",
+      "summary": "Carl earns Podophilia! for crushing an opponent with his bare feet.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-meadow-lark",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The Royal Court meets Meadow Lark.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 38
+    },
+    {
+      "id": "evt-f1-countdown-crawlers-2552085",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 39
+    },
+    {
+      "id": "evt-f1-countdown-system-patch-late",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "A late First Floor system patch is announced.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 40
+    },
+    {
+      "id": "evt-f1-018-battlefield-construction",
+      "order": 41,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "achievementId": "achievement-battlefield-construction",
+      "summary": "Carl earns Battlefield Construction for deploying a crafted structure in battle.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Combat"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-ball-of-swine",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut encounter the Ball of Swine.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 42
+    },
+    {
+      "id": "evt-f1-countdown-floor-2-descent",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Crawlers can descend to Floor 2 without the usual six-hour loss.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 43
+    },
+    {
+      "id": "evt-f1-019-exit",
+      "order": 44,
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl reaches the stairs and completes the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    }
   ],
   "observations": [
     {
@@ -82,15 +1212,33 @@
       "currentMana": 3,
       "maxMana": 3,
       "note": "Carl's HUD shows three mana points when the basic healing spell is introduced; no mana-change event is asserted.",
-      "evidence": [{"sourceId":"src-book-1","locator":{"chapter":6},"confidence":"confirmed"}]
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ]
     },
     {
       "id": "obs-f1-intelligence-baseline",
       "kind": "crawler-attributes",
       "eventId": "evt-f1-006-trollskin-shirt",
-      "attributes": {"Intelligence":3},
+      "attributes": {
+        "Intelligence": 3
+      },
       "note": "HUD attribute reading, not an attributed Intelligence change.",
-      "evidence": [{"sourceId":"src-book-1","locator":{"chapter":6},"confidence":"confirmed"}]
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ]
     },
     {
       "id": "obs-f1-toe-ring-equipped",
@@ -98,27 +1246,510 @@
       "eventId": "evt-f1-toe-ring-equipped",
       "slot": "FEET",
       "itemInstanceId": "inst-f1-toe-ring",
-      "evidence": [{"sourceId":"src-book-1","locator":{"chapter":6},"confidence":"confirmed"}]
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ]
     },
     {
-      "id": "obs-countdown-floor-1-collapse-f1-013-desperado-pass",
+      "id": "obs-f1-level-2",
+      "kind": "xp-progress",
+      "eventId": "evt-f1-level-2",
+      "level": 2,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 50)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-level-3",
+      "kind": "xp-progress",
+      "eventId": "evt-f1-level-3",
+      "level": 3,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 78)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-level-5",
+      "kind": "xp-progress",
+      "eventId": "evt-f1-level-5",
+      "level": 5,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 92)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-level-7",
+      "kind": "xp-progress",
+      "eventId": "evt-f1-level-7",
+      "level": 7,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 120)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-level-8",
+      "kind": "xp-progress",
+      "eventId": "evt-f1-level-8",
+      "level": 8,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 138)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-level-9",
+      "kind": "xp-progress",
+      "eventId": "evt-f1-level-9",
+      "level": 9,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 194)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-level-10",
+      "kind": "xp-progress",
+      "eventId": "evt-f1-level-10",
+      "level": 10,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Levels (page 218)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-attributes-nightgaunt",
+      "kind": "crawler-attributes",
+      "eventId": "evt-f1-007-nightgaunt-cloak",
+      "attributes": {
+        "Strength": 6,
+        "Intelligence": 3,
+        "Constitution": 9,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 56)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-attributes-toe-ring",
+      "kind": "crawler-attributes",
+      "eventId": "evt-f1-toe-ring-equipped",
+      "attributes": {
+        "Strength": 9,
+        "Intelligence": 3,
+        "Constitution": 9,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 59)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-attributes-ring-plus-1",
+      "kind": "crawler-attributes",
+      "eventId": "evt-f1-010-silver-ring-plus-1-con",
+      "attributes": {
+        "Strength": 9,
+        "Intelligence": 3,
+        "Constitution": 10,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 83)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-f1-attributes-ring-plus-2",
+      "kind": "crawler-attributes",
+      "eventId": "evt-f1-014-silver-ring-plus-2-con",
+      "attributes": {
+        "Strength": 9,
+        "Intelligence": 3,
+        "Constitution": 12,
+        "Dexterity": 5,
+        "Charisma": 4
+      },
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-carl",
+          "locator": {
+            "section": "Book 1 Stats (page 146)"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-entered",
       "kind": "countdown-remaining",
-      "eventId": "evt-f1-013-desperado-pass",
+      "eventId": "evt-f1-001-entered",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 431280,
+      "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-start",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-start",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 432000,
+      "note": "The First Floor opens and its five-day collapse countdown is displayed. (5d until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-tutorial-start",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-tutorial-start",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 429660,
+      "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-cascadia-announcement",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-cascadia-announcement",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 428400,
+      "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-tutorial-complete",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-tutorial-complete",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 417600,
+      "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-4322395",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-crawlers-4322395",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 405420,
+      "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-4148111",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-crawlers-4148111",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 356580,
+      "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-royal-court-hoarder",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-royal-court-hoarder",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 345600,
+      "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-episode-1",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-episode-1",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 324000,
+      "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-floor-2-stairs",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-floor-2-stairs",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 320400,
+      "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-3594517",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-crawlers-3594517",
       "countdownId": "countdown-floor-1-collapse",
       "remainingSeconds": 237600,
-      "note": "The Desperado Pass Tattoo and Silver Ring of +2 CON are received with 2 days and 18 hours remaining.",
-      "evidence": [{"sourceId":"src-wiki-carl-floor-1","locator":{"section":"Gear Gained"},"confidence":"corroborated"}]
+      "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
-    {"id":"obs-f1-level-2","kind":"xp-progress","eventId":"evt-f1-level-2","level":2,"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 50)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-level-3","kind":"xp-progress","eventId":"evt-f1-level-3","level":3,"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 78)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-level-5","kind":"xp-progress","eventId":"evt-f1-level-5","level":5,"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 92)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-level-7","kind":"xp-progress","eventId":"evt-f1-level-7","level":7,"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 120)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-level-8","kind":"xp-progress","eventId":"evt-f1-level-8","level":8,"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 138)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-level-9","kind":"xp-progress","eventId":"evt-f1-level-9","level":9,"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 194)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-level-10","kind":"xp-progress","eventId":"evt-f1-level-10","level":10,"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Levels (page 218)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-attributes-nightgaunt","kind":"crawler-attributes","eventId":"evt-f1-007-nightgaunt-cloak","attributes":{"Strength":6,"Intelligence":3,"Constitution":9,"Dexterity":5,"Charisma":4},"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Stats (page 56)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-attributes-toe-ring","kind":"crawler-attributes","eventId":"evt-f1-toe-ring-equipped","attributes":{"Strength":9,"Intelligence":3,"Constitution":9,"Dexterity":5,"Charisma":4},"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Stats (page 59)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-attributes-ring-plus-1","kind":"crawler-attributes","eventId":"evt-f1-010-silver-ring-plus-1-con","attributes":{"Strength":9,"Intelligence":3,"Constitution":10,"Dexterity":5,"Charisma":4},"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Stats (page 83)"},"confidence":"corroborated"}]},
-    {"id":"obs-f1-attributes-ring-plus-2","kind":"crawler-attributes","eventId":"evt-f1-014-silver-ring-plus-2-con","attributes":{"Strength":9,"Intelligence":3,"Constitution":12,"Dexterity":5,"Charisma":4},"evidence":[{"sourceId":"src-dcc-database-carl","locator":{"section":"Book 1 Stats (page 146)"},"confidence":"corroborated"}]}
+    {
+      "id": "obs-countdown-floor-1-collapse-episode-2",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-episode-2",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 216000,
+      "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-system-patch",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-system-patch",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 212400,
+      "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-meadow-lark",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-meadow-lark",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 144000,
+      "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-crawlers-2552085",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-crawlers-2552085",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 108000,
+      "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-system-patch-late",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-system-patch-late",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 104400,
+      "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-ball-of-swine",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-ball-of-swine",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 23400,
+      "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-floor-2-descent",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f1-countdown-floor-2-descent",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 21600,
+      "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    }
   ]
 }
