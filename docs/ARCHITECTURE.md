@@ -45,6 +45,8 @@ Historical projection is immutable, not non-interactive: a user may initiate an 
 
 `app/chatgpt-auth.ts` contains optional ChatGPT-host-specific identity helpers. This contract applies to the ChatGPT Live App adapter, not to the static GitHub Pages deployment.
 
+- `oai-authenticated-user-email` supplies the authenticated user's email when host identity is available.
+- `oai-authenticated-user-full-name` may supply an optional percent-encoded UTF-8 full name. Decode it only when `oai-authenticated-user-full-name-encoding` is `percent-encoded-utf-8`; otherwise treat the full name as unavailable and fall back to email.
 - `getChatGPTUser()` reads optional identity supplied by the host.
 - `requireChatGPTUser(returnTo)` redirects anonymous users through Sign in with ChatGPT.
 - `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` construct host-owned authentication paths and validate same-origin relative return paths.
@@ -119,7 +121,7 @@ Keeping raw validation and compilation in Node tooling prevents Ajv code generat
 
 ## Deterministic State Projection
 
-- **Event Projection (`app/domain/projection.ts`)**: Applies causal events (`ItemAcquired`, `AttributeModified`, `ConditionApplied`, etc.) to produce point-in-time crawler state.
+- **Event Projection (`app/domain/projection.ts`)**: Applies causal events (`ItemAcquired`, `AttributeModified`, `ConditionChanged`, etc.) to produce point-in-time crawler state.
 - **Observation Telemetry (`app/domain/observations.ts`)**: Projects non-causal readings with evidence provenance. Non-discrete readings may interpolate between compatible anchors according to the authoring rules in [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md).
 - **Countdown Engine (`app/domain/countdowns.ts`)**: Derives exact countdown values at references and compatible estimates between/after references while respecting lifecycle phase breaks.
 - **Snapshots**: Replay normally derives state from the event stream. Snapshot support remains an allowed optimization, but generation/invalidation should only be introduced when measured replay cost justifies it.
