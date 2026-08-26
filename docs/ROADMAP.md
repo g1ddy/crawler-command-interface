@@ -6,12 +6,11 @@ This document is the authoritative list of unfinished product, data, and mainten
 
 The following core constraints guide all ongoing and future roadmap work:
 
-- **Browser-First Primary Runtime**: The core HUD, timeline scrubber, event state projection, and immutable historical projection execute entirely in the browser without requiring a server, account, API, or Cloudflare binding.
-- **Dual Deployment Targets**: A single shared browser core (`src/CrawlerApp.tsx`) is used by thin adapters for ChatGPT Sites / Vinext Worker (`app/page.tsx`) and static GitHub Pages (`src/main.pages.tsx`). Shared runtime code remains compatible with both targets, including the more restrictive ChatGPT Worker import/render path.
-- **Deterministic Historical Replay**: State at sequence $N$ is derived from event/observation history. Historical state is immutable, but interactions remain available: resulting mutations append new events to the live endpoint rather than rewriting historical sequences.
-- **Raw Story Authoring Source**: Story evidence is authored strictly in `data/raw/floors/`. `data/floors/*.json` and `data/compiled-timeline.json` are generated via `npm run generate:fixture`.
-
-Host-specific Worker, static Pages, authentication, and tooling boundaries are documented in [ARCHITECTURE.md](ARCHITECTURE.md) rather than duplicated here.
+- **Browser-First Primary Runtime**: The core HUD, timeline scrubber, event state projection, and read-only historical replay execute entirely in the browser without requiring a server, account, API, or Cloudflare binding.
+- **Dual Deployment Targets**: Single shared browser core (`src/CrawlerApp.tsx`) with thin adapters for ChatGPT Sites / Vinext Worker (`app/page.tsx`) and static GitHub Pages (`src/main.pages.tsx`).
+- **Worker-Safe Import Boundary**: Runtime import chains must avoid AJV schema compilation or dynamic code generation (`eval`/`new Function`) to comply with Cloudflare Worker constraints.
+- **Deterministic Historical Replay**: State at sequence $N$ is derived in memory from event/observation history. Replayed state is immutable; user interactions append new events to the live endpoint rather than mutating historical sequences.
+- **Raw Story Authoring Source**: Story evidence is authored strictly in `data/raw/floors/`. Derived fixtures (`app/domain/fixtures/compiled-timeline.ts`) are generated via `npm run generate:fixture`.
 
 ---
 
@@ -27,11 +26,12 @@ Host-specific Worker, static Pages, authentication, and tooling boundaries are d
 - [ ] Define provenance policy for `occurred_at`, `recorded_at`, `causation_id`, and `correlation_id` when authoring sources establish them consistently. Do not invent timestamps/IDs merely to fill fields.
 - [ ] Support globally chronological ordering for overlapping floor transitions:
   - Establish sourced cross-floor ordering fields and compiler interleaving rules to support events occurring after entry to a new floor.
-- [ ] *Intentional Deferral*: Add periodic snapshot generation and invalidation only when measurement demonstrates replaying the full event stream is no longer fast. Timeline contract and projector already support snapshots.
+- [ ] *Intentional Deferral*: Add periodic snapshot generation and invalidation only when measurement demonstrates replaying the full event stream is no longer fast. (Timeline contract and projector already support snapshots).
 
 ### 3. Interaction Polish
 
 - [ ] Add drag-and-drop reordering for skill hotlist slots on desktop.
+- [ ] Add Playwright browser E2E coverage for keyboard shortcuts, mobile bottom-sheet behavior, and replay state contract.
 
 ### 4. Application Architecture
 
@@ -48,6 +48,6 @@ Host-specific Worker, static Pages, authentication, and tooling boundaries are d
   - Verify floor navigation updates sequence to derived floor endpoints.
   - Verify **Return to Live** restores latest projected state.
   - Verify live interactions append endpoint events without altering earlier sequences.
-  - Smoke-test the GitHub Pages static bundle and a mobile viewport.
+  - Smoke-test GitHub Pages static bundle and mobile viewport layouts.
 - [ ] Add Dependabot configuration, GitHub code scanning, `.editorconfig`, issue templates, and PR template.
 - [ ] Add clear non-commercial fan-project disclaimer prior to wider public promotion.
