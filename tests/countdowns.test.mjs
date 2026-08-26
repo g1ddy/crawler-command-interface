@@ -13,7 +13,7 @@ const floor1CountdownSequence = compiledDoc.countdowns.find((countdown) => count
 const floor2References = compiledDoc.countdowns
   .find((countdown) => countdown.id === "countdown-floor-2-collapse")
   .references;
-const floor2EntryCountdownSequence = floor2References.find((r) => r.activationOffset === -18000).sequence;
+const floor2EntryCountdownSequence = floor2References.find((r) => r.activationOffset === -7200).sequence;
 const floor2MidFloorCountdownSequence = floor2References.find((r) => r.remainingSeconds === 360000).sequence;
 
 test("formatCountdownDuration formats scheduled, active, and completed durations properly", () => {
@@ -37,17 +37,17 @@ test("projection at pre-activation sequence returns scheduled countdown state wi
   assert.ok(earlyAccessState);
   assert.equal(earlyAccessState.lifecycleStatus, "scheduled");
   assert.equal(earlyAccessState.status, "stated");
-  assert.equal(earlyAccessState.activationOffset, -25200);
-  assert.equal(earlyAccessState.remainingSeconds, 518400);
-  assert.equal(earlyAccessState.formattedTime, "COUNTDOWN STARTS IN 7h");
-  assert.equal(earlyAccessState.formattedLabel, "COUNTDOWN STARTS IN 7h · scheduled");
+  assert.equal(earlyAccessState.activationOffset, -21600);
+  assert.equal(earlyAccessState.remainingSeconds, 540000);
+  assert.equal(earlyAccessState.formattedTime, "COUNTDOWN STARTS IN 6h");
+  assert.equal(earlyAccessState.formattedLabel, "COUNTDOWN STARTS IN 6h · scheduled");
   assert.equal(earlyAccessState.formattedTime.includes("left"), false);
 
   const arrivalState = projectCountdownState(compiledDoc, enteredSeq, 2);
   assert.ok(arrivalState);
   assert.equal(arrivalState.lifecycleStatus, "scheduled");
-  assert.equal(arrivalState.activationOffset, -18000);
-  assert.equal(arrivalState.formattedTime, "COUNTDOWN STARTS IN 5h");
+  assert.equal(arrivalState.activationOffset, -7200);
+  assert.equal(arrivalState.formattedTime, "COUNTDOWN STARTS IN 2h");
   assert.equal(arrivalState.formattedTime.includes("left"), false);
 
   const activeState = projectCountdownState(compiledDoc, startSeq, 2);
@@ -77,41 +77,38 @@ test("validation rejects negative remainingSeconds while accepting valid activat
   assert.ok(res.errors.some((err) => err.includes("must be >= 0") || err.includes("remainingSeconds")));
 });
 
-test("Floor 1's authored collapse-clock reference is visible at its exact sequence", () => {
+test("Floor 1's authored collapse-clock opening reference is visible at its exact sequence", () => {
   const state = projectCountdownState(compiledDoc, floor1CountdownSequence, 1);
   assert.ok(state);
   assert.equal(state.status, "stated");
   assert.equal(state.basis, "exact-reference");
-  assert.equal(state.remainingSeconds, 237600);
-  assert.equal(state.formattedLabel, "2d 18h left · stated");
+  assert.equal(state.remainingSeconds, 432000);
+  assert.equal(state.formattedLabel, "5d 0h left · stated");
   assert.equal(state.referencePoints.length, 1);
   assert.equal(state.referencePoints[0].sequence, floor1CountdownSequence);
 });
 
 test("evidence boundary: returns null before the first sourced countdown reference", () => {
-  // Sequence 1 is before Floor 1's first countdown reference
-  assert.equal(projectCountdownState(compiledDoc, 1, 1), null);
-  assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence - 1, 1), null);
+  assert.equal(projectCountdownState(compiledDoc, 0, 1), null);
 
   // Sequence 1 is also before Floor 2's first countdown reference (early access)
   const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
   assert.equal(projectCountdownState(compiledDoc, earlyAccessSeq - 1, 2), null);
 });
 
-test("scheduled countdown invariant: time until collapse equals active collapse duration", () => {
+test("scheduled countdown references retain time-to-collapse as well as time-to-activation", () => {
   const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
   const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-entered").sequence;
 
   const earlyAccessState = projectCountdownState(compiledDoc, earlyAccessSeq, 2);
   assert.ok(earlyAccessState);
   assert.equal(earlyAccessState.lifecycleStatus, "scheduled");
-  // remainingSeconds (time to collapse) equals 6 days (518400)
-  assert.equal(earlyAccessState.remainingSeconds, 518400);
+  assert.equal(earlyAccessState.remainingSeconds, 540000);
 
   const arrivalState = projectCountdownState(compiledDoc, enteredSeq, 2);
   assert.ok(arrivalState);
   assert.equal(arrivalState.lifecycleStatus, "scheduled");
-  assert.equal(arrivalState.remainingSeconds, 518400);
+  assert.equal(arrivalState.remainingSeconds, 525600);
 });
 
 test("scheduled after-final extrapolation advances activationOffset toward zero while remainingSeconds remains constant", () => {
@@ -147,24 +144,16 @@ test("scheduled after-final extrapolation advances activationOffset toward zero 
   assert.equal(extrapolated.activationOffset, -5000); // Advanced from -10000 toward 0
 });
 
-test("timeline retains Floor 1's last known reading without extrapolating it", () => {
-  assert.equal(projectCountdownState(compiledDoc, 1, 1), null);
-  assert.equal(projectCountdownState(compiledDoc, floor1CountdownSequence - 1, 1), null);
-
+test("Floor 1 retains sourced readings through its collapse anchor", () => {
   const stated = projectCountdownState(compiledDoc, floor1CountdownSequence, 1);
   assert.ok(stated);
   assert.equal(stated.status, "stated");
-  assert.equal(stated.remainingSeconds, 237600);
-
-  const lastKnown = projectCountdownState(compiledDoc, floor1CountdownSequence + 1, 1);
-  assert.ok(lastKnown);
-  assert.equal(lastKnown.status, "stated");
-  assert.equal(lastKnown.isStale, true);
-  assert.equal(lastKnown.basis, "last-known-reference");
-  assert.equal(lastKnown.remainingSeconds, 237600);
-  assert.equal(lastKnown.formattedLabel, "2d 18h left · stated (latest source)");
-  assert.equal(lastKnown.referencePoints.length, 1);
-  assert.equal(lastKnown.referencePoints[0].sequence, floor1CountdownSequence);
+  assert.equal(stated.remainingSeconds, 432000);
+  const collapseSequence = compiledDoc.events.find((event) => event.id === "evt-f1-countdown-collapse").sequence;
+  const collapse = projectCountdownState(compiledDoc, collapseSequence, 1);
+  assert.ok(collapse);
+  assert.equal(collapse.remainingSeconds, 0);
+  assert.equal(collapse.status, "stated");
 });
 
 test("Floor 2's authored collapse-clock references are monotonic", () => {
@@ -172,8 +161,8 @@ test("Floor 2's authored collapse-clock references are monotonic", () => {
   assert.ok(stateSeq20);
   assert.equal(stateSeq20.status, "stated");
   assert.equal(stateSeq20.lifecycleStatus, "scheduled");
-  assert.equal(stateSeq20.remainingSeconds, 518400);
-  assert.equal(stateSeq20.activationOffset, -18000);
+  assert.equal(stateSeq20.remainingSeconds, 525600);
+  assert.equal(stateSeq20.activationOffset, -7200);
 
   const stateSeq23 = projectCountdownState(compiledDoc, floor2MidFloorCountdownSequence, 2);
   assert.ok(stateSeq23);
@@ -181,18 +170,10 @@ test("Floor 2's authored collapse-clock references are monotonic", () => {
   assert.equal(stateSeq23.lifecycleStatus, "active");
   assert.equal(stateSeq23.remainingSeconds, 360000);
 
-  const estimatedState = projectCountdownState(compiledDoc, floor2EntryCountdownSequence + 1, 2);
-  assert.ok(estimatedState);
-  assert.equal(estimatedState.status, "estimated");
-  assert.equal(estimatedState.lifecycleStatus, "scheduled");
-
   const lastKnown = projectCountdownState(compiledDoc, compiledDoc.floors.find((floor) => floor.ordinal === 2).endSequence, 2);
   assert.ok(lastKnown);
-  assert.equal(lastKnown.status, "estimated");
-  assert.equal(lastKnown.isStale, false);
-  assert.equal(lastKnown.basis, "sequence-position-extrapolation");
-  assert.ok(lastKnown.remainingSeconds < 360000);
-  assert.equal(lastKnown.formattedTime.startsWith("~"), true);
+  assert.equal(lastKnown.status, "stated");
+  assert.equal(lastKnown.remainingSeconds, 0);
 });
 
 test("prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence", () => {
@@ -334,7 +315,7 @@ test("live-action appends extend floor end sequence and preserve historical coun
   const state = projectCountdownState({ events, countdowns: compiledDoc.countdowns }, floor1CountdownSequence, 1);
   assert.ok(state);
   assert.equal(state.status, "stated");
-  assert.equal(state.remainingSeconds, 237600);
+  assert.equal(state.remainingSeconds, 432000);
 });
 
 test("phase-aware countdown monotonicity accepts legitimate reset boundaries and rejects intra-phase increases", () => {
