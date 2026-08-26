@@ -144,16 +144,16 @@ test("scheduled after-final extrapolation advances activationOffset toward zero 
   assert.equal(extrapolated.activationOffset, -5000); // Advanced from -10000 toward 0
 });
 
-test("Floor 1 retains sourced readings through its collapse anchor", () => {
+test("Floor 1 retains sourced readings through the sourced descent window", () => {
   const stated = projectCountdownState(compiledDoc, floor1CountdownSequence, 1);
   assert.ok(stated);
   assert.equal(stated.status, "stated");
   assert.equal(stated.remainingSeconds, 432000);
-  const collapseSequence = compiledDoc.events.find((event) => event.id === "evt-f1-countdown-collapse").sequence;
-  const collapse = projectCountdownState(compiledDoc, collapseSequence, 1);
-  assert.ok(collapse);
-  assert.equal(collapse.remainingSeconds, 0);
-  assert.equal(collapse.status, "stated");
+  const descentSequence = compiledDoc.events.find((event) => event.id === "evt-f1-countdown-floor-2-descent").sequence;
+  const descent = projectCountdownState(compiledDoc, descentSequence, 1);
+  assert.ok(descent);
+  assert.equal(descent.remainingSeconds, 21600);
+  assert.equal(descent.status, "stated");
 });
 
 test("Floor 2's authored collapse-clock references are monotonic", () => {
