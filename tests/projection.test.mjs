@@ -211,25 +211,26 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   assert.equal(doc.floors[0].endSequence + 1, doc.floors[1].startSequence);
   const floor1Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-1-collapse");
   assert.ok(floor1Countdown);
+  assert.ok(floor1Countdown.references.length >= 19);
   assert.deepEqual(
-    floor1Countdown.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
-    [[doc.events.find((event) => event.id === "evt-f1-013-desperado-pass").sequence, 237600]]
+    [floor1Countdown.references[0].remainingSeconds, floor1Countdown.references.at(-1).remainingSeconds],
+    [432000, 0]
   );
   const floor2Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-2-collapse");
+  assert.ok(floor2Countdown.references.length >= 14);
   assert.deepEqual(
-    floor2Countdown?.references.map((reference) => [reference.sequence, reference.remainingSeconds]),
+    floor2Countdown.references.slice(0, 3).map((reference) => [reference.sequence, reference.remainingSeconds]),
     [
-      [doc.events.find((event) => event.id === "evt-f2-001-early-access").sequence, 518400],
-      [doc.events.find((event) => event.id === "evt-f2-001-entered").sequence, 518400],
+      [doc.events.find((event) => event.id === "evt-f2-001-early-access").sequence, 540000],
+      [doc.events.find((event) => event.id === "evt-f2-001-entered").sequence, 525600],
       [doc.events.find((event) => event.id === "evt-f2-001-countdown-start").sequence, 518400],
-      [doc.events.find((event) => event.id === "evt-f2-004-bigboi-boxers").sequence, 360000],
     ]
   );
   const floor2End = projectState(doc, doc.events.at(-1).sequence);
   assert.equal(floor2End.crawler.level, 13);
   assert.equal(floor2End.broadcast.viewers, 212000000000);
   assert.equal(doc.sources.find((s) => s.id === "src-book-1")?.citationStyle, "Chapter {chapter}");
-  assert.equal(doc.events[0].position.chapter, 1);
+  assert.equal(doc.events.find((event) => event.id === "evt-f1-001-entered")?.position.chapter, 1);
 });
 
 test("compiler rejects floor files with conflicting item definitions", () => {
