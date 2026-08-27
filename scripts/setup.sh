@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-echo "[codex] bootstrapping fresh repository environment"
-
-# A fresh environment should always perform the full reusable maintenance path,
-# including npm install state and Playwright system dependencies.
-CODEX_FORCE_REFRESH=1 exec "${script_dir}/maintenance.sh"
+npm ci
+npx playwright install --with-deps chromium
