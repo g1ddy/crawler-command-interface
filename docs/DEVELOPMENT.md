@@ -18,9 +18,9 @@ Use the repository scripts as the Codex environment lifecycle hooks:
 ./scripts/maintenance.sh
 ```
 
-`setup.sh` is the heavyweight fresh-environment bootstrap: it installs the exact lockfile dependency graph, installs Chromium plus its operating-system dependencies for Playwright, records the installed lockfile state under the ignored `.codex/` directory, and regenerates derived story fixtures.
+Both scripts keep environment preparation intentionally small: install the exact npm dependency graph with `npm ci`, then install Chromium and its Linux dependencies for Playwright with `npx playwright install --with-deps chromium`.
 
-`maintenance.sh` is intended for subsequent Codex task/resume cycles. It reruns `npm ci` only when `node_modules` is missing or `package-lock.json` changed, ensures Chromium remains available, and refreshes generated fixtures. See [`scripts/README.md`](../scripts/README.md) for the script contract.
+`setup.sh` is intended for a fresh Codex environment. `maintenance.sh` is intended for resumed environments after pulling changes or switching branches. Neither script generates fixtures, runs tests, or builds artifacts. See [`scripts/README.md`](../scripts/README.md) for the script contract.
 
 These Codex scripts do not replace the hardened ChatGPT Sites / CI install path.
 
