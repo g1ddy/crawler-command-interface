@@ -108,23 +108,103 @@
     "achievements": [
       {
         "id": "achievement-peta-enthusiast",
-        "title": "PETA Enthusiast",
-        "description": "Carl earns the achievement after freeing the dingos.",
+        "title": "PETA Enthusiast!",
+        "description": "Removed an aggravated non-sapient enemy’s hostility and caused it to fight other enemies.",
         "reward": [
           {
             "kind": "other",
-            "description": "The Ghost of Steve Irwin smiles down upon you."
+            "description": "The Ghost of Steve Irwin smiles down upon Carl."
           }
-        ]
+        ],
+        "recipient": "carl"
       },
       {
         "id": "achievement-dungeonpreneur",
         "title": "Dungeonpreneur",
-        "description": "Carl's improvised incendiary, Carl's Jug O' Boom, is recognized as a stackable dungeon invention.",
+        "description": "Invented Carl’s Jug O’ Boom, a stackable dungeon device.",
         "reward": [
           {
-            "kind": "entitlement",
-            "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+            "kind": "other",
+            "description": "A lifetime gold-coin royalty for kills other crawlers make with the invention."
+          }
+        ],
+        "recipient": "carl"
+      },
+      {
+        "id": "achievement-what-goes-up",
+        "title": "What Goes Up...",
+        "recipient": "carl",
+        "description": "Survived the Reverse Gravity spell.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "Carl can truthfully say he is more durable than Albert II, a rhesus monkey."
+          }
+        ]
+      },
+      {
+        "id": "achievement-like-a-moth-to-the-flame",
+        "title": "Like a Moth to the Flame",
+        "recipient": "party",
+        "description": "Damaged a mob more than 75 levels above the crawler.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "lucky-bastard",
+            "rarity": "platinum",
+            "description": "Platinum Lucky Bastard Box containing a lottery scratch-off ticket"
+          }
+        ]
+      },
+      {
+        "id": "achievement-grease-monkey",
+        "title": "Grease Monkey!",
+        "recipient": "carl",
+        "description": "Built and deployed a wheeled device.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "mechanic",
+            "rarity": "silver",
+            "description": "Silver Mechanic Box"
+          }
+        ]
+      },
+      {
+        "id": "achievement-you-call-that-a-trap",
+        "title": "You Call That a Trap?",
+        "recipient": "carl",
+        "description": "A mob was hurt by something Carl deliberately left in the dungeon.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "sapper",
+            "rarity": "gold",
+            "description": "Gold Sapper Box"
+          }
+        ]
+      },
+      {
+        "id": "achievement-ceramic-dalmatian-pat",
+        "title": "I'll Take the Ceramic Dalmatian, Pat!",
+        "recipient": "party",
+        "description": "Discovered a reward room.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No material reward; the reward room is the reward."
+          }
+        ]
+      },
+      {
+        "id": "achievement-menagerie",
+        "title": "Menagerie!",
+        "recipient": "donut",
+        "description": "Discovered a pet reward room.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "A key that opens one cage in the pet reward room."
           }
         ]
       }
@@ -252,7 +332,7 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         },
         {
-          "anchorOrder": 18,
+          "anchorOrder": 17,
           "remainingSeconds": 302400,
           "evidence": [
             {
@@ -266,7 +346,7 @@
           "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
         },
         {
-          "anchorOrder": 19,
+          "anchorOrder": 18,
           "remainingSeconds": 298800,
           "evidence": [
             {
@@ -280,7 +360,7 @@
           "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
         },
         {
-          "anchorOrder": 21,
+          "anchorOrder": 20,
           "remainingSeconds": 194400,
           "evidence": [
             {
@@ -294,7 +374,7 @@
           "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 24,
+          "anchorOrder": 27,
           "remainingSeconds": 86400,
           "evidence": [
             {
@@ -308,7 +388,7 @@
           "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
         },
         {
-          "anchorOrder": 26,
+          "anchorOrder": 32,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -322,7 +402,7 @@
           "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 28,
+          "anchorOrder": 34,
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -636,25 +716,25 @@
       ]
     },
     {
-      "id": "evt-f2-006-jug-o-boom",
-      "order": 14,
+      "id": "evt-f2-achievement-dungeonpreneur",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
         "book": 1,
-        "chapter": 33
+        "chapter": 35
       },
       "achievementId": "achievement-dungeonpreneur",
-      "summary": "Carl earns Dungeonpreneur for inventing Carl's Jug O' Boom, which grants a royalty entitlement.",
+      "summary": "Carl unlocks Dungeonpreneur.",
       "evidence": [
         {
-          "sourceId": "src-book-1",
+          "sourceId": "src-wiki-floor-2-achievements",
           "locator": {
-            "chapter": 33
+            "section": "Book 1 Achievements"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 14
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
@@ -710,27 +790,6 @@
       ]
     },
     {
-      "id": "evt-f2-008-peta-enthusiast",
-      "order": 17,
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 2,
-        "book": 1,
-        "chapter": 35
-      },
-      "achievementId": "achievement-peta-enthusiast",
-      "summary": "Carl earns PETA Enthusiast for freeing the dingos.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-2-achievements",
-          "locator": {
-            "section": "Achievements for Dungeon Crawling"
-          },
-          "confidence": "corroborated"
-        }
-      ]
-    },
-    {
       "id": "evt-f2-countdown-episode-6",
       "type": "NarrativeEvent",
       "kind": "other",
@@ -748,7 +807,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 17
     },
     {
       "id": "evt-f2-countdown-crawlers-990303",
@@ -768,11 +827,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19
+      "order": 18
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "order": 20,
+      "order": 19,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -810,11 +869,95 @@
           "confidence": "corroborated"
         }
       ],
+      "order": 20
+    },
+    {
+      "id": "evt-f2-achievement-what-goes-up",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 39
+      },
+      "achievementId": "achievement-what-goes-up",
+      "summary": "Carl unlocks What Goes Up....",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
       "order": 21
     },
     {
+      "id": "evt-f2-achievement-like-a-moth-to-the-flame",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 39
+      },
+      "achievementId": "achievement-like-a-moth-to-the-flame",
+      "summary": "The party unlocks Like a Moth to the Flame.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 22
+    },
+    {
+      "id": "evt-f2-achievement-grease-monkey",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 41
+      },
+      "achievementId": "achievement-grease-monkey",
+      "summary": "Carl unlocks Grease Monkey!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 23
+    },
+    {
+      "id": "evt-f2-achievement-you-call-that-a-trap",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 41
+      },
+      "achievementId": "achievement-you-call-that-a-trap",
+      "summary": "Carl unlocks You Call That a Trap?.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 24
+    },
+    {
       "id": "evt-f2-010-mongo-bonded",
-      "order": 22,
+      "order": 25,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -835,7 +978,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "order": 23,
+      "order": 26,
       "type": "LevelChanged",
       "level": 12,
       "position": {
@@ -871,11 +1014,74 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 24
+      "order": 27
+    },
+    {
+      "id": "evt-f2-achievement-ceramic-dalmatian-pat",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 46
+      },
+      "achievementId": "achievement-ceramic-dalmatian-pat",
+      "summary": "The party unlocks I'll Take the Ceramic Dalmatian, Pat!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 28
+    },
+    {
+      "id": "evt-f2-achievement-menagerie",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 46
+      },
+      "achievementId": "achievement-menagerie",
+      "summary": "Donut unlocks Menagerie!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 29
+    },
+    {
+      "id": "evt-f2-achievement-peta-enthusiast",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "achievementId": "achievement-peta-enthusiast",
+      "summary": "Carl unlocks PETA Enthusiast!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 30
     },
     {
       "id": "evt-f2-011-level-13",
-      "order": 25,
+      "order": 31,
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -912,11 +1118,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 26
+      "order": 32
     },
     {
       "id": "evt-f2-012-exit",
-      "order": 27,
+      "order": 33,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -953,7 +1159,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28
+      "order": 34
     }
   ]
 }

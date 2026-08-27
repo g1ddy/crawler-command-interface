@@ -426,6 +426,9 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
         state.achievements.push({
           achievementId: achId,
           title: String(ach.title || 'Achievement Unlocked'),
+          ...(ach.recipient === 'carl' || ach.recipient === 'donut' || ach.recipient === 'party'
+            ? { recipient: ach.recipient }
+            : {}),
           description: String(ach.description || ''),
           rewards: rewardsStr,
           icon: String(ach.icon || '☠'),

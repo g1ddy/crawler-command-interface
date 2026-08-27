@@ -96,6 +96,7 @@ export interface RewardSpec {
 export interface TimelineAchievement {
   id: string;
   title: string;
+  recipient?: 'carl' | 'donut' | 'party';
   sourceTitle?: string;
   description?: string;
   repeatCount?: number;
@@ -487,6 +488,7 @@ export interface CatalogItem {
 export interface CatalogAchievement {
   id: string;
   title: string;
+  recipient?: 'carl' | 'donut' | 'party';
   description?: string;
   reward: RewardSpec[];
 }
@@ -724,6 +726,7 @@ export interface Quest {
 export interface Achievement {
   achievementId: string;
   title: string;
+  recipient?: 'carl' | 'donut' | 'party';
   description: string;
   rewards: string;
   icon: string;
