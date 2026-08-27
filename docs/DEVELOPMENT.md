@@ -9,7 +9,26 @@ This guide covers local environment setup, npm commands, build targets, fixture 
 
 ## Environment Setup
 
-Before running tests or builds, initialize dependencies using the single bounded lockfile install:
+### ChatGPT Codex environments
+
+Use the repository scripts as the Codex environment lifecycle hooks:
+
+```bash
+./scripts/setup.sh
+./scripts/maintenance.sh
+```
+
+`setup.sh` is for a fresh Codex environment. It performs a clean `npm ci` install from the repository lockfile and installs Chromium plus its Linux dependencies for Playwright.
+
+`maintenance.sh` is for an existing Codex environment after pulling changes or switching branches. It runs `npm install` to reconcile the existing dependency tree with the current branch, then refreshes Chromium and its Linux dependencies.
+
+Neither script generates fixtures, runs tests, builds artifacts, or writes repository-local bookkeeping state. See [`scripts/README.md`](../scripts/README.md) for the script contract.
+
+These Codex scripts do not replace the hardened ChatGPT Sites / CI install path.
+
+### ChatGPT Sites / CI environment
+
+Before running tests or builds through the constrained Sites environment, initialize dependencies using the single bounded lockfile install:
 
 ```bash
 npm run install:ci
@@ -35,7 +54,9 @@ The Pages adapter defaults to base path `/crawler-command-interface/`.
 
 | Command | Description |
 | --- | --- |
-| `npm run install:ci` | Perform bounded lockfile installation |
+| `./scripts/setup.sh` | Clean-install a fresh ChatGPT Codex environment |
+| `./scripts/maintenance.sh` | Reconcile dependencies in an existing ChatGPT Codex environment |
+| `npm run install:ci` | Perform bounded lockfile installation for the Sites/CI environment |
 | `npm run dev` | Start local Vite / Vinext development server for ChatGPT live app |
 | `npm run generate:fixture` | Generate `data/floors/*.json` and `data/compiled-timeline.json` from raw floor documents |
 | `npm run build` / `npm run build:live` | Build deployable ChatGPT live-app Worker artifact (`dist/`) |

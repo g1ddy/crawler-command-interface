@@ -2029,27 +2029,6 @@
       "order": 58
     },
     {
-      "id": "evt-f1-019-exit",
-      "order": 59,
-      "type": "NarrativeEvent",
-      "kind": "floor-exited",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 30
-      },
-      "summary": "Carl reaches the stairs and completes the First Floor.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Achievements for Dungeon Crawling"
-          },
-          "confidence": "corroborated"
-        }
-      ]
-    },
-    {
       "id": "evt-f1-achievement-borough-boss",
       "type": "AchievementUnlocked",
       "position": {
@@ -2068,7 +2047,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 60
+      "order": 59
     },
     {
       "id": "evt-f1-achievement-bully-and-a-thief",
@@ -2089,11 +2068,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 61
+      "order": 60
     },
     {
       "id": "evt-f1-018-battlefield-construction",
-      "order": 62,
+      "order": 61,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2131,7 +2110,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 63
+      "order": 62
     },
     {
       "id": "evt-f1-achievement-found-stairs",
@@ -2152,7 +2131,28 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 64
+      "order": 63
+    },
+    {
+      "id": "evt-f1-019-exit",
+      "order": 64,
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl reaches the stairs and completes the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     }
   ]
 }

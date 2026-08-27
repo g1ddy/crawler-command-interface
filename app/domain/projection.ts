@@ -42,6 +42,10 @@ function parseQuantity(rawQty: unknown): { numericQuantity: number; qtyObject?: 
   return { numericQuantity: 1 };
 }
 
+function getAchievementRecipient(value: unknown): 'carl' | 'donut' | 'party' | undefined {
+  return value === 'carl' || value === 'donut' || value === 'party' ? value : undefined;
+}
+
 export function createInitialState(timelineState?: TimelineState): CrawlerState {
   const crawler = timelineState?.crawler;
 
@@ -89,6 +93,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   const achievements = (timelineState?.achievements || []).map((a) => ({
     achievementId: a.id,
     title: a.title,
+    recipient: getAchievementRecipient(a.recipient),
     description: a.description || '',
     rewards: a.sourceTitle || '',
     icon: '☠',
