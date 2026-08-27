@@ -65,6 +65,13 @@
       "trust": "corroborating",
       "title": "DCC Database: First Floor",
       "url": "https://www.dccdatabase.com/wiki/First_Floor/"
+    },
+    {
+      "id": "src-wiki-first-floor",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "First Floor",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/First_Floor"
     }
   ],
   "catalog": {
@@ -504,6 +511,31 @@
             "description": "No material reward; surviving to read the notification is the reward."
           }
         ]
+      },
+      {
+        "id": "achievement-crazy-cat-lady",
+        "title": "Crazy Cat Lady",
+        "recipient": "carl",
+        "description": "Entered the World Dungeon accompanied by a cat.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "pet",
+            "rarity": "bronze",
+            "description": "Bronze Pet Box"
+          }
+        ]
+      },
+      {
+        "id": "achievement-bitchmeat",
+        "title": "Bitchmeat",
+        "description": "Was attacked by a fellow crawler in a safe room and required the system’s help.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No reward."
+          }
+        ]
       }
     ]
   },
@@ -545,7 +577,7 @@
         "book": 1,
         "chapter": 1
       },
-      "summary": "Carl enters the First Floor with Donut.",
+      "summary": "Carl and Donut enter the First Floor as the 4,119th and 4,122nd crawlers.",
       "evidence": [
         {
           "sourceId": "src-book-1",
@@ -553,23 +585,31 @@
             "chapter": 1
           },
           "confidence": "confirmed"
+        },
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
         }
       ]
     },
     {
-      "id": "evt-f1-countdown-tutorial-start",
-      "type": "NarrativeEvent",
-      "kind": "other",
+      "id": "evt-f1-achievement-crazy-cat-lady",
+      "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
-        "book": 1
+        "book": 1,
+        "chapter": 2
       },
-      "summary": "Carl and Donut begin the First Floor tutorial.",
+      "achievementId": "achievement-crazy-cat-lady",
+      "summary": "Carl unlocks Crazy Cat Lady.",
       "evidence": [
         {
-          "sourceId": "src-dcc-database-floor-1",
+          "sourceId": "src-wiki-first-floor",
           "locator": {
-            "section": "Floor Timeline & Patch Notes"
+            "section": "Achievements"
           },
           "confidence": "corroborated"
         }
@@ -577,19 +617,20 @@
       "order": 3
     },
     {
-      "id": "evt-f1-countdown-cascadia-announcement",
-      "type": "NarrativeEvent",
-      "kind": "other",
+      "id": "evt-f1-achievement-trailblazing-crazy-cat-lady",
+      "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
-        "book": 1
+        "book": 1,
+        "chapter": 2
       },
-      "summary": "Cascadia issues the First Floor announcement as the surface stairwells close.",
+      "achievementId": "achievement-trailblazing-crazy-cat-lady",
+      "summary": "Donut unlocks Trailblazing Crazy Cat Lady.",
       "evidence": [
         {
-          "sourceId": "src-dcc-database-floor-1",
+          "sourceId": "src-wiki-floor-1-achievements",
           "locator": {
-            "section": "Floor Timeline & Patch Notes"
+            "section": "Book 1 Achievements"
           },
           "confidence": "corroborated"
         }
@@ -597,19 +638,20 @@
       "order": 4
     },
     {
-      "id": "evt-f1-countdown-tutorial-complete",
-      "type": "NarrativeEvent",
-      "kind": "other",
+      "id": "evt-f1-achievement-early-adopter",
+      "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
-        "book": 1
+        "book": 1,
+        "chapter": 2
       },
-      "summary": "Carl and Donut complete the First Floor tutorial.",
+      "achievementId": "achievement-early-adopter",
+      "summary": "Carl unlocks Early Adopter.",
       "evidence": [
         {
-          "sourceId": "src-dcc-database-floor-1",
+          "sourceId": "src-wiki-floor-1-achievements",
           "locator": {
-            "section": "Floor Timeline & Patch Notes"
+            "section": "Book 1 Achievements"
           },
           "confidence": "corroborated"
         }
@@ -680,6 +722,115 @@
       ]
     },
     {
+      "id": "evt-f1-achievement-loner",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "achievementId": "achievement-loner",
+      "summary": "Carl unlocks Loner.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 9
+    },
+    {
+      "id": "evt-f1-countdown-tutorial-start",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut begin the First Floor tutorial.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 10
+    },
+    {
+      "id": "evt-f1-countdown-cascadia-announcement",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Cascadia closes the surface stairwells; just under 13 million entered and fewer than 10 million remain.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        },
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Introductory Announcement"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 11
+    },
+    {
+      "id": "evt-f1-countdown-tutorial-complete",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Carl and Donut complete the First Floor tutorial.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 12
+    },
+    {
+      "id": "evt-f1-achievement-fall-into-obvious-trap",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "achievementId": "achievement-fall-into-obvious-trap",
+      "summary": "Carl unlocks Fall into an Obvious Trap.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 13
+    },
+    {
       "id": "evt-f1-achievement-read-official-dungeon-sign",
       "type": "AchievementUnlocked",
       "position": {
@@ -698,7 +849,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 9
+      "order": 14
     },
     {
       "id": "evt-f1-achievement-inflicted-damage-on-mob",
@@ -719,7 +870,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 10
+      "order": 15
     },
     {
       "id": "evt-f1-achievement-killed-a-mob",
@@ -740,7 +891,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 11
+      "order": 16
     },
     {
       "id": "evt-f1-achievement-armed-mob-bare-hands",
@@ -761,7 +912,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 12
+      "order": 17
     },
     {
       "id": "evt-f1-achievement-higher-level-mob",
@@ -782,7 +933,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 13
+      "order": 18
     },
     {
       "id": "evt-f1-achievement-entered-a-guildhall",
@@ -803,11 +954,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 14
+      "order": 19
     },
     {
       "id": "evt-f1-017-podophilia",
-      "order": 15,
+      "order": 20,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -828,7 +979,7 @@
     },
     {
       "id": "evt-f1-015-boom",
-      "order": 16,
+      "order": 21,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -866,95 +1017,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17
-    },
-    {
-      "id": "evt-f1-achievement-trailblazing-crazy-cat-lady",
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 2
-      },
-      "achievementId": "achievement-trailblazing-crazy-cat-lady",
-      "summary": "Donut unlocks Trailblazing Crazy Cat Lady.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Book 1 Achievements"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "order": 18
-    },
-    {
-      "id": "evt-f1-achievement-early-adopter",
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 2
-      },
-      "achievementId": "achievement-early-adopter",
-      "summary": "Carl unlocks Early Adopter.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Book 1 Achievements"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "order": 19
-    },
-    {
-      "id": "evt-f1-achievement-loner",
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 2
-      },
-      "achievementId": "achievement-loner",
-      "summary": "Carl unlocks Loner.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Book 1 Achievements"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "order": 20
-    },
-    {
-      "id": "evt-f1-achievement-fall-into-obvious-trap",
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 2
-      },
-      "achievementId": "achievement-fall-into-obvious-trap",
-      "summary": "Carl unlocks Fall into an Obvious Trap.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Book 1 Achievements"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "order": 21
+      "order": 22
     },
     {
       "id": "evt-f1-level-2",
-      "order": 22,
+      "order": 23,
       "type": "LevelChanged",
       "level": 2,
       "position": {
@@ -974,7 +1041,7 @@
     },
     {
       "id": "evt-f1-005-goblin-pass",
-      "order": 23,
+      "order": 24,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -999,7 +1066,7 @@
     },
     {
       "id": "evt-f1-006-trollskin-shirt",
-      "order": 24,
+      "order": 25,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1044,11 +1111,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 25
+      "order": 26
     },
     {
       "id": "evt-f1-009-first-magic-gear",
-      "order": 26,
+      "order": 27,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1086,11 +1153,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27
+      "order": 28
     },
     {
       "id": "evt-f1-007-nightgaunt-cloak",
-      "order": 28,
+      "order": 29,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1118,7 +1185,7 @@
     },
     {
       "id": "evt-f1-008-toe-ring",
-      "order": 29,
+      "order": 30,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1146,7 +1213,7 @@
     },
     {
       "id": "evt-f1-toe-ring-equipped",
-      "order": 30,
+      "order": 31,
       "type": "ItemEquipped",
       "position": {
         "floor": 1,
@@ -1168,7 +1235,7 @@
     },
     {
       "id": "evt-f1-level-3",
-      "order": 31,
+      "order": 32,
       "type": "LevelChanged",
       "level": 3,
       "position": {
@@ -1188,7 +1255,7 @@
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
-      "order": 32,
+      "order": 33,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1216,7 +1283,7 @@
     },
     {
       "id": "evt-f1-level-5",
-      "order": 33,
+      "order": 34,
       "type": "LevelChanged",
       "level": 5,
       "position": {
@@ -1252,7 +1319,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 34
+      "order": 35
     },
     {
       "id": "evt-f1-countdown-crawlers-4148111",
@@ -1272,7 +1339,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 35
+      "order": 36
     },
     {
       "id": "evt-f1-countdown-royal-court-hoarder",
@@ -1292,11 +1359,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36
+      "order": 37
     },
     {
       "id": "evt-f1-011-shade-gnoll-kneepads",
-      "order": 37,
+      "order": 38,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1330,7 +1397,7 @@
         "floor": 1,
         "book": 1
       },
-      "summary": "Dungeon Crawler World episode one airs.",
+      "summary": "Dungeon Crawler World episode one airs; 4,006,002 crawlers remain on the First Floor.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1338,9 +1405,16 @@
             "section": "Floor Timeline & Patch Notes"
           },
           "confidence": "corroborated"
+        },
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
         }
       ],
-      "order": 38
+      "order": 39
     },
     {
       "id": "evt-f1-countdown-floor-2-stairs",
@@ -1360,11 +1434,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 39
+      "order": 40
     },
     {
       "id": "evt-f1-level-7",
-      "order": 40,
+      "order": 41,
       "type": "LevelChanged",
       "level": 7,
       "position": {
@@ -1384,7 +1458,7 @@
     },
     {
       "id": "evt-f1-level-8",
-      "order": 41,
+      "order": 42,
       "type": "LevelChanged",
       "level": 8,
       "position": {
@@ -1404,7 +1478,7 @@
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
-      "order": 42,
+      "order": 43,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1449,7 +1523,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 43
+      "order": 44
     },
     {
       "id": "evt-f1-achievement-war-criminal",
@@ -1470,7 +1544,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 44
+      "order": 45
     },
     {
       "id": "evt-f1-countdown-crawlers-3594517",
@@ -1490,11 +1564,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 45
+      "order": 46
     },
     {
       "id": "evt-f1-013-desperado-pass",
-      "order": 46,
+      "order": 47,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -1519,7 +1593,7 @@
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
-      "order": 47,
+      "order": 48,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1547,7 +1621,7 @@
     },
     {
       "id": "evt-f1-level-9",
-      "order": 48,
+      "order": 49,
       "type": "LevelChanged",
       "level": 9,
       "position": {
@@ -1567,7 +1641,7 @@
     },
     {
       "id": "evt-f1-level-10",
-      "order": 49,
+      "order": 50,
       "type": "LevelChanged",
       "level": 10,
       "position": {
@@ -1603,7 +1677,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 50
+      "order": 51
     },
     {
       "id": "evt-f1-countdown-system-patch",
@@ -1623,11 +1697,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 51
+      "order": 52
     },
     {
       "id": "evt-f1-016-war-gauntlet",
-      "order": 52,
+      "order": 53,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1654,6 +1728,26 @@
       ]
     },
     {
+      "id": "evt-f1-achievement-bitchmeat",
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "achievementId": "achievement-bitchmeat",
+      "summary": "A crawler unlocks Bitchmeat.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 54
+    },
+    {
       "id": "evt-f1-achievement-two-chicks-same-time",
       "type": "AchievementUnlocked",
       "position": {
@@ -1672,7 +1766,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 53
+      "order": 55
     },
     {
       "id": "evt-f1-countdown-meadow-lark",
@@ -1692,7 +1786,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 54
+      "order": 56
     },
     {
       "id": "evt-f1-countdown-crawlers-2552085",
@@ -1712,7 +1806,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55
+      "order": 57
     },
     {
       "id": "evt-f1-countdown-system-patch-late",
@@ -1732,7 +1826,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 56
+      "order": 58
     },
     {
       "id": "evt-f1-countdown-ball-of-swine",
@@ -1752,7 +1846,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 57
+      "order": 59
     },
     {
       "id": "evt-f1-countdown-floor-2-descent",
@@ -1772,7 +1866,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 58
+      "order": 60
     },
     {
       "id": "evt-f1-achievement-borough-boss",
@@ -1793,7 +1887,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 59
+      "order": 61
     },
     {
       "id": "evt-f1-achievement-bully-and-a-thief",
@@ -1814,11 +1908,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 60
+      "order": 62
     },
     {
       "id": "evt-f1-018-battlefield-construction",
-      "order": 61,
+      "order": 63,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1856,7 +1950,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 62
+      "order": 64
     },
     {
       "id": "evt-f1-achievement-found-stairs",
@@ -1877,11 +1971,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 63
+      "order": 65
     },
     {
       "id": "evt-f1-019-exit",
-      "order": 64,
+      "order": 66,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {

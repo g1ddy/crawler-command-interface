@@ -112,12 +112,17 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   const achievements = rawTimeline.events.filter((event) => event.type === "AchievementUnlocked");
   const byFloor = (floor) => achievements.filter((event) => event.position.floor === floor);
 
-  assert.equal(byFloor(1).length, 27);
+  assert.equal(byFloor(1).length, 29);
   assert.equal(byFloor(2).length, 8);
 
-  const crazyCatLady = achievements.find((event) => event.achievement.id === "achievement-trailblazing-crazy-cat-lady");
-  assert.equal(crazyCatLady?.achievement.recipient, "donut");
-  assert.equal(crazyCatLady?.achievement.reward?.[0]?.description, "Legendary Pet Box");
+  const crazyCatLady = achievements.find((event) => event.achievement.id === "achievement-crazy-cat-lady");
+  assert.equal(crazyCatLady?.achievement.recipient, "carl");
+  assert.equal(crazyCatLady?.achievement.reward?.[0]?.description, "Bronze Pet Box");
+  assert.equal(crazyCatLady?.sequence, 3);
+
+  const trailblazingCrazyCatLady = achievements.find((event) => event.achievement.id === "achievement-trailblazing-crazy-cat-lady");
+  assert.equal(trailblazingCrazyCatLady?.achievement.recipient, "donut");
+  assert.equal(trailblazingCrazyCatLady?.achievement.reward?.[0]?.description, "Legendary Pet Box");
 
   const menagerie = achievements.find((event) => event.achievement.id === "achievement-menagerie");
   assert.equal(menagerie?.achievement.recipient, "donut");
@@ -127,6 +132,7 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   assert.ok(floor1Exit);
   const atFloor1Exit = projectState(rawTimeline, floor1Exit.sequence);
   assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-found-stairs"));
+  assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-bitchmeat"));
 });
 
 test("PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay", () => {
