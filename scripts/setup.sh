@@ -1,27 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "${project_root}"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "[codex] bootstrapping repository environment"
+echo "[codex] bootstrapping fresh repository environment"
 
-command -v node >/dev/null || { echo "Node.js is required." >&2; exit 69; }
-command -v npm >/dev/null || { echo "npm is required." >&2; exit 69; }
-command -v sha256sum >/dev/null || { echo "sha256sum is required." >&2; exit 69; }
-
-npm ci
-
-stamp_dir="${project_root}/.codex"
-mkdir -p "${stamp_dir}"
-sha256sum package-lock.json | awk '{print $1}' > "${stamp_dir}/package-lock.sha256"
-
-# The E2E suite currently targets Chromium only. Install both the browser and
-# its OS dependencies so a fresh Codex environment can run npm run test:e2e.
-npx playwright install --with-deps chromium
-
-# Generate derived story fixtures once so the working tree starts from the
-# repository's canonical raw evidence.
-npm run generate:fixture
-
-echo "[codex] setup complete"
+# A fresh environment should always perform the full reusable maintenance path,
+# including npm install state and Playwright system dependencies.
+CODEX_FORCE_REFRESH=1 exec "${script_dir}/maintenance.sh"
