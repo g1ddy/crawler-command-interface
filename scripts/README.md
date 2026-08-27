@@ -6,22 +6,21 @@ This directory contains project-specific automation used by local development, C
 
 ### `setup.sh`
 
-Use `setup.sh` when creating a fresh Codex environment. It performs the heavyweight bootstrap needed to make the repository immediately usable:
-
-- installs the exact npm dependency graph with `npm ci`;
-- installs Chromium and its operating-system dependencies for Playwright;
-- regenerates derived story fixtures from `data/raw/floors/`.
+Use `setup.sh` when creating a fresh Codex environment. It deliberately delegates to the reusable maintenance path with a forced refresh so setup and maintenance cannot drift apart.
 
 ```bash
 ./scripts/setup.sh
 ```
 
+A fresh setup therefore performs the full maintenance contract: exact npm dependency installation, Chromium plus its operating-system dependencies, and regeneration of derived story fixtures.
+
 ### `maintenance.sh`
 
-Use `maintenance.sh` when resuming an existing Codex environment after pulling changes or switching branches. It is intentionally cheaper and idempotent:
+Use `maintenance.sh` when resuming an existing Codex environment after pulling changes or switching branches. It is intentionally cheap when dependency state has not changed:
 
-- reruns `npm ci` only when `node_modules` is missing or `package-lock.json` changed;
-- ensures the Chromium browser required by the E2E suite is present;
+- reruns `npm ci` when `node_modules` is missing, `package-lock.json` changed, or setup explicitly forces a refresh;
+- when dependencies are refreshed, runs `playwright install --with-deps chromium` so Playwright/browser upgrades also refresh required Linux libraries;
+- on unchanged task resumes, uses the cheaper `playwright install chromium` path;
 - refreshes generated story fixtures.
 
 ```bash
