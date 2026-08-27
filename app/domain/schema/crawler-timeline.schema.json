@@ -244,6 +244,7 @@
       "properties": {
         "id": { "$ref": "#/$defs/id" },
         "title": { "type": "string", "minLength": 1 },
+        "recipient": { "enum": ["carl", "donut", "party"] },
         "sourceTitle": { "type": "string" },
         "description": { "type": "string" },
         "repeatCount": { "type": "integer", "minimum": 1 },
