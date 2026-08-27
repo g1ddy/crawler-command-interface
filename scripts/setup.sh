@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+set -e
 
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "${script_dir}/maintenance.sh"
+npm ci
+npx playwright install --with-deps chromium
