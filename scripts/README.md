@@ -12,7 +12,7 @@ Use `setup.sh` when creating a fresh ChatGPT Codex environment:
 ./scripts/setup.sh
 ```
 
-It installs the exact npm dependency graph and the Chromium browser plus Linux dependencies required by the Playwright E2E suite.
+It performs a clean install from `package-lock.json` with `npm ci`, then installs Chromium and its Linux dependencies for the Playwright E2E suite.
 
 ### `maintenance.sh`
 
@@ -22,7 +22,7 @@ Use `maintenance.sh` when Codex resumes an existing environment after pulling ch
 ./scripts/maintenance.sh
 ```
 
-It deliberately performs the same two idempotent environment refresh steps as setup: `npm ci` and `playwright install --with-deps chromium`.
+It incrementally reconciles the existing npm environment with the current branch using `npm install`, then refreshes Chromium and its Linux dependencies.
 
 Neither Codex script generates fixtures, builds artifacts, runs tests, or writes repository-local bookkeeping state. Those remain explicit repository commands.
 
