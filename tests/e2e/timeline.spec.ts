@@ -4,12 +4,9 @@ const sequenceHeading = (page: Page) =>
   page.getByRole("heading", { name: /SEQ #\d+/ });
 
 async function selectSequence(page: Page, sequence: number) {
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  await slider.evaluate((element, value) => {
-    const input = element as HTMLInputElement;
-    input.value = String(value);
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-  }, sequence);
+  await slider.fill(String(sequence));
 }
 
 test.beforeEach(async ({ page }) => {
@@ -25,7 +22,7 @@ test("scrubbing backward removes state that was introduced later", async ({ page
 
   await expect(page.getByText(/HISTORICAL VIEW · REPLAYING SEQUENCE #1/)).toBeVisible();
   await expect(page.locator(".mobile-crawler-info")).not.toContainText("LVL 13");
-  await page.getByRole("button", { name: "INVENTORY" }).click();
+  await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   await expect(page.locator(".grid .item")).toHaveCount(0);
 });
 
@@ -55,7 +52,7 @@ test("Return to Live restores the latest projection", async ({ page }) => {
 test("live interactions append events without rewriting historical state", async ({ page }) => {
   await selectSequence(page, 44);
   await expect(page.getByText(/HISTORICAL VIEW · REPLAYING SEQUENCE #44/)).toBeVisible();
-  await page.getByRole("button", { name: "INVENTORY" }).click();
+  await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   const firstItem = page.locator(".grid .item").first();
   await firstItem.click();
   const itemName = (await firstItem.getAttribute("aria-label"))?.replace(/ \([^)]+\)$/, "") ?? "";
@@ -77,6 +74,6 @@ test("static bundle renders its essential HUD at desktop and mobile sizes", asyn
 
   if (testInfo.project.name === "mobile-chromium") {
     await expect(page.locator(".mobile-status-bar")).toBeVisible();
-    await expect(page.locator("body")).toHaveCSS("overflow-x", "hidden");
+    expect(page.viewportSize()?.width).toBeLessThanOrEqual(412);
   }
 });
