@@ -39,5 +39,6 @@ next-env.d.ts
 /dist-pages/
 /.wrangler/
 /.sites-runtime/
+/.codex/
 /outputs/
 /work/
