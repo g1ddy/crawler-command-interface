@@ -640,8 +640,11 @@
               "enum": [
                 "floor-entered",
                 "floor-exited",
+                "floor-collapsed",
                 "encounter-started",
                 "encounter-resolved",
+                "episode-released",
+                "rule-changed",
                 "location-discovered",
                 "dialogue",
                 "choice-made",

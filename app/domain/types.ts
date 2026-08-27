@@ -199,9 +199,11 @@ export interface PermanentEntitlementGrantedEvent extends TimelineEventBase {
 
 export interface NarrativeEvent extends TimelineEventBase {
   type: 'NarrativeEvent';
-  kind: 'floor-entered' | 'floor-exited' | 'encounter-started' | 'encounter-resolved' | 'location-discovered' | 'dialogue' | 'choice-made' | 'transformation' | 'party-changed' | 'other';
+  kind: 'floor-entered' | 'floor-exited' | 'floor-collapsed' | 'encounter-started' | 'encounter-resolved' | 'episode-released' | 'rule-changed' | 'location-discovered' | 'dialogue' | 'choice-made' | 'transformation' | 'party-changed' | 'other';
   entities?: string[];
 }
+
+export type NarrativeEventKind = NarrativeEvent['kind'];
 
 export interface LevelChangedEvent extends TimelineEventBase {
   type: 'LevelChanged';
@@ -634,7 +636,13 @@ export interface RawCrawlerAttributesObservation extends Omit<RawCountdownObserv
 export interface RawXpProgressObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'xp-progress'; interpolation?: 'linear'; xp?: number; maxXp?: number; level?: number; }
 export interface RawBroadcastMetricsObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'broadcast-metrics'; interpolation?: 'linear'; viewers?: number; followers?: number; favorites?: number; patrons?: number; leaderboardRank?: number; bounty?: number; }
 /** Discrete, floor-wide readings; these are never interpolated. */
-export interface RawFloorMetricsObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'floor-metrics'; remainingCrawlers: number; }
+export interface RawFloorMetricsObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> {
+  kind: 'floor-metrics';
+  remainingCrawlers?: number;
+  boroughBossesKilled?: number;
+  neighborhoodBossesKilled?: number;
+  collapseDeaths?: number;
+}
 export interface RawInventoryStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'inventory-state'; itemInstanceId: string; present?: boolean; quantity?: QuantityObject; isEquipped?: boolean; }
 export interface RawEquipmentStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'equipment-state'; slot: string; itemInstanceId: string | null; }
 export type RawObservation = RawCountdownObservation | RawCrawlerConditionObservation | RawCrawlerAttributesObservation | RawXpProgressObservation | RawBroadcastMetricsObservation | RawFloorMetricsObservation | RawInventoryStateObservation | RawEquipmentStateObservation;

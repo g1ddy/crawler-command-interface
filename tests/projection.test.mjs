@@ -226,7 +226,7 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   assert.ok(floor1Countdown.references.length >= 18);
   assert.deepEqual(
     [floor1Countdown.references[0].remainingSeconds, floor1Countdown.references.at(-1).remainingSeconds],
-    [432000, 21600]
+    [432000, 0]
   );
   const floor2Countdown = doc.countdowns?.find((countdown) => countdown.id === "countdown-floor-2-collapse");
   assert.ok(floor2Countdown.references.length >= 14);

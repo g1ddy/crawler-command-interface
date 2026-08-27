@@ -109,6 +109,19 @@ test("floor population is exact, floor-scoped telemetry and never interpolated",
   assert.equal(beforeLaterPopulation, null, "population snapshots must not estimate deaths between reports");
 });
 
+test("Floor 1 retains sourced boss progress and collapse telemetry", () => {
+  const bossPatchSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-countdown-floor-2-stairs").sequence;
+  const bossProgress = projectObservationValue(compiledTimeline, bossPatchSequence, "floor-metrics.boroughBossesKilled");
+  assert.ok(bossProgress);
+  assert.equal(bossProgress.value, 15);
+  assert.equal(bossProgress.status, "stated");
+
+  const collapseSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-floor-collapse").sequence;
+  const collapsePopulation = projectObservationValue(compiledTimeline, collapseSequence, "floor-metrics.remainingCrawlers");
+  assert.ok(collapsePopulation);
+  assert.equal(collapsePopulation.value, 1292526);
+});
+
 test("linear interpolation never crosses a floor boundary", () => {
   const docCrossFloor = {
     events: [

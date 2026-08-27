@@ -20,10 +20,16 @@ const scalarFieldsByKind: Partial<Record<TimelineObservation['kind'], string[]>>
   'crawler-condition': ['currentHealth', 'maxHealth', 'currentMana', 'maxMana', 'currentStamina', 'maxStamina'],
   'xp-progress': ['xp', 'maxXp', 'level'],
   'broadcast-metrics': ['viewers', 'followers', 'favorites', 'patrons', 'leaderboardRank', 'bounty'],
-  'floor-metrics': ['remainingCrawlers'],
+  'floor-metrics': ['remainingCrawlers', 'boroughBossesKilled', 'neighborhoodBossesKilled', 'collapseDeaths'],
 };
 
-const discreteKeys = new Set(['xp-progress.level', 'floor-metrics.remainingCrawlers']);
+const discreteKeys = new Set([
+  'xp-progress.level',
+  'floor-metrics.remainingCrawlers',
+  'floor-metrics.boroughBossesKilled',
+  'floor-metrics.neighborhoodBossesKilled',
+  'floor-metrics.collapseDeaths',
+]);
 
 function numericSamples(observations: TimelineObservation[]): NumericObservationSample[] {
   const samples: NumericObservationSample[] = [];
