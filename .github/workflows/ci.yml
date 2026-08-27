@@ -21,3 +21,15 @@ jobs:
       # The repository path is the production default. Exercise the custom
       # domain base too, then restore the default static artifact for clarity.
       - run: npm run test:pages:custom-base
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
