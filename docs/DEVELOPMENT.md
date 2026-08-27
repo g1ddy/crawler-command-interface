@@ -124,7 +124,7 @@ npm run verify
 
 Domain unit tests run directly against TypeScript source using Node's `--experimental-strip-types` flag (supported on Node 22.13+).
 
-Playwright tests start the Pages development server at its normal
+Local Playwright tests build and start the Pages development server at its normal
 `/crawler-command-interface/` project path and cover
 point-in-time replay, floor navigation, live-endpoint mutations, and desktop/mobile
 bundle smoke tests. Install Chromium once with `npx playwright install chromium`,
@@ -138,8 +138,9 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 - **Artifact Name**: `github-pages-artifact`
 - **Contents**: The exact `dist-pages/` static Pages bundle produced by `npm run verify` and validated by its `npm run test:artifacts` step, including `build-provenance.json` recording the verified source commit SHA. CI does not rebuild the bundle between validation and upload.
 - **Verification Guarantee**: The uploaded artifact is produced only if all deterministic correctness checks (fixture sync, linting, unit tests, live Worker build, rendered-output tests, Pages build, and same-commit artifact provenance contracts) pass. If any verification check fails, no artifact is published.
-- **Downstream Reuse**: Downstream workflows (such as deployment or E2E jobs) can consume `github-pages-artifact` directly without rebuilding the Pages application.
-- **Separation from E2E**: Playwright E2E browser tests run in a separate parallel CI job (`e2e`). Playwright E2E results are non-blocking for artifact generation and are kept distinct from the deterministic verification gate.
+- **Artifact Promotion**: After a successful `CI` run on `main`, `deploy-pages.yml` downloads `github-pages-artifact` from that exact workflow run, checks that its provenance SHA matches the CI source commit, and uploads the unchanged directory for GitHub Pages deployment. Deployment does not check out source, install dependencies, rerun verification, or rebuild the application.
+- **Independent E2E Consumption**: After every successful `CI` run (including supported pull-request and `main` runs), `playwright.yml` independently downloads the artifact from that exact run, verifies its provenance, serves it at `/crawler-command-interface/`, and runs the browser suite without rebuilding the application. Failed browser runs retain their HTML report, traces, screenshots, and other available test results as a workflow artifact.
+- **Non-blocking Browser Gate**: Pages deployment and Playwright are sibling `workflow_run` consumers of deterministic CI; neither depends on the other. Browser failures remain visible but currently do not block or delay deployment because E2E may be flaky. The deterministic `npm run verify` checks remain the hard release gates.
 
 ## Contribution Expectations
 

@@ -5,7 +5,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? "github" : "list",
+  reporter: process.env.CI
+    ? [["github"], ["html", { open: "never" }]]
+    : "list",
   use: {
     baseURL: "http://127.0.0.1:4173",
     trace: "on-first-retry",
@@ -15,7 +17,9 @@ export default defineConfig({
     { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
-    command: "npm run build:pages && npx vite preview --config vite.pages.config.ts --host 127.0.0.1 --port 4173",
+    command:
+      process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ??
+      "npm run build:pages && npx vite preview --config vite.pages.config.ts --host 127.0.0.1 --port 4173",
     port: 4173,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
