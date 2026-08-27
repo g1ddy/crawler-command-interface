@@ -18,9 +18,11 @@ Use the repository scripts as the Codex environment lifecycle hooks:
 ./scripts/maintenance.sh
 ```
 
-Both scripts keep environment preparation intentionally small: install the exact npm dependency graph with `npm ci`, then install Chromium and its Linux dependencies for Playwright with `npx playwright install --with-deps chromium`.
+`setup.sh` is for a fresh Codex environment. It performs a clean `npm ci` install from the repository lockfile and installs Chromium plus its Linux dependencies for Playwright.
 
-`setup.sh` is intended for a fresh Codex environment. `maintenance.sh` is intended for resumed environments after pulling changes or switching branches. Neither script generates fixtures, runs tests, or builds artifacts. See [`scripts/README.md`](../scripts/README.md) for the script contract.
+`maintenance.sh` is for an existing Codex environment after pulling changes or switching branches. It runs `npm install` to reconcile the existing dependency tree with the current branch, then refreshes Chromium and its Linux dependencies.
+
+Neither script generates fixtures, runs tests, builds artifacts, or writes repository-local bookkeeping state. See [`scripts/README.md`](../scripts/README.md) for the script contract.
 
 These Codex scripts do not replace the hardened ChatGPT Sites / CI install path.
 
@@ -52,8 +54,8 @@ The Pages adapter defaults to base path `/crawler-command-interface/`.
 
 | Command | Description |
 | --- | --- |
-| `./scripts/setup.sh` | Bootstrap a fresh ChatGPT Codex environment |
-| `./scripts/maintenance.sh` | Refresh an existing ChatGPT Codex environment after repository changes |
+| `./scripts/setup.sh` | Clean-install a fresh ChatGPT Codex environment |
+| `./scripts/maintenance.sh` | Reconcile dependencies in an existing ChatGPT Codex environment |
 | `npm run install:ci` | Perform bounded lockfile installation for the Sites/CI environment |
 | `npm run dev` | Start local Vite / Vinext development server for ChatGPT live app |
 | `npm run generate:fixture` | Generate `data/floors/*.json` and `data/compiled-timeline.json` from raw floor documents |
