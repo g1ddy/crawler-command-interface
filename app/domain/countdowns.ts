@@ -166,8 +166,11 @@ export function projectCountdownState(
     }
   }
 
-  // Find active countdown for targetFloor
-  const activeCountdown = countdowns.find((c) => c.floor === targetFloor);
+  // The HUD's primary clock is floor collapse. Secondary clocks (such as
+  // safe-room closure) may coexist without replacing it.
+  const activeCountdown =
+    countdowns.find((c) => c.floor === targetFloor && c.target === 'floor-collapse') ||
+    countdowns.find((c) => c.floor === targetFloor);
   if (!activeCountdown || !activeCountdown.references || activeCountdown.references.length === 0) {
     return null;
   }

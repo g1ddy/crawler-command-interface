@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-27T03:59:20.459Z",
-    "updatedAt": "2026-08-27T03:59:20.459Z"
+    "createdAt": "2026-08-27T12:25:58.446Z",
+    "updatedAt": "2026-08-27T12:25:58.446Z"
   },
   "floors": [
     {
@@ -112,6 +112,13 @@
       "trust": "corroborating",
       "title": "DCC Database: Second Floor",
       "url": "https://www.dccdatabase.com/wiki/Second_Floor/"
+    },
+    {
+      "id": "src-wiki-second-floor",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Second Floor",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Second_Floor"
     }
   ],
   "initialState": {
@@ -2058,7 +2065,7 @@
         "book": 1,
         "chapter": 31
       },
-      "summary": "The formal 6-day Second Floor collapse countdown activates.",
+      "summary": "The formal 6-day Second Floor collapse countdown activates as Dungeon Crawler World: Earth episode four airs, recapping the final 30 hours of Floor 1.",
       "evidence": [
         {
           "sourceId": "src-book-1",
@@ -2147,10 +2154,10 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "Cascadia introduces the Second Floor and ratings become active.",
+      "summary": "Cascadia's introductory announcement activates ratings, follows, and favorites; establishes three-patron limits and future auction rules; and activates the human-born bathroom-violation penalty, which summons a Level 93 Rage Elemental.",
       "evidence": [
         {
-          "sourceId": "src-dcc-database-floor-2",
+          "sourceId": "src-wiki-second-floor",
           "locator": {
             "section": "Floor Timeline & Patch Notes"
           },
@@ -2187,7 +2194,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room.",
+      "summary": "Dungeon Crawler World episode five airs while Carl, Donut, and the Meadow Lark party camp in a safe room with a Rage Elemental outside; Carl's Jug O' Boom is added to the Dungeon Codex.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
@@ -2207,7 +2214,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "A Second Floor patch announces hedgehogs and the safe-room closure rule.",
+      "summary": "Cascadia's follow-up patch relocates Satan's Lil' Hedgehogs to a deeper floor and establishes that safe rooms close one hour before floor collapse, teleporting remaining occupants outside; it also introduces the safe-room-only Time to Safe Room Closure countdown.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
@@ -2448,7 +2455,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "The system reports 990,303 crawlers remaining in the daily announcement.",
+      "summary": "Cascadia's daily announcement reports 990,303 crawlers remaining; permits Game Guides to explain Third Floor race/class selection; stops non-sapient mobs from disintegrating in stairwells; halves Brindled Vespas and slightly lowers their acid-spit damage; and reduces Brindle Grub pupa advancement to 50% while retaining corpse generation.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
@@ -2863,7 +2870,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "The Second Floor collapses.",
+      "summary": "The Second Floor collapses and the human-born bathroom-violation penalty is lifted.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
@@ -3946,6 +3953,22 @@
       "sequence": 69
     },
     {
+      "id": "obs-f2-floor-population-start",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 1292526,
+      "note": "Exact floor-wide population report at formal countdown activation; not a crawler broadcast metric and not interpolated.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 69
+    },
+    {
       "id": "obs-countdown-floor-2-collapse-f2-004-bigboi-boxers",
       "kind": "countdown-remaining",
       "countdownId": "countdown-floor-2-collapse",
@@ -4079,6 +4102,22 @@
       "sequence": 73
     },
     {
+      "id": "obs-f2-floor-population-1033992",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 1033992,
+      "note": "Exact floor-wide population report; deaths between snapshots are not estimated.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 73
+    },
+    {
       "id": "obs-countdown-floor-2-collapse-episode-5",
       "kind": "countdown-remaining",
       "countdownId": "countdown-floor-2-collapse",
@@ -4138,6 +4177,22 @@
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 84
+    },
+    {
+      "id": "obs-f2-floor-population-990303",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 990303,
+      "note": "Exact floor-wide population report; deaths between snapshots are not estimated.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
           "locator": {
             "section": "Floor Timeline & Patch Notes"
           },

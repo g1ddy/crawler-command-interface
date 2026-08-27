@@ -187,7 +187,7 @@
         "id": { "$ref": "#/$defs/id" },
         "title": { "type": "string", "minLength": 1 },
         "floor": { "$ref": "#/$defs/positiveInteger" },
-        "target": { "const": "floor-collapse" },
+        "target": { "enum": ["floor-collapse", "safe-room-closure"] },
         "references": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/countdownReference" } }
       }
     },
@@ -197,7 +197,7 @@
       "required": ["id", "kind", "sequence", "evidence"],
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "kind": { "enum": ["countdown-remaining", "crawler-condition", "crawler-attributes", "xp-progress", "broadcast-metrics", "inventory-state", "equipment-state"] },
+        "kind": { "enum": ["countdown-remaining", "crawler-condition", "crawler-attributes", "xp-progress", "broadcast-metrics", "floor-metrics", "inventory-state", "equipment-state"] },
         "sequence": { "$ref": "#/$defs/positiveInteger" },
         "interpolation": { "const": "linear" },
         "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },

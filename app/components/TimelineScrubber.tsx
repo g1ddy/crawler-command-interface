@@ -755,6 +755,14 @@ function SequenceInspector({
                 <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
               </div>
             ))}
+
+            {Object.entries(projectedObservations.floor).map(([k, val]) => (
+              <div key={`floor-${k}`} style={{ background: '#081a26', border: '1px solid #1a3c4c', padding: '3px 7px', borderRadius: '3px', fontSize: '10px' }}>
+                <span style={{ color: '#7f9ea9' }}>Floor.{k}: </span>
+                <strong style={{ color: '#fff' }}>{val.value.toLocaleString()}</strong>
+                <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -776,6 +784,9 @@ function formatObservationPayload(obs: TimelineObservation): string {
   }
   if (obs.kind === 'broadcast-metrics') {
     return `Viewers: ${o.viewers ? Number(o.viewers).toLocaleString() : '—'}, Followers: ${o.followers ? Number(o.followers).toLocaleString() : '—'}`;
+  }
+  if (obs.kind === 'floor-metrics') {
+    return `Remaining crawlers: ${Number(o.remainingCrawlers).toLocaleString()}`;
   }
   if (obs.kind === 'inventory-state') {
     return `Item ${o.itemInstanceId}: present=${o.present ?? true}, qty=${o.quantity ? JSON.stringify(o.quantity) : '1'}`;

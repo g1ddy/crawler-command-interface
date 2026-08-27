@@ -99,6 +99,16 @@ test("projectObservations returns exact point-in-time HUD telemetry state when s
   assert.equal(seqEndObs.broadcast["viewers"].value, 212000000000);
 });
 
+test("floor population is exact, floor-scoped telemetry and never interpolated", () => {
+  const startSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-001-countdown-start").sequence;
+  const firstPopulation = projectObservations(compiledTimeline, startSequence);
+  assert.equal(firstPopulation.floor.remainingCrawlers.value, 1292526);
+
+  const laterSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-countdown-crawlers-1033992").sequence;
+  const beforeLaterPopulation = projectObservationValue(compiledTimeline, laterSequence - 1, "floor-metrics.remainingCrawlers");
+  assert.equal(beforeLaterPopulation, null, "population snapshots must not estimate deaths between reports");
+});
+
 test("linear interpolation never crosses a floor boundary", () => {
   const docCrossFloor = {
     events: [
