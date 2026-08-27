@@ -19,6 +19,18 @@ test("initial state has default crawler stats", () => {
   assert.equal(state.inventory.length, 0);
 });
 
+test("initial-state achievements retain valid recipients", () => {
+  const state = createInitialState({
+    achievements: [
+      { id: "achievement-donut", title: "Cat Lady", recipient: "donut" },
+      { id: "achievement-invalid", title: "Unknown", recipient: "not-a-crawler" },
+    ],
+  });
+
+  assert.equal(state.achievements[0].recipient, "donut");
+  assert.equal(state.achievements[1].recipient, undefined);
+});
+
 test("projection at sequence 1 creates initial quest record", () => {
   const state = projectState(floor6Events, 1, []);
   assert.equal(state.sequence, 1);

@@ -122,6 +122,11 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   const menagerie = achievements.find((event) => event.achievement.id === "achievement-menagerie");
   assert.equal(menagerie?.achievement.recipient, "donut");
   assert.ok(menagerie?.achievement.description);
+
+  const floor1Exit = rawTimeline.events.find((event) => event.id === "evt-f1-019-exit");
+  assert.ok(floor1Exit);
+  const atFloor1Exit = projectState(rawTimeline, floor1Exit.sequence);
+  assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-found-stairs"));
 });
 
 test("PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay", () => {

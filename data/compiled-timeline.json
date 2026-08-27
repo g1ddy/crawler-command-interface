@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-27T01:45:31.493Z",
-    "updatedAt": "2026-08-27T01:45:31.493Z"
+    "createdAt": "2026-08-27T02:23:01.642Z",
+    "updatedAt": "2026-08-27T02:23:01.643Z"
   },
   "floors": [
     {
@@ -1728,29 +1728,8 @@
       ]
     },
     {
-      "id": "evt-f1-019-exit",
-      "sequence": 59,
-      "type": "NarrativeEvent",
-      "kind": "floor-exited",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 30
-      },
-      "summary": "Carl reaches the stairs and completes the First Floor.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Achievements for Dungeon Crawling"
-          },
-          "confidence": "corroborated"
-        }
-      ]
-    },
-    {
       "id": "evt-f1-achievement-borough-boss",
-      "sequence": 60,
+      "sequence": 59,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1782,7 +1761,7 @@
     },
     {
       "id": "evt-f1-achievement-bully-and-a-thief",
-      "sequence": 61,
+      "sequence": 60,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1816,7 +1795,7 @@
     },
     {
       "id": "evt-f1-018-battlefield-construction",
-      "sequence": 62,
+      "sequence": 61,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1850,7 +1829,7 @@
     },
     {
       "id": "evt-f1-achievement-little-piggy-went-to-market",
-      "sequence": 63,
+      "sequence": 62,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1884,7 +1863,7 @@
     },
     {
       "id": "evt-f1-achievement-found-stairs",
-      "sequence": 64,
+      "sequence": 63,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1913,6 +1892,27 @@
           }
         ]
       }
+    },
+    {
+      "id": "evt-f1-019-exit",
+      "sequence": 64,
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl reaches the stairs and completes the First Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
     },
     {
       "id": "evt-f2-001-early-access",
