@@ -31,7 +31,7 @@
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
       "startSequence": 69,
-      "endSequence": 102
+      "endSequence": 109
     }
   ],
   "sources": [
@@ -2101,7 +2101,7 @@
       "id": "evt-f2-001-countdown-start",
       "sequence": 71,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1,
@@ -2191,7 +2191,7 @@
       "id": "evt-f2-countdown-cascadia-intro",
       "sequence": 74,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -2231,7 +2231,7 @@
       "id": "evt-f2-countdown-episode-5",
       "sequence": 76,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -2251,7 +2251,7 @@
       "id": "evt-f2-countdown-system-patch",
       "sequence": 77,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -2268,8 +2268,48 @@
       ]
     },
     {
-      "id": "evt-f2-004-bigboi-boxers",
+      "id": "evt-f2-rage-elemental-defeated",
       "sequence": 78,
+      "type": "NarrativeEvent",
+      "kind": "encounter-resolved",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl kills a Level 93 Rage Elemental by luring it into a stairwell with the Mother of All Bombs, an oil slick, and Donut's Puddle Jumper; the kill awards no experience.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-meadow-lark-descended",
+      "sequence": 79,
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "The surviving Meadow Lark residents descend safely to the Third Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-004-bigboi-boxers",
+      "sequence": 80,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2306,7 +2346,7 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "sequence": 79,
+      "sequence": 81,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -2327,7 +2367,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "sequence": 80,
+      "sequence": 82,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -2347,7 +2387,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "sequence": 81,
+      "sequence": 83,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -2380,7 +2420,7 @@
     },
     {
       "id": "evt-f2-achievement-dungeonpreneur",
-      "sequence": 82,
+      "sequence": 84,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2412,7 +2452,7 @@
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "sequence": 83,
+      "sequence": 85,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -2437,7 +2477,7 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "sequence": 84,
+      "sequence": 86,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2470,9 +2510,9 @@
     },
     {
       "id": "evt-f2-countdown-episode-6",
-      "sequence": 85,
+      "sequence": 87,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -2490,9 +2530,9 @@
     },
     {
       "id": "evt-f2-countdown-crawlers-990303",
-      "sequence": 86,
+      "sequence": 88,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -2510,7 +2550,7 @@
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "sequence": 87,
+      "sequence": 89,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -2531,10 +2571,70 @@
       "followers": 4400000000
     },
     {
-      "id": "evt-f2-countdown-episode-7",
-      "sequence": 88,
+      "id": "evt-f2-death-watch-appearance",
+      "sequence": 90,
       "type": "NarrativeEvent",
       "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Mukta overrides Zev's scheduling and forces Carl and Donut onto Death Watch Extreme Dungeon Mayhem.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-maestro-rescue",
+      "sequence": 91,
+      "type": "NarrativeEvent",
+      "kind": "encounter-resolved",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl goads the Maestro into rescuing Li Jun, Li Na, Zhang, and their manager.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-snick-video-viral",
+      "sequence": 92,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "A fabricated snick video goes viral, increasing Carl and Donut's view counts without a sourced numeric change.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-countdown-episode-7",
+      "sequence": 93,
+      "type": "NarrativeEvent",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -2552,7 +2652,7 @@
     },
     {
       "id": "evt-f2-achievement-what-goes-up",
-      "sequence": 89,
+      "sequence": 94,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2584,7 +2684,7 @@
     },
     {
       "id": "evt-f2-achievement-like-a-moth-to-the-flame",
-      "sequence": 90,
+      "sequence": 95,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2618,7 +2718,7 @@
     },
     {
       "id": "evt-f2-achievement-grease-monkey",
-      "sequence": 91,
+      "sequence": 96,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2652,7 +2752,7 @@
     },
     {
       "id": "evt-f2-achievement-you-call-that-a-trap",
-      "sequence": 92,
+      "sequence": 97,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2686,7 +2786,7 @@
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "sequence": 93,
+      "sequence": 98,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -2707,7 +2807,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "sequence": 94,
+      "sequence": 99,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -2727,9 +2827,9 @@
     },
     {
       "id": "evt-f2-countdown-episode-8",
-      "sequence": 95,
+      "sequence": 100,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -2746,8 +2846,48 @@
       ]
     },
     {
+      "id": "evt-f2-agatha-reappears",
+      "sequence": 101,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Agatha reappears alive at the stairwell.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-valtay-technology-discovered",
+      "sequence": 102,
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl realizes that Agatha's absorbed shopping-cart contents include illegal Valtay Corporation technology.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
-      "sequence": 96,
+      "sequence": 103,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2779,7 +2919,7 @@
     },
     {
       "id": "evt-f2-achievement-menagerie",
-      "sequence": 97,
+      "sequence": 104,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2811,7 +2951,7 @@
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
-      "sequence": 98,
+      "sequence": 105,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2833,17 +2973,12 @@
         "title": "PETA Enthusiast!",
         "recipient": "carl",
         "description": "Removed an aggravated non-sapient enemy’s hostility and caused it to fight other enemies.",
-        "reward": [
-          {
-            "kind": "other",
-            "description": "The Ghost of Steve Irwin smiles down upon Carl."
-          }
-        ]
+        "reward": []
       }
     },
     {
       "id": "evt-f2-011-level-13",
-      "sequence": 99,
+      "sequence": 106,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -2864,9 +2999,9 @@
     },
     {
       "id": "evt-f2-countdown-floor-3-descent",
-      "sequence": 100,
+      "sequence": 107,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -2884,7 +3019,7 @@
     },
     {
       "id": "evt-f2-012-exit",
-      "sequence": 101,
+      "sequence": 108,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2905,9 +3040,9 @@
     },
     {
       "id": "evt-f2-countdown-collapse",
-      "sequence": 102,
+      "sequence": 109,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "floor-collapsed",
       "position": {
         "floor": 2,
         "book": 1
@@ -3307,7 +3442,7 @@
           "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
         },
         {
-          "sequence": 78,
+          "sequence": 80,
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -3321,7 +3456,7 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         },
         {
-          "sequence": 85,
+          "sequence": 87,
           "remainingSeconds": 302400,
           "evidence": [
             {
@@ -3335,7 +3470,7 @@
           "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
         },
         {
-          "sequence": 86,
+          "sequence": 88,
           "remainingSeconds": 298800,
           "evidence": [
             {
@@ -3349,7 +3484,7 @@
           "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
         },
         {
-          "sequence": 88,
+          "sequence": 93,
           "remainingSeconds": 194400,
           "evidence": [
             {
@@ -3363,7 +3498,7 @@
           "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
         },
         {
-          "sequence": 95,
+          "sequence": 100,
           "remainingSeconds": 86400,
           "evidence": [
             {
@@ -3377,7 +3512,7 @@
           "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
         },
         {
-          "sequence": 100,
+          "sequence": 107,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -3391,7 +3526,7 @@
           "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "sequence": 102,
+          "sequence": 109,
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -4147,7 +4282,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 78
+      "sequence": 80
     },
     {
       "id": "obs-f2-level-11",
@@ -4162,7 +4297,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 80
+      "sequence": 82
     },
     {
       "id": "obs-f2-level-12",
@@ -4177,7 +4312,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 94
+      "sequence": 99
     },
     {
       "id": "obs-f2-level-13",
@@ -4192,7 +4327,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 99
+      "sequence": 106
     },
     {
       "id": "obs-f2-attributes-bigboi-boxers",
@@ -4213,7 +4348,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 78
+      "sequence": 80
     },
     {
       "id": "obs-f2-broadcast-ratings",
@@ -4229,7 +4364,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 87
+      "sequence": 89
     },
     {
       "id": "obs-countdown-floor-2-collapse-cascadia-intro",
@@ -4330,7 +4465,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 85
+      "sequence": 87
     },
     {
       "id": "obs-countdown-floor-2-collapse-crawlers-990303",
@@ -4347,7 +4482,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 86
+      "sequence": 88
     },
     {
       "id": "obs-f2-floor-population-990303",
@@ -4363,7 +4498,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 86
+      "sequence": 88
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-7",
@@ -4380,7 +4515,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 88
+      "sequence": 93
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-8",
@@ -4397,7 +4532,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 95
+      "sequence": 100
     },
     {
       "id": "obs-countdown-floor-2-collapse-floor-3-descent",
@@ -4414,7 +4549,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 100
+      "sequence": 107
     },
     {
       "id": "obs-countdown-floor-2-collapse-collapse",
@@ -4431,7 +4566,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 102
+      "sequence": 109
     }
   ]
 }

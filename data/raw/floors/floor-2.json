@@ -117,12 +117,7 @@
         "id": "achievement-peta-enthusiast",
         "title": "PETA Enthusiast!",
         "description": "Removed an aggravated non-sapient enemy’s hostility and caused it to fight other enemies.",
-        "reward": [
-          {
-            "kind": "other",
-            "description": "The Ghost of Steve Irwin smiles down upon Carl."
-          }
-        ],
+        "reward": [],
         "recipient": "carl"
       },
       {
@@ -220,6 +215,12 @@
         "title": "Wait, Bosses Can Leave Their Rooms?",
         "description": "Encountered a boss that left its chamber before crawlers entered.",
         "reward": []
+      },
+      {
+        "id": "achievement-you-found-stairs",
+        "title": "You Found Stairs",
+        "description": "Found a stairwell down.",
+        "reward": []
       }
     ]
   },
@@ -277,7 +278,7 @@
       "id": "evt-f2-001-countdown-start",
       "order": 3,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1,
@@ -353,7 +354,7 @@
     {
       "id": "evt-f2-countdown-cascadia-intro",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -393,7 +394,7 @@
     {
       "id": "evt-f2-countdown-episode-5",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -413,7 +414,7 @@
     {
       "id": "evt-f2-countdown-system-patch",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -431,8 +432,48 @@
       "order": 9
     },
     {
+      "id": "evt-f2-rage-elemental-defeated",
+      "type": "NarrativeEvent",
+      "kind": "encounter-resolved",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl kills a Level 93 Rage Elemental by luring it into a stairwell with the Mother of All Bombs, an oil slick, and Donut's Puddle Jumper; the kill awards no experience.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 10
+    },
+    {
+      "id": "evt-f2-meadow-lark-descended",
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "The surviving Meadow Lark residents descend safely to the Third Floor.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 11
+    },
+    {
       "id": "evt-f2-004-bigboi-boxers",
-      "order": 10,
+      "order": 12,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -460,7 +501,7 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "order": 11,
+      "order": 13,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -481,7 +522,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "order": 12,
+      "order": 14,
       "type": "LevelChanged",
       "level": 11,
       "position": {
@@ -501,7 +542,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "order": 13,
+      "order": 15,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -546,11 +587,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 14
+      "order": 16
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "order": 15,
+      "order": 17,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -575,7 +616,7 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "order": 16,
+      "order": 18,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -604,7 +645,7 @@
     {
       "id": "evt-f2-countdown-episode-6",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -619,12 +660,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17
+      "order": 19
     },
     {
       "id": "evt-f2-countdown-crawlers-990303",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -639,11 +680,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 20
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "order": 19,
+      "order": 21,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -664,9 +705,69 @@
       ]
     },
     {
-      "id": "evt-f2-countdown-episode-7",
+      "id": "evt-f2-death-watch-appearance",
       "type": "NarrativeEvent",
       "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Mukta overrides Zev's scheduling and forces Carl and Donut onto Death Watch Extreme Dungeon Mayhem.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 22
+    },
+    {
+      "id": "evt-f2-maestro-rescue",
+      "type": "NarrativeEvent",
+      "kind": "encounter-resolved",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl goads the Maestro into rescuing Li Jun, Li Na, Zhang, and their manager.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 23
+    },
+    {
+      "id": "evt-f2-snick-video-viral",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "A fabricated snick video goes viral, increasing Carl and Donut's view counts without a sourced numeric change.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 24
+    },
+    {
+      "id": "evt-f2-countdown-episode-7",
+      "type": "NarrativeEvent",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -681,7 +782,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 20
+      "order": 25
     },
     {
       "id": "evt-f2-achievement-what-goes-up",
@@ -702,7 +803,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 21
+      "order": 26
     },
     {
       "id": "evt-f2-achievement-like-a-moth-to-the-flame",
@@ -723,7 +824,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 22
+      "order": 27
     },
     {
       "id": "evt-f2-achievement-grease-monkey",
@@ -744,7 +845,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 23
+      "order": 28
     },
     {
       "id": "evt-f2-achievement-you-call-that-a-trap",
@@ -765,11 +866,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 24
+      "order": 29
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "order": 25,
+      "order": 30,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -790,7 +891,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "order": 26,
+      "order": 31,
       "type": "LevelChanged",
       "level": 12,
       "position": {
@@ -811,7 +912,7 @@
     {
       "id": "evt-f2-countdown-episode-8",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -826,7 +927,47 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27
+      "order": 32
+    },
+    {
+      "id": "evt-f2-agatha-reappears",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Agatha reappears alive at the stairwell.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 33
+    },
+    {
+      "id": "evt-f2-valtay-technology-discovered",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 2,
+        "book": 1
+      },
+      "summary": "Carl realizes that Agatha's absorbed shopping-cart contents include illegal Valtay Corporation technology.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-second-floor",
+          "locator": {
+            "section": "Story"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 34
     },
     {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
@@ -847,7 +988,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28
+      "order": 35
     },
     {
       "id": "evt-f2-achievement-menagerie",
@@ -868,7 +1009,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29
+      "order": 36
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
@@ -889,11 +1030,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 30
+      "order": 37
     },
     {
       "id": "evt-f2-011-level-13",
-      "order": 31,
+      "order": 38,
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -915,7 +1056,7 @@
     {
       "id": "evt-f2-countdown-floor-3-descent",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -930,11 +1071,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 32
+      "order": 39
     },
     {
       "id": "evt-f2-012-exit",
-      "order": 33,
+      "order": 40,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -956,7 +1097,7 @@
     {
       "id": "evt-f2-countdown-collapse",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "floor-collapsed",
       "position": {
         "floor": 2,
         "book": 1
@@ -971,7 +1112,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 34
+      "order": 41
     }
   ],
   "observations": [
