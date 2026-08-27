@@ -6,28 +6,25 @@ This directory contains project-specific automation used by local development, C
 
 ### `setup.sh`
 
-Use `setup.sh` when creating a fresh Codex environment. It deliberately delegates to the reusable maintenance path with a forced refresh so setup and maintenance cannot drift apart.
+Use `setup.sh` when creating a fresh ChatGPT Codex environment:
 
 ```bash
 ./scripts/setup.sh
 ```
 
-A fresh setup therefore performs the full maintenance contract: exact npm dependency installation, Chromium plus its operating-system dependencies, and regeneration of derived story fixtures.
+It installs the exact npm dependency graph and the Chromium browser plus Linux dependencies required by the Playwright E2E suite.
 
 ### `maintenance.sh`
 
-Use `maintenance.sh` when resuming an existing Codex environment after pulling changes or switching branches. It is intentionally cheap when dependency state has not changed:
-
-- reruns `npm ci` when `node_modules` is missing, `package-lock.json` changed, or setup explicitly forces a refresh;
-- when dependencies are refreshed, runs `playwright install --with-deps chromium` so Playwright/browser upgrades also refresh required Linux libraries;
-- on unchanged task resumes, uses the cheaper `playwright install chromium` path;
-- refreshes generated story fixtures.
+Use `maintenance.sh` when Codex resumes an existing environment after pulling changes or switching branches:
 
 ```bash
 ./scripts/maintenance.sh
 ```
 
-The maintenance lockfile checksum is local environment state stored under `.codex/` and must not be committed.
+It deliberately performs the same two idempotent environment refresh steps as setup: `npm ci` and `playwright install --with-deps chromium`.
+
+Neither Codex script generates fixtures, builds artifacts, runs tests, or writes repository-local bookkeeping state. Those remain explicit repository commands.
 
 ## Other scripts
 
@@ -39,4 +36,4 @@ The Codex scripts do not replace the hardened ChatGPT Sites / CI helpers:
 - `sync-derived-fixtures.mjs` regenerates checked-in derived timeline fixtures.
 - `write-build-provenance.mjs` records the source commit in built artifacts.
 
-`package.json` remains the normal user-facing command interface; these scripts encapsulate environment and orchestration details that are awkward to express directly as npm commands.
+`package.json` remains the normal user-facing command interface; these scripts only prepare the Codex environment.
