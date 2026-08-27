@@ -154,6 +154,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           achievement: {
             id: achDef.id,
             title: achDef.title,
+            recipient: achDef.recipient,
             description: achDef.description,
             reward: achDef.reward,
           },

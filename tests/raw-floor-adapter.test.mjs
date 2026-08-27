@@ -107,6 +107,28 @@ test("Floor 1 and Floor 2 retain sourced progression anchors and supporting tran
   assert.ok(rawTimeline.events.some((event) => event.id === "evt-f2-dungeonpreneur-royalty" && event.type === "PermanentEntitlementGranted"));
 });
 
+test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with recipients and rewards", () => {
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
+  const achievements = rawTimeline.events.filter((event) => event.type === "AchievementUnlocked");
+  const byFloor = (floor) => achievements.filter((event) => event.position.floor === floor);
+
+  assert.equal(byFloor(1).length, 27);
+  assert.equal(byFloor(2).length, 8);
+
+  const crazyCatLady = achievements.find((event) => event.achievement.id === "achievement-trailblazing-crazy-cat-lady");
+  assert.equal(crazyCatLady?.achievement.recipient, "donut");
+  assert.equal(crazyCatLady?.achievement.reward?.[0]?.description, "Legendary Pet Box");
+
+  const menagerie = achievements.find((event) => event.achievement.id === "achievement-menagerie");
+  assert.equal(menagerie?.achievement.recipient, "donut");
+  assert.ok(menagerie?.achievement.description);
+
+  const floor1Exit = rawTimeline.events.find((event) => event.id === "evt-f1-019-exit");
+  assert.ok(floor1Exit);
+  const atFloor1Exit = projectState(rawTimeline, floor1Exit.sequence);
+  assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-found-stairs"));
+});
+
 test("PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay", () => {
   const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
   const royaltyEvent = rawTimeline.events.find((event) => event.id === "evt-f2-dungeonpreneur-royalty");

@@ -1831,7 +1831,7 @@ function Journal({
                 <div className="achievement" key={ach.achievementId}>
                   <span>{ach.icon}</span>
                   <div>
-                    <p className="eyebrow">ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
+                    <p className="eyebrow">{ach.recipient ? `${ach.recipient.toUpperCase()} · ` : ""}ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
                     <h1>{ach.title}</h1>
                     <p>{ach.description}</p>
                     <b>{ach.rewards}</b>
@@ -2023,7 +2023,7 @@ function Achievements({ achievements }: { achievements: CrawlerState["achievemen
         <div className="achievement" key={ach.achievementId}>
           <span>{ach.icon}</span>
           <div>
-            <p className="eyebrow">ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
+            <p className="eyebrow">{ach.recipient ? `${ach.recipient.toUpperCase()} · ` : ""}ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
             <h1>{ach.title}</h1>
             <p>{ach.description}</p>
             <b>{ach.rewards}</b>

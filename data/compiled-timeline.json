@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-26T12:09:30.083Z",
-    "updatedAt": "2026-08-26T12:09:30.083Z"
+    "createdAt": "2026-08-27T02:23:01.642Z",
+    "updatedAt": "2026-08-27T02:23:01.643Z"
   },
   "floors": [
     {
@@ -22,7 +22,7 @@
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
       "startSequence": 1,
-      "endSequence": 44
+      "endSequence": 64
     },
     {
       "id": "floor-2",
@@ -30,8 +30,8 @@
       "title": "Second Floor",
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
-      "startSequence": 45,
-      "endSequence": 72
+      "startSequence": 65,
+      "endSequence": 98
     }
   ],
   "sources": [
@@ -248,24 +248,27 @@
         "book": 1,
         "chapter": 2
       },
-      "summary": "Carl receives the Empty Pockets Achievement.",
+      "summary": "Carl unlocks Empty Pockets.",
       "evidence": [
         {
           "sourceId": "src-wiki-floor-1-achievements",
           "locator": {
-            "section": "Achievements for Entering the Dungeon"
+            "section": "Book 1 Achievements"
           },
           "confidence": "corroborated"
         }
       ],
       "achievement": {
         "id": "achievement-empty-pockets",
-        "title": "Empty Pockets Achievement",
+        "title": "Empty Pockets",
+        "recipient": "carl",
+        "description": "Entered the dungeon without supplies.",
         "reward": [
           {
             "kind": "box",
             "boxType": "adventurer",
-            "rarity": "bronze"
+            "rarity": "bronze",
+            "description": "Bronze Adventurer Box"
           }
         ]
       }
@@ -279,24 +282,27 @@
         "book": 1,
         "chapter": 2
       },
-      "summary": "Carl receives the Why Aren't You Wearing Pants? Achievement.",
+      "summary": "Carl unlocks Why Aren't You Wearing Pants?.",
       "evidence": [
         {
           "sourceId": "src-wiki-floor-1-achievements",
           "locator": {
-            "section": "Achievements for Entering the Dungeon"
+            "section": "Book 1 Achievements"
           },
           "confidence": "corroborated"
         }
       ],
       "achievement": {
         "id": "achievement-why-no-pants",
-        "title": "Why Aren't You Wearing Pants? Achievement",
+        "title": "Why Aren't You Wearing Pants?",
+        "recipient": "carl",
+        "description": "Entered the dungeon without pants.",
         "reward": [
           {
             "kind": "box",
             "boxType": "apparel",
-            "rarity": "gold"
+            "rarity": "gold",
+            "description": "Gold Apparel Box"
           }
         ]
       }
@@ -310,31 +316,462 @@
         "book": 1,
         "chapter": 2
       },
-      "summary": "Carl receives the Unarmed Combat Achievement.",
+      "summary": "Carl unlocks Unarmed Combat.",
       "evidence": [
         {
           "sourceId": "src-wiki-floor-1-achievements",
           "locator": {
-            "section": "Achievements for Entering the Dungeon"
+            "section": "Book 1 Achievements"
           },
           "confidence": "corroborated"
         }
       ],
       "achievement": {
         "id": "achievement-unarmed-combat",
-        "title": "Unarmed Combat Achievement",
+        "title": "Unarmed Combat",
+        "recipient": "carl",
+        "description": "Entered the World Dungeon without a weapon.",
         "reward": [
           {
             "kind": "box",
             "boxType": "weapon",
-            "rarity": "bronze"
+            "rarity": "bronze",
+            "description": "Bronze Weapon Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-read-official-dungeon-sign",
+      "sequence": 9,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks You've Discovered and Read an Official Dungeon Sign.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-read-official-dungeon-sign",
+        "title": "You've Discovered and Read an Official Dungeon Sign",
+        "recipient": "carl",
+        "description": "Read an official dungeon sign.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "Official signs are highlighted and nearby guilds appear on the minimap."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-inflicted-damage-on-mob",
+      "sequence": 10,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks You've Inflicted Damage on a Mob.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-inflicted-damage-on-mob",
+        "title": "You've Inflicted Damage on a Mob",
+        "recipient": "carl",
+        "description": "Damaged a mob for the first time.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "The mob will probably hit back."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-killed-a-mob",
+      "sequence": 11,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks You've Killed a Mob!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-killed-a-mob",
+        "title": "You've Killed a Mob!",
+        "recipient": "carl",
+        "description": "Killed a mob for the first time.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "Carl can now gain experience."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-armed-mob-bare-hands",
+      "sequence": 12,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks You've Killed an Armed Mob with Your Bare Fucking Hands!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-armed-mob-bare-hands",
+        "title": "You've Killed an Armed Mob with Your Bare Fucking Hands!",
+        "recipient": "carl",
+        "description": "Killed an armed mob with bare hands.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "weapon",
+            "rarity": "bronze",
+            "description": "Bronze Weapon Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-higher-level-mob",
+      "sequence": 13,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks You've Killed a Mob a Higher Level Than Yourself!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-higher-level-mob",
+        "title": "You've Killed a Mob a Higher Level Than Yourself!",
+        "recipient": "carl",
+        "description": "Killed a mob above Carl’s level.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze",
+            "description": "Bronze Adventurer Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-entered-a-guildhall",
+      "sequence": 14,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks You've Entered a Guildhall!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-entered-a-guildhall",
+        "title": "You've Entered a Guildhall!",
+        "recipient": "carl",
+        "description": "Entered a guildhall.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No material reward."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-017-podophilia",
+      "sequence": 15,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks Podophilia!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-podophilia",
+        "title": "Podophilia!",
+        "recipient": "carl",
+        "description": "Killed an opponent by crushing it with bare feet.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "shoe",
+            "rarity": "gold",
+            "description": "Gold Shoe Box containing the Enchanted Pedicure Kit of the Sylph"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-015-boom",
+      "sequence": 16,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks Boom!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-boom",
+        "title": "Boom!",
+        "recipient": "carl",
+        "description": "Caused a wall-shaking explosion in the dungeon.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "goblin",
+            "rarity": "silver",
+            "description": "Silver Goblin Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-level-up-baby",
+      "sequence": 17,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 5
+      },
+      "summary": "Carl unlocks Level-Up, Baby!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-level-up-baby",
+        "title": "Level-Up, Baby!",
+        "recipient": "carl",
+        "description": "Gained enough experience to reach a new level.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No extra reward beyond the level."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-trailblazing-crazy-cat-lady",
+      "sequence": 18,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "Donut unlocks Trailblazing Crazy Cat Lady.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-trailblazing-crazy-cat-lady",
+        "title": "Trailblazing Crazy Cat Lady",
+        "recipient": "donut",
+        "description": "The first crawler to enter the World Dungeon with a cat.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "pet",
+            "rarity": "legendary",
+            "description": "Legendary Pet Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-early-adopter",
+      "sequence": 19,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "Carl unlocks Early Adopter.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-early-adopter",
+        "title": "Early Adopter",
+        "recipient": "carl",
+        "description": "One of the first 5,000 crawlers to enter a new World Dungeon.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "silver",
+            "description": "Silver Adventurer Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-loner",
+      "sequence": 20,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "Carl unlocks Loner.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-loner",
+        "title": "Loner",
+        "recipient": "carl",
+        "description": "Entered without any human companions.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No reward."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-fall-into-obvious-trap",
+      "sequence": 21,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "Carl unlocks Fall into an Obvious Trap.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-fall-into-obvious-trap",
+        "title": "Fall into an Obvious Trap",
+        "recipient": "carl",
+        "description": "No achievement notification text is preserved by the source.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "A warning that Carl is about to meet his maker."
           }
         ]
       }
     },
     {
       "id": "evt-f1-level-2",
-      "sequence": 9,
+      "sequence": 22,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -354,7 +791,7 @@
     },
     {
       "id": "evt-f1-005-goblin-pass",
-      "sequence": 10,
+      "sequence": 23,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -379,7 +816,7 @@
     },
     {
       "id": "evt-f1-006-trollskin-shirt",
-      "sequence": 11,
+      "sequence": 24,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -412,8 +849,106 @@
       }
     },
     {
+      "id": "evt-f1-achievement-loot",
+      "sequence": 25,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl unlocks Loot!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-loot",
+        "title": "Loot!",
+        "recipient": "carl",
+        "description": "Wore an item found in the dungeon.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No material reward."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-009-first-magic-gear",
+      "sequence": 26,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl unlocks Oooh, Magic!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-oooh-magic",
+        "title": "Oooh, Magic!",
+        "recipient": "carl",
+        "description": "Wore magical gear for the first time.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "adventurer",
+            "rarity": "bronze",
+            "description": "Bronze Adventurer Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-boss-babe",
+      "sequence": 27,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 11
+      },
+      "summary": "Carl unlocks Boss Babe.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-boss-babe",
+        "title": "Boss Babe",
+        "recipient": "carl",
+        "description": "Damaged a dungeon boss.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No immediate reward recorded."
+          }
+        ]
+      }
+    },
+    {
       "id": "evt-f1-007-nightgaunt-cloak",
-      "sequence": 12,
+      "sequence": 28,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -450,7 +985,7 @@
     },
     {
       "id": "evt-f1-008-toe-ring",
-      "sequence": 13,
+      "sequence": 29,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -487,7 +1022,7 @@
     },
     {
       "id": "evt-f1-toe-ring-equipped",
-      "sequence": 14,
+      "sequence": 30,
       "type": "ItemEquipped",
       "position": {
         "floor": 1,
@@ -508,39 +1043,8 @@
       "slot": "FEET"
     },
     {
-      "id": "evt-f1-009-first-magic-gear",
-      "sequence": 15,
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 6
-      },
-      "summary": "Carl earns Oooh, Magic after first equipping magical gear.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Achievements for Dungeon Crawling"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "achievement": {
-        "id": "achievement-oooh-magic",
-        "title": "Oooh, Magic Achievement",
-        "reward": [
-          {
-            "kind": "box",
-            "boxType": "adventurer",
-            "rarity": "bronze"
-          }
-        ]
-      }
-    },
-    {
       "id": "evt-f1-level-3",
-      "sequence": 16,
+      "sequence": 31,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -560,7 +1064,7 @@
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
-      "sequence": 17,
+      "sequence": 32,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -596,7 +1100,7 @@
     },
     {
       "id": "evt-f1-level-5",
-      "sequence": 18,
+      "sequence": 33,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -616,7 +1120,7 @@
     },
     {
       "id": "evt-f1-countdown-crawlers-4322395",
-      "sequence": 19,
+      "sequence": 34,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -636,7 +1140,7 @@
     },
     {
       "id": "evt-f1-countdown-crawlers-4148111",
-      "sequence": 20,
+      "sequence": 35,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -656,7 +1160,7 @@
     },
     {
       "id": "evt-f1-countdown-royal-court-hoarder",
-      "sequence": 21,
+      "sequence": 36,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -676,7 +1180,7 @@
     },
     {
       "id": "evt-f1-011-shade-gnoll-kneepads",
-      "sequence": 22,
+      "sequence": 37,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -713,7 +1217,7 @@
     },
     {
       "id": "evt-f1-countdown-episode-1",
-      "sequence": 23,
+      "sequence": 38,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -733,7 +1237,7 @@
     },
     {
       "id": "evt-f1-countdown-floor-2-stairs",
-      "sequence": 24,
+      "sequence": 39,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -753,7 +1257,7 @@
     },
     {
       "id": "evt-f1-level-7",
-      "sequence": 25,
+      "sequence": 40,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -773,7 +1277,7 @@
     },
     {
       "id": "evt-f1-level-8",
-      "sequence": 26,
+      "sequence": 41,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -793,7 +1297,7 @@
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
-      "sequence": 27,
+      "sequence": 42,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -825,8 +1329,74 @@
       }
     },
     {
+      "id": "evt-f1-achievement-you-monster",
+      "sequence": 43,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "summary": "Carl unlocks You Monster!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-you-monster",
+        "title": "You Monster!",
+        "recipient": "carl",
+        "description": "Killed goblin children during the goblin chieftain-room explosion.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No material reward; the notification is deliberately cruel."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-war-criminal",
+      "sequence": 44,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 19
+      },
+      "summary": "Carl unlocks War Criminal.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-war-criminal",
+        "title": "War Criminal",
+        "recipient": "carl",
+        "description": "Killed more than twenty noncombatants with one attack.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "asshole",
+            "rarity": "gold",
+            "description": "Gold Asshole's Box"
+          }
+        ]
+      }
+    },
+    {
       "id": "evt-f1-countdown-crawlers-3594517",
-      "sequence": 28,
+      "sequence": 45,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -846,7 +1416,7 @@
     },
     {
       "id": "evt-f1-013-desperado-pass",
-      "sequence": 29,
+      "sequence": 46,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -871,7 +1441,7 @@
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
-      "sequence": 30,
+      "sequence": 47,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -906,39 +1476,8 @@
       }
     },
     {
-      "id": "evt-f1-015-boom",
-      "sequence": 31,
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 19
-      },
-      "summary": "Carl earns Boom! for his first explosion.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Achievements for Combat"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "achievement": {
-        "id": "achievement-boom",
-        "title": "Boom! Achievement",
-        "reward": [
-          {
-            "kind": "box",
-            "boxType": "goblin",
-            "rarity": "silver"
-          }
-        ]
-      }
-    },
-    {
       "id": "evt-f1-level-9",
-      "sequence": 32,
+      "sequence": 48,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -958,7 +1497,7 @@
     },
     {
       "id": "evt-f1-level-10",
-      "sequence": 33,
+      "sequence": 49,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -978,7 +1517,7 @@
     },
     {
       "id": "evt-f1-countdown-episode-2",
-      "sequence": 34,
+      "sequence": 50,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -998,7 +1537,7 @@
     },
     {
       "id": "evt-f1-countdown-system-patch",
-      "sequence": 35,
+      "sequence": 51,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1018,7 +1557,7 @@
     },
     {
       "id": "evt-f1-016-war-gauntlet",
-      "sequence": 36,
+      "sequence": 52,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1055,39 +1594,42 @@
       }
     },
     {
-      "id": "evt-f1-017-podophilia",
-      "sequence": 37,
+      "id": "evt-f1-achievement-two-chicks-same-time",
+      "sequence": 53,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
         "book": 1,
         "chapter": 25
       },
-      "summary": "Carl earns Podophilia! for crushing an opponent with his bare feet.",
+      "summary": "Carl unlocks Two Chicks at the Same Time.",
       "evidence": [
         {
           "sourceId": "src-wiki-floor-1-achievements",
           "locator": {
-            "section": "Achievements for Combat"
+            "section": "Book 1 Achievements"
           },
           "confidence": "corroborated"
         }
       ],
       "achievement": {
-        "id": "achievement-podophilia",
-        "title": "Podophilia! Achievement",
+        "id": "achievement-two-chicks-same-time",
+        "title": "Two Chicks at the Same Time",
+        "recipient": "carl",
+        "description": "Killed two mobs at once by using their bodies against one another.",
         "reward": [
           {
             "kind": "box",
-            "boxType": "shoe",
-            "rarity": "gold"
+            "boxType": "brawler",
+            "rarity": "gold",
+            "description": "Gold Brawler Box"
           }
         ]
       }
     },
     {
       "id": "evt-f1-countdown-meadow-lark",
-      "sequence": 38,
+      "sequence": 54,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1107,7 +1649,7 @@
     },
     {
       "id": "evt-f1-countdown-crawlers-2552085",
-      "sequence": 39,
+      "sequence": 55,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1127,7 +1669,7 @@
     },
     {
       "id": "evt-f1-countdown-system-patch-late",
-      "sequence": 40,
+      "sequence": 56,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1146,39 +1688,8 @@
       ]
     },
     {
-      "id": "evt-f1-018-battlefield-construction",
-      "sequence": 41,
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 1,
-        "book": 1,
-        "chapter": 30
-      },
-      "summary": "Carl earns Battlefield Construction for deploying a crafted structure in battle.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-1-achievements",
-          "locator": {
-            "section": "Achievements for Combat"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "achievement": {
-        "id": "achievement-battlefield-construction",
-        "title": "Battlefield Construction Achievement",
-        "reward": [
-          {
-            "kind": "box",
-            "boxType": "mechanic",
-            "rarity": "silver"
-          }
-        ]
-      }
-    },
-    {
       "id": "evt-f1-countdown-ball-of-swine",
-      "sequence": 42,
+      "sequence": 57,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1198,7 +1709,7 @@
     },
     {
       "id": "evt-f1-countdown-floor-2-descent",
-      "sequence": 43,
+      "sequence": 58,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1217,8 +1728,174 @@
       ]
     },
     {
+      "id": "evt-f1-achievement-borough-boss",
+      "sequence": 59,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "The party unlocks Borough Boss!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-borough-boss",
+        "title": "Borough Boss!",
+        "recipient": "party",
+        "description": "Entered a borough-boss chamber.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No reward."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-bully-and-a-thief",
+      "sequence": 60,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl unlocks Bully and a Thief!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-bully-and-a-thief",
+        "title": "Bully and a Thief!",
+        "recipient": "carl",
+        "description": "Inadvertently took Agatha’s shopping cart into inventory during the Ball of Swine fight.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "asshole",
+            "rarity": "bronze",
+            "description": "Bronze Asshole's Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-018-battlefield-construction",
+      "sequence": 61,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl unlocks Battlefield Construction!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-battlefield-construction",
+        "title": "Battlefield Construction!",
+        "recipient": "carl",
+        "description": "Built and deployed a structure in battle.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "mechanic",
+            "rarity": "silver",
+            "description": "Silver Mechanic Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-little-piggy-went-to-market",
+      "sequence": 62,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "Carl unlocks This Little Piggy Went to Market!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-little-piggy-went-to-market",
+        "title": "This Little Piggy Went to Market!",
+        "recipient": "carl",
+        "description": "Killed more than five opponents in boss fights with bare feet.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "shoe",
+            "rarity": "platinum",
+            "description": "Platinum Shoe Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-found-stairs",
+      "sequence": 63,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 30
+      },
+      "summary": "The party unlocks You Found Stairs!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-1-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-found-stairs",
+        "title": "You Found Stairs!",
+        "recipient": "party",
+        "description": "Found a stairwell down to the next floor.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No material reward; surviving to read the notification is the reward."
+          }
+        ]
+      }
+    },
+    {
       "id": "evt-f1-019-exit",
-      "sequence": 44,
+      "sequence": 64,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1239,7 +1916,7 @@
     },
     {
       "id": "evt-f2-001-early-access",
-      "sequence": 45,
+      "sequence": 65,
       "type": "NarrativeEvent",
       "kind": "location-discovered",
       "position": {
@@ -1260,7 +1937,7 @@
     },
     {
       "id": "evt-f2-001-entered",
-      "sequence": 46,
+      "sequence": 66,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -1281,7 +1958,7 @@
     },
     {
       "id": "evt-f2-001-countdown-start",
-      "sequence": 47,
+      "sequence": 67,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1302,7 +1979,7 @@
     },
     {
       "id": "evt-f2-002-goo-inator",
-      "sequence": 48,
+      "sequence": 68,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -1335,7 +2012,7 @@
     },
     {
       "id": "evt-f2-003-pedicure-kit",
-      "sequence": 49,
+      "sequence": 69,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -1371,7 +2048,7 @@
     },
     {
       "id": "evt-f2-countdown-cascadia-intro",
-      "sequence": 50,
+      "sequence": 70,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1391,7 +2068,7 @@
     },
     {
       "id": "evt-f2-countdown-crawlers-1033992",
-      "sequence": 51,
+      "sequence": 71,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1411,7 +2088,7 @@
     },
     {
       "id": "evt-f2-countdown-episode-5",
-      "sequence": 52,
+      "sequence": 72,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1431,7 +2108,7 @@
     },
     {
       "id": "evt-f2-countdown-system-patch",
-      "sequence": 53,
+      "sequence": 73,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1451,7 +2128,7 @@
     },
     {
       "id": "evt-f2-004-bigboi-boxers",
-      "sequence": 54,
+      "sequence": 74,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -1488,7 +2165,7 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "sequence": 55,
+      "sequence": 75,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -1509,7 +2186,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "sequence": 56,
+      "sequence": 76,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -1529,7 +2206,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "sequence": 57,
+      "sequence": 77,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -1561,39 +2238,40 @@
       }
     },
     {
-      "id": "evt-f2-006-jug-o-boom",
-      "sequence": 58,
+      "id": "evt-f2-achievement-dungeonpreneur",
+      "sequence": 78,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
         "book": 1,
-        "chapter": 33
+        "chapter": 35
       },
-      "summary": "Carl earns Dungeonpreneur for inventing Carl's Jug O' Boom, which grants a royalty entitlement.",
+      "summary": "Carl unlocks Dungeonpreneur.",
       "evidence": [
         {
-          "sourceId": "src-book-1",
+          "sourceId": "src-wiki-floor-2-achievements",
           "locator": {
-            "chapter": 33
+            "section": "Book 1 Achievements"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "achievement": {
         "id": "achievement-dungeonpreneur",
         "title": "Dungeonpreneur",
-        "description": "Carl's improvised incendiary, Carl's Jug O' Boom, is recognized as a stackable dungeon invention.",
+        "recipient": "carl",
+        "description": "Invented Carl’s Jug O’ Boom, a stackable dungeon device.",
         "reward": [
           {
-            "kind": "entitlement",
-            "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+            "kind": "other",
+            "description": "A lifetime gold-coin royalty for kills other crawlers make with the invention."
           }
         ]
       }
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "sequence": 59,
+      "sequence": 79,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -1618,7 +2296,7 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "sequence": 60,
+      "sequence": 80,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -1650,39 +2328,8 @@
       }
     },
     {
-      "id": "evt-f2-008-peta-enthusiast",
-      "sequence": 61,
-      "type": "AchievementUnlocked",
-      "position": {
-        "floor": 2,
-        "book": 1,
-        "chapter": 35
-      },
-      "summary": "Carl earns PETA Enthusiast for freeing the dingos.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-floor-2-achievements",
-          "locator": {
-            "section": "Achievements for Dungeon Crawling"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "achievement": {
-        "id": "achievement-peta-enthusiast",
-        "title": "PETA Enthusiast",
-        "description": "Carl earns the achievement after freeing the dingos.",
-        "reward": [
-          {
-            "kind": "other",
-            "description": "The Ghost of Steve Irwin smiles down upon you."
-          }
-        ]
-      }
-    },
-    {
       "id": "evt-f2-countdown-episode-6",
-      "sequence": 62,
+      "sequence": 81,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1702,7 +2349,7 @@
     },
     {
       "id": "evt-f2-countdown-crawlers-990303",
-      "sequence": 63,
+      "sequence": 82,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1722,7 +2369,7 @@
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "sequence": 64,
+      "sequence": 83,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -1744,7 +2391,7 @@
     },
     {
       "id": "evt-f2-countdown-episode-7",
-      "sequence": 65,
+      "sequence": 84,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1763,8 +2410,142 @@
       ]
     },
     {
+      "id": "evt-f2-achievement-what-goes-up",
+      "sequence": 85,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 39
+      },
+      "summary": "Carl unlocks What Goes Up....",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-what-goes-up",
+        "title": "What Goes Up...",
+        "recipient": "carl",
+        "description": "Survived the Reverse Gravity spell.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "Carl can truthfully say he is more durable than Albert II, a rhesus monkey."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f2-achievement-like-a-moth-to-the-flame",
+      "sequence": 86,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 39
+      },
+      "summary": "The party unlocks Like a Moth to the Flame.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-like-a-moth-to-the-flame",
+        "title": "Like a Moth to the Flame",
+        "recipient": "party",
+        "description": "Damaged a mob more than 75 levels above the crawler.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "lucky-bastard",
+            "rarity": "platinum",
+            "description": "Platinum Lucky Bastard Box containing a lottery scratch-off ticket"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f2-achievement-grease-monkey",
+      "sequence": 87,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 41
+      },
+      "summary": "Carl unlocks Grease Monkey!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-grease-monkey",
+        "title": "Grease Monkey!",
+        "recipient": "carl",
+        "description": "Built and deployed a wheeled device.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "mechanic",
+            "rarity": "silver",
+            "description": "Silver Mechanic Box"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f2-achievement-you-call-that-a-trap",
+      "sequence": 88,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 41
+      },
+      "summary": "Carl unlocks You Call That a Trap?.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-you-call-that-a-trap",
+        "title": "You Call That a Trap?",
+        "recipient": "carl",
+        "description": "A mob was hurt by something Carl deliberately left in the dungeon.",
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "sapper",
+            "rarity": "gold",
+            "description": "Gold Sapper Box"
+          }
+        ]
+      }
+    },
+    {
       "id": "evt-f2-010-mongo-bonded",
-      "sequence": 66,
+      "sequence": 89,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -1785,7 +2566,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "sequence": 67,
+      "sequence": 90,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -1805,7 +2586,7 @@
     },
     {
       "id": "evt-f2-countdown-episode-8",
-      "sequence": 68,
+      "sequence": 91,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1824,8 +2605,104 @@
       ]
     },
     {
+      "id": "evt-f2-achievement-ceramic-dalmatian-pat",
+      "sequence": 92,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 46
+      },
+      "summary": "The party unlocks I'll Take the Ceramic Dalmatian, Pat!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-ceramic-dalmatian-pat",
+        "title": "I'll Take the Ceramic Dalmatian, Pat!",
+        "recipient": "party",
+        "description": "Discovered a reward room.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "No material reward; the reward room is the reward."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f2-achievement-menagerie",
+      "sequence": 93,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 46
+      },
+      "summary": "Donut unlocks Menagerie!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-menagerie",
+        "title": "Menagerie!",
+        "recipient": "donut",
+        "description": "Discovered a pet reward room.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "A key that opens one cage in the pet reward room."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f2-achievement-peta-enthusiast",
+      "sequence": 94,
+      "type": "AchievementUnlocked",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "summary": "Carl unlocks PETA Enthusiast!.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-floor-2-achievements",
+          "locator": {
+            "section": "Book 1 Achievements"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "achievement": {
+        "id": "achievement-peta-enthusiast",
+        "title": "PETA Enthusiast!",
+        "recipient": "carl",
+        "description": "Removed an aggravated non-sapient enemy’s hostility and caused it to fight other enemies.",
+        "reward": [
+          {
+            "kind": "other",
+            "description": "The Ghost of Steve Irwin smiles down upon Carl."
+          }
+        ]
+      }
+    },
+    {
       "id": "evt-f2-011-level-13",
-      "sequence": 69,
+      "sequence": 95,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -1846,7 +2723,7 @@
     },
     {
       "id": "evt-f2-countdown-floor-3-descent",
-      "sequence": 70,
+      "sequence": 96,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1866,7 +2743,7 @@
     },
     {
       "id": "evt-f2-012-exit",
-      "sequence": 71,
+      "sequence": 97,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1887,7 +2764,7 @@
     },
     {
       "id": "evt-f2-countdown-collapse",
-      "sequence": 72,
+      "sequence": 98,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1984,7 +2861,7 @@
           "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)"
         },
         {
-          "sequence": 19,
+          "sequence": 34,
           "remainingSeconds": 405420,
           "evidence": [
             {
@@ -1998,7 +2875,7 @@
           "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)"
         },
         {
-          "sequence": 20,
+          "sequence": 35,
           "remainingSeconds": 356580,
           "evidence": [
             {
@@ -2012,7 +2889,7 @@
           "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)"
         },
         {
-          "sequence": 21,
+          "sequence": 36,
           "remainingSeconds": 345600,
           "evidence": [
             {
@@ -2026,7 +2903,7 @@
           "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)"
         },
         {
-          "sequence": 23,
+          "sequence": 38,
           "remainingSeconds": 324000,
           "evidence": [
             {
@@ -2040,7 +2917,7 @@
           "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)"
         },
         {
-          "sequence": 24,
+          "sequence": 39,
           "remainingSeconds": 320400,
           "evidence": [
             {
@@ -2054,7 +2931,7 @@
           "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)"
         },
         {
-          "sequence": 28,
+          "sequence": 45,
           "remainingSeconds": 237600,
           "evidence": [
             {
@@ -2068,7 +2945,7 @@
           "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)"
         },
         {
-          "sequence": 34,
+          "sequence": 50,
           "remainingSeconds": 216000,
           "evidence": [
             {
@@ -2082,7 +2959,7 @@
           "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)"
         },
         {
-          "sequence": 35,
+          "sequence": 51,
           "remainingSeconds": 212400,
           "evidence": [
             {
@@ -2096,7 +2973,7 @@
           "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)"
         },
         {
-          "sequence": 38,
+          "sequence": 54,
           "remainingSeconds": 144000,
           "evidence": [
             {
@@ -2110,7 +2987,7 @@
           "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)"
         },
         {
-          "sequence": 39,
+          "sequence": 55,
           "remainingSeconds": 108000,
           "evidence": [
             {
@@ -2124,7 +3001,7 @@
           "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)"
         },
         {
-          "sequence": 40,
+          "sequence": 56,
           "remainingSeconds": 104400,
           "evidence": [
             {
@@ -2138,7 +3015,7 @@
           "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)"
         },
         {
-          "sequence": 42,
+          "sequence": 57,
           "remainingSeconds": 23400,
           "evidence": [
             {
@@ -2152,7 +3029,7 @@
           "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)"
         },
         {
-          "sequence": 43,
+          "sequence": 58,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -2174,7 +3051,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "sequence": 45,
+          "sequence": 65,
           "remainingSeconds": 540000,
           "activationOffset": -21600,
           "evidence": [
@@ -2189,7 +3066,7 @@
           "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse."
         },
         {
-          "sequence": 46,
+          "sequence": 66,
           "remainingSeconds": 525600,
           "activationOffset": -7200,
           "evidence": [
@@ -2204,7 +3081,7 @@
           "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse."
         },
         {
-          "sequence": 47,
+          "sequence": 67,
           "remainingSeconds": 518400,
           "activationOffset": 0,
           "evidence": [
@@ -2219,7 +3096,7 @@
           "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse."
         },
         {
-          "sequence": 50,
+          "sequence": 70,
           "remainingSeconds": 514800,
           "evidence": [
             {
@@ -2233,7 +3110,7 @@
           "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)"
         },
         {
-          "sequence": 51,
+          "sequence": 71,
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -2247,7 +3124,7 @@
           "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)"
         },
         {
-          "sequence": 52,
+          "sequence": 72,
           "remainingSeconds": 410400,
           "evidence": [
             {
@@ -2261,7 +3138,7 @@
           "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)"
         },
         {
-          "sequence": 53,
+          "sequence": 73,
           "remainingSeconds": 406800,
           "evidence": [
             {
@@ -2275,7 +3152,7 @@
           "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
         },
         {
-          "sequence": 54,
+          "sequence": 74,
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -2289,7 +3166,7 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         },
         {
-          "sequence": 62,
+          "sequence": 81,
           "remainingSeconds": 302400,
           "evidence": [
             {
@@ -2303,7 +3180,7 @@
           "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
         },
         {
-          "sequence": 63,
+          "sequence": 82,
           "remainingSeconds": 298800,
           "evidence": [
             {
@@ -2317,7 +3194,7 @@
           "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
         },
         {
-          "sequence": 65,
+          "sequence": 84,
           "remainingSeconds": 194400,
           "evidence": [
             {
@@ -2331,7 +3208,7 @@
           "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
         },
         {
-          "sequence": 68,
+          "sequence": 91,
           "remainingSeconds": 86400,
           "evidence": [
             {
@@ -2345,7 +3222,7 @@
           "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
         },
         {
-          "sequence": 70,
+          "sequence": 96,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -2359,7 +3236,7 @@
           "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "sequence": 72,
+          "sequence": 98,
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -2391,7 +3268,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 11
+      "sequence": 24
     },
     {
       "id": "obs-f1-intelligence-baseline",
@@ -2409,7 +3286,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 11
+      "sequence": 24
     },
     {
       "id": "obs-f1-toe-ring-equipped",
@@ -2425,7 +3302,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 14
+      "sequence": 30
     },
     {
       "id": "obs-f1-level-2",
@@ -2440,7 +3317,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 9
+      "sequence": 22
     },
     {
       "id": "obs-f1-level-3",
@@ -2455,7 +3332,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 16
+      "sequence": 31
     },
     {
       "id": "obs-f1-level-5",
@@ -2470,7 +3347,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 18
+      "sequence": 33
     },
     {
       "id": "obs-f1-level-7",
@@ -2485,7 +3362,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 25
+      "sequence": 40
     },
     {
       "id": "obs-f1-level-8",
@@ -2500,7 +3377,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 26
+      "sequence": 41
     },
     {
       "id": "obs-f1-level-9",
@@ -2515,7 +3392,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 32
+      "sequence": 48
     },
     {
       "id": "obs-f1-level-10",
@@ -2530,7 +3407,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 33
+      "sequence": 49
     },
     {
       "id": "obs-f1-attributes-nightgaunt",
@@ -2551,7 +3428,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 12
+      "sequence": 28
     },
     {
       "id": "obs-f1-attributes-toe-ring",
@@ -2572,7 +3449,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 14
+      "sequence": 30
     },
     {
       "id": "obs-f1-attributes-ring-plus-1",
@@ -2593,7 +3470,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 17
+      "sequence": 32
     },
     {
       "id": "obs-f1-attributes-ring-plus-2",
@@ -2614,7 +3491,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 30
+      "sequence": 47
     },
     {
       "id": "obs-countdown-floor-1-collapse-entered",
@@ -2716,7 +3593,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 19
+      "sequence": 34
     },
     {
       "id": "obs-countdown-floor-1-collapse-crawlers-4148111",
@@ -2733,7 +3610,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 20
+      "sequence": 35
     },
     {
       "id": "obs-countdown-floor-1-collapse-royal-court-hoarder",
@@ -2750,7 +3627,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 21
+      "sequence": 36
     },
     {
       "id": "obs-countdown-floor-1-collapse-episode-1",
@@ -2767,7 +3644,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 23
+      "sequence": 38
     },
     {
       "id": "obs-countdown-floor-1-collapse-floor-2-stairs",
@@ -2784,7 +3661,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 24
+      "sequence": 39
     },
     {
       "id": "obs-countdown-floor-1-collapse-crawlers-3594517",
@@ -2801,7 +3678,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 28
+      "sequence": 45
     },
     {
       "id": "obs-countdown-floor-1-collapse-episode-2",
@@ -2818,7 +3695,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 34
+      "sequence": 50
     },
     {
       "id": "obs-countdown-floor-1-collapse-system-patch",
@@ -2835,7 +3712,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 35
+      "sequence": 51
     },
     {
       "id": "obs-countdown-floor-1-collapse-meadow-lark",
@@ -2852,7 +3729,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 38
+      "sequence": 54
     },
     {
       "id": "obs-countdown-floor-1-collapse-crawlers-2552085",
@@ -2869,7 +3746,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 39
+      "sequence": 55
     },
     {
       "id": "obs-countdown-floor-1-collapse-system-patch-late",
@@ -2886,7 +3763,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 40
+      "sequence": 56
     },
     {
       "id": "obs-countdown-floor-1-collapse-ball-of-swine",
@@ -2903,7 +3780,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 42
+      "sequence": 57
     },
     {
       "id": "obs-countdown-floor-1-collapse-floor-2-descent",
@@ -2920,7 +3797,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 43
+      "sequence": 58
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-early-access",
@@ -2938,7 +3815,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 45
+      "sequence": 65
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-entered",
@@ -2956,7 +3833,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 46
+      "sequence": 66
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-countdown-start",
@@ -2974,7 +3851,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 47
+      "sequence": 67
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-004-bigboi-boxers",
@@ -2991,7 +3868,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 54
+      "sequence": 74
     },
     {
       "id": "obs-f2-level-11",
@@ -3006,7 +3883,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 56
+      "sequence": 76
     },
     {
       "id": "obs-f2-level-12",
@@ -3021,7 +3898,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 67
+      "sequence": 90
     },
     {
       "id": "obs-f2-level-13",
@@ -3036,7 +3913,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 69
+      "sequence": 95
     },
     {
       "id": "obs-f2-attributes-bigboi-boxers",
@@ -3057,7 +3934,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 54
+      "sequence": 74
     },
     {
       "id": "obs-f2-broadcast-ratings",
@@ -3073,7 +3950,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 64
+      "sequence": 83
     },
     {
       "id": "obs-countdown-floor-2-collapse-cascadia-intro",
@@ -3090,7 +3967,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 50
+      "sequence": 70
     },
     {
       "id": "obs-countdown-floor-2-collapse-crawlers-1033992",
@@ -3107,7 +3984,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 51
+      "sequence": 71
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-5",
@@ -3124,7 +4001,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 52
+      "sequence": 72
     },
     {
       "id": "obs-countdown-floor-2-collapse-system-patch",
@@ -3141,7 +4018,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 53
+      "sequence": 73
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-6",
@@ -3158,7 +4035,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 62
+      "sequence": 81
     },
     {
       "id": "obs-countdown-floor-2-collapse-crawlers-990303",
@@ -3175,7 +4052,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 63
+      "sequence": 82
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-7",
@@ -3192,7 +4069,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 65
+      "sequence": 84
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-8",
@@ -3209,7 +4086,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 68
+      "sequence": 91
     },
     {
       "id": "obs-countdown-floor-2-collapse-floor-3-descent",
@@ -3226,7 +4103,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 70
+      "sequence": 96
     },
     {
       "id": "obs-countdown-floor-2-collapse-collapse",
@@ -3243,7 +4120,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 72
+      "sequence": 98
     }
   ]
 }

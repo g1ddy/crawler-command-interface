@@ -473,6 +473,9 @@
           "type": "string",
           "minLength": 1
         },
+        "recipient": {
+          "enum": ["carl", "donut", "party"]
+        },
         "description": {
           "type": "string",
           "maxLength": 4000
