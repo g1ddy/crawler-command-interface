@@ -17,10 +17,10 @@ jobs:
           node-version: 22.13.0
           cache: npm
       - run: npm ci
-      - run: npm run verify
-      # The repository path is the production default. Exercise the custom
-      # domain base too, then restore the default static artifact for clarity.
+      # Exercise the custom-domain base first. The deterministic verification
+      # gate then produces and validates the canonical repository-path bundle.
       - run: npm run test:pages:custom-base
+      - run: npm run verify
       - name: Publish canonical Pages artifact
         uses: actions/upload-artifact@v4
         with:
