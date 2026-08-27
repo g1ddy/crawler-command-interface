@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+#!/bin/bash
+set -e
 
 npm ci
 npx playwright install --with-deps chromium
