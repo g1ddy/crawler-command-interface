@@ -620,6 +620,9 @@ function SequenceInspector({
 }) {
   const currentEvent = events.find((e) => e.sequence === sequence);
   const currentObservations = observations.filter((o) => o.sequence === sequence);
+  const narrativeKind = currentEvent?.type === 'NarrativeEvent'
+    ? (currentEvent as { kind?: string }).kind
+    : undefined;
 
   const showEvents = feedMode !== 'telemetry-only';
   const showTelemetry = feedMode !== 'events-only';
@@ -658,7 +661,7 @@ function SequenceInspector({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
               <strong style={{ color: '#ff8a90', fontSize: '10px', letterSpacing: '0.08em' }}>
-                ⚡ CAUSAL EVENT ({currentEvent.type || 'EVENT'})
+                ⚡ CAUSAL EVENT ({currentEvent.type || 'EVENT'}{narrativeKind ? ` · ${narrativeKind.toUpperCase()}` : ''})
               </strong>
               <span style={{ fontSize: '9px', color: '#8ca8b3' }}>
                 Category: {currentEvent.category ? currentEvent.category.toUpperCase() : 'SYSTEM'}
