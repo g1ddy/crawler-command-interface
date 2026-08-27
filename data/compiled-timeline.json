@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-27T12:25:58.446Z",
-    "updatedAt": "2026-08-27T12:25:58.446Z"
+    "createdAt": "2026-08-27T22:17:16.779Z",
+    "updatedAt": "2026-08-27T22:17:16.779Z"
   },
   "floors": [
     {
@@ -22,7 +22,7 @@
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
       "startSequence": 1,
-      "endSequence": 66
+      "endSequence": 68
     },
     {
       "id": "floor-2",
@@ -30,8 +30,8 @@
       "title": "Second Floor",
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
-      "startSequence": 67,
-      "endSequence": 100
+      "startSequence": 69,
+      "endSequence": 102
     }
   ],
   "sources": [
@@ -1281,12 +1281,12 @@
       "id": "evt-f1-countdown-episode-1",
       "sequence": 39,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "Dungeon Crawler World episode one airs; 4,006,002 crawlers remain on the First Floor.",
+      "summary": "Dungeon Crawler World episode one airs, showing spine-covered wolves, fire blobs, floating stingrays, floating eyeballs, and the first Borough Boss defeat by a 10-person crawler group; 4,006,002 crawlers remain.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1308,12 +1308,12 @@
       "id": "evt-f1-countdown-floor-2-stairs",
       "sequence": 40,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule.",
+      "summary": "A Cascadia patch populates the Floor 2 stairs, announces the descent head-start rule, reports 15 Borough Bosses and more than 1,500 Neighborhood Bosses killed, and changes Fire Fingers, hallway-bathroom explosions, toilet paper, mob inventory, and inventory momentum rules.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1423,8 +1423,10 @@
         "description": "Killed goblin children during the goblin chieftain-room explosion.",
         "reward": [
           {
-            "kind": "other",
-            "description": "No material reward; the notification is deliberately cruel."
+            "kind": "box",
+            "boxType": "asshole",
+            "rarity": "bronze",
+            "description": "Bronze Asshole's Box"
           }
         ]
       }
@@ -1588,12 +1590,12 @@
       "id": "evt-f1-countdown-episode-2",
       "sequence": 51,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "Dungeon Crawler World episode two airs.",
+      "summary": "Dungeon Crawler World episode two airs, including the Royal Court's encounter with Frank Q and Maggie My.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1608,12 +1610,12 @@
       "id": "evt-f1-countdown-system-patch",
       "sequence": 52,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "A First Floor system patch is announced.",
+      "summary": "First Floor rules change: toilet suction and bathroom explosions are resolved; language and cross-language support are added; Feral Rabies is curable and no longer airborne; Blender Fiends move down; Street Preacher becomes a Borough Boss; mob strength levels are adjusted.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1750,12 +1752,12 @@
       "id": "evt-f1-countdown-crawlers-2552085",
       "sequence": 57,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs.",
+      "summary": "Dungeon Crawler World episode three airs as the system reports 2,552,085 crawlers remaining.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1770,12 +1772,12 @@
       "id": "evt-f1-countdown-system-patch-late",
       "sequence": 58,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "A late First Floor system patch is announced.",
+      "summary": "A late First Floor patch changes spells and mob power levels and reiterates the warning not to use hallways as bathrooms.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1790,12 +1792,12 @@
       "id": "evt-f1-countdown-ball-of-swine",
       "sequence": 59,
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "encounter-resolved",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "Carl and Donut encounter the Ball of Swine.",
+      "summary": "Royal Court, Meadow Lark, and Agatha defeat the Ball of Swine using Carl's explosives and the dungeon architecture.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -2014,8 +2016,48 @@
       ]
     },
     {
-      "id": "evt-f2-001-early-access",
+      "id": "evt-f1-floor-collapse",
       "sequence": 67,
+      "type": "NarrativeEvent",
+      "kind": "floor-collapsed",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The First Floor collapses; 1,292,526 crawlers remain and more than 700,000 die in the collapse.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-episode-4",
+      "sequence": 68,
+      "type": "NarrativeEvent",
+      "kind": "episode-released",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode four airs, highlighting three-headed baboons, eggplants with teeth, crawler fights, and races for the stairs.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f2-001-early-access",
+      "sequence": 69,
       "type": "NarrativeEvent",
       "kind": "location-discovered",
       "position": {
@@ -2036,7 +2078,7 @@
     },
     {
       "id": "evt-f2-001-entered",
-      "sequence": 68,
+      "sequence": 70,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -2057,7 +2099,7 @@
     },
     {
       "id": "evt-f2-001-countdown-start",
-      "sequence": 69,
+      "sequence": 71,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2078,7 +2120,7 @@
     },
     {
       "id": "evt-f2-002-goo-inator",
-      "sequence": 70,
+      "sequence": 72,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2111,7 +2153,7 @@
     },
     {
       "id": "evt-f2-003-pedicure-kit",
-      "sequence": 71,
+      "sequence": 73,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2147,7 +2189,7 @@
     },
     {
       "id": "evt-f2-countdown-cascadia-intro",
-      "sequence": 72,
+      "sequence": 74,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2167,7 +2209,7 @@
     },
     {
       "id": "evt-f2-countdown-crawlers-1033992",
-      "sequence": 73,
+      "sequence": 75,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2187,7 +2229,7 @@
     },
     {
       "id": "evt-f2-countdown-episode-5",
-      "sequence": 74,
+      "sequence": 76,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2207,7 +2249,7 @@
     },
     {
       "id": "evt-f2-countdown-system-patch",
-      "sequence": 75,
+      "sequence": 77,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2227,7 +2269,7 @@
     },
     {
       "id": "evt-f2-004-bigboi-boxers",
-      "sequence": 76,
+      "sequence": 78,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2264,7 +2306,7 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "sequence": 77,
+      "sequence": 79,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -2285,7 +2327,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "sequence": 78,
+      "sequence": 80,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -2305,7 +2347,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "sequence": 79,
+      "sequence": 81,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -2338,7 +2380,7 @@
     },
     {
       "id": "evt-f2-achievement-dungeonpreneur",
-      "sequence": 80,
+      "sequence": 82,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2370,7 +2412,7 @@
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "sequence": 81,
+      "sequence": 83,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -2395,7 +2437,7 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "sequence": 82,
+      "sequence": 84,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2428,7 +2470,7 @@
     },
     {
       "id": "evt-f2-countdown-episode-6",
-      "sequence": 83,
+      "sequence": 85,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2448,7 +2490,7 @@
     },
     {
       "id": "evt-f2-countdown-crawlers-990303",
-      "sequence": 84,
+      "sequence": 86,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2468,7 +2510,7 @@
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "sequence": 85,
+      "sequence": 87,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -2490,7 +2532,7 @@
     },
     {
       "id": "evt-f2-countdown-episode-7",
-      "sequence": 86,
+      "sequence": 88,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2510,7 +2552,7 @@
     },
     {
       "id": "evt-f2-achievement-what-goes-up",
-      "sequence": 87,
+      "sequence": 89,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2542,7 +2584,7 @@
     },
     {
       "id": "evt-f2-achievement-like-a-moth-to-the-flame",
-      "sequence": 88,
+      "sequence": 90,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2576,7 +2618,7 @@
     },
     {
       "id": "evt-f2-achievement-grease-monkey",
-      "sequence": 89,
+      "sequence": 91,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2610,7 +2652,7 @@
     },
     {
       "id": "evt-f2-achievement-you-call-that-a-trap",
-      "sequence": 90,
+      "sequence": 92,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2644,7 +2686,7 @@
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "sequence": 91,
+      "sequence": 93,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -2665,7 +2707,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "sequence": 92,
+      "sequence": 94,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -2685,7 +2727,7 @@
     },
     {
       "id": "evt-f2-countdown-episode-8",
-      "sequence": 93,
+      "sequence": 95,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2705,7 +2747,7 @@
     },
     {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
-      "sequence": 94,
+      "sequence": 96,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2737,7 +2779,7 @@
     },
     {
       "id": "evt-f2-achievement-menagerie",
-      "sequence": 95,
+      "sequence": 97,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2769,7 +2811,7 @@
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
-      "sequence": 96,
+      "sequence": 98,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -2801,7 +2843,7 @@
     },
     {
       "id": "evt-f2-011-level-13",
-      "sequence": 97,
+      "sequence": 99,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -2822,7 +2864,7 @@
     },
     {
       "id": "evt-f2-countdown-floor-3-descent",
-      "sequence": 98,
+      "sequence": 100,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2842,7 +2884,7 @@
     },
     {
       "id": "evt-f2-012-exit",
-      "sequence": 99,
+      "sequence": 101,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2863,7 +2905,7 @@
     },
     {
       "id": "evt-f2-countdown-collapse",
-      "sequence": 100,
+      "sequence": 102,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -3140,6 +3182,20 @@
             }
           ],
           "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
+        },
+        {
+          "sequence": 67,
+          "remainingSeconds": 0,
+          "evidence": [
+            {
+              "sourceId": "src-wiki-first-floor",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The First Floor collapses."
         }
       ]
     },
@@ -3150,7 +3206,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "sequence": 67,
+          "sequence": 69,
           "remainingSeconds": 540000,
           "activationOffset": -21600,
           "evidence": [
@@ -3165,7 +3221,7 @@
           "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse."
         },
         {
-          "sequence": 68,
+          "sequence": 70,
           "remainingSeconds": 525600,
           "activationOffset": -7200,
           "evidence": [
@@ -3180,7 +3236,7 @@
           "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse."
         },
         {
-          "sequence": 69,
+          "sequence": 71,
           "remainingSeconds": 518400,
           "activationOffset": 0,
           "evidence": [
@@ -3195,7 +3251,7 @@
           "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse."
         },
         {
-          "sequence": 72,
+          "sequence": 74,
           "remainingSeconds": 514800,
           "evidence": [
             {
@@ -3209,7 +3265,7 @@
           "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)"
         },
         {
-          "sequence": 73,
+          "sequence": 75,
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -3223,7 +3279,7 @@
           "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)"
         },
         {
-          "sequence": 74,
+          "sequence": 76,
           "remainingSeconds": 410400,
           "evidence": [
             {
@@ -3237,7 +3293,7 @@
           "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)"
         },
         {
-          "sequence": 75,
+          "sequence": 77,
           "remainingSeconds": 406800,
           "evidence": [
             {
@@ -3251,7 +3307,7 @@
           "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
         },
         {
-          "sequence": 76,
+          "sequence": 78,
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -3265,7 +3321,7 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         },
         {
-          "sequence": 83,
+          "sequence": 85,
           "remainingSeconds": 302400,
           "evidence": [
             {
@@ -3279,7 +3335,7 @@
           "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
         },
         {
-          "sequence": 84,
+          "sequence": 86,
           "remainingSeconds": 298800,
           "evidence": [
             {
@@ -3293,7 +3349,7 @@
           "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
         },
         {
-          "sequence": 86,
+          "sequence": 88,
           "remainingSeconds": 194400,
           "evidence": [
             {
@@ -3307,7 +3363,7 @@
           "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
         },
         {
-          "sequence": 93,
+          "sequence": 95,
           "remainingSeconds": 86400,
           "evidence": [
             {
@@ -3321,7 +3377,7 @@
           "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
         },
         {
-          "sequence": 98,
+          "sequence": 100,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -3335,7 +3391,7 @@
           "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "sequence": 100,
+          "sequence": 102,
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -3899,6 +3955,114 @@
       "sequence": 60
     },
     {
+      "id": "obs-f1-floor-metrics-crawlers-4322395",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 4322395,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 35
+    },
+    {
+      "id": "obs-f1-floor-metrics-crawlers-4148111",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 4148111,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 36
+    },
+    {
+      "id": "obs-f1-floor-metrics-crawlers-3594517",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 3594517,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 46
+    },
+    {
+      "id": "obs-f1-floor-metrics-crawlers-2552085",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 2552085,
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 57
+    },
+    {
+      "id": "obs-f1-floor-metrics-borough-bosses-15",
+      "kind": "floor-metrics",
+      "boroughBossesKilled": 15,
+      "note": "The same patch reports more than 1,500 Neighborhood Bosses killed; that lower-bounded value remains in the event summary because this observation stores exact readings.",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-1",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 40
+    },
+    {
+      "id": "obs-f1-floor-metrics-collapse",
+      "kind": "floor-metrics",
+      "remainingCrawlers": 1292526,
+      "evidence": [
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 67
+    },
+    {
+      "id": "obs-countdown-floor-1-collapse-complete",
+      "kind": "countdown-remaining",
+      "countdownId": "countdown-floor-1-collapse",
+      "remainingSeconds": 0,
+      "note": "The First Floor collapses.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "sequence": 67
+    },
+    {
       "id": "obs-countdown-floor-2-collapse-f2-001-early-access",
       "kind": "countdown-remaining",
       "countdownId": "countdown-floor-2-collapse",
@@ -3914,7 +4078,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 67
+      "sequence": 69
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-entered",
@@ -3932,7 +4096,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 68
+      "sequence": 70
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-countdown-start",
@@ -3950,7 +4114,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 69
+      "sequence": 71
     },
     {
       "id": "obs-f2-floor-population-start",
@@ -3966,7 +4130,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 69
+      "sequence": 71
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-004-bigboi-boxers",
@@ -3983,7 +4147,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 76
+      "sequence": 78
     },
     {
       "id": "obs-f2-level-11",
@@ -3998,7 +4162,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 78
+      "sequence": 80
     },
     {
       "id": "obs-f2-level-12",
@@ -4013,7 +4177,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 92
+      "sequence": 94
     },
     {
       "id": "obs-f2-level-13",
@@ -4028,7 +4192,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 97
+      "sequence": 99
     },
     {
       "id": "obs-f2-attributes-bigboi-boxers",
@@ -4049,7 +4213,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 76
+      "sequence": 78
     },
     {
       "id": "obs-f2-broadcast-ratings",
@@ -4065,7 +4229,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 85
+      "sequence": 87
     },
     {
       "id": "obs-countdown-floor-2-collapse-cascadia-intro",
@@ -4082,7 +4246,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 72
+      "sequence": 74
     },
     {
       "id": "obs-countdown-floor-2-collapse-crawlers-1033992",
@@ -4099,7 +4263,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 73
+      "sequence": 75
     },
     {
       "id": "obs-f2-floor-population-1033992",
@@ -4115,7 +4279,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 73
+      "sequence": 75
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-5",
@@ -4132,7 +4296,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 74
+      "sequence": 76
     },
     {
       "id": "obs-countdown-floor-2-collapse-system-patch",
@@ -4149,7 +4313,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 75
+      "sequence": 77
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-6",
@@ -4166,7 +4330,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 83
+      "sequence": 85
     },
     {
       "id": "obs-countdown-floor-2-collapse-crawlers-990303",
@@ -4183,7 +4347,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 84
+      "sequence": 86
     },
     {
       "id": "obs-f2-floor-population-990303",
@@ -4199,7 +4363,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 84
+      "sequence": 86
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-7",
@@ -4216,7 +4380,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 86
+      "sequence": 88
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-8",
@@ -4233,7 +4397,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 93
+      "sequence": 95
     },
     {
       "id": "obs-countdown-floor-2-collapse-floor-3-descent",
@@ -4250,7 +4414,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 98
+      "sequence": 100
     },
     {
       "id": "obs-countdown-floor-2-collapse-collapse",
@@ -4267,7 +4431,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 100
+      "sequence": 102
     }
   ]
 }

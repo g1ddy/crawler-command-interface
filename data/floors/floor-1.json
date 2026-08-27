@@ -427,8 +427,10 @@
         "description": "Killed goblin children during the goblin chieftain-room explosion.",
         "reward": [
           {
-            "kind": "other",
-            "description": "No material reward; the notification is deliberately cruel."
+            "kind": "box",
+            "boxType": "asshole",
+            "rarity": "bronze",
+            "description": "Bronze Asshole's Box"
           }
         ]
       },
@@ -796,6 +798,20 @@
             }
           ],
           "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
+        },
+        {
+          "anchorOrder": 67,
+          "remainingSeconds": 0,
+          "evidence": [
+            {
+              "sourceId": "src-wiki-first-floor",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The First Floor collapses."
         }
       ]
     }
@@ -1646,12 +1662,12 @@
     {
       "id": "evt-f1-countdown-episode-1",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "Dungeon Crawler World episode one airs; 4,006,002 crawlers remain on the First Floor.",
+      "summary": "Dungeon Crawler World episode one airs, showing spine-covered wolves, fire blobs, floating stingrays, floating eyeballs, and the first Borough Boss defeat by a 10-person crawler group; 4,006,002 crawlers remain.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1673,12 +1689,12 @@
     {
       "id": "evt-f1-countdown-floor-2-stairs",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule.",
+      "summary": "A Cascadia patch populates the Floor 2 stairs, announces the descent head-start rule, reports 15 Borough Bosses and more than 1,500 Neighborhood Bosses killed, and changes Fire Fingers, hallway-bathroom explosions, toilet paper, mob inventory, and inventory momentum rules.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1916,12 +1932,12 @@
     {
       "id": "evt-f1-countdown-episode-2",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "Dungeon Crawler World episode two airs.",
+      "summary": "Dungeon Crawler World episode two airs, including the Royal Court's encounter with Frank Q and Maggie My.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -1936,12 +1952,12 @@
     {
       "id": "evt-f1-countdown-system-patch",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "A First Floor system patch is announced.",
+      "summary": "First Floor rules change: toilet suction and bathroom explosions are resolved; language and cross-language support are added; Feral Rabies is curable and no longer airborne; Blender Fiends move down; Street Preacher becomes a Borough Boss; mob strength levels are adjusted.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -2045,12 +2061,12 @@
     {
       "id": "evt-f1-countdown-crawlers-2552085",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs.",
+      "summary": "Dungeon Crawler World episode three airs as the system reports 2,552,085 crawlers remaining.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -2065,12 +2081,12 @@
     {
       "id": "evt-f1-countdown-system-patch-late",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "A late First Floor system patch is announced.",
+      "summary": "A late First Floor patch changes spells and mob power levels and reiterates the warning not to use hallways as bathrooms.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -2085,12 +2101,12 @@
     {
       "id": "evt-f1-countdown-ball-of-swine",
       "type": "NarrativeEvent",
-      "kind": "other",
+      "kind": "encounter-resolved",
       "position": {
         "floor": 1,
         "book": 1
       },
-      "summary": "Carl and Donut encounter the Ball of Swine.",
+      "summary": "Royal Court, Meadow Lark, and Agatha defeat the Ball of Swine using Carl's explosives and the dungeon architecture.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -2243,6 +2259,46 @@
           "sourceId": "src-wiki-floor-1-achievements",
           "locator": {
             "section": "Achievements for Dungeon Crawling"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-floor-collapse",
+      "order": 67,
+      "type": "NarrativeEvent",
+      "kind": "floor-collapsed",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "The First Floor collapses; 1,292,526 crawlers remain and more than 700,000 die in the collapse.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "evt-f1-countdown-episode-4",
+      "order": 68,
+      "type": "NarrativeEvent",
+      "kind": "episode-released",
+      "position": {
+        "floor": 1,
+        "book": 1
+      },
+      "summary": "Dungeon Crawler World episode four airs, highlighting three-headed baboons, eggplants with teeth, crawler fights, and races for the stairs.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-first-floor",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
           },
           "confidence": "corroborated"
         }

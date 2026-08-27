@@ -20,10 +20,16 @@ const scalarFieldsByKind: Partial<Record<TimelineObservation['kind'], string[]>>
   'crawler-condition': ['currentHealth', 'maxHealth', 'currentMana', 'maxMana', 'currentStamina', 'maxStamina'],
   'xp-progress': ['xp', 'maxXp', 'level'],
   'broadcast-metrics': ['viewers', 'followers', 'favorites', 'patrons', 'leaderboardRank', 'bounty'],
-  'floor-metrics': ['remainingCrawlers'],
+  'floor-metrics': ['remainingCrawlers', 'boroughBossesKilled', 'neighborhoodBossesKilled', 'collapseDeaths'],
 };
 
-const discreteKeys = new Set(['xp-progress.level', 'floor-metrics.remainingCrawlers']);
+const discreteKeys = new Set([
+  'xp-progress.level',
+  'floor-metrics.remainingCrawlers',
+  'floor-metrics.boroughBossesKilled',
+  'floor-metrics.neighborhoodBossesKilled',
+  'floor-metrics.collapseDeaths',
+]);
 
 function numericSamples(observations: TimelineObservation[]): NumericObservationSample[] {
   const samples: NumericObservationSample[] = [];
@@ -167,6 +173,8 @@ export function projectObservations(
   targetSequence: number
 ): ProjectedObservationsState {
   const observations = doc.observations || [];
+  const eventBySequence = new Map(doc.events.map((event) => [event.sequence, event]));
+  const targetFloor = eventBySequence.get(targetSequence)?.position?.floor;
   const samplesByKey = new Map<string, NumericObservationSample[]>();
   for (const sample of numericSamples(observations)) {
     let list = samplesByKey.get(sample.key);
@@ -185,8 +193,14 @@ export function projectObservations(
       projectedValues[key] = projected;
     } else {
       // Stepwise fallback: find latest sample at or before targetSequence
+      // Floor-wide metrics do not carry across floor boundaries.
+      if (key.startsWith('floor-metrics.') && targetFloor === undefined) continue;
       const priorSamples = samples
-        .filter((s) => s.observation.sequence <= targetSequence)
+        .filter((s) => {
+          if (s.observation.sequence > targetSequence) return false;
+          if (!key.startsWith('floor-metrics.')) return true;
+          return eventBySequence.get(s.observation.sequence)?.position?.floor === targetFloor;
+        })
         .sort((a, b) => b.observation.sequence - a.observation.sequence);
 
       if (priorSamples.length > 0) {

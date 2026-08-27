@@ -107,6 +107,26 @@ test("floor population is exact, floor-scoped telemetry and never interpolated",
   const laterSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-countdown-crawlers-1033992").sequence;
   const beforeLaterPopulation = projectObservationValue(compiledTimeline, laterSequence - 1, "floor-metrics.remainingCrawlers");
   assert.equal(beforeLaterPopulation, null, "population snapshots must not estimate deaths between reports");
+
+  const bossProgressOnFloor2 = projectObservations(compiledTimeline, laterSequence);
+  assert.equal(
+    bossProgressOnFloor2.floor.boroughBossesKilled,
+    undefined,
+    "Floor 1 boss telemetry must not leak into Floor 2"
+  );
+});
+
+test("Floor 1 retains sourced boss progress and collapse telemetry", () => {
+  const bossPatchSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-countdown-floor-2-stairs").sequence;
+  const bossProgress = projectObservationValue(compiledTimeline, bossPatchSequence, "floor-metrics.boroughBossesKilled");
+  assert.ok(bossProgress);
+  assert.equal(bossProgress.value, 15);
+  assert.equal(bossProgress.status, "stated");
+
+  const collapseSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-floor-collapse").sequence;
+  const collapsePopulation = projectObservationValue(compiledTimeline, collapseSequence, "floor-metrics.remainingCrawlers");
+  assert.ok(collapsePopulation);
+  assert.equal(collapsePopulation.value, 1292526);
 });
 
 test("linear interpolation never crosses a floor boundary", () => {

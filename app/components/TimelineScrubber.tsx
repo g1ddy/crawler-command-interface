@@ -786,7 +786,16 @@ function formatObservationPayload(obs: TimelineObservation): string {
     return `Viewers: ${o.viewers ? Number(o.viewers).toLocaleString() : '—'}, Followers: ${o.followers ? Number(o.followers).toLocaleString() : '—'}`;
   }
   if (obs.kind === 'floor-metrics') {
-    return `Remaining crawlers: ${Number(o.remainingCrawlers).toLocaleString()}`;
+    const labels: Record<string, string> = {
+      remainingCrawlers: 'Remaining crawlers',
+      boroughBossesKilled: 'Borough bosses killed',
+      neighborhoodBossesKilled: 'Neighborhood bosses killed',
+      collapseDeaths: 'Collapse deaths',
+    };
+    const readings = Object.entries(labels)
+      .filter(([key]) => typeof o[key] === 'number')
+      .map(([key, label]) => `${label}: ${(o[key] as number).toLocaleString()}`);
+    return readings.join(', ') || 'Floor metrics update';
   }
   if (obs.kind === 'inventory-state') {
     return `Item ${o.itemInstanceId}: present=${o.present ?? true}, qty=${o.quantity ? JSON.stringify(o.quantity) : '1'}`;
