@@ -107,6 +107,13 @@ test("floor population is exact, floor-scoped telemetry and never interpolated",
   const laterSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-countdown-crawlers-1033992").sequence;
   const beforeLaterPopulation = projectObservationValue(compiledTimeline, laterSequence - 1, "floor-metrics.remainingCrawlers");
   assert.equal(beforeLaterPopulation, null, "population snapshots must not estimate deaths between reports");
+
+  const bossProgressOnFloor2 = projectObservations(compiledTimeline, laterSequence);
+  assert.equal(
+    bossProgressOnFloor2.floor.boroughBossesKilled,
+    undefined,
+    "Floor 1 boss telemetry must not leak into Floor 2"
+  );
 });
 
 test("Floor 1 retains sourced boss progress and collapse telemetry", () => {
