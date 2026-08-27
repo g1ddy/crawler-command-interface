@@ -112,10 +112,10 @@ so the existing verification command does not implicitly download browser binari
 
 ## CI Artifact Contract
 
-Upon successful completion of `npm run verify` and custom base verification (`npm run test:pages:custom-base`), the CI pipeline (`.github/workflows/ci.yml`) uploads the validated `dist-pages/` build directory as a named GitHub Actions artifact:
+The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base first, then runs `npm run verify` as its final deterministic correctness gate. After that gate succeeds, CI uploads the resulting validated `dist-pages/` build directory as a named GitHub Actions artifact:
 
 - **Artifact Name**: `github-pages-artifact`
-- **Contents**: The exact pre-built and validated `dist-pages/` static Pages bundle, including `build-provenance.json` recording the verified source commit SHA.
+- **Contents**: The exact `dist-pages/` static Pages bundle produced by `npm run verify` and validated by its `npm run test:artifacts` step, including `build-provenance.json` recording the verified source commit SHA. CI does not rebuild the bundle between validation and upload.
 - **Verification Guarantee**: The uploaded artifact is produced only if all deterministic correctness checks (fixture sync, linting, unit tests, live Worker build, rendered-output tests, Pages build, and same-commit artifact provenance contracts) pass. If any verification check fails, no artifact is published.
 - **Downstream Reuse**: Downstream workflows (such as deployment or E2E jobs) can consume `github-pages-artifact` directly without rebuilding the Pages application.
 - **Separation from E2E**: Playwright E2E browser tests run in a separate parallel CI job (`e2e`). Playwright E2E results are non-blocking for artifact generation and are kept distinct from the deterministic verification gate.
