@@ -103,7 +103,8 @@ npm run verify
 
 Domain unit tests run directly against TypeScript source using Node's `--experimental-strip-types` flag (supported on Node 22.13+).
 
-Playwright tests start the Pages development server with a root base path and cover
+Playwright tests start the Pages development server at its normal
+`/crawler-command-interface/` project path and cover
 point-in-time replay, floor navigation, live-endpoint mutations, and desktop/mobile
 bundle smoke tests. Install Chromium once with `npx playwright install chromium`,
 then run `npm run test:e2e`. The browser suite is kept separate from `npm run verify`

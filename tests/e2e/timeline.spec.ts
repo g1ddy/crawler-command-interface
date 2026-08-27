@@ -13,7 +13,7 @@ async function selectSequence(page: Page, sequence: number) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/crawler-command-interface/");
   await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
 });
 
@@ -53,6 +53,8 @@ test("Return to Live restores the latest projection", async ({ page }) => {
 });
 
 test("live interactions append events without rewriting historical state", async ({ page }) => {
+  await selectSequence(page, 44);
+  await expect(page.getByText(/HISTORICAL VIEW · REPLAYING SEQUENCE #44/)).toBeVisible();
   await page.getByRole("button", { name: "INVENTORY" }).click();
   const firstItem = page.locator(".grid .item").first();
   await firstItem.click();
@@ -62,7 +64,7 @@ test("live interactions append events without rewriting historical state", async
   await expect(sequenceHeading(page)).toContainText("SEQ #73");
   await expect(page.getByRole("status")).toContainText(`Locked ${itemName}`);
 
-  await selectSequence(page, 72);
+  await selectSequence(page, 44);
   await expect(page.getByRole("button", { name: /LOCK/ })).toBeVisible();
   await page.getByRole("button", { name: /RETURN TO LIVE/ }).first().click();
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();

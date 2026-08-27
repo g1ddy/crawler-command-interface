@@ -43,11 +43,11 @@ Host-specific Worker, static Pages, authentication, and tooling boundaries are d
 
 ### 6. Quality, Governance, and Disclaimers
 
-- [ ] **Next Priority Milestone**: Implement Playwright E2E browser tests:
-  - Verify scrubbing backward clears later inventory/stat/telemetry state.
-  - Verify floor navigation updates sequence to derived floor endpoints.
-  - Verify **Return to Live** restores latest projected state.
-  - Verify live interactions append endpoint events without altering earlier sequences.
-  - Smoke-test the GitHub Pages static bundle and a mobile viewport.
+- [x] Implement Playwright E2E browser tests:
+  - [x] Verify scrubbing backward clears later inventory/stat/telemetry state.
+  - [x] Verify floor navigation updates sequence to derived floor endpoints.
+  - [x] Verify **Return to Live** restores latest projected state.
+  - [x] Verify live interactions initiated during replay append endpoint events without altering earlier sequences.
+  - [x] Smoke-test the normal GitHub Pages project path and a mobile viewport.
 - [ ] Add Dependabot configuration, GitHub code scanning, `.editorconfig`, issue templates, and PR template.
 - [ ] Add clear non-commercial fan-project disclaimer prior to wider public promotion.

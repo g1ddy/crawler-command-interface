@@ -16,7 +16,6 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run build:pages && npx vite preview --config vite.pages.config.ts --host 127.0.0.1 --port 4173",
-    env: { PAGES_BASE_PATH: "/" },
     port: 4173,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
