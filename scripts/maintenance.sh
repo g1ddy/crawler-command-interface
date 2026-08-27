@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
 
-npm ci
+npm install
 npx playwright install --with-deps chromium
