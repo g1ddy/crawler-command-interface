@@ -110,6 +110,16 @@ bundle smoke tests. Install Chromium once with `npx playwright install chromium`
 then run `npm run test:e2e`. The browser suite is kept separate from `npm run verify`
 so the existing verification command does not implicitly download browser binaries.
 
+## CI Artifact Contract
+
+Upon successful completion of `npm run verify` and custom base verification (`npm run test:pages:custom-base`), the CI pipeline (`.github/workflows/ci.yml`) uploads the validated `dist-pages/` build directory as a named GitHub Actions artifact:
+
+- **Artifact Name**: `github-pages-artifact`
+- **Contents**: The exact pre-built and validated `dist-pages/` static Pages bundle, including `build-provenance.json` recording the verified source commit SHA.
+- **Verification Guarantee**: The uploaded artifact is produced only if all deterministic correctness checks (fixture sync, linting, unit tests, live Worker build, rendered-output tests, Pages build, and same-commit artifact provenance contracts) pass. If any verification check fails, no artifact is published.
+- **Downstream Reuse**: Downstream workflows (such as deployment or E2E jobs) can consume `github-pages-artifact` directly without rebuilding the Pages application.
+- **Separation from E2E**: Playwright E2E browser tests run in a separate parallel CI job (`e2e`). Playwright E2E results are non-blocking for artifact generation and are kept distinct from the deterministic verification gate.
+
 ## Contribution Expectations
 
 - **Source vs. generated data**: Edit source files in `app/`, `src/`, `data/raw/floors/`, `scripts/`, or `tests/`. Do not edit `dist/`, `dist-pages/`, `data/floors/*.json`, or `data/compiled-timeline.json` directly.
