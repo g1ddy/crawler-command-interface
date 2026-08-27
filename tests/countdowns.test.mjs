@@ -176,6 +176,26 @@ test("Floor 2's authored collapse-clock references are monotonic", () => {
   assert.equal(lastKnown.remainingSeconds, 0);
 });
 
+test("the primary floor-collapse clock remains selected when a floor has secondary countdowns", () => {
+  const floor2 = compiledDoc.countdowns.find((countdown) => countdown.id === "countdown-floor-2-collapse");
+  const sequence = floor2.references[0].sequence;
+  const docWithSecondary = {
+    ...compiledDoc,
+    countdowns: [
+      {
+        id: "countdown-safe-room-closure",
+        title: "Time to Safe Room Closure",
+        floor: 2,
+        target: "safe-room-closure",
+        references: [{ sequence, remainingSeconds: 0, evidence: [{ sourceId: "src-book-1" }] }],
+      },
+      ...compiledDoc.countdowns,
+    ],
+  };
+
+  assert.equal(projectCountdownState(docWithSecondary, sequence, 2)?.id, "countdown-floor-2-collapse");
+});
+
 test("prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence", () => {
   const docWithElapsed = {
     schemaVersion: "crawler-timeline/v2",

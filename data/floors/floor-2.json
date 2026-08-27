@@ -58,6 +58,13 @@
       "trust": "corroborating",
       "title": "DCC Database: Second Floor",
       "url": "https://www.dccdatabase.com/wiki/Second_Floor/"
+    },
+    {
+      "id": "src-wiki-second-floor",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Second Floor",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Second_Floor"
     }
   ],
   "catalog": {
@@ -207,6 +214,12 @@
             "description": "A key that opens one cage in the pet reward room."
           }
         ]
+      },
+      {
+        "id": "achievement-bosses-can-leave-rooms",
+        "title": "Wait, Bosses Can Leave Their Rooms?",
+        "description": "Encountered a boss that left its chamber before crawlers entered.",
+        "reward": []
       }
     ]
   },
@@ -471,7 +484,7 @@
         "book": 1,
         "chapter": 31
       },
-      "summary": "The formal 6-day Second Floor collapse countdown activates.",
+      "summary": "The formal 6-day Second Floor collapse countdown activates as Dungeon Crawler World: Earth episode four airs, recapping the final 30 hours of Floor 1.",
       "evidence": [
         {
           "sourceId": "src-book-1",
@@ -546,10 +559,10 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "Cascadia introduces the Second Floor and ratings become active.",
+      "summary": "Cascadia's introductory announcement activates ratings, follows, and favorites; establishes three-patron limits and future auction rules; and activates the human-born bathroom-violation penalty, which summons a Level 93 Rage Elemental.",
       "evidence": [
         {
-          "sourceId": "src-dcc-database-floor-2",
+          "sourceId": "src-wiki-second-floor",
           "locator": {
             "section": "Floor Timeline & Patch Notes"
           },
@@ -586,7 +599,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room.",
+      "summary": "Dungeon Crawler World episode five airs while Carl, Donut, and the Meadow Lark party camp in a safe room with a Rage Elemental outside; Carl's Jug O' Boom is added to the Dungeon Codex.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
@@ -606,7 +619,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "A Second Floor patch announces hedgehogs and the safe-room closure rule.",
+      "summary": "Cascadia's follow-up patch relocates Satan's Lil' Hedgehogs to a deeper floor and establishes that safe rooms close one hour before floor collapse, teleporting remaining occupants outside; it also introduces the safe-room-only Time to Safe Room Closure countdown.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
@@ -817,7 +830,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "The system reports 990,303 crawlers remaining in the daily announcement.",
+      "summary": "Cascadia's daily announcement reports 990,303 crawlers remaining; permits Game Guides to explain Third Floor race/class selection; stops non-sapient mobs from disintegrating in stairwells; halves Brindled Vespas and slightly lowers their acid-spit damage; and reduces Brindle Grub pupa advancement to 50% while retaining corpse generation.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",
@@ -1149,7 +1162,7 @@
         "floor": 2,
         "book": 1
       },
-      "summary": "The Second Floor collapses.",
+      "summary": "The Second Floor collapses and the human-born bathroom-violation penalty is lifted.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",

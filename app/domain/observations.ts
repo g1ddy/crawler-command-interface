@@ -20,9 +20,10 @@ const scalarFieldsByKind: Partial<Record<TimelineObservation['kind'], string[]>>
   'crawler-condition': ['currentHealth', 'maxHealth', 'currentMana', 'maxMana', 'currentStamina', 'maxStamina'],
   'xp-progress': ['xp', 'maxXp', 'level'],
   'broadcast-metrics': ['viewers', 'followers', 'favorites', 'patrons', 'leaderboardRank', 'bounty'],
+  'floor-metrics': ['remainingCrawlers'],
 };
 
-const discreteKeys = new Set(['xp-progress.level']);
+const discreteKeys = new Set(['xp-progress.level', 'floor-metrics.remainingCrawlers']);
 
 function numericSamples(observations: TimelineObservation[]): NumericObservationSample[] {
   const samples: NumericObservationSample[] = [];
@@ -206,6 +207,7 @@ export function projectObservations(
   const attributes: Record<string, ProjectedObservationValue> = {};
   const xpProgress: Record<string, ProjectedObservationValue> = {};
   const broadcast: Record<string, ProjectedObservationValue> = {};
+  const floor: Record<string, ProjectedObservationValue> = {};
 
   for (const [key, val] of Object.entries(projectedValues)) {
     if (key.startsWith('crawler-condition.')) {
@@ -216,6 +218,8 @@ export function projectObservations(
       xpProgress[key.slice('xp-progress.'.length)] = val;
     } else if (key.startsWith('broadcast-metrics.')) {
       broadcast[key.slice('broadcast-metrics.'.length)] = val;
+    } else if (key.startsWith('floor-metrics.')) {
+      floor[key.slice('floor-metrics.'.length)] = val;
     }
   }
 
@@ -268,6 +272,7 @@ export function projectObservations(
     attributes,
     xpProgress,
     broadcast,
+    floor,
     inventory,
     equipment,
   };
