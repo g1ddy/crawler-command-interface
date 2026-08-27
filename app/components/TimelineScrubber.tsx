@@ -214,6 +214,7 @@ export function TimelineScrubber({
           ◄ PREV FLOOR
         </button>
         <select
+          aria-label="Floor timeline scope"
           value={selectedFloorOrdinal}
           onChange={(e) => {
             const val = e.target.value === 'all' ? 'all' : Number(e.target.value);
@@ -358,6 +359,7 @@ export function TimelineScrubber({
 
       <div className="slider-wrapper">
         <input
+          aria-label="Selected timeline sequence"
           type="range"
           min={minSeq}
           max={maxSeq}

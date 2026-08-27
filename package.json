@@ -18,6 +18,7 @@
     "test:unit": "node --experimental-strip-types --test tests/countdowns.test.mjs tests/projection.test.mjs tests/raw-floor-adapter.test.mjs tests/raw-projection-regressions.test.mjs tests/persistence.test.mjs tests/validation-worker-safety.test.mjs tests/telemetry-hud.test.mjs tests/floors.test.mjs",
     "test:rendered": "node --experimental-strip-types --test tests/rendered-html.test.mjs",
     "test:artifacts": "node --test tests/build-targets.test.mjs",
+    "test:e2e": "playwright test",
     "test:pages:custom-base": "npm run build:live && PAGES_BASE_PATH=/ npm run build:pages && PAGES_BASE_PATH=/ npm run test:artifacts && npm run build:pages && npm run test:artifacts",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern dist-pages --ignore-pattern .next",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
+    "@playwright/test": "^1.55.0",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
