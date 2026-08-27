@@ -8,6 +8,7 @@ Refer to the canonical documentation for detailed guidance:
 
 - [README.md](README.md) — Concise user-facing introduction, deployment summary, and quick start.
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Local setup, diagnostic scripts, build targets, fixture generation, and contribution rules.
+- [scripts/README.md](scripts/README.md) — ChatGPT Codex setup/maintenance lifecycle and repository script responsibilities.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Shared runtime, deployment modes, host-specific constraints, data flow, and Worker-safe boundaries.
 - [docs/ROADMAP.md](docs/ROADMAP.md) — Authoritative active product backlog and intentional deferrals.
 - [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Authoritative raw evidence authoring rules, JSON schemas, countdown lifecycle breaks, scrubbing, and projection semantics.
