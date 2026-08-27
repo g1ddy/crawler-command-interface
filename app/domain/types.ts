@@ -345,6 +345,8 @@ export interface TimelineSnapshot {
   generatedFromEventHash?: string;
 }
 
+export type CountdownTarget = 'floor-collapse' | 'safe-room-closure';
+
 export interface CountdownReference {
   sequence: number;
   remainingSeconds: number;
@@ -357,7 +359,7 @@ export interface TimelineCountdown {
   id: string;
   title: string;
   floor: number;
-  target: 'floor-collapse';
+  target: CountdownTarget;
   references: CountdownReference[];
 }
 
@@ -410,6 +412,7 @@ export interface ProjectedObservationsState {
   attributes: Record<string, ProjectedObservationValue>;
   xpProgress: Record<string, ProjectedObservationValue>;
   broadcast: Record<string, ProjectedObservationValue>;
+  floorMetrics: Record<string, ProjectedObservationValue>;
   inventory: Record<string, ProjectedItemObservation>;
   equipment: Record<string, ProjectedEquipmentObservation>;
 }
@@ -418,7 +421,7 @@ export interface ActiveCountdownState {
   id: string;
   title: string;
   floor: number;
-  target: 'floor-collapse';
+  target: CountdownTarget;
   lifecycleStatus: 'scheduled' | 'active' | 'completed';
   remainingSeconds: number;
   activationOffset?: number;
@@ -631,14 +634,15 @@ export interface RawCrawlerConditionObservation extends Omit<RawCountdownObserva
 export interface RawCrawlerAttributesObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'crawler-attributes'; interpolation?: 'linear'; attributes: Record<string, number>; availableAttributePoints?: number; }
 export interface RawXpProgressObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'xp-progress'; interpolation?: 'linear'; xp?: number; maxXp?: number; level?: number; }
 export interface RawBroadcastMetricsObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'broadcast-metrics'; interpolation?: 'linear'; viewers?: number; followers?: number; favorites?: number; patrons?: number; leaderboardRank?: number; bounty?: number; }
+export interface RawFloorMetricsObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'floor-metrics'; remainingCrawlers: number; }
 export interface RawInventoryStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'inventory-state'; itemInstanceId: string; present?: boolean; quantity?: QuantityObject; isEquipped?: boolean; }
 export interface RawEquipmentStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'equipment-state'; slot: string; itemInstanceId: string | null; }
-export type RawObservation = RawCountdownObservation | RawCrawlerConditionObservation | RawCrawlerAttributesObservation | RawXpProgressObservation | RawBroadcastMetricsObservation | RawInventoryStateObservation | RawEquipmentStateObservation;
+export type RawObservation = RawCountdownObservation | RawCrawlerConditionObservation | RawCrawlerAttributesObservation | RawXpProgressObservation | RawBroadcastMetricsObservation | RawFloorMetricsObservation | RawInventoryStateObservation | RawEquipmentStateObservation;
 
 export interface RawFloorCountdown {
   id: string;
   title: string;
-  target: 'floor-collapse';
+  target: CountdownTarget;
 }
 
 export interface RawCrawlerFloorDocument extends Omit<CrawlerFloorDocument, 'authoringVersion' | 'countdowns'> {
