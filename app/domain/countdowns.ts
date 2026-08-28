@@ -44,7 +44,6 @@ export function formatCountdownDuration(
   const days = Math.floor(remainingSeconds / 86400);
   const hours = Math.floor((remainingSeconds % 86400) / 3600);
   const mins = Math.floor((remainingSeconds % 3600) / 60);
-
   const secs = remainingSeconds % 60;
 
   let formatted = '';
@@ -130,6 +129,21 @@ function makeCountdownState(
   };
 }
 
+function floorAtSequence(events: (TimelineEvent | CrawlerEvent)[], targetSequence: number): number | undefined {
+  const exactEvent = events.find((event) => event.sequence === targetSequence);
+  if (exactEvent?.position?.floor !== undefined) return exactEvent.position.floor;
+
+  let nearestFloor: number | undefined;
+  let nearestSequence = Number.NEGATIVE_INFINITY;
+  for (const event of events) {
+    if (event.sequence <= targetSequence && event.sequence > nearestSequence && event.position?.floor !== undefined) {
+      nearestFloor = event.position.floor;
+      nearestSequence = event.sequence;
+    }
+  }
+  return nearestFloor;
+}
+
 export function projectCountdownState(
   docOrEvents: CrawlerTimelineDocument | CrawlerEvent[] | { countdowns?: TimelineCountdown[]; events?: CrawlerEvent[] } | unknown,
   targetSequence: number,
@@ -154,16 +168,23 @@ export function projectCountdownState(
     return null;
   }
 
-  // Determine active floor ordinal
+  const sequenceFloor = floorAtSequence(events, targetSequence);
+
+  // A numeric floor supplied by a caller is a display scope, not permission to
+  // project a clock from that floor into a sequence that belongs to another
+  // floor. This matters when Whole Story mode evaluates secondary clocks one at
+  // a time: old clocks must disappear as soon as replay enters a later floor.
+  if (
+    typeof selectedFloorOrdinal === 'number' &&
+    sequenceFloor !== undefined &&
+    selectedFloorOrdinal !== sequenceFloor
+  ) {
+    return null;
+  }
+
   let targetFloor = selectedFloorOrdinal;
   if (targetFloor === 'all' || targetFloor === undefined) {
-    const targetEv = events.find((e) => e.sequence === targetSequence);
-    if (targetEv?.position?.floor) {
-      targetFloor = targetEv.position.floor;
-    } else {
-      // Default to floor of first countdown
-      targetFloor = countdowns[0].floor;
-    }
+    targetFloor = sequenceFloor ?? countdowns[0].floor;
   }
 
   // The HUD's primary clock is floor collapse. Secondary clocks (such as
@@ -175,13 +196,10 @@ export function projectCountdownState(
     return null;
   }
 
-  // Sort references by sequence
   const references = [...activeCountdown.references].sort((a, b) => a.sequence - b.sequence);
   const firstRef = references[0];
   const lastRef = references[references.length - 1];
 
-  // Extrapolate beyond the final reference from the latest compatible pair so
-  // replay keeps a continuous countdown through the floor exit.
   if (targetSequence > lastRef.sequence) {
     const laterPhaseBreak = events.some(
       (event) =>
@@ -261,8 +279,6 @@ export function projectCountdownState(
       );
     }
 
-    // A single reference cannot yield a rate. Retain it as a clearly sourced
-    // value rather than pretending an estimate exists.
     const remainingSeconds = lastRef.remainingSeconds;
     const confidence = lastRef.evidence[0]?.confidence || 'confirmed';
     return makeCountdownState(
@@ -278,12 +294,10 @@ export function projectCountdownState(
     );
   }
 
-  // 1. Evidence boundary: return null before the first sourced countdown reference
   if (targetSequence < firstRef.sequence) {
     return null;
   }
 
-  // 2. Check exact sequence match
   const exactRef = references.find((r) => r.sequence === targetSequence);
   if (exactRef) {
     const remainingSeconds = exactRef.remainingSeconds;
@@ -301,7 +315,6 @@ export function projectCountdownState(
     );
   }
 
-  // 3. Find bounding references R1 and R2
   let r1: CountdownReference | null = null;
   let r2: CountdownReference | null = null;
 
@@ -317,25 +330,19 @@ export function projectCountdownState(
     return null;
   }
 
-  // Check compatibility:
-  // If both references are active, remainingSeconds must decrease.
-  // If either reference is scheduled, activationOffset must increase towards activation.
   const r1IsScheduled = r1.activationOffset !== undefined && r1.activationOffset < 0;
   const r2IsScheduled = r2.activationOffset !== undefined && r2.activationOffset < 0;
 
   if (!r1IsScheduled && !r2IsScheduled) {
     if (r2.remainingSeconds >= r1.remainingSeconds) {
-      // Non-monotonic active countdown -> do not interpolate
       return null;
     }
   } else if (r1.activationOffset !== undefined && r2.activationOffset !== undefined) {
     if (r2.activationOffset <= r1.activationOffset) {
-      // Scheduled activation offset must increase towards activation
       return null;
     }
   }
 
-  // Check if events between r1 and r2 contain countdown pause/resume/reset/phase change events
   const intermediateEvents = events.filter((e) => e.sequence > r1!.sequence && e.sequence <= r2!.sequence);
   const hasPhaseBreak = intermediateEvents.some((e) => isCountdownPhaseBreakEvent(e, activeCountdown.id));
 
@@ -343,7 +350,6 @@ export function projectCountdownState(
     return null;
   }
 
-  // Find corresponding events for r1, r2, and targetSequence
   const ev1 = events.find((e) => e.sequence === r1!.sequence);
   const ev2 = events.find((e) => e.sequence === r2!.sequence);
   const evTarget = events.find((e) => e.sequence === targetSequence);
