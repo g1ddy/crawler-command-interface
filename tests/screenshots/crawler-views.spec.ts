@@ -1,8 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
-import { mkdir } from "node:fs/promises";
-import path from "node:path";
-
-const OUTPUT_DIR = path.resolve("docs/images");
+import {
+  SCREENSHOTS,
+  promoteCanonicalScreenshots,
+  resetScreenshotStaging,
+  stagedScreenshotPath,
+} from "./canonical-screenshots.ts";
 
 async function preparePage(page: Page) {
   await page.goto("/crawler-command-interface/");
@@ -40,17 +42,21 @@ async function selectCrawlerSubTab(page: Page, name: "OVERVIEW" | "ACHIEVEMENTS"
   await expect(tab).toHaveClass(/\bon\b/);
 }
 
-async function capture(page: Page, filename: string) {
+async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({
-    path: path.join(OUTPUT_DIR, filename),
+    path: stagedScreenshotPath(key),
     fullPage: true,
     animations: "disabled",
   });
 }
 
 test.beforeAll(async () => {
-  await mkdir(OUTPUT_DIR, { recursive: true });
+  await resetScreenshotStaging();
+});
+
+test.afterAll(async () => {
+  await promoteCanonicalScreenshots();
 });
 
 test.beforeEach(async ({ page }) => {
@@ -58,43 +64,50 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("export top-level Crawler tab", async ({ page }) => {
-  await selectTopLevelTab(page, "CRAWLER");
-  await expect(page.locator(".subnav")).toBeVisible();
-  await capture(page, "screenshot-crawler.png");
+  await selectCrawlerSubTab(page, "OVERVIEW");
+  await expect(page.getByRole("button", { name: "Manage in Inventory →", exact: true })).toBeVisible();
+  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toBeVisible();
+  await capture(page, "crawler");
 });
 
 test("export top-level Inventory tab", async ({ page }) => {
   await selectTopLevelTab(page, "INVENTORY");
   await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
-  await capture(page, "screenshot-inventory.png");
+  await expect(page.getByRole("button", { name: "ALL ITEMS", exact: true })).toHaveClass(/\bon\b/);
+  await capture(page, "inventory");
 });
 
 test("export top-level Skills tab", async ({ page }) => {
   await selectTopLevelTab(page, "SKILLS");
   await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible();
-  await capture(page, "screenshot-skills.png");
+  await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible();
+  await capture(page, "skills");
 });
 
 test("export top-level Journal tab", async ({ page }) => {
   await selectTopLevelTab(page, "JOURNAL");
   await expect(page.getByRole("heading", { name: "JOURNAL", exact: true })).toBeVisible();
-  await capture(page, "screenshot-journal.png");
+  await expect(page.getByRole("button", { name: "ACTIVE", exact: true })).toHaveClass(/\bon\b/);
+  await capture(page, "journal");
 });
 
 test("export Crawler Overview profile sub-tab", async ({ page }) => {
   await selectCrawlerSubTab(page, "OVERVIEW");
-  await expect(page.locator(".view-content")).toBeVisible();
-  await capture(page, "screenshot-crawler-overview.png");
+  await expect(page.getByRole("button", { name: "Manage in Inventory →", exact: true })).toBeVisible();
+  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toBeVisible();
+  await capture(page, "crawlerOverview");
 });
 
 test("export Crawler Achievements profile sub-tab", async ({ page }) => {
   await selectCrawlerSubTab(page, "ACHIEVEMENTS");
-  await expect(page.locator(".view-content")).toBeVisible();
-  await capture(page, "screenshot-crawler-achievements.png");
+  await expect(page.locator(".achievements .achievement").first()).toBeVisible();
+  await expect(page.getByText(/ACHIEVEMENT UNLOCKED/).first()).toBeVisible();
+  await capture(page, "crawlerAchievements");
 });
 
 test("export Crawler Broadcast profile sub-tab", async ({ page }) => {
   await selectCrawlerSubTab(page, "BROADCAST");
-  await expect(page.locator(".view-content")).toBeVisible();
-  await capture(page, "screenshot-crawler-broadcast.png");
+  await expect(page.getByText("LIVE BROADCAST", { exact: true })).toBeVisible();
+  await expect(page.getByText("CURRENT VIEWERS", { exact: true })).toBeVisible();
+  await capture(page, "crawlerBroadcast");
 });
