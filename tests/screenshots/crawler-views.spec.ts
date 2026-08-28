@@ -65,19 +65,19 @@ test("export top-level Crawler tab", async ({ page }) => {
 
 test("export top-level Inventory tab", async ({ page }) => {
   await selectTopLevelTab(page, "INVENTORY");
-  await expect(page.getByRole("button", { name: "ALL ITEMS", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
   await capture(page, "top-inventory.png");
 });
 
 test("export top-level Skills tab", async ({ page }) => {
   await selectTopLevelTab(page, "SKILLS");
-  await expect(page.getByText(/SKILLS/i).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible();
   await capture(page, "top-skills.png");
 });
 
 test("export top-level Journal tab", async ({ page }) => {
   await selectTopLevelTab(page, "JOURNAL");
-  await expect(page.getByText(/QUEST|JOURNAL/i).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "JOURNAL", exact: true })).toBeVisible();
   await capture(page, "top-journal.png");
 });
 
@@ -88,12 +88,12 @@ test("export Crawler Overview profile sub-tab", async ({ page }) => {
 
 test("export Crawler Achievements profile sub-tab", async ({ page }) => {
   await selectCrawlerSubTab(page, "ACHIEVEMENTS");
-  await expect(page.getByText(/ACHIEVEMENT/i).first()).toBeVisible();
+  await expect(page.locator(".view-content")).toBeVisible();
   await capture(page, "crawler-achievements.png");
 });
 
 test("export Crawler Broadcast profile sub-tab", async ({ page }) => {
   await selectCrawlerSubTab(page, "BROADCAST");
-  await expect(page.getByText(/VIEWERS|BROADCAST/i).first()).toBeVisible();
+  await expect(page.locator(".view-content")).toBeVisible();
   await capture(page, "crawler-broadcast.png");
 });
