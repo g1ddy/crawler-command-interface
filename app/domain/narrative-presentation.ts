@@ -34,6 +34,10 @@ export function isNarrativeEvent(event: CrawlerEvent): boolean {
   return event.type === 'NarrativeEvent';
 }
 
+function eventMatchesReplayScope(event: CrawlerEvent, sequence: number, floor: number | 'all'): boolean {
+  return event.sequence <= sequence && (floor === 'all' || event.position?.floor === floor);
+}
+
 export function narrativeEventsAtOrBefore(
   events: CrawlerEvent[],
   sequence: number,
@@ -41,17 +45,29 @@ export function narrativeEventsAtOrBefore(
   kind?: NarrativeEventKind,
 ): CrawlerEvent[] {
   return events.filter((event) =>
-    isNarrativeEvent(event) && event.sequence <= sequence &&
-    (floor === 'all' || event.position?.floor === floor) &&
+    isNarrativeEvent(event) && eventMatchesReplayScope(event, sequence, floor) &&
     (!kind || event.kind === kind)
   ).sort((a, b) => a.sequence - b.sequence);
 }
 
-export function formatSequencePosition(position?: TimelinePosition, evidence: TimelineEvidence[] = []): string {
-  const floor = position?.floor ? `Floor ${position.floor}` : 'Floor not sourced';
+export function genericEventsAtOrBefore(
+  events: CrawlerEvent[],
+  sequence: number,
+  floor: number | 'all',
+): CrawlerEvent[] {
+  return events.filter((event) =>
+    !isNarrativeEvent(event) && eventMatchesReplayScope(event, sequence, floor)
+  ).sort((a, b) => a.sequence - b.sequence);
+}
+
+export function formatSequenceAnchor(position?: TimelinePosition, evidence: TimelineEvidence[] = []): string {
   const chapter = position?.chapter ?? evidence.find((item) => item.locator?.chapter)?.locator?.chapter;
   const timestamp = evidence.find((item) => item.locator?.timestamp)?.locator?.timestamp;
   const scene = position?.scene;
-  const anchor = timestamp ? `timestamp ${timestamp}` : chapter ? `Chapter ${chapter}` : scene ? `Scene ${scene}` : 'exact time not sourced';
-  return `${floor} · ${anchor}`;
+  return timestamp ? `timestamp ${timestamp}` : chapter ? `Chapter ${chapter}` : scene ? `Scene ${scene}` : 'exact time not sourced';
+}
+
+export function formatSequencePosition(position?: TimelinePosition, evidence: TimelineEvidence[] = []): string {
+  const floor = position?.floor ? `Floor ${position.floor}` : 'Floor not sourced';
+  return `${floor} · ${formatSequenceAnchor(position, evidence)}`;
 }
