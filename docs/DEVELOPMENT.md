@@ -66,6 +66,7 @@ The Pages adapter defaults to base path `/crawler-command-interface/`.
 | `npm run test:pages:custom-base` | Test custom domain Pages build (`PAGES_BASE_PATH=/`) and restore default Pages build |
 | `npm run test:rendered` | Verify development preview metadata rendering |
 | `npm run test:e2e` | Run Playwright browser tests against the GitHub Pages adapter |
+| `npm run test:screenshots` | Export the seven canonical desktop Crawler UI screenshots to `artifacts/screenshots/` |
 | `npm run verify` | Full verification suite: sync fixtures, lint, run unit tests, build both targets, and test artifacts |
 | `npm run start` | Start built Vinext production server locally |
 | `npm run db:generate` | Generate Drizzle migrations after schema changes |
@@ -131,6 +132,8 @@ bundle smoke tests. Install Chromium once with `npx playwright install chromium`
 then run `npm run test:e2e`. The browser suite is kept separate from `npm run verify`
 so the existing verification command does not implicitly download browser binaries.
 
+Screenshot export uses a separate single-browser Playwright configuration with a fixed desktop viewport and disabled motion. `npm run test:screenshots` captures the four top-level views (`CRAWLER`, `INVENTORY`, `SKILLS`, `JOURNAL`) plus the three Crawler profile sub-tabs (`OVERVIEW`, `ACHIEVEMENTS`, `BROADCAST`). Local output is written to the ignored `artifacts/screenshots/` directory.
+
 ## CI Artifact Contract
 
 The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base first, then runs `npm run verify` as its final deterministic correctness gate. After that gate succeeds, CI uploads the resulting validated `dist-pages/` build directory as a named GitHub Actions artifact:
@@ -140,9 +143,10 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 - **Verification Guarantee**: The uploaded artifact is produced only if all deterministic correctness checks (fixture sync, linting, unit tests, live Worker build, rendered-output tests, Pages build, and same-commit artifact provenance contracts) pass. If any verification check fails, no artifact is published.
 - **Artifact Promotion**: After a successful `CI` push run from this repository's `main` branch, `deploy-pages.yml` downloads `github-pages-artifact` from that exact workflow run, checks that its provenance SHA matches the CI source commit, and uploads the unchanged directory for GitHub Pages deployment. Pull-request-originated CI runs are never eligible for Pages promotion. Deployment does not check out source, install dependencies, rerun verification, or rebuild the application.
 - **Independent E2E Consumption**: After every successful `CI` run (including supported pull-request and `main` runs), `playwright.yml` independently downloads the artifact from that exact run, verifies its provenance, serves it at `/crawler-command-interface/`, and runs the browser suite without rebuilding the application. Failed browser runs retain their HTML report, traces, screenshots, and other available test results as a workflow artifact.
-- **Non-blocking Browser Gate**: Pages deployment and Playwright are sibling `workflow_run` consumers of deterministic CI; neither depends on the other. Browser failures remain visible but currently do not block or delay deployment because E2E may be flaky. The deterministic `npm run verify` checks remain the hard release gates.
+- **Screenshot Export**: `screenshots.yml` is another independent `workflow_run` consumer. After successful CI it downloads the same validated Pages artifact, verifies provenance, exports the seven canonical desktop screenshots, records SHA-256 checksums plus the Pages `build-provenance.json`, and uploads the bundle as `crawler-interface-screenshots-<CI run id>` for 30 days. Screenshot generation never rebuilds the application and does not block Pages deployment.
+- **Non-blocking Browser Gate**: Pages deployment, Playwright E2E, and screenshot export are sibling `workflow_run` consumers of deterministic CI; none depends on another. Browser or screenshot failures remain visible but do not block or delay deployment. The deterministic `npm run verify` checks remain the hard release gates.
 - **Manual Deployment**: The previous `workflow_dispatch` path is intentionally removed. Pages deployment now promotes only a previously validated CI artifact; recovery or manual promotion should be added later only if it selects an existing validated CI run rather than rebuilding source.
-- **Rollout Validation**: New `workflow_run` consumers cannot fully exercise their downstream trigger until their workflow definitions exist on the default branch. After changes to this fan-out topology land, verify the first successful `main` CI run produces both downstream workflows, that both consume the same CI run artifact, and that provenance validation succeeds before considering the delivery change fully validated.
+- **Rollout Validation**: New `workflow_run` consumers cannot fully exercise their downstream trigger until their workflow definitions exist on the default branch. After changes to this fan-out topology land, verify the first successful `main` CI run produces the expected downstream workflows, that they consume the same CI run artifact, and that provenance validation succeeds before considering the delivery change fully validated.
 
 ## Contribution Expectations
 
