@@ -45,3 +45,20 @@
 .feed-row:hover{background-color:#0b2636!important}
 .telemetry-pill{transition:all .2s;user-select:none}
 .telemetry-pill:hover{scale:1.05;box-shadow:0 0 8px #1bd9ff66}
+.sequence-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 6px; border:1px solid #526b78; border-radius:3px; color:#d8edf4; background:#10232d; font:700 9px/1.3 monospace; letter-spacing:.05em; }
+.sequence-rules { border-color:#c79a3b; color:#ffd77d; }
+.sequence-broadcasts { border-color:#8d68d8; color:#cbb3ff; }
+.sequence-encounters { border-color:#42a56b; color:#8aefad; }
+.sequence-floor-transitions { border-color:#e16a73; color:#ff9ba3; }
+.sequence-badge.terminal, .typed-log-entry.terminal { border-color:#ff3d4d; box-shadow:inset 0 0 0 1px #791d25; }
+.typed-marker { width:10px !important; height:10px !important; transform:rotate(45deg); border-radius:1px !important; }
+.typed-marker.terminal { width:13px !important; height:13px !important; background:#ff3d4d !important; }
+.semantic-filters { display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin-top:10px; }
+.secondary-countdown { display:grid; gap:1px; padding:4px 8px; background:#151127; border:1px solid #7356a6; color:#d9c8ff; font:9px monospace; text-align:left; }
+.secondary-countdown b { font-size:12px; }
+.typed-log-entry { display:grid; gap:6px; margin:8px 0; padding:10px; background:#071923; border:1px solid #244655; border-left-width:3px; cursor:pointer; }
+.typed-log-entry header { display:flex; justify-content:space-between; align-items:center; }
+.typed-log-entry p, .typed-log-entry small { margin:0; color:#8faab5; }
+.typed-log-entry small { display:block; }
+.history-disclaimer { padding:8px; border:1px solid #715c2d; color:#e6c979; background:#211b0d; }
+.telemetry-metric-row { display:flex; justify-content:space-between; align-items:center; padding:5px 8px; margin-top:5px; background:#0b1c27; font-size:10px; }

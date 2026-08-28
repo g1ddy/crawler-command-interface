@@ -14,6 +14,12 @@ test("renders development preview metadata", async (t) => {
 
   const workerUrl = new URL(workerPath.href);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
+  // Undici lazily initializes Request internals with Function. Construct the
+  // request before simulating the Workerd code-generation restriction so the
+  // assertion exercises application rendering rather than Node bootstrap.
+  const request = new Request("http://localhost/", {
+    headers: { accept: "text/html" },
+  });
   const originalFunction = globalThis.Function;
   globalThis.Function = function WorkerSafeFunction() {
     throw new Error("Code generation from strings disallowed for this context");
@@ -22,9 +28,7 @@ test("renders development preview metadata", async (t) => {
   try {
     const { default: worker } = await import(workerUrl.href);
     const response = await worker.fetch(
-      new Request("http://localhost/", {
-        headers: { accept: "text/html" },
-      }),
+      request,
       {
         ASSETS: {
           fetch: async () => new Response("Not found", { status: 404 }),
