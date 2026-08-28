@@ -16,7 +16,7 @@ export type ScreenshotKey = keyof typeof SCREENSHOTS;
 
 export const CANONICAL_SCREENSHOT_FILENAMES = Object.freeze(Object.values(SCREENSHOTS));
 export const CANONICAL_SCREENSHOT_DIR = path.resolve("docs/images");
-export const SCREENSHOT_STAGING_DIR = path.resolve("test-results/documentation-screenshots");
+export const SCREENSHOT_STAGING_DIR = path.resolve(".screenshots-staging");
 
 export function assertUniqueCanonicalScreenshotFilenames() {
   const uniqueNames = new Set(CANONICAL_SCREENSHOT_FILENAMES);
@@ -93,9 +93,13 @@ if (invokedDirectly) {
     for (const filename of CANONICAL_SCREENSHOT_FILENAMES) {
       console.log(path.join("docs/images", filename));
     }
+  } else if (command === "--reset-staging") {
+    await resetScreenshotStaging();
+  } else if (command === "--promote-staged") {
+    await promoteCanonicalScreenshots();
   } else if (command === "--verify-canonical") {
     await verifyCanonicalScreenshots();
   } else {
-    throw new Error("Expected --paths or --verify-canonical.");
+    throw new Error("Expected --paths, --reset-staging, --promote-staged, or --verify-canonical.");
   }
 }
