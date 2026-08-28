@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const PORT = 4174;
+const BASE_URL = `http://127.0.0.1:${PORT}`;
+
 export default defineConfig({
   testDir: "./tests/screenshots",
   fullyParallel: false,
@@ -8,7 +11,7 @@ export default defineConfig({
   workers: 1,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: BASE_URL,
     trace: "retain-on-failure",
     reducedMotion: "reduce",
   },
@@ -22,11 +25,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command:
-      process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ??
-      "npm run build:pages && npx vite preview --config vite.pages.config.ts --host 127.0.0.1 --port 4173",
-    port: 4173,
-    reuseExistingServer: !process.env.CI,
+    command: `npm run build:pages && npx vite preview --config vite.pages.config.ts --host 127.0.0.1 --port ${PORT}`,
+    port: PORT,
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });
