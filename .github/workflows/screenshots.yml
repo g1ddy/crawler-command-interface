@@ -1,23 +1,34 @@
-name: Screenshot Export
+name: Update Documentation Screenshots
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'app/**'
+      - 'data/**'
+      - 'public/**'
+      - 'index.html'
+      - 'vite.pages.config.ts'
+      - 'playwright.screenshots.config.ts'
+      - 'tests/screenshots/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/screenshots.yml'
 
 permissions:
-  actions: read
-  contents: read
+  contents: write
 
 jobs:
   screenshots:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout pull request branch
+        uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ github.event.workflow_run.head_sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -26,46 +37,59 @@ jobs:
 
       - run: npm ci
 
-      - name: Download validated Pages artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages-artifact
-          path: dist-pages
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
 
-      - name: Verify artifact provenance
-        env:
-          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: |
-          test -f dist-pages/build-provenance.json
-          test "$(jq -r '.commitSha' dist-pages/build-provenance.json)" = "$EXPECTED_SHA"
-
-      - run: npx playwright install --with-deps chromium
-
-      - name: Export canonical screenshots
-        env:
-          PLAYWRIGHT_WEB_SERVER_COMMAND: npx vite preview --config vite.pages.config.ts --host 127.0.0.1 --port 4173
+      - name: Generate documentation screenshots
         run: npm run test:screenshots
+        env:
+          CI: true
 
-      - name: Add screenshot provenance and checksums
+      - name: Verify canonical screenshot set
+        shell: bash
         run: |
-          cp dist-pages/build-provenance.json artifacts/screenshots/build-provenance.json
-          sha256sum artifacts/screenshots/*.png > artifacts/screenshots/SHA256SUMS.txt
+          set -euo pipefail
+          expected=(
+            screenshot-crawler.png
+            screenshot-inventory.png
+            screenshot-skills.png
+            screenshot-journal.png
+            screenshot-crawler-overview.png
+            screenshot-crawler-achievements.png
+            screenshot-crawler-broadcast.png
+          )
+          for filename in "${expected[@]}"; do
+            test -s "docs/images/${filename}"
+          done
 
-      - name: Upload screenshot bundle
+      - name: Upload generated screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: crawler-interface-screenshots-${{ github.event.workflow_run.id }}
-          path: artifacts/screenshots/
+          name: crawler-documentation-screenshots-${{ github.event.pull_request.number }}
+          path: docs/images/*.png
           if-no-files-found: error
-          retention-days: 30
-
-      - name: Upload screenshot diagnostics
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: crawler-screenshot-diagnostics-${{ github.event.workflow_run.id }}
-          path: test-results/
-          if-no-files-found: warn
           retention-days: 14
+
+      - name: Commit refreshed documentation screenshots
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        shell: bash
+        env:
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            docs/images/screenshot-crawler.png \
+            docs/images/screenshot-inventory.png \
+            docs/images/screenshot-skills.png \
+            docs/images/screenshot-journal.png \
+            docs/images/screenshot-crawler-overview.png \
+            docs/images/screenshot-crawler-achievements.png \
+            docs/images/screenshot-crawler-broadcast.png
+          if git diff --cached --quiet; then
+            echo "Documentation screenshots are already current."
+            exit 0
+          fi
+          git commit -m "docs(assets): refresh interface screenshots"
+          git push origin "HEAD:${HEAD_BRANCH}"
