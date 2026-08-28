@@ -2,7 +2,19 @@ import { expect, test, type Page } from '@playwright/test';
 import { compiledTimeline } from '../../app/domain/fixtures/compiled-timeline.ts';
 import { getNarrativePresentation } from '../../app/domain/narrative-presentation.ts';
 
-const events = compiledTimeline.events as Array<Record<string, any>>;
+interface TestTimelineEvent {
+  sequence: number;
+  type: string;
+  kind?: string;
+  summary: string;
+  occurred_at?: string;
+  position?: {
+    floor?: number;
+    elapsedSeconds?: number;
+  };
+}
+
+const events = compiledTimeline.events as unknown as TestTimelineEvent[];
 
 function narrativeEvents(kind: string, floor?: number) {
   return events
@@ -26,7 +38,7 @@ async function selectSequence(page: Page, sequence: number) {
   await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${sequence}\\b`) })).toBeVisible();
 }
 
-function markerFor(page: Page, event: Record<string, any>) {
+function markerFor(page: Page, event: TestTimelineEvent) {
   const presentation = getNarrativePresentation(event.kind);
   return page.getByRole('button', {
     name: `${presentation.accessibleLabel}: ${event.summary}`,
@@ -88,7 +100,7 @@ test('unanchored Floor 2 story event never displays an inherited or undefined ti
     event.position?.floor === 2 &&
     event.occurred_at === undefined &&
     event.position?.elapsedSeconds === undefined &&
-    ['encounter-resolved', 'other', 'floor-exited'].includes(event.kind)
+    ['encounter-resolved', 'other', 'floor-exited'].includes(event.kind ?? '')
   );
   if (!unanchored) throw new Error('Missing an unanchored Floor 2 narrative event.');
 
