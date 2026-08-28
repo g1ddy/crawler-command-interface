@@ -44,7 +44,7 @@ async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({
     path: stagedScreenshotPath(key),
-    fullPage: true,
+    fullPage: false,
     animations: "disabled",
   });
 }
