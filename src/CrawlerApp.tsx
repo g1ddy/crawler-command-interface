@@ -20,6 +20,8 @@ import type { CrawlerEvent, CrawlerState, CrawlerTimelineDocument, InventoryItem
 import { TimelineScrubber } from "../app/components/TimelineScrubber";
 import { StatInspectorModal } from "../app/components/StatInspectorModal";
 import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
+import { SequenceBadge } from "../app/components/SequenceBadge";
+import { formatSequencePosition, narrativeEventsAtOrBefore } from "../app/domain/narrative-presentation";
 
 type View = "crawler" | "inventory" | "skills" | "journal";
 
@@ -397,6 +399,9 @@ export default function CrawlerApp() {
           <Journal
             state={projectedState}
             observations={projectedObservations}
+            events={events}
+            sources={timelineDoc.sources as TimelineSource[]}
+            selectedFloorOrdinal={selectedFloorOrdinal}
             onNavigateToSequence={(seq) => {
               setSelectedSeq(seq);
               setIsLive(seq === maxSeq);
@@ -1757,11 +1762,17 @@ function Skills({
 function Journal({
   state,
   observations,
+  events,
+  sources,
+  selectedFloorOrdinal,
   onNavigateToSequence,
   onInspectObservation,
 }: {
   state: CrawlerState;
   observations?: ProjectedObservationsState;
+  events: CrawlerEvent[];
+  sources: TimelineSource[];
+  selectedFloorOrdinal: number | 'all';
   onNavigateToSequence: (seq: number) => void;
   onInspectObservation?: (obs: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
 }) {
@@ -1770,6 +1781,9 @@ function Journal({
   const activeQuests = useMemo(() => state.quests.filter((q) => !q.status || q.status === "active"), [state.quests]);
   const completedQuests = useMemo(() => state.quests.filter((q) => q.status === "completed"), [state.quests]);
   const failedQuests = useMemo(() => state.quests.filter((q) => q.status === "failed"), [state.quests]);
+  const narrativeEvents = useMemo(() => narrativeEventsAtOrBefore(events, state.sequence, selectedFloorOrdinal), [events, state.sequence, selectedFloorOrdinal]);
+  const ruleHistory = useMemo(() => narrativeEventsAtOrBefore(events, state.sequence, selectedFloorOrdinal, 'rule-changed'), [events, state.sequence, selectedFloorOrdinal]);
+  const sourceTitle = (sourceId: string) => sources.find((source) => source.id === sourceId)?.title ?? sourceId;
 
   const displayedQuests =
     tab === "ACTIVE"
@@ -1905,6 +1919,10 @@ function Journal({
                   )}
                 </div>
                 <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
+                  <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>FLOOR METRICS</h3>
+                  {Object.keys(observations.floor).length === 0 ? <p style={{ fontSize: "10px", color: "#6a8592" }}>No floor metrics sourced at this sequence.</p> : Object.entries(observations.floor).map(([key, value]) => <div key={key} className="telemetry-metric-row"><span>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase())}: <strong>{value.value.toLocaleString()}</strong></span><TelemetryBadge observation={value} onClick={() => onInspectObservation?.(value)} /></div>)}
+                </div>
+                <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
                   <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>OBSERVED INVENTORY & EQUIPMENT</h3>
                   {Object.keys(observations.inventory).length === 0 && Object.keys(observations.equipment).length === 0 ? (
                     <p style={{ fontSize: "10px", color: "#6a8592" }}>No inventory or equipment observations at this sequence.</p>
@@ -1935,25 +1953,18 @@ function Journal({
         <Panel title={tab === "LOG" ? "SYSTEM EVENT LOG" : "FLOOR RULES & DIRECTIVES"}>
           <div className="log">
             {tab === "LOG" ? (
-              state.recentLogs.map((l) => (
-                <p
-                  key={l.sequence}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => onNavigateToSequence(l.sequence)}
-                >
-                  <span>SEQ #{l.sequence}</span> [{l.timestamp}] {l.message}
-                </p>
-              ))
+              <>
+                {narrativeEvents.slice().reverse().map((event) => <article key={event.sequence} className={`typed-log-entry ${event.kind === 'floor-collapsed' ? 'terminal' : ''}`} tabIndex={0} role="button" onClick={() => onNavigateToSequence(event.sequence)} onKeyDown={(key) => { if (key.key === 'Enter' || key.key === ' ') onNavigateToSequence(event.sequence); }}>
+                  <header><SequenceBadge kind={String(event.kind)} /><span>SEQ #{event.sequence}</span></header>
+                  <strong>{event.summary}</strong>
+                  {Array.isArray(event.entities) && event.entities.length > 0 && <p>Entities: {(event.entities as string[]).join(', ')}</p>}
+                  <p>{formatSequencePosition(event.position, Array.isArray(event.evidence) ? event.evidence : [])}</p>
+                  {Array.isArray(event.evidence) && event.evidence.map((evidence, index) => <small key={`${evidence.sourceId}-${index}`}>SOURCE: {sourceTitle(evidence.sourceId)}{evidence.locator?.section ? ` · ${evidence.locator.section}` : ''} · {(evidence.confidence ?? 'sourced').toUpperCase()}</small>)}
+                </article>)}
+                <details><summary>GENERIC SYSTEM EVENTS</summary>{state.recentLogs.filter((log) => !narrativeEvents.some((event) => event.sequence === log.sequence)).map((log) => <p key={log.sequence} onClick={() => onNavigateToSequence(log.sequence)}><span>SEQ #{log.sequence}</span> {log.timestamp ? `[${log.timestamp}] ` : ''}{log.message}</p>)}</details>
+              </>
             ) : (
-              [
-                "LEVEL COLLAPSE: Remaining structures compress at zero.",
-                "SAFETY ROOMS: Marked on discovered map tiles only.",
-                "VIEWER EVENT: Audience favorites may receive sponsor attention.",
-              ].map((x) => (
-                <p key={x}>
-                  <span>RULE</span> {x}
-                </p>
-              ))
+              <><p className="history-disclaimer">HISTORICAL CHANGE LOG · Entries are source-recorded changes only; current, superseded, or revoked status is not inferred.</p>{ruleHistory.length ? ruleHistory.map((event) => <article key={event.sequence} className="typed-log-entry"><header><SequenceBadge kind="rule-changed" /><button onClick={() => onNavigateToSequence(event.sequence)}>SEQ #{event.sequence}</button></header><strong>{event.summary}</strong><p>{formatSequencePosition(event.position, Array.isArray(event.evidence) ? event.evidence : [])}</p>{Array.isArray(event.evidence) && event.evidence.map((evidence, index) => <small key={`${evidence.sourceId}-${index}`}>SOURCE: {sourceTitle(evidence.sourceId)}{evidence.locator?.section ? ` · ${evidence.locator.section}` : ''}</small>)}</article>) : <p>No rule changes sourced in this floor scope at or before Sequence #{state.sequence}.</p>}</>
             )}
           </div>
         </Panel>

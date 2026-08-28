@@ -15,6 +15,8 @@ import type {
 import { getFloorEndSequence } from '../domain/floors';
 import { projectCountdownState, formatCountdownDuration } from '../domain/countdowns';
 import { TelemetryBadge } from './TelemetryBadge';
+import { SequenceBadge } from './SequenceBadge';
+import { getNarrativePresentation } from '../domain/narrative-presentation';
 
 interface TimelineScrubberProps {
   events: CrawlerEvent[];
@@ -49,6 +51,7 @@ export function TimelineScrubber({
 }: TimelineScrubberProps) {
   const [filterCategory, setFilterCategory] = useState<EventCategory | 'all'>('all');
   const [feedMode, setFeedMode] = useState<'all' | 'events-only' | 'telemetry-only'>('all');
+  const [semanticFilter, setSemanticFilter] = useState<'all' | 'rules' | 'broadcasts' | 'encounters' | 'floor-transitions'>('all');
   const [showDiagnostics, setShowDiagnostics] = useState<boolean>(false);
   const [showObservationMarkers, setShowObservationMarkers] = useState<boolean>(false);
   const [hoveredEvent, setHoveredEvent] = useState<CrawlerEvent | null>(null);
@@ -91,6 +94,12 @@ export function TimelineScrubber({
     return projectCountdownState({ events, countdowns }, selectedSequence, selectedFloorOrdinal);
   }, [events, countdowns, selectedSequence, selectedFloorOrdinal]);
 
+  const secondaryCountdowns = React.useMemo(() => countdowns
+    .filter((countdown) => countdown.target !== 'floor-collapse' && (selectedFloorOrdinal === 'all' || countdown.floor === selectedFloorOrdinal))
+    .map((countdown) => projectCountdownState({ events, countdowns: [countdown] }, selectedSequence, countdown.floor))
+    .filter((countdown): countdown is NonNullable<typeof countdown> => countdown !== null),
+  [events, countdowns, selectedSequence, selectedFloorOrdinal]);
+
   // Events filtered by selected floor
   const floorEvents = React.useMemo(() => {
     if (selectedFloorOrdinal === 'all') return events;
@@ -118,10 +127,12 @@ export function TimelineScrubber({
   // Category-filtered events for markers display
   const markerEvents = React.useMemo(() => {
     if (feedMode === 'telemetry-only') return [];
-    return floorEvents.filter(
-      (e) => filterCategory === 'all' || e.category === filterCategory
-    );
-  }, [floorEvents, filterCategory, feedMode]);
+    return floorEvents.filter((e) => {
+      if (filterCategory !== 'all' && e.category !== filterCategory) return false;
+      if (semanticFilter === 'all') return true;
+      return e.type === 'NarrativeEvent' && getNarrativePresentation(String(e.kind)).group === semanticFilter;
+    });
+  }, [floorEvents, filterCategory, semanticFilter, feedMode]);
 
   // Observations for track display
   const markerObservations = React.useMemo(() => {
@@ -305,6 +316,14 @@ export function TimelineScrubber({
             </button>
           </div>
         )}
+        {secondaryCountdowns.map((countdown) => (
+          <div key={countdown.id} className="secondary-countdown" title={`${countdown.status} · ${countdown.basis} · ${countdown.target}`}>
+            <span>SECONDARY · {countdown.title.toUpperCase()}</span>
+            <b>{countdown.formattedTime}</b>
+            <small>{countdown.status.toUpperCase()} · {countdown.target.replaceAll('-', ' ').toUpperCase()}</small>
+            <small>EVIDENCE: {countdown.referencePoints.flatMap((reference) => reference.evidence ?? [])[0]?.sourceId ?? 'not sourced at this sequence'}</small>
+          </div>
+        ))}
       </div>
 
       <div className="timeline-header">
@@ -330,7 +349,7 @@ export function TimelineScrubber({
         <div className="time-display">
           <span className="eyebrow">SELECTED TIMELINE SEQUENCE</span>
           <h2>
-            SEQ #{selectedSequence} <small>({currentEvent?.occurred_at || '04:00:00'})</small>
+            SEQ #{selectedSequence} <small>({currentEvent?.occurred_at || 'exact time not sourced'})</small>
           </h2>
         </div>
 
@@ -389,11 +408,12 @@ export function TimelineScrubber({
               <button
                 key={`evt-${ev.sequence}`}
                 style={{ left: `${pct}%` }}
-                className={`marker marker-${ev.category} ${isSelected ? 'active' : ''}`}
+                className={`marker marker-${ev.category} ${ev.type === 'NarrativeEvent' ? `typed-marker marker-${getNarrativePresentation(String(ev.kind)).group}` : ''} ${ev.kind === 'floor-collapsed' ? 'terminal' : ''} ${isSelected ? 'active' : ''}`}
                 onClick={() => onSelectSequence(ev.sequence)}
                 onMouseEnter={() => setHoveredEvent(ev)}
                 onMouseLeave={() => setHoveredEvent(null)}
-                title={`[Causal Event · Floor ${ev.position?.floor ?? 1} · ${ev.occurred_at}] ${ev.summary}`}
+                aria-label={ev.type === 'NarrativeEvent' ? `${getNarrativePresentation(String(ev.kind)).accessibleLabel}: ${ev.summary}` : ev.summary}
+                title={`[${ev.type === 'NarrativeEvent' ? getNarrativePresentation(String(ev.kind)).label : 'Causal Event'} · Floor ${ev.position?.floor ?? 1}${ev.occurred_at ? ` · ${ev.occurred_at}` : ''}] ${ev.summary}`}
               />
             );
           })}
@@ -414,6 +434,11 @@ export function TimelineScrubber({
             );
           })}
         </div>
+      </div>
+
+      <div className="filters semantic-filters" aria-label="Semantic sequence filters">
+        <span className="filter-label">STORY:</span>
+        {(['all', 'rules', 'broadcasts', 'encounters', 'floor-transitions'] as const).map((group) => <button key={group} className={`filter-chip ${semanticFilter === group ? 'active' : ''}`} aria-pressed={semanticFilter === group} onClick={() => setSemanticFilter(group)}>{group === 'all' ? 'ALL' : group.replace('-', ' ').toUpperCase()}</button>)}
       </div>
 
       <div style={{ marginTop: '14px', borderTop: '1px solid #183e4d', paddingTop: '10px' }}>
@@ -478,7 +503,7 @@ export function TimelineScrubber({
           <div className="event-card-preview" style={{ background: hoveredObservation ? '#07202b' : '#0d1f2b', borderColor: hoveredObservation ? '#1bd9ff' : '#1bd9ff' }}>
             {hoveredEvent ? (
               <>
-                <span className="tag">{hoveredEvent.category.toUpperCase()}</span>
+                {hoveredEvent.type === 'NarrativeEvent' ? <SequenceBadge kind={String(hoveredEvent.kind)} /> : <span className="tag">{hoveredEvent.category.toUpperCase()}</span>}
                 <b>
                   ⚡ CAUSAL EVENT · FLOOR {hoveredEvent.position?.floor ?? 1} · SEQ #{hoveredEvent.sequence} ({hoveredEvent.occurred_at})
                 </b>
@@ -623,6 +648,7 @@ function SequenceInspector({
   const narrativeKind = currentEvent?.type === 'NarrativeEvent'
     ? (currentEvent as { kind?: string }).kind
     : undefined;
+  const currentEvidence = Array.isArray(currentEvent?.evidence) ? currentEvent.evidence as unknown as TimelineObservation['evidence'] : [];
 
   const showEvents = feedMode !== 'telemetry-only';
   const showTelemetry = feedMode !== 'events-only';
@@ -661,7 +687,7 @@ function SequenceInspector({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
               <strong style={{ color: '#ff8a90', fontSize: '10px', letterSpacing: '0.08em' }}>
-                ⚡ CAUSAL EVENT ({currentEvent.type || 'EVENT'}{narrativeKind ? ` · ${narrativeKind.toUpperCase()}` : ''})
+                {narrativeKind ? <SequenceBadge kind={narrativeKind} /> : `⚡ CAUSAL EVENT (${currentEvent.type || 'EVENT'})`}
               </strong>
               <span style={{ fontSize: '9px', color: '#8ca8b3' }}>
                 Category: {currentEvent.category ? currentEvent.category.toUpperCase() : 'SYSTEM'}
@@ -670,10 +696,10 @@ function SequenceInspector({
             <p style={{ margin: '2px 0 0 0', color: '#e6f3f7', fontSize: '11px' }}>
               {currentEvent.summary}
             </p>
-            {currentEvent.evidence && currentEvent.evidence.length > 0 && (
+            {currentEvidence.length > 0 && (
               <div style={{ marginTop: '4px', fontSize: '9px', color: '#7fa0ac' }}>
-                Evidence Source: <span style={{ color: '#ffb74d' }}>{currentEvent.evidence[0].sourceId}</span>
-                {currentEvent.evidence[0].locator?.chapter ? ` (Chapter ${currentEvent.evidence[0].locator.chapter})` : ''}
+                Evidence Source: <span style={{ color: '#ffb74d' }}>{currentEvidence[0].sourceId}</span>
+                {currentEvidence[0].locator?.chapter ? ` (Chapter ${currentEvidence[0].locator.chapter})` : ''}
               </div>
             )}
           </div>

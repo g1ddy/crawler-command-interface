@@ -422,7 +422,7 @@ export interface ActiveCountdownState {
   id: string;
   title: string;
   floor: number;
-  target: 'floor-collapse';
+  target: 'floor-collapse' | 'safe-room-closure';
   lifecycleStatus: 'scheduled' | 'active' | 'completed';
   remainingSeconds: number;
   activationOffset?: number;
@@ -600,7 +600,7 @@ export interface FloorCountdownReference {
 export interface FloorCountdown {
   id: string;
   title: string;
-  target: 'floor-collapse';
+  target: 'floor-collapse' | 'safe-room-closure';
   references: FloorCountdownReference[];
 }
 
