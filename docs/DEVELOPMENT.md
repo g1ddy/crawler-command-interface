@@ -20,7 +20,7 @@ Use the repository scripts as the Codex environment lifecycle hooks:
 
 `setup.sh` is for a fresh Codex environment. It performs a clean `npm ci` install from the repository lockfile and installs Chromium plus its Linux dependencies for Playwright.
 
-`maintenance.sh` is for an existing Codex environment after pulling changes or switching branches. It runs `npm install` to reconcile the existing dependency tree with the current branch, then refreshes Chromium and its Linux dependencies.
+`maintenance.sh` is for an existing ChatGPT Codex environment after pulling changes or switching branches. It runs `npm install` to reconcile the existing dependency tree with the current branch, then refreshes Chromium and its Linux dependencies.
 
 Neither script generates fixtures, runs tests, builds artifacts, or writes repository-local bookkeeping state. See [`scripts/README.md`](../scripts/README.md) for the script contract.
 
@@ -66,7 +66,7 @@ The Pages adapter defaults to base path `/crawler-command-interface/`.
 | `npm run test:pages:custom-base` | Test custom domain Pages build (`PAGES_BASE_PATH=/`) and restore default Pages build |
 | `npm run test:rendered` | Verify development preview metadata rendering |
 | `npm run test:e2e` | Run Playwright browser tests against the GitHub Pages adapter |
-| `npm run test:screenshots` | Export the seven canonical desktop Crawler UI screenshots to `artifacts/screenshots/` |
+| `npm run test:screenshots` | Regenerate the seven canonical documentation screenshots in `docs/images/` |
 | `npm run verify` | Full verification suite: sync fixtures, lint, run unit tests, build both targets, and test artifacts |
 | `npm run start` | Start built Vinext production server locally |
 | `npm run db:generate` | Generate Drizzle migrations after schema changes |
@@ -132,7 +132,23 @@ bundle smoke tests. Install Chromium once with `npx playwright install chromium`
 then run `npm run test:e2e`. The browser suite is kept separate from `npm run verify`
 so the existing verification command does not implicitly download browser binaries.
 
-Screenshot export uses a separate single-browser Playwright configuration with a fixed desktop viewport and disabled motion. `npm run test:screenshots` captures the four top-level views (`CRAWLER`, `INVENTORY`, `SKILLS`, `JOURNAL`) plus the three Crawler profile sub-tabs (`OVERVIEW`, `ACHIEVEMENTS`, `BROADCAST`). Local output is written to the ignored `artifacts/screenshots/` directory.
+## Documentation Screenshot Workflow
+
+Documentation screenshots are generated source-controlled assets, not disposable test output. `npm run test:screenshots` uses a dedicated single-browser Playwright configuration with a fixed desktop viewport, one worker, no retries, reduced motion, explicit semantic UI-state assertions, and no fixed sleeps or forced clicks.
+
+The canonical screenshot set is written directly to `docs/images/`:
+
+- `screenshot-crawler.png`
+- `screenshot-inventory.png`
+- `screenshot-skills.png`
+- `screenshot-journal.png`
+- `screenshot-crawler-overview.png`
+- `screenshot-crawler-achievements.png`
+- `screenshot-crawler-broadcast.png`
+
+These files are generated evidence of the documented interface and should not be hand-edited. When UI, fixture data, Pages rendering inputs, or screenshot-generation code changes, `.github/workflows/screenshots.yml` regenerates the exact seven-file set on the pull-request branch. Same-repository pull requests automatically commit changed screenshots back to the branch; fork pull requests still generate and upload the images for review but do not receive write access.
+
+Keep this workflow separate from functional E2E. E2E answers whether user behavior works across supported browsers; the screenshot workflow deliberately renders stable canonical documentation states. Do not make screenshot generation part of `npm run verify`, broaden it into the browser compatibility matrix, add fallback screenshot subjects, or use forced interactions to make captures succeed.
 
 ## CI Artifact Contract
 
@@ -143,17 +159,18 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 - **Verification Guarantee**: The uploaded artifact is produced only if all deterministic correctness checks (fixture sync, linting, unit tests, live Worker build, rendered-output tests, Pages build, and same-commit artifact provenance contracts) pass. If any verification check fails, no artifact is published.
 - **Artifact Promotion**: After a successful `CI` push run from this repository's `main` branch, `deploy-pages.yml` downloads `github-pages-artifact` from that exact workflow run, checks that its provenance SHA matches the CI source commit, and uploads the unchanged directory for GitHub Pages deployment. Pull-request-originated CI runs are never eligible for Pages promotion. Deployment does not check out source, install dependencies, rerun verification, or rebuild the application.
 - **Independent E2E Consumption**: After every successful `CI` run (including supported pull-request and `main` runs), `playwright.yml` independently downloads the artifact from that exact run, verifies its provenance, serves it at `/crawler-command-interface/`, and runs the browser suite without rebuilding the application. Failed browser runs retain their HTML report, traces, screenshots, and other available test results as a workflow artifact.
-- **Screenshot Export**: `screenshots.yml` is another independent `workflow_run` consumer. After successful CI it downloads the same validated Pages artifact, verifies provenance, exports the seven canonical desktop screenshots, records SHA-256 checksums plus the Pages `build-provenance.json`, and uploads the bundle as `crawler-interface-screenshots-<CI run id>` for 30 days. Screenshot generation never rebuilds the application and does not block Pages deployment.
-- **Non-blocking Browser Gate**: Pages deployment, Playwright E2E, and screenshot export are sibling `workflow_run` consumers of deterministic CI; none depends on another. Browser or screenshot failures remain visible but do not block or delay deployment. The deterministic `npm run verify` checks remain the hard release gates.
+- **Living Documentation Screenshots**: `screenshots.yml` is a pull-request documentation workflow, intentionally separate from the post-CI E2E/deployment fan-out. It regenerates tracked `docs/images/*.png` assets from the pull-request source using the dedicated screenshot Playwright config, verifies that all seven expected files are non-empty, uploads them for review, and auto-commits changed images on same-repository branches.
+- **Non-blocking Browser Gate**: Pages deployment and Playwright E2E are sibling `workflow_run` consumers of deterministic CI; neither depends on the other. Documentation screenshot generation is also non-blocking for deployment. Browser or screenshot failures remain visible while the deterministic `npm run verify` checks remain the hard release gates.
 - **Manual Deployment**: The previous `workflow_dispatch` path is intentionally removed. Pages deployment now promotes only a previously validated CI artifact; recovery or manual promotion should be added later only if it selects an existing validated CI run rather than rebuilding source.
 - **Rollout Validation**: New `workflow_run` consumers cannot fully exercise their downstream trigger until their workflow definitions exist on the default branch. After changes to this fan-out topology land, verify the first successful `main` CI run produces the expected downstream workflows, that they consume the same CI run artifact, and that provenance validation succeeds before considering the delivery change fully validated.
 
 ## Contribution Expectations
 
 - **Source vs. generated data**: Edit source files in `app/`, `src/`, `data/raw/floors/`, `scripts/`, or `tests/`. Do not edit `dist/`, `dist-pages/`, `data/floors/*.json`, or `data/compiled-timeline.json` directly.
+- **Generated documentation screenshots**: Treat `docs/images/screenshot-*.png` as generated canonical documentation assets. Regenerate them with `npm run test:screenshots` or let the screenshot workflow refresh them; do not retouch or replace them manually.
 - **Shared runtime portability**: Code shared by the adapters must continue to work in both browser-only Pages mode and the more restrictive ChatGPT Worker import/render path.
 - **Verification**: Ensure `npm run verify` passes completely before submitting code.
 - **Documentation boundaries**:
   - Refer to [ARCHITECTURE.md](ARCHITECTURE.md) for system architecture, run modes, host-specific constraints, and data flow.
   - Refer to [ROADMAP.md](ROADMAP.md) for current product goals and task backlogs.
-  - Refer to [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) for evidence authoring, JSON schemas, and countdown projection semantics.
+  - Refer to [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) for evidence authoring, JSON schemas, countdown projection semantics.
