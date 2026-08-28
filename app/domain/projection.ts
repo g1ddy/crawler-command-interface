@@ -200,7 +200,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       ? event.occurred_at
       : pos && typeof pos.elapsedSeconds === 'number'
       ? formatElapsedSeconds(pos.elapsedSeconds)
-      : state.occurredAt;
+      : 'exact time not sourced';
   state.occurredAt = occurredAt;
 
   const category: EventCategory =
@@ -221,21 +221,24 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
 
   const summary = typeof event.summary === 'string' ? event.summary : 'Event recorded';
 
-  // Add log entry
-  state.recentLogs = [
-    {
-      sequence,
-      timestamp: occurredAt,
-      message: summary,
-      category,
-    },
-    ...state.recentLogs,
-  ].slice(0, 30);
+  // Narrative events retain their typed payload in the immutable timeline and
+  // are rendered from there. Keep recentLogs as the generic fallback only so
+  // narrative kind, evidence, and floor scope are never flattened away.
+  if (event.type !== 'NarrativeEvent') {
+    state.recentLogs = [
+      {
+        sequence,
+        timestamp: occurredAt,
+        message: summary,
+        category,
+      },
+      ...state.recentLogs,
+    ].slice(0, 30);
+  }
 
   switch (event.type) {
     case 'ItemAcquired':
     case 'ItemCrafted': {
-      // Schema event has event.item, legacy event has item fields directly
       const itemData = ((event.item as Record<string, unknown>) || event) as Record<string, unknown>;
       const instanceId = String(itemData.instanceId || itemData.itemInstanceId);
       const existing = state.inventory.find((i) => i.instanceId === instanceId);
@@ -293,7 +296,6 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const slot = String(event.slot || 'SPECIAL').toUpperCase();
       const instanceId = String(event.itemInstanceId);
 
-      // Clear instanceId if it was equipped in another slot
       for (const s in state.equippedSlots) {
         if (state.equippedSlots[s] === instanceId) {
           state.equippedSlots[s] = null;
@@ -317,27 +319,21 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     case 'ItemLocked': {
       const instanceId = String(event.itemInstanceId);
       const item = state.inventory.find((i) => i.instanceId === instanceId);
-      if (item) {
-        item.isLocked = true;
-      }
+      if (item) item.isLocked = true;
       break;
     }
 
     case 'ItemUnlocked': {
       const instanceId = String(event.itemInstanceId);
       const item = state.inventory.find((i) => i.instanceId === instanceId);
-      if (item) {
-        item.isLocked = false;
-      }
+      if (item) item.isLocked = false;
       break;
     }
 
     case 'ItemLockToggled': {
       const instanceId = String(event.itemInstanceId);
       const item = state.inventory.find((i) => i.instanceId === instanceId);
-      if (item) {
-        item.isLocked = !item.isLocked;
-      }
+      if (item) item.isLocked = !item.isLocked;
       break;
     }
 
@@ -354,13 +350,9 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     case 'ItemUnequipped': {
       const slot = String(event.slot || 'SPECIAL').toUpperCase();
       const instanceId = String(event.itemInstanceId);
-      if (state.equippedSlots[slot] === instanceId) {
-        state.equippedSlots[slot] = null;
-      }
+      if (state.equippedSlots[slot] === instanceId) state.equippedSlots[slot] = null;
       const item = state.inventory.find((i) => i.instanceId === instanceId);
-      if (item) {
-        item.isEquipped = false;
-      }
+      if (item) item.isEquipped = false;
       break;
     }
 
@@ -370,9 +362,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const item = state.inventory.find((i) => i.instanceId === instanceId);
       if (item) {
         item.quantity -= numericQuantity;
-        if (item.quantity <= 0) {
-          state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
-        }
+        if (item.quantity <= 0) state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
       }
       if (event.healthRestored) {
         state.crawler.condition.currentHealth = Math.min(
@@ -410,9 +400,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       }
       if (isFullyRemoved) {
         for (const slot in state.equippedSlots) {
-          if (state.equippedSlots[slot] === instanceId) {
-            state.equippedSlots[slot] = null;
-          }
+          if (state.equippedSlots[slot] === instanceId) state.equippedSlots[slot] = null;
         }
       }
       break;
@@ -457,7 +445,6 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     }
 
     case 'NarrativeEvent': {
-      // Log entry already recorded above
       break;
     }
 
@@ -479,19 +466,14 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
 
     case 'LevelChanged': {
       const level = Number(event.level);
-      if (Number.isInteger(level) && level > 0) {
-        state.crawler.level = level;
-      }
+      if (Number.isInteger(level) && level > 0) state.crawler.level = level;
       break;
     }
 
     case 'XPChanged': {
       if (event.maxXp !== undefined) state.crawler.maxXp = Number(event.maxXp);
-      if (event.xp !== undefined) {
-        state.crawler.xp = Number(event.xp);
-      } else if (event.xpDelta !== undefined) {
-        state.crawler.xp = Math.max(0, state.crawler.xp + Number(event.xpDelta));
-      }
+      if (event.xp !== undefined) state.crawler.xp = Number(event.xp);
+      else if (event.xpDelta !== undefined) state.crawler.xp = Math.max(0, state.crawler.xp + Number(event.xpDelta));
       break;
     }
 
@@ -542,9 +524,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
           cost: typeof event.cost === 'string' ? event.cost : undefined,
           synergies: Array.isArray(event.synergies) ? (event.synergies as string[]) : undefined,
         });
-        if (state.hotlist.length < 10) {
-          state.hotlist.push(skillId);
-        }
+        if (state.hotlist.length < 10) state.hotlist.push(skillId);
       }
       break;
     }
@@ -560,11 +540,8 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
         rewards: String(event.rewards || ''),
         status: (event.status as 'active' | 'completed' | 'failed') || 'active',
       };
-      if (questIndex >= 0) {
-        state.quests[questIndex] = updatedQuest;
-      } else {
-        state.quests.push(updatedQuest);
-      }
+      if (questIndex >= 0) state.quests[questIndex] = updatedQuest;
+      else state.quests.push(updatedQuest);
       break;
     }
 
@@ -643,7 +620,6 @@ export function projectState(
     events = doc.events || [];
     baseInitialState = createInitialState(doc.initialState);
 
-    // Map doc.snapshots if available
     if (Array.isArray(doc.snapshots)) {
       activeSnapshots = doc.snapshots.map((snap) => ({
         sequence: snap.sequence,
@@ -668,7 +644,6 @@ export function projectState(
   let baseState: CrawlerState = baseInitialState;
   let startSequence = minSeq;
 
-  // Filter valid snapshots <= targetSequence
   const validSnapshots = activeSnapshots
     .filter((s) => s.sequence <= clampedTarget)
     .sort((a, b) => b.sequence - a.sequence);
