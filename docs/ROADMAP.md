@@ -39,6 +39,7 @@ Host-specific Worker, static Pages, authentication, and tooling boundaries are d
 
 ### 5. Deployment and Delivery
 
+- [x] Promote the canonical, provenance-checked Pages artifact from deterministic CI to deployment and Playwright through independent downstream workflows; keep browser E2E visible but non-blocking for deployment.
 - [ ] Record reviewed `main` commit SHA during ChatGPT live-app releases, or automate release metadata generation in CI/CD.
 
 ### 6. Quality, Governance, and Disclaimers

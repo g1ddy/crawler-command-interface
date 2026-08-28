@@ -1,11 +1,13 @@
 name: Deploy GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
-  workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -15,18 +17,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  promote:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Download validated Pages artifact
+        uses: actions/download-artifact@v4
         with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      # Do not publish the static artifact unless the shared browser app and
-      # the ChatGPT-compatible Worker artifact both pass their contract checks.
-      - run: npm run verify
+          name: github-pages-artifact
+          path: dist-pages
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Verify artifact provenance
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          test -f dist-pages/build-provenance.json
+          test "$(jq -r '.commitSha' dist-pages/build-provenance.json)" = "$EXPECTED_SHA"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
@@ -36,7 +47,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
+    needs: promote
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
