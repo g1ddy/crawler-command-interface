@@ -1,8 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
   SCREENSHOTS,
-  promoteCanonicalScreenshots,
-  resetScreenshotStaging,
   stagedScreenshotPath,
 } from "./canonical-screenshots.ts";
 
@@ -51,14 +49,6 @@ async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
   });
 }
 
-test.beforeAll(async () => {
-  await resetScreenshotStaging();
-});
-
-test.afterAll(async () => {
-  await promoteCanonicalScreenshots();
-});
-
 test.beforeEach(async ({ page }) => {
   await preparePage(page);
 });
@@ -73,7 +63,8 @@ test("export top-level Crawler tab", async ({ page }) => {
 test("export top-level Inventory tab", async ({ page }) => {
   await selectTopLevelTab(page, "INVENTORY");
   await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "ALL ITEMS", exact: true })).toHaveClass(/\bon\b/);
+  await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/\bon\b/);
+  await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible();
   await capture(page, "inventory");
 });
 
@@ -87,7 +78,8 @@ test("export top-level Skills tab", async ({ page }) => {
 test("export top-level Journal tab", async ({ page }) => {
   await selectTopLevelTab(page, "JOURNAL");
   await expect(page.getByRole("heading", { name: "JOURNAL", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "ACTIVE", exact: true })).toHaveClass(/\bon\b/);
+  await expect(page.getByRole("button", { name: /^ACTIVE\b/ })).toHaveClass(/\bon\b/);
+  await expect(page.getByText("RECENT PROGRESS & ACHIEVEMENTS", { exact: true })).toBeVisible();
   await capture(page, "journal");
 });
 
