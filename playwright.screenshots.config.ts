@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { CANONICAL_VIEWPORT } from "./tests/screenshots/canonical-screenshots.ts";
 
 const PORT = 4174;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
@@ -20,7 +21,7 @@ export default defineConfig({
       name: "desktop-chromium",
       use: {
         ...devices["Desktop Chrome"],
-        viewport: { width: 1440, height: 1100 },
+        viewport: CANONICAL_VIEWPORT,
       },
     },
   ],
