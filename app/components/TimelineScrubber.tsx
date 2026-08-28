@@ -505,7 +505,7 @@ export function TimelineScrubber({
               <>
                 {hoveredEvent.type === 'NarrativeEvent' ? <SequenceBadge kind={String(hoveredEvent.kind)} /> : <span className="tag">{hoveredEvent.category.toUpperCase()}</span>}
                 <b>
-                  ⚡ CAUSAL EVENT · FLOOR {hoveredEvent.position?.floor ?? 1} · SEQ #{hoveredEvent.sequence} ({hoveredEvent.occurred_at})
+                  ⚡ CAUSAL EVENT · FLOOR {hoveredEvent.position?.floor ?? 1} · SEQ #{hoveredEvent.sequence} ({hoveredEvent.occurred_at || 'exact time not sourced'})
                 </b>
                 <p>{hoveredEvent.summary}</p>
               </>
