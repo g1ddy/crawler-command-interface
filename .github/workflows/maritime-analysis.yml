@@ -17,48 +17,33 @@ jobs:
         with:
           repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-          path: crawler
           fetch-depth: 0
-
-      - name: Checkout Dependency Maritime
-        uses: actions/checkout@v4
-        with:
-          repository: g1ddy/dependency-maritime
-          ref: 0c2e9369356edb32f04ffb261c3705e0c23cd08b
-          path: maritime
 
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.13.0
 
-      - name: Build and pack Maritime
-        working-directory: maritime
-        run: |
-          npm ci
-          npm run build:cli
-          mkdir -p ../packages
-          npm pack --pack-destination ../packages
+      - name: Install Crawler dependencies
+        run: npm ci
 
-      - name: Install Crawler and packed Maritime CLI
-        working-directory: crawler
-        run: |
-          npm ci
-          TARBALL=$(ls ../packages/dependency-maritime-cli-*.tgz | head -n1)
-          npm install --no-save "$TARBALL"
-
-      - name: Analyze Crawler architecture
-        working-directory: crawler
-        run: npm run analyze:architecture
+      - name: Analyze with Maritime
+        uses: g1ddy/dependency-maritime@cli-v0.1.0-beta.2
+        with:
+          node-version: '22.13.0'
+          source-roots: 'app src'
+          output-dir: '.maritime'
+          fail-on-unmeasured: 'true'
+          upload-artifact: 'false'
 
       - name: Inspect Maritime outputs
-        run: find crawler/.maritime -maxdepth 1 -type f -print
+        run: find .maritime -maxdepth 1 -type f -print
 
       - name: Upload Maritime analysis
         uses: actions/upload-artifact@v4
         with:
           name: maritime-analysis
-          path: crawler/.maritime/
+          path: .maritime/
           if-no-files-found: error
           include-hidden-files: true
 
@@ -67,7 +52,6 @@ jobs:
           github.event_name == 'pull_request' &&
           contains(github.event.pull_request.labels.*.name, 'maritime') &&
           github.event.pull_request.head.repo.full_name == github.repository
-        working-directory: crawler
         env:
           HEAD_BRANCH: ${{ github.head_ref }}
         run: |

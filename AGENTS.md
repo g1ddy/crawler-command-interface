@@ -10,6 +10,7 @@ Refer to the canonical documentation for detailed guidance:
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Local setup, diagnostic scripts, build targets, fixture generation, contribution rules, and generated screenshot workflow.
 - [scripts/README.md](scripts/README.md) — ChatGPT Codex setup/maintenance lifecycle and repository script responsibilities.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Shared runtime, deployment modes, host-specific constraints, data flow, and Worker-safe boundaries.
+- [docs/COMPLEXITY.md](docs/COMPLEXITY.md) — Canonical generated Maritime architecture and complexity evidence.
 - [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) — Canonical generated visual documentation for the supported interface views.
 - [docs/ROADMAP.md](docs/ROADMAP.md) — Authoritative active product backlog and intentional deferrals.
 - [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Authoritative raw evidence authoring rules, JSON schemas, countdown lifecycle breaks, scrubbing, and projection semantics.
