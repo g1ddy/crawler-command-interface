@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
 import { projectState, projectCountdownState, projectObservations } from "../app/domain/projection";
+import { formatProjectedObservationValue } from "../app/domain/observations";
 import { getFloorEndSequence } from "../app/domain/floors";
 import type {
   ProjectedObservationsState,
@@ -9,6 +10,7 @@ import type {
   ProjectedItemObservation,
   ProjectedEquipmentObservation,
   TimelineSource,
+  RewardSpec,
 } from "../app/domain/types";
 import { TelemetryBadge } from "../app/components/TelemetryBadge";
 import { TelemetryInspectorModal } from "../app/components/TelemetryInspectorModal";
@@ -1848,7 +1850,7 @@ function Journal({
                     <p className="eyebrow">{ach.recipient ? `${ach.recipient.toUpperCase()} · ` : ""}ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
                     <h1>{ach.title}</h1>
                     <p>{ach.description}</p>
-                    <b>{ach.rewards}</b>
+                    <AchievementRewards rewards={ach.rewards} />
                   </div>
                 </div>
               ))}
@@ -1920,7 +1922,7 @@ function Journal({
                 </div>
                 <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
                   <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>FLOOR METRICS</h3>
-                  {Object.keys(observations.floor).length === 0 ? <p style={{ fontSize: "10px", color: "#6a8592" }}>No floor metrics sourced at this sequence.</p> : Object.entries(observations.floor).map(([key, value]) => <div key={key} className="telemetry-metric-row"><span>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase())}: <strong>{value.value.toLocaleString()}</strong></span><TelemetryBadge observation={value} onClick={() => onInspectObservation?.(value)} /></div>)}
+                  {Object.keys(observations.floor).length === 0 ? <p style={{ fontSize: "10px", color: "#6a8592" }}>No floor metrics sourced at this sequence.</p> : Object.entries(observations.floor).map(([key, value]) => <div key={key} className="telemetry-metric-row"><span>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase())}: <strong>{formatProjectedObservationValue(value)}</strong></span><TelemetryBadge observation={value} onClick={() => onInspectObservation?.(value)} /></div>)}
                 </div>
                 <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
                   <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>OBSERVED INVENTORY & EQUIPMENT</h3>
@@ -2037,7 +2039,7 @@ function Achievements({ achievements }: { achievements: CrawlerState["achievemen
             <p className="eyebrow">{ach.recipient ? `${ach.recipient.toUpperCase()} · ` : ""}ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
             <h1>{ach.title}</h1>
             <p>{ach.description}</p>
-            <b>{ach.rewards}</b>
+            <AchievementRewards rewards={ach.rewards} />
           </div>
         </div>
       ))}
@@ -2056,6 +2058,32 @@ function Achievements({ achievements }: { achievements: CrawlerState["achievemen
     </div>
   );
 }
+
+function AchievementRewards({ rewards }: { rewards: RewardSpec[] }) {
+  if (rewards.length === 0) {
+    return <p className="achievement-rewards empty">REWARD: NONE RECORDED</p>;
+  }
+
+  return (
+    <ul className="achievement-rewards" aria-label="Achievement rewards">
+      {rewards.map((reward, index) => {
+        const details = [
+          reward.boxType,
+          reward.rarity,
+          reward.amount !== undefined ? reward.amount.toLocaleString() : undefined,
+          reward.description,
+        ].filter(Boolean);
+        return (
+          <li key={`${reward.kind}-${index}`}>
+            <strong>{reward.kind.toUpperCase()}</strong>
+            {details.length > 0 ? ` · ${details.join(" · ")}` : ""}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 
 function Broadcast({
   broadcast,

@@ -57,7 +57,7 @@ export const floor6Timeline: CrawlerTimelineDocument = {
         title: 'Tutorial: Reach the Stairs',
         urgency: 'URGENT',
         goals: ['Find the emergency stairwell', 'Bypass the security lockdown'],
-        rewards: '150 XP · Bronze Box',
+        rewards: [{ kind: 'xp', amount: 150 }, { kind: 'box', boxType: 'Bronze Box', rarity: 'bronze' }],
         status: 'active',
       },
       {
@@ -65,7 +65,7 @@ export const floor6Timeline: CrawlerTimelineDocument = {
         title: 'Extermination Protocol',
         urgency: 'STANDARD',
         goals: ['Kill 10 grunts (0/10)', 'Defeat the Broodmother (0/1)'],
-        rewards: '500 XP · Skill Point',
+        rewards: [{ kind: 'xp', amount: 500 }, { kind: 'other', description: 'Skill Point' }],
         status: 'active',
       },
     ],
