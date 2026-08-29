@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   analyze:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Crawler
         uses: actions/checkout@v4
@@ -41,9 +41,9 @@ jobs:
         run: find .maritime -maxdepth 1 -type f -print
 
       - name: Install Graphviz
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes graphviz
+        uses: ts-graphviz/setup-graphviz@b1de5da23ed0a6d14e0aeee8ed52fdd87af2363c # v2
+        with:
+          ubuntu-graphviz-version: '2.42.2-9ubuntu0.1'
 
       - name: Generate dependency diagram
         run: npm run generate:architecture-diagram

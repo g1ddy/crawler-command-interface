@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const defaultInput = resolve(repositoryRoot, ".maritime/dependency-graph.json");
 const defaultOutput = resolve(repositoryRoot, "docs/images/dependency-graph.svg");
+const otherGroup = "__other__";
 
 const groups = [
   ["app/components", "UI components"],
@@ -15,13 +16,15 @@ const groups = [
   ["app", "ChatGPT adapter"],
   ["src", "Shared app and Pages adapter"],
 ];
+const renderGroups = [...groups, [otherGroup, "Other analyzed modules"]];
 
 function quote(value) {
   return JSON.stringify(value);
 }
 
 function groupFor(path) {
-  return groups.find(([prefix]) => path === prefix || path.startsWith(`${prefix}/`))?.[0];
+  if (typeof path !== "string" || path.startsWith("node_modules/")) return undefined;
+  return groups.find(([prefix]) => path === prefix || path.startsWith(`${prefix}/`))?.[0] ?? otherGroup;
 }
 
 function externalName(dependency) {
@@ -36,7 +39,7 @@ export function graphToDot(graph) {
   }
 
   const modules = graph.modules
-    .filter(({ source }) => typeof source === "string" && groupFor(source))
+    .filter(({ source }) => groupFor(source))
     .sort((a, b) => a.source.localeCompare(b.source));
   const moduleNames = new Set(modules.map(({ source }) => source));
   const externals = new Set();
@@ -66,13 +69,14 @@ export function graphToDot(graph) {
     "  edge [color=\"#94a3b8\", arrowsize=0.55, penwidth=0.8];",
   ];
 
-  for (const [prefix, label] of groups) {
+  for (const [prefix, label] of renderGroups) {
     const members = modules.filter(({ source }) => groupFor(source) === prefix);
     if (members.length === 0) continue;
     lines.push(`  subgraph ${quote(`cluster_${prefix.replaceAll("/", "_")}`)} {`);
     lines.push(`    label=${quote(label)}; color=\"#cbd5e1\"; style=\"rounded\";`);
     for (const { source } of members) {
-      lines.push(`    ${quote(source)} [label=${quote(relative(prefix, source) || source)}];`);
+      const nodeLabel = prefix === otherGroup ? source : relative(prefix, source) || source;
+      lines.push(`    ${quote(source)} [label=${quote(nodeLabel)}];`);
     }
     lines.push("  }");
   }

@@ -19,6 +19,24 @@ test("Maritime graph is converted to stable, path-grouped DOT", async () => {
   assert.doesNotMatch(first, /"node_modules\/react\/index\.js" \[/);
 });
 
+test("unmatched local modules remain visible instead of being silently dropped", () => {
+  const dot = graphToDot({
+    modules: [
+      {
+        source: "src/CrawlerApp.tsx",
+        dependencies: [{ resolved: "tools/bridge.ts", module: "../tools/bridge" }],
+      },
+      { source: "tools/bridge.ts", dependencies: [] },
+      { source: "node_modules/react/index.js", dependencies: [] },
+    ],
+  });
+
+  assert.match(dot, /label="Other analyzed modules"/);
+  assert.match(dot, /"tools\/bridge\.ts" \[label="tools\/bridge\.ts"\]/);
+  assert.match(dot, /"src\/CrawlerApp\.tsx" -> "tools\/bridge\.ts"/);
+  assert.doesNotMatch(dot, /node_modules\/react\/index\.js/);
+});
+
 test("invalid Maritime graph contracts fail clearly", () => {
   assert.throws(() => graphToDot({}), /modules array/);
 });
