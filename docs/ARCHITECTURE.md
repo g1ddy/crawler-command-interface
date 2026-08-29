@@ -28,11 +28,11 @@ The overview above is a hand-authored conceptual view of runtime responsibilitie
 
 ### Generated Dependency Structure
 
-The diagram below is generated structural evidence derived exclusively from Maritime's canonical `.maritime/dependency-graph.json`. It groups modules mechanically by repository path and includes imported external packages to make adapter and runtime boundaries visible. It does not replace the conceptual diagrams in this document.
+The diagram below is generated structural evidence derived exclusively from Maritime's canonical `.maritime/dependency-graph.json`. The derived SVG presentation (`docs/images/dependency-graph.svg`) is rendered by Maritime using Graphviz, deriving module hierarchy recursively from repository source paths. It does not replace the conceptual diagrams in this document.
 
 ![Generated Crawler module dependency graph](images/dependency-graph.svg)
 
-Do not edit the SVG by hand. After refreshing Maritime evidence, regenerate it with `npm run generate:architecture-diagram`.
+Do not edit the SVG by hand. After refreshing `.maritime/dependency-graph.json`, regenerate the diagram with `npx --package=@dependency-maritime/cli@0.1.0-beta.3 maritime graph --input .maritime --output docs/images/dependency-graph.svg`.
 
 ## Execution Modes and Compatibility Boundaries
 
