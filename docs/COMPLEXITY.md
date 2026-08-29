@@ -6,6 +6,7 @@ The `.maritime/` directory is Crawler Command Interface's generated, authoritati
 - [`.maritime/complexity-metrics.json`](../.maritime/complexity-metrics.json) — machine-readable, per-file complexity measurements.
 - [`.maritime/dependency-graph.json`](../.maritime/dependency-graph.json) — the analyzed dependency graph for the application source roots.
 - [`.maritime/manifest.json`](../.maritime/manifest.json) — the versioned bundle manifest and validation envelope.
+- [`docs/images/dependency-graph.svg`](images/dependency-graph.svg) — the generated Graphviz presentation of the canonical Maritime dependency graph.
 
 ## Regenerating the evidence
 
@@ -18,8 +19,13 @@ For equivalent local analysis, install the matching published CLI without saving
 ```bash
 npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.2
 npm run analyze:architecture
+npm run generate:architecture-diagram
 ```
 
 The `npm run analyze:architecture` script uses the same source roots, output directory, and `--fail-on-unmeasured` strictness as CI.
 
+Run the commands in that order: diagram generation consumes the existing `.maritime/dependency-graph.json` and never starts a second dependency analysis. Graphviz's `dot` executable must be installed locally. The Maritime workflow performs the same rendering immediately after successful analysis and updates the SVG in the existing labeled baseline commit, so no competing branch-writing workflow is involved.
+
 The files under `.maritime/` are generated evidence. Do not hand-edit them; regenerate the complete bundle through the workflow or the equivalent local command.
+
+The dependency SVG is generated documentation too and must not be hand-edited. Its repository-owned adapter deterministically filters, groups, and sorts the Maritime modules and edges before passing DOT to Graphviz.

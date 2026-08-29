@@ -24,6 +24,16 @@ The Crawler Command Interface is a deterministic, replayable dungeon crawler HUD
     +-------------------------------+       +-------------------------------+
 ```
 
+The overview above is a hand-authored conceptual view of runtime responsibilities and deployment boundaries. It is intentionally maintained separately from the file-level evidence.
+
+### Generated Dependency Structure
+
+The diagram below is generated structural evidence derived exclusively from Maritime's canonical `.maritime/dependency-graph.json`. It groups modules mechanically by repository path and includes imported external packages to make adapter and runtime boundaries visible. It does not replace the conceptual diagrams in this document.
+
+![Generated Crawler module dependency graph](images/dependency-graph.svg)
+
+Do not edit the SVG by hand. After refreshing Maritime evidence, regenerate it with `npm run generate:architecture-diagram`.
+
 ## Execution Modes and Compatibility Boundaries
 
 ### Shared TypeScript Runtime

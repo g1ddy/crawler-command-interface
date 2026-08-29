@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-npm ci
-npx playwright install --with-deps chromium
+exec bash scripts/maintenance.sh --clean
