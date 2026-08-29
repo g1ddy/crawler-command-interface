@@ -301,3 +301,21 @@ export function projectObservations(
     equipment,
   };
 }
+
+/** Formats a projected scalar without discarding authored bound semantics. */
+export function formatProjectedObservationValue(observation: ProjectedObservationValue): string {
+  const quantity = observation.quantity;
+  if (!quantity || quantity.kind === 'exact') return observation.value.toLocaleString();
+  if (quantity.kind === 'unknown') return 'Unknown';
+  return `${quantity.kind === 'lower-bound' ? '>' : '<'}${quantity.value.toLocaleString()}`;
+}
+
+/** Human-readable semantics for provenance displays. */
+export function projectedObservationSemantics(observation: ProjectedObservationValue): string {
+  if (observation.status === 'estimated') return 'Estimated / Interpolated';
+  const kind = observation.quantity?.kind;
+  if (kind === 'lower-bound') return 'Stated Lower Bound';
+  if (kind === 'upper-bound') return 'Stated Upper Bound';
+  if (kind === 'unknown') return 'Stated Unknown / Missing';
+  return 'Exact Fact';
+}

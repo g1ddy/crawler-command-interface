@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
 import { projectState, projectCountdownState, projectObservations } from "../app/domain/projection";
+import { formatProjectedObservationValue } from "../app/domain/observations";
 import { getFloorEndSequence } from "../app/domain/floors";
 import type {
   ProjectedObservationsState,
@@ -1921,7 +1922,7 @@ function Journal({
                 </div>
                 <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
                   <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>FLOOR METRICS</h3>
-                  {Object.keys(observations.floor).length === 0 ? <p style={{ fontSize: "10px", color: "#6a8592" }}>No floor metrics sourced at this sequence.</p> : Object.entries(observations.floor).map(([key, value]) => <div key={key} className="telemetry-metric-row"><span>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase())}: <strong>{formatMetricQuantity(value)}</strong></span><TelemetryBadge observation={value} onClick={() => onInspectObservation?.(value)} /></div>)}
+                  {Object.keys(observations.floor).length === 0 ? <p style={{ fontSize: "10px", color: "#6a8592" }}>No floor metrics sourced at this sequence.</p> : Object.entries(observations.floor).map(([key, value]) => <div key={key} className="telemetry-metric-row"><span>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase())}: <strong>{formatProjectedObservationValue(value)}</strong></span><TelemetryBadge observation={value} onClick={() => onInspectObservation?.(value)} /></div>)}
                 </div>
                 <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
                   <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>OBSERVED INVENTORY & EQUIPMENT</h3>
@@ -2083,12 +2084,6 @@ function AchievementRewards({ rewards }: { rewards: RewardSpec[] }) {
   );
 }
 
-function formatMetricQuantity(observation: ProjectedObservationValue): string {
-  const quantity = observation.quantity;
-  if (!quantity || quantity.kind === 'exact') return observation.value.toLocaleString();
-  if (quantity.kind === 'unknown') return 'Unknown';
-  return `${quantity.kind === 'lower-bound' ? '>' : '<'}${quantity.value.toLocaleString()}`;
-}
 
 function Broadcast({
   broadcast,

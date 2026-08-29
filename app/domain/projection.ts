@@ -28,9 +28,10 @@ const defaultFloor6Quests: Quest[] = [
   },
 ];
 
-function structuredRewards(value: unknown): RewardSpec[] {
-  if (!Array.isArray(value)) return [];
-  return value.map((reward) => ({ ...(reward as RewardSpec) }));
+function structuredRewards(value: unknown, legacyText?: unknown): RewardSpec[] {
+  if (Array.isArray(value)) return value.map((reward) => ({ ...(reward as RewardSpec) }));
+  const description = typeof legacyText === 'string' ? legacyText.trim() : '';
+  return description ? [{ kind: 'other', description }] : [];
 }
 
 function parseQuantity(rawQty: unknown): { numericQuantity: number; qtyObject?: QuantityObject } {
@@ -101,7 +102,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     title: a.title,
     recipient: getAchievementRecipient(a.recipient),
     description: a.description || '',
-    rewards: structuredRewards(a.reward),
+    rewards: structuredRewards(a.reward, a.sourceTitle),
     icon: '☠',
     unlockedAtSequence: 0,
   }));
@@ -423,7 +424,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
             ? { recipient: ach.recipient }
             : {}),
           description: String(ach.description || ''),
-          rewards: structuredRewards(ach.reward),
+          rewards: structuredRewards(ach.reward, ach.rewards || ach.sourceTitle),
           icon: String(ach.icon || '☠'),
           unlockedAtSequence: sequence,
         });

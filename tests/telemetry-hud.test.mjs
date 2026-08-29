@@ -2,9 +2,19 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
 import {
+  formatProjectedObservationValue,
   projectObservationValue,
   projectObservations,
+  projectedObservationSemantics,
 } from "../app/domain/observations.ts";
+
+test("bounded and unknown telemetry format without claiming exact values", () => {
+  const base = { key: "floor-metrics.test", value: 0, status: "stated", basis: "exact-observation", evidence: [], referenceObservationIds: [] };
+  assert.equal(formatProjectedObservationValue({ ...base, value: 1500, quantity: { kind: "lower-bound", value: 1500 } }), ">1,500");
+  assert.equal(projectedObservationSemantics({ ...base, value: 1500, quantity: { kind: "lower-bound", value: 1500 } }), "Stated Lower Bound");
+  assert.equal(formatProjectedObservationValue({ ...base, quantity: { kind: "unknown" } }), "Unknown");
+  assert.equal(projectedObservationSemantics({ ...base, quantity: { kind: "unknown" } }), "Stated Unknown / Missing");
+});
 
 test("projectObservationValue produces exact stated fact when target sequence matches observation", () => {
   const magicSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence;

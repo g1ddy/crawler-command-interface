@@ -6,6 +6,7 @@ import type {
   ProjectedEquipmentObservation,
   TimelineSource,
 } from "../domain/types";
+import { formatProjectedObservationValue, projectedObservationSemantics } from "../domain/observations";
 
 interface TelemetryInspectorModalProps {
   observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation;
@@ -29,6 +30,9 @@ export function TelemetryInspectorModal({
     : `Equipment Slot ${(observation as ProjectedEquipmentObservation).slot}`;
 
   const statusLabel = observation.status.toUpperCase();
+  const semanticsLabel = isNumeric
+    ? projectedObservationSemantics(observation as ProjectedObservationValue)
+    : observation.status === "stated" ? "Exact Fact" : "Estimated / Interpolated";
   const basisLabel = observation.basis;
 
   return (
@@ -61,7 +65,7 @@ export function TelemetryInspectorModal({
                   color: observation.status === "stated" ? "#4ee88a" : "#ffd052",
                 }}
               >
-                {statusLabel} ({observation.status === "stated" ? "Exact Fact" : "Estimated / Interpolated"})
+                {statusLabel} ({semanticsLabel})
               </strong>
             </div>
             <div>
@@ -72,7 +76,7 @@ export function TelemetryInspectorModal({
               <div>
                 <span style={{ color: "#7fa0ac" }}>OBSERVED VALUE:</span>{" "}
                 <strong style={{ color: "#1bd9ff", fontSize: "14px" }}>
-                  {(observation as ProjectedObservationValue).value.toLocaleString()}
+                  {formatProjectedObservationValue(observation as ProjectedObservationValue)}
                 </strong>
               </div>
             )}
