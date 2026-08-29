@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-27T22:17:16.779Z",
-    "updatedAt": "2026-08-27T22:17:16.779Z"
+    "createdAt": "2026-08-29T17:16:17.715Z",
+    "updatedAt": "2026-08-29T17:16:17.716Z"
   },
   "floors": [
     {
@@ -4153,7 +4153,11 @@
       "id": "obs-f1-floor-metrics-borough-bosses-15",
       "kind": "floor-metrics",
       "boroughBossesKilled": 15,
-      "note": "The same patch reports more than 1,500 Neighborhood Bosses killed; that lower-bounded value remains in the event summary because this observation stores exact readings.",
+      "neighborhoodBossesKilled": {
+        "kind": "lower-bound",
+        "value": 1500
+      },
+      "note": "The patch reports 15 Borough Bosses and more than 1,500 Neighborhood Bosses killed; the inequality is preserved as a lower bound.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-1",
@@ -4169,6 +4173,11 @@
       "id": "obs-f1-floor-metrics-collapse",
       "kind": "floor-metrics",
       "remainingCrawlers": 1292526,
+      "collapseDeaths": {
+        "kind": "lower-bound",
+        "value": 700000
+      },
+      "note": "The source states that more than 700,000 crawlers died in the collapse; the inequality is preserved as a lower bound.",
       "evidence": [
         {
           "sourceId": "src-wiki-first-floor",

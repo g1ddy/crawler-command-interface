@@ -19,6 +19,15 @@ test("initial state has default crawler stats", () => {
   assert.equal(state.inventory.length, 0);
 });
 
+test("legacy achievement reward text remains visible as a structured reward", () => {
+  const state = projectState(floor6Timeline, 25);
+  const achievement = state.achievements.find((entry) => entry.achievementId === "ach-barely");
+  assert.deepEqual(achievement.rewards, [{
+    kind: "other",
+    description: "+250 XP · +50 FAME · TITLE: UNBREAKABLE",
+  }]);
+});
+
 test("initial-state achievements retain valid recipients", () => {
   const state = createInitialState({
     achievements: [
