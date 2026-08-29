@@ -8,6 +8,7 @@ import type {
   ItemCategory,
   ItemRarity,
   QuantityObject,
+  RewardSpec,
   Quest,
   Skill,
   Snapshot,
@@ -26,6 +27,11 @@ const defaultFloor6Quests: Quest[] = [
     status: 'active',
   },
 ];
+
+function structuredRewards(value: unknown): RewardSpec[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((reward) => ({ ...(reward as RewardSpec) }));
+}
 
 function parseQuantity(rawQty: unknown): { numericQuantity: number; qtyObject?: QuantityObject } {
   if (typeof rawQty === 'number') {
@@ -95,7 +101,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     title: a.title,
     recipient: getAchievementRecipient(a.recipient),
     description: a.description || '',
-    rewards: a.sourceTitle || '',
+    rewards: structuredRewards(a.reward),
     icon: '☠',
     unlockedAtSequence: 0,
   }));
@@ -410,12 +416,6 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const ach = ((event.achievement as Record<string, unknown>) || event) as Record<string, unknown>;
       const achId = String(ach.id || ach.achievementId);
       if (!state.achievements.some((a) => a.achievementId === achId)) {
-        let rewardsStr = String(ach.rewards || ach.sourceTitle || '');
-        if (!rewardsStr && Array.isArray(ach.reward)) {
-          rewardsStr = ach.reward
-            .map((r: Record<string, unknown>) => r.description || `${r.kind} reward`)
-            .join(' · ');
-        }
         state.achievements.push({
           achievementId: achId,
           title: String(ach.title || 'Achievement Unlocked'),
@@ -423,7 +423,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
             ? { recipient: ach.recipient }
             : {}),
           description: String(ach.description || ''),
-          rewards: rewardsStr,
+          rewards: structuredRewards(ach.reward),
           icon: String(ach.icon || '☠'),
           unlockedAtSequence: sequence,
         });

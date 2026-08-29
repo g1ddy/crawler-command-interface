@@ -8,12 +8,14 @@ import type {
   RawInventoryStateObservation,
   TimelineEvent,
   TimelineObservation,
+  MetricQuantity,
 } from './types.ts';
 
 interface NumericObservationSample {
   key: string;
   value: number;
   observation: TimelineObservation;
+  quantity?: MetricQuantity;
 }
 
 const scalarFieldsByKind: Partial<Record<TimelineObservation['kind'], string[]>> = {
@@ -37,7 +39,13 @@ function numericSamples(observations: TimelineObservation[]): NumericObservation
     const values = observation as unknown as Record<string, unknown>;
     for (const field of scalarFieldsByKind[observation.kind] || []) {
       if (typeof values[field] === 'number') {
-        samples.push({ key: `${observation.kind}.${field}`, value: values[field] as number, observation });
+        samples.push({ key: `${observation.kind}.${field}`, value: values[field] as number, observation,
+          ...(observation.kind === 'floor-metrics' ? { quantity: { kind: 'exact', value: values[field] as number } as MetricQuantity } : {}) });
+      } else if (observation.kind === 'floor-metrics' && values[field] && typeof values[field] === 'object') {
+        const quantity = values[field] as MetricQuantity;
+        if (quantity.kind === 'unknown' || typeof quantity.value === 'number') {
+          samples.push({ key: `${observation.kind}.${field}`, value: quantity.kind === 'unknown' ? 0 : quantity.value, observation, quantity });
+        }
       }
     }
     if (observation.kind === 'crawler-attributes') {
@@ -80,6 +88,7 @@ export function projectObservationValue(
     return {
       key,
       value: exact.value,
+      ...(exact.quantity ? { quantity: exact.quantity } : {}),
       status: 'stated',
       basis: 'exact-observation',
       evidence: exact.observation.evidence,
@@ -208,6 +217,7 @@ export function projectObservations(
         projectedValues[key] = {
           key,
           value: latest.value,
+          ...(latest.quantity ? { quantity: latest.quantity } : {}),
           status: 'stated',
           basis: 'exact-observation',
           evidence: latest.observation.evidence,

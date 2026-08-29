@@ -70,6 +70,24 @@
       "type": "integer",
       "minimum": 1
     },
+    "metricQuantity": {
+      "oneOf": [
+        { "$ref": "#/$defs/nonNegativeInteger" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "enum": ["exact", "lower-bound", "upper-bound", "unknown"] },
+            "value": { "$ref": "#/$defs/nonNegativeInteger" }
+          },
+          "allOf": [
+            { "if": { "properties": { "kind": { "const": "unknown" } } }, "then": { "not": { "required": ["value"] } } },
+            { "if": { "properties": { "kind": { "enum": ["exact", "lower-bound", "upper-bound"] } } }, "then": { "required": ["value"] } }
+          ]
+        }
+      ]
+    },
     "floor": {
       "type": "object",
       "additionalProperties": false,
@@ -1978,7 +1996,7 @@
     "attributesObservation": { "allOf": [{ "$ref": "#/$defs/observationBase" }, { "type": "object", "additionalProperties": false, "required": ["attributes"], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "crawler-attributes" }, "eventId": { "$ref": "#/$defs/id" }, "interpolation": { "const": "linear" }, "attributes": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "number" } }, "availableAttributePoints": { "$ref": "#/$defs/nonNegativeInteger" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 } } }] },
     "xpObservation": { "allOf": [{ "$ref": "#/$defs/observationBase" }, { "type": "object", "additionalProperties": false, "anyOf": [{"required":["xp"]},{"required":["maxXp"]},{"required":["level"]}], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "xp-progress" }, "eventId": { "$ref": "#/$defs/id" }, "interpolation": { "const": "linear" }, "xp": { "$ref": "#/$defs/nonNegativeInteger" }, "maxXp": { "$ref": "#/$defs/nonNegativeInteger" }, "level": { "$ref": "#/$defs/positiveInteger" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 } } }] },
     "broadcastObservation": { "allOf": [{ "$ref": "#/$defs/observationBase" }, { "type": "object", "additionalProperties": false, "anyOf": [{"required":["viewers"]},{"required":["followers"]},{"required":["favorites"]},{"required":["patrons"]},{"required":["leaderboardRank"]},{"required":["bounty"]}], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "broadcast-metrics" }, "eventId": { "$ref": "#/$defs/id" }, "interpolation": { "const": "linear" }, "viewers": { "$ref": "#/$defs/nonNegativeInteger" }, "followers": { "$ref": "#/$defs/nonNegativeInteger" }, "favorites": { "$ref": "#/$defs/nonNegativeInteger" }, "patrons": { "$ref": "#/$defs/nonNegativeInteger" }, "leaderboardRank": { "$ref": "#/$defs/positiveInteger" }, "bounty": { "$ref": "#/$defs/nonNegativeInteger" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 } } }] },
-    "floorMetricsObservation": { "allOf": [{ "$ref": "#/$defs/observationBase" }, { "type": "object", "additionalProperties": false, "anyOf": [{"required":["remainingCrawlers"]},{"required":["boroughBossesKilled"]},{"required":["neighborhoodBossesKilled"]},{"required":["collapseDeaths"]}], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "floor-metrics" }, "eventId": { "$ref": "#/$defs/id" }, "remainingCrawlers": { "$ref": "#/$defs/nonNegativeInteger" }, "boroughBossesKilled": { "$ref": "#/$defs/nonNegativeInteger" }, "neighborhoodBossesKilled": { "$ref": "#/$defs/nonNegativeInteger" }, "collapseDeaths": { "$ref": "#/$defs/nonNegativeInteger" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 } } }] },
+    "floorMetricsObservation": { "allOf": [{ "$ref": "#/$defs/observationBase" }, { "type": "object", "additionalProperties": false, "anyOf": [{"required":["remainingCrawlers"]},{"required":["boroughBossesKilled"]},{"required":["neighborhoodBossesKilled"]},{"required":["collapseDeaths"]}], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "floor-metrics" }, "eventId": { "$ref": "#/$defs/id" }, "remainingCrawlers": { "$ref": "#/$defs/metricQuantity" }, "boroughBossesKilled": { "$ref": "#/$defs/metricQuantity" }, "neighborhoodBossesKilled": { "$ref": "#/$defs/metricQuantity" }, "collapseDeaths": { "$ref": "#/$defs/metricQuantity" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 } } }] },
     "inventoryObservation": { "allOf": [{ "$ref": "#/$defs/observationBase" }, { "type": "object", "additionalProperties": false, "required": ["itemInstanceId"], "anyOf": [{"required":["present"]},{"required":["quantity"]},{"required":["isEquipped"]}], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "inventory-state" }, "eventId": { "$ref": "#/$defs/id" }, "itemInstanceId": { "$ref": "#/$defs/id" }, "present": { "type": "boolean" }, "quantity": { "$ref": "#/$defs/quantity" }, "isEquipped": { "type": "boolean" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 } } }] },
     "equipmentObservation": { "allOf": [{ "$ref": "#/$defs/observationBase" }, { "type": "object", "additionalProperties": false, "required": ["slot", "itemInstanceId"], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "equipment-state" }, "eventId": { "$ref": "#/$defs/id" }, "slot": { "type": "string", "minLength": 1 }, "itemInstanceId": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }, "note": { "type": "string", "maxLength": 1000 } } }] }
   }

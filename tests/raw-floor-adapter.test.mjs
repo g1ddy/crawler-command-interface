@@ -95,6 +95,24 @@ test("raw adapter resolves every supported observation kind without turning evid
   assert.equal(compiled.events.length, rawDoc.events.length);
 });
 
+test("raw countdown identities route multiple timers without leaking into nested references", () => {
+  const rawDoc = JSON.parse(JSON.stringify(rawFloor2));
+  const eventId = rawDoc.events[0].id;
+  const evidence = [{ sourceId: rawDoc.sources[0].id, confidence: "confirmed" }];
+  rawDoc.countdowns.push({ id: "countdown-floor-2-safe-room", title: "Safe-room closure", target: "safe-room-closure" });
+  rawDoc.observations.push(
+    { id: "obs-primary-routing", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-2-collapse", remainingSeconds: 100, evidence },
+    { id: "obs-secondary-routing", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-2-safe-room", remainingSeconds: 20, evidence },
+  );
+
+  const adapted = adaptRawFloorDocument(rawDoc);
+  assert.ok(adapted.countdowns.find((countdown) => countdown.id === "countdown-floor-2-collapse").references.some((reference) => reference.remainingSeconds === 100));
+  assert.equal(adapted.countdowns.find((countdown) => countdown.id === "countdown-floor-2-safe-room").references[0].remainingSeconds, 20);
+  for (const countdown of adapted.countdowns) {
+    assert.ok(countdown.references.every((reference) => !("countdownId" in reference)));
+  }
+});
+
 test("Floor 1 and Floor 2 retain sourced progression anchors and supporting transitions", () => {
   const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
   const levelEvents = rawTimeline.events.filter((event) => event.type === "LevelChanged");
@@ -133,6 +151,19 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   const atFloor1Exit = projectState(rawTimeline, floor1Exit.sequence);
   assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-found-stairs"));
   assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-bitchmeat"));
+
+  const bronzeAsshole = atFloor1Exit.achievements.find((achievement) => achievement.achievementId === "achievement-you-monster");
+  assert.ok(bronzeAsshole.rewards.some((reward) => reward.description === "Bronze Asshole's Box" && reward.boxType === "asshole" && reward.rarity === "bronze"));
+  const peta = projectState(rawTimeline, rawTimeline.events.at(-1).sequence).achievements.find((achievement) => achievement.achievementId === "achievement-peta-enthusiast");
+  assert.deepEqual(peta.rewards, []);
+});
+
+test("floor telemetry preserves authored lower bounds", () => {
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
+  const collapse = rawTimeline.events.find((event) => event.id === "evt-f1-floor-collapse");
+  const floor = projectObservations(rawTimeline, collapse.sequence).floor;
+  assert.deepEqual(floor.collapseDeaths.quantity, { kind: "lower-bound", value: 700000 });
+  assert.notEqual(floor.collapseDeaths.quantity.kind, "exact");
 });
 
 test("PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay", () => {

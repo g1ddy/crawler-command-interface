@@ -379,11 +379,19 @@ export type TimelineObservation = Omit<RawObservation, 'eventId'> & TimelineObse
 export interface ProjectedObservationValue {
   key: string;
   value: number;
+  /** Authored quantity semantics. Estimates are always exact numeric values. */
+  quantity?: MetricQuantity;
   status: 'stated' | 'estimated';
   basis: 'exact-observation' | 'elapsed-duration' | 'sequence-position';
   evidence: TimelineEvidence[];
   referenceObservationIds: string[];
 }
+
+export type MetricQuantity =
+  | { kind: 'exact'; value: number }
+  | { kind: 'lower-bound'; value: number }
+  | { kind: 'upper-bound'; value: number }
+  | { kind: 'unknown' };
 
 export interface ProjectedItemObservation {
   itemInstanceId: string;
@@ -638,10 +646,10 @@ export interface RawBroadcastMetricsObservation extends Omit<RawCountdownObserva
 /** Discrete, floor-wide readings; these are never interpolated. */
 export interface RawFloorMetricsObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> {
   kind: 'floor-metrics';
-  remainingCrawlers?: number;
-  boroughBossesKilled?: number;
-  neighborhoodBossesKilled?: number;
-  collapseDeaths?: number;
+  remainingCrawlers?: number | MetricQuantity;
+  boroughBossesKilled?: number | MetricQuantity;
+  neighborhoodBossesKilled?: number | MetricQuantity;
+  collapseDeaths?: number | MetricQuantity;
 }
 export interface RawInventoryStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'inventory-state'; itemInstanceId: string; present?: boolean; quantity?: QuantityObject; isEquipped?: boolean; }
 export interface RawEquipmentStateObservation extends Omit<RawCountdownObservation, 'kind' | 'countdownId' | 'remainingSeconds'> { kind: 'equipment-state'; slot: string; itemInstanceId: string | null; }
@@ -740,7 +748,7 @@ export interface Achievement {
   title: string;
   recipient?: 'carl' | 'donut' | 'party';
   description: string;
-  rewards: string;
+  rewards: RewardSpec[];
   icon: string;
   unlockedAtSequence: number;
 }

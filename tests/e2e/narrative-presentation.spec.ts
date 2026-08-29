@@ -78,19 +78,26 @@ test('episode, collapse, and encounter resolution render as typed timeline marke
   const collapse = requireNarrative('floor-collapsed');
   const encounter = requireNarrative('encounter-resolved');
 
+  // The application opens on the latest floor. These assertions intentionally
+  // span floors, so establish Whole Story scope before locating any marker.
+  await page.getByRole('combobox', { name: 'Floor timeline scope' }).selectOption('all');
+
   const episodeMarker = markerFor(page, episode);
   await expect(episodeMarker).toBeVisible();
-  await episodeMarker.click();
+  await episodeMarker.focus();
+  await episodeMarker.press('Enter');
   await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${episode.sequence}\\b`) })).toBeVisible();
 
   const collapseMarker = markerFor(page, collapse);
   await expect(collapseMarker).toHaveClass(/terminal/);
-  await collapseMarker.click();
+  await collapseMarker.focus();
+  await collapseMarker.press('Enter');
   await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${collapse.sequence}\\b`) })).toBeVisible();
 
   const encounterMarker = markerFor(page, encounter);
   await expect(encounterMarker).toBeVisible();
-  await encounterMarker.click();
+  await encounterMarker.focus();
+  await encounterMarker.press('Enter');
   await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${encounter.sequence}\\b`) })).toBeVisible();
 });
 
