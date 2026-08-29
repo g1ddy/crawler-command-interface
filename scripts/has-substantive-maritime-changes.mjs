@@ -28,13 +28,20 @@ function listBaselineFiles() {
 }
 
 function normalizedContents(path, contents) {
-  if (path !== ".maritime/manifest.json") {
-    return contents;
+  if (path === ".maritime/complexity-report.md") {
+    const report = contents
+      .toString("utf8")
+      .replace(/^\*\*Last Updated:\*\*\s+.*$/m, "**Last Updated:** <generated>");
+    return Buffer.from(report);
   }
 
-  const manifest = JSON.parse(contents.toString("utf8"));
-  delete manifest.generatedAt;
-  return Buffer.from(JSON.stringify(manifest));
+  if (path === ".maritime/manifest.json") {
+    const manifest = JSON.parse(contents.toString("utf8"));
+    delete manifest.generatedAt;
+    return Buffer.from(JSON.stringify(manifest));
+  }
+
+  return contents;
 }
 
 function baselineContents(path) {
