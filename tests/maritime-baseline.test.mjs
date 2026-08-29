@@ -34,7 +34,7 @@ test("Maritime baseline comparison ignores only volatile metadata", async (t) =>
 
   const manifest = {
     schemaVersion: "1.0.0",
-    toolVersion: "0.1.0-beta.2",
+    toolVersion: "0.1.0-beta.3",
     generatedAt: "2026-08-28T00:00:00.000Z",
     summary: { totalFiles: 2 },
   };

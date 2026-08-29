@@ -234,6 +234,7 @@
           "anchorOrder": 1,
           "remainingSeconds": 540000,
           "activationOffset": -21600,
+          "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse.",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -242,13 +243,13 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse."
+          ]
         },
         {
           "anchorOrder": 2,
           "remainingSeconds": 525600,
           "activationOffset": -7200,
+          "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse.",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -257,13 +258,13 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse."
+          ]
         },
         {
           "anchorOrder": 3,
           "remainingSeconds": 518400,
           "activationOffset": 0,
+          "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse.",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -272,12 +273,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse."
+          ]
         },
         {
           "anchorOrder": 6,
           "remainingSeconds": 514800,
+          "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -286,12 +287,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 7,
           "remainingSeconds": 417600,
+          "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -300,12 +301,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 8,
           "remainingSeconds": 410400,
+          "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -314,12 +315,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 9,
           "remainingSeconds": 406800,
+          "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -328,12 +329,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 12,
           "remainingSeconds": 360000,
+          "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining.",
           "evidence": [
             {
               "sourceId": "src-wiki-carl-floor-2",
@@ -342,12 +343,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
+          ]
         },
         {
           "anchorOrder": 19,
           "remainingSeconds": 302400,
+          "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -356,12 +357,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 20,
           "remainingSeconds": 298800,
+          "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -370,12 +371,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 25,
           "remainingSeconds": 194400,
+          "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -384,12 +385,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 32,
           "remainingSeconds": 86400,
+          "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -398,12 +399,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 39,
           "remainingSeconds": 21600,
+          "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -412,12 +413,12 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
+          ]
         },
         {
           "anchorOrder": 41,
           "remainingSeconds": 0,
+          "note": "The Second Floor collapses. (0d until floor collapse.)",
           "evidence": [
             {
               "sourceId": "src-dcc-database-floor-2",
@@ -426,8 +427,7 @@
               },
               "confidence": "corroborated"
             }
-          ],
-          "note": "The Second Floor collapses. (0d until floor collapse.)"
+          ]
         }
       ]
     }

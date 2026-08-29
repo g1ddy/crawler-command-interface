@@ -1774,7 +1774,7 @@
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/workspace/crawler-command-interface",
+      "baseDir": "/app",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
