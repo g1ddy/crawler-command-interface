@@ -40,6 +40,11 @@ jobs:
       - name: Inspect Maritime outputs
         run: find .maritime -maxdepth 1 -type f -print
 
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes graphviz
+
       - name: Generate dependency diagram
         run: npm run generate:architecture-diagram
 
