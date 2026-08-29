@@ -9,7 +9,9 @@ The `.maritime/` directory is Crawler Command Interface's generated, authoritati
 
 ## Regenerating the evidence
 
-The [Maritime Architecture Analysis workflow](../.github/workflows/maritime-analysis.yml) is the canonical CI regeneration path. It installs Crawler's dependencies, then invokes the immutable `g1ddy/dependency-maritime@cli-v0.1.0-beta.2` action against `app` and `src` in strict measurement mode. The action resolves the corresponding published `@dependency-maritime/cli@0.1.0-beta.2` package, performs analysis, and validates the completed bundle.
+The [Maritime Architecture Analysis workflow](../.github/workflows/maritime-analysis.yml) is the canonical CI regeneration path. It installs Crawler's dependencies, pins the Maritime Action implementation to commit `0291da99242e70080522c9d465d902a31966e47e`, and explicitly consumes the exact published `@dependency-maritime/cli@0.1.0-beta.2` package. CI analyzes `app` and `src` in strict measurement mode, then validates the completed bundle.
+
+For labeled baseline updates, CI ignores `manifest.json.generatedAt` only while deciding whether the generated evidence changed substantively. A timestamp-only regeneration does not create a commit; any substantive change commits the entire newly generated `.maritime/` bundle, including its real generation timestamp.
 
 For equivalent local analysis, install the matching published CLI without saving it as a project dependency, then run the repository script:
 

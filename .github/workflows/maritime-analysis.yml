@@ -28,9 +28,10 @@ jobs:
         run: npm ci
 
       - name: Analyze with Maritime
-        uses: g1ddy/dependency-maritime@cli-v0.1.0-beta.2
+        uses: g1ddy/dependency-maritime@0291da99242e70080522c9d465d902a31966e47e
         with:
           node-version: '22.13.0'
+          cli-source: '@dependency-maritime/cli@0.1.0-beta.2'
           source-roots: 'app src'
           output-dir: '.maritime'
           fail-on-unmeasured: 'true'
@@ -55,9 +56,14 @@ jobs:
         env:
           HEAD_BRANCH: ${{ github.head_ref }}
         run: |
-          if [ -z "$(git status --porcelain -- .maritime)" ]; then
+          if node scripts/has-substantive-maritime-changes.mjs; then
             echo "Maritime baseline is already current."
             exit 0
+          else
+            comparison_status=$?
+            if [ "$comparison_status" -ne 1 ]; then
+              exit "$comparison_status"
+            fi
           fi
 
           git config user.name "github-actions[bot]"
