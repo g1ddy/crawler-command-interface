@@ -1,5 +1,17 @@
-import type { CrawlerEvent, CrawlerTimelineDocument, Snapshot } from '../types.ts';
+import type { CrawlerEvent, CrawlerTimelineDocument, Quest, Snapshot } from '../types.ts';
 import { projectState } from '../projection.ts';
+
+/** Legacy initial state retained only for projection tests that exercise an explicit adapter. */
+export const legacyFloor6Quests: Quest[] = [
+  {
+    questId: 'q-stairwell',
+    title: 'Tutorial: Reach the Stairs',
+    urgency: 'URGENT',
+    goals: ['Find the emergency stairwell', 'Bypass the security lockdown'],
+    rewards: '150 XP · Bronze Box',
+    status: 'active',
+  },
+];
 
 export const floor6Timeline: CrawlerTimelineDocument = {
   schemaVersion: 'crawler-timeline/v1',

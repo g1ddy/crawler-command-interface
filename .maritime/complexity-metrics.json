@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 806,
     "instability": 0,
-    "fanIn": 20,
+    "fanIn": 25,
     "fanOut": 0,
     "scanned": true
   },
@@ -42,8 +42,8 @@
   "app/components/TelemetryBadge.tsx": {
     "complexity": 15,
     "loc": 81,
-    "instability": 0.5,
-    "fanIn": 2,
+    "instability": 0.4,
+    "fanIn": 3,
     "fanOut": 2,
     "scanned": true
   },
@@ -58,8 +58,8 @@
   "app/domain/observations.ts": {
     "complexity": 29,
     "loc": 322,
-    "instability": 0.25,
-    "fanIn": 3,
+    "instability": 0.2,
+    "fanIn": 4,
     "fanOut": 1,
     "scanned": true
   },
@@ -105,7 +105,7 @@
   },
   "app/domain/fixtures/floor6.ts": {
     "complexity": 1,
-    "loc": 762,
+    "loc": 774,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 2,
@@ -113,7 +113,7 @@
   },
   "app/domain/projection.ts": {
     "complexity": 155,
-    "loc": 672,
+    "loc": 658,
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,
@@ -130,8 +130,8 @@
   "app/domain/narrative-presentation.ts": {
     "complexity": 12,
     "loc": 74,
-    "instability": 0.25,
-    "fanIn": 3,
+    "instability": 0.17,
+    "fanIn": 5,
     "fanOut": 1,
     "scanned": true
   },
@@ -169,34 +169,74 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 40,
-    "loc": 2045,
-    "instability": 0.91,
+    "loc": 1835,
+    "instability": 0.92,
     "fanIn": 2,
-    "fanOut": 20,
+    "fanOut": 24,
     "scanned": true
   },
-  "src/features/timeline/SequenceBadge.tsx": {
-    "complexity": 2,
-    "loc": 10,
-    "instability": 0.6,
-    "fanIn": 2,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/features/timeline/TimelineScrubber.tsx": {
-    "complexity": 40,
-    "loc": 803,
-    "instability": 0.88,
+  "src/features/floor/FloorRules.tsx": {
+    "complexity": 5,
+    "loc": 98,
+    "instability": 0.83,
     "fanIn": 1,
-    "fanOut": 7,
+    "fanOut": 5,
     "scanned": true
   },
   "src/shared/ui/Panel.tsx": {
     "complexity": 2,
     "loc": 11,
-    "instability": 0.5,
-    "fanIn": 1,
+    "instability": 0.2,
+    "fanIn": 4,
     "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/timeline/SequenceBadge.tsx": {
+    "complexity": 2,
+    "loc": 10,
+    "instability": 0.43,
+    "fanIn": 4,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/quests/QuestsView.tsx": {
+    "complexity": 15,
+    "loc": 118,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/quests/QuestCard.tsx": {
+    "complexity": 8,
+    "loc": 55,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/TimelineEvidence.tsx": {
+    "complexity": 12,
+    "loc": 152,
+    "instability": 0.83,
+    "fanIn": 1,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/features/timeline/history/TimelineHistory.tsx": {
+    "complexity": 6,
+    "loc": 126,
+    "instability": 0.83,
+    "fanIn": 1,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/features/timeline/TimelineScrubber.tsx": {
+    "complexity": 40,
+    "loc": 834,
+    "instability": 0.88,
+    "fanIn": 1,
+    "fanOut": 7,
     "scanned": true
   },
   "src/shell/hud/PersistentHud.tsx": {
@@ -208,8 +248,8 @@
     "scanned": true
   },
   "src/shell/navigation/RootNavigation.tsx": {
-    "complexity": 5,
-    "loc": 15,
+    "complexity": 7,
+    "loc": 27,
     "instability": 0,
     "fanIn": 1,
     "fanOut": 0,

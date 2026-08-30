@@ -32,6 +32,9 @@ interface TimelineScrubberProps {
   isLive: boolean;
   onToggleLive: () => void;
   onInspectObservation?: (obs: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
+  onOpenFloorRules?: () => void;
+  onOpenTimelineHistory?: () => void;
+  onOpenTimelineEvidence?: () => void;
 }
 
 export function TimelineScrubber({
@@ -48,6 +51,9 @@ export function TimelineScrubber({
   isLive,
   onToggleLive,
   onInspectObservation,
+  onOpenFloorRules,
+  onOpenTimelineHistory,
+  onOpenTimelineEvidence,
 }: TimelineScrubberProps) {
   const [filterCategory, setFilterCategory] = useState<EventCategory | 'all'>('all');
   const [feedMode, setFeedMode] = useState<'all' | 'events-only' | 'telemetry-only'>('all');
@@ -269,6 +275,14 @@ export function TimelineScrubber({
           NEXT FLOOR ►
         </button>
 
+        <button
+          className="mode-btn"
+          onClick={onOpenFloorRules}
+          title="Inspect floor directives and rules"
+        >
+          📜 FLOOR RULES
+        </button>
+
         {activeCountdown && (
           <button
             className="countdown-details-link"
@@ -313,6 +327,23 @@ export function TimelineScrubber({
           <h2>
             SEQ #{selectedSequence} <small>({currentEvent?.occurred_at || 'exact time not sourced'})</small>
           </h2>
+        </div>
+
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <button
+            className="mode-btn"
+            onClick={onOpenTimelineHistory}
+            title="Open Timeline Event History Feed"
+          >
+            📜 HISTORY
+          </button>
+          <button
+            className="mode-btn"
+            onClick={onOpenTimelineEvidence}
+            title="Open Telemetry & Evidence Inspector"
+          >
+            📡 TELEMETRY
+          </button>
         </div>
 
         <div className="step-controls">

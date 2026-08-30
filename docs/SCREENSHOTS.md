@@ -20,16 +20,15 @@ The persistent timeline shown in every canonical view keeps floor selection, seq
 
 ![Skills view](images/screenshot-skills.png)
 
-### Journal
+### Quests
 
-![Journal view](images/screenshot-journal.png)
+![Quests view](images/screenshot-quests.png)
 
 ## Crawler profile views
 
 ### Overview
 
 The overview intentionally omits the duplicate broadcast summary; audience details remain documented in the Broadcast view.
-
 
 ![Crawler overview](images/screenshot-crawler-overview.png)
 
@@ -40,3 +39,13 @@ The overview intentionally omits the duplicate broadcast summary; audience detai
 ### Broadcast
 
 ![Crawler broadcast](images/screenshot-crawler-broadcast.png)
+
+## Timeline and floor context views
+
+### Floor Rules
+
+![Floor rules view](images/screenshot-floor-rules.png)
+
+### Timeline History
+
+![Timeline history view](images/screenshot-timeline-history.png)
