@@ -115,6 +115,12 @@ export default function CrawlerApp() {
     return projectState(timelineDoc, currentSeq);
   }, [timelineDoc, currentSeq]);
 
+  // Replay can move before the first quest was authored. Keep the selected
+  // root destination valid in that state rather than rendering an empty view.
+  const resolvedView: View = view === "quests" && projectedState.quests.length === 0
+    ? "crawler"
+    : view;
+
   const projectedObservations: ProjectedObservationsState = useMemo(() => {
     return projectObservations(timelineDoc, currentSeq);
   }, [timelineDoc, currentSeq]);
@@ -281,12 +287,12 @@ export default function CrawlerApp() {
       if (e.key === "1") setView("crawler");
       if (e.key === "2") setView("inventory");
       if (e.key === "3") setView("skills");
-      if (e.key === "4") setView("journal");
+      if (e.key === "4" && projectedState.quests.length > 0) setView("quests");
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [inspectStat, provenanceItem, showJsonModal, notes]);
+  }, [inspectStat, provenanceItem, showJsonModal, notes, projectedState.quests.length]);
 
   return (
     <main>
@@ -309,7 +315,7 @@ export default function CrawlerApp() {
       />
 
       <RootNavigation
-        active={view}
+        active={resolvedView}
         set={setView}
         hasQuests={projectedState.quests.length > 0}
         onOpenTools={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }}
@@ -368,7 +374,7 @@ export default function CrawlerApp() {
           onOpenTimelineEvidence={() => setShowTimelineEvidence(true)}
         />
 
-        {view === "crawler" ? (
+        {resolvedView === "crawler" ? (
           <Crawler
             state={projectedState}
             observations={projectedObservations}
@@ -379,7 +385,7 @@ export default function CrawlerApp() {
             onNavigateToEquipmentSlot={handleNavigateToEquipmentSlot}
             onEmitEvent={handleEmitEvent}
           />
-        ) : view === "inventory" ? (
+        ) : resolvedView === "inventory" ? (
           <Inventory
             state={projectedState}
             liveState={liveState}
@@ -399,9 +405,9 @@ export default function CrawlerApp() {
             onEmitEvent={handleEmitEvent}
             onInspectObservation={(obs) => setInspectObservation(obs)}
           />
-        ) : view === "skills" ? (
+        ) : resolvedView === "skills" ? (
           <Skills state={projectedState} onEmitEvent={handleEmitEvent} />
-        ) : view === "quests" && projectedState.quests.length > 0 ? (
+        ) : resolvedView === "quests" ? (
           <QuestsView quests={projectedState.quests} />
         ) : null}
       </div>

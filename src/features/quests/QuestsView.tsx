@@ -7,19 +7,29 @@ interface QuestsViewProps {
   quests: Quest[];
 }
 
+type QuestWithStatus = Quest & { status: NonNullable<Quest["status"]> };
+
+function hasStatus(status: NonNullable<Quest["status"]>) {
+  return (quest: Quest): quest is QuestWithStatus => quest.status === status;
+}
+
 export function QuestsView({ quests }: QuestsViewProps) {
-  const [filter, setFilter] = useState<"ACTIVE" | "COMPLETED" | "FAILED">("ACTIVE");
+  const [filter, setFilter] = useState<"ACTIVE" | "COMPLETED" | "FAILED" | "UNKNOWN">("ACTIVE");
 
   const activeQuests = useMemo(
-    () => quests.filter((q) => !q.status || q.status === "active"),
+    () => quests.filter(hasStatus("active")),
     [quests]
   );
   const completedQuests = useMemo(
-    () => quests.filter((q) => q.status === "completed"),
+    () => quests.filter(hasStatus("completed")),
     [quests]
   );
   const failedQuests = useMemo(
-    () => quests.filter((q) => q.status === "failed"),
+    () => quests.filter(hasStatus("failed")),
+    [quests]
+  );
+  const unknownQuests = useMemo(
+    () => quests.filter((quest) => quest.status === undefined),
     [quests]
   );
 
@@ -28,7 +38,9 @@ export function QuestsView({ quests }: QuestsViewProps) {
       ? activeQuests
       : filter === "COMPLETED"
       ? completedQuests
-      : failedQuests;
+      : filter === "FAILED"
+      ? failedQuests
+      : unknownQuests;
 
   return (
     <section className="view-content">
@@ -56,6 +68,14 @@ export function QuestsView({ quests }: QuestsViewProps) {
           >
             FAILED ({failedQuests.length})
           </button>
+          {unknownQuests.length > 0 && (
+            <button
+              className={filter === "UNKNOWN" ? "on" : ""}
+              onClick={() => setFilter("UNKNOWN")}
+            >
+              UNKNOWN ({unknownQuests.length})
+            </button>
+          )}
         </div>
       </header>
 
@@ -77,7 +97,9 @@ export function QuestsView({ quests }: QuestsViewProps) {
               ? "No active quests."
               : filter === "COMPLETED"
               ? "No completed quests."
-              : "No failed quests."}
+              : filter === "FAILED"
+              ? "No failed quests."
+              : "No quests with unknown status."}
           </p>
         )}
       </div>
