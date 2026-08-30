@@ -1,0 +1,112 @@
+name: Publish Generated Artifacts
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to finalize'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: artifact-finalization-${{ github.event.pull_request.number || github.inputs.pr_number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Promote Generated Artifacts
+    runs-on: ubuntu-24.04
+    environment: artifact-finalization
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Playwright screenshots
+        run: npx playwright install --with-deps chromium
+
+      - name: Promote and publish generated artifacts
+        shell: bash
+        env:
+          HEAD_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+          EXPECTED_HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # 1. Verify remote head matches expected source SHA
+          git fetch --no-tags origin "${HEAD_BRANCH}"
+          remote_head="$(git rev-parse FETCH_HEAD)"
+          if [ "${remote_head}" != "${EXPECTED_HEAD_SHA}" ]; then
+            echo "PR branch advanced from ${EXPECTED_HEAD_SHA} to ${remote_head}. Refusing to publish for stale commit."
+            exit 1
+          fi
+
+          # 2. Prevent recursive loops if head commit is already a publish commit
+          latest_commit_msg="$(git log -1 --pretty=%s)"
+          if [ "${latest_commit_msg}" = "chore: publish generated artifacts" ]; then
+            echo "Head commit is already a published artifact commit. Skipping publication."
+            exit 0
+          fi
+
+          # 3. Regenerate documentation screenshots
+          rm -f docs/images/screenshot-*.png
+          npm run test:screenshots
+          node --experimental-strip-types tests/screenshots/canonical-screenshots.ts --verify-canonical
+
+          # 4. Regenerate Maritime evidence & dependency graph
+          npx --package=@dependency-maritime/cli@0.1.0-beta.4 maritime analyze --source app --source src --output .maritime --fail-on-unmeasured
+          npx --package=@dependency-maritime/cli@0.1.0-beta.4 maritime graph --input .maritime --output docs/images/dependency-graph.svg
+          npm run verify:maritime
+
+          # 5. Check for substantive changes
+          has_screenshot_changes=false
+          git add -N -- 'docs/images/screenshot-*.png'
+          if ! git diff --quiet -- 'docs/images/screenshot-*.png'; then
+            has_screenshot_changes=true
+          fi
+
+          has_maritime_changes=false
+          if node scripts/has-substantive-maritime-changes.mjs; then
+            has_maritime_changes=true
+          elif ! git diff --quiet -- docs/images/dependency-graph.svg; then
+            has_maritime_changes=true
+          fi
+
+          if [ "${has_screenshot_changes}" = "false" ] && [ "${has_maritime_changes}" = "false" ]; then
+            echo "Both screenshot and Maritime artifacts are already current."
+            exit 0
+          fi
+
+          # 6. Re-verify remote head before committing and pushing
+          git fetch --no-tags origin "${HEAD_BRANCH}"
+          newer_remote_head="$(git rev-parse FETCH_HEAD)"
+          if [ "${newer_remote_head}" != "${EXPECTED_HEAD_SHA}" ]; then
+            echo "PR branch advanced during artifact generation from ${EXPECTED_HEAD_SHA} to ${newer_remote_head}. Refusing to publish."
+            exit 1
+          fi
+
+          # 7. Commit and push promoted artifacts in a single controlled commit
+          git add -- 'docs/images/screenshot-*.png' .maritime docs/images/dependency-graph.svg
+          git commit -m "chore: publish generated artifacts"
+          git push origin "HEAD:${HEAD_BRANCH}"

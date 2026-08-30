@@ -6,7 +6,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: maritime-analysis-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
@@ -48,32 +52,9 @@ jobs:
       - name: Upload Maritime analysis
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-analysis
+          name: maritime-analysis-${{ github.event.pull_request.number || github.sha }}
           path: |
             .maritime/
             docs/images/dependency-graph.svg
           if-no-files-found: error
           include-hidden-files: true
-
-      - name: Commit Maritime baseline to PR branch
-        if: >-
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          HEAD_BRANCH: ${{ github.head_ref }}
-        run: |
-          if node scripts/has-substantive-maritime-changes.mjs && git diff --quiet -- docs/images/dependency-graph.svg; then
-            echo "Maritime baseline is already current."
-            exit 0
-          else
-            comparison_status=$?
-            if [ "$comparison_status" -ne 1 ]; then
-              exit "$comparison_status"
-            fi
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .maritime docs/images/dependency-graph.svg
-          git commit -m "chore: update Maritime architecture baseline"
-          git push origin "HEAD:${HEAD_BRANCH}"

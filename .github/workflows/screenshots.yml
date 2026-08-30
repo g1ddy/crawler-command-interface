@@ -1,4 +1,4 @@
-name: Update Documentation Screenshots
+name: Documentation Screenshots
 
 on:
   pull_request:
@@ -17,12 +17,13 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/screenshots.yml'
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: documentation-screenshots-${{ github.event.pull_request.number }}
+  group: documentation-screenshots-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -32,8 +33,8 @@ jobs:
       - name: Checkout pull request branch
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
 
       - uses: actions/setup-node@v4
         with:
@@ -63,46 +64,7 @@ jobs:
       - name: Upload generated screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: crawler-documentation-screenshots-${{ github.event.pull_request.number }}
+          name: crawler-documentation-screenshots-${{ github.event.pull_request.number || github.sha }}
           path: docs/images/*.png
           if-no-files-found: error
           retention-days: 14
-
-      - name: Commit refreshed documentation screenshots
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-        shell: bash
-        env:
-          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
-          SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git fetch --no-tags origin "${HEAD_BRANCH}"
-          remote_head="$(git rev-parse FETCH_HEAD)"
-          if [ "${remote_head}" != "${SOURCE_HEAD_SHA}" ]; then
-            echo "PR branch advanced from ${SOURCE_HEAD_SHA} to ${remote_head}; a newer run will refresh screenshots."
-            exit 0
-          fi
-
-          git add -A -- 'docs/images/screenshot-*.png'
-          if git diff --cached --quiet; then
-            echo "Documentation screenshots are already current."
-            exit 0
-          fi
-
-          git commit -m "docs(assets): refresh interface screenshots"
-          if git push origin "HEAD:${HEAD_BRANCH}"; then
-            exit 0
-          fi
-
-          git fetch --no-tags origin "${HEAD_BRANCH}"
-          newer_remote_head="$(git rev-parse FETCH_HEAD)"
-          if [ "${newer_remote_head}" != "${SOURCE_HEAD_SHA}" ]; then
-            echo "PR branch advanced during screenshot generation; a newer run will own the refresh."
-            exit 0
-          fi
-
-          echo "Screenshot push failed without a superseding branch update."
-          exit 1
