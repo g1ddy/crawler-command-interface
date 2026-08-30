@@ -95,20 +95,30 @@ test("raw adapter resolves every supported observation kind without turning evid
   assert.equal(compiled.events.length, rawDoc.events.length);
 });
 
-test("raw countdown identities route multiple timers without leaking into nested references", () => {
+test("multiple raw countdown observations compile into identified timers without leaking IDs into derived references", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor2));
   const eventId = rawDoc.events[0].id;
   const evidence = [{ sourceId: rawDoc.sources[0].id, confidence: "confirmed" }];
   rawDoc.countdowns.push({ id: "countdown-floor-2-safe-room", title: "Safe-room closure", target: "safe-room-closure" });
+  rawDoc.observations = rawDoc.observations.filter((observation) => observation.kind !== "countdown-remaining");
   rawDoc.observations.push(
     { id: "obs-primary-routing", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-2-collapse", remainingSeconds: 100, evidence },
     { id: "obs-secondary-routing", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-2-safe-room", remainingSeconds: 20, evidence },
   );
 
-  const adapted = adaptRawFloorDocument(rawDoc);
-  assert.ok(adapted.countdowns.find((countdown) => countdown.id === "countdown-floor-2-collapse").references.some((reference) => reference.remainingSeconds === 100));
-  assert.equal(adapted.countdowns.find((countdown) => countdown.id === "countdown-floor-2-safe-room").references[0].remainingSeconds, 20);
-  for (const countdown of adapted.countdowns) {
+  const rawReadings = rawDoc.observations.filter((observation) => observation.kind === "countdown-remaining");
+  assert.ok(rawReadings.every((observation) => typeof observation.countdownId === "string"));
+
+  const compiled = compileRawFloorFiles([rawDoc]);
+  const collapse = compiled.countdowns.find((countdown) => countdown.id === "countdown-floor-2-collapse");
+  const safeRoom = compiled.countdowns.find((countdown) => countdown.id === "countdown-floor-2-safe-room");
+
+  assert.ok(collapse.references.some((reference) => reference.remainingSeconds === 100));
+  assert.equal(safeRoom.references.length, 1);
+  assert.equal(safeRoom.references[0].remainingSeconds, 20);
+  assert.equal(safeRoom.references[0].sequence, compiled.events.find((event) => event.id === eventId).sequence);
+
+  for (const countdown of compiled.countdowns) {
     assert.ok(countdown.references.every((reference) => !("countdownId" in reference)));
   }
 });
