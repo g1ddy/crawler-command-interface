@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 806,
     "instability": 0,
-    "fanIn": 25,
+    "fanIn": 31,
     "fanOut": 0,
     "scanned": true
   },
@@ -42,8 +42,8 @@
   "app/components/TelemetryBadge.tsx": {
     "complexity": 15,
     "loc": 81,
-    "instability": 0.4,
-    "fanIn": 3,
+    "instability": 0.25,
+    "fanIn": 6,
     "fanOut": 2,
     "scanned": true
   },
@@ -58,8 +58,8 @@
   "app/domain/observations.ts": {
     "complexity": 29,
     "loc": 322,
-    "instability": 0.2,
-    "fanIn": 4,
+    "instability": 0.25,
+    "fanIn": 3,
     "fanOut": 1,
     "scanned": true
   },
@@ -130,8 +130,8 @@
   "app/domain/narrative-presentation.ts": {
     "complexity": 12,
     "loc": 74,
-    "instability": 0.17,
-    "fanIn": 5,
+    "instability": 0.2,
+    "fanIn": 4,
     "fanOut": 1,
     "scanned": true
   },
@@ -169,10 +169,42 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 40,
-    "loc": 1835,
+    "loc": 1391,
     "instability": 0.92,
     "fanIn": 2,
     "fanOut": 24,
+    "scanned": true
+  },
+  "src/features/crawler/CrawlerView.tsx": {
+    "complexity": 4,
+    "loc": 9,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/crawler/health/HealthConditions.tsx": {
+    "complexity": 7,
+    "loc": 19,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/shared/ui/Panel.tsx": {
+    "complexity": 2,
+    "loc": 11,
+    "instability": 0.13,
+    "fanIn": 7,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/crawler/stats/PlayerStats.tsx": {
+    "complexity": 18,
+    "loc": 36,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
     "scanned": true
   },
   "src/features/floor/FloorRules.tsx": {
@@ -183,20 +215,28 @@
     "fanOut": 5,
     "scanned": true
   },
-  "src/shared/ui/Panel.tsx": {
-    "complexity": 2,
-    "loc": 11,
-    "instability": 0.2,
-    "fanIn": 4,
-    "fanOut": 1,
-    "scanned": true
-  },
   "src/features/timeline/SequenceBadge.tsx": {
     "complexity": 2,
     "loc": 10,
-    "instability": 0.43,
-    "fanIn": 4,
+    "instability": 0.5,
+    "fanIn": 3,
     "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/notifications/NotificationsView.tsx": {
+    "complexity": 4,
+    "loc": 7,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/notifications/notification-presentation.ts": {
+    "complexity": 13,
+    "loc": 23,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {
@@ -213,6 +253,14 @@
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/ratings/RatingsView.tsx": {
+    "complexity": 11,
+    "loc": 22,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
     "scanned": true
   },
   "src/features/timeline/evidence/TimelineEvidence.tsx": {
@@ -248,8 +296,8 @@
     "scanned": true
   },
   "src/shell/navigation/RootNavigation.tsx": {
-    "complexity": 7,
-    "loc": 27,
+    "complexity": 9,
+    "loc": 29,
     "instability": 0,
     "fanIn": 1,
     "fanOut": 0,
