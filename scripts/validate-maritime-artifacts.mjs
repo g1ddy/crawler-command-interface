@@ -7,12 +7,16 @@ export function validateMaritimeArtifacts(
   svgPath = "docs/images/dependency-graph.svg",
 ) {
   const manifestPath = resolve(evidenceDir, "manifest.json");
+  const reportPath = resolve(evidenceDir, "complexity-report.md");
   const metricsPath = resolve(evidenceDir, "complexity-metrics.json");
   const graphPath = resolve(evidenceDir, "dependency-graph.json");
   const resolvedSvgPath = resolve(svgPath);
 
   if (!existsSync(manifestPath)) {
     throw new Error(`Maritime manifest missing at ${manifestPath}`);
+  }
+  if (!existsSync(reportPath)) {
+    throw new Error(`Maritime complexity report missing at ${reportPath}`);
   }
   if (!existsSync(metricsPath)) {
     throw new Error(`Maritime complexity metrics missing at ${metricsPath}`);
@@ -108,6 +112,17 @@ export function validateMaritimeArtifacts(
     }
   }
 
+  for (const file of graphSources) {
+    if (
+      typeof file === "string" &&
+      (file.startsWith("app/") || file.startsWith("src/")) &&
+      /\.[cm]?[jt]sx?$/.test(file) &&
+      !Object.hasOwn(metrics, file)
+    ) {
+      throw new Error(`Local dependency graph module '${file}' is missing from metrics`);
+    }
+  }
+
   const svgContent = readFileSync(resolvedSvgPath, "utf8");
   if (!svgContent.includes("<svg") || !svgContent.includes("</svg>")) {
     throw new Error("SVG file missing root <svg> elements");
@@ -116,8 +131,8 @@ export function validateMaritimeArtifacts(
   const hasAppInSvg = svgContent.includes("app/") || svgContent.includes("cluster:app");
   const hasSrcInSvg = svgContent.includes("src/") || svgContent.includes("cluster:src");
 
-  if (!hasAppInSvg && !hasSrcInSvg) {
-    throw new Error("SVG contains no local app/ or src/ module nodes");
+  if (!hasAppInSvg || !hasSrcInSvg) {
+    throw new Error("SVG must contain local module nodes under both app/ and src/");
   }
 
   return true;

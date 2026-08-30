@@ -19,11 +19,11 @@ For equivalent local analysis, consumer verification, and diagram rendering, ins
 ```bash
 npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.4
 npm run analyze:architecture
-npm run verify:maritime
 npm run generate:graph
+npm run verify:maritime
 ```
 
-The `npm run analyze:architecture` script uses the same source roots (`app` and `src`), output directory (`.maritime`), and `--fail-on-unmeasured` strictness as CI. `npm run verify:maritime` performs Crawler's consumer contract check to ensure evidence completeness and SVG validity. `npm run generate:graph` uses a version-pinned `npx --package` wrapper to render `docs/images/dependency-graph.svg` from existing `.maritime/dependency-graph.json` evidence without starting a second dependency analysis. Graphviz's `dot` executable must be installed locally for direct local graph rendering.
+The `npm run analyze:architecture` script uses the same source roots (`app` and `src`), output directory (`.maritime`), and `--fail-on-unmeasured` strictness as CI. `npm run generate:graph` uses a version-pinned `npx --package` wrapper to render `docs/images/dependency-graph.svg` from existing `.maritime/dependency-graph.json` evidence without starting a second dependency analysis. Run `npm run verify:maritime` after rendering so Crawler's consumer contract checks the freshly generated evidence and SVG together. Graphviz's `dot` executable must be installed locally for direct local graph rendering.
 
 The files under `.maritime/` are canonical machine-readable evidence. Do not hand-edit them; regenerate the complete bundle through the workflow or the equivalent local commands.
 

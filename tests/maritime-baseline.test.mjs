@@ -43,7 +43,14 @@ test("Maritime baseline comparison ignores only volatile metadata", async (t) =>
   writeJson(manifestPath, manifest);
   writeFileSync(reportPath, "## Complexity Report\n\n**Last Updated:** 2026-08-28\n\nStable content.\n");
   writeJson(metricsPath, { files: [{ path: "app/a.ts", complexity: 1 }] });
-  writeJson(graphPath, { modules: [{ source: "app/a.ts" }] });
+  const graph = {
+    modules: [{ source: "app/a.ts", dependencies: [] }],
+    summary: {
+      violations: [],
+      optionsUsed: { baseDir: "/app", ruleSet: { forbidden: [] } },
+    },
+  };
+  writeJson(graphPath, graph);
 
   execFileSync("git", ["init", "--quiet"], { cwd: temporaryRepository });
   execFileSync("git", ["config", "user.name", "Maritime Test"], { cwd: temporaryRepository });
@@ -68,6 +75,21 @@ test("Maritime baseline comparison ignores only volatile metadata", async (t) =>
     execFileSync("git", ["checkout", "--quiet", "--", ".maritime"], { cwd: temporaryRepository });
   });
 
+  await t.test("dependency graph baseDir only is not substantive", () => {
+    writeJson(graphPath, {
+      ...graph,
+      summary: {
+        ...graph.summary,
+        optionsUsed: {
+          ...graph.summary.optionsUsed,
+          baseDir: "/home/runner/work/project/project",
+        },
+      },
+    });
+    assertComparison(temporaryRepository, 0);
+    execFileSync("git", ["checkout", "--quiet", "--", ".maritime"], { cwd: temporaryRepository });
+  });
+
   await t.test("metrics changes are substantive", () => {
     writeJson(metricsPath, { files: [{ path: "app/a.ts", complexity: 2 }] });
     assertComparison(temporaryRepository, 1);
@@ -79,6 +101,18 @@ test("Maritime baseline comparison ignores only volatile metadata", async (t) =>
     assertComparison(temporaryRepository, 1);
     execFileSync("git", ["checkout", "--quiet", "--", ".maritime"], { cwd: temporaryRepository });
   });
+
+  for (const [name, changedGraph] of [
+    ["dependencies", { ...graph, modules: [{ source: "app/a.ts", dependencies: [{ resolved: "src/b.ts" }] }] }],
+    ["violations", { ...graph, summary: { ...graph.summary, violations: [{ rule: "no-cycle" }] } }],
+    ["other graph options", { ...graph, summary: { ...graph.summary, optionsUsed: { ...graph.summary.optionsUsed, ruleSet: { forbidden: [{ name: "new-rule" }] } } } }],
+  ]) {
+    await t.test(`${name} changes are substantive`, () => {
+      writeJson(graphPath, changedGraph);
+      assertComparison(temporaryRepository, 1);
+      execFileSync("git", ["checkout", "--quiet", "--", ".maritime"], { cwd: temporaryRepository });
+    });
+  }
 
   await t.test("nonvolatile manifest changes are substantive", () => {
     writeJson(manifestPath, { ...manifest, summary: { totalFiles: 3 } });
@@ -143,6 +177,15 @@ test("Maritime consumer artifact validator enforces contract rules", async (t) =
     assert.equal(validateMaritimeArtifacts(evidenceDirectory, svgPath), true);
   });
 
+  await t.test("missing complexity report is rejected", () => {
+    createValidBundle();
+    rmSync(reportPath);
+    assert.throws(
+      () => validateMaritimeArtifacts(evidenceDirectory, svgPath),
+      /Maritime complexity report missing/,
+    );
+  });
+
   await t.test("zero-file / zero-scanned bundle is rejected even if claiming health 100", () => {
     createValidBundle();
     writeJson(manifestPath, {
@@ -163,12 +206,30 @@ test("Maritime consumer artifact validator enforces contract rules", async (t) =
   await t.test("metric missing from dependency graph is rejected", () => {
     createValidBundle();
     writeJson(graphPath, {
-      modules: [{ source: "app/a.ts", valid: true }],
+      modules: [
+        { source: "app/a.ts", valid: true },
+        { source: "src/other.ts", valid: true },
+      ],
     });
-    // Missing src/ in graph leads to local modules check error or missing from graph error
     assert.throws(
       () => validateMaritimeArtifacts(evidenceDirectory, svgPath),
-      /Dependency graph must contain local modules under both app\/ and src\/|Measured file 'src\/b.ts' is missing from dependency graph/,
+      /Measured file 'src\/b.ts' is missing from dependency graph/,
+    );
+  });
+
+  await t.test("local graph module missing from metrics is rejected", () => {
+    createValidBundle();
+    writeJson(graphPath, {
+      modules: [
+        { source: "app/a.ts", valid: true },
+        { source: "app/unmeasured.ts", valid: true },
+        { source: "src/b.ts", valid: true },
+        { source: "node_modules/external/index.js", valid: true },
+      ],
+    });
+    assert.throws(
+      () => validateMaritimeArtifacts(evidenceDirectory, svgPath),
+      /Local dependency graph module 'app\/unmeasured.ts' is missing from metrics/,
     );
   });
 
@@ -219,7 +280,18 @@ test("Maritime consumer artifact validator enforces contract rules", async (t) =
     writeFileSync(svgPath, "<svg><g></g></svg>");
     assert.throws(
       () => validateMaritimeArtifacts(evidenceDirectory, svgPath),
-      /SVG contains no local app\/ or src\/ module nodes/,
+      /SVG must contain local module nodes under both app\/ and src\//,
     );
   });
+
+  for (const root of ["app", "src"]) {
+    await t.test(`SVG containing ${root} but not the other source root is rejected`, () => {
+      createValidBundle();
+      writeFileSync(svgPath, `<svg><g class="cluster" id="cluster:${root}"></g></svg>`);
+      assert.throws(
+        () => validateMaritimeArtifacts(evidenceDirectory, svgPath),
+        /SVG must contain local module nodes under both app\/ and src\//,
+      );
+    });
+  }
 });
