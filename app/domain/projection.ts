@@ -9,24 +9,12 @@ import type {
   ItemRarity,
   QuantityObject,
   RewardSpec,
-  Quest,
   Skill,
   Snapshot,
   TimelineEvent,
   TimelineItem,
   TimelineState,
 } from './types.ts';
-
-const defaultFloor6Quests: Quest[] = [
-  {
-    questId: 'q-stairwell',
-    title: 'Tutorial: Reach the Stairs',
-    urgency: 'URGENT',
-    goals: ['Find the emergency stairwell', 'Bypass the security lockdown'],
-    rewards: '150 XP · Bronze Box',
-    status: 'active',
-  },
-];
 
 function structuredRewards(value: unknown, legacyText?: unknown): RewardSpec[] {
   if (Array.isArray(value)) return value.map((reward) => ({ ...(reward as RewardSpec) }));
@@ -109,12 +97,9 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   const entitlements = (timelineState?.entitlements || []).map((entitlement) => ({ ...entitlement }));
 
   const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
-  const quests = timelineState
-    ? ((timelineState.quests as Quest[]) || []).map((q) => ({
-        ...q,
-        status: q.status || 'active',
-      }))
-    : defaultFloor6Quests;
+  const quests = (timelineState?.quests as Quest[] || []).map((q) => ({
+    ...q,
+  }));
 
   const broadcast = timelineState
     ? { viewers: 0, viewerDelta: '+0%', followers: 0, fameRank: '#-', sponsorInterest: false }

@@ -25,7 +25,7 @@ async function preparePage(page: Page) {
   });
 }
 
-async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "JOURNAL") {
+async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS") {
   const navigation = page.getByRole("navigation", { name: "Main Navigation" });
   const tab = navigation.getByRole("button", { name, exact: true });
   await tab.click();
@@ -75,12 +75,75 @@ test("export top-level Skills tab", async ({ page }) => {
   await capture(page, "skills");
 });
 
-test("export top-level Journal tab", async ({ page }) => {
-  await selectTopLevelTab(page, "JOURNAL");
-  await expect(page.getByRole("heading", { name: "JOURNAL", exact: true })).toBeVisible();
+test("export top-level Quests tab", async ({ page }) => {
+  await page.evaluate(() => {
+    const docWithQuests = {
+      schemaVersion: "crawler-timeline/v1",
+      timeline: {
+        id: "tl-quests-doc",
+        title: "Quests Timeline Document",
+        story: { id: "st-quests", title: "Crawler Story" },
+      },
+      sources: [
+        {
+          id: "src-wda-log",
+          kind: "official-text",
+          trust: "primary",
+          title: "World Dungeon Authority System Log",
+          url: "https://example.com/log",
+        },
+      ],
+      initialState: {
+        crawler: {
+          name: "CARL G.",
+          level: 42,
+          race: "PRIMAL",
+          class: "SCOUT",
+          xp: 21500,
+          maxXp: 74000,
+          attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 },
+          condition: { currentHealth: 3100, maxHealth: 4200, currentMana: 800, maxMana: 1360, currentStamina: 200, maxStamina: 280 },
+        },
+        quests: [
+          {
+            questId: "q-stairwell",
+            title: "Tutorial: Reach the Stairs",
+            urgency: "URGENT",
+            goals: ["Find the emergency stairwell", "Bypass security lockdown"],
+            rewards: "150 XP · Bronze Box",
+            status: "active",
+          },
+          {
+            questId: "q-clear-mobs",
+            title: "Clear Entry Sector",
+            urgency: "STANDARD",
+            goals: ["Defeat sector guardians"],
+            rewards: "50 XP",
+            status: "completed",
+          },
+        ],
+      },
+      events: [
+        {
+          id: "evt-q-1",
+          sequence: 1,
+          type: "NarrativeEvent",
+          kind: "floor-entered",
+          position: { floor: 1 },
+          summary: "Entered Floor 1",
+          evidence: [{ sourceId: "src-wda-log" }],
+        },
+      ],
+    };
+    localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(docWithQuests));
+  });
+  await page.reload();
+  await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
+
+  await selectTopLevelTab(page, "QUESTS");
+  await expect(page.getByRole("heading", { name: "QUESTS", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /^ACTIVE\b/ })).toHaveClass(/\bon\b/);
-  await expect(page.getByText("RECENT PROGRESS & ACHIEVEMENTS", { exact: true })).toBeVisible();
-  await capture(page, "journal");
+  await capture(page, "quests");
 });
 
 test("export Crawler Overview profile sub-tab", async ({ page }) => {
@@ -102,4 +165,16 @@ test("export Crawler Broadcast profile sub-tab", async ({ page }) => {
   await expect(page.getByText("LIVE BROADCAST", { exact: true })).toBeVisible();
   await expect(page.getByText("CURRENT VIEWERS", { exact: true })).toBeVisible();
   await capture(page, "crawlerBroadcast");
+});
+
+test("export Floor Rules modal view", async ({ page }) => {
+  await page.getByRole("button", { name: "📜 FLOOR RULES", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "FLOOR RULES", exact: true })).toBeVisible();
+  await capture(page, "floorRules");
+});
+
+test("export Timeline History modal view", async ({ page }) => {
+  await page.getByRole("button", { name: "📜 HISTORY", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "EVENT & NARRATIVE LOG", exact: true })).toBeVisible();
+  await capture(page, "timelineHistory");
 });

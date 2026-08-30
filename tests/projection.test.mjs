@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
-import { floor6Events, floor6Snapshots, floor6Timeline } from "../app/domain/fixtures/floor6.ts";
+import { floor6Events, floor6Snapshots, floor6Timeline, legacyFloor6Quests } from "../app/domain/fixtures/floor6.ts";
 import { projectState, createInitialState, applyEvent } from "../app/domain/projection.ts";
 import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/validation.ts";
 import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats.ts";
@@ -40,8 +40,10 @@ test("initial-state achievements retain valid recipients", () => {
   assert.equal(state.achievements[1].recipient, undefined);
 });
 
-test("projection at sequence 1 creates initial quest record", () => {
-  const state = projectState(floor6Events, 1, []);
+test("projection at sequence 1 creates initial quest record with explicit fixture adapter", () => {
+  const customInitial = createInitialState();
+  customInitial.quests = legacyFloor6Quests;
+  const state = projectState(floor6Events, 1, [], customInitial);
   assert.equal(state.sequence, 1);
   assert.equal(state.quests.length, 1);
   assert.equal(state.quests[0].title, "Tutorial: Reach the Stairs");
@@ -444,21 +446,23 @@ test("QuestUpdated event updates quest status and filtering excludes non-active 
   assert.equal(state.quests.filter((q) => q.status === "failed").length, 1);
 });
 
-test("createInitialState normalizes quests without a status to active", () => {
+test("createInitialState preserves quests without forcing a status when absent", () => {
   const state = createInitialState({ crawler: { name: "CARL G.", level: 42, attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 }, condition: { currentHealth: 3100, maxHealth: 4200, currentMana: 800, maxMana: 1360, currentStamina: 200, maxStamina: 280 } }, quests: [{ questId: "q-nostatus", title: "Quest Without Status", urgency: "STANDARD", goals: ["Do something"], rewards: "100 XP" }] });
   assert.equal(state.quests.length, 1);
-  assert.equal(state.quests[0].status, "active");
+  assert.equal(state.quests[0].status, undefined);
 });
 
-test("filtering preserves quests without a status as active", () => {
+test("filtering does not silently classify quests without a status as active", () => {
   const quests = [{ questId: "q-1", title: "Active Quest", status: "active" }, { questId: "q-2", title: "Statusless Quest" }, { questId: "q-3", title: "Completed Quest", status: "completed" }];
-  const activeQuests = quests.filter((q) => !q.status || q.status === "active");
+  const activeQuests = quests.filter((q) => q.status === "active");
   const completedQuests = quests.filter((q) => q.status === "completed");
   const failedQuests = quests.filter((q) => q.status === "failed");
-  assert.equal(activeQuests.length, 2);
-  assert.deepEqual(activeQuests.map((q) => q.questId), ["q-1", "q-2"]);
+  const unknownQuests = quests.filter((q) => q.status === undefined);
+  assert.equal(activeQuests.length, 1);
+  assert.deepEqual(activeQuests.map((q) => q.questId), ["q-1"]);
   assert.equal(completedQuests.length, 1);
   assert.equal(failedQuests.length, 0);
+  assert.deepEqual(unknownQuests.map((q) => q.questId), ["q-2"]);
 });
 
 test("AchievementUnlocked does not manufacture an icon when none is sourced", () => {

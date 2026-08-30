@@ -46,9 +46,12 @@ function markerFor(page: Page, event: TestTimelineEvent) {
   });
 }
 
-async function openJournalTab(page: Page, tab: 'FLOOR RULES' | 'LOG') {
-  await page.getByRole('button', { name: 'JOURNAL', exact: true }).click();
-  await page.getByRole('button', { name: tab, exact: true }).click();
+async function openFloorRules(page: Page) {
+  await page.getByRole('button', { name: '📜 FLOOR RULES', exact: true }).click();
+}
+
+async function openTimelineHistory(page: Page) {
+  await page.getByRole('button', { name: '📜 HISTORY', exact: true }).click();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -63,7 +66,7 @@ test('rule history changes at two scrub positions without hard-coded directives'
   const secondRule = rules[1];
 
   await selectSequence(page, firstRule.sequence);
-  await openJournalTab(page, 'FLOOR RULES');
+  await openFloorRules(page);
 
   await expect(page.getByText(firstRule.summary, { exact: true })).toBeVisible();
   await expect(page.getByText(secondRule.summary, { exact: true })).toHaveCount(0);
@@ -133,7 +136,7 @@ test('floor-scoped LOG never reclassifies a prior-floor narrative as a generic e
   const floorSelector = page.getByRole('combobox', { name: 'Floor timeline scope' });
   await floorSelector.selectOption('2');
   await page.getByRole('slider', { name: 'Selected timeline sequence' }).fill(String(floor2FirstSequence));
-  await openJournalTab(page, 'LOG');
+  await openTimelineHistory(page);
 
   const genericFallback = page.locator('details').filter({ hasText: 'GENERIC SYSTEM EVENTS' });
   await expect(genericFallback).not.toContainText(floor1Narrative.summary);
