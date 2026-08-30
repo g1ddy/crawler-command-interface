@@ -200,8 +200,8 @@
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {
-    "complexity": 13,
-    "loc": 109,
+    "complexity": 15,
+    "loc": 118,
     "instability": 0.75,
     "fanIn": 1,
     "fanOut": 3,
