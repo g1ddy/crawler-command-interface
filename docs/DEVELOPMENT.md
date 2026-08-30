@@ -66,7 +66,7 @@ The Pages adapter defaults to base path `/crawler-command-interface/`.
 | `npm run test:pages:custom-base` | Test custom domain Pages build (`PAGES_BASE_PATH=/`) and restore default Pages build |
 | `npm run test:rendered` | Verify development preview metadata rendering |
 | `npm run test:e2e` | Run Playwright browser tests against the GitHub Pages adapter |
-| `npm run test:screenshots` | Regenerate the seven canonical documentation screenshots in `docs/images/` |
+| `npm run test:screenshots` | Regenerate the canonical documentation screenshots in `docs/images/` |
 | `npm run verify` | Full verification suite: sync fixtures, lint, run unit tests, build both targets, and test artifacts |
 | `npm run start` | Start built Vinext production server locally |
 | `npm run db:generate` | Generate Drizzle migrations after schema changes |
@@ -141,14 +141,27 @@ The canonical screenshot set is written directly to `docs/images/`:
 - `screenshot-crawler.png`
 - `screenshot-inventory.png`
 - `screenshot-skills.png`
-- `screenshot-journal.png`
+- `screenshot-quests.png`
 - `screenshot-crawler-overview.png`
 - `screenshot-crawler-achievements.png`
 - `screenshot-crawler-broadcast.png`
+- `screenshot-floor-rules.png`
+- `screenshot-timeline-history.png`
 
-These files are generated evidence of the documented interface and should not be hand-edited. When UI, fixture data, Pages rendering inputs, or screenshot-generation code changes, `.github/workflows/screenshots.yml` regenerates the exact seven-file set on the pull-request branch. Same-repository pull requests automatically commit changed screenshots back to the branch; fork pull requests still generate and upload the images for review but do not receive write access.
+These files are generated evidence of the documented interface and should not be hand-edited. On each applicable pull-request update, `.github/workflows/publish-artifacts.yml` regenerates the complete canonical set in its `verify-screenshots` job. Screenshot verification runs as a read-only check without writing back to the active PR branch; generated screenshots are uploaded as workflow artifacts for inspection before publication.
 
 Keep this workflow separate from functional E2E. E2E answers whether user behavior works across supported browsers; the screenshot workflow deliberately renders stable canonical documentation states. Do not make screenshot generation part of `npm run verify`, broaden it into the browser compatibility matrix, add fallback screenshot subjects, or use forced interactions to make captures succeed.
+
+## Artifact Publication & Verification Mechanics
+
+To prevent workflow-agent race conditions where generated workflow commits advance PR branch heads underneath active coding agents, PR verification workflows operate as agent-safe read-only checks:
+
+- **Automatic Verification**: `ci.yml` and the verification jobs (`verify-screenshots`, `verify-maritime` in `publish-artifacts.yml`) run automatically for every applicable PR update.
+- **Read-Only Verification Jobs**: Ordinary verification workflows generate and validate artifacts (Pages bundles, canonical screenshots, and Maritime complexity/graph evidence) and upload them as Actions artifacts for review, but do not commit or push to the PR branch.
+- **Approval-Gated Finalization**: Generated artifact publication back to the repository branch is performed strictly by the `publish` job in `.github/workflows/publish-artifacts.yml`. Only that job receives `contents: write`; it uses the protected `artifact-finalization` GitHub Actions environment and requires maintainer approval before branch mutation.
+- **Source SHA Verification**: The verification jobs check out the resolved PR head SHA. Immediately before committing or pushing, publication verifies that the remote PR branch still points to that same SHA. If the branch advanced while verification or approval was pending, publication refuses to push.
+- **Single Promotion Step**: A single approved finalization job promotes both screenshots (`docs/images/screenshot-*.png`) and Maritime architecture evidence (`.maritime/*` and `docs/images/dependency-graph.svg`) in at most one commit when tracked outputs changed. If artifacts are already current, no commit is created.
+- **Fork PR Handling**: Fork PRs receive the same read-only screenshot and Maritime verification and uploaded workflow artifacts, but the `publish` job is intentionally skipped because this repository does not write back to fork branches. `workflow_dispatch` may target a PR for verification/recovery, but it does not bypass the fork-write guard. If tracked generated outputs from a fork must be promoted, a maintainer must reconcile them through a same-repository branch or equivalent local workflow.
 
 ## CI Artifact Contract
 
@@ -159,7 +172,7 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 - **Verification Guarantee**: The uploaded artifact is produced only if all deterministic correctness checks (fixture sync, linting, unit tests, live Worker build, rendered-output tests, Pages build, and same-commit artifact provenance contracts) pass. If any verification check fails, no artifact is published.
 - **Artifact Promotion**: After a successful `CI` push run from this repository's `main` branch, `deploy-pages.yml` downloads `github-pages-artifact` from that exact workflow run, checks that its provenance SHA matches the CI source commit, and uploads the unchanged directory for GitHub Pages deployment. Pull-request-originated CI runs are never eligible for Pages promotion. Deployment does not check out source, install dependencies, rerun verification, or rebuild the application.
 - **Independent E2E Consumption**: After every successful `CI` run (including supported pull-request and `main` runs), `playwright.yml` independently downloads the artifact from that exact run, verifies its provenance, serves it at `/crawler-command-interface/`, and runs the browser suite without rebuilding the application. Failed browser runs retain their HTML report, traces, screenshots, and other available test results as a workflow artifact.
-- **Living Documentation Screenshots**: `screenshots.yml` is a pull-request documentation workflow, intentionally separate from the post-CI E2E/deployment fan-out. It regenerates tracked `docs/images/*.png` assets from the pull-request source using the dedicated screenshot Playwright config, verifies that all seven expected files are non-empty, uploads them for review, and auto-commits changed images on same-repository branches.
+- **Living Documentation Screenshots**: `publish-artifacts.yml` runs screenshot verification in its `verify-screenshots` job on PR updates using the dedicated screenshot Playwright config, verifies that the complete canonical set is non-empty, and uploads it for review as a workflow artifact without committing back to the PR branch.
 - **Non-blocking Browser Gate**: Pages deployment and Playwright E2E are sibling `workflow_run` consumers of deterministic CI; neither depends on the other. Documentation screenshot generation is also non-blocking for deployment. Browser or screenshot failures remain visible while the deterministic `npm run verify` checks remain the hard release gates.
 - **Manual Deployment**: The previous `workflow_dispatch` path is intentionally removed. Pages deployment now promotes only a previously validated CI artifact; recovery or manual promotion should be added later only if it selects an existing validated CI run rather than rebuilding source.
 - **Rollout Validation**: New `workflow_run` consumers cannot fully exercise their downstream trigger until their workflow definitions exist on the default branch. After changes to this fan-out topology land, verify the first successful `main` CI run produces the expected downstream workflows, that they consume the same CI run artifact, and that provenance validation succeeds before considering the delivery change fully validated.
@@ -167,7 +180,7 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 ## Contribution Expectations
 
 - **Source vs. generated data**: Edit source files in `app/`, `src/`, `data/raw/floors/`, `scripts/`, or `tests/`. Do not edit `dist/`, `dist-pages/`, `data/floors/*.json`, or `data/compiled-timeline.json` directly.
-- **Generated documentation screenshots**: Treat `docs/images/screenshot-*.png` as generated canonical documentation assets. Regenerate them with `npm run test:screenshots` or let the screenshot workflow refresh them; do not retouch or replace them manually.
+- **Generated documentation screenshots**: Treat `docs/images/screenshot-*.png` as generated canonical documentation assets. Regenerate them with `npm run test:screenshots` locally or use the approval-gated artifact publication workflow; do not retouch or replace them manually.
 - **Shared runtime portability**: Code shared by the adapters must continue to work in both browser-only Pages mode and the more restrictive ChatGPT Worker import/render path.
 - **Verification**: Ensure `npm run verify` passes completely before submitting code.
 - **Documentation boundaries**:

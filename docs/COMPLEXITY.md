@@ -10,9 +10,9 @@ The `.maritime/` directory is Crawler Command Interface's generated, authoritati
 
 ## Regenerating the evidence
 
-The [Maritime Architecture Analysis workflow](../.github/workflows/maritime-analysis.yml) is the single canonical branch-writing workflow for generated architecture evidence. It installs Crawler's dependencies, pins the Maritime Action implementation to commit `05315851a619ef8b854af365e09d64290370639b`, and explicitly consumes the exact published `@dependency-maritime/cli@0.1.0-beta.4` package. CI analyzes `app` and `src` in strict measurement mode, renders the canonical dependency graph SVG (`docs/images/dependency-graph.svg`), validates the bundle via `npm run verify:maritime`, and automatically commits substantive baseline changes on same-repository PRs.
+The `verify-maritime` job in the [Publish Generated Artifacts workflow](../.github/workflows/publish-artifacts.yml) generates and verifies architecture evidence on every PR update. To keep PR verification agent-safe and read-only, `verify-maritime` uploads generated evidence as a workflow artifact rather than committing directly to active PR branches.
 
-CI ignores `manifest.json.generatedAt` only while deciding whether the generated evidence changed substantively via `scripts/has-substantive-maritime-changes.mjs`. A timestamp-only regeneration does not create a commit; any substantive change commits the entire newly generated `.maritime/` bundle and updated SVG graph artifact together.
+When substantive architecture changes occur, maintainers promote the updated `.maritime/` evidence and `docs/images/dependency-graph.svg` through the approval-gated [Publish Generated Artifacts workflow](../.github/workflows/publish-artifacts.yml) (`artifact-finalization` environment). Finalization evaluates `scripts/has-substantive-maritime-changes.mjs` and updates the tracked baseline in a single controlled commit alongside any updated screenshots.
 
 For equivalent local analysis, consumer verification, and diagram rendering, install the matching published CLI without saving it as a project dependency:
 

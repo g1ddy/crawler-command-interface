@@ -21,12 +21,12 @@ test("generated architecture SVG artifact exists and contains valid SVG content"
   assert.match(content, /<\/svg>/i, "diagram file should contain an SVG closing tag");
 });
 
-test("generated-evidence workflow and baseline check include the SVG path", async () => {
-  const workflowPath = join(repositoryRoot, ".github/workflows/maritime-analysis.yml");
-  const workflowContent = await readFile(workflowPath, "utf8");
+test("publish-artifacts workflow configures Maritime analysis and graph rendering", async () => {
+  const publishWorkflowPath = join(repositoryRoot, ".github/workflows/publish-artifacts.yml");
+  const publishContent = await readFile(publishWorkflowPath, "utf8");
 
-  assert.match(workflowContent, /docs\/images\/dependency-graph\.svg/);
-  assert.match(workflowContent, /render-graph:\s*'true'/);
-  assert.match(workflowContent, /graph-output:\s*'docs\/images\/dependency-graph\.svg'/);
-  assert.match(workflowContent, /git diff --quiet -- docs\/images\/dependency-graph\.svg/);
+  assert.match(publishContent, /docs\/images\/dependency-graph\.svg/);
+  assert.match(publishContent, /render-graph:\s*'true'/);
+  assert.match(publishContent, /graph-output:\s*'docs\/images\/dependency-graph\.svg'/);
+  assert.match(publishContent, /git diff --quiet -- docs\/images\/dependency-graph\.svg/);
 });
