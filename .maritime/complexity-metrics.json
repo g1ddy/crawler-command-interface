@@ -17,7 +17,7 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 799,
+    "loc": 807,
     "instability": 0,
     "fanIn": 19,
     "fanOut": 0,
@@ -64,11 +64,19 @@
     "scanned": true
   },
   "app/components/TelemetryInspectorModal.tsx": {
-    "complexity": 14,
-    "loc": 182,
-    "instability": 0.67,
+    "complexity": 15,
+    "loc": 186,
+    "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 2,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "app/domain/observations.ts": {
+    "complexity": 29,
+    "loc": 322,
+    "instability": 0.25,
+    "fanIn": 3,
+    "fanOut": 1,
     "scanned": true
   },
   "app/components/TimelineScrubber.tsx": {
@@ -136,19 +144,11 @@
     "scanned": true
   },
   "app/domain/projection.ts": {
-    "complexity": 157,
-    "loc": 667,
+    "complexity": 154,
+    "loc": 668,
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,
-    "scanned": true
-  },
-  "app/domain/observations.ts": {
-    "complexity": 28,
-    "loc": 294,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
     "scanned": true
   },
   "app/domain/persistence.ts": {
@@ -185,10 +185,10 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 44,
-    "loc": 2128,
+    "loc": 2156,
     "instability": 0.89,
     "fanIn": 2,
-    "fanOut": 16,
+    "fanOut": 17,
     "scanned": true
   },
   "src/main.pages.tsx": {

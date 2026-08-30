@@ -10,21 +10,20 @@ The `.maritime/` directory is Crawler Command Interface's generated, authoritati
 
 ## Regenerating the evidence
 
-The [Maritime Architecture Analysis workflow](../.github/workflows/maritime-analysis.yml) is the canonical CI regeneration path. It installs Crawler's dependencies, pins the Maritime Action implementation to commit `70b1882dbe37728bba511ea396645421170789f7`, and explicitly consumes the exact published `@dependency-maritime/cli@0.1.0-beta.3` package. CI analyzes `app` and `src` in strict measurement mode, then validates the completed bundle and renders the canonical dependency graph SVG (`docs/images/dependency-graph.svg`) using Maritime's first-class graph renderer.
+The [Maritime Architecture Analysis workflow](../.github/workflows/maritime-analysis.yml) is the single canonical branch-writing workflow for generated architecture evidence. It installs Crawler's dependencies, pins the Maritime Action implementation to commit `05315851a619ef8b854af365e09d64290370639b`, and explicitly consumes the exact published `@dependency-maritime/cli@0.1.0-beta.4` package. CI analyzes `app` and `src` in strict measurement mode, renders the canonical dependency graph SVG (`docs/images/dependency-graph.svg`), validates the bundle via `npm run verify:maritime`, and automatically commits substantive baseline changes on same-repository PRs.
 
-For labeled baseline updates, CI ignores `manifest.json.generatedAt` only while deciding whether the generated evidence changed substantively. A timestamp-only regeneration does not create a commit; any substantive change commits the entire newly generated `.maritime/` bundle, including its real generation timestamp and updated SVG graph artifact.
+CI ignores `manifest.json.generatedAt` only while deciding whether the generated evidence changed substantively via `scripts/has-substantive-maritime-changes.mjs`. A timestamp-only regeneration does not create a commit; any substantive change commits the entire newly generated `.maritime/` bundle and updated SVG graph artifact together.
 
-For equivalent local analysis and diagram rendering, install the matching published CLI without saving it as a project dependency, then run analysis and graph rendering:
+For equivalent local analysis, consumer verification, and diagram rendering, install the matching published CLI without saving it as a project dependency:
 
 ```bash
-npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.3
+npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.4
 npm run analyze:architecture
-npx maritime graph --input .maritime --output docs/images/dependency-graph.svg
+npm run verify:maritime
+npm run generate:graph
 ```
 
-The `npm run analyze:architecture` script uses the same source roots, output directory, and `--fail-on-unmeasured` strictness as CI.
-
-Run the commands in that order: diagram rendering consumes the existing `.maritime/dependency-graph.json` canonical machine evidence and never starts a second dependency analysis. Graphviz's `dot` executable must be installed locally for direct CLI graph rendering. The Maritime workflow performs the same rendering immediately after successful analysis and updates the SVG in the existing labeled baseline commit, so no competing branch-writing workflow is involved.
+The `npm run analyze:architecture` script uses the same source roots (`app` and `src`), output directory (`.maritime`), and `--fail-on-unmeasured` strictness as CI. `npm run verify:maritime` performs Crawler's consumer contract check to ensure evidence completeness and SVG validity. `npm run generate:graph` uses a version-pinned `npx --package` wrapper to render `docs/images/dependency-graph.svg` from existing `.maritime/dependency-graph.json` evidence without starting a second dependency analysis. Graphviz's `dot` executable must be installed locally for direct local graph rendering.
 
 The files under `.maritime/` are canonical machine-readable evidence. Do not hand-edit them; regenerate the complete bundle through the workflow or the equivalent local commands.
 
