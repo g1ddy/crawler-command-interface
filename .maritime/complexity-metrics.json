@@ -200,7 +200,7 @@
     "scanned": true
   },
   "src/shell/hud/PersistentHud.tsx": {
-    "complexity": 10,
+    "complexity": 11,
     "loc": 43,
     "instability": 0.5,
     "fanIn": 1,

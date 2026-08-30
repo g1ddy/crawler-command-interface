@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-08-30
 
-### 🏥 Repository Health Score: **79.0 / 100**
+### 🏥 Repository Health Score: **78.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 28
