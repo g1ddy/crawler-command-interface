@@ -99,11 +99,10 @@ test("multiple raw countdown observations compile into identified timers without
   const rawDoc = JSON.parse(JSON.stringify(rawFloor2));
   const eventId = rawDoc.events[0].id;
   const evidence = [{ sourceId: rawDoc.sources[0].id, confidence: "confirmed" }];
-  rawDoc.countdowns.push({ id: "countdown-floor-2-safe-room", title: "Safe-room closure", target: "safe-room-closure" });
   rawDoc.observations = rawDoc.observations.filter((observation) => observation.kind !== "countdown-remaining");
   rawDoc.observations.push(
     { id: "obs-primary-routing", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-2-collapse", remainingSeconds: 100, evidence },
-    { id: "obs-secondary-routing", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-2-safe-room", remainingSeconds: 20, evidence },
+    { id: "obs-secondary-routing", kind: "countdown-remaining", eventId, countdownId: "countdown-floor-2-safe-room-closure", remainingSeconds: 20, evidence },
   );
 
   const rawReadings = rawDoc.observations.filter((observation) => observation.kind === "countdown-remaining");
@@ -111,7 +110,7 @@ test("multiple raw countdown observations compile into identified timers without
 
   const compiled = compileRawFloorFiles([rawDoc]);
   const collapse = compiled.countdowns.find((countdown) => countdown.id === "countdown-floor-2-collapse");
-  const safeRoom = compiled.countdowns.find((countdown) => countdown.id === "countdown-floor-2-safe-room");
+  const safeRoom = compiled.countdowns.find((countdown) => countdown.id === "countdown-floor-2-safe-room-closure");
 
   assert.ok(collapse.references.some((reference) => reference.remainingSeconds === 100));
   assert.equal(safeRoom.references.length, 1);

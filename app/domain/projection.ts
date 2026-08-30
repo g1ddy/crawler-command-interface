@@ -87,7 +87,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
       quantity: numericQuantity,
       quantityObject: qtyObject,
       maxStack: i.maxStack || 1,
-      value: 100,
+      value: 0,
       stats: i.stats,
       description: i.description || '',
       acquiredAtSequence: 0,
@@ -103,7 +103,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     recipient: getAchievementRecipient(a.recipient),
     description: a.description || '',
     rewards: structuredRewards(a.reward, a.sourceTitle),
-    icon: '☠',
+    icon: '',
     unlockedAtSequence: 0,
   }));
   const entitlements = (timelineState?.entitlements || []).map((entitlement) => ({ ...entitlement }));
@@ -425,7 +425,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
             : {}),
           description: String(ach.description || ''),
           rewards: structuredRewards(ach.reward, ach.rewards || ach.sourceTitle),
-          icon: String(ach.icon || '☠'),
+          icon: typeof ach.icon === 'string' ? ach.icon : '',
           unlockedAtSequence: sequence,
         });
       }

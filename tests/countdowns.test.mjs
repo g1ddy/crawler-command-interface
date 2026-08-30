@@ -435,3 +435,23 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
   assert.equal(invalidTimelineResult.valid, false);
   assert.ok(invalidTimelineResult.errors.some((err) => err.includes("increases from 200s at sequence #10 to 600000s at sequence #20")));
 });
+
+test("authored Floor 2 safe-room closure remains distinct and floor scoped", () => {
+  const secondary = compiledDoc.countdowns.find((countdown) => countdown.id === "countdown-floor-2-safe-room-closure");
+  assert.ok(secondary);
+  assert.equal(secondary.target, "safe-room-closure");
+  assert.equal(secondary.floor, 2);
+
+  const reading = secondary.references.find((reference) => reference.remainingSeconds === 403200);
+  assert.ok(reading);
+  assert.equal("countdownId" in reading, false);
+
+  const floorTwoEndpoint = Math.max(...compiledDoc.events.filter((event) => event.position.floor === 2).map((event) => event.sequence));
+  const endpointState = projectCountdownState({ ...compiledDoc, countdowns: [secondary] }, floorTwoEndpoint, 2);
+  assert.ok(endpointState);
+  assert.equal(endpointState.isStale, true);
+  assert.match(endpointState.formattedLabel, /stated \(latest source\)$/);
+
+  const floorOneSequence = compiledDoc.events.find((event) => event.position.floor === 1).sequence;
+  assert.equal(projectCountdownState({ ...compiledDoc, countdowns: [secondary] }, floorOneSequence, 1), null);
+});

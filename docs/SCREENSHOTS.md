@@ -4,6 +4,8 @@ These images are generated canonical views of the Crawler Command Interface. The
 
 Do not retouch these files manually. If a documented interface state changes, update the application or screenshot-generation code and regenerate the assets.
 
+The persistent timeline shown in every canonical view keeps floor selection, sequence scrubbing, typed story markers, replay stepping, and return-to-Live controls visible. Primary collapse timing is presented once in the persistent HUD; sourced secondary timers and countdown evidence remain contextual timeline details.
+
 ## Top-level views
 
 ### Crawler
@@ -25,6 +27,9 @@ Do not retouch these files manually. If a documented interface state changes, up
 ## Crawler profile views
 
 ### Overview
+
+The overview intentionally omits the duplicate broadcast summary; audience details remain documented in the Broadcast view.
+
 
 ![Crawler overview](images/screenshot-crawler-overview.png)
 

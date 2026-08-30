@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import { floor6Events, floor6Snapshots, floor6Timeline } from "../app/domain/fixtures/floor6.ts";
-import { projectState, createInitialState } from "../app/domain/projection.ts";
+import { projectState, createInitialState, applyEvent } from "../app/domain/projection.ts";
 import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/validation.ts";
 import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats.ts";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
@@ -459,4 +459,18 @@ test("filtering preserves quests without a status as active", () => {
   assert.deepEqual(activeQuests.map((q) => q.questId), ["q-1", "q-2"]);
   assert.equal(completedQuests.length, 1);
   assert.equal(failedQuests.length, 0);
+});
+
+test("AchievementUnlocked does not manufacture an icon when none is sourced", () => {
+  const state = createInitialState({
+    crawler: { name: "Test", level: 1, attributes: {}, condition: {} },
+    achievements: [],
+  });
+  const projected = applyEvent(state, {
+    id: "evt-achievement-no-icon",
+    sequence: 1,
+    type: "AchievementUnlocked",
+    achievement: { id: "achievement-no-icon", title: "No Icon Authored" },
+  });
+  assert.equal(projected.achievements[0].icon, "");
 });

@@ -19,13 +19,16 @@ import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../ap
 import { LocalDeviceStorageAdapter } from "../app/domain/persistence";
 import type { StatBreakdown } from "../app/domain/stats";
 import type { CrawlerEvent, CrawlerState, CrawlerTimelineDocument, InventoryItem } from "../app/domain/types";
-import { TimelineScrubber } from "../app/components/TimelineScrubber";
+import { TimelineScrubber } from "./features/timeline/TimelineScrubber";
 import { StatInspectorModal } from "../app/components/StatInspectorModal";
 import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
-import { SequenceBadge } from "../app/components/SequenceBadge";
+import { SequenceBadge } from "./features/timeline/SequenceBadge";
 import { formatSequencePosition, narrativeEventsAtOrBefore } from "../app/domain/narrative-presentation";
+import { Panel } from "./shared/ui/Panel";
+import { RootNavigation, type RootView } from "./shell/navigation/RootNavigation";
+import { PersistentHud } from "./shell/hud/PersistentHud";
 
-type View = "crawler" | "inventory" | "skills" | "journal";
+type View = RootView;
 
 export default function CrawlerApp() {
   const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
@@ -279,40 +282,25 @@ export default function CrawlerApp() {
 
   return (
     <main>
-      {/* Mobile Compact Persistent HUD Header */}
-      <div className="mobile-status-bar">
-        <div className="mobile-crawler-info">
-          <b>{projectedState.crawler.name}</b> (LVL {hudLevel} {projectedState.crawler.class})
-        </div>
-        <div className="mobile-meters">
-          <span className="hp-mini">HP {hudHealth}/{hudMaxHealth}</span>
-          <span className="mp-mini">MP {hudMana}/{hudMaxMana}</span>
-        </div>
-        <div className="mobile-mode">
-          {isLive ? <span className="live-pill">● LIVE</span> : <span className="replay-pill">↺ SEQ #{projectedState.sequence}</span>}
-        </div>
-      </div>
+      <PersistentHud
+        crawlerName={projectedState.crawler.name}
+        crawlerClass={projectedState.crawler.class}
+        level={hudLevel}
+        health={hudHealth}
+        maxHealth={hudMaxHealth}
+        mana={hudMana}
+        maxMana={hudMaxMana}
+        viewers={hudViewers}
+        floorTitle={floorHudTitle}
+        countdown={activeCountdown}
+        fallbackCountdown={`${h}:${m}:${s}`}
+        isLive={isLive}
+        sequence={projectedState.sequence}
+        occurredAt={projectedState.occurredAt}
+        onReturnToLive={handleReturnToLive}
+      />
 
-      <div className="timer">
-        <span>{floorHudTitle.toUpperCase()}</span>
-        <b title={activeCountdown ? `${activeCountdown.status} · ${activeCountdown.basis}` : undefined}>
-          {activeCountdown?.isStale
-            ? `LATEST SOURCED COLLAPSE TIME: ${activeCountdown.formattedTime.toUpperCase()}`
-            : activeCountdown?.lifecycleStatus === 'scheduled'
-            ? activeCountdown.formattedTime.toUpperCase()
-            : `LEVEL COLLAPSE IN ${activeCountdown ? activeCountdown.formattedTime.toUpperCase() : `${h}:${m}:${s}`}`}
-        </b>
-        <span>● LIVE · {hudViewers.toLocaleString()} VIEWERS</span>
-      </div>
-
-      {!isLive && (
-        <div className="replay-banner">
-          <span>HISTORICAL VIEW · REPLAYING SEQUENCE #{projectedState.sequence} ({projectedState.occurredAt})</span>
-          <button onClick={handleReturnToLive}>RETURN TO LIVE ⚡</button>
-        </div>
-      )}
-
-      <Nav active={view} set={setView} onOpenJsonModal={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }} />
+      <RootNavigation active={view} set={setView} onOpenTools={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }} />
 
       {toastMessage && (
         <div className="toast-notification" role="status" aria-live="polite">
@@ -321,7 +309,7 @@ export default function CrawlerApp() {
       )}
 
       <button className="bell" onClick={() => setNotes(!notes)} aria-label="Toggle system notices">
-        ◔<b>{projectedState.recentLogs.length > 0 ? projectedState.recentLogs.length : 3}</b>
+        ◔{projectedState.recentLogs.length > 0 && <b>{projectedState.recentLogs.length}</b>}
       </button>
 
       {notes && (
@@ -502,40 +490,6 @@ export default function CrawlerApp() {
   );
 }
 
-function Panel({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
-  return (
-    <article className={"panel " + className}>
-      <h2>{title}</h2>
-      {children}
-    </article>
-  );
-}
-
-function Nav({ active, set, onOpenJsonModal }: { active: View; set: (v: View) => void; onOpenJsonModal: () => void }) {
-  return (
-    <nav className="nav" aria-label="Main Navigation">
-      <b><span>WORLD DUNGEON</span> AUTHORITY</b>
-      {(["crawler", "inventory", "skills", "journal"] as View[]).map((v) => (
-        <button
-          key={v}
-          className={active === v ? "active" : ""}
-          onClick={() => set(v)}
-          aria-pressed={active === v}
-        >
-          {v === "crawler" ? "CRAWLER" : v.toUpperCase()}
-        </button>
-      ))}
-      <button
-        style={{ marginLeft: "auto", border: "1px solid #1f4252", padding: "6px 10px" }}
-        onClick={onOpenJsonModal}
-        aria-label="Import/Export JSON Timeline"
-      >
-        ⚙ JSON
-      </button>
-    </nav>
-  );
-}
-
 function Crawler({
   state,
   observations,
@@ -585,12 +539,6 @@ function Crawler({
   const maxStVal = obsMaxSt ? obsMaxSt.value : c.condition.maxStamina;
   const stPct = maxStVal ? Math.min(100, Math.round(((stVal || 0) / maxStVal) * 100)) : 0;
 
-  const obsViewers = observations.broadcast["viewers"];
-  const obsFollowers = observations.broadcast["followers"];
-  const obsRank = observations.broadcast["leaderboardRank"];
-  const viewersVal = obsViewers ? obsViewers.value : state.broadcast.viewers;
-  const followersVal = obsFollowers ? obsFollowers.value : state.broadcast.followers;
-  const fameRankVal = obsRank ? `#${obsRank.value}` : state.broadcast.fameRank;
 
   const equipmentSlots = new Set([...Object.keys(state.equippedSlots), ...Object.keys(observations.equipment)]);
   const equippedCount = Array.from(equipmentSlots).filter(
@@ -803,47 +751,7 @@ function Crawler({
               </div>
             </Panel>
 
-            <Panel title="BROADCAST STATUS">
-              <div className="broadcast">
-                <p>
-                  <span>
-                    VIEWERS
-                    <TelemetryBadge
-                      observation={obsViewers}
-                      causalValue={state.broadcast.viewers}
-                      onClick={() => obsViewers && onInspectObservation(obsViewers)}
-                    />
-                  </span>
-                  <b>{viewersVal !== undefined ? viewersVal.toLocaleString() : "—"}</b>
-                  <em>{state.broadcast.viewerDelta}</em>
-                </p>
-                <p>
-                  <span>
-                    FOLLOWERS
-                    <TelemetryBadge
-                      observation={obsFollowers}
-                      causalValue={state.broadcast.followers}
-                      onClick={() => obsFollowers && onInspectObservation(obsFollowers)}
-                    />
-                  </span>
-                  <b>{followersVal !== undefined ? followersVal.toLocaleString() : "—"}</b>
-                </p>
-                <p>
-                  <span>
-                    FAME RANK
-                    <TelemetryBadge
-                      observation={obsRank}
-                      causalValue={state.broadcast.fameRank}
-                      onClick={() => obsRank && onInspectObservation(obsRank)}
-                    />
-                  </span>
-                  <b>{fameRankVal}</b>
-                </p>
-                {state.broadcast.sponsorInterest && (
-                  <p className="sponsor">● Sponsor interest detected</p>
-                )}
-              </div>
-            </Panel>
+
           </div>
         </>
       )}
@@ -853,7 +761,6 @@ function Crawler({
         <Broadcast
           broadcast={state.broadcast}
           observations={observations.broadcast}
-          logs={state.recentLogs}
           onInspectObservation={onInspectObservation}
         />
       )}
@@ -1004,7 +911,7 @@ function Inventory({
           <p className="eyebrow">STORAGE SYSTEM</p>
           <h1>INVENTORY</h1>
         </div>
-        <b>CAPACITY {items.length} / 100</b>
+        <b>{items.length} SOURCED ITEM{items.length === 1 ? "" : "S"}</b>
       </header>
 
       <div className="inventory">
@@ -1081,7 +988,9 @@ function Inventory({
             <div className="right">
               <Panel title="EQUIPPED GEAR SLOTS">
                 <div className="compact">
-                  HOOD <b>◉</b> VEST <b>◈</b> BOOTS <b>▰</b>
+                  {Object.entries(state.equippedSlots).filter(([, itemId]) => itemId).length > 0
+                    ? Object.entries(state.equippedSlots).filter(([, itemId]) => itemId).map(([slot, itemId]) => <span key={slot}>{slot}: {state.inventory.find((item) => item.instanceId === itemId)?.name ?? "UNKNOWN ITEM"}</span>)
+                    : <span>No equipped gear is sourced at this sequence.</span>}
                 </div>
                 <button className="link" onClick={() => setFilter("EQUIPMENT")}>
                   Open equipment slot matrix →
@@ -1110,7 +1019,7 @@ function Inventory({
                   <dl>
                     <div>
                       <dt>VALUE</dt>
-                      <dd>{selectedItem.value} ⊙</dd>
+                      <dd>{selectedItem.value > 0 ? `${selectedItem.value} ⊙` : "NOT SOURCED"}</dd>
                     </div>
                     <div>
                       <dt>STACK</dt>
@@ -1664,7 +1573,7 @@ function Skills({
             {["ALL SKILLS", "ACTIVE", "PASSIVE", "COMBAT", "UTILITY"].map((x) => (
               <button className={filter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
                 {x}
-                <b>{x === "ALL SKILLS" ? skills.length : 2}</b>
+                <b>{x === "ALL SKILLS" ? skills.length : x === "ACTIVE" ? skills.filter((skill) => skill.category !== "passive").length : x === "PASSIVE" ? skills.filter((skill) => skill.category === "passive").length : skills.filter((skill) => skill.category.toUpperCase() === x).length}</b>
               </button>
             ))}
           </div>
@@ -2044,17 +1953,7 @@ function Achievements({ achievements }: { achievements: CrawlerState["achievemen
         </div>
       ))}
 
-      <div className="award-grid">
-        {["Dungeon King", "Team Player", "Monster Hunter", "Deep Runner", "First Steps", "Pyromaniac"].map(
-          (x, i) => (
-            <article key={x}>
-              <i>{["♛", "♜", "☠", "↥", "➟", "♨"][i]}</i>
-              <h2>{x}</h2>
-              <p>{i % 2 === 0 ? "UNLOCKED" : "IN PROGRESS"}</p>
-            </article>
-          )
-        )}
-      </div>
+
     </div>
   );
 }
@@ -2088,12 +1987,10 @@ function AchievementRewards({ rewards }: { rewards: RewardSpec[] }) {
 function Broadcast({
   broadcast,
   observations,
-  logs,
   onInspectObservation,
 }: {
   broadcast: CrawlerState["broadcast"];
   observations: Record<string, ProjectedObservationValue>;
-  logs: CrawlerState["recentLogs"];
   onInspectObservation: (obs: ProjectedObservationValue) => void;
 }) {
   const viewers = observations.viewers?.value ?? broadcast.viewers;
@@ -2141,15 +2038,7 @@ function Broadcast({
         </div>
       </Panel>
 
-      <Panel title="RECENT EVENT STREAM">
-        <div className="log">
-          {logs.slice(0, 5).map((l) => (
-            <p key={l.sequence}>
-              <span>SEQ #{l.sequence}</span> {l.message}
-            </p>
-          ))}
-        </div>
-      </Panel>
+
     </div>
   );
 }

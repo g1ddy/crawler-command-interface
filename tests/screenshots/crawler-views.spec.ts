@@ -56,7 +56,7 @@ test.beforeEach(async ({ page }) => {
 test("export top-level Crawler tab", async ({ page }) => {
   await selectCrawlerSubTab(page, "OVERVIEW");
   await expect(page.getByRole("button", { name: "Manage in Inventory →", exact: true })).toBeVisible();
-  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toBeVisible();
+  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toHaveCount(0);
   await capture(page, "crawler");
 });
 
@@ -86,7 +86,7 @@ test("export top-level Journal tab", async ({ page }) => {
 test("export Crawler Overview profile sub-tab", async ({ page }) => {
   await selectCrawlerSubTab(page, "OVERVIEW");
   await expect(page.getByRole("button", { name: "Manage in Inventory →", exact: true })).toBeVisible();
-  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toBeVisible();
+  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toHaveCount(0);
   await capture(page, "crawlerOverview");
 });
 

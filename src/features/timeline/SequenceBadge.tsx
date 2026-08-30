@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
-import { getNarrativePresentation } from '../domain/narrative-presentation';
-import type { NarrativeEventKind } from '../domain/types';
+import { getNarrativePresentation } from '../../../app/domain/narrative-presentation';
+import type { NarrativeEventKind } from '../../../app/domain/types';
 
 export function SequenceBadge({ kind }: { kind: NarrativeEventKind | string | undefined }) {
   const presentation = getNarrativePresentation(kind);
