@@ -105,7 +105,7 @@
   },
   "app/domain/fixtures/floor6.ts": {
     "complexity": 1,
-    "loc": 762,
+    "loc": 774,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 2,
@@ -113,7 +113,7 @@
   },
   "app/domain/projection.ts": {
     "complexity": 155,
-    "loc": 669,
+    "loc": 658,
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,
@@ -169,7 +169,7 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 40,
-    "loc": 1829,
+    "loc": 1835,
     "instability": 0.92,
     "fanIn": 2,
     "fanOut": 24,
@@ -200,16 +200,16 @@
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {
-    "complexity": 9,
-    "loc": 87,
+    "complexity": 15,
+    "loc": 118,
     "instability": 0.75,
     "fanIn": 1,
     "fanOut": 3,
     "scanned": true
   },
   "src/features/quests/QuestCard.tsx": {
-    "complexity": 9,
-    "loc": 56,
+    "complexity": 8,
+    "loc": 55,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,

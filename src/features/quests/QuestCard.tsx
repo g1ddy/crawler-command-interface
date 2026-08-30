@@ -14,9 +14,9 @@ export function QuestCard({
   urgency,
   goals,
   rewards,
-  status = "active",
+  status,
 }: QuestCardProps) {
-  const currentStatus = status || "active";
+  const currentStatus = status ?? "unknown";
   return (
     <article className={`quest ${currentStatus}`}>
       <header>
@@ -41,7 +41,6 @@ export function QuestCard({
           <i>{urgency}</i>
         </div>
       </header>
-      <p>Dungeon conditions are unstable. Complete this before failure becomes permanent.</p>
       <ul>
         {goals.map((x) => (
           <li key={x}>{x}</li>

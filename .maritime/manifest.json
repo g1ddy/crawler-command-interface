@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "toolVersion": "0.1.0-beta.4",
-  "generatedAt": "2026-08-30T18:33:23.297Z",
+  "generatedAt": "2026-08-30T19:10:17.953Z",
   "sourceRoots": [
     "app",
     "src"
@@ -13,7 +13,7 @@
   },
   "summary": {
     "totalFiles": 33,
-    "healthScore": 77,
+    "healthScore": 76,
     "scannedCount": 33,
     "skippedCount": 0
   }

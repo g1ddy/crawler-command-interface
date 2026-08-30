@@ -7,28 +7,49 @@ interface QuestsViewProps {
   quests: Quest[];
 }
 
+type QuestFilter = "ACTIVE" | "COMPLETED" | "FAILED" | "UNKNOWN";
+type QuestWithStatus = Quest & { status: NonNullable<Quest["status"]> };
+
+function hasStatus(status: NonNullable<Quest["status"]>) {
+  return (quest: Quest): quest is QuestWithStatus => quest.status === status;
+}
+
 export function QuestsView({ quests }: QuestsViewProps) {
-  const [filter, setFilter] = useState<"ACTIVE" | "COMPLETED" | "FAILED">("ACTIVE");
+  const [filter, setFilter] = useState<QuestFilter>("ACTIVE");
 
   const activeQuests = useMemo(
-    () => quests.filter((q) => !q.status || q.status === "active"),
+    () => quests.filter(hasStatus("active")),
     [quests]
   );
   const completedQuests = useMemo(
-    () => quests.filter((q) => q.status === "completed"),
+    () => quests.filter(hasStatus("completed")),
     [quests]
   );
   const failedQuests = useMemo(
-    () => quests.filter((q) => q.status === "failed"),
+    () => quests.filter(hasStatus("failed")),
+    [quests]
+  );
+  const unknownQuests = useMemo(
+    () => quests.filter((quest) => quest.status === undefined),
     [quests]
   );
 
+  const hasUnknownQuests = unknownQuests.length > 0;
+  // Replay can move past the point where a statusless quest gains a known
+  // status. Keep the visible filter valid without synchronously setting state
+  // from an effect; if UNKNOWN is unavailable, present ACTIVE as the fallback.
+  const effectiveFilter: QuestFilter = filter === "UNKNOWN" && !hasUnknownQuests
+    ? "ACTIVE"
+    : filter;
+
   const displayedQuests =
-    filter === "ACTIVE"
+    effectiveFilter === "ACTIVE"
       ? activeQuests
-      : filter === "COMPLETED"
+      : effectiveFilter === "COMPLETED"
       ? completedQuests
-      : failedQuests;
+      : effectiveFilter === "FAILED"
+      ? failedQuests
+      : unknownQuests;
 
   return (
     <section className="view-content">
@@ -39,23 +60,31 @@ export function QuestsView({ quests }: QuestsViewProps) {
         </div>
         <div className="subnav" aria-label="Quest status filters">
           <button
-            className={filter === "ACTIVE" ? "on" : ""}
+            className={effectiveFilter === "ACTIVE" ? "on" : ""}
             onClick={() => setFilter("ACTIVE")}
           >
             ACTIVE ({activeQuests.length})
           </button>
           <button
-            className={filter === "COMPLETED" ? "on" : ""}
+            className={effectiveFilter === "COMPLETED" ? "on" : ""}
             onClick={() => setFilter("COMPLETED")}
           >
             COMPLETED ({completedQuests.length})
           </button>
           <button
-            className={filter === "FAILED" ? "on" : ""}
+            className={effectiveFilter === "FAILED" ? "on" : ""}
             onClick={() => setFilter("FAILED")}
           >
             FAILED ({failedQuests.length})
           </button>
+          {hasUnknownQuests && (
+            <button
+              className={effectiveFilter === "UNKNOWN" ? "on" : ""}
+              onClick={() => setFilter("UNKNOWN")}
+            >
+              UNKNOWN ({unknownQuests.length})
+            </button>
+          )}
         </div>
       </header>
 
@@ -73,11 +102,13 @@ export function QuestsView({ quests }: QuestsViewProps) {
           ))
         ) : (
           <p style={{ fontSize: "11px", color: "#8fa1aa", padding: "12px 0" }}>
-            {filter === "ACTIVE"
+            {effectiveFilter === "ACTIVE"
               ? "No active quests."
-              : filter === "COMPLETED"
+              : effectiveFilter === "COMPLETED"
               ? "No completed quests."
-              : "No failed quests."}
+              : effectiveFilter === "FAILED"
+              ? "No failed quests."
+              : "No quests with unknown status."}
           </p>
         )}
       </div>
