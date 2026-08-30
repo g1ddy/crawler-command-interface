@@ -12,7 +12,7 @@ Use `setup.sh` when creating a fresh ChatGPT Codex environment:
 ./scripts/setup.sh
 ```
 
-It delegates to `maintenance.sh --clean`, which performs a clean install from `package-lock.json` with `npm ci`, installs Chromium and its Linux dependencies for the Playwright E2E suite, and ensures Graphviz is available for direct local Maritime CLI graph rendering (`maritime graph`).
+It delegates to `maintenance.sh --clean`, which performs a clean install from `package-lock.json` with `npm ci`, installs Chromium and its Linux dependencies for the Playwright E2E suite, and ensures Graphviz is available for direct local Maritime CLI graph rendering (`npm run generate:graph`).
 
 ### `maintenance.sh`
 

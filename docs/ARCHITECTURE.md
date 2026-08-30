@@ -32,7 +32,7 @@ The diagram below is generated structural evidence derived exclusively from Mari
 
 ![Generated Crawler module dependency graph](images/dependency-graph.svg)
 
-Do not edit the SVG by hand. After refreshing `.maritime/dependency-graph.json`, regenerate the diagram with `npx --package=@dependency-maritime/cli@0.1.0-beta.3 maritime graph --input .maritime --output docs/images/dependency-graph.svg`.
+Do not edit the SVG by hand. After refreshing `.maritime/dependency-graph.json`, regenerate the diagram with `npm run generate:graph`.
 
 ## Execution Modes and Compatibility Boundaries
 

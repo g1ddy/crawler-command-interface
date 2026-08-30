@@ -2,7 +2,7 @@ name: Maritime Architecture Analysis
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, labeled]
+    types: [opened, reopened, synchronize]
   workflow_dispatch:
 
 permissions:
@@ -28,10 +28,10 @@ jobs:
         run: npm ci
 
       - name: Analyze with Maritime
-        uses: g1ddy/dependency-maritime@70b1882dbe37728bba511ea396645421170789f7
+        uses: g1ddy/dependency-maritime@05315851a619ef8b854af365e09d64290370639b
         with:
           node-version: '22.13.0'
-          cli-source: '@dependency-maritime/cli@0.1.0-beta.3'
+          cli-source: '@dependency-maritime/cli@0.1.0-beta.4'
           source-roots: 'app src'
           output-dir: '.maritime'
           fail-on-unmeasured: 'true'
@@ -41,6 +41,9 @@ jobs:
 
       - name: Inspect Maritime outputs
         run: find .maritime -maxdepth 1 -type f -print
+
+      - name: Verify Maritime artifacts
+        run: npm run verify:maritime
 
       - name: Upload Maritime analysis
         uses: actions/upload-artifact@v4
@@ -52,10 +55,9 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Commit Maritime baseline to labeled PR branch
+      - name: Commit Maritime baseline to PR branch
         if: >-
           github.event_name == 'pull_request' &&
-          contains(github.event.pull_request.labels.*.name, 'maritime') &&
           github.event.pull_request.head.repo.full_name == github.repository
         env:
           HEAD_BRANCH: ${{ github.head_ref }}

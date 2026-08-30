@@ -156,6 +156,7 @@
         "app/domain/stats.ts",
         "app/components/TelemetryBadge.tsx",
         "app/components/TelemetryInspectorModal.tsx",
+        "app/domain/observations.ts",
         "app/components/TimelineScrubber.tsx",
         "app/domain/countdowns.ts",
         "app/domain/floors.ts",
@@ -165,7 +166,6 @@
         "app/domain/fixtures/compiled-timeline.ts",
         "app/domain/fixtures/floor6.ts",
         "app/domain/projection.ts",
-        "app/domain/observations.ts",
         "app/domain/persistence.ts",
         "app/domain/raw-compiler.ts",
         "src/CrawlerApp.tsx"
@@ -395,6 +395,23 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../domain/observations",
+          "resolved": "app/domain/observations.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "type-only",
             "import"
           ],
@@ -426,6 +443,36 @@
         }
       ],
       "dependents": [
+        "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "app/domain/observations.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "app/components/TelemetryInspectorModal.tsx",
+        "app/domain/projection.ts",
         "src/CrawlerApp.tsx"
       ],
       "orphan": false
@@ -1133,34 +1180,6 @@
       "orphan": false
     },
     {
-      "source": "app/domain/observations.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./types.ts",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "app/domain/projection.ts"
-      ],
-      "orphan": false
-    },
-    {
       "source": "app/domain/persistence.ts",
       "valid": true,
       "dependencies": [
@@ -1555,6 +1574,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../app/domain/observations",
+          "resolved": "app/domain/observations.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../app/domain/persistence",
           "resolved": "app/domain/persistence.ts",
           "valid": true,
@@ -1770,11 +1806,11 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 38,
-    "totalDependenciesCruised": 73,
+    "totalDependenciesCruised": 75,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/app",
+      "baseDir": "/home/runner/work/crawler-command-interface/crawler-command-interface",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,

@@ -41,6 +41,14 @@ function normalizedContents(path, contents) {
     return Buffer.from(JSON.stringify(manifest));
   }
 
+  if (path === ".maritime/dependency-graph.json") {
+    const graph = JSON.parse(contents.toString("utf8"));
+    if (graph.summary?.optionsUsed && typeof graph.summary.optionsUsed === "object") {
+      delete graph.summary.optionsUsed.baseDir;
+    }
+    return Buffer.from(JSON.stringify(graph));
+  }
+
   return contents;
 }
 
