@@ -9,8 +9,6 @@ const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 test("ordinary PR verification workflows do not commit or push to active branches", async () => {
   const verificationWorkflows = [
     ".github/workflows/ci.yml",
-    ".github/workflows/screenshots.yml",
-    ".github/workflows/maritime-analysis.yml",
     ".github/workflows/playwright.yml",
     ".github/workflows/deploy-pages.yml",
   ];
@@ -37,19 +35,24 @@ test("ordinary PR verification workflows do not commit or push to active branche
   }
 });
 
-test("publish workflow enforces protected environment, single commit, SHA verification, and cancel-in-progress", async () => {
+test("publish workflow enforces job dependencies, protected environment, single commit, SHA verification, and PR resolution", async () => {
   const publishWorkflowPath = join(repositoryRoot, ".github/workflows/publish-artifacts.yml");
   const content = await readFile(publishWorkflowPath, "utf8");
 
   assert.match(
     content,
+    /needs:\s*\[resolve-pr,\s*verify-screenshots,\s*verify-maritime\]/,
+    "publish job must depend on successful screenshot and Maritime verification",
+  );
+  assert.match(
+    content,
     /environment:\s*artifact-finalization/,
-    "publish workflow must use the protected artifact-finalization environment",
+    "publish job must use the protected artifact-finalization environment",
   );
   assert.match(
     content,
     /permissions:\s*\n\s*contents:\s*write/,
-    "publish workflow must request contents: write permission",
+    "publish workflow top-level must request contents: write permission for publication",
   );
   assert.match(
     content,
@@ -73,7 +76,12 @@ test("publish workflow enforces protected environment, single commit, SHA verifi
   );
   assert.match(
     content,
-    /github\.event\.pull_request\.head\.repo\.full_name == github\.repository/,
-    "publish workflow must check repository ownership for PRs",
+    /INPUT_PR_NUMBER/,
+    "publish workflow must handle workflow_dispatch pr_number resolution",
+  );
+  assert.match(
+    content,
+    /is_fork/,
+    "publish workflow must check fork status before publication",
   );
 });

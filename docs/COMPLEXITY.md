@@ -10,7 +10,7 @@ The `.maritime/` directory is Crawler Command Interface's generated, authoritati
 
 ## Regenerating the evidence
 
-The [Maritime Architecture Analysis workflow](../.github/workflows/maritime-analysis.yml) generates and verifies architecture evidence on every PR update. To keep PR verification agent-safe and read-only, `maritime-analysis.yml` uploads generated evidence as a workflow artifact rather than committing directly to active PR branches.
+The `verify-maritime` job in the [Publish Generated Artifacts workflow](../.github/workflows/publish-artifacts.yml) generates and verifies architecture evidence on every PR update. To keep PR verification agent-safe and read-only, `verify-maritime` uploads generated evidence as a workflow artifact rather than committing directly to active PR branches.
 
 When substantive architecture changes occur, maintainers promote the updated `.maritime/` evidence and `docs/images/dependency-graph.svg` through the approval-gated [Publish Generated Artifacts workflow](../.github/workflows/publish-artifacts.yml) (`artifact-finalization` environment). Finalization evaluates `scripts/has-substantive-maritime-changes.mjs` and updates the tracked baseline in a single controlled commit alongside any updated screenshots.
 

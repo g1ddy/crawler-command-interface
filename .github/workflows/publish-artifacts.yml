@@ -19,55 +19,135 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  publish:
-    name: Promote Generated Artifacts
+  resolve-pr:
+    name: Resolve Target Pull Request
     runs-on: ubuntu-24.04
-    environment: artifact-finalization
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    outputs:
+      pr_repo: ${{ steps.resolve.outputs.pr_repo }}
+      head_branch: ${{ steps.resolve.outputs.head_branch }}
+      expected_head_sha: ${{ steps.resolve.outputs.expected_head_sha }}
+      is_fork: ${{ steps.resolve.outputs.is_fork }}
+    steps:
+      - name: Resolve PR context
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          DEFAULT_REPO: ${{ github.repository }}
+          DEFAULT_REF: ${{ github.ref_name }}
+          DEFAULT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "${INPUT_PR_NUMBER}" ]; then
+            echo "Resolving PR #${INPUT_PR_NUMBER} via GitHub API..."
+            pr_json="$(curl -s -H "Authorization: token ${GH_TOKEN}" \
+              "https://api.github.com/repos/${DEFAULT_REPO}/pulls/${INPUT_PR_NUMBER}")"
+
+            pr_repo="$(echo "${pr_json}" | jq -r '.head.repo.full_name')"
+            head_branch="$(echo "${pr_json}" | jq -r '.head.ref')"
+            expected_head_sha="$(echo "${pr_json}" | jq -r '.head.sha')"
+
+            if [ "${pr_repo}" = "null" ] || [ -z "${pr_repo}" ]; then
+              echo "Error: Could not resolve PR #${INPUT_PR_NUMBER}"
+              exit 1
+            fi
+          elif [ "${EVENT_NAME}" = "pull_request" ]; then
+            pr_repo="${PR_HEAD_REPO}"
+            head_branch="${PR_HEAD_REF}"
+            expected_head_sha="${PR_HEAD_SHA}"
+          else
+            pr_repo="${DEFAULT_REPO}"
+            head_branch="${DEFAULT_REF}"
+            expected_head_sha="${DEFAULT_SHA}"
+          fi
+
+          is_fork="false"
+          if [ "${pr_repo}" != "${DEFAULT_REPO}" ]; then
+            is_fork="true"
+          fi
+
+          echo "pr_repo=${pr_repo}" >> "$GITHUB_OUTPUT"
+          echo "head_branch=${head_branch}" >> "$GITHUB_OUTPUT"
+          echo "expected_head_sha=${expected_head_sha}" >> "$GITHUB_OUTPUT"
+          echo "is_fork=${is_fork}" >> "$GITHUB_OUTPUT"
+
+          echo "Target Repository: ${pr_repo}"
+          echo "Head Branch: ${head_branch}"
+          echo "Expected Head SHA: ${expected_head_sha}"
+          echo "Is Fork: ${is_fork}"
+
+  verify-screenshots:
+    name: Verify Screenshots
+    needs: resolve-pr
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+          repository: ${{ needs.resolve-pr.outputs.pr_repo }}
+          ref: ${{ needs.resolve-pr.outputs.expected_head_sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: npm
+
+      - run: npm ci
+
+      - name: Enforce browser interaction policy
+        run: node --test tests/browser-test-policy.test.mjs
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Clear generated documentation screenshots
+        shell: bash
+        run: rm -f docs/images/screenshot-*.png
+
+      - name: Generate documentation screenshots
+        run: npm run test:screenshots
+        env:
+          CI: true
+
+      - name: Verify canonical screenshot set
+        run: node --experimental-strip-types tests/screenshots/canonical-screenshots.ts --verify-canonical
+
+      - name: Upload generated screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawler-documentation-screenshots-${{ needs.resolve-pr.outputs.expected_head_sha }}
+          path: docs/images/*.png
+          if-no-files-found: error
+          retention-days: 14
+
+  verify-maritime:
+    name: Verify Maritime Architecture Analysis
+    needs: resolve-pr
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ needs.resolve-pr.outputs.pr_repo }}
+          ref: ${{ needs.resolve-pr.outputs.expected_head_sha }}
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.13.0
 
-      - name: Verify initial PR head SHA
-        shell: bash
-        env:
-          HEAD_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
-          EXPECTED_HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-        run: |
-          set -euo pipefail
-          git fetch --no-tags origin "${HEAD_BRANCH}"
-          remote_head="$(git rev-parse FETCH_HEAD)"
-          if [ "${remote_head}" != "${EXPECTED_HEAD_SHA}" ]; then
-            echo "PR branch advanced from ${EXPECTED_HEAD_SHA} to ${remote_head}. Refusing to publish for stale commit."
-            exit 1
-          fi
-
-          latest_commit_msg="$(git log -1 --pretty=%s)"
-          if [ "${latest_commit_msg}" = "chore: publish generated artifacts" ]; then
-            echo "Head commit is already a published artifact commit. Skipping publication."
-            exit 0
-          fi
-
-      - name: Install dependencies
+      - name: Install Crawler dependencies
         run: npm ci
-
-      - name: Install Chromium for Playwright screenshots
-        run: npx playwright install --with-deps chromium
-
-      - name: Regenerate documentation screenshots
-        run: |
-          rm -f docs/images/screenshot-*.png
-          npm run test:screenshots
-          node --experimental-strip-types tests/screenshots/canonical-screenshots.ts --verify-canonical
 
       - name: Analyze with Maritime
         uses: g1ddy/dependency-maritime@05315851a619ef8b854af365e09d64290370639b
@@ -81,14 +161,66 @@ jobs:
           render-graph: 'true'
           graph-output: 'docs/images/dependency-graph.svg'
 
+      - name: Inspect Maritime outputs
+        run: find .maritime -maxdepth 1 -type f -print
+
       - name: Verify Maritime artifacts
         run: npm run verify:maritime
+
+      - name: Upload Maritime analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: maritime-analysis-${{ needs.resolve-pr.outputs.expected_head_sha }}
+          path: |
+            .maritime/
+            docs/images/dependency-graph.svg
+          if-no-files-found: error
+          include-hidden-files: true
+
+  publish:
+    name: Promote Generated Artifacts
+    needs: [resolve-pr, verify-screenshots, verify-maritime]
+    runs-on: ubuntu-24.04
+    environment: artifact-finalization
+    if: needs.resolve-pr.outputs.is_fork == 'false'
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ needs.resolve-pr.outputs.pr_repo }}
+          ref: ${{ needs.resolve-pr.outputs.head_branch }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download screenshot artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: crawler-documentation-screenshots-${{ needs.resolve-pr.outputs.expected_head_sha }}
+          path: docs/images
+
+      - name: Download Maritime artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: maritime-analysis-${{ needs.resolve-pr.outputs.expected_head_sha }}
+          path: .
+
+      - name: Verify downloaded artifacts
+        run: |
+          node --experimental-strip-types tests/screenshots/canonical-screenshots.ts --verify-canonical
+          npm run verify:maritime
 
       - name: Promote and publish generated artifacts
         shell: bash
         env:
-          HEAD_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
-          EXPECTED_HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          HEAD_BRANCH: ${{ needs.resolve-pr.outputs.head_branch }}
+          EXPECTED_HEAD_SHA: ${{ needs.resolve-pr.outputs.expected_head_sha }}
         run: |
           set -euo pipefail
 
@@ -114,11 +246,11 @@ jobs:
             exit 0
           fi
 
-          # 2. Re-verify remote head before committing and pushing
+          # 2. Verify remote head before committing and pushing
           git fetch --no-tags origin "${HEAD_BRANCH}"
           newer_remote_head="$(git rev-parse FETCH_HEAD)"
           if [ "${newer_remote_head}" != "${EXPECTED_HEAD_SHA}" ]; then
-            echo "PR branch advanced during artifact generation from ${EXPECTED_HEAD_SHA} to ${newer_remote_head}. Refusing to publish."
+            echo "PR branch advanced during verification from ${EXPECTED_HEAD_SHA} to ${newer_remote_head}. Refusing to publish."
             exit 1
           fi
 
