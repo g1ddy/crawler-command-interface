@@ -32,6 +32,8 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   await selectSequence(page, 1);
 
   await expect(page.getByText(/HISTORICAL VIEW · REPLAYING SEQUENCE #1/)).toBeVisible();
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+  await expect(page.getByTestId("hud-audience-mode")).not.toContainText("LIVE");
   await expect(page.locator(".mobile-crawler-info")).not.toContainText("LVL 13");
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   await expect(page.locator(".grid .item")).toHaveCount(0);
@@ -67,13 +69,13 @@ test("live interactions append events without rewriting historical state", async
   const firstItem = page.locator(".grid .item").first();
   await firstItem.click();
   const itemName = (await firstItem.getAttribute("aria-label"))?.replace(/ \([^)]+\)$/, "") ?? "";
-  await page.getByRole("button", { name: /LOCK/ }).click();
+  await page.getByRole("button", { name: /^LOCK/ }).click();
 
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence + 1}`);
   await expect(page.getByRole("status")).toContainText(`Locked ${itemName}`);
 
   await selectSequence(page, floor1EndSequence);
-  await expect(page.getByRole("button", { name: /LOCK/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^LOCK/ })).toBeVisible();
   await page.getByRole("button", { name: /RETURN TO LIVE/ }).first().click();
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();
 });

@@ -281,8 +281,8 @@ export function TimelineScrubber({
         {secondaryCountdowns.map((countdown) => (
           <div key={countdown.id} className="secondary-countdown" title={`${countdown.status} · ${countdown.basis} · ${countdown.target}`}>
             <span>SECONDARY · {countdown.title.toUpperCase()}</span>
-            <b>{countdown.formattedTime}</b>
-            <small>{countdown.status.toUpperCase()} · {countdown.target.replaceAll('-', ' ').toUpperCase()}</small>
+            <b>{countdown.formattedLabel}</b>
+            <small>{countdown.target.replaceAll('-', ' ').toUpperCase()}</small>
             <small>EVIDENCE: {countdown.referencePoints.flatMap((reference) => reference.evidence ?? [])[0]?.sourceId ?? 'not sourced at this sequence'}</small>
           </div>
         ))}
