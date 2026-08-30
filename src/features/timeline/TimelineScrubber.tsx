@@ -11,12 +11,12 @@ import type {
   ProjectedObservationValue,
   ProjectedItemObservation,
   ProjectedEquipmentObservation,
-} from '../domain/types';
-import { getFloorEndSequence } from '../domain/floors';
-import { projectCountdownState, formatCountdownDuration } from '../domain/countdowns';
-import { TelemetryBadge } from './TelemetryBadge';
+} from '../../../app/domain/types';
+import { getFloorEndSequence } from '../../../app/domain/floors';
+import { projectCountdownState, formatCountdownDuration } from '../../../app/domain/countdowns';
+import { TelemetryBadge } from '../../../app/components/TelemetryBadge';
 import { SequenceBadge } from './SequenceBadge';
-import { getNarrativePresentation } from '../domain/narrative-presentation';
+import { getNarrativePresentation } from '../../../app/domain/narrative-presentation';
 
 interface TimelineScrubberProps {
   events: CrawlerEvent[];
@@ -270,51 +270,13 @@ export function TimelineScrubber({
         </button>
 
         {activeCountdown && (
-          <div
-            className="countdown-hud-readout"
-            style={{
-              marginLeft: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: '#081720',
-              border: '1px solid #1a475c',
-              borderRadius: '4px',
-              padding: '4px 8px',
-              fontSize: '11px',
-              fontFamily: 'monospace',
-            }}
+          <button
+            className="countdown-details-link"
+            onClick={() => setShowCountdownDetails(true)}
+            title="Inspect primary countdown evidence and reference points"
           >
-            <span style={{ color: '#ffb74d', fontWeight: 'bold' }}>⏱ COUNTDOWN:</span>
-            <button
-              className={`countdown-pill ${activeCountdown.status} ${activeCountdown.lifecycleStatus}`}
-              onClick={() => setShowCountdownDetails(true)}
-              style={{
-                background:
-                  activeCountdown.lifecycleStatus === 'scheduled'
-                    ? '#382200'
-                    : activeCountdown.status === 'stated'
-                    ? '#0d364a'
-                    : '#0c2230',
-                border: `1px solid ${
-                  activeCountdown.lifecycleStatus === 'scheduled'
-                    ? '#ffb74d'
-                    : activeCountdown.status === 'stated'
-                    ? '#32c1e8'
-                    : '#1c6585'
-                }`,
-                color: '#ffffff',
-                borderRadius: '3px',
-                padding: '2px 8px',
-                fontSize: '11px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-              }}
-              title="Click to view countdown basis and reference points"
-            >
-              {activeCountdown.formattedTime}
-            </button>
-          </div>
+            ⏱ COLLAPSE CLOCK EVIDENCE
+          </button>
         )}
         {secondaryCountdowns.map((countdown) => (
           <div key={countdown.id} className="secondary-countdown" title={`${countdown.status} · ${countdown.basis} · ${countdown.target}`}>

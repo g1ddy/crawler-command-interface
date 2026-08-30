@@ -26,7 +26,7 @@ Always preserve the following invariants:
 5. **Shared Runtime Portability**: The shared TypeScript application/domain runtime must work in both deployment targets and remain safe to import/render through the more restrictive ChatGPT Live App Worker path. Importing Ajv-dependent code is allowed only when import/render does not execute schema compilation or other Worker-incompatible behavior.
 6. **No Evidence Fallback Leakage**: Missing or partial observations must not be inferred from unrelated evidence or silently replaced with later live state. Preserve partial readings as authored.
 7. **Thin Host Adapters**: ChatGPT-specific identity/Worker behavior and GitHub Pages static-host behavior belong at their documented adapter boundaries rather than in divergent copies of the shared application.
-8. **Generated Visual Documentation**: `docs/images/screenshot-*.png` are generated canonical documentation assets. Do not hand-edit or retouch them; regenerate with `npm run test:screenshots` or let the screenshot workflow update them when documented UI states change.
+8. **Generated Visual Documentation**: `docs/images/screenshot-*.png` are build-generated canonical documentation assets. Do not hand-edit, retouch, stage, or commit PNG screenshot outputs. The screenshot build/workflow owns their generation and promotion; commit only the manifest, scenarios, or documentation source changes that define them.
 
 ## Repository Map
 
@@ -60,7 +60,7 @@ npm run build:live
 npm run build:pages
 ```
 
-When changing documented UI states or screenshot-generation code, also run:
+When changing documented UI states or screenshot-generation code, also run the screenshot check, but do not stage or commit its generated PNG outputs:
 
 ```bash
 npm run test:screenshots
@@ -72,4 +72,4 @@ Before requesting review or submitting code, execute the full verification suite
 npm run verify
 ```
 
-`npm run verify` runs fixture generation, linting, unit tests, both deployment builds, rendered preview tests, and artifact contract checks. Documentation screenshot generation remains a separate workflow because it produces tracked documentation assets rather than functional compatibility results.
+`npm run verify` runs fixture generation, linting, unit tests, both deployment builds, rendered preview tests, and artifact contract checks. Documentation screenshot generation remains a separate workflow because it produces build-owned documentation assets rather than functional compatibility results. Generated PNG outputs must not be committed by coding agents.

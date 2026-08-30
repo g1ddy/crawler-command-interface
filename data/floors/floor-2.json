@@ -430,6 +430,27 @@
           "note": "The Second Floor collapses. (0d until floor collapse.)"
         }
       ]
+    },
+    {
+      "id": "countdown-floor-2-safe-room-closure",
+      "title": "Time to Safe Room Closure",
+      "target": "safe-room-closure",
+      "references": [
+        {
+          "anchorOrder": 9,
+          "remainingSeconds": 403200,
+          "evidence": [
+            {
+              "sourceId": "src-dcc-database-floor-2",
+              "locator": {
+                "section": "Floor Timeline & Patch Notes"
+              },
+              "confidence": "corroborated"
+            }
+          ],
+          "note": "The safe-room-only display reads 4 days 16 hours until safe-room closure after the Second Floor patch."
+        }
+      ]
     }
   ],
   "events": [

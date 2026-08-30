@@ -229,6 +229,11 @@
       "id": "countdown-floor-2-collapse",
       "title": "Second Floor Collapse",
       "target": "floor-collapse"
+    },
+    {
+      "id": "countdown-floor-2-safe-room-closure",
+      "title": "Time to Safe Room Closure",
+      "target": "safe-room-closure"
     }
   ],
   "events": [
@@ -1359,6 +1364,23 @@
       "countdownId": "countdown-floor-2-collapse",
       "remainingSeconds": 406800,
       "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)",
+      "evidence": [
+        {
+          "sourceId": "src-dcc-database-floor-2",
+          "locator": {
+            "section": "Floor Timeline & Patch Notes"
+          },
+          "confidence": "corroborated"
+        }
+      ]
+    },
+    {
+      "id": "obs-countdown-floor-2-safe-room-closure-system-patch",
+      "kind": "countdown-remaining",
+      "eventId": "evt-f2-countdown-system-patch",
+      "countdownId": "countdown-floor-2-safe-room-closure",
+      "remainingSeconds": 403200,
+      "note": "The safe-room-only display reads 4 days 16 hours until safe-room closure after the Second Floor patch.",
       "evidence": [
         {
           "sourceId": "src-dcc-database-floor-2",

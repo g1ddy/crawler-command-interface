@@ -21,7 +21,7 @@ export function TelemetryBadge({
 }: TelemetryBadgeProps) {
   if (observation) {
     const isStated = observation.status === "stated";
-    const label = isStated ? "📡 STATED" : "📡 ESTIMATED";
+    const label = isStated ? "SOURCE" : "📡 ESTIMATED";
     return (
       <span
         className={`telemetry-pill ${isStated ? "stated" : "estimated"}`}
@@ -35,48 +35,25 @@ export function TelemetryBadge({
           display: inline ? "inline-flex" : "flex",
           alignItems: "center",
           gap: "3px",
-          fontSize: "9px",
+          fontSize: isStated ? "8px" : "9px",
           fontWeight: "bold",
-          padding: "1px 5px",
+          padding: isStated ? "1px 3px" : "1px 5px",
           borderRadius: "3px",
           cursor: onClick ? "pointer" : "default",
           background: isStated ? "#082a38" : "#2a1e08",
-          border: `1px solid ${isStated ? "#1bd9ff" : "#ffb74d"}`,
-          color: isStated ? "#7ee5ff" : "#ffd052",
+          border: `1px solid ${isStated ? "#31515e" : "#ffb74d"}`,
+          color: isStated ? "#7895a0" : "#ffd052",
           marginLeft: "6px",
           fontFamily: "monospace",
         }}
         title={`Click to inspect source evidence and observation provenance (${observation.status})`}
       >
-        {label} ℹ️
+        {label}
       </span>
     );
   }
 
-  if (causalValue !== undefined && causalValue !== null) {
-    return (
-      <span
-        className="telemetry-pill causal"
-        style={{
-          display: inline ? "inline-flex" : "flex",
-          alignItems: "center",
-          gap: "3px",
-          fontSize: "9px",
-          fontWeight: "bold",
-          padding: "1px 5px",
-          borderRadius: "3px",
-          background: "#0d1a24",
-          border: "1px solid #234b5c",
-          color: "#8ca4ad",
-          marginLeft: "6px",
-          fontFamily: "monospace",
-        }}
-        title="Derived state from primary causal events"
-      >
-        ⚡ CAUSAL
-      </span>
-    );
-  }
+  if (causalValue !== undefined && causalValue !== null) return null;
 
   return (
     <span
