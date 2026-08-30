@@ -2,7 +2,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
 import { projectState, projectCountdownState, projectObservations } from "../app/domain/projection";
-import { formatProjectedObservationValue } from "../app/domain/observations";
 import { getFloorEndSequence } from "../app/domain/floors";
 import type {
   ProjectedObservationsState,
@@ -10,7 +9,6 @@ import type {
   ProjectedItemObservation,
   ProjectedEquipmentObservation,
   TimelineSource,
-  RewardSpec,
 } from "../app/domain/types";
 import { TelemetryBadge } from "../app/components/TelemetryBadge";
 import { TelemetryInspectorModal } from "../app/components/TelemetryInspectorModal";
@@ -22,8 +20,6 @@ import type { CrawlerEvent, CrawlerState, CrawlerTimelineDocument, InventoryItem
 import { TimelineScrubber } from "./features/timeline/TimelineScrubber";
 import { StatInspectorModal } from "../app/components/StatInspectorModal";
 import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
-import { SequenceBadge } from "./features/timeline/SequenceBadge";
-import { formatSequencePosition, narrativeEventsAtOrBefore } from "../app/domain/narrative-presentation";
 import { Panel } from "./shared/ui/Panel";
 import { RootNavigation, type RootView } from "./shell/navigation/RootNavigation";
 import { PersistentHud } from "./shell/hud/PersistentHud";
@@ -31,6 +27,9 @@ import { QuestsView } from "./features/quests/QuestsView";
 import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
 import { TimelineEvidence } from "./features/timeline/evidence/TimelineEvidence";
 import { FloorRules } from "./features/floor/FloorRules";
+import { CrawlerView } from "./features/crawler/CrawlerView";
+import { RatingsView } from "./features/ratings/RatingsView";
+import { NotificationsView } from "./features/notifications/NotificationsView";
 
 type View = RootView;
 
@@ -74,7 +73,6 @@ export default function CrawlerApp() {
 
   const [view, setView] = useState<View>("crawler");
   const [time, setTime] = useState<number>(4 * 3600 + 17 * 60 + 32);
-  const [notes, setNotes] = useState<boolean>(false);
 
   const [inspectStat, setInspectStat] = useState<string | null>(null);
   const [inspectObservation, setInspectObservation] = useState<
@@ -261,11 +259,7 @@ export default function CrawlerApp() {
     showToast(`⚡ ${summaryText}`);
   };
 
-  const handleNavigateToEquipmentSlot = (slot: string) => {
-    setView("inventory");
-    setInventoryFilter("EQUIPMENT");
-    setEquipmentSlot(slot);
-  };
+
 
   // Keyboard Navigation Support
   useEffect(() => {
@@ -280,7 +274,6 @@ export default function CrawlerApp() {
         if (inspectStat) setInspectStat(null);
         else if (provenanceItem) setProvenanceItem(null);
         else if (showJsonModal) setShowJsonModal(false);
-        else if (notes) setNotes(false);
         return;
       }
 
@@ -292,7 +285,7 @@ export default function CrawlerApp() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [inspectStat, provenanceItem, showJsonModal, notes, projectedState.quests.length]);
+  }, [inspectStat, provenanceItem, showJsonModal, projectedState.quests.length]);
 
   return (
     <main>
@@ -327,23 +320,7 @@ export default function CrawlerApp() {
         </div>
       )}
 
-      <button className="bell" onClick={() => setNotes(!notes)} aria-label="Toggle system notices">
-        ◔{projectedState.recentLogs.length > 0 && <b>{projectedState.recentLogs.length}</b>}
-      </button>
 
-      {notes && (
-        <aside className="notices">
-          <button onClick={() => setNotes(false)}>×</button>
-          <p className="eyebrow">SYSTEM LOG NOTICE</p>
-          {projectedState.recentLogs.slice(0, 3).map((log) => (
-            <div key={log.sequence}>
-              <b>[{log.timestamp}] {log.category.toUpperCase()}</b>
-              <span>{log.message}</span>
-              <hr />
-            </div>
-          ))}
-        </aside>
-      )}
 
       <div className="view">
         <TimelineScrubber
@@ -375,16 +352,17 @@ export default function CrawlerApp() {
         />
 
         {resolvedView === "crawler" ? (
-          <Crawler
+          <CrawlerView
             state={projectedState}
             observations={projectedObservations}
-            sources={timelineDoc.sources as TimelineSource[]}
             onInspectStat={(stat) => setInspectStat(stat)}
             onInspectObservation={(obs) => setInspectObservation(obs)}
-            onNavigateView={(v) => setView(v)}
-            onNavigateToEquipmentSlot={handleNavigateToEquipmentSlot}
             onEmitEvent={handleEmitEvent}
           />
+        ) : resolvedView === "ratings" ? (
+          <RatingsView broadcast={projectedState.broadcast} observations={projectedObservations.broadcast} onInspectObservation={(obs) => setInspectObservation(obs)} />
+        ) : resolvedView === "notifications" ? (
+          <NotificationsView events={events} state={projectedState} sequence={currentSeq} onNavigateToSequence={(seq) => { setSelectedSeq(seq); setIsLive(seq === maxSeq); }} />
         ) : resolvedView === "inventory" ? (
           <Inventory
             state={projectedState}
@@ -543,318 +521,6 @@ export default function CrawlerApp() {
   );
 }
 
-function Crawler({
-  state,
-  observations,
-  onInspectStat,
-  onInspectObservation,
-  onNavigateView,
-  onNavigateToEquipmentSlot,
-  onEmitEvent,
-}: {
-  state: CrawlerState;
-  observations: ProjectedObservationsState;
-  sources?: TimelineSource[];
-  onInspectStat: (stat: string) => void;
-  onInspectObservation: (obs: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
-  onNavigateView: (v: View) => void;
-  onNavigateToEquipmentSlot: (slot: string) => void;
-  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
-}) {
-  const [mode, setMode] = useState<string>("OVERVIEW");
-
-  const c = state.crawler;
-  const obsLevel = observations.xpProgress["level"];
-  const obsXp = observations.xpProgress["xp"];
-  const obsMaxXp = observations.xpProgress["maxXp"];
-
-  const levelVal = obsLevel ? obsLevel.value : c.level;
-  const xpVal = obsXp ? obsXp.value : c.xp;
-  const maxXpVal = obsMaxXp ? obsMaxXp.value : c.maxXp;
-
-  const xpPct = maxXpVal ? Math.min(100, Math.round(((xpVal || 0) / maxXpVal) * 100)) : 0;
-
-  const obsHp = observations.condition["currentHealth"];
-  const obsMaxHp = observations.condition["maxHealth"];
-  const hpVal = obsHp ? obsHp.value : c.condition.currentHealth;
-  const maxHpVal = obsMaxHp ? obsMaxHp.value : c.condition.maxHealth;
-  const hpPct = maxHpVal ? Math.min(100, Math.round(((hpVal || 0) / maxHpVal) * 100)) : 0;
-
-  const obsMp = observations.condition["currentMana"];
-  const obsMaxMp = observations.condition["maxMana"];
-  const mpVal = obsMp ? obsMp.value : c.condition.currentMana;
-  const maxMpVal = obsMaxMp ? obsMaxMp.value : c.condition.maxMana;
-  const mpPct = maxMpVal ? Math.min(100, Math.round(((mpVal || 0) / maxMpVal) * 100)) : 0;
-
-  const obsSt = observations.condition["currentStamina"];
-  const obsMaxSt = observations.condition["maxStamina"];
-  const stVal = obsSt ? obsSt.value : c.condition.currentStamina;
-  const maxStVal = obsMaxSt ? obsMaxSt.value : c.condition.maxStamina;
-  const stPct = maxStVal ? Math.min(100, Math.round(((stVal || 0) / maxStVal) * 100)) : 0;
-
-
-  const equipmentSlots = new Set([...Object.keys(state.equippedSlots), ...Object.keys(observations.equipment)]);
-  const equippedCount = Array.from(equipmentSlots).filter(
-    (slot) => observations.equipment[slot] ? observations.equipment[slot].itemInstanceId : state.equippedSlots[slot]
-  ).length;
-
-  return (
-    <section className="view-content">
-      <div className="subnav">
-        {["OVERVIEW", "ACHIEVEMENTS", "BROADCAST"].map((x) => (
-          <button className={mode === x ? "on" : ""} key={x} onClick={() => setMode(x)}>
-            {x}
-          </button>
-        ))}
-      </div>
-
-      {mode === "OVERVIEW" && (
-        <>
-          <header className="profile">
-            <div className="portrait">C</div>
-            <div>
-              <p className="eyebrow">ACTIVE CRAWLER</p>
-              <h1>{c.name}</h1>
-              <i>
-                LEVEL {levelVal !== undefined ? levelVal : "—"}
-                <TelemetryBadge
-                  observation={obsLevel}
-                  causalValue={c.level}
-                  onClick={() => obsLevel && onInspectObservation(obsLevel)}
-                />
-              </i>
-              <i>RACE: {c.race || "—"}</i>
-              <i>CLASS: {c.class || "—"}</i>
-            </div>
-            <div className="xp">
-              <span>
-                EXPERIENCE&nbsp;{" "}
-                <b>
-                  {xpVal !== undefined ? xpVal.toLocaleString() : "—"} /{" "}
-                  {maxXpVal !== undefined ? maxXpVal.toLocaleString() : "—"}
-                </b>
-                <TelemetryBadge
-                  observation={obsXp || obsMaxXp}
-                  causalValue={c.xp}
-                  onClick={() => (obsXp || obsMaxXp) && onInspectObservation((obsXp || obsMaxXp)!)}
-                />
-              </span>
-              <em>
-                <b style={{ width: `${xpPct}%` }} />
-              </em>
-            </div>
-          </header>
-
-          <div className="two-col">
-            <Panel title="ATTRIBUTES · CLICK TO INSPECT PROVENANCE">
-              <div className="stats">
-                {[
-                  ["Strength", "red"],
-                  ["Dexterity", "green"],
-                  ["Constitution", "yellow"],
-                  ["Intelligence", "blue"],
-                  ["Charisma", "purple"],
-                ].map(([n, color]) => {
-                  const attrName = String(n);
-                  const obsAttr = observations.attributes[attrName];
-                  const attrVal = obsAttr ? obsAttr.value : c.attributes[attrName as AttributeName];
-                  const canAllocate = c.availableAttributePoints > 0;
-                  return (
-                    <div key={attrName} className="stat-row">
-                      <p className="stat-clickable" onClick={() => onInspectStat(attrName)}>
-                        <span>{attrName} 🔍</span>
-                        <b>{attrVal !== undefined ? attrVal : "—"}</b>
-                        <TelemetryBadge
-                          observation={obsAttr}
-                          causalValue={c.attributes[attrName as AttributeName]}
-                          onClick={() => obsAttr && onInspectObservation(obsAttr)}
-                        />
-                        <em>
-                          <i className={String(color)} style={{ width: Math.min(100, Number(attrVal || 0) * 2) + "%" }} />
-                        </em>
-                      </p>
-                      <div className="attr-actions">
-                        <button
-                          className="attr-btn add"
-                          disabled={!canAllocate}
-                          title={canAllocate ? `Allocate +1 to ${attrName}` : "No attribute points available"}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!canAllocate) return;
-                            onEmitEvent({
-                              type: "AttributeModified",
-                              attribute: attrName,
-                              source: "allocation",
-                              delta: 1,
-                              summary: `Allocated +1 point to ${attrName}`,
-                            });
-                          }}
-                        >
-                          +1
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="points-banner">
-                <span>AVAILABLE POINTS</span>
-                <b className={c.availableAttributePoints > 0 ? "has-points" : ""}>
-                  {c.availableAttributePoints}
-                </b>
-                <TelemetryBadge
-                  observation={observations.attributes["availableAttributePoints"]}
-                  causalValue={c.availableAttributePoints}
-                  onClick={() =>
-                    observations.attributes["availableAttributePoints"] &&
-                    onInspectObservation(observations.attributes["availableAttributePoints"])
-                  }
-                />
-              </div>
-            </Panel>
-
-            <Panel title="CURRENT CONDITION">
-              <div className="meters">
-                <Meter
-                  name="HEALTH"
-                  value={`${hpVal !== undefined ? hpVal.toLocaleString() : "—"} / ${
-                    maxHpVal !== undefined ? maxHpVal.toLocaleString() : "—"
-                  }`}
-                  pct={hpPct}
-                  c="red"
-                  observation={obsHp || obsMaxHp}
-                  causalValue={c.condition.currentHealth}
-                  onInspectObservation={onInspectObservation}
-                />
-                <Meter
-                  name="MANA"
-                  value={`${mpVal !== undefined ? mpVal.toLocaleString() : "—"} / ${
-                    maxMpVal !== undefined ? maxMpVal.toLocaleString() : "—"
-                  }`}
-                  pct={mpPct}
-                  c="blue"
-                  observation={obsMp || obsMaxMp}
-                  causalValue={c.condition.currentMana}
-                  onInspectObservation={onInspectObservation}
-                />
-                <Meter
-                  name="STAMINA"
-                  value={`${stVal !== undefined ? stVal.toLocaleString() : "—"} / ${
-                    maxStVal !== undefined ? maxStVal.toLocaleString() : "—"
-                  }`}
-                  pct={stPct}
-                  c="yellow"
-                  observation={obsSt || obsMaxSt}
-                  causalValue={c.condition.currentStamina}
-                  onInspectObservation={onInspectObservation}
-                />
-              </div>
-              <div className="effects">
-                {state.effects.length > 0 ? (
-                  state.effects.map((eff) => (
-                    <p key={eff.effectId} className={eff.type}>
-                      {eff.icon} {eff.name} <b>{eff.durationSeconds}s</b>
-                      <small>{eff.description}</small>
-                    </p>
-                  ))
-                ) : (
-                  <p className="good">NO ACTIVE STATUS EFFECTS</p>
-                )}
-              </div>
-            </Panel>
-
-            <Panel title="EQUIPPED GEAR">
-              <div className="gear">
-                <div>◉</div>
-                <p>Equipped Slots: <b>{equippedCount} / 10</b></p>
-                <p>Active Gear Items: <b>{equippedCount} Items</b></p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", margin: "10px 0" }}>
-                  {Array.from(equipmentSlots).map((sName) => {
-                    const equipmentObservation = observations.equipment[sName];
-                    // An explicit null is a sourced empty-slot reading, not a
-                    // missing value to be replaced with causal state.
-                    const instId = equipmentObservation ? equipmentObservation.itemInstanceId : state.equippedSlots[sName];
-                    const eqItem = state.inventory.find((i) => i.instanceId === instId);
-                    return (
-                      <button
-                        key={sName}
-                        style={{
-                          fontSize: "9px",
-                          padding: "3px 7px",
-                          background: eqItem ? "#0d2633" : "#09141c",
-                          border: `1px solid ${eqItem ? "#1bd9ff" : "#1a3542"}`,
-                          color: eqItem ? "#7ee5ff" : "#7c97a2",
-                          borderRadius: "3px",
-                        }}
-                        onClick={() => onNavigateToEquipmentSlot(sName)}
-                        title={`Go to equipment matrix for ${sName}`}
-                      >
-                        {sName}: {eqItem ? eqItem.name : instId || "EMPTY"}
-                        {equipmentObservation && (
-                          <TelemetryBadge
-                            observation={equipmentObservation}
-                            onClick={() => onInspectObservation(equipmentObservation)}
-                          />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-                <button onClick={() => onNavigateView("inventory")}>Manage in Inventory →</button>
-              </div>
-            </Panel>
-
-
-          </div>
-        </>
-      )}
-
-      {mode === "ACHIEVEMENTS" && <Achievements achievements={state.achievements} />}
-      {mode === "BROADCAST" && (
-        <Broadcast
-          broadcast={state.broadcast}
-          observations={observations.broadcast}
-          onInspectObservation={onInspectObservation}
-        />
-      )}
-    </section>
-  );
-}
-
-function Meter({
-  name,
-  value,
-  pct,
-  c,
-  observation,
-  causalValue,
-  onInspectObservation,
-}: {
-  name: string;
-  value: string;
-  pct: number;
-  c: string;
-  observation?: ProjectedObservationValue | null;
-  causalValue?: unknown;
-  onInspectObservation?: (obs: ProjectedObservationValue) => void;
-}) {
-  return (
-    <p className="meter">
-      <span>
-        {name}
-        <TelemetryBadge
-          observation={observation}
-          causalValue={causalValue}
-          onClick={() => observation && onInspectObservation?.(observation)}
-        />
-      </span>
-      <b>{value}</b>
-      <em>
-        <i className={c} style={{ width: pct + "%" }} />
-      </em>
-    </p>
-  );
-}
 
 function Inventory({
   state,
@@ -1720,115 +1386,5 @@ function Skills({
         </div>
       </Panel>
     </section>
-  );
-}
-
-
-function Achievements({ achievements }: { achievements: CrawlerState["achievements"] }) {
-  const sortedAchievements = [...achievements].sort(
-    (a, b) => b.unlockedAtSequence - a.unlockedAtSequence
-  );
-
-  return (
-    <div className="achievements">
-      {sortedAchievements.map((ach) => (
-        <div className="achievement" key={ach.achievementId}>
-          <span>{ach.icon}</span>
-          <div>
-            <p className="eyebrow">{ach.recipient ? `${ach.recipient.toUpperCase()} · ` : ""}ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
-            <h1>{ach.title}</h1>
-            <p>{ach.description}</p>
-            <AchievementRewards rewards={ach.rewards} />
-          </div>
-        </div>
-      ))}
-
-
-    </div>
-  );
-}
-
-function AchievementRewards({ rewards }: { rewards: RewardSpec[] }) {
-  if (rewards.length === 0) {
-    return <p className="achievement-rewards empty">REWARD: NONE RECORDED</p>;
-  }
-
-  return (
-    <ul className="achievement-rewards" aria-label="Achievement rewards">
-      {rewards.map((reward, index) => {
-        const details = [
-          reward.boxType,
-          reward.rarity,
-          reward.amount !== undefined ? reward.amount.toLocaleString() : undefined,
-          reward.description,
-        ].filter(Boolean);
-        return (
-          <li key={`${reward.kind}-${index}`}>
-            <strong>{reward.kind.toUpperCase()}</strong>
-            {details.length > 0 ? ` · ${details.join(" · ")}` : ""}
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-
-function Broadcast({
-  broadcast,
-  observations,
-  onInspectObservation,
-}: {
-  broadcast: CrawlerState["broadcast"];
-  observations: Record<string, ProjectedObservationValue>;
-  onInspectObservation: (obs: ProjectedObservationValue) => void;
-}) {
-  const viewers = observations.viewers?.value ?? broadcast.viewers;
-  const followers = observations.followers?.value ?? broadcast.followers;
-  const rank = observations.leaderboardRank ? `#${observations.leaderboardRank.value}` : broadcast.fameRank;
-  const metrics = [
-    ["VIEWERS", viewers, observations.viewers],
-    ["FOLLOWERS", followers, observations.followers],
-    ["FLOOR RANK", rank, observations.leaderboardRank],
-    ["FAVORITES", observations.favorites?.value, observations.favorites],
-    ["PATRONS", observations.patrons?.value, observations.patrons],
-    ["BOUNTY", observations.bounty?.value, observations.bounty],
-  ].filter(([, value]) => value !== undefined) as [string, string | number, ProjectedObservationValue | undefined][];
-  return (
-    <div className="broadcast-page">
-      <Panel title="LIVE BROADCAST">
-        <div className="viewer">
-          <span>● LIVE AUDIENCE</span>
-          <h1>{viewers.toLocaleString()}</h1>
-          <p>CURRENT VIEWERS</p>
-          <b>{broadcast.viewerDelta} this encounter</b>
-        </div>
-      </Panel>
-
-      <Panel title="AUDIENCE RESPONSE">
-        <div className="audience">
-          <p>
-            <b>{followers.toLocaleString()}</b> Followers
-          </p>
-          <p>
-            <b>{rank}</b> Floor Rank
-          </p>
-          {broadcast.sponsorInterest && <p className="sponsor">● Sponsor interest detected</p>}
-        </div>
-      </Panel>
-
-      <Panel title="SOURCED AUDIENCE TELEMETRY">
-        <div className="audience">
-          {metrics.map(([label, value, observation]) => (
-            <p key={label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
-              <span><b>{typeof value === "number" ? value.toLocaleString() : value}</b> {label}</span>
-              <TelemetryBadge observation={observation} causalValue={observation ? undefined : value} onClick={() => observation && onInspectObservation(observation)} />
-            </p>
-          ))}
-        </div>
-      </Panel>
-
-
-    </div>
   );
 }

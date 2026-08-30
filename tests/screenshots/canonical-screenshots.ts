@@ -9,9 +9,10 @@ export const SCREENSHOTS = {
   inventory: "screenshot-inventory.png",
   skills: "screenshot-skills.png",
   quests: "screenshot-quests.png",
-  crawlerOverview: "screenshot-crawler-overview.png",
-  crawlerAchievements: "screenshot-crawler-achievements.png",
-  crawlerBroadcast: "screenshot-crawler-broadcast.png",
+  crawlerStats: "screenshot-crawler-stats.png",
+  crawlerHealth: "screenshot-crawler-health.png",
+  ratings: "screenshot-ratings.png",
+  notifications: "screenshot-notifications.png",
   floorRules: "screenshot-floor-rules.png",
   timelineHistory: "screenshot-timeline-history.png",
 } as const;
