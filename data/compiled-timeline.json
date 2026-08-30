@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-30T05:15:47.924Z",
-    "updatedAt": "2026-08-30T05:15:47.924Z"
+    "createdAt": "2026-08-30T16:35:24.490Z",
+    "updatedAt": "2026-08-30T16:35:24.490Z"
   },
   "floors": [
     {
@@ -901,7 +901,7 @@
         "name": "Enchanted Trollskin Shirt of Pummeling",
         "category": "equipment",
         "slot": "UNDERSHIRT",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A regenerating enchanted undershirt that resists several disruptive combat effects.",
         "quantity": {
           "known": true,
@@ -1033,7 +1033,7 @@
         "name": "Enchanted Nightgaunt Cloak of Stoutness",
         "category": "equipment",
         "slot": "NECK",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A cloak that adds 4 Constitution and provides poison, ice, and anti-piercing protection.",
         "stats": {
           "Constitution": 4
@@ -1070,7 +1070,7 @@
         "name": "Enchanted Toe Ring of the Splatter Skunk",
         "category": "equipment",
         "slot": "FEET",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A toe ring that adds 3 Strength and improves Powerful Strike.",
         "stats": {
           "Strength": 3
@@ -1149,7 +1149,7 @@
         "name": "Silver Ring of +1 CON",
         "category": "equipment",
         "slot": "RING",
-        "rarity": "common",
+        "rarity": "unknown",
         "stats": {
           "Constitution": 1
         },
@@ -1265,7 +1265,7 @@
         "name": "Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces",
         "category": "equipment",
         "slot": "KNEES",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "Spiked kneepads that reflect 10% of damage and cancel momentum-based attacks.",
         "stats": {
           "Damage Reflect Percent": 10
@@ -1388,7 +1388,7 @@
         "itemId": "item-goblin-copper-chopper",
         "name": "Goblin Copper Chopper",
         "category": "vehicle",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A goblin-built chopper used for traversal and battlefield construction.",
         "quantity": {
           "known": true,
@@ -1535,7 +1535,7 @@
         "name": "Silver Ring of +2 CON",
         "category": "equipment",
         "slot": "RING",
-        "rarity": "common",
+        "rarity": "unknown",
         "stats": {
           "Constitution": 2
         },
@@ -1651,7 +1651,7 @@
         "name": "Enchanted War Gauntlet of the Exalted Grull",
         "category": "equipment",
         "slot": "WRISTS",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist, adding 1 Dexterity and 3 Strength in fist mode.",
         "stats": {
           "Dexterity": 1,
@@ -2142,7 +2142,7 @@
         "itemId": "item-goo-inator-3000",
         "name": "Goo-Inator 3000",
         "category": "tool",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A shaping tool that can be used at a workbench.",
         "quantity": {
           "known": true,
@@ -2175,7 +2175,7 @@
         "itemId": "item-enchanted-pedicure-kit-of-sylph",
         "name": "Enchanted Pedicure Kit of the Sylph",
         "category": "tool",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A limited-use kit that adds 15% bare-foot attack damage, makes Carl's feet unbreakable, and warns of foot-triggered traps five seconds before activation.",
         "stats": {
           "Barefoot Attack Damage Percent": 15
@@ -2332,7 +2332,7 @@
         "name": "Enchanted BigBoi Boxers",
         "category": "equipment",
         "slot": "LEGS",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "Enchanted boxers that add 2 Constitution and grant the Protective Shell spell.",
         "stats": {
           "Constitution": 2
@@ -2409,7 +2409,7 @@
         "itemId": "item-carls-jug-o-boom",
         "name": "Carl's Jug O' Boom",
         "category": "crafting",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "Carl's stackable incendiary dungeon invention.",
         "quantity": {
           "known": false,
@@ -2499,7 +2499,7 @@
         "itemId": "item-proximity-trigger",
         "name": "Proximity Trigger",
         "category": "crafting",
-        "rarity": "common",
+        "rarity": "unknown",
         "description": "A Sapper's-table component that can be attached to a non-static trap.",
         "quantity": {
           "known": false,

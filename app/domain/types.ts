@@ -697,7 +697,7 @@ export interface InventoryItem {
   slot?: string;
   quantity: number;
   quantityObject?: QuantityObject;
-  maxStack: number;
+  maxStack: number | 'NOT SOURCED';
   value: number;
   stats?: Record<string, number>;
   requirements?: Record<string, number | string>;

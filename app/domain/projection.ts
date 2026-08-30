@@ -81,17 +81,17 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
       itemId: i.itemId || i.instanceId,
       name: i.name,
       icon: getItemIcon(normCategory, i.slot),
-      rarity: (i.rarity || 'common') as ItemRarity,
+      rarity: (i.rarity || 'unknown') as ItemRarity,
       category: normCategory,
       slot: i.slot,
       quantity: numericQuantity,
       quantityObject: qtyObject,
-      maxStack: i.maxStack || 1,
+      maxStack: i.maxStack ?? 'NOT SOURCED',
       value: 0,
       stats: i.stats,
       description: i.description || '',
       acquiredAtSequence: 0,
-      source: i.sourceDescription || 'Initial State',
+      source: i.sourceDescription || 'Source not provided',
       isLocked: false,
       isEquipped: false,
     };
@@ -255,8 +255,8 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       if (existing) {
         existing.quantity += numericQuantity;
       } else {
-        const rawCategory = String(itemData.category || 'equipment');
-        const uiCategory = mapSchemaCategoryToUi(rawCategory);
+        const rawCategory = typeof itemData.category === 'string' ? itemData.category : undefined;
+        const uiCategory: ItemCategory = rawCategory ? mapSchemaCategoryToUi(rawCategory) : 'miscellaneous';
         const slotVal = typeof itemData.slot === 'string' ? itemData.slot : undefined;
         const statsVal = itemData.stats as Record<string, number> | undefined;
         const reqsVal = itemData.requirements as Record<string, number | string> | undefined;
@@ -267,19 +267,24 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
           itemId: String(itemData.itemId || instanceId),
           name: String(itemData.name || 'Unknown Item'),
           icon: typeof itemData.icon === 'string' ? itemData.icon : getItemIcon(uiCategory, slotVal),
-          rarity: (String(itemData.rarity || 'common')).toLowerCase() as ItemRarity,
+          rarity: (typeof itemData.rarity === 'string' ? itemData.rarity.toLowerCase() : 'unknown') as ItemRarity,
           category: uiCategory,
           slot: slotVal,
           quantity: numericQuantity,
           quantityObject: qtyObject,
-          maxStack: Number(itemData.maxStack ?? 1),
-          value: Number(itemData.value ?? 100),
+          maxStack: typeof itemData.maxStack === 'number' ? itemData.maxStack : 'NOT SOURCED',
+          value: typeof itemData.value === 'number' ? itemData.value : 0,
           stats: statsVal,
           requirements: reqsVal,
           description: String(itemData.description || ''),
           durability: durVal,
           acquiredAtSequence: sequence,
-          source: String(itemData.sourceDescription || itemData.source || 'Discovered'),
+          source:
+            typeof itemData.sourceDescription === 'string'
+              ? itemData.sourceDescription
+              : typeof itemData.source === 'string'
+                ? itemData.source
+                : 'Source not provided',
           isLocked: false,
           isEquipped: false,
         });
