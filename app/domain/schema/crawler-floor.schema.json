@@ -559,7 +559,7 @@
           "minLength": 1
         },
         "target": {
-          "const": "floor-collapse"
+          "enum": ["floor-collapse", "safe-room-closure"]
         },
         "references": {
           "type": "array",
