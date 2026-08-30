@@ -8,14 +8,16 @@ on:
     inputs:
       pr_number:
         description: 'PR number to finalize'
-        required: false
+        required: true
         type: string
 
 permissions:
-  contents: write
+  actions: read
+  contents: read
+  pull-requests: read
 
 concurrency:
-  group: artifact-finalization-${{ github.event.pull_request.number || github.inputs.pr_number || github.ref }}
+  group: artifact-finalization-${{ github.event.pull_request.number || github.inputs.pr_number }}
   cancel-in-progress: true
 
 jobs:
@@ -38,32 +40,38 @@ jobs:
           PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           DEFAULT_REPO: ${{ github.repository }}
-          DEFAULT_REF: ${{ github.ref_name }}
-          DEFAULT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
 
-          if [ -n "${INPUT_PR_NUMBER}" ]; then
+          if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+            if [ -z "${INPUT_PR_NUMBER}" ]; then
+              echo "Error: workflow_dispatch requires pr_number."
+              exit 1
+            fi
+
             echo "Resolving PR #${INPUT_PR_NUMBER} via GitHub API..."
-            pr_json="$(curl -s -H "Authorization: token ${GH_TOKEN}" \
+            pr_json="$(curl --fail --silent --show-error \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
               "https://api.github.com/repos/${DEFAULT_REPO}/pulls/${INPUT_PR_NUMBER}")"
 
             pr_repo="$(echo "${pr_json}" | jq -r '.head.repo.full_name')"
             head_branch="$(echo "${pr_json}" | jq -r '.head.ref')"
             expected_head_sha="$(echo "${pr_json}" | jq -r '.head.sha')"
-
-            if [ "${pr_repo}" = "null" ] || [ -z "${pr_repo}" ]; then
-              echo "Error: Could not resolve PR #${INPUT_PR_NUMBER}"
-              exit 1
-            fi
           elif [ "${EVENT_NAME}" = "pull_request" ]; then
             pr_repo="${PR_HEAD_REPO}"
             head_branch="${PR_HEAD_REF}"
             expected_head_sha="${PR_HEAD_SHA}"
           else
-            pr_repo="${DEFAULT_REPO}"
-            head_branch="${DEFAULT_REF}"
-            expected_head_sha="${DEFAULT_SHA}"
+            echo "Error: unsupported event ${EVENT_NAME}."
+            exit 1
+          fi
+
+          if [ "${pr_repo}" = "null" ] || [ -z "${pr_repo}" ] || \
+             [ "${head_branch}" = "null" ] || [ -z "${head_branch}" ] || \
+             [ "${expected_head_sha}" = "null" ] || [ -z "${expected_head_sha}" ]; then
+            echo "Error: Could not resolve target pull request."
+            exit 1
           fi
 
           is_fork="false"
@@ -86,9 +94,10 @@ jobs:
     needs: resolve-pr
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
     steps:
-      - name: Checkout PR branch
+      - name: Checkout PR source SHA
         uses: actions/checkout@v4
         with:
           repository: ${{ needs.resolve-pr.outputs.pr_repo }}
@@ -132,9 +141,10 @@ jobs:
     needs: resolve-pr
     runs-on: ubuntu-24.04
     permissions:
+      actions: read
       contents: read
     steps:
-      - name: Checkout PR branch
+      - name: Checkout PR source SHA
         uses: actions/checkout@v4
         with:
           repository: ${{ needs.resolve-pr.outputs.pr_repo }}
@@ -183,6 +193,9 @@ jobs:
     runs-on: ubuntu-24.04
     environment: artifact-finalization
     if: needs.resolve-pr.outputs.is_fork == 'false'
+    permissions:
+      actions: read
+      contents: write
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
@@ -227,7 +240,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # 1. Check for substantive changes
+          # 1. Check for substantive changes.
           has_screenshot_changes=false
           git add -N -- 'docs/images/screenshot-*.png'
           if ! git diff --quiet -- 'docs/images/screenshot-*.png'; then
@@ -236,8 +249,24 @@ jobs:
 
           has_maritime_changes=false
           if node scripts/has-substantive-maritime-changes.mjs; then
-            has_maritime_changes=true
-          elif ! git diff --quiet -- docs/images/dependency-graph.svg; then
+            comparison_status=0
+          else
+            comparison_status=$?
+          fi
+
+          case "${comparison_status}" in
+            0)
+              ;;
+            1)
+              has_maritime_changes=true
+              ;;
+            *)
+              echo "Maritime baseline comparison failed with status ${comparison_status}."
+              exit "${comparison_status}"
+              ;;
+          esac
+
+          if ! git diff --quiet -- docs/images/dependency-graph.svg; then
             has_maritime_changes=true
           fi
 
@@ -246,7 +275,7 @@ jobs:
             exit 0
           fi
 
-          # 2. Verify remote head before committing and pushing
+          # 2. Verify remote head before committing and pushing.
           git fetch --no-tags origin "${HEAD_BRANCH}"
           newer_remote_head="$(git rev-parse FETCH_HEAD)"
           if [ "${newer_remote_head}" != "${EXPECTED_HEAD_SHA}" ]; then
@@ -254,7 +283,7 @@ jobs:
             exit 1
           fi
 
-          # 3. Commit and push promoted artifacts in a single controlled commit
+          # 3. Commit and push promoted artifacts in a single controlled commit.
           git add -- 'docs/images/screenshot-*.png' .maritime docs/images/dependency-graph.svg
           git commit -m "chore: publish generated artifacts"
           git push origin "HEAD:${HEAD_BRANCH}"
