@@ -446,6 +446,12 @@ test("authored Floor 2 safe-room closure remains distinct and floor scoped", () 
   assert.ok(reading);
   assert.equal("countdownId" in reading, false);
 
+  const floorTwoEndpoint = Math.max(...compiledDoc.events.filter((event) => event.position.floor === 2).map((event) => event.sequence));
+  const endpointState = projectCountdownState({ ...compiledDoc, countdowns: [secondary] }, floorTwoEndpoint, 2);
+  assert.ok(endpointState);
+  assert.equal(endpointState.isStale, true);
+  assert.match(endpointState.formattedLabel, /stated \(latest source\)$/);
+
   const floorOneSequence = compiledDoc.events.find((event) => event.position.floor === 1).sequence;
   assert.equal(projectCountdownState({ ...compiledDoc, countdowns: [secondary] }, floorOneSequence, 1), null);
 });

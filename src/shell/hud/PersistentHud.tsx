@@ -35,7 +35,7 @@ export function PersistentHud(props: PersistentHudProps) {
     <div className="timer">
       <span>{props.floorTitle.toUpperCase()}</span>
       <b title={countdown ? `${countdown.status} · ${countdown.basis}` : undefined}>{countdownLabel}</b>
-      <span>● LIVE · {props.viewers.toLocaleString()} VIEWERS</span>
+      <span data-testid="hud-audience-mode">{props.isLive ? "● LIVE" : "↺ REPLAY"} · {props.viewers.toLocaleString()} VIEWERS</span>
     </div>
     {!props.isLive && <div className="replay-banner"><span>HISTORICAL VIEW · REPLAYING SEQUENCE #{props.sequence} ({props.occurredAt})</span><button onClick={props.onReturnToLive}>RETURN TO LIVE ⚡</button></div>}
   </>;
