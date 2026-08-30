@@ -8,10 +8,12 @@ export const SCREENSHOTS = {
   crawler: "screenshot-crawler.png",
   inventory: "screenshot-inventory.png",
   skills: "screenshot-skills.png",
-  journal: "screenshot-journal.png",
+  quests: "screenshot-quests.png",
   crawlerOverview: "screenshot-crawler-overview.png",
   crawlerAchievements: "screenshot-crawler-achievements.png",
   crawlerBroadcast: "screenshot-crawler-broadcast.png",
+  floorRules: "screenshot-floor-rules.png",
+  timelineHistory: "screenshot-timeline-history.png",
 } as const;
 
 export type ScreenshotKey = keyof typeof SCREENSHOTS;

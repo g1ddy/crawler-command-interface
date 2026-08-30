@@ -27,6 +27,10 @@ import { formatSequencePosition, narrativeEventsAtOrBefore } from "../app/domain
 import { Panel } from "./shared/ui/Panel";
 import { RootNavigation, type RootView } from "./shell/navigation/RootNavigation";
 import { PersistentHud } from "./shell/hud/PersistentHud";
+import { QuestsView } from "./features/quests/QuestsView";
+import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
+import { TimelineEvidence } from "./features/timeline/evidence/TimelineEvidence";
+import { FloorRules } from "./features/floor/FloorRules";
 
 type View = RootView;
 
@@ -80,6 +84,10 @@ export default function CrawlerApp() {
   const [showJsonModal, setShowJsonModal] = useState<boolean>(false);
   const [jsonText, setJsonText] = useState<string>("");
   const [importError, setImportError] = useState<string | null>(null);
+
+  const [showFloorRules, setShowFloorRules] = useState<boolean>(false);
+  const [showTimelineHistory, setShowTimelineHistory] = useState<boolean>(false);
+  const [showTimelineEvidence, setShowTimelineEvidence] = useState<boolean>(false);
 
   // Navigation context state for equipment/inventory deep-linking
   const [inventoryFilter, setInventoryFilter] = useState<string>("ALL ITEMS");
@@ -300,7 +308,12 @@ export default function CrawlerApp() {
         onReturnToLive={handleReturnToLive}
       />
 
-      <RootNavigation active={view} set={setView} onOpenTools={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }} />
+      <RootNavigation
+        active={view}
+        set={setView}
+        hasQuests={projectedState.quests.length > 0}
+        onOpenTools={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }}
+      />
 
       {toastMessage && (
         <div className="toast-notification" role="status" aria-live="polite">
@@ -350,6 +363,9 @@ export default function CrawlerApp() {
             }
           }}
           onInspectObservation={(obs) => setInspectObservation(obs)}
+          onOpenFloorRules={() => setShowFloorRules(true)}
+          onOpenTimelineHistory={() => setShowTimelineHistory(true)}
+          onOpenTimelineEvidence={() => setShowTimelineEvidence(true)}
         />
 
         {view === "crawler" ? (
@@ -385,21 +401,52 @@ export default function CrawlerApp() {
           />
         ) : view === "skills" ? (
           <Skills state={projectedState} onEmitEvent={handleEmitEvent} />
-        ) : (
-          <Journal
-            state={projectedState}
-            observations={projectedObservations}
-            events={events}
-            sources={timelineDoc.sources as TimelineSource[]}
-            selectedFloorOrdinal={selectedFloorOrdinal}
-            onNavigateToSequence={(seq) => {
-              setSelectedSeq(seq);
-              setIsLive(seq === maxSeq);
-            }}
-            onInspectObservation={(obs) => setInspectObservation(obs)}
-          />
-        )}
+        ) : view === "quests" && projectedState.quests.length > 0 ? (
+          <QuestsView quests={projectedState.quests} />
+        ) : null}
       </div>
+
+      {showFloorRules && (
+        <FloorRules
+          events={events}
+          sequence={currentSeq}
+          selectedFloorOrdinal={selectedFloorOrdinal}
+          sources={timelineDoc.sources as TimelineSource[]}
+          onNavigateToSequence={(seq) => {
+            setSelectedSeq(seq);
+            setIsLive(seq === maxSeq);
+          }}
+          onClose={() => setShowFloorRules(false)}
+          isModal
+        />
+      )}
+
+      {showTimelineHistory && (
+        <TimelineHistory
+          events={events}
+          sequence={currentSeq}
+          selectedFloorOrdinal={selectedFloorOrdinal}
+          recentLogs={projectedState.recentLogs}
+          sources={timelineDoc.sources as TimelineSource[]}
+          onNavigateToSequence={(seq) => {
+            setSelectedSeq(seq);
+            setIsLive(seq === maxSeq);
+          }}
+          onClose={() => setShowTimelineHistory(false)}
+          isModal
+        />
+      )}
+
+      {showTimelineEvidence && (
+        <TimelineEvidence
+          observations={projectedObservations}
+          sequence={currentSeq}
+          sources={timelineDoc.sources as TimelineSource[]}
+          onInspectObservation={(obs) => setInspectObservation(obs)}
+          onClose={() => setShowTimelineEvidence(false)}
+          isModal
+        />
+      )}
 
       {statBreakdown && (
         <StatInspectorModal
@@ -1670,269 +1717,6 @@ function Skills({
   );
 }
 
-function Journal({
-  state,
-  observations,
-  events,
-  sources,
-  selectedFloorOrdinal,
-  onNavigateToSequence,
-  onInspectObservation,
-}: {
-  state: CrawlerState;
-  observations?: ProjectedObservationsState;
-  events: CrawlerEvent[];
-  sources: TimelineSource[];
-  selectedFloorOrdinal: number | 'all';
-  onNavigateToSequence: (seq: number) => void;
-  onInspectObservation?: (obs: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
-}) {
-  const [tab, setTab] = useState<string>("ACTIVE");
-
-  const activeQuests = useMemo(() => state.quests.filter((q) => !q.status || q.status === "active"), [state.quests]);
-  const completedQuests = useMemo(() => state.quests.filter((q) => q.status === "completed"), [state.quests]);
-  const failedQuests = useMemo(() => state.quests.filter((q) => q.status === "failed"), [state.quests]);
-  const narrativeEvents = useMemo(() => narrativeEventsAtOrBefore(events, state.sequence, selectedFloorOrdinal), [events, state.sequence, selectedFloorOrdinal]);
-  const ruleHistory = useMemo(() => narrativeEventsAtOrBefore(events, state.sequence, selectedFloorOrdinal, 'rule-changed'), [events, state.sequence, selectedFloorOrdinal]);
-  const sourceTitle = (sourceId: string) => sources.find((source) => source.id === sourceId)?.title ?? sourceId;
-
-  const displayedQuests =
-    tab === "ACTIVE"
-      ? activeQuests
-      : tab === "COMPLETED"
-      ? completedQuests
-      : tab === "FAILED"
-      ? failedQuests
-      : [];
-
-  return (
-    <section className="view-content">
-      <header className="title">
-        <div>
-          <p className="eyebrow">OBJECTIVES & SYSTEM RECORDS</p>
-          <h1>JOURNAL</h1>
-        </div>
-        <div className="subnav">
-          {["ACTIVE", "COMPLETED", "FAILED", "FLOOR RULES", "TELEMETRY", "LOG"].map((x) => (
-            <button className={tab === x ? "on" : ""} onClick={() => setTab(x)} key={x}>
-              {x}
-              {x === "ACTIVE" && ` (${activeQuests.length})`}
-              {x === "COMPLETED" && ` (${completedQuests.length})`}
-              {x === "FAILED" && ` (${failedQuests.length})`}
-            </button>
-          ))}
-        </div>
-      </header>
-
-      {tab === "ACTIVE" || tab === "COMPLETED" || tab === "FAILED" ? (
-        <div className="journal">
-          <div>
-            {displayedQuests.length > 0 ? (
-              displayedQuests.map((q) => (
-                <Quest
-                  key={q.questId}
-                  title={q.title}
-                  urgency={q.urgency}
-                  goals={q.goals}
-                  rewards={q.rewards}
-                  status={q.status}
-                />
-              ))
-            ) : (
-              <p style={{ fontSize: "11px", color: "#8fa1aa", padding: "12px 0" }}>
-                {tab === "ACTIVE"
-                  ? "No active quests."
-                  : tab === "COMPLETED"
-                  ? "No completed quests."
-                  : "No failed quests."}
-              </p>
-            )}
-          </div>
-
-          <Panel title="RECENT PROGRESS & ACHIEVEMENTS">
-            {[...state.achievements]
-              .sort((a, b) => b.unlockedAtSequence - a.unlockedAtSequence)
-              .map((ach) => (
-                <div className="achievement" key={ach.achievementId}>
-                  <span>{ach.icon}</span>
-                  <div>
-                    <p className="eyebrow">{ach.recipient ? `${ach.recipient.toUpperCase()} · ` : ""}ACHIEVEMENT UNLOCKED (SEQ #{ach.unlockedAtSequence})</p>
-                    <h1>{ach.title}</h1>
-                    <p>{ach.description}</p>
-                    <AchievementRewards rewards={ach.rewards} />
-                  </div>
-                </div>
-              ))}
-
-            <div className="log">
-              {state.recentLogs.slice(0, 5).map((l) => (
-                <p
-                  key={l.sequence}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => onNavigateToSequence(l.sequence)}
-                  title="Click to jump timeline sequence"
-                >
-                  <span>SEQ #{l.sequence}</span> {l.message}
-                </p>
-              ))}
-            </div>
-          </Panel>
-        </div>
-      ) : tab === "TELEMETRY" ? (
-        <Panel title="POINT-IN-TIME SOURCED TELEMETRY & HUD READINGS">
-          <p style={{ fontSize: "11px", color: "#8fa1aa", marginBottom: "12px" }}>
-            The following Sourced Telemetry readings are projected at Sequence #{state.sequence}. Stated facts represent explicit source observations, while estimated values use bounded linear interpolation across phase boundaries.
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-            {observations ? (
-              <>
-                <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px" }}>
-                  <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>CRAWLER CONDITION & ATTRIBUTES</h3>
-                  {Object.keys(observations.condition).length === 0 && Object.keys(observations.attributes).length === 0 ? (
-                    <p style={{ fontSize: "10px", color: "#6a8592" }}>No condition or attribute observations at this sequence.</p>
-                  ) : (
-                    <div style={{ display: "grid", gap: "6px" }}>
-                      {Object.entries(observations.condition).map(([k, val]) => (
-                        <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
-                          <span>Condition.{k}: <strong style={{ color: "#fff" }}>{val.value.toLocaleString()}</strong></span>
-                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
-                        </div>
-                      ))}
-                      {Object.entries(observations.attributes).map(([k, val]) => (
-                        <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
-                          <span>Attribute.{k}: <strong style={{ color: "#fff" }}>{val.value.toLocaleString()}</strong></span>
-                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px" }}>
-                  <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>XP PROGRESS & BROADCAST METRICS</h3>
-                  {Object.keys(observations.xpProgress).length === 0 && Object.keys(observations.broadcast).length === 0 ? (
-                    <p style={{ fontSize: "10px", color: "#6a8592" }}>No XP or broadcast observations at this sequence.</p>
-                  ) : (
-                    <div style={{ display: "grid", gap: "6px" }}>
-                      {Object.entries(observations.xpProgress).map(([k, val]) => (
-                        <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
-                          <span>XP.{k}: <strong style={{ color: "#fff" }}>{val.value.toLocaleString()}</strong></span>
-                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
-                        </div>
-                      ))}
-                      {Object.entries(observations.broadcast).map(([k, val]) => (
-                        <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
-                          <span>Broadcast.{k}: <strong style={{ color: "#fff" }}>{val.value.toLocaleString()}</strong></span>
-                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
-                  <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>FLOOR METRICS</h3>
-                  {Object.keys(observations.floor).length === 0 ? <p style={{ fontSize: "10px", color: "#6a8592" }}>No floor metrics sourced at this sequence.</p> : Object.entries(observations.floor).map(([key, value]) => <div key={key} className="telemetry-metric-row"><span>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase())}: <strong>{formatProjectedObservationValue(value)}</strong></span><TelemetryBadge observation={value} onClick={() => onInspectObservation?.(value)} /></div>)}
-                </div>
-                <div style={{ background: "#06131c", border: "1px solid #1f4252", padding: "10px", borderRadius: "4px", gridColumn: "1 / -1" }}>
-                  <h3 style={{ fontSize: "11px", color: "#1bd9ff", margin: "0 0 8px 0" }}>OBSERVED INVENTORY & EQUIPMENT</h3>
-                  {Object.keys(observations.inventory).length === 0 && Object.keys(observations.equipment).length === 0 ? (
-                    <p style={{ fontSize: "10px", color: "#6a8592" }}>No inventory or equipment observations at this sequence.</p>
-                  ) : (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "6px" }}>
-                      {Object.values(observations.inventory).map((val) => (
-                        <div key={`inventory-${val.itemInstanceId}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
-                          <span>Inventory.{val.itemInstanceId}: <strong style={{ color: "#fff" }}>{val.present === false ? "ABSENT" : "PRESENT"}</strong></span>
-                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
-                        </div>
-                      ))}
-                      {Object.values(observations.equipment).map((val) => (
-                        <div key={`equipment-${val.slot}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "10px", background: "#0b1c27", padding: "4px 8px" }}>
-                          <span>Equipment.{val.slot}: <strong style={{ color: "#fff" }}>{val.itemInstanceId || "EMPTY"}</strong></span>
-                          <TelemetryBadge observation={val} onClick={() => onInspectObservation?.(val)} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <p style={{ fontSize: "11px", color: "#8fa1aa" }}>No telemetry projected.</p>
-            )}
-          </div>
-        </Panel>
-      ) : (
-        <Panel title={tab === "LOG" ? "SYSTEM EVENT LOG" : "FLOOR RULES & DIRECTIVES"}>
-          <div className="log">
-            {tab === "LOG" ? (
-              <>
-                {narrativeEvents.slice().reverse().map((event) => <article key={event.sequence} className={`typed-log-entry ${event.kind === 'floor-collapsed' ? 'terminal' : ''}`} tabIndex={0} role="button" onClick={() => onNavigateToSequence(event.sequence)} onKeyDown={(key) => { if (key.key === 'Enter' || key.key === ' ') onNavigateToSequence(event.sequence); }}>
-                  <header><SequenceBadge kind={String(event.kind)} /><span>SEQ #{event.sequence}</span></header>
-                  <strong>{event.summary}</strong>
-                  {Array.isArray(event.entities) && event.entities.length > 0 && <p>Entities: {(event.entities as string[]).join(', ')}</p>}
-                  <p>{formatSequencePosition(event.position, Array.isArray(event.evidence) ? event.evidence : [])}</p>
-                  {Array.isArray(event.evidence) && event.evidence.map((evidence, index) => <small key={`${evidence.sourceId}-${index}`}>SOURCE: {sourceTitle(evidence.sourceId)}{evidence.locator?.section ? ` · ${evidence.locator.section}` : ''} · {(evidence.confidence ?? 'sourced').toUpperCase()}</small>)}
-                </article>)}
-                <details><summary>GENERIC SYSTEM EVENTS</summary>{state.recentLogs.filter((log) => !narrativeEvents.some((event) => event.sequence === log.sequence)).map((log) => <p key={log.sequence} onClick={() => onNavigateToSequence(log.sequence)}><span>SEQ #{log.sequence}</span> {log.timestamp ? `[${log.timestamp}] ` : ''}{log.message}</p>)}</details>
-              </>
-            ) : (
-              <><p className="history-disclaimer">HISTORICAL CHANGE LOG · Entries are source-recorded changes only; current, superseded, or revoked status is not inferred.</p>{ruleHistory.length ? ruleHistory.map((event) => <article key={event.sequence} className="typed-log-entry"><header><SequenceBadge kind="rule-changed" /><button onClick={() => onNavigateToSequence(event.sequence)}>SEQ #{event.sequence}</button></header><strong>{event.summary}</strong><p>{formatSequencePosition(event.position, Array.isArray(event.evidence) ? event.evidence : [])}</p>{Array.isArray(event.evidence) && event.evidence.map((evidence, index) => <small key={`${evidence.sourceId}-${index}`}>SOURCE: {sourceTitle(evidence.sourceId)}{evidence.locator?.section ? ` · ${evidence.locator.section}` : ''}</small>)}</article>) : <p>No rule changes sourced in this floor scope at or before Sequence #{state.sequence}.</p>}</>
-            )}
-          </div>
-        </Panel>
-      )}
-    </section>
-  );
-}
-
-function Quest({
-  title,
-  urgency,
-  goals,
-  rewards,
-  status = "active",
-}: {
-  title: string;
-  urgency: string;
-  goals: string[];
-  rewards: string;
-  status?: string;
-}) {
-  return (
-    <article className={`quest ${status}`}>
-      <header>
-        <h2>{title}</h2>
-        <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-          <i
-            style={{
-              fontStyle: "normal",
-              fontSize: "9px",
-              padding: "5px",
-              background:
-                status === "completed" ? "#133822" : status === "failed" ? "#4a1215" : "#103242",
-              color:
-                status === "completed" ? "#6bf1b1" : status === "failed" ? "#ff8a90" : "#86cbff",
-              border: `1px solid ${
-                status === "completed" ? "#288e58" : status === "failed" ? "#9e2d35" : "#1f5873"
-              }`,
-            }}
-          >
-            {status.toUpperCase()}
-          </i>
-          <i>{urgency}</i>
-        </div>
-      </header>
-      <p>Dungeon conditions are unstable. Complete this before failure becomes permanent.</p>
-      <ul>
-        {goals.map((x) => (
-          <li key={x}>{x}</li>
-        ))}
-      </ul>
-      <footer>
-        REWARDS <b>{rewards}</b>
-      </footer>
-    </article>
-  );
-}
 
 function Achievements({ achievements }: { achievements: CrawlerState["achievements"] }) {
   const sortedAchievements = [...achievements].sort(

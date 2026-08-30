@@ -17,7 +17,7 @@ import type {
   TimelineState,
 } from './types.ts';
 
-const defaultFloor6Quests: Quest[] = [
+export const defaultFloor6Quests: Quest[] = [
   {
     questId: 'q-stairwell',
     title: 'Tutorial: Reach the Stairs',
@@ -109,12 +109,9 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   const entitlements = (timelineState?.entitlements || []).map((entitlement) => ({ ...entitlement }));
 
   const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
-  const quests = timelineState
-    ? ((timelineState.quests as Quest[]) || []).map((q) => ({
-        ...q,
-        status: q.status || 'active',
-      }))
-    : defaultFloor6Quests;
+  const quests = (timelineState?.quests as Quest[] || []).map((q) => ({
+    ...q,
+  }));
 
   const broadcast = timelineState
     ? { viewers: 0, viewerDelta: '+0%', followers: 0, fameRank: '#-', sponsorInterest: false }

@@ -13,6 +13,7 @@
 # testing
 /coverage
 /.screenshots-staging/
+/test-results/
 
 # next.js
 /.next/
