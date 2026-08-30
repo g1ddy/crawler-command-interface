@@ -1810,7 +1810,7 @@
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/home/runner/work/crawler-command-interface/crawler-command-interface",
+      "baseDir": "/app",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
