@@ -173,7 +173,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           name: itemDef.name,
           category: itemDef.category,
           slot: itemDef.slot,
-          rarity: itemDef.rarity || 'common',
+          rarity: itemDef.rarity || 'unknown',
           description: itemDef.description,
           stats: itemDef.stats,
           quantity: rawEv.item!.quantity,
