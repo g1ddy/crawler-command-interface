@@ -1,0 +1,34 @@
+name: PR113 Regenerate Fixture
+
+on:
+  push:
+    paths:
+      - .github/workflows/pr113-regenerate-fixture.yml
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/issue-93-inventory-source-honesty
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run generate:fixture
+      - name: Commit generated fixture
+        run: |
+          if git diff --quiet -- data/floors data/compiled-timeline.json; then
+            echo "Generated fixtures already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/floors data/compiled-timeline.json
+          git commit -m "data: regenerate compiled timeline"
+          git push origin HEAD:fix/issue-93-inventory-source-honesty
