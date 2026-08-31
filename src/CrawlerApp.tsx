@@ -22,6 +22,7 @@ import { StatInspectorModal } from "../app/components/StatInspectorModal";
 import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
 import { Panel } from "./shared/ui/Panel";
 import { RootNavigation, type RootView } from "./shell/navigation/RootNavigation";
+import { ROOT_VIEW_ORDER, resolveRootView, selectedSequenceCapabilities } from "./shell/navigation/capabilities";
 import { PersistentHud } from "./shell/hud/PersistentHud";
 import { QuestsView } from "./features/quests/QuestsView";
 import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
@@ -113,15 +114,12 @@ export default function CrawlerApp() {
     return projectState(timelineDoc, currentSeq);
   }, [timelineDoc, currentSeq]);
 
-  // Replay can move before the first quest was authored. Keep the selected
-  // root destination valid in that state rather than rendering an empty view.
-  const resolvedView: View = view === "quests" && projectedState.quests.length === 0
-    ? "crawler"
-    : view;
-
   const projectedObservations: ProjectedObservationsState = useMemo(() => {
     return projectObservations(timelineDoc, currentSeq);
   }, [timelineDoc, currentSeq]);
+
+  const capabilities = useMemo(() => selectedSequenceCapabilities(projectedState, projectedObservations, events, currentSeq), [projectedState, projectedObservations, events, currentSeq]);
+  const resolvedView = resolveRootView(view, capabilities);
 
   const liveState: CrawlerState = useMemo(() => {
     return projectState(timelineDoc, maxSeq);
@@ -277,15 +275,13 @@ export default function CrawlerApp() {
         return;
       }
 
-      if (e.key === "1") setView("crawler");
-      if (e.key === "2") setView("inventory");
-      if (e.key === "3") setView("skills");
-      if (e.key === "4" && projectedState.quests.length > 0) setView("quests");
+      const destination = ROOT_VIEW_ORDER[Number(e.key) - 1];
+      if (destination && capabilities[destination]) setView(destination);
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [inspectStat, provenanceItem, showJsonModal, projectedState.quests.length]);
+  }, [inspectStat, provenanceItem, showJsonModal, capabilities]);
 
   return (
     <main>
@@ -310,7 +306,7 @@ export default function CrawlerApp() {
       <RootNavigation
         active={resolvedView}
         set={setView}
-        hasQuests={projectedState.quests.length > 0}
+        capabilities={capabilities}
         onOpenTools={() => { setImportError(null); setJsonText(""); setShowJsonModal(true); }}
       />
 
@@ -360,9 +356,9 @@ export default function CrawlerApp() {
             onEmitEvent={handleEmitEvent}
           />
         ) : resolvedView === "ratings" ? (
-          <RatingsView broadcast={projectedState.broadcast} observations={projectedObservations.broadcast} onInspectObservation={(obs) => setInspectObservation(obs)} />
+          <RatingsView observations={projectedObservations.broadcast} isLive={isLive} sequence={currentSeq} onInspectObservation={(obs) => setInspectObservation(obs)} />
         ) : resolvedView === "notifications" ? (
-          <NotificationsView events={events} state={projectedState} sequence={currentSeq} onNavigateToSequence={(seq) => { setSelectedSeq(seq); setIsLive(seq === maxSeq); }} />
+          <NotificationsView events={events} sequence={currentSeq} onNavigateToSequence={(seq) => { setSelectedSeq(seq); setIsLive(seq === maxSeq); }} />
         ) : resolvedView === "inventory" ? (
           <Inventory
             state={projectedState}

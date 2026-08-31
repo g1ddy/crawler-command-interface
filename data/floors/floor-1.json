@@ -884,7 +884,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 3
+      "order": 3,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-trailblazing-crazy-cat-lady",
@@ -905,7 +910,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 4
+      "order": 4,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-early-adopter",
@@ -926,7 +936,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 5
+      "order": 5,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-002-empty-pockets",
@@ -947,7 +962,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-003-no-pants",
@@ -968,7 +988,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-004-unarmed-combat",
@@ -989,7 +1014,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-loner",
@@ -1010,7 +1040,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 9
+      "order": 9,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-countdown-tutorial-start",
@@ -1098,7 +1133,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 13
+      "order": 13,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-read-official-dungeon-sign",
@@ -1119,7 +1159,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 14
+      "order": 14,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-inflicted-damage-on-mob",
@@ -1140,7 +1185,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 15
+      "order": 15,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-killed-a-mob",
@@ -1161,7 +1211,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 16
+      "order": 16,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-armed-mob-bare-hands",
@@ -1182,7 +1237,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17
+      "order": 17,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-higher-level-mob",
@@ -1203,7 +1263,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 18,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-entered-a-guildhall",
@@ -1224,7 +1289,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19
+      "order": 19,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-017-podophilia",
@@ -1245,7 +1315,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-015-boom",
@@ -1266,7 +1341,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-level-up-baby",
@@ -1287,7 +1367,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 22
+      "order": 22,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-level-2",
@@ -1307,7 +1392,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-005-goblin-pass",
@@ -1332,7 +1422,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-006-trollskin-shirt",
@@ -1381,7 +1476,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 26
+      "order": 26,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-009-first-magic-gear",
@@ -1402,7 +1502,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-boss-babe",
@@ -1423,7 +1528,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28
+      "order": 28,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-007-nightgaunt-cloak",
@@ -1521,7 +1631,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
@@ -1569,7 +1684,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-countdown-crawlers-4322395",
@@ -1724,7 +1844,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-level-8",
@@ -1744,7 +1869,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
@@ -1793,7 +1923,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 44
+      "order": 44,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-war-criminal",
@@ -1814,7 +1949,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 45
+      "order": 45,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-countdown-crawlers-3594517",
@@ -1859,7 +1999,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
@@ -1907,7 +2052,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-level-10",
@@ -1927,7 +2077,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-countdown-episode-2",
@@ -2015,7 +2170,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 54
+      "order": 54,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-two-chicks-same-time",
@@ -2036,7 +2196,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55
+      "order": 55,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-countdown-meadow-lark",
@@ -2157,7 +2322,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 61
+      "order": 61,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-bully-and-a-thief",
@@ -2178,7 +2348,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 62
+      "order": 62,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-018-battlefield-construction",
@@ -2199,7 +2374,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-little-piggy-went-to-market",
@@ -2220,7 +2400,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 64
+      "order": 64,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-achievement-found-stairs",
@@ -2241,7 +2426,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 65
+      "order": 65,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-019-exit",

@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-08-30T18:29:01.653Z",
-    "updatedAt": "2026-08-30T18:29:01.653Z"
+    "createdAt": "2026-08-31T02:36:35.923Z",
+    "updatedAt": "2026-08-31T02:36:35.924Z"
   },
   "floors": [
     {
@@ -219,6 +219,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-crazy-cat-lady",
         "title": "Crazy Cat Lady",
@@ -253,6 +258,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-trailblazing-crazy-cat-lady",
         "title": "Trailblazing Crazy Cat Lady",
@@ -287,6 +297,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-early-adopter",
         "title": "Early Adopter",
@@ -321,6 +336,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-empty-pockets",
         "title": "Empty Pockets",
@@ -355,6 +375,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-why-no-pants",
         "title": "Why Aren't You Wearing Pants?",
@@ -389,6 +414,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-unarmed-combat",
         "title": "Unarmed Combat",
@@ -423,6 +453,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-loner",
         "title": "Loner",
@@ -522,6 +557,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-fall-into-obvious-trap",
         "title": "Fall into an Obvious Trap",
@@ -554,6 +594,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-read-official-dungeon-sign",
         "title": "You've Discovered and Read an Official Dungeon Sign",
@@ -586,6 +631,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-inflicted-damage-on-mob",
         "title": "You've Inflicted Damage on a Mob",
@@ -618,6 +668,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-killed-a-mob",
         "title": "You've Killed a Mob!",
@@ -650,6 +705,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-armed-mob-bare-hands",
         "title": "You've Killed an Armed Mob with Your Bare Fucking Hands!",
@@ -684,6 +744,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-higher-level-mob",
         "title": "You've Killed a Mob a Higher Level Than Yourself!",
@@ -718,6 +783,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-entered-a-guildhall",
         "title": "You've Entered a Guildhall!",
@@ -750,6 +820,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-podophilia",
         "title": "Podophilia!",
@@ -784,6 +859,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-boom",
         "title": "Boom!",
@@ -818,6 +898,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-level-up-baby",
         "title": "Level-Up, Baby!",
@@ -849,7 +934,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 2
+      "level": 2,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-005-goblin-pass",
@@ -870,6 +960,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      },
       "entitlement": {
         "id": "entitlement-goblin-pass-tattoo",
         "name": "Goblin Pass Tattoo",
@@ -929,6 +1024,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-loot",
         "title": "Loot!",
@@ -961,6 +1061,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-oooh-magic",
         "title": "Oooh, Magic!",
@@ -995,6 +1100,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-boss-babe",
         "title": "Boss Babe",
@@ -1122,7 +1232,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 3
+      "level": 3,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
@@ -1178,7 +1293,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 5
+      "level": 5,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-countdown-crawlers-4322395",
@@ -1342,7 +1462,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 7
+      "level": 7,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-level-8",
@@ -1362,7 +1487,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 8
+      "level": 8,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
@@ -1416,6 +1546,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-you-monster",
         "title": "You Monster!",
@@ -1450,6 +1585,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-war-criminal",
         "title": "War Criminal",
@@ -1504,6 +1644,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      },
       "entitlement": {
         "id": "entitlement-desperado-pass-tattoo",
         "name": "Desperado Pass Tattoo",
@@ -1564,7 +1709,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 9
+      "level": 9,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-level-10",
@@ -1584,7 +1734,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 10
+      "level": 10,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f1-countdown-episode-2",
@@ -1682,6 +1837,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-bitchmeat",
         "title": "Bitchmeat",
@@ -1713,6 +1873,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-two-chicks-same-time",
         "title": "Two Chicks at the Same Time",
@@ -1847,6 +2012,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-borough-boss",
         "title": "Borough Boss!",
@@ -1879,6 +2049,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-bully-and-a-thief",
         "title": "Bully and a Thief!",
@@ -1913,6 +2088,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-battlefield-construction",
         "title": "Battlefield Construction!",
@@ -1947,6 +2127,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-little-piggy-went-to-market",
         "title": "This Little Piggy Went to Market!",
@@ -1981,6 +2166,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-found-stairs",
         "title": "You Found Stairs!",
@@ -2383,7 +2573,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 11
+      "level": 11,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
@@ -2437,6 +2632,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-dungeonpreneur",
         "title": "Dungeonpreneur",
@@ -2469,6 +2669,11 @@
           "confidence": "confirmed"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      },
       "entitlement": {
         "id": "entitlement-f2-dungeonpreneur-royalty",
         "name": "Dungeonpreneur royalty",
@@ -2669,6 +2874,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-what-goes-up",
         "title": "What Goes Up...",
@@ -2701,6 +2911,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-like-a-moth-to-the-flame",
         "title": "Like a Moth to the Flame",
@@ -2735,6 +2950,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-grease-monkey",
         "title": "Grease Monkey!",
@@ -2769,6 +2989,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-you-call-that-a-trap",
         "title": "You Call That a Trap?",
@@ -2823,7 +3048,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 12
+      "level": 12,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-countdown-episode-8",
@@ -2904,6 +3134,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-ceramic-dalmatian-pat",
         "title": "I'll Take the Ceramic Dalmatian, Pat!",
@@ -2936,6 +3171,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-menagerie",
         "title": "Menagerie!",
@@ -2968,6 +3208,11 @@
           "confidence": "corroborated"
         }
       ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
       "achievement": {
         "id": "achievement-peta-enthusiast",
         "title": "PETA Enthusiast!",
@@ -2995,7 +3240,12 @@
           "confidence": "corroborated"
         }
       ],
-      "level": 13
+      "level": 13,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-countdown-floor-3-descent",

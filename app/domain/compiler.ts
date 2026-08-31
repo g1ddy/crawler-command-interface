@@ -151,6 +151,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           correlationId: rawEv.correlationId,
           causationId: rawEv.causationId,
           evidence: rawEv.evidence,
+          notificationDelivery: rawEv.notificationDelivery,
           achievement: {
             id: achDef.id,
             title: achDef.title,
@@ -189,6 +190,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           correlationId: rawEv.correlationId,
           causationId: rawEv.causationId,
           evidence: rawEv.evidence,
+          notificationDelivery: rawEv.notificationDelivery,
           item: itemObj,
         });
       } else if (rawEv.type === 'PermanentEntitlementGranted') {
@@ -201,6 +203,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           correlationId: rawEv.correlationId,
           causationId: rawEv.causationId,
           evidence: rawEv.evidence,
+          notificationDelivery: rawEv.notificationDelivery,
           entitlement: rawEv.entitlement!,
         });
       } else if (rawEv.type === 'NarrativeEvent') {
@@ -214,6 +217,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           correlationId: rawEv.correlationId,
           causationId: rawEv.causationId,
           evidence: rawEv.evidence,
+          notificationDelivery: rawEv.notificationDelivery,
         });
       } else {
         // Preserve all structured event properties losslessly

@@ -138,6 +138,17 @@ export interface TimelineEventBase {
   causationId?: string;
   correlationId?: string;
   evidence: TimelineEvidence[];
+  notificationDelivery?: NotificationDelivery;
+}
+
+export type NotificationKind = 'achievement' | 'progression' | 'skill' | 'quest' | 'reward' | 'system' | 'floor';
+export type NotificationSeverity = 'info' | 'success' | 'warning' | 'critical';
+export interface NotificationDelivery {
+  delivered: true;
+  kind: NotificationKind;
+  severity: NotificationSeverity;
+  title?: string;
+  message?: string;
 }
 
 export interface AchievementUnlockedEvent extends TimelineEventBase {
@@ -550,7 +561,8 @@ export interface FloorEventBase {
   cooldown?: string;
   category?: 'combat' | 'utility' | 'passive';
   effectId?: string;
-  effectType?: 'good' | 'bad';
+  effectType?: 'good' | 'bad' | 'injury' | 'other';
+  notificationDelivery?: NotificationDelivery;
   durationSeconds?: number;
   statModifiers?: Record<string, number>;
   viewers?: number;
@@ -714,7 +726,7 @@ export type EquippedSlotMap = Record<string, string | null>;
 export interface ActiveEffect {
   effectId: string;
   name: string;
-  type: 'good' | 'bad';
+  type: 'good' | 'bad' | 'injury' | 'other';
   icon: string;
   durationSeconds: number;
   appliedAtSequence: number;
