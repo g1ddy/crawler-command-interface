@@ -485,7 +485,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       state.effects.push({
         effectId,
         name: String(event.name || ''),
-        type: (event.effectType as 'good' | 'bad') || 'good',
+        type: (event.effectType as 'good' | 'bad' | 'injury' | 'other') || 'other',
         icon: String(event.icon || '✦'),
         durationSeconds: Number(event.durationSeconds || 0),
         appliedAtSequence: sequence,

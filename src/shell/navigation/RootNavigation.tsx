@@ -3,12 +3,12 @@ export type RootView = "crawler" | "inventory" | "skills" | "quests" | "ratings"
 export function RootNavigation({
   active,
   set,
-  hasQuests = false,
+  capabilities,
   onOpenTools,
 }: {
   active: RootView;
   set: (view: RootView) => void;
-  hasQuests?: boolean;
+  capabilities: Record<RootView, boolean>;
   onOpenTools: () => void;
 }) {
   return (
@@ -17,11 +17,11 @@ export function RootNavigation({
       <button className={active === "crawler" ? "active" : ""} aria-pressed={active === "crawler"} onClick={() => set("crawler")}>CRAWLER</button>
       <button className={active === "inventory" ? "active" : ""} aria-pressed={active === "inventory"} onClick={() => set("inventory")}>INVENTORY</button>
       <button className={active === "skills" ? "active" : ""} aria-pressed={active === "skills"} onClick={() => set("skills")}>SKILLS</button>
-      {hasQuests && (
+      {capabilities.quests && (
         <button className={active === "quests" ? "active" : ""} aria-pressed={active === "quests"} onClick={() => set("quests")}>QUESTS</button>
       )}
-      <button className={active === "ratings" ? "active" : ""} aria-pressed={active === "ratings"} onClick={() => set("ratings")}>RATINGS</button>
-      <button className={active === "notifications" ? "active" : ""} aria-pressed={active === "notifications"} onClick={() => set("notifications")}>NOTIFICATIONS</button>
+      {capabilities.ratings && <button className={active === "ratings" ? "active" : ""} aria-pressed={active === "ratings"} onClick={() => set("ratings")}>RATINGS</button>}
+      {capabilities.notifications && <button className={active === "notifications" ? "active" : ""} aria-pressed={active === "notifications"} onClick={() => set("notifications")}>NOTIFICATIONS</button>}
       <button className="secondary-tools" onClick={onOpenTools} aria-label="Open data tools" title="Import, export, or reset timeline data">⚙ TOOLS</button>
     </nav>
   );

@@ -116,14 +116,14 @@
       {
         "id": "achievement-peta-enthusiast",
         "title": "PETA Enthusiast!",
-        "description": "Removed an aggravated non-sapient enemy’s hostility and caused it to fight other enemies.",
+        "description": "Removed an aggravated non-sapient enemy\u2019s hostility and caused it to fight other enemies.",
         "reward": [],
         "recipient": "carl"
       },
       {
         "id": "achievement-dungeonpreneur",
         "title": "Dungeonpreneur",
-        "description": "Invented Carl’s Jug O’ Boom, a stackable dungeon device.",
+        "description": "Invented Carl\u2019s Jug O\u2019 Boom, a stackable dungeon device.",
         "reward": [
           {
             "kind": "other",
@@ -543,7 +543,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
@@ -592,7 +597,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 16
+      "order": 16,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
@@ -617,7 +627,12 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-007-proximity-trigger",
@@ -808,7 +823,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 26
+      "order": 26,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-achievement-like-a-moth-to-the-flame",
@@ -829,7 +849,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27
+      "order": 27,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-achievement-grease-monkey",
@@ -850,7 +875,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28
+      "order": 28,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-achievement-you-call-that-a-trap",
@@ -871,7 +901,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29
+      "order": 29,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-010-mongo-bonded",
@@ -912,7 +947,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-countdown-episode-8",
@@ -993,7 +1033,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 35
+      "order": 35,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-achievement-menagerie",
@@ -1014,7 +1059,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36
+      "order": 36,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
@@ -1035,7 +1085,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 37
+      "order": 37,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-011-level-13",
@@ -1056,7 +1111,12 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "progression",
+        "severity": "success"
+      }
     },
     {
       "id": "evt-f2-countdown-floor-3-descent",
