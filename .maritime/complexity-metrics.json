@@ -313,7 +313,7 @@
   },
   "src/shell/navigation/capabilities.ts": {
     "complexity": 3,
-    "loc": 9,
+    "loc": 12,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
