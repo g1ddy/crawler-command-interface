@@ -176,6 +176,7 @@
         "src/CrawlerApp.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/crawler/health/HealthConditions.tsx",
+        "src/features/crawler/health/condition-presentation.ts",
         "src/features/crawler/stats/PlayerStats.tsx",
         "src/features/floor/FloorRules.tsx",
         "src/features/timeline/SequenceBadge.tsx",
@@ -184,10 +185,12 @@
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/ratings/RatingsView.tsx",
+        "src/features/ratings/ratings-presentation.ts",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/timeline/history/TimelineHistory.tsx",
         "src/features/timeline/TimelineScrubber.tsx",
-        "src/shell/hud/PersistentHud.tsx"
+        "src/shell/hud/PersistentHud.tsx",
+        "src/shell/navigation/capabilities.ts"
       ],
       "orphan": false
     },
@@ -1628,6 +1631,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "./shell/navigation/capabilities",
+          "resolved": "src/shell/navigation/capabilities.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./shell/navigation/RootNavigation",
           "resolved": "src/shell/navigation/RootNavigation.tsx",
           "valid": true,
@@ -1791,6 +1811,23 @@
           "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./condition-presentation",
+          "resolved": "src/features/crawler/health/condition-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -1829,6 +1866,34 @@
         "src/features/ratings/RatingsView.tsx",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/timeline/history/TimelineHistory.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/crawler/health/condition-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/crawler/health/HealthConditions.tsx"
       ],
       "orphan": false
     },
@@ -2289,10 +2354,55 @@
           "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./ratings-presentation",
+          "resolved": "src/features/ratings/ratings-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
         "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/ratings/ratings-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/ratings/RatingsView.tsx"
       ],
       "orphan": false
     },
@@ -2647,11 +2757,58 @@
       "orphan": false
     },
     {
+      "source": "src/shell/navigation/capabilities.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./RootNavigation",
+          "resolved": "src/shell/navigation/RootNavigation.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/shell/navigation/RootNavigation.tsx",
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "src/CrawlerApp.tsx"
+        "src/CrawlerApp.tsx",
+        "src/shell/navigation/capabilities.ts"
       ],
       "orphan": false
     },
@@ -2753,8 +2910,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 52,
-    "totalDependenciesCruised": 120,
+    "totalCruised": 55,
+    "totalDependenciesCruised": 127,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

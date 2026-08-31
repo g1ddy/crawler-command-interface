@@ -17,9 +17,9 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 806,
+    "loc": 819,
     "instability": 0,
-    "fanIn": 31,
+    "fanIn": 34,
     "fanOut": 0,
     "scanned": true
   },
@@ -65,7 +65,7 @@
   },
   "app/domain/compiler.ts": {
     "complexity": 39,
-    "loc": 329,
+    "loc": 333,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -169,10 +169,10 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 40,
-    "loc": 1391,
-    "instability": 0.92,
+    "loc": 1387,
+    "instability": 0.93,
     "fanIn": 2,
-    "fanOut": 24,
+    "fanOut": 25,
     "scanned": true
   },
   "src/features/crawler/CrawlerView.tsx": {
@@ -185,10 +185,10 @@
   },
   "src/features/crawler/health/HealthConditions.tsx": {
     "complexity": 7,
-    "loc": 19,
-    "instability": 0.75,
+    "loc": 20,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 4,
     "scanned": true
   },
   "src/shared/ui/Panel.tsx": {
@@ -196,6 +196,14 @@
     "loc": 11,
     "instability": 0.13,
     "fanIn": 7,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/crawler/health/condition-presentation.ts": {
+    "complexity": 1,
+    "loc": 5,
+    "instability": 0.5,
+    "fanIn": 1,
     "fanOut": 1,
     "scanned": true
   },
@@ -232,8 +240,8 @@
     "scanned": true
   },
   "src/features/notifications/notification-presentation.ts": {
-    "complexity": 13,
-    "loc": 23,
+    "complexity": 11,
+    "loc": 14,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -256,11 +264,19 @@
     "scanned": true
   },
   "src/features/ratings/RatingsView.tsx": {
-    "complexity": 11,
-    "loc": 22,
-    "instability": 0.75,
+    "complexity": 4,
+    "loc": 13,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/ratings/ratings-presentation.ts": {
+    "complexity": 2,
+    "loc": 10,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/timeline/evidence/TimelineEvidence.tsx": {
@@ -295,11 +311,19 @@
     "fanOut": 1,
     "scanned": true
   },
+  "src/shell/navigation/capabilities.ts": {
+    "complexity": 3,
+    "loc": 9,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
   "src/shell/navigation/RootNavigation.tsx": {
-    "complexity": 9,
+    "complexity": 10,
     "loc": 29,
     "instability": 0,
-    "fanIn": 1,
+    "fanIn": 2,
     "fanOut": 0,
     "scanned": true
   },
