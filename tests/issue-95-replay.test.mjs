@@ -4,7 +4,7 @@ import { createInitialState, applyEvent } from "../app/domain/projection.ts";
 import { projectNotifications } from "../src/features/notifications/notification-presentation.ts";
 import { projectRatingsMetrics } from "../src/features/ratings/ratings-presentation.ts";
 import { groupConditions } from "../src/features/crawler/health/condition-presentation.ts";
-import { resolveRootView, selectedSequenceCapabilities } from "../src/shell/navigation/capabilities.ts";
+import { availableRootViews, resolveRootView, selectedSequenceCapabilities } from "../src/shell/navigation/capabilities.ts";
 
 const base = { occurred_at: "2025-01-01", category: "system", position: { floor: 1 }, evidence: [] };
 const delivered = { delivered: true, kind: "achievement", severity: "warning" };
@@ -29,6 +29,19 @@ test("selected-sequence capabilities cross evidence boundaries and resolve unava
   assert.equal(before.ratings, false); assert.equal(before.notifications, false); assert.equal(resolveRootView("ratings", before), "crawler");
   const after = selectedSequenceCapabilities(state, { ...emptyObservations, broadcast: { viewers: { value: 12 } } }, events, 3);
   assert.equal(after.ratings, true); assert.equal(after.notifications, true); assert.equal(resolveRootView("notifications", after), "notifications");
+});
+
+test("numeric navigation follows capability-filtered visible order", () => {
+  const state = createInitialState({ crawler: { name: "Carl", level: 1, attributes: {}, condition: {} } });
+  const capabilities = selectedSequenceCapabilities(
+    state,
+    { ...emptyObservations, broadcast: { viewers: { value: 12 } } },
+    events,
+    3,
+  );
+
+  assert.equal(capabilities.quests, false);
+  assert.deepEqual(availableRootViews(capabilities), ["crawler", "inventory", "skills", "ratings", "notifications"]);
 });
 
 test("condition UI renders every explicit authored classification without text inference", () => {

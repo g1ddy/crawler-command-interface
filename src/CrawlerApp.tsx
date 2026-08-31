@@ -22,7 +22,7 @@ import { StatInspectorModal } from "../app/components/StatInspectorModal";
 import { ItemProvenanceDrawer } from "../app/components/ItemProvenanceDrawer";
 import { Panel } from "./shared/ui/Panel";
 import { RootNavigation, type RootView } from "./shell/navigation/RootNavigation";
-import { ROOT_VIEW_ORDER, resolveRootView, selectedSequenceCapabilities } from "./shell/navigation/capabilities";
+import { availableRootViews, resolveRootView, selectedSequenceCapabilities } from "./shell/navigation/capabilities";
 import { PersistentHud } from "./shell/hud/PersistentHud";
 import { QuestsView } from "./features/quests/QuestsView";
 import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
@@ -275,8 +275,8 @@ export default function CrawlerApp() {
         return;
       }
 
-      const destination = ROOT_VIEW_ORDER[Number(e.key) - 1];
-      if (destination && capabilities[destination]) setView(destination);
+      const destination = availableRootViews(capabilities)[Number(e.key) - 1];
+      if (destination) setView(destination);
     };
 
     window.addEventListener("keydown", handleKeyDown);

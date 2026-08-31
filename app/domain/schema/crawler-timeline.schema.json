@@ -388,45 +388,6 @@
         "note": {
           "type": "string",
           "maxLength": 1000
-        },
-        "notificationDelivery": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "delivered",
-            "kind",
-            "severity"
-          ],
-          "properties": {
-            "delivered": {
-              "const": true
-            },
-            "kind": {
-              "enum": [
-                "achievement",
-                "progression",
-                "skill",
-                "quest",
-                "reward",
-                "system",
-                "floor"
-              ]
-            },
-            "severity": {
-              "enum": [
-                "info",
-                "success",
-                "warning",
-                "critical"
-              ]
-            },
-            "title": {
-              "type": "string"
-            },
-            "message": {
-              "type": "string"
-            }
-          }
         }
       }
     },
@@ -507,46 +468,12 @@
         "note": {
           "type": "string",
           "maxLength": 1000
-        },
-        "notificationDelivery": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "delivered",
-            "kind",
-            "severity"
-          ],
-          "properties": {
-            "delivered": {
-              "const": true
-            },
-            "kind": {
-              "enum": [
-                "achievement",
-                "progression",
-                "skill",
-                "quest",
-                "reward",
-                "system",
-                "floor"
-              ]
-            },
-            "severity": {
-              "enum": [
-                "info",
-                "success",
-                "warning",
-                "critical"
-              ]
-            },
-            "title": {
-              "type": "string"
-            },
-            "message": {
-              "type": "string"
-            }
-          }
         }
+      },
+      "not": {
+        "required": [
+          "notificationDelivery"
+        ]
       }
     },
     "rarity": {
