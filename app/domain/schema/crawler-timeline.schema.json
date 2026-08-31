@@ -5,58 +5,108 @@
   "description": "Portable, evidence-backed timeline for a crawler storyline with floor segment index support.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "timeline", "sources", "initialState", "events"],
+  "required": [
+    "schemaVersion",
+    "timeline",
+    "sources",
+    "initialState",
+    "events"
+  ],
   "properties": {
-    "schemaVersion": { "enum": ["crawler-timeline/v1", "crawler-timeline/v2"] },
+    "schemaVersion": {
+      "enum": [
+        "crawler-timeline/v1",
+        "crawler-timeline/v2"
+      ]
+    },
     "timeline": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "title", "story"],
+      "required": [
+        "id",
+        "title",
+        "story"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "title": { "type": "string", "minLength": 1 },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
         "story": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["id", "title"],
+          "required": [
+            "id",
+            "title"
+          ],
           "properties": {
-            "id": { "$ref": "#/$defs/id" },
-            "title": { "type": "string", "minLength": 1 },
-            "spoilerScope": { "$ref": "#/$defs/spoilerScope" }
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "spoilerScope": {
+              "$ref": "#/$defs/spoilerScope"
+            }
           }
         },
-        "createdAt": { "type": "string", "format": "date-time" },
-        "updatedAt": { "type": "string", "format": "date-time" }
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
     "floors": {
       "type": "array",
-      "items": { "$ref": "#/$defs/floorSegment" }
+      "items": {
+        "$ref": "#/$defs/floorSegment"
+      }
     },
     "sources": {
       "type": "array",
       "uniqueItems": true,
-      "items": { "$ref": "#/$defs/source" }
+      "items": {
+        "$ref": "#/$defs/source"
+      }
     },
-    "initialState": { "$ref": "#/$defs/state" },
+    "initialState": {
+      "$ref": "#/$defs/state"
+    },
     "events": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/$defs/event" }
+      "items": {
+        "$ref": "#/$defs/event"
+      }
     },
     "countdowns": {
       "type": "array",
-      "items": { "$ref": "#/$defs/countdown" }
+      "items": {
+        "$ref": "#/$defs/countdown"
+      }
     },
     "observations": {
       "description": "Source-backed HUD readings. Estimated values are projected at runtime and are not stored here.",
       "type": "array",
-      "items": { "$ref": "#/$defs/observation" }
+      "items": {
+        "$ref": "#/$defs/observation"
+      }
     },
     "snapshots": {
       "description": "Optional projection caches. Regenerate after changing initialState or events.",
       "type": "array",
-      "items": { "$ref": "#/$defs/snapshot" }
+      "items": {
+        "$ref": "#/$defs/snapshot"
+      }
     }
   },
   "$defs": {
@@ -64,21 +114,42 @@
       "type": "string",
       "pattern": "^[a-z][a-z0-9-]{1,100}$"
     },
-    "nonNegativeInteger": { "type": "integer", "minimum": 0 },
-    "positiveInteger": { "type": "integer", "minimum": 1 },
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 1
+    },
     "quantity": {
       "oneOf": [
-        { "type": "integer", "minimum": 1 },
+        {
+          "type": "integer",
+          "minimum": 1
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["known"],
+          "required": [
+            "known"
+          ],
           "properties": {
-            "known": { "type": "boolean" },
-            "value": { "$ref": "#/$defs/positiveInteger" },
-            "minimum": { "$ref": "#/$defs/positiveInteger" },
-            "unit": { "type": "string" },
-            "note": { "type": "string" }
+            "known": {
+              "type": "boolean"
+            },
+            "value": {
+              "$ref": "#/$defs/positiveInteger"
+            },
+            "minimum": {
+              "$ref": "#/$defs/positiveInteger"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
           }
         }
       ]
@@ -86,343 +157,1756 @@
     "patron": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name"],
+      "required": [
+        "id",
+        "name"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "name": { "type": "string", "minLength": 1 },
-        "tier": { "type": "string", "minLength": 1 },
-        "contribution": { "type": "string", "minLength": 1 }
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contribution": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "floorSegment": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "ordinal", "title", "startSequence", "endSequence"],
+      "required": [
+        "id",
+        "ordinal",
+        "title",
+        "startSequence",
+        "endSequence"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "ordinal": { "$ref": "#/$defs/positiveInteger" },
-        "title": { "type": "string", "minLength": 1 },
-        "book": { "$ref": "#/$defs/positiveInteger" },
-        "bookTitle": { "type": "string" },
-        "startSequence": { "$ref": "#/$defs/positiveInteger" },
-        "endSequence": { "$ref": "#/$defs/positiveInteger" }
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "book": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "bookTitle": {
+          "type": "string"
+        },
+        "startSequence": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "endSequence": {
+          "$ref": "#/$defs/positiveInteger"
+        }
       }
     },
     "spoilerScope": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "book": { "type": "integer", "minimum": 1 },
-        "chapter": { "type": "integer", "minimum": 1 },
-        "floor": { "type": "integer", "minimum": 0 }
+        "book": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "chapter": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "floor": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "kind", "title", "url", "trust"],
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "url",
+        "trust"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "kind": {
-          "enum": ["official-text", "official-audio", "official-preview", "wiki", "fan-compendium", "discussion", "editorial"]
+        "id": {
+          "$ref": "#/$defs/id"
         },
-        "trust": { "enum": ["primary", "corroborating", "candidate"] },
-        "title": { "type": "string", "minLength": 1 },
-        "url": { "type": "string", "format": "uri" },
-        "citationStyle": { "type": "string" },
-        "accessedAt": { "type": "string", "format": "date-time" },
-        "revision": { "type": "string" }
+        "kind": {
+          "enum": [
+            "official-text",
+            "official-audio",
+            "official-preview",
+            "wiki",
+            "fan-compendium",
+            "discussion",
+            "editorial"
+          ]
+        },
+        "trust": {
+          "enum": [
+            "primary",
+            "corroborating",
+            "candidate"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "citationStyle": {
+          "type": "string"
+        },
+        "accessedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revision": {
+          "type": "string"
+        }
       }
     },
     "evidence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sourceId"],
+      "required": [
+        "sourceId"
+      ],
       "properties": {
-        "sourceId": { "$ref": "#/$defs/id" },
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
         "locator": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "book": { "type": "integer", "minimum": 1 },
-            "chapter": { "type": "integer", "minimum": 1 },
-            "floor": { "type": "integer", "minimum": 0 },
-            "section": { "type": "string" },
-            "timestamp": { "type": "string" }
+            "book": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "chapter": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "floor": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "section": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string"
+            }
           }
         },
-        "note": { "type": "string", "maxLength": 1000 },
-        "confidence": { "enum": ["confirmed", "corroborated", "candidate", "disputed"] }
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "confidence": {
+          "enum": [
+            "confirmed",
+            "corroborated",
+            "candidate",
+            "disputed"
+          ]
+        }
       }
     },
     "timelinePosition": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["floor"],
+      "required": [
+        "floor"
+      ],
       "properties": {
-        "floor": { "type": "integer", "minimum": 0 },
-        "book": { "type": "integer", "minimum": 1 },
-        "chapter": { "type": "integer", "minimum": 1 },
-        "scene": { "type": "integer", "minimum": 1 },
-        "elapsedSeconds": { "$ref": "#/$defs/nonNegativeInteger" }
+        "floor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "book": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "chapter": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scene": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "elapsedSeconds": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
       }
     },
     "countdownReference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sequence", "remainingSeconds", "evidence"],
+      "required": [
+        "sequence",
+        "remainingSeconds",
+        "evidence"
+      ],
       "properties": {
-        "sequence": { "$ref": "#/$defs/positiveInteger" },
-        "remainingSeconds": { "$ref": "#/$defs/nonNegativeInteger" },
-        "activationOffset": { "type": "integer" },
-        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-        "note": { "type": "string", "maxLength": 1000 }
+        "sequence": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "remainingSeconds": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "activationOffset": {
+          "type": "integer"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        }
       }
     },
     "countdown": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "title", "floor", "target", "references"],
+      "required": [
+        "id",
+        "title",
+        "floor",
+        "target",
+        "references"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "title": { "type": "string", "minLength": 1 },
-        "floor": { "$ref": "#/$defs/positiveInteger" },
-        "target": { "enum": ["floor-collapse", "safe-room-closure"] },
-        "references": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/countdownReference" } }
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "floor": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "target": {
+          "enum": [
+            "floor-collapse",
+            "safe-room-closure"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/countdownReference"
+          }
+        }
       }
     },
     "observation": {
       "type": "object",
       "additionalProperties": true,
-      "required": ["id", "kind", "sequence", "evidence"],
+      "required": [
+        "id",
+        "kind",
+        "sequence",
+        "evidence"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "kind": { "enum": ["countdown-remaining", "crawler-condition", "crawler-attributes", "xp-progress", "broadcast-metrics", "floor-metrics", "inventory-state", "equipment-state"] },
-        "sequence": { "$ref": "#/$defs/positiveInteger" },
-        "interpolation": { "const": "linear" },
-        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-        "note": { "type": "string", "maxLength": 1000 }
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "countdown-remaining",
+            "crawler-condition",
+            "crawler-attributes",
+            "xp-progress",
+            "broadcast-metrics",
+            "floor-metrics",
+            "inventory-state",
+            "equipment-state"
+          ]
+        },
+        "sequence": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "interpolation": {
+          "const": "linear"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "not": {
+        "required": [
+          "notificationDelivery"
+        ]
       }
     },
-    "rarity": { "enum": ["common", "uncommon", "rare", "epic", "legendary", "celestial", "bronze", "silver", "gold", "platinum", "unknown"] },
-    "itemCategory": { "enum": ["equipment", "consumable", "quest-item", "crafting", "box", "weapon", "tool", "document", "vehicle", "miscellaneous"] },
+    "rarity": {
+      "enum": [
+        "common",
+        "uncommon",
+        "rare",
+        "epic",
+        "legendary",
+        "celestial",
+        "bronze",
+        "silver",
+        "gold",
+        "platinum",
+        "unknown"
+      ]
+    },
+    "itemCategory": {
+      "enum": [
+        "equipment",
+        "consumable",
+        "quest-item",
+        "crafting",
+        "box",
+        "weapon",
+        "tool",
+        "document",
+        "vehicle",
+        "miscellaneous"
+      ]
+    },
     "item": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["instanceId", "name", "category", "quantity"],
+      "required": [
+        "instanceId",
+        "name",
+        "category",
+        "quantity"
+      ],
       "properties": {
-        "instanceId": { "$ref": "#/$defs/id" },
-        "itemId": { "$ref": "#/$defs/id" },
-        "name": { "type": "string", "minLength": 1 },
-        "category": { "$ref": "#/$defs/itemCategory" },
-        "rarity": { "$ref": "#/$defs/rarity" },
-        "quantity": { "$ref": "#/$defs/quantity" },
-        "maxStack": { "type": "integer", "minimum": 1 },
-        "slot": { "type": "string" },
-        "description": { "type": "string" },
-        "stats": { "type": "object", "additionalProperties": { "type": "number" } },
-        "sourceDescription": { "type": "string" }
+        "instanceId": {
+          "$ref": "#/$defs/id"
+        },
+        "itemId": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "$ref": "#/$defs/itemCategory"
+        },
+        "rarity": {
+          "$ref": "#/$defs/rarity"
+        },
+        "quantity": {
+          "$ref": "#/$defs/quantity"
+        },
+        "maxStack": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "slot": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "stats": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "sourceDescription": {
+          "type": "string"
+        }
       }
     },
     "reward": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind"],
+      "required": [
+        "kind"
+      ],
       "properties": {
-        "kind": { "enum": ["box", "item", "xp", "entitlement", "feature", "other"] },
-        "boxType": { "type": "string" },
-        "rarity": { "$ref": "#/$defs/rarity" },
-        "itemId": { "$ref": "#/$defs/id" },
-        "amount": { "$ref": "#/$defs/nonNegativeInteger" },
-        "description": { "type": "string" }
+        "kind": {
+          "enum": [
+            "box",
+            "item",
+            "xp",
+            "entitlement",
+            "feature",
+            "other"
+          ]
+        },
+        "boxType": {
+          "type": "string"
+        },
+        "rarity": {
+          "$ref": "#/$defs/rarity"
+        },
+        "itemId": {
+          "$ref": "#/$defs/id"
+        },
+        "amount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "description": {
+          "type": "string"
+        }
       }
     },
     "achievement": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "title"],
+      "required": [
+        "id",
+        "title"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "title": { "type": "string", "minLength": 1 },
-        "recipient": { "enum": ["carl", "donut", "party"] },
-        "sourceTitle": { "type": "string" },
-        "description": { "type": "string" },
-        "repeatCount": { "type": "integer", "minimum": 1 },
-        "reward": { "type": "array", "items": { "$ref": "#/$defs/reward" } }
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recipient": {
+          "enum": [
+            "carl",
+            "donut",
+            "party"
+          ]
+        },
+        "sourceTitle": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "repeatCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reward": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reward"
+          }
+        }
       }
     },
     "state": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["crawler"],
+      "required": [
+        "crawler"
+      ],
       "properties": {
         "crawler": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["name", "level", "attributes", "condition"],
+          "required": [
+            "name",
+            "level",
+            "attributes",
+            "condition"
+          ],
           "properties": {
-            "name": { "type": "string", "minLength": 1 },
-            "level": { "type": "integer", "minimum": 1 },
-            "race": { "type": "string" },
-            "class": { "type": "string" },
-            "xp": { "$ref": "#/$defs/nonNegativeInteger" },
-            "maxXp": { "$ref": "#/$defs/nonNegativeInteger" },
-            "attributes": { "type": "object", "additionalProperties": { "type": "number" } },
-            "condition": { "type": "object", "additionalProperties": { "type": "number" } }
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "level": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "race": {
+              "type": "string"
+            },
+            "class": {
+              "type": "string"
+            },
+            "xp": {
+              "$ref": "#/$defs/nonNegativeInteger"
+            },
+            "maxXp": {
+              "$ref": "#/$defs/nonNegativeInteger"
+            },
+            "attributes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "condition": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
           }
         },
-        "inventory": { "type": "array", "items": { "$ref": "#/$defs/item" } },
-        "achievements": { "type": "array", "items": { "$ref": "#/$defs/achievement" } },
-        "skills": { "type": "array", "items": { "type": "object" } },
-        "quests": { "type": "array", "items": { "type": "object" } },
-        "entitlements": { "type": "array", "items": { "type": "object" } }
+        "inventory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item"
+          }
+        },
+        "achievements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/achievement"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "quests": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "entitlements": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
       }
     },
     "eventBase": {
       "type": "object",
-      "required": ["id", "sequence", "type", "position", "summary", "evidence"],
+      "required": [
+        "id",
+        "sequence",
+        "type",
+        "position",
+        "summary",
+        "evidence"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "sequence": { "type": "integer", "minimum": 1 },
-        "type": { "type": "string" },
-        "position": { "$ref": "#/$defs/timelinePosition" },
-        "summary": { "type": "string", "minLength": 1 },
-        "spoilerScope": { "$ref": "#/$defs/spoilerScope" },
-        "causationId": { "$ref": "#/$defs/id" },
-        "correlationId": { "$ref": "#/$defs/id" },
-        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "type": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/$defs/timelinePosition"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "spoilerScope": {
+          "$ref": "#/$defs/spoilerScope"
+        },
+        "causationId": {
+          "$ref": "#/$defs/id"
+        },
+        "correlationId": {
+          "$ref": "#/$defs/id"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "notificationDelivery": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "delivered",
+            "kind",
+            "severity"
+          ],
+          "properties": {
+            "delivered": {
+              "const": true
+            },
+            "kind": {
+              "enum": [
+                "achievement",
+                "progression",
+                "skill",
+                "quest",
+                "reward",
+                "system",
+                "floor"
+              ]
+            },
+            "severity": {
+              "enum": [
+                "info",
+                "success",
+                "warning",
+                "critical"
+              ]
+            },
+            "title": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
       }
     },
     "event": {
       "oneOf": [
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "achievement"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence",
+                "achievement"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "AchievementUnlocked" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "achievement": { "$ref": "#/$defs/achievement" }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "const": "AchievementUnlocked"
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "achievement": {
+                  "$ref": "#/$defs/achievement"
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           ]
         },
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "item"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence",
+                "item"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["ItemAcquired", "ItemCrafted"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "item": { "$ref": "#/$defs/item" }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "enum": [
+                    "ItemAcquired",
+                    "ItemCrafted"
+                  ]
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "item": {
+                  "$ref": "#/$defs/item"
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           ]
         },
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence",
+                "itemInstanceId"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "ItemConsumed" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "itemInstanceId": { "$ref": "#/$defs/id" }, "quantity": { "$ref": "#/$defs/quantity" }, "outcome": { "type": "string" }, "healthRestored": { "type": "number" }, "manaRestored": { "type": "number" }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "const": "ItemConsumed"
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "itemInstanceId": {
+                  "$ref": "#/$defs/id"
+                },
+                "quantity": {
+                  "$ref": "#/$defs/quantity"
+                },
+                "outcome": {
+                  "type": "string"
+                },
+                "healthRestored": {
+                  "type": "number"
+                },
+                "manaRestored": {
+                  "type": "number"
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           ]
         },
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence",
+                "itemInstanceId"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["ItemEquipped", "ItemUnequipped", "ItemDiscarded"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "itemInstanceId": { "$ref": "#/$defs/id" }, "slot": { "type": "string" }, "quantity": { "$ref": "#/$defs/quantity" }, "reason": { "type": "string" }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "enum": [
+                    "ItemEquipped",
+                    "ItemUnequipped",
+                    "ItemDiscarded"
+                  ]
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "itemInstanceId": {
+                  "$ref": "#/$defs/id"
+                },
+                "slot": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "$ref": "#/$defs/quantity"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           ]
         },
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "itemInstanceId", "delta"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence",
+                "itemInstanceId",
+                "delta"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "ItemQuantityChanged" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "itemInstanceId": { "$ref": "#/$defs/id" }, "delta": { "type": "integer" }, "quantity": { "$ref": "#/$defs/quantity" }, "reason": { "type": "string" }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "const": "ItemQuantityChanged"
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "itemInstanceId": {
+                  "$ref": "#/$defs/id"
+                },
+                "delta": {
+                  "type": "integer"
+                },
+                "quantity": {
+                  "$ref": "#/$defs/quantity"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           ]
         },
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "entitlement"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence",
+                "entitlement"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "PermanentEntitlementGranted" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "entitlement": { "type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": { "id": { "$ref": "#/$defs/id" }, "name": { "type": "string" }, "location": { "type": "string" }, "description": { "type": "string" } } }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "const": "PermanentEntitlementGranted"
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "entitlement": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "name"
+                  ],
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/id"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           ]
         },
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence", "kind"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence",
+                "kind"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "const": "NarrativeEvent" }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "kind": { "enum": ["floor-entered", "floor-exited", "floor-collapsed", "encounter-started", "encounter-resolved", "episode-released", "rule-changed", "location-discovered", "dialogue", "choice-made", "transformation", "party-changed", "other"] },
-                "entities": { "type": "array", "items": { "$ref": "#/$defs/id" } }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "const": "NarrativeEvent"
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "kind": {
+                  "enum": [
+                    "floor-entered",
+                    "floor-exited",
+                    "floor-collapsed",
+                    "encounter-started",
+                    "encounter-resolved",
+                    "episode-released",
+                    "rule-changed",
+                    "location-discovered",
+                    "dialogue",
+                    "choice-made",
+                    "transformation",
+                    "party-changed",
+                    "other"
+                  ]
+                },
+                "entities": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/id"
+                  }
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           ]
         },
         {
           "allOf": [
-            { "$ref": "#/$defs/eventBase" },
+            {
+              "$ref": "#/$defs/eventBase"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "sequence", "type", "position", "summary", "evidence"],
+              "required": [
+                "id",
+                "sequence",
+                "type",
+                "position",
+                "summary",
+                "evidence"
+              ],
               "properties": {
-                "id": { "$ref": "#/$defs/id" }, "sequence": { "type": "integer", "minimum": 1 }, "type": { "enum": ["AttributeModified", "EffectApplied", "EffectExpired", "SkillGranted", "QuestUpdated", "BroadcastUpdated", "ConditionChanged", "LevelChanged", "XPChanged", "HotlistUpdated", "CountdownReset", "CountdownPaused", "CountdownResumed", "CountdownPhaseChanged"] }, "position": { "$ref": "#/$defs/timelinePosition" }, "summary": { "type": "string" }, "spoilerScope": { "$ref": "#/$defs/spoilerScope" }, "causationId": { "$ref": "#/$defs/id" }, "correlationId": { "$ref": "#/$defs/id" }, "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
-                "level": { "type": "integer", "minimum": 1 }, "previousLevel": { "type": "integer", "minimum": 1 }, "skillId": { "$ref": "#/$defs/id" }, "name": { "type": "string" }, "icon": { "type": "string" }, "rank": { "type": "string" }, "description": { "type": "string" }, "cooldown": { "type": "string" }, "category": { "enum": ["combat", "utility", "passive"] }, "effectId": { "$ref": "#/$defs/id" }, "effectType": { "enum": ["good", "bad"] }, "durationSeconds": { "type": "number", "minimum": 0 }, "statModifiers": { "type": "object", "additionalProperties": { "type": "number" } }, "viewers": { "type": "number", "minimum": 0 }, "viewerDelta": { "type": "string" }, "followers": { "type": "number", "minimum": 0 }, "fameRank": { "type": "string" }, "sponsorInterest": { "type": "boolean" },
-                "patrons": { "type": "array", "items": { "$ref": "#/$defs/patron" } }, "favorites": { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/patron" }] } }, "metrics": { "type": "object", "additionalProperties": true },
-                "attribute": { "enum": ["Strength", "Dexterity", "Constitution", "Intelligence", "Charisma"] }, "delta": { "type": "integer" }, "source": { "type": "string" }, "reason": { "type": "string" }, "isAllocation": { "type": "boolean" },
-                "currentHealth": { "type": "integer", "minimum": 0 }, "maxHealth": { "type": "integer", "minimum": 1 }, "healthDelta": { "type": "integer" }, "currentMana": { "type": "integer", "minimum": 0 }, "maxMana": { "type": "integer", "minimum": 1 }, "manaDelta": { "type": "integer" }, "currentStamina": { "type": "integer", "minimum": 0 }, "maxStamina": { "type": "integer", "minimum": 1 }, "staminaDelta": { "type": "integer" },
-                "xp": { "type": "integer", "minimum": 0 }, "xpDelta": { "type": "integer" }, "maxXp": { "type": "integer", "minimum": 1 },
-                "questId": { "$ref": "#/$defs/id" }, "title": { "type": "string" }, "urgency": { "enum": ["URGENT", "STANDARD", "COMPLETED"] }, "goals": { "type": "array", "items": { "type": "string" } }, "rewards": { "type": "string" }, "status": { "enum": ["active", "completed", "failed"] },
-                "hotlist": { "type": "array", "items": { "type": "string" } }, "index": { "type": "integer", "minimum": 0 },
-                "countdownId": { "$ref": "#/$defs/id" }, "newRemainingSeconds": { "type": "integer", "minimum": 0 }, "phase": { "type": "string" }, "fromPhase": { "type": "string" }, "toPhase": { "type": "string" }
+                "id": {
+                  "$ref": "#/$defs/id"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "type": {
+                  "enum": [
+                    "AttributeModified",
+                    "EffectApplied",
+                    "EffectExpired",
+                    "SkillGranted",
+                    "QuestUpdated",
+                    "BroadcastUpdated",
+                    "ConditionChanged",
+                    "LevelChanged",
+                    "XPChanged",
+                    "HotlistUpdated",
+                    "CountdownReset",
+                    "CountdownPaused",
+                    "CountdownResumed",
+                    "CountdownPhaseChanged"
+                  ]
+                },
+                "position": {
+                  "$ref": "#/$defs/timelinePosition"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "spoilerScope": {
+                  "$ref": "#/$defs/spoilerScope"
+                },
+                "causationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "correlationId": {
+                  "$ref": "#/$defs/id"
+                },
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/evidence"
+                  }
+                },
+                "level": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "previousLevel": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "skillId": {
+                  "$ref": "#/$defs/id"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "rank": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "cooldown": {
+                  "type": "string"
+                },
+                "category": {
+                  "enum": [
+                    "combat",
+                    "utility",
+                    "passive"
+                  ]
+                },
+                "effectId": {
+                  "$ref": "#/$defs/id"
+                },
+                "effectType": {
+                  "enum": [
+                    "good",
+                    "bad",
+                    "injury",
+                    "other"
+                  ]
+                },
+                "durationSeconds": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "statModifiers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                "viewers": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "viewerDelta": {
+                  "type": "string"
+                },
+                "followers": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "fameRank": {
+                  "type": "string"
+                },
+                "sponsorInterest": {
+                  "type": "boolean"
+                },
+                "patrons": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/patron"
+                  }
+                },
+                "favorites": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/patron"
+                      }
+                    ]
+                  }
+                },
+                "metrics": {
+                  "type": "object",
+                  "additionalProperties": true
+                },
+                "attribute": {
+                  "enum": [
+                    "Strength",
+                    "Dexterity",
+                    "Constitution",
+                    "Intelligence",
+                    "Charisma"
+                  ]
+                },
+                "delta": {
+                  "type": "integer"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "isAllocation": {
+                  "type": "boolean"
+                },
+                "currentHealth": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "maxHealth": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "healthDelta": {
+                  "type": "integer"
+                },
+                "currentMana": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "maxMana": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "manaDelta": {
+                  "type": "integer"
+                },
+                "currentStamina": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "maxStamina": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "staminaDelta": {
+                  "type": "integer"
+                },
+                "xp": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "xpDelta": {
+                  "type": "integer"
+                },
+                "maxXp": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "questId": {
+                  "$ref": "#/$defs/id"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "urgency": {
+                  "enum": [
+                    "URGENT",
+                    "STANDARD",
+                    "COMPLETED"
+                  ]
+                },
+                "goals": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "rewards": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "active",
+                    "completed",
+                    "failed"
+                  ]
+                },
+                "hotlist": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "index": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "countdownId": {
+                  "$ref": "#/$defs/id"
+                },
+                "newRemainingSeconds": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "phase": {
+                  "type": "string"
+                },
+                "fromPhase": {
+                  "type": "string"
+                },
+                "toPhase": {
+                  "type": "string"
+                },
+                "notificationDelivery": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "delivered",
+                    "kind",
+                    "severity"
+                  ],
+                  "properties": {
+                    "delivered": {
+                      "const": true
+                    },
+                    "kind": {
+                      "enum": [
+                        "achievement",
+                        "progression",
+                        "skill",
+                        "quest",
+                        "reward",
+                        "system",
+                        "floor"
+                      ]
+                    },
+                    "severity": {
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "critical"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
               },
               "allOf": [
                 {
-                  "if": { "properties": { "type": { "enum": ["CountdownReset", "CountdownPaused", "CountdownResumed", "CountdownPhaseChanged"] } } },
-                  "then": { "required": ["countdownId"] }
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "CountdownReset",
+                          "CountdownPaused",
+                          "CountdownResumed",
+                          "CountdownPhaseChanged"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "countdownId"
+                    ]
+                  }
                 },
                 {
-                  "if": { "properties": { "type": { "const": "HotlistUpdated" } } },
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "HotlistUpdated"
+                      }
+                    }
+                  },
                   "then": {
                     "anyOf": [
-                      { "required": ["hotlist"] },
-                      { "required": ["skillId", "index"] }
+                      {
+                        "required": [
+                          "hotlist"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "skillId",
+                          "index"
+                        ]
+                      }
                     ]
                   }
                 }
@@ -435,11 +1919,21 @@
     "snapshot": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sequence", "state"],
+      "required": [
+        "sequence",
+        "state"
+      ],
       "properties": {
-        "sequence": { "type": "integer", "minimum": 0 },
-        "state": { "$ref": "#/$defs/state" },
-        "generatedFromEventHash": { "type": "string" }
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "state": {
+          "$ref": "#/$defs/state"
+        },
+        "generatedFromEventHash": {
+          "type": "string"
+        }
       }
     }
   }

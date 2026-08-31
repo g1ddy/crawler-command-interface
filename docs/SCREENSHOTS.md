@@ -1,51 +1,44 @@
 # Interface Screenshots
 
-These images are generated canonical views of the Crawler Command Interface. They are refreshed by `npm run test:screenshots` and by the pull-request screenshot workflow when UI, fixture data, Pages rendering inputs, or screenshot-generation code changes.
+These images are generated canonical views of the Crawler Command Interface. Refresh the complete set with `npm run test:screenshots`; do not retouch generated images manually.
 
-Do not retouch these files manually. If a documented interface state changes, update the application or screenshot-generation code and regenerate the assets.
-
-The persistent timeline shown in every canonical view keeps floor selection, sequence scrubbing, typed story markers, replay stepping, and return-to-Live controls visible. Primary collapse timing is presented once in the persistent HUD; sourced secondary timers and countdown evidence remain contextual timeline details.
+The persistent timeline in every view remains replay-aware and the compact viewer counter stays in the persistent HUD.
 
 ## Top-level views
 
 ### Crawler
-
 ![Crawler view](images/screenshot-crawler.png)
 
 ### Inventory
-
 ![Inventory view](images/screenshot-inventory.png)
 
 ### Skills
-
 ![Skills view](images/screenshot-skills.png)
 
 ### Quests
-
 ![Quests view](images/screenshot-quests.png)
 
-## Crawler profile views
+### Ratings
+Broadcast-domain observations are presented in canon-aligned Ratings groups without renaming the underlying data model.
+![Ratings view](images/screenshot-ratings.png)
 
-### Overview
+### Notifications
+Only source-backed crawler-visible semantics are represented; generic Timeline activity remains separate.
+![Notifications view](images/screenshot-notifications.png)
 
-The overview intentionally omits the duplicate broadcast summary; audience details remain documented in the Broadcast view.
+## Crawler views
 
-![Crawler overview](images/screenshot-crawler-overview.png)
+### Player Stats
+![Crawler stats](images/screenshot-crawler-stats.png)
 
-### Achievements
-
-![Crawler achievements](images/screenshot-crawler-achievements.png)
-
-### Broadcast
-
-![Crawler broadcast](images/screenshot-crawler-broadcast.png)
+### Health / Conditions
+Vitals are separate from beneficial, harmful, injury, and other condition presentation. Injuries are never inferred from effect text.
+![Crawler health and conditions](images/screenshot-crawler-health.png)
 
 ## Timeline and floor context views
 
 ### Floor Rules
-
 ![Floor rules view](images/screenshot-floor-rules.png)
 
 ### Timeline History
-
 ![Timeline history view](images/screenshot-timeline-history.png)

@@ -25,17 +25,16 @@ async function preparePage(page: Page) {
   });
 }
 
-async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS") {
+async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS" | "RATINGS" | "NOTIFICATIONS") {
   const navigation = page.getByRole("navigation", { name: "Main Navigation" });
   const tab = navigation.getByRole("button", { name, exact: true });
   await tab.click();
   await expect(tab).toHaveAttribute("aria-pressed", "true");
 }
 
-async function selectCrawlerSubTab(page: Page, name: "OVERVIEW" | "ACHIEVEMENTS" | "BROADCAST") {
+async function selectCrawlerSubTab(page: Page, name: "STATS" | "HEALTH / CONDITIONS") {
   await selectTopLevelTab(page, "CRAWLER");
-  const subnav = page.locator(".subnav");
-  const tab = subnav.getByRole("button", { name, exact: true });
+  const tab = page.locator(".subnav").getByRole("button", { name, exact: true });
   await tab.click();
   await expect(tab).toHaveClass(/\bon\b/);
 }
@@ -54,9 +53,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("export top-level Crawler tab", async ({ page }) => {
-  await selectCrawlerSubTab(page, "OVERVIEW");
-  await expect(page.getByRole("button", { name: "Manage in Inventory →", exact: true })).toBeVisible();
-  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toHaveCount(0);
+  await selectCrawlerSubTab(page, "STATS");
+  await expect(page.getByText("PLAYER ATTRIBUTES · CLICK TO INSPECT PROVENANCE", { exact: true })).toBeVisible();
   await capture(page, "crawler");
 });
 
@@ -146,25 +144,28 @@ test("export top-level Quests tab", async ({ page }) => {
   await capture(page, "quests");
 });
 
-test("export Crawler Overview profile sub-tab", async ({ page }) => {
-  await selectCrawlerSubTab(page, "OVERVIEW");
-  await expect(page.getByRole("button", { name: "Manage in Inventory →", exact: true })).toBeVisible();
-  await expect(page.getByText("BROADCAST STATUS", { exact: true })).toHaveCount(0);
-  await capture(page, "crawlerOverview");
+test("export Crawler Stats", async ({ page }) => {
+  await selectCrawlerSubTab(page, "STATS");
+  await expect(page.getByText("AVAILABLE STAT POINTS", { exact: true })).toBeVisible();
+  await capture(page, "crawlerStats");
 });
 
-test("export Crawler Achievements profile sub-tab", async ({ page }) => {
-  await selectCrawlerSubTab(page, "ACHIEVEMENTS");
-  await expect(page.locator(".achievements .achievement").first()).toBeVisible();
-  await expect(page.getByText(/ACHIEVEMENT UNLOCKED/).first()).toBeVisible();
-  await capture(page, "crawlerAchievements");
+test("export Crawler Health and Conditions", async ({ page }) => {
+  await selectCrawlerSubTab(page, "HEALTH / CONDITIONS");
+  await expect(page.getByText("VITALS", { exact: true })).toBeVisible();
+  await capture(page, "crawlerHealth");
 });
 
-test("export Crawler Broadcast profile sub-tab", async ({ page }) => {
-  await selectCrawlerSubTab(page, "BROADCAST");
-  await expect(page.getByText("LIVE BROADCAST", { exact: true })).toBeVisible();
-  await expect(page.getByText("CURRENT VIEWERS", { exact: true })).toBeVisible();
-  await capture(page, "crawlerBroadcast");
+test("export Ratings", async ({ page }) => {
+  await selectTopLevelTab(page, "RATINGS");
+  await expect(page.getByRole("heading", { name: "RATINGS", exact: true })).toBeVisible();
+  await capture(page, "ratings");
+});
+
+test("export Notifications", async ({ page }) => {
+  await selectTopLevelTab(page, "NOTIFICATIONS");
+  await expect(page.getByRole("heading", { name: "NOTIFICATIONS", exact: true })).toBeVisible();
+  await capture(page, "notifications");
 });
 
 test("export Floor Rules modal view", async ({ page }) => {
