@@ -110,6 +110,24 @@ test("invalid schema rejects non-compliant documents", () => {
   assert.ok(validation.errors.length > 0);
 });
 
+test("notification delivery metadata is accepted only on timeline events", () => {
+  const delivery = { delivered: true, kind: "system", severity: "info" };
+
+  const eventDoc = JSON.parse(JSON.stringify(compiledTimeline));
+  eventDoc.events[0].notificationDelivery = delivery;
+  assert.equal(validateCrawlerTimeline(eventDoc).valid, true);
+
+  const countdownDoc = JSON.parse(JSON.stringify(compiledTimeline));
+  countdownDoc.countdowns[0].references[0].notificationDelivery = delivery;
+  const countdownValidation = validateCrawlerTimeline(countdownDoc);
+  assert.equal(countdownValidation.valid, false);
+
+  const observationDoc = JSON.parse(JSON.stringify(compiledTimeline));
+  observationDoc.observations[0].notificationDelivery = delivery;
+  const observationValidation = validateCrawlerTimeline(observationDoc);
+  assert.equal(observationValidation.valid, false);
+});
+
 test("rejects document with duplicate or out-of-order event sequence numbers", () => {
   const badDoc = JSON.parse(JSON.stringify(floor6Timeline));
   badDoc.events[1].sequence = 1;
