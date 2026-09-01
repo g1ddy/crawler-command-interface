@@ -159,6 +159,7 @@ function mapSchemaCategoryToUi(cat: string): ItemCategory {
   if (lower === 'consumable' || lower === 'consumables') return 'CONSUMABLES';
   if (lower === 'quest-item' || lower === 'quest items') return 'QUEST ITEMS';
   if (lower === 'crafting') return 'CRAFTING';
+  if (lower === 'box') return 'BOXES';
   return 'JUNK';
 }
 
@@ -170,6 +171,7 @@ function getItemIcon(category: ItemCategory, slot?: string): string {
   if (category === 'CONSUMABLES') return '🧪';
   if (category === 'QUEST ITEMS') return '▣';
   if (category === 'CRAFTING') return '◆';
+  if (category === 'BOXES') return '▣';
   return '📦';
 }
 

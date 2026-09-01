@@ -155,6 +155,38 @@
           "Dexterity": 1,
           "Strength (Fist Mode)": 3
         }
+      },
+      {
+        "id": "item-award-silver-adventurer-box",
+        "name": "Silver Adventurer Box",
+        "category": "box",
+        "rarity": "silver",
+        "persistent": false,
+        "description": "Awarded for the Early Adopter achievement. Its later contents are not modeled here."
+      },
+      {
+        "id": "item-award-bronze-adventurer-box",
+        "name": "Bronze Adventurer Box",
+        "category": "box",
+        "rarity": "bronze",
+        "persistent": false,
+        "description": "Awarded for the Empty Pockets achievement. Its later contents are not modeled here."
+      },
+      {
+        "id": "item-award-gold-apparel-box",
+        "name": "Gold Apparel Box",
+        "category": "box",
+        "rarity": "gold",
+        "persistent": false,
+        "description": "Awarded for the Why Aren't You Wearing Pants? achievement. Its later contents are not modeled here."
+      },
+      {
+        "id": "item-award-bronze-weapon-box",
+        "name": "Bronze Weapon Box",
+        "category": "box",
+        "rarity": "bronze",
+        "persistent": false,
+        "description": "Awarded for the Unarmed Combat achievement. Its later contents are not modeled here."
       }
     ],
     "achievements": [
@@ -576,7 +608,7 @@
           "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse."
         },
         {
-          "anchorOrder": 10,
+          "anchorOrder": 18,
           "remainingSeconds": 429660,
           "evidence": [
             {
@@ -590,7 +622,7 @@
           "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)"
         },
         {
-          "anchorOrder": 11,
+          "anchorOrder": 19,
           "remainingSeconds": 428400,
           "evidence": [
             {
@@ -604,7 +636,7 @@
           "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)"
         },
         {
-          "anchorOrder": 12,
+          "anchorOrder": 20,
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -618,7 +650,7 @@
           "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)"
         },
         {
-          "anchorOrder": 35,
+          "anchorOrder": 43,
           "remainingSeconds": 405420,
           "evidence": [
             {
@@ -632,7 +664,7 @@
           "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)"
         },
         {
-          "anchorOrder": 36,
+          "anchorOrder": 44,
           "remainingSeconds": 356580,
           "evidence": [
             {
@@ -646,7 +678,7 @@
           "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)"
         },
         {
-          "anchorOrder": 37,
+          "anchorOrder": 45,
           "remainingSeconds": 345600,
           "evidence": [
             {
@@ -660,7 +692,7 @@
           "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)"
         },
         {
-          "anchorOrder": 39,
+          "anchorOrder": 47,
           "remainingSeconds": 324000,
           "evidence": [
             {
@@ -674,7 +706,7 @@
           "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 40,
+          "anchorOrder": 48,
           "remainingSeconds": 320400,
           "evidence": [
             {
@@ -688,7 +720,7 @@
           "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)"
         },
         {
-          "anchorOrder": 46,
+          "anchorOrder": 54,
           "remainingSeconds": 237600,
           "evidence": [
             {
@@ -702,7 +734,7 @@
           "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 51,
+          "anchorOrder": 59,
           "remainingSeconds": 216000,
           "evidence": [
             {
@@ -716,7 +748,7 @@
           "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)"
         },
         {
-          "anchorOrder": 52,
+          "anchorOrder": 60,
           "remainingSeconds": 212400,
           "evidence": [
             {
@@ -730,7 +762,7 @@
           "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)"
         },
         {
-          "anchorOrder": 56,
+          "anchorOrder": 64,
           "remainingSeconds": 144000,
           "evidence": [
             {
@@ -744,7 +776,7 @@
           "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)"
         },
         {
-          "anchorOrder": 57,
+          "anchorOrder": 65,
           "remainingSeconds": 108000,
           "evidence": [
             {
@@ -758,7 +790,7 @@
           "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 58,
+          "anchorOrder": 66,
           "remainingSeconds": 104400,
           "evidence": [
             {
@@ -772,7 +804,7 @@
           "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)"
         },
         {
-          "anchorOrder": 59,
+          "anchorOrder": 67,
           "remainingSeconds": 23400,
           "evidence": [
             {
@@ -786,7 +818,7 @@
           "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)"
         },
         {
-          "anchorOrder": 60,
+          "anchorOrder": 68,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -800,7 +832,7 @@
           "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 67,
+          "anchorOrder": 75,
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -944,8 +976,42 @@
       }
     },
     {
-      "id": "evt-f1-002-empty-pockets",
+      "id": "evt-f1-award-early-adopter-box",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "causationId": "evt-f1-achievement-early-adopter",
+      "item": {
+        "instanceId": "inst-f1-award-silver-adventurer-box",
+        "itemId": "item-award-silver-adventurer-box",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "The Dungeon System awards Carl a Silver Adventurer Box for Early Adopter.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
       "order": 6,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      }
+    },
+    {
+      "id": "evt-f1-002-empty-pockets",
+      "order": 7,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -970,8 +1036,42 @@
       }
     },
     {
+      "id": "evt-f1-award-empty-pockets-box",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "causationId": "evt-f1-002-empty-pockets",
+      "item": {
+        "instanceId": "inst-f1-award-bronze-adventurer-box",
+        "itemId": "item-award-bronze-adventurer-box",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "The Dungeon System awards Carl a Bronze Adventurer Box for Empty Pockets.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 8,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      }
+    },
+    {
       "id": "evt-f1-003-no-pants",
-      "order": 7,
+      "order": 9,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -996,8 +1096,42 @@
       }
     },
     {
+      "id": "evt-f1-award-no-pants-box",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "causationId": "evt-f1-003-no-pants",
+      "item": {
+        "instanceId": "inst-f1-award-gold-apparel-box",
+        "itemId": "item-award-gold-apparel-box",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "The Dungeon System awards Carl a Gold Apparel Box for Why Aren't You Wearing Pants?.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 10,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      }
+    },
+    {
       "id": "evt-f1-004-unarmed-combat",
-      "order": 8,
+      "order": 11,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1022,6 +1156,128 @@
       }
     },
     {
+      "id": "evt-f1-award-unarmed-combat-box",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "causationId": "evt-f1-004-unarmed-combat",
+      "item": {
+        "instanceId": "inst-f1-award-bronze-weapon-box",
+        "itemId": "item-award-bronze-weapon-box",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "The Dungeon System awards Carl a Bronze Weapon Box for Unarmed Combat.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 12,
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
+      }
+    },
+    {
+      "id": "evt-f1-open-early-adopter-box",
+      "type": "ItemDiscarded",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "itemInstanceId": "inst-f1-award-silver-adventurer-box",
+      "reason": "opened",
+      "summary": "Carl opens the Silver Adventurer Box awarded for Early Adopter.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 13
+    },
+    {
+      "id": "evt-f1-open-empty-pockets-box",
+      "type": "ItemDiscarded",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "itemInstanceId": "inst-f1-award-bronze-adventurer-box",
+      "reason": "opened",
+      "summary": "Carl opens the Bronze Adventurer Box awarded for Empty Pockets.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 14
+    },
+    {
+      "id": "evt-f1-open-no-pants-box",
+      "type": "ItemDiscarded",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "itemInstanceId": "inst-f1-award-gold-apparel-box",
+      "reason": "opened",
+      "summary": "Carl opens the Gold Apparel Box awarded for Why Aren't You Wearing Pants?.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 15
+    },
+    {
+      "id": "evt-f1-open-unarmed-combat-box",
+      "type": "ItemDiscarded",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "itemInstanceId": "inst-f1-award-bronze-weapon-box",
+      "reason": "opened",
+      "summary": "Carl opens the Bronze Weapon Box awarded for Unarmed Combat.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 16
+    },
+    {
       "id": "evt-f1-achievement-loner",
       "type": "AchievementUnlocked",
       "position": {
@@ -1040,7 +1296,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 9,
+      "order": 17,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1065,7 +1321,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 10
+      "order": 18
     },
     {
       "id": "evt-f1-countdown-cascadia-announcement",
@@ -1092,7 +1348,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 11
+      "order": 19
     },
     {
       "id": "evt-f1-countdown-tutorial-complete",
@@ -1112,7 +1368,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 12
+      "order": 20
     },
     {
       "id": "evt-f1-achievement-fall-into-obvious-trap",
@@ -1133,7 +1389,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 13,
+      "order": 21,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1159,7 +1415,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 14,
+      "order": 22,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1185,7 +1441,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 15,
+      "order": 23,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1211,7 +1467,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 16,
+      "order": 24,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1237,7 +1493,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17,
+      "order": 25,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1263,7 +1519,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18,
+      "order": 26,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1289,7 +1545,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19,
+      "order": 27,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1298,7 +1554,7 @@
     },
     {
       "id": "evt-f1-017-podophilia",
-      "order": 20,
+      "order": 28,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1324,7 +1580,7 @@
     },
     {
       "id": "evt-f1-015-boom",
-      "order": 21,
+      "order": 29,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1367,7 +1623,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 22,
+      "order": 30,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1376,7 +1632,7 @@
     },
     {
       "id": "evt-f1-level-2",
-      "order": 23,
+      "order": 31,
       "type": "LevelChanged",
       "level": 2,
       "position": {
@@ -1401,7 +1657,7 @@
     },
     {
       "id": "evt-f1-005-goblin-pass",
-      "order": 24,
+      "order": 32,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -1431,7 +1687,7 @@
     },
     {
       "id": "evt-f1-006-trollskin-shirt",
-      "order": 25,
+      "order": 33,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1476,7 +1732,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 26,
+      "order": 34,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1485,7 +1741,7 @@
     },
     {
       "id": "evt-f1-009-first-magic-gear",
-      "order": 27,
+      "order": 35,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1528,7 +1784,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28,
+      "order": 36,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1537,7 +1793,7 @@
     },
     {
       "id": "evt-f1-007-nightgaunt-cloak",
-      "order": 29,
+      "order": 37,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1565,7 +1821,7 @@
     },
     {
       "id": "evt-f1-008-toe-ring",
-      "order": 30,
+      "order": 38,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1593,7 +1849,7 @@
     },
     {
       "id": "evt-f1-toe-ring-equipped",
-      "order": 31,
+      "order": 39,
       "type": "ItemEquipped",
       "position": {
         "floor": 1,
@@ -1615,7 +1871,7 @@
     },
     {
       "id": "evt-f1-level-3",
-      "order": 32,
+      "order": 40,
       "type": "LevelChanged",
       "level": 3,
       "position": {
@@ -1640,7 +1896,7 @@
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
-      "order": 33,
+      "order": 41,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1668,7 +1924,7 @@
     },
     {
       "id": "evt-f1-level-5",
-      "order": 34,
+      "order": 42,
       "type": "LevelChanged",
       "level": 5,
       "position": {
@@ -1709,7 +1965,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 35
+      "order": 43
     },
     {
       "id": "evt-f1-countdown-crawlers-4148111",
@@ -1729,7 +1985,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36
+      "order": 44
     },
     {
       "id": "evt-f1-countdown-royal-court-hoarder",
@@ -1749,11 +2005,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 37
+      "order": 45
     },
     {
       "id": "evt-f1-011-shade-gnoll-kneepads",
-      "order": 38,
+      "order": 46,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1804,7 +2060,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 39
+      "order": 47
     },
     {
       "id": "evt-f1-countdown-floor-2-stairs",
@@ -1824,11 +2080,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 40
+      "order": 48
     },
     {
       "id": "evt-f1-level-7",
-      "order": 41,
+      "order": 49,
       "type": "LevelChanged",
       "level": 7,
       "position": {
@@ -1853,7 +2109,7 @@
     },
     {
       "id": "evt-f1-level-8",
-      "order": 42,
+      "order": 50,
       "type": "LevelChanged",
       "level": 8,
       "position": {
@@ -1878,7 +2134,7 @@
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
-      "order": 43,
+      "order": 51,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1923,7 +2179,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 44,
+      "order": 52,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1949,7 +2205,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 45,
+      "order": 53,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1974,11 +2230,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 46
+      "order": 54
     },
     {
       "id": "evt-f1-013-desperado-pass",
-      "order": 47,
+      "order": 55,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -2008,7 +2264,7 @@
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
-      "order": 48,
+      "order": 56,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2036,7 +2292,7 @@
     },
     {
       "id": "evt-f1-level-9",
-      "order": 49,
+      "order": 57,
       "type": "LevelChanged",
       "level": 9,
       "position": {
@@ -2061,7 +2317,7 @@
     },
     {
       "id": "evt-f1-level-10",
-      "order": 50,
+      "order": 58,
       "type": "LevelChanged",
       "level": 10,
       "position": {
@@ -2102,7 +2358,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 51
+      "order": 59
     },
     {
       "id": "evt-f1-countdown-system-patch",
@@ -2122,11 +2378,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 52
+      "order": 60
     },
     {
       "id": "evt-f1-016-war-gauntlet",
-      "order": 53,
+      "order": 61,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2170,7 +2426,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 54,
+      "order": 62,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2196,7 +2452,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55,
+      "order": 63,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2221,7 +2477,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 56
+      "order": 64
     },
     {
       "id": "evt-f1-countdown-crawlers-2552085",
@@ -2241,7 +2497,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 57
+      "order": 65
     },
     {
       "id": "evt-f1-countdown-system-patch-late",
@@ -2261,7 +2517,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 58
+      "order": 66
     },
     {
       "id": "evt-f1-countdown-ball-of-swine",
@@ -2281,7 +2537,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 59
+      "order": 67
     },
     {
       "id": "evt-f1-countdown-floor-2-descent",
@@ -2301,7 +2557,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 60
+      "order": 68
     },
     {
       "id": "evt-f1-achievement-borough-boss",
@@ -2322,7 +2578,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 61,
+      "order": 69,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2348,7 +2604,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 62,
+      "order": 70,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2357,7 +2613,7 @@
     },
     {
       "id": "evt-f1-018-battlefield-construction",
-      "order": 63,
+      "order": 71,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2400,7 +2656,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 64,
+      "order": 72,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2426,7 +2682,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 65,
+      "order": 73,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2435,7 +2691,7 @@
     },
     {
       "id": "evt-f1-019-exit",
-      "order": 66,
+      "order": 74,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2456,7 +2712,7 @@
     },
     {
       "id": "evt-f1-floor-collapse",
-      "order": 67,
+      "order": 75,
       "type": "NarrativeEvent",
       "kind": "floor-collapsed",
       "position": {
@@ -2476,7 +2732,7 @@
     },
     {
       "id": "evt-f1-countdown-episode-4",
-      "order": 68,
+      "order": 76,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {

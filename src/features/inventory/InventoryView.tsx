@@ -10,6 +10,7 @@ export function InventoryView({
   liveState,
   observations,
   events,
+  sequence,
   provenanceItem,
   setProvenanceItem,
   filter,
@@ -25,6 +26,7 @@ export function InventoryView({
   observations: ProjectedObservationsState;
   sources?: TimelineSource[];
   events: CrawlerEvent[];
+  sequence: number;
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
   filter: string;
@@ -40,6 +42,38 @@ export function InventoryView({
   const [search, setSearch] = useState<string>("");
 
   const items = state.inventory;
+  const awards = useMemo(() => {
+    const eventById = new Map(events.map((event) => [event.id, event]));
+
+    return events
+      .filter((event) => event.sequence <= sequence && event.type === "ItemAcquired")
+      .flatMap((event) => {
+        const item = event.item as { instanceId?: unknown; name?: unknown; category?: unknown; rarity?: unknown; description?: unknown } | undefined;
+        if (!item || item.category !== "box" || typeof item.instanceId !== "string") return [];
+
+        const openedBy = events.find(
+          (candidate) =>
+            candidate.sequence <= sequence &&
+            candidate.type === "ItemDiscarded" &&
+            candidate.itemInstanceId === item.instanceId &&
+            candidate.reason === "opened"
+        );
+        const achievementEvent = typeof event.causationId === "string" ? eventById.get(event.causationId) : undefined;
+        const achievement = achievementEvent?.achievement as { title?: unknown } | undefined;
+
+        return [{
+          id: item.instanceId,
+          name: typeof item.name === "string" ? item.name : "Awarded Box",
+          rarity: typeof item.rarity === "string" ? item.rarity : "unknown",
+          description: typeof item.description === "string" ? item.description : "No box details are sourced.",
+          awardedAtSequence: event.sequence,
+          achievementTitle: typeof achievement?.title === "string" ? achievement.title : "Source-backed award",
+          openedAtSequence: openedBy?.sequence,
+          isInInventory: state.inventory.some((inventoryItem) => inventoryItem.instanceId === item.instanceId),
+        }];
+      });
+  }, [events, sequence, state.inventory]);
+  const effectiveFilter = filter === "AWARDS / BOXES" && awards.length === 0 ? "ALL ITEMS" : filter;
   const filteredItems = useMemo(() => {
     const rarityRank: Record<string, number> = {
       celestial: 6,
@@ -52,15 +86,15 @@ export function InventoryView({
 
     const matched = items.filter((item) => {
       const matchesCategory =
-        filter === "ALL ITEMS"
+        effectiveFilter === "ALL ITEMS"
           ? true
-          : filter === "EQUIPMENT"
+          : effectiveFilter === "EQUIPMENT"
           ? item.category === "EQUIPMENT" || item.category === "equipment"
-          : filter === "CONSUMABLES"
+          : effectiveFilter === "CONSUMABLES"
           ? item.category === "CONSUMABLES" || item.category === "consumable"
-          : filter === "QUEST ITEMS"
+          : effectiveFilter === "QUEST ITEMS"
           ? item.category === "QUEST ITEMS" || item.category === "quest-item"
-          : filter === "CRAFTING"
+          : effectiveFilter === "CRAFTING"
           ? item.category === "CRAFTING" || item.category === "crafting"
           : true;
 
@@ -76,7 +110,7 @@ export function InventoryView({
       if (sortOrder === "name") return a.name.localeCompare(b.name);
       return 0;
     });
-  }, [items, filter, search, sortOrder]);
+  }, [items, effectiveFilter, search, sortOrder]);
 
   const selectedItem = useMemo(() => {
     if (selectedInstanceId) {
@@ -104,7 +138,7 @@ export function InventoryView({
       ].filter((detail): detail is string => detail !== null)
     : [];
 
-  const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING"];
+  const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING", ...(awards.length > 0 ? ["AWARDS / BOXES"] : [])];
 
   return (
     <section className="view-content">
@@ -120,10 +154,12 @@ export function InventoryView({
         <Panel title="CATEGORIES">
           <div className="categories">
             {categories.map((x) => (
-              <button className={filter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
+              <button className={effectiveFilter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
                 {x}
                 <b>
-                  {x === "ALL ITEMS"
+                  {x === "AWARDS / BOXES"
+                    ? awards.length
+                    : x === "ALL ITEMS"
                     ? items.length
                     : items.filter((i) => i.category === x).length}
                 </b>
@@ -132,7 +168,46 @@ export function InventoryView({
           </div>
         </Panel>
 
-        {filter !== "EQUIPMENT" ? (
+        {effectiveFilter === "AWARDS / BOXES" ? (
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 2fr) minmax(240px, 1fr)", gap: "18px" }}>
+            <Panel title="AWARDS / BOXES">
+              <p style={{ fontSize: "11px", color: "#9db3bd", marginTop: 0 }}>
+                Source-backed awards are shown even after a box is opened. This is award history, not an assertion that every box remains in inventory.
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "8px" }}>
+                {awards.map((award) => (
+                  <article
+                    key={award.id}
+                    className={award.rarity}
+                    style={{ border: "1px solid #315462", background: "#091721", padding: "10px", minHeight: "118px" }}
+                    aria-label={`${award.name} award`}
+                  >
+                    <i aria-hidden="true" style={{ display: "block", color: "#f3cc52", fontSize: "23px", fontStyle: "normal" }}>▣</i>
+                    <strong style={{ display: "block", color: "#e4f2f6", fontSize: "11px", marginTop: "6px" }}>{award.name}</strong>
+                    <small style={{ display: "block", color: "#f3cc52", fontSize: "9px", marginTop: "4px" }}>
+                      {award.openedAtSequence ? "OPENED" : award.isInInventory ? "IN INVENTORY" : "STATUS NOT SOURCED"}
+                    </small>
+                  </article>
+                ))}
+              </div>
+            </Panel>
+            <Panel title="AWARD LEDGER">
+              <div className="compact">
+                {awards.map((award) => (
+                  <span key={award.id}>
+                    <strong>{award.name}</strong><br />
+                    Awarded by {award.achievementTitle} · SEQ #{award.awardedAtSequence}<br />
+                    {award.openedAtSequence
+                      ? `Opened at SEQ #${award.openedAtSequence}`
+                      : award.isInInventory
+                      ? "Present in selected inventory state"
+                      : "Later status is not sourced"}
+                  </span>
+                ))}
+              </div>
+            </Panel>
+          </div>
+        ) : effectiveFilter !== "EQUIPMENT" ? (
           <>
             <Panel title={filter}>
               <div className="tools">
