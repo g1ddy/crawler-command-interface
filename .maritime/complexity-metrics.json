@@ -17,9 +17,9 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 819,
+    "loc": 820,
     "instability": 0,
-    "fanIn": 37,
+    "fanIn": 38,
     "fanOut": 0,
     "scanned": true
   },
@@ -113,7 +113,7 @@
   },
   "app/domain/projection.ts": {
     "complexity": 154,
-    "loc": 660,
+    "loc": 662,
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,
@@ -169,7 +169,7 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 36,
-    "loc": 520,
+    "loc": 521,
     "instability": 0.92,
     "fanIn": 2,
     "fanOut": 24,
@@ -232,11 +232,19 @@
     "scanned": true
   },
   "src/features/inventory/InventoryView.tsx": {
-    "complexity": 40,
-    "loc": 727,
-    "instability": 0.86,
+    "complexity": 45,
+    "loc": 793,
+    "instability": 0.88,
     "fanIn": 1,
-    "fanOut": 6,
+    "fanOut": 7,
+    "scanned": true
+  },
+  "src/features/inventory/awardHistory.ts": {
+    "complexity": 16,
+    "loc": 87,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/notifications/NotificationsView.tsx": {
