@@ -283,7 +283,9 @@ jobs:
             exit 1
           fi
 
-          # 3. Commit and push promoted artifacts in a single controlled commit.
+          # 3. Commit and push both generated artifact families in one approved write.
+          # Keep the commit message free of workflow-skip directives so a rebase or
+          # squash merge cannot suppress the required push-to-main CI/deploy chain.
           git add -- 'docs/images/screenshot-*.png' .maritime docs/images/dependency-graph.svg
           git commit -m "chore: publish generated artifacts"
           git push origin "HEAD:${HEAD_BRANCH}"
