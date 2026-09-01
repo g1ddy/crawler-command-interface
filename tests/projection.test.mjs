@@ -436,11 +436,19 @@ test("AttributeModified event allocates attribute points correctly", () => {
   assert.equal(state.crawler.availableAttributePoints, 4);
 });
 
-test("HotlistUpdated event modifies hotlist skill slots", () => {
-  let state = createInitialState();
-  assert.ok(Array.isArray(state.hotlist));
-  state = projectState([{ id: "evt-hotlist-1", sequence: 1, type: "HotlistUpdated", index: 2, skillId: "sk-custom-fireball", summary: "Assigned Fireball to hotlist slot 3" }], 1, [], state);
-  assert.equal(state.hotlist[2], "sk-custom-fireball");
+test("Hotlist remains absent until an explicit replay-bounded assignment", () => {
+  const initialState = createInitialState({ skills: [{ skillId: "skill-discovered", name: "Discovered Skill" }] });
+  assert.deepEqual(initialState.hotlist, []);
+  assert.deepEqual(createInitialState({ hotlist: ["skill-authored"] }).hotlist, ["skill-authored"]);
+  assert.deepEqual(projectState(compiledTimeline, compiledTimeline.events.at(-1).sequence).hotlist, []);
+
+  const events = [
+    { id: "evt-skill-1", sequence: 1, type: "SkillGranted", skillId: "skill-granted", name: "Granted Skill", summary: "Granted a skill" },
+    { id: "evt-hotlist-1", sequence: 2, type: "HotlistUpdated", index: 2, skillId: "skill-granted", summary: "Assigned Granted Skill to hotlist slot 3" },
+  ];
+
+  assert.deepEqual(projectState(events, 1, [], initialState).hotlist, []);
+  assert.equal(projectState(events, 2, [], initialState).hotlist[2], "skill-granted");
 });
 
 test("item requirement evaluation against live state vs historical state during timeline replay", () => {

@@ -26,11 +26,8 @@ export function SkillsView({
 
   const handleAssignHotlist = (hotlistIndex: number) => {
     if (!selectedSkill) return;
-    const currentHotlist = [...state.hotlist];
-    currentHotlist[hotlistIndex] = selectedSkill.skillId;
     onEmitEvent({
       type: "HotlistUpdated",
-      hotlist: currentHotlist,
       index: hotlistIndex,
       skillId: selectedSkill.skillId,
       summary: `Assigned ${selectedSkill.name} to hotlist slot #${hotlistIndex + 1}`,

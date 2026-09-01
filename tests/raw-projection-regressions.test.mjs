@@ -133,7 +133,9 @@ test("HotlistUpdated accepted forms reach projection and mutate the hotlist", ()
     index: 1,
     summary: "Update one hotlist slot",
   });
-  assert.deepEqual(targeted.hotlist, ["skill-a", "skill-c", "skill-c"]);
+  assert.equal(targeted.hotlist.length, 10);
+  assert.equal(targeted.hotlist[1], "skill-c");
+  assert.equal(targeted.hotlist.filter(Boolean).length, 1);
 });
 
 function equippedStackState(quantity = 3) {
