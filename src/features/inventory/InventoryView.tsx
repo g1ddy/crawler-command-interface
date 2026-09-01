@@ -4,6 +4,7 @@ import { compareGearStats, checkItemRequirements } from "../../../app/domain/sta
 import { TelemetryBadge } from "../../../app/components/TelemetryBadge";
 import { ItemProvenanceDrawer } from "../../../app/components/ItemProvenanceDrawer";
 import { Panel } from "../../shared/ui/Panel";
+import { deriveAwardHistory } from "./awardHistory";
 
 export function InventoryView({
   state,
@@ -42,38 +43,11 @@ export function InventoryView({
   const [search, setSearch] = useState<string>("");
 
   const items = state.inventory;
-  const awards = useMemo(() => {
-    const eventById = new Map(events.map((event) => [event.id, event]));
-
-    return events
-      .filter((event) => event.sequence <= sequence && event.type === "ItemAcquired")
-      .flatMap((event) => {
-        const item = event.item as { instanceId?: unknown; name?: unknown; category?: unknown; rarity?: unknown; description?: unknown } | undefined;
-        if (!item || item.category !== "box" || typeof item.instanceId !== "string") return [];
-
-        const openedBy = events.find(
-          (candidate) =>
-            candidate.sequence <= sequence &&
-            candidate.type === "ItemDiscarded" &&
-            candidate.itemInstanceId === item.instanceId &&
-            candidate.reason === "opened"
-        );
-        const achievementEvent = typeof event.causationId === "string" ? eventById.get(event.causationId) : undefined;
-        const achievement = achievementEvent?.achievement as { title?: unknown } | undefined;
-
-        return [{
-          id: item.instanceId,
-          name: typeof item.name === "string" ? item.name : "Awarded Box",
-          rarity: typeof item.rarity === "string" ? item.rarity : "unknown",
-          description: typeof item.description === "string" ? item.description : "No box details are sourced.",
-          awardedAtSequence: event.sequence,
-          achievementTitle: typeof achievement?.title === "string" ? achievement.title : "Source-backed award",
-          openedAtSequence: openedBy?.sequence,
-          isInInventory: state.inventory.some((inventoryItem) => inventoryItem.instanceId === item.instanceId),
-        }];
-      });
-  }, [events, sequence, state.inventory]);
-  const effectiveFilter = filter === "AWARDS / BOXES" && awards.length === 0 ? "ALL ITEMS" : filter;
+  const awards = useMemo(
+    () => deriveAwardHistory(events, sequence, state.inventory),
+    [events, sequence, state.inventory]
+  );
+  const effectiveFilter = filter;
   const filteredItems = useMemo(() => {
     const rarityRank: Record<string, number> = {
       celestial: 6,
@@ -138,7 +112,14 @@ export function InventoryView({
       ].filter((detail): detail is string => detail !== null)
     : [];
 
-  const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING", ...(awards.length > 0 ? ["AWARDS / BOXES"] : [])];
+  const categories = [
+    "ALL ITEMS",
+    "EQUIPMENT",
+    "CONSUMABLES",
+    "QUEST ITEMS",
+    "CRAFTING",
+    ...(awards.length > 0 || filter === "AWARDS / BOXES" ? ["AWARDS / BOXES"] : []),
+  ];
 
   return (
     <section className="view-content">
@@ -174,37 +155,49 @@ export function InventoryView({
               <p style={{ fontSize: "11px", color: "#9db3bd", marginTop: 0 }}>
                 Source-backed awards are shown even after a box is opened. This is award history, not an assertion that every box remains in inventory.
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "8px" }}>
-                {awards.map((award) => (
-                  <article
-                    key={award.id}
-                    className={award.rarity}
-                    style={{ border: "1px solid #315462", background: "#091721", padding: "10px", minHeight: "118px" }}
-                    aria-label={`${award.name} award`}
-                  >
-                    <i aria-hidden="true" style={{ display: "block", color: "#f3cc52", fontSize: "23px", fontStyle: "normal" }}>▣</i>
-                    <strong style={{ display: "block", color: "#e4f2f6", fontSize: "11px", marginTop: "6px" }}>{award.name}</strong>
-                    <small style={{ display: "block", color: "#f3cc52", fontSize: "9px", marginTop: "4px" }}>
-                      {award.openedAtSequence ? "OPENED" : award.isInInventory ? "IN INVENTORY" : "STATUS NOT SOURCED"}
-                    </small>
-                  </article>
-                ))}
-              </div>
+              {awards.length > 0 ? (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "8px" }}>
+                  {awards.map((award) => (
+                    <article
+                      key={award.id}
+                      className={award.rarity}
+                      style={{ border: "1px solid #315462", background: "#091721", padding: "10px", minHeight: "118px" }}
+                      aria-label={`${award.name} award`}
+                    >
+                      <i aria-hidden="true" style={{ display: "block", color: "#f3cc52", fontSize: "23px", fontStyle: "normal" }}>▣</i>
+                      <strong style={{ display: "block", color: "#e4f2f6", fontSize: "11px", marginTop: "6px" }}>{award.name}</strong>
+                      <small style={{ display: "block", color: "#f3cc52", fontSize: "9px", marginTop: "4px" }}>
+                        {award.openedAtSequence ? "OPENED" : award.isInInventory ? "IN INVENTORY" : "STATUS NOT SOURCED"}
+                      </small>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: "11px", color: "#8fa1aa" }}>
+                  No source-backed awards are available at this replay sequence.
+                </p>
+              )}
             </Panel>
             <Panel title="AWARD LEDGER">
-              <div className="compact">
-                {awards.map((award) => (
-                  <span key={award.id}>
-                    <strong>{award.name}</strong><br />
-                    Awarded by {award.achievementTitle} · SEQ #{award.awardedAtSequence}<br />
-                    {award.openedAtSequence
-                      ? `Opened at SEQ #${award.openedAtSequence}`
-                      : award.isInInventory
-                      ? "Present in selected inventory state"
-                      : "Later status is not sourced"}
-                  </span>
-                ))}
-              </div>
+              {awards.length > 0 ? (
+                <div className="compact">
+                  {awards.map((award) => (
+                    <span key={award.id}>
+                      <strong>{award.name}</strong><br />
+                      Awarded by {award.achievementTitle} · SEQ #{award.awardedAtSequence}<br />
+                      {award.openedAtSequence
+                        ? `Opened at SEQ #${award.openedAtSequence}`
+                        : award.isInInventory
+                        ? "Present in selected inventory state"
+                        : "Later status is not sourced"}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: "11px", color: "#8fa1aa" }}>
+                  Award history is unavailable until a replay-visible box acquisition is explicitly caused by an achievement unlock.
+                </p>
+              )}
             </Panel>
           </div>
         ) : effectiveFilter !== "EQUIPMENT" ? (
@@ -695,7 +688,6 @@ function EquipmentView({
               )}
             </div>
 
-            {/* Item Requirements */}
             <div style={{ marginBottom: "14px", fontSize: "10px", color: "#a5b9c0" }}>
               {reqResult.met ? (
                 <p style={{ color: "#62ef98" }}>✓ ITEM REQUIREMENTS MET</p>
@@ -713,7 +705,6 @@ function EquipmentView({
               )}
             </div>
 
-            {/* Actions */}
             <div className="actions" style={{ flexWrap: "wrap", gap: "6px" }}>
               {activeCandidate.instanceId !== equippedItem?.instanceId && (
                 <button
