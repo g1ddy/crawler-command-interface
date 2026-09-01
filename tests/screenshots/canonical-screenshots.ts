@@ -7,6 +7,7 @@ export const CANONICAL_VIEWPORT = Object.freeze({ width: 1440, height: 1100 });
 export const SCREENSHOTS = {
   crawler: "screenshot-crawler.png",
   inventory: "screenshot-inventory.png",
+  awards: "screenshot-awards.png",
   skills: "screenshot-skills.png",
   quests: "screenshot-quests.png",
   crawlerStats: "screenshot-crawler-stats.png",

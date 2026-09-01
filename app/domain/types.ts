@@ -6,6 +6,7 @@ export type ItemCategory =
   | 'CONSUMABLES'
   | 'QUEST ITEMS'
   | 'CRAFTING'
+  | 'BOXES'
   | 'JUNK'
   | 'equipment'
   | 'consumable'

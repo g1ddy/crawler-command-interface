@@ -326,7 +326,9 @@ test("ItemCrafted events project crafted items into inventory", () => {
 });
 
 test("cross-floor item provenance is preserved when replaying later events", () => {
-  const stateAtEnd = projectState(compiledTimeline, 29);
+  const shirtAcquiredAt = compiledTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt")?.sequence;
+  assert.ok(shirtAcquiredAt);
+  const stateAtEnd = projectState(compiledTimeline, shirtAcquiredAt);
   const shirt = stateAtEnd.inventory.find((i) => i.itemId === "item-trollskin-shirt-of-pummeling");
   assert.ok(shirt);
   assert.equal(shirt.source, "First Floor");
@@ -503,4 +505,25 @@ test("AchievementUnlocked does not manufacture an icon when none is sourced", ()
     achievement: { id: "achievement-no-icon", title: "No Icon Authored" },
   });
   assert.equal(projected.achievements[0].icon, "");
+});
+
+test("Awards / Boxes require an explicit, source-backed inventory transition", () => {
+  const achievement = compiledTimeline.events.find((event) => event.id === "evt-f1-achievement-early-adopter");
+  const award = compiledTimeline.events.find((event) => event.id === "evt-f1-award-early-adopter-box");
+  const opened = compiledTimeline.events.find((event) => event.id === "evt-f1-open-early-adopter-box");
+
+  assert.ok(achievement && award && opened);
+  assert.equal(award.type, "ItemAcquired");
+  assert.equal(award.causationId, achievement.id);
+  assert.equal(award.notificationDelivery?.kind, "reward");
+  assert.ok(award.evidence.some((e) => e.sourceId === "src-book-1"));
+
+  const beforeAward = projectState(compiledTimeline, achievement.sequence);
+  assert.equal(beforeAward.inventory.some((item) => item.instanceId === "inst-f1-award-silver-adventurer-box"), false);
+
+  const afterAward = projectState(compiledTimeline, award.sequence);
+  assert.equal(afterAward.inventory.some((item) => item.instanceId === "inst-f1-award-silver-adventurer-box"), true);
+
+  const afterOpening = projectState(compiledTimeline, opened.sequence);
+  assert.equal(afterOpening.inventory.some((item) => item.instanceId === "inst-f1-award-silver-adventurer-box"), false);
 });

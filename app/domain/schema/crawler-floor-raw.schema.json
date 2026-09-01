@@ -460,6 +460,10 @@
             "epic",
             "legendary",
             "celestial",
+            "bronze",
+            "silver",
+            "gold",
+            "platinum",
             "unknown"
           ]
         },

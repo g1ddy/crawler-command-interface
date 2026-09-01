@@ -4,12 +4,14 @@ import { compareGearStats, checkItemRequirements } from "../../../app/domain/sta
 import { TelemetryBadge } from "../../../app/components/TelemetryBadge";
 import { ItemProvenanceDrawer } from "../../../app/components/ItemProvenanceDrawer";
 import { Panel } from "../../shared/ui/Panel";
+import { deriveAwardHistory } from "./awardHistory";
 
 export function InventoryView({
   state,
   liveState,
   observations,
   events,
+  sequence,
   provenanceItem,
   setProvenanceItem,
   filter,
@@ -25,6 +27,7 @@ export function InventoryView({
   observations: ProjectedObservationsState;
   sources?: TimelineSource[];
   events: CrawlerEvent[];
+  sequence: number;
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
   filter: string;
@@ -40,6 +43,11 @@ export function InventoryView({
   const [search, setSearch] = useState<string>("");
 
   const items = state.inventory;
+  const awards = useMemo(
+    () => deriveAwardHistory(events, sequence, state.inventory),
+    [events, sequence, state.inventory]
+  );
+  const effectiveFilter = filter;
   const filteredItems = useMemo(() => {
     const rarityRank: Record<string, number> = {
       celestial: 6,
@@ -52,15 +60,15 @@ export function InventoryView({
 
     const matched = items.filter((item) => {
       const matchesCategory =
-        filter === "ALL ITEMS"
+        effectiveFilter === "ALL ITEMS"
           ? true
-          : filter === "EQUIPMENT"
+          : effectiveFilter === "EQUIPMENT"
           ? item.category === "EQUIPMENT" || item.category === "equipment"
-          : filter === "CONSUMABLES"
+          : effectiveFilter === "CONSUMABLES"
           ? item.category === "CONSUMABLES" || item.category === "consumable"
-          : filter === "QUEST ITEMS"
+          : effectiveFilter === "QUEST ITEMS"
           ? item.category === "QUEST ITEMS" || item.category === "quest-item"
-          : filter === "CRAFTING"
+          : effectiveFilter === "CRAFTING"
           ? item.category === "CRAFTING" || item.category === "crafting"
           : true;
 
@@ -76,7 +84,7 @@ export function InventoryView({
       if (sortOrder === "name") return a.name.localeCompare(b.name);
       return 0;
     });
-  }, [items, filter, search, sortOrder]);
+  }, [items, effectiveFilter, search, sortOrder]);
 
   const selectedItem = useMemo(() => {
     if (selectedInstanceId) {
@@ -104,7 +112,14 @@ export function InventoryView({
       ].filter((detail): detail is string => detail !== null)
     : [];
 
-  const categories = ["ALL ITEMS", "EQUIPMENT", "CONSUMABLES", "QUEST ITEMS", "CRAFTING"];
+  const categories = [
+    "ALL ITEMS",
+    "EQUIPMENT",
+    "CONSUMABLES",
+    "QUEST ITEMS",
+    "CRAFTING",
+    ...(awards.length > 0 || filter === "AWARDS / BOXES" ? ["AWARDS / BOXES"] : []),
+  ];
 
   return (
     <section className="view-content">
@@ -120,10 +135,12 @@ export function InventoryView({
         <Panel title="CATEGORIES">
           <div className="categories">
             {categories.map((x) => (
-              <button className={filter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
+              <button className={effectiveFilter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
                 {x}
                 <b>
-                  {x === "ALL ITEMS"
+                  {x === "AWARDS / BOXES"
+                    ? awards.length
+                    : x === "ALL ITEMS"
                     ? items.length
                     : items.filter((i) => i.category === x).length}
                 </b>
@@ -132,7 +149,58 @@ export function InventoryView({
           </div>
         </Panel>
 
-        {filter !== "EQUIPMENT" ? (
+        {effectiveFilter === "AWARDS / BOXES" ? (
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 2fr) minmax(240px, 1fr)", gap: "18px" }}>
+            <Panel title="AWARDS / BOXES">
+              <p style={{ fontSize: "11px", color: "#9db3bd", marginTop: 0 }}>
+                Source-backed awards are shown even after a box is opened. This is award history, not an assertion that every box remains in inventory.
+              </p>
+              {awards.length > 0 ? (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "8px" }}>
+                  {awards.map((award) => (
+                    <article
+                      key={award.id}
+                      className={award.rarity}
+                      style={{ border: "1px solid #315462", background: "#091721", padding: "10px", minHeight: "118px" }}
+                      aria-label={`${award.name} award`}
+                    >
+                      <i aria-hidden="true" style={{ display: "block", color: "#f3cc52", fontSize: "23px", fontStyle: "normal" }}>▣</i>
+                      <strong style={{ display: "block", color: "#e4f2f6", fontSize: "11px", marginTop: "6px" }}>{award.name}</strong>
+                      <small style={{ display: "block", color: "#f3cc52", fontSize: "9px", marginTop: "4px" }}>
+                        {award.openedAtSequence ? "OPENED" : award.isInInventory ? "IN INVENTORY" : "STATUS NOT SOURCED"}
+                      </small>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: "11px", color: "#8fa1aa" }}>
+                  No source-backed awards are available at this replay sequence.
+                </p>
+              )}
+            </Panel>
+            <Panel title="AWARD LEDGER">
+              {awards.length > 0 ? (
+                <div className="compact">
+                  {awards.map((award) => (
+                    <span key={award.id}>
+                      <strong>{award.name}</strong><br />
+                      Awarded by {award.achievementTitle} · SEQ #{award.awardedAtSequence}<br />
+                      {award.openedAtSequence
+                        ? `Opened at SEQ #${award.openedAtSequence}`
+                        : award.isInInventory
+                        ? "Present in selected inventory state"
+                        : "Later status is not sourced"}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: "11px", color: "#8fa1aa" }}>
+                  Award history is unavailable until a replay-visible box acquisition is explicitly caused by an achievement unlock.
+                </p>
+              )}
+            </Panel>
+          </div>
+        ) : effectiveFilter !== "EQUIPMENT" ? (
           <>
             <Panel title={filter}>
               <div className="tools">
@@ -620,7 +688,6 @@ function EquipmentView({
               )}
             </div>
 
-            {/* Item Requirements */}
             <div style={{ marginBottom: "14px", fontSize: "10px", color: "#a5b9c0" }}>
               {reqResult.met ? (
                 <p style={{ color: "#62ef98" }}>✓ ITEM REQUIREMENTS MET</p>
@@ -638,7 +705,6 @@ function EquipmentView({
               )}
             </div>
 
-            {/* Actions */}
             <div className="actions" style={{ flexWrap: "wrap", gap: "6px" }}>
               {activeCandidate.instanceId !== equippedItem?.instanceId && (
                 <button

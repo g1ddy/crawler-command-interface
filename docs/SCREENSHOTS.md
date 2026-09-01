@@ -14,6 +14,10 @@ Only domains unlocked by meaningful projected storyline state appear in navigati
 ### Inventory
 ![Inventory view](images/screenshot-inventory.png)
 
+### Awards / Boxes
+Awards and Boxes appear only after an explicit, source-backed award-to-inventory transition. The ledger preserves the award history after a box is opened without claiming that it remains in inventory.
+![Awards and Boxes view](images/screenshot-awards.png)
+
 ### Skills
 ![Skills view](images/screenshot-skills.png)
 

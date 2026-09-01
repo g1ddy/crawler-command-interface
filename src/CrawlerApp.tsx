@@ -367,6 +367,7 @@ export default function CrawlerApp() {
             observations={projectedObservations}
             sources={timelineDoc.sources as TimelineSource[]}
             events={events}
+            sequence={currentSeq}
             provenanceItem={provenanceItem}
             setProvenanceItem={setProvenanceItem}
             filter={inventoryFilter}

@@ -125,6 +125,17 @@ test("export top-level Inventory tab", async ({ page }) => {
   await capture(page, "inventory");
 });
 
+test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => {
+  await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click();
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("12");
+  await selectTopLevelTab(page, "INVENTORY");
+  await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click();
+  await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible();
+  await capture(page, "awards");
+});
+
 test("export top-level Skills tab", async ({ page }) => {
   await selectTopLevelTab(page, "SKILLS");
   await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible();
