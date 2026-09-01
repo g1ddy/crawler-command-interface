@@ -1,4 +1,5 @@
-import type { ProjectedCountdownState } from "../../../app/domain/types";
+import type { ProjectedCountdownState, Skill } from "../../../app/domain/types";
+import { Hotlist } from "./hotlist/Hotlist";
 
 interface PersistentHudProps {
   crawlerName: string;
@@ -15,6 +16,8 @@ interface PersistentHudProps {
   isLive: boolean;
   sequence: number;
   occurredAt: string;
+  hotlist: string[];
+  skills: Skill[];
   onReturnToLive: () => void;
 }
 
@@ -37,6 +40,7 @@ export function PersistentHud(props: PersistentHudProps) {
       <b title={countdown ? `${countdown.status} · ${countdown.basis}` : undefined}>{countdownLabel}</b>
       <span data-testid="hud-audience-mode">{props.isLive ? "● LIVE" : "↺ REPLAY"} · {props.viewers.toLocaleString()} VIEWERS</span>
     </div>
+    <Hotlist hotlist={props.hotlist} skills={props.skills} />
     {!props.isLive && <div className="replay-banner"><span>HISTORICAL VIEW · REPLAYING SEQUENCE #{props.sequence} ({props.occurredAt})</span><button onClick={props.onReturnToLive}>RETURN TO LIVE ⚡</button></div>}
   </>;
 }

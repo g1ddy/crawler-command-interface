@@ -50,6 +50,7 @@ test("renders development preview metadata", async (t) => {
     assert.match(html, /FLOOR NAVIGATOR:/);
     assert.match(html, /SELECTED TIMELINE SEQUENCE/);
     assert.match(html, /type="range"/);
+    assert.match(html, /aria-label="Hotlist"/);
   } finally {
     globalThis.Function = originalFunction;
   }
