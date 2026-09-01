@@ -284,9 +284,8 @@ jobs:
           fi
 
           # 3. Commit and push both generated artifact families in one approved write.
-          # The native skip marker prevents this already-verified generated-only
-          # commit from spawning redundant PR workflow runs that require a second
-          # maintainer approval.
+          # Keep the commit message free of workflow-skip directives so a rebase or
+          # squash merge cannot suppress the required push-to-main CI/deploy chain.
           git add -- 'docs/images/screenshot-*.png' .maritime docs/images/dependency-graph.svg
-          git commit -m "chore: publish generated artifacts [skip ci]"
+          git commit -m "chore: publish generated artifacts"
           git push origin "HEAD:${HEAD_BRANCH}"
