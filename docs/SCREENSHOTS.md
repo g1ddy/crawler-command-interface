@@ -2,7 +2,9 @@
 
 These images are generated canonical views of the Crawler Command Interface. Refresh the complete set with `npm run test:screenshots`; do not retouch generated images manually.
 
-The persistent timeline in every view remains replay-aware and the compact viewer counter stays in the persistent HUD.
+The persistent timeline in every view remains replay-aware. The compact viewer counter stays in the persistent HUD. Once an explicit Hotlist assignment is projected, its ten-slot, point-in-time status appears there too, while assignment controls remain in Skills.
+
+Only domains unlocked by meaningful projected storyline state appear in navigation. Magic, Sponsorship, Party, Messages, Minimap, Pet, and other extensions remain conditional rather than universally available.
 
 ## Top-level views
 

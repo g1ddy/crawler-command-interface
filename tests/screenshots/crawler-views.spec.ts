@@ -48,6 +48,65 @@ async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
   });
 }
 
+async function seedHotlistSkillsScenario(page: Page) {
+  await page.evaluate(() => {
+    const docWithSkill = {
+      schemaVersion: "crawler-timeline/v1",
+      timeline: {
+        id: "tl-hotlist-doc",
+        title: "Hotlist Skills Timeline Document",
+        story: { id: "st-hotlist", title: "Crawler Story" },
+      },
+      sources: [
+        {
+          id: "src-wda-skill-log",
+          kind: "official-text",
+          trust: "primary",
+          title: "Test-only source",
+          url: "https://example.com/test-hotlist",
+        },
+      ],
+      initialState: {
+        crawler: {
+          name: "CARL G.",
+          level: 42,
+          race: "PRIMAL",
+          class: "SCOUT",
+          xp: 21500,
+          maxXp: 74000,
+          attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 },
+          condition: { currentHealth: 3100, maxHealth: 4200, currentMana: 800, maxMana: 1360, currentStamina: 200, maxStamina: 280 },
+        },
+        skills: [
+          {
+            skillId: "skill-hotlist-demo",
+            name: "Test Skill",
+            icon: "✦",
+            rank: "RANK 1",
+            category: "utility",
+            description: "An isolated test skill used to verify Hotlist assignment presentation.",
+            cooldown: "READY",
+          },
+        ],
+      },
+      events: [
+        {
+          id: "evt-hotlist-floor-entry",
+          sequence: 1,
+          type: "NarrativeEvent",
+          kind: "floor-entered",
+          position: { floor: 1 },
+          summary: "Entered Floor 1",
+          evidence: [{ sourceId: "src-wda-skill-log" }],
+        },
+      ],
+    };
+    localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(docWithSkill));
+  });
+  await page.reload();
+  await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
+}
+
 test.beforeEach(async ({ page }) => {
   await preparePage(page);
 });
@@ -71,6 +130,15 @@ test("export top-level Skills tab", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible();
   await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible();
   await capture(page, "skills");
+});
+
+test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => {
+  await seedHotlistSkillsScenario(page);
+  await selectTopLevelTab(page, "SKILLS");
+  await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Slot #1", exact: true }).click();
+  await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible();
+  await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1");
 });
 
 test("export top-level Quests tab", async ({ page }) => {

@@ -141,7 +141,10 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     },
     effects: [],
     skills,
-    hotlist: skills.map((s) => s.skillId).slice(0, 10),
+    // Hotlist membership is crawler state, not a presentation default. Preserve
+    // an explicitly authored initial/snapshot value, otherwise leave it absent
+    // until a HotlistUpdated transition occurs.
+    hotlist: Array.isArray(timelineState?.hotlist) ? timelineState.hotlist.slice(0, 10) : [],
     quests,
     achievements,
     entitlements,
@@ -472,7 +475,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       if (Array.isArray(event.hotlist)) {
         state.hotlist = (event.hotlist as string[]).slice(0, 10);
       } else if (typeof event.index === 'number' && typeof event.skillId === 'string') {
-        const newHotlist = [...state.hotlist];
+        const newHotlist = Array.from({ length: 10 }, (_, index) => state.hotlist[index] ?? '');
         newHotlist[event.index] = event.skillId;
         state.hotlist = newHotlist;
       }
@@ -515,7 +518,6 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
           cost: typeof event.cost === 'string' ? event.cost : undefined,
           synergies: Array.isArray(event.synergies) ? (event.synergies as string[]) : undefined,
         });
-        if (state.hotlist.length < 10) state.hotlist.push(skillId);
       }
       break;
     }

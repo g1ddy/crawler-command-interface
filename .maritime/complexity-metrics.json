@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 819,
     "instability": 0,
-    "fanIn": 34,
+    "fanIn": 37,
     "fanOut": 0,
     "scanned": true
   },
@@ -34,8 +34,8 @@
   "app/domain/stats.ts": {
     "complexity": 17,
     "loc": 183,
-    "instability": 0.33,
-    "fanIn": 2,
+    "instability": 0.25,
+    "fanIn": 3,
     "fanOut": 1,
     "scanned": true
   },
@@ -112,8 +112,8 @@
     "scanned": true
   },
   "app/domain/projection.ts": {
-    "complexity": 155,
-    "loc": 658,
+    "complexity": 154,
+    "loc": 660,
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,
@@ -168,11 +168,11 @@
     "scanned": true
   },
   "src/CrawlerApp.tsx": {
-    "complexity": 40,
-    "loc": 1387,
-    "instability": 0.93,
+    "complexity": 36,
+    "loc": 520,
+    "instability": 0.92,
     "fanIn": 2,
-    "fanOut": 25,
+    "fanOut": 24,
     "scanned": true
   },
   "src/features/crawler/CrawlerView.tsx": {
@@ -194,8 +194,8 @@
   "src/shared/ui/Panel.tsx": {
     "complexity": 2,
     "loc": 11,
-    "instability": 0.13,
-    "fanIn": 7,
+    "instability": 0.11,
+    "fanIn": 8,
     "fanOut": 1,
     "scanned": true
   },
@@ -229,6 +229,14 @@
     "instability": 0.5,
     "fanIn": 3,
     "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/inventory/InventoryView.tsx": {
+    "complexity": 40,
+    "loc": 727,
+    "instability": 0.86,
+    "fanIn": 1,
+    "fanOut": 6,
     "scanned": true
   },
   "src/features/notifications/NotificationsView.tsx": {
@@ -279,6 +287,14 @@
     "fanOut": 1,
     "scanned": true
   },
+  "src/features/skills/SkillsView.tsx": {
+    "complexity": 5,
+    "loc": 128,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
   "src/features/timeline/evidence/TimelineEvidence.tsx": {
     "complexity": 12,
     "loc": 152,
@@ -305,7 +321,15 @@
   },
   "src/shell/hud/PersistentHud.tsx": {
     "complexity": 11,
-    "loc": 43,
+    "loc": 47,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/shell/hud/hotlist/Hotlist.tsx": {
+    "complexity": 6,
+    "loc": 26,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
