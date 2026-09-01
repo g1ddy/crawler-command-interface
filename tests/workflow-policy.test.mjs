@@ -37,7 +37,12 @@ test("artifact workflow keeps verification read-only and gates the only writer",
     "only the publish job should receive contents: write");
   assert.match(content, /cancel-in-progress:\s*true/,
     "publish workflow must use cancel-in-progress concurrency");
-  assert.match(content, /git commit/, "publish workflow must contain controlled git commit");
+  assert.match(content, /git add -- 'docs\/images\/screenshot-\*\.png' \.maritime docs\/images\/dependency-graph\.svg/,
+    "the single approved writer must promote screenshots and Maritime evidence together");
+  assert.match(content, /git commit -m "chore: publish generated artifacts"/,
+    "generated artifacts must be published in one controlled commit");
+  assert.doesNotMatch(content, /\[(?:skip ci|ci skip|no ci|skip actions|actions skip)\]/i,
+    "generated artifact commits must not persist workflow-skip directives that could suppress main CI");
   assert.match(content, /git push/, "publish workflow must contain controlled git push");
   assert.match(content, /EXPECTED_HEAD_SHA/, "publish workflow must check expected head SHA before publishing");
   assert.match(content, /INPUT_PR_NUMBER/, "workflow_dispatch must resolve a requested PR");
