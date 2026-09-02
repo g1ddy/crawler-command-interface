@@ -507,8 +507,7 @@
     {
       "id": "evt-f2-005-dungeon-book-club",
       "order": 13,
-      "type": "NarrativeEvent",
-      "kind": "party-changed",
+      "type": "SpellGranted",
       "position": {
         "floor": 2,
         "book": 1,
@@ -523,7 +522,17 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "spell": {
+        "spellId": "spell-second-chance",
+        "name": "Second Chance",
+        "owner": "donut",
+        "abilityKind": "spell",
+        "acquisitionSource": {
+          "kind": "dungeon-book",
+          "name": "Dungeon Book of the Floor Club"
+        }
+      }
     },
     {
       "id": "evt-f2-level-11",

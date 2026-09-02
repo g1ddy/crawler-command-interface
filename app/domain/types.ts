@@ -111,6 +111,20 @@ export interface TimelineEntitlement {
   description?: string;
 }
 
+export interface SpellAcquisitionSource {
+  kind: 'dungeon-book';
+  name: string;
+}
+
+/** Magic is deliberately modeled separately from ordinary crawler skills. */
+export interface Spell {
+  spellId: string;
+  name: string;
+  owner: 'carl' | 'donut';
+  abilityKind: 'spell';
+  acquisitionSource: SpellAcquisitionSource;
+}
+
 export interface TimelineState {
   crawler: {
     name: string;
@@ -125,6 +139,7 @@ export interface TimelineState {
   inventory?: TimelineItem[];
   achievements?: TimelineAchievement[];
   skills?: Record<string, unknown>[];
+  spells?: Spell[];
   quests?: Record<string, unknown>[];
   entitlements?: TimelineEntitlement[];
 }
@@ -207,6 +222,11 @@ export interface ItemUnequippedEvent extends TimelineEventBase {
 export interface PermanentEntitlementGrantedEvent extends TimelineEventBase {
   type: 'PermanentEntitlementGranted';
   entitlement: TimelineEntitlement;
+}
+
+export interface SpellGrantedEvent extends TimelineEventBase {
+  type: 'SpellGranted';
+  spell: Spell;
 }
 
 export interface NarrativeEvent extends TimelineEventBase {
@@ -338,6 +358,7 @@ export type TimelineEvent =
   | ItemEquippedEvent
   | ItemUnequippedEvent
   | PermanentEntitlementGrantedEvent
+  | SpellGrantedEvent
   | NarrativeEvent
   | LevelChangedEvent
   | AttributeModifiedEvent
@@ -550,6 +571,7 @@ export interface FloorEventBase {
   achievementId?: string;
   item?: FloorEventItemRef;
   entitlement?: TimelineEntitlement;
+  spell?: Spell;
   itemInstanceId?: string;
   slot?: string;
   level?: number;
@@ -792,6 +814,7 @@ export interface CrawlerState {
   equippedSlots: EquippedSlotMap;
   effects: ActiveEffect[];
   skills: Skill[];
+  spells: Spell[];
   hotlist: string[]; // skillIds
   quests: Quest[];
   achievements: Achievement[];

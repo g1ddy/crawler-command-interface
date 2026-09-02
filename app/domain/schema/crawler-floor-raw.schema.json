@@ -2828,6 +2828,135 @@
             "type",
             "position",
             "summary",
+            "evidence",
+            "spell"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "order": {
+              "$ref": "#/$defs/positiveInteger"
+            },
+            "type": {
+              "const": "SpellGranted"
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "correlationId": {
+              "$ref": "#/$defs/id"
+            },
+            "causationId": {
+              "$ref": "#/$defs/id"
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/evidence"
+              }
+            },
+            "notificationDelivery": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "delivered",
+                "kind",
+                "severity"
+              ],
+              "properties": {
+                "delivered": {
+                  "const": true
+                },
+                "kind": {
+                  "enum": [
+                    "achievement",
+                    "progression",
+                    "skill",
+                    "quest",
+                    "reward",
+                    "system",
+                    "floor"
+                  ]
+                },
+                "severity": {
+                  "enum": [
+                    "info",
+                    "success",
+                    "warning",
+                    "critical"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "spell": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "spellId",
+                "name",
+                "owner",
+                "abilityKind",
+                "acquisitionSource"
+              ],
+              "properties": {
+                "spellId": {
+                  "$ref": "#/$defs/id"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "owner": {
+                  "enum": [
+                    "carl",
+                    "donut"
+                  ]
+                },
+                "abilityKind": {
+                  "const": "spell"
+                },
+                "acquisitionSource": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "name"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "dungeon-book"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "order",
+            "type",
+            "position",
+            "summary",
             "evidence"
           ],
           "properties": {

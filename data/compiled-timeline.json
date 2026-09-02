@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-09-01T12:41:22.264Z",
-    "updatedAt": "2026-09-01T12:41:22.264Z"
+    "createdAt": "2026-09-02T03:34:30.706Z",
+    "updatedAt": "2026-09-02T03:34:30.707Z"
   },
   "floors": [
     {
@@ -148,6 +148,7 @@
     "inventory": [],
     "achievements": [],
     "skills": [],
+    "spells": [],
     "quests": [],
     "entitlements": []
   },
@@ -2781,8 +2782,7 @@
     {
       "id": "evt-f2-005-dungeon-book-club",
       "sequence": 89,
-      "type": "NarrativeEvent",
-      "kind": "party-changed",
+      "type": "SpellGranted",
       "position": {
         "floor": 2,
         "book": 1,
@@ -2797,7 +2797,17 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "spell": {
+        "spellId": "spell-second-chance",
+        "name": "Second Chance",
+        "owner": "donut",
+        "abilityKind": "spell",
+        "acquisitionSource": {
+          "kind": "dungeon-book",
+          "name": "Dungeon Book of the Floor Club"
+        }
+      }
     },
     {
       "id": "evt-f2-level-11",

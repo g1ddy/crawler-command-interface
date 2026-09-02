@@ -97,6 +97,10 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   const entitlements = (timelineState?.entitlements || []).map((entitlement) => ({ ...entitlement }));
 
   const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
+  const spells = (timelineState?.spells || []).map((spell) => ({
+    ...spell,
+    acquisitionSource: { ...spell.acquisitionSource },
+  }));
   const quests = (timelineState?.quests as Quest[] || []).map((q) => ({
     ...q,
   }));
@@ -141,6 +145,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     },
     effects: [],
     skills,
+    spells,
     // Hotlist membership is crawler state, not a presentation default. Preserve
     // an explicitly authored initial/snapshot value, otherwise leave it absent
     // until a HotlistUpdated transition occurs.
@@ -212,7 +217,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       ? 'levelup'
       : event.type === 'QuestUpdated'
       ? 'quest'
-      : event.type === 'SkillGranted' || event.type === 'HotlistUpdated'
+      : event.type === 'SkillGranted' || event.type === 'SpellGranted' || event.type === 'HotlistUpdated'
       ? 'skills'
       : 'system');
 
@@ -520,6 +525,14 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
           cost: typeof event.cost === 'string' ? event.cost : undefined,
           synergies: Array.isArray(event.synergies) ? (event.synergies as string[]) : undefined,
         });
+      }
+      break;
+    }
+
+    case 'SpellGranted': {
+      const spell = event.spell as CrawlerState['spells'][number] | undefined;
+      if (spell && !state.spells.some((existing) => existing.spellId === spell.spellId)) {
+        state.spells.push({ ...spell, acquisitionSource: { ...spell.acquisitionSource } });
       }
       break;
     }

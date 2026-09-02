@@ -83,6 +83,16 @@ In particular, never encode behavior only in `summary`. Countdown resets, pauses
 
 When a needed fact cannot be represented without abusing another event type, extend the schema intentionally instead of hiding the fact in prose.
 
+### Magic grants
+
+Use `SpellGranted` only for a sourced spell acquisition. Its `spell` payload keeps
+Magic separate from `SkillGranted` and records only a stable spell ID, name,
+known owner, the explicit `abilityKind: "spell"` discriminator, and the named
+acquisition source. Do not add rank, cooldown, mana cost, duration, or mechanics
+that the cited evidence does not establish. A spell grant projects into `spells`,
+never `skills`; it does not imply party membership or a separate permanent
+entitlement.
+
 ## Countdown observations
 
 Countdowns have stable IDs. Every lifecycle event must identify the countdown it affects.
