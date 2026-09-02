@@ -204,10 +204,11 @@ test("numeric HUD readings interpolate only when both evidence anchors opt in", 
   const compiled = compileRawFloorFiles([rawDoc]);
   const startSequence = compiled.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence;
   const endSequence = compiled.events.find((event) => event.id === "evt-f1-009-first-magic-gear").sequence;
-  const estimated = projectObservationValue(compiled, Math.floor((startSequence + endSequence) / 2), "crawler-condition.currentMana");
+  const targetSequence = Math.floor((startSequence + endSequence) / 2);
+  const estimated = projectObservationValue(compiled, targetSequence, "crawler-condition.currentMana");
   assert.equal(estimated?.status, "estimated");
   assert.equal(estimated?.basis, "sequence-position");
-  assert.equal(estimated?.value, 25);
+  assert.equal(estimated?.value, 10 + ((targetSequence - startSequence) / (endSequence - startSequence)) * 30);
   assert.deepEqual(estimated?.referenceObservationIds, ["obs-linear-mana-start", "obs-linear-mana-end"]);
 
   const discrete = JSON.parse(JSON.stringify(rawDoc));

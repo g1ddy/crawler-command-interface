@@ -206,6 +206,19 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           notificationDelivery: rawEv.notificationDelivery,
           entitlement: rawEv.entitlement!,
         });
+      } else if (rawEv.type === 'SpellGranted') {
+        compiledEvents.push({
+          id: rawEv.id,
+          sequence: seq,
+          type: 'SpellGranted',
+          position: pos,
+          summary: rawEv.summary,
+          correlationId: rawEv.correlationId,
+          causationId: rawEv.causationId,
+          evidence: rawEv.evidence,
+          notificationDelivery: rawEv.notificationDelivery,
+          spell: rawEv.spell!,
+        });
       } else if (rawEv.type === 'NarrativeEvent') {
         compiledEvents.push({
           id: rawEv.id,
@@ -314,6 +327,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
       inventory: [],
       achievements: [],
       skills: [],
+      spells: [],
       quests: [],
       entitlements: [],
     },

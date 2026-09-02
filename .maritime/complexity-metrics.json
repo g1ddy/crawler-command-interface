@@ -17,7 +17,7 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 820,
+    "loc": 845,
     "instability": 0,
     "fanIn": 38,
     "fanOut": 0,
@@ -64,8 +64,8 @@
     "scanned": true
   },
   "app/domain/compiler.ts": {
-    "complexity": 39,
-    "loc": 333,
+    "complexity": 40,
+    "loc": 347,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -112,8 +112,8 @@
     "scanned": true
   },
   "app/domain/projection.ts": {
-    "complexity": 154,
-    "loc": 662,
+    "complexity": 158,
+    "loc": 675,
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,

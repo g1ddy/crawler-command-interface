@@ -18,7 +18,7 @@ Primary evidence is preferred for new mechanics and persistent state when availa
 
 | Domain | Floors 1–2 evidence | Decision |
 | --- | --- | --- |
-| Magic | Floor 1 has a primary-cited basic-healing/mana observation; Floor 2 has Second Chance, a Protective Shell equipment lead, and a Puddle Jumper encounter lead. | Research/model candidate; no Magic UI yet. |
+| Magic | Carl receives the basic healing spell and Donut receives Puddle Jumper on Floor 1. Floor 2 adds Protective Shell through Carl's boxers and Second Chance through the Dungeon Book. | Four source-backed spells are modeled; no Magic UI yet. |
 | Pet | Mongo bonds to Donut in Floor 2 with a primary chapter locator. | Research/model candidate; a small conditional Pet capability may be meaningful. |
 | Party | Groups and party-scoped achievements are referenced, but no replayable roster is modeled. | Audit only; no Party UI. |
 | Crafting | Carl creates Carl's Jug O' Boom, while workbench and Sapper's-table references remain indirect. | Preserve the causal event; no workstation or Crafting UI. |
@@ -31,12 +31,12 @@ Primary evidence is preferred for new mechanics and persistent state when availa
 
 | Claim | Source tier and locator | Current representation | What is missing |
 | --- | --- | --- | --- |
-| A basic healing spell is introduced while Carl's HUD shows 3/3 mana. | Primary; Book 1, ch. 6. | `obs-f1-magic-baseline` is a condition reading only. | Name, owner, and any directly stated behavior before creating a spell record. |
-| Donut joins the Dungeon Book of the Floor Club and receives Second Chance. | Primary; Book 1, ch. 31. | `evt-f2-005-dungeon-book-club` is currently a narrative event. | Exact spell/unlock semantics and only source-backed management fields. |
-| Enchanted BigBoi Boxers grant Protective Shell. | Corroborating; Floor 2 item catalog/acquisition, ch. 31. | Equipment description only. | Whether it creates an independent spell state and any verified mechanics. |
-| Donut uses Puddle Jumper during the Rage Elemental encounter. | Corroborating; Floor 2 story summary. | Encounter summary only. | Stable locator and smallest supported ability claim. |
+| Carl receives the basic healing spell while his HUD shows 3/3 mana. | Primary; Book 1, ch. 6. | `evt-f1-basic-healing-spell` grants `Basic healing spell` to Carl through the Magic menu tutorial. | Mechanics remain intentionally unmodeled. |
+| Donut receives Puddle Jumper from post-Juicer loot boxes. | Corroborating; Bookworm Wiki, Book 1 timeline, ch. 25. | `evt-f1-puddle-jumper-granted` records the distinct spell and its loot-box acquisition. | A primary locator and mechanics remain intentionally unmodeled. |
+| Donut joins the Dungeon Book of the Floor Club and receives Second Chance. | Primary; Book 1, ch. 31. | `evt-f2-005-dungeon-book-club` grants the distinct spell `Second Chance` to Donut and names the Dungeon Book as its acquisition source. | Effect mechanics and any independently evidenced persistent club unlock. |
+| Enchanted BigBoi Boxers grant Protective Shell to Carl. | Corroborating; Floor 2 gear acquisition, ch. 31. | `evt-f2-protective-shell-granted` retains the source equipment instance as acquisition provenance. | Mechanics and any behavior after the equipment is lost or unequipped remain intentionally unmodeled. |
 
-Do not collapse spells into the current `Skill` model just because that UI can render them. A future Magic model needs an explicit spell/skill distinction and acquisition source. It must not invent rank, cooldown, mana cost, or effect details.
+Spells remain distinct from the current `Skill` model. The projected Magic state has an explicit spell discriminator, known owner, and acquisition source, without rank, cooldown, mana cost, duration, or effect details. These four known spells are preserved for replay but do not yet provide useful management behavior, so Magic navigation remains unavailable.
 
 Useful discovery sources include the [Book 1 guide](https://www.abookloversdigest.com/post/dungeon-crawler-carl-book-1) and the [Book 1 section summary](https://www.supersummary.com/dungeon-crawler-carl/part-2-chapters-28-36-summary/). They remain corroborating sources.
 
