@@ -531,7 +531,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
 
     case 'SpellGranted': {
       const spell = event.spell as CrawlerState['spells'][number] | undefined;
-      if (spell && !state.spells.some((existing) => existing.spellId === spell.spellId)) {
+      if (spell && !state.spells.some((existing) => existing.spellId === spell.spellId && existing.owner === spell.owner)) {
         state.spells.push({ ...spell, acquisitionSource: { ...spell.acquisitionSource } });
       }
       break;

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
-import { projectState } from "../app/domain/projection.ts";
+import { applyEvent, createInitialState, projectState } from "../app/domain/projection.ts";
 import { selectedSequenceCapabilities } from "../src/shell/navigation/capabilities.ts";
 import { projectObservations } from "../app/domain/observations.ts";
 import { validateRawCrawlerFloor } from "../app/domain/validation.ts";
@@ -51,4 +51,33 @@ test("spell state obeys replay boundaries without entering skills or exposing a 
     grant.sequence,
   );
   assert.equal(Object.hasOwn(capabilities, "magic"), false);
+});
+
+test("the same spell granted to different owners preserves both acquisitions", () => {
+  const baseEvent = {
+    type: "SpellGranted",
+    summary: "Second Chance granted",
+    spell: {
+      spellId: "spell-second-chance",
+      name: "Second Chance",
+      abilityKind: "spell",
+      acquisitionSource: { kind: "dungeon-book", name: "Dungeon Book of the Floor Club" },
+    },
+  };
+
+  const afterDonut = applyEvent(createInitialState(), {
+    ...baseEvent,
+    sequence: 1,
+    spell: { ...baseEvent.spell, owner: "donut" },
+  });
+  const afterCarl = applyEvent(afterDonut, {
+    ...baseEvent,
+    sequence: 2,
+    spell: { ...baseEvent.spell, owner: "carl" },
+  });
+
+  assert.deepEqual(
+    afterCarl.spells.map(({ spellId, owner }) => [spellId, owner]),
+    [["spell-second-chance", "donut"], ["spell-second-chance", "carl"]],
+  );
 });
