@@ -23,7 +23,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/compiler.ts` | **132** | 347 | 40 | 2 | 0.67 |
 | `app/domain/fixtures/floor6.ts` | **103.4** | 774 | 1 | 2 | 1 |
 | `app/domain/observations.ts` | **97.2** | 322 | 29 | 1 | 0.25 |
-| `app/domain/types.ts` | **86.3** | 843 | 1 | 0 | 0 |
+| `app/domain/types.ts` | **86.5** | 845 | 1 | 0 | 0 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |

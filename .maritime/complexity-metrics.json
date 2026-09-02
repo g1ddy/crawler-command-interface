@@ -17,7 +17,7 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 843,
+    "loc": 845,
     "instability": 0,
     "fanIn": 38,
     "fanOut": 0,
