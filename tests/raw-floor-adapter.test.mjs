@@ -145,7 +145,8 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   const crazyCatLady = achievements.find((event) => event.achievement.id === "achievement-crazy-cat-lady");
   assert.equal(crazyCatLady?.achievement.recipient, "carl");
   assert.equal(crazyCatLady?.achievement.reward?.[0]?.description, "Bronze Pet Box");
-  assert.equal(crazyCatLady?.sequence, 3);
+  // Party formation is an authored Floor 1 transition before achievement delivery.
+  assert.equal(crazyCatLady?.sequence, 4);
 
   const trailblazingCrazyCatLady = achievements.find((event) => event.achievement.id === "achievement-trailblazing-crazy-cat-lady");
   assert.equal(trailblazingCrazyCatLady?.achievement.recipient, "donut");

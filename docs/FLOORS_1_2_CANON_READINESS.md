@@ -19,12 +19,12 @@ Primary evidence is preferred for new mechanics and persistent state when availa
 | Domain | Floors 1–2 evidence | Decision |
 | --- | --- | --- |
 | Magic | Carl receives the basic healing spell and Donut receives Puddle Jumper on Floor 1. Floor 2 adds Protective Shell through Carl's boxers and Second Chance through the Dungeon Book. | Four source-backed spells are modeled; no Magic UI yet. |
-| Pet | Mongo bonds to Donut in Floor 2 with a primary chapter locator. | Research/model candidate; a small conditional Pet capability may be meaningful. |
-| Party | Groups and party-scoped achievements are referenced, but no replayable roster is modeled. | Audit only; no Party UI. |
-| Crafting | Carl creates Carl's Jug O' Boom, while workbench and Sapper's-table references remain indirect. | Preserve the causal event; no workstation or Crafting UI. |
-| Sponsorship | Ratings, follows, favorites, and patron limits are present. | Unavailable: these are not a sponsor relationship. |
-| Messages / Scratchpad | No message artifact or sender/recipient semantics are modeled. | Unavailable. |
-| Minimap | Floor and location events lack topology or navigational state. | Unavailable. |
+| Pet | Mongo bonds to Donut in Floor 2 with a primary chapter locator. | Research/model candidate. Mongo is not a Party member; replace the transitional generic `party-changed` narrative classification when the Pet model is added. |
+| Party | In Book 1, ch. 2, Donut becomes a crawler and forms the two-member Royal Court of Princess Donut with Carl as a member and Donut as leader. | Modeled as a replay-aware roster from the formation sequence onward. No inferred teammate stats, pet membership, or later roster changes. |
+| Crafting | Carl creates Carl's Jug O' Boom, while workbench and Sapper's-table references remain indirect. | Preserve the one causal event; no workstation, recipe catalog, or Crafting UI. |
+| Sponsorship | Ratings, follows, favorites, patron limits, and sponsor interest are present. | Unavailable: interest and audience metrics are not a sourced sponsor relationship, agreement, or benefit. |
+| Messages / Scratchpad | Book 1 establishes chat use, but the raw timeline has no message records, participants, delivery, or text semantics. | Unavailable until message-shaped source data and a useful conversation view exist. |
+| Minimap | The story establishes a Map menu/minimap-related references, but the raw timeline has no topology, nodes, visibility, or navigable location state. | Unavailable: do not turn location discoveries into a speculative map. |
 | Generic extensions | A Book Club lead exists, but no distinct interface has been established. | Do not create a catch-all menu. |
 
 ## Magic
@@ -51,13 +51,14 @@ A future pet transition should project only sourced fields. A compact Pet view c
 
 ## Party
 
-| Claim | Source tier and locator | Why it is insufficient |
-| --- | --- | --- |
-| Carl and Donut enter Floor 1 together. | Primary; Book 1, ch. 1. | Co-entry is not a machine-readable party formation or roster. |
-| Party-scoped achievements occur. | Mostly corroborating achievement records. | A `recipient: party` field identifies the recipient, not membership, leader, or duration. |
-| The Royal Court is named, and Mongo later joins it. | Mixed corroborating and primary leads. | No projected roster or useful teammate state exists. |
+| Claim | Source tier and locator | Current representation | Boundary |
+| --- | --- | --- | --- |
+| Donut becomes a crawler and forms the Royal Court of Princess Donut with Carl. | Primary; Book 1, ch. 2. Corroborating review confirms the party name and Donut's leader role. | `evt-f1-party-royal-court-formed` projects the named two-member roster. | The event is the formation anchor; their Floor 1 co-entry alone is not party evidence. |
+| Donut is leader and Carl is a member. | Corroborating; Book 1 review. | `PartyMember.role` is limited to `leader` or `member`. | No unsourced level, health, equipment, class, online status, or combat role is shown. |
+| Mongo bonds to Donut on Floor 2. | Primary; Book 1, ch. 40. | Not represented in Party state. | A pet's bond or membership in the Royal Court does not make it a crawler Party roster member. |
+| Party-scoped achievements occur. | Mostly corroborating achievement records. | Existing `recipient: party` remains achievement metadata. | It is not used to infer a roster, leader, or duration. |
 
-The Book Club event must not be used as a Party model. Audit party formation, members, and roles only where directly supported; keep the domain unavailable unless that produces a replayable roster and useful compact teammate state.
+The Book Club event must not be used as Party evidence. Floors 1–2 establish the initial two-crawler roster only; later join/leave/disband changes need their own sourced transitions.
 
 ## Crafting
 
@@ -68,6 +69,15 @@ The Book Club event must not be used as a Party model. Audit party formation, me
 | Carl acquires a Proximity Trigger, described as a Sapper's-table component. | Corroborating; Floor 2, ch. 34. | Crafting-category item with unknown quantity. | Ownership or availability of a Sapper's table or workflow. |
 
 Keep the `ItemCrafted` event in Inventory/Timeline history. New source work may add directly supported causal inputs, but Floors 1–2 must not acquire a workstation, Crafting navigation, or an inferred recipe system.
+
+## Other domain corrections
+
+The absence of a raw representation is not the same as absence from the books. The following distinctions keep this ledger useful for future data work:
+
+- **Messages:** a known chat capability or isolated chat use is a research lead, not a chat history. Preserve actual sender, recipient, delivery, and message content before exposing Chats or Scratchpad.
+- **Minimap:** menu or location references can establish that mapping exists diegetically; a usable application map still needs source-backed topology and point-in-time discovery state.
+- **Sponsorship:** audience metrics, favorites, patron capacity, and sponsor interest belong to Ratings until a specific sponsorship relationship is sourced and modeled.
+- **Pet:** narrative wording such as “joins the Royal Court” must be interpreted through the stated relationship. It does not override the crawler-only Party roster contract.
 
 ## Research sources and scope
 

@@ -25,7 +25,7 @@ async function preparePage(page: Page) {
   });
 }
 
-async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS" | "RATINGS" | "NOTIFICATIONS") {
+async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS" | "RATINGS" | "PARTY" | "NOTIFICATIONS") {
   const navigation = page.getByRole("navigation", { name: "Main Navigation" });
   const tab = navigation.getByRole("button", { name, exact: true });
   await tab.click();
@@ -127,7 +127,9 @@ test("export top-level Inventory tab", async ({ page }) => {
 
 test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => {
   await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click();
-  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("12");
+  // Party formation now occupies the Floor 1 sequence immediately before the
+  // pre-existing award transitions.
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13");
   await selectTopLevelTab(page, "INVENTORY");
   await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click();
   await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible();
@@ -239,6 +241,13 @@ test("export Ratings", async ({ page }) => {
   await selectTopLevelTab(page, "RATINGS");
   await expect(page.getByRole("heading", { name: "RATINGS", exact: true })).toBeVisible();
   await capture(page, "ratings");
+});
+
+test("export Party after the sourced formation sequence", async ({ page }) => {
+  await selectTopLevelTab(page, "PARTY");
+  await expect(page.getByRole("heading", { name: "PARTY", exact: true })).toBeVisible();
+  await expect(page.getByLabel("The Royal Court of Princess Donut roster", { exact: true })).toContainText("Princess Donut");
+  await capture(page, "party");
 });
 
 test("export Notifications", async ({ page }) => {

@@ -219,6 +219,19 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           notificationDelivery: rawEv.notificationDelivery,
           spell: rawEv.spell!,
         });
+      } else if (rawEv.type === 'PartyFormed') {
+        compiledEvents.push({
+          id: rawEv.id,
+          sequence: seq,
+          type: 'PartyFormed',
+          position: pos,
+          summary: rawEv.summary,
+          correlationId: rawEv.correlationId,
+          causationId: rawEv.causationId,
+          evidence: rawEv.evidence,
+          notificationDelivery: rawEv.notificationDelivery,
+          party: rawEv.party!,
+        });
       } else if (rawEv.type === 'NarrativeEvent') {
         compiledEvents.push({
           id: rawEv.id,

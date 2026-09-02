@@ -95,6 +95,22 @@ that the cited evidence does not establish. A spell grant projects into `spells`
 never `skills`; it does not imply party membership or a separate permanent
 entitlement.
 
+### Party formation
+
+Use `PartyFormed` only when a source establishes a crawler roster, its name,
+and the member roles being recorded. The current contract intentionally keeps
+the payload small: stable party and crawler IDs, displayed names, and either
+`leader` or `member`. It projects from that sequence onward and therefore must
+be placed at the actual formation boundary, not at co-entry or the first
+party-scoped achievement.
+
+Do not add a crawler to Party because they travel together, share an
+achievement, are mentioned in a social group, or are called part of a court or
+team in ordinary narration. Pets, summons, and other bonded entities are not
+crawler Party members unless the source explicitly establishes a crawler roster
+membership. Do not infer levels, health, equipment, class, readiness, combat
+role, or later join/leave events from a formation payload.
+
 ## Countdown observations
 
 Countdowns have stable IDs. Every lifecycle event must identify the countdown it affects.

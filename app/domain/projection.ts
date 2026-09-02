@@ -101,6 +101,9 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     ...spell,
     acquisitionSource: { ...spell.acquisitionSource },
   }));
+  const party = timelineState?.party
+    ? { ...timelineState.party, members: timelineState.party.members.map((member) => ({ ...member })) }
+    : undefined;
   const quests = (timelineState?.quests as Quest[] || []).map((q) => ({
     ...q,
   }));
@@ -146,6 +149,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     effects: [],
     skills,
     spells,
+    party,
     // Hotlist membership is crawler state, not a presentation default. Preserve
     // an explicitly authored initial/snapshot value, otherwise leave it absent
     // until a HotlistUpdated transition occurs.
@@ -533,6 +537,14 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       const spell = event.spell as CrawlerState['spells'][number] | undefined;
       if (spell && !state.spells.some((existing) => existing.spellId === spell.spellId && existing.owner === spell.owner)) {
         state.spells.push({ ...spell, acquisitionSource: { ...spell.acquisitionSource } });
+      }
+      break;
+    }
+
+    case 'PartyFormed': {
+      const party = event.party as CrawlerState['party'];
+      if (party) {
+        state.party = { ...party, members: party.members.map((member) => ({ ...member })) };
       }
       break;
     }

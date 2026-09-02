@@ -30,6 +30,7 @@ import { RatingsView } from "./features/ratings/RatingsView";
 import { NotificationsView } from "./features/notifications/NotificationsView";
 import { InventoryView } from "./features/inventory/InventoryView";
 import { SkillsView } from "./features/skills/SkillsView";
+import { PartyView } from "./features/party/PartyView";
 
 type View = RootView;
 
@@ -358,6 +359,8 @@ export default function CrawlerApp() {
           />
         ) : resolvedView === "ratings" ? (
           <RatingsView observations={projectedObservations.broadcast} isLive={isLive} sequence={currentSeq} onInspectObservation={(obs) => setInspectObservation(obs)} />
+        ) : resolvedView === "party" ? (
+          <PartyView party={projectedState.party} />
         ) : resolvedView === "notifications" ? (
           <NotificationsView events={events} sequence={currentSeq} onNavigateToSequence={(seq) => { setSelectedSeq(seq); setIsLive(seq === maxSeq); }} />
         ) : resolvedView === "inventory" ? (
