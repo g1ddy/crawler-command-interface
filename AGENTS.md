@@ -14,6 +14,7 @@ Refer to the canonical documentation for detailed guidance:
 - [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) — Canonical generated visual documentation for the supported interface views.
 - [docs/ROADMAP.md](docs/ROADMAP.md) — Authoritative active product backlog and intentional deferrals.
 - [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Authoritative raw evidence authoring rules, JSON schemas, countdown lifecycle breaks, scrubbing, and projection semantics.
+- [docs/FLOORS_1_2_CANON_READINESS.md](docs/FLOORS_1_2_CANON_READINESS.md) — Evidence-tiered readiness ledger for conditional canon domains in the current Floors 1–2 scope.
 
 ## Durable Invariants
 
