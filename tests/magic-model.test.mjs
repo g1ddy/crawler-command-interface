@@ -8,20 +8,52 @@ import { projectObservations } from "../app/domain/observations.ts";
 import { validateRawCrawlerFloor } from "../app/domain/validation.ts";
 
 const rawFloor2 = JSON.parse(fs.readFileSync("data/raw/floors/floor-2.json", "utf8"));
-const grant = compiledTimeline.events.find((event) => event.id === "evt-f2-005-dungeon-book-club");
+const secondChance = compiledTimeline.events.find((event) => event.id === "evt-f2-005-dungeon-book-club");
+const basicHealing = compiledTimeline.events.find((event) => event.id === "evt-f1-basic-healing-spell");
+const puddleJumper = compiledTimeline.events.find((event) => event.id === "evt-f1-puddle-jumper-granted");
+const protectiveShell = compiledTimeline.events.find((event) => event.id === "evt-f2-protective-shell-granted");
 
-test("Second Chance is a valid, primary-sourced spell grant rather than a skill or party change", () => {
-  assert.ok(grant);
-  assert.equal(grant.type, "SpellGranted");
-  assert.deepEqual(grant.spell, {
+test("the Floors 1–2 spell grants preserve the smallest sourced acquisition facts", () => {
+  assert.ok(basicHealing);
+  assert.ok(puddleJumper);
+  assert.ok(protectiveShell);
+  assert.ok(secondChance);
+  assert.deepEqual(basicHealing.spell, {
+    spellId: "spell-basic-healing",
+    name: "Basic healing spell",
+    owner: "carl",
+    abilityKind: "spell",
+    acquisitionSource: { kind: "crawler-menu", name: "Magic menu tutorial" },
+  });
+  assert.deepEqual(puddleJumper.spell, {
+    spellId: "spell-puddle-jumper",
+    name: "Puddle Jumper",
+    owner: "donut",
+    abilityKind: "spell",
+    acquisitionSource: { kind: "loot-box", name: "Post-Juicer loot boxes" },
+  });
+  assert.deepEqual(protectiveShell.spell, {
+    spellId: "spell-protective-shell",
+    name: "Protective Shell",
+    owner: "carl",
+    abilityKind: "spell",
+    acquisitionSource: {
+      kind: "equipment",
+      name: "Enchanted BigBoi Boxers",
+      itemInstanceId: "inst-f2-bigboi-boxers",
+    },
+  });
+  assert.deepEqual(secondChance.spell, {
     spellId: "spell-second-chance",
     name: "Second Chance",
     owner: "donut",
     abilityKind: "spell",
     acquisitionSource: { kind: "dungeon-book", name: "Dungeon Book of the Floor Club" },
   });
-  assert.equal(grant.evidence[0].sourceId, "src-book-1");
-  assert.equal(grant.evidence[0].confidence, "confirmed");
+  assert.equal(basicHealing.evidence[0].confidence, "confirmed");
+  assert.equal(secondChance.evidence[0].confidence, "confirmed");
+  assert.equal(puddleJumper.evidence[0].confidence, "corroborated");
+  assert.equal(protectiveShell.evidence[0].confidence, "corroborated");
 });
 
 test("malformed spell grants fail raw schema validation", () => {
@@ -34,21 +66,26 @@ test("malformed spell grants fail raw schema validation", () => {
 });
 
 test("spell state obeys replay boundaries without entering skills or exposing a Magic capability", () => {
-  const before = projectState(compiledTimeline, grant.sequence - 1);
-  const after = projectState(compiledTimeline, grant.sequence);
-  const rewound = projectState(compiledTimeline, grant.sequence - 1);
+  const beforeHealing = projectState(compiledTimeline, basicHealing.sequence - 1);
+  const before = projectState(compiledTimeline, puddleJumper.sequence - 1);
+  const after = projectState(compiledTimeline, protectiveShell.sequence);
+  const rewound = projectState(compiledTimeline, puddleJumper.sequence - 1);
 
-  assert.deepEqual(before.spells, []);
-  assert.deepEqual(rewound.spells, []);
-  assert.equal(after.spells.length, 1);
-  assert.equal(after.spells[0].owner, "donut");
-  assert.equal(after.skills.some((skill) => skill.name === "Second Chance"), false);
+  assert.deepEqual(beforeHealing.spells, []);
+  assert.deepEqual(before.spells.map((spell) => spell.spellId), ["spell-basic-healing"]);
+  assert.deepEqual(rewound.spells.map((spell) => spell.spellId), ["spell-basic-healing"]);
+  assert.deepEqual(after.spells.map((spell) => spell.spellId), [
+    "spell-basic-healing",
+    "spell-puddle-jumper",
+    "spell-protective-shell",
+  ]);
+  assert.equal(after.skills.some((skill) => ["Basic healing spell", "Puddle Jumper", "Protective Shell"].includes(skill.name)), false);
 
   const capabilities = selectedSequenceCapabilities(
     after,
-    projectObservations(compiledTimeline, grant.sequence),
+    projectObservations(compiledTimeline, protectiveShell.sequence),
     compiledTimeline.events,
-    grant.sequence,
+    protectiveShell.sequence,
   );
   assert.equal(Object.hasOwn(capabilities, "magic"), false);
 });

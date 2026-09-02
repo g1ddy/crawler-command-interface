@@ -112,8 +112,10 @@ export interface TimelineEntitlement {
 }
 
 export interface SpellAcquisitionSource {
-  kind: 'dungeon-book';
+  kind: 'crawler-menu' | 'loot-box' | 'equipment' | 'dungeon-book';
   name: string;
+  /** Present only when a spell is granted by a particular equipped item. */
+  itemInstanceId?: string;
 }
 
 /** Magic is deliberately modeled separately from ordinary crawler skills. */

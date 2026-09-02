@@ -747,13 +747,21 @@
                   "name"
                 ],
                 "properties": {
-                  "kind": {
-                    "const": "dungeon-book"
-                  },
-                  "name": {
-                    "type": "string",
-                    "minLength": 1
-                  }
+                    "kind": {
+                      "enum": [
+                        "crawler-menu",
+                        "loot-box",
+                        "equipment",
+                        "dungeon-book"
+                      ]
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "itemInstanceId": {
+                      "$ref": "#/$defs/id"
+                    }
                 }
               }
             }
@@ -1722,13 +1730,21 @@
                         "name"
                       ],
                       "properties": {
-                        "kind": {
-                          "const": "dungeon-book"
-                        },
-                        "name": {
-                          "type": "string",
-                          "minLength": 1
-                        }
+                    "kind": {
+                      "enum": [
+                        "crawler-menu",
+                        "loot-box",
+                        "equipment",
+                        "dungeon-book"
+                      ]
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "itemInstanceId": {
+                      "$ref": "#/$defs/id"
+                    }
                       }
                     }
                   }

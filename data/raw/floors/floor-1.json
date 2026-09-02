@@ -72,6 +72,13 @@
       "trust": "corroborating",
       "title": "First Floor",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/First_Floor"
+    },
+    {
+      "id": "src-bookworm-book-1",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Bookworm Wiki: Dungeon Crawler Carl, Book 1 timeline",
+      "url": "https://wiki.bookwormai.app/dungeon-crawler-carl/timeline"
     }
   ],
   "catalog": {
@@ -1446,6 +1453,36 @@
       ]
     },
     {
+      "id": "evt-f1-basic-healing-spell",
+      "order": 34,
+      "type": "SpellGranted",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 6
+      },
+      "summary": "Carl receives the basic healing spell in the Magic menu tutorial.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 6
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "spell": {
+        "spellId": "spell-basic-healing",
+        "name": "Basic healing spell",
+        "owner": "carl",
+        "abilityKind": "spell",
+        "acquisitionSource": {
+          "kind": "crawler-menu",
+          "name": "Magic menu tutorial"
+        }
+      }
+    },
+    {
       "id": "evt-f1-achievement-loot",
       "type": "AchievementUnlocked",
       "position": {
@@ -1464,7 +1501,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 34,
+      "order": 35,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1473,7 +1510,7 @@
     },
     {
       "id": "evt-f1-009-first-magic-gear",
-      "order": 35,
+      "order": 36,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1516,7 +1553,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36,
+      "order": 37,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1525,7 +1562,7 @@
     },
     {
       "id": "evt-f1-007-nightgaunt-cloak",
-      "order": 37,
+      "order": 38,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1553,7 +1590,7 @@
     },
     {
       "id": "evt-f1-008-toe-ring",
-      "order": 38,
+      "order": 39,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1581,7 +1618,7 @@
     },
     {
       "id": "evt-f1-toe-ring-equipped",
-      "order": 39,
+      "order": 40,
       "type": "ItemEquipped",
       "position": {
         "floor": 1,
@@ -1603,7 +1640,7 @@
     },
     {
       "id": "evt-f1-level-3",
-      "order": 40,
+      "order": 41,
       "type": "LevelChanged",
       "level": 3,
       "position": {
@@ -1628,7 +1665,7 @@
     },
     {
       "id": "evt-f1-010-silver-ring-plus-1-con",
-      "order": 41,
+      "order": 42,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1656,7 +1693,7 @@
     },
     {
       "id": "evt-f1-level-5",
-      "order": 42,
+      "order": 43,
       "type": "LevelChanged",
       "level": 5,
       "position": {
@@ -1697,7 +1734,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 43
+      "order": 44
     },
     {
       "id": "evt-f1-countdown-crawlers-4148111",
@@ -1717,7 +1754,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 44
+      "order": 45
     },
     {
       "id": "evt-f1-countdown-royal-court-hoarder",
@@ -1737,11 +1774,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 45
+      "order": 46
     },
     {
       "id": "evt-f1-011-shade-gnoll-kneepads",
-      "order": 46,
+      "order": 47,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1792,7 +1829,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 47
+      "order": 48
     },
     {
       "id": "evt-f1-countdown-floor-2-stairs",
@@ -1812,11 +1849,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 48
+      "order": 49
     },
     {
       "id": "evt-f1-level-7",
-      "order": 49,
+      "order": 50,
       "type": "LevelChanged",
       "level": 7,
       "position": {
@@ -1841,7 +1878,7 @@
     },
     {
       "id": "evt-f1-level-8",
-      "order": 50,
+      "order": 51,
       "type": "LevelChanged",
       "level": 8,
       "position": {
@@ -1866,7 +1903,7 @@
     },
     {
       "id": "evt-f1-012-goblin-copper-chopper",
-      "order": 51,
+      "order": 52,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1911,7 +1948,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 52,
+      "order": 53,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1937,7 +1974,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 53,
+      "order": 54,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1962,11 +1999,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 54
+      "order": 55
     },
     {
       "id": "evt-f1-013-desperado-pass",
-      "order": 55,
+      "order": 56,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -1996,7 +2033,7 @@
     },
     {
       "id": "evt-f1-014-silver-ring-plus-2-con",
-      "order": 56,
+      "order": 57,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2024,7 +2061,7 @@
     },
     {
       "id": "evt-f1-level-9",
-      "order": 57,
+      "order": 58,
       "type": "LevelChanged",
       "level": 9,
       "position": {
@@ -2049,7 +2086,7 @@
     },
     {
       "id": "evt-f1-level-10",
-      "order": 58,
+      "order": 59,
       "type": "LevelChanged",
       "level": 10,
       "position": {
@@ -2090,7 +2127,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 59
+      "order": 60
     },
     {
       "id": "evt-f1-countdown-system-patch",
@@ -2110,11 +2147,41 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 60
+      "order": 61
+    },
+    {
+      "id": "evt-f1-puddle-jumper-granted",
+      "order": 62,
+      "type": "SpellGranted",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 25
+      },
+      "summary": "Donut receives Puddle Jumper from the post-Juicer loot boxes.",
+      "evidence": [
+        {
+          "sourceId": "src-bookworm-book-1",
+          "locator": {
+            "section": "Chapter 25"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "spell": {
+        "spellId": "spell-puddle-jumper",
+        "name": "Puddle Jumper",
+        "owner": "donut",
+        "abilityKind": "spell",
+        "acquisitionSource": {
+          "kind": "loot-box",
+          "name": "Post-Juicer loot boxes"
+        }
+      }
     },
     {
       "id": "evt-f1-016-war-gauntlet",
-      "order": 61,
+      "order": 63,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2158,7 +2225,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 62,
+      "order": 64,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2184,7 +2251,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 63,
+      "order": 65,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2209,7 +2276,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 64
+      "order": 66
     },
     {
       "id": "evt-f1-countdown-crawlers-2552085",
@@ -2229,7 +2296,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 65
+      "order": 67
     },
     {
       "id": "evt-f1-countdown-system-patch-late",
@@ -2249,7 +2316,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 66
+      "order": 68
     },
     {
       "id": "evt-f1-countdown-ball-of-swine",
@@ -2269,7 +2336,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 67
+      "order": 69
     },
     {
       "id": "evt-f1-countdown-floor-2-descent",
@@ -2289,7 +2356,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 68
+      "order": 70
     },
     {
       "id": "evt-f1-achievement-borough-boss",
@@ -2310,7 +2377,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 69,
+      "order": 71,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2336,7 +2403,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 70,
+      "order": 72,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2345,7 +2412,7 @@
     },
     {
       "id": "evt-f1-018-battlefield-construction",
-      "order": 71,
+      "order": 73,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2388,7 +2455,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 72,
+      "order": 74,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2414,7 +2481,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 73,
+      "order": 75,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -2423,7 +2490,7 @@
     },
     {
       "id": "evt-f1-019-exit",
-      "order": 74,
+      "order": 76,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2444,7 +2511,7 @@
     },
     {
       "id": "evt-f1-floor-collapse",
-      "order": 75,
+      "order": 77,
       "type": "NarrativeEvent",
       "kind": "floor-collapsed",
       "position": {
@@ -2464,7 +2531,7 @@
     },
     {
       "id": "evt-f1-countdown-episode-4",
-      "order": 76,
+      "order": 78,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {

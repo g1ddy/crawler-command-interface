@@ -2936,11 +2936,19 @@
                   ],
                   "properties": {
                     "kind": {
-                      "const": "dungeon-book"
+                      "enum": [
+                        "crawler-menu",
+                        "loot-box",
+                        "equipment",
+                        "dungeon-book"
+                      ]
                     },
                     "name": {
                       "type": "string",
                       "minLength": 1
+                    },
+                    "itemInstanceId": {
+                      "$ref": "#/$defs/id"
                     }
                   }
                 }

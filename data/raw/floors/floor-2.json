@@ -505,8 +505,40 @@
       ]
     },
     {
-      "id": "evt-f2-005-dungeon-book-club",
+      "id": "evt-f2-protective-shell-granted",
       "order": 13,
+      "type": "SpellGranted",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 31
+      },
+      "causationId": "evt-f2-004-bigboi-boxers",
+      "summary": "The Enchanted BigBoi Boxers grant Carl Protective Shell.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-floor-2",
+          "locator": {
+            "section": "Gear Gained"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "spell": {
+        "spellId": "spell-protective-shell",
+        "name": "Protective Shell",
+        "owner": "carl",
+        "abilityKind": "spell",
+        "acquisitionSource": {
+          "kind": "equipment",
+          "name": "Enchanted BigBoi Boxers",
+          "itemInstanceId": "inst-f2-bigboi-boxers"
+        }
+      }
+    },
+    {
+      "id": "evt-f2-005-dungeon-book-club",
+      "order": 14,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -536,7 +568,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "order": 14,
+      "order": 15,
       "type": "LevelChanged",
       "level": 11,
       "position": {
@@ -561,7 +593,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "order": 15,
+      "order": 16,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -606,7 +638,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 16,
+      "order": 17,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -615,7 +647,7 @@
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "order": 17,
+      "order": 18,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -645,7 +677,7 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "order": 18,
+      "order": 19,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -689,7 +721,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19
+      "order": 20
     },
     {
       "id": "evt-f2-countdown-crawlers-990303",
@@ -709,11 +741,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 20
+      "order": 21
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "order": 21,
+      "order": 22,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -751,7 +783,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 22
+      "order": 23
     },
     {
       "id": "evt-f2-maestro-rescue",
@@ -771,7 +803,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 23
+      "order": 24
     },
     {
       "id": "evt-f2-snick-video-viral",
@@ -791,7 +823,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 24
+      "order": 25
     },
     {
       "id": "evt-f2-countdown-episode-7",
@@ -811,7 +843,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 25
+      "order": 26
     },
     {
       "id": "evt-f2-achievement-what-goes-up",
@@ -832,7 +864,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 26,
+      "order": 27,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -858,7 +890,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27,
+      "order": 28,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -884,7 +916,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28,
+      "order": 29,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -910,7 +942,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29,
+      "order": 30,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -919,7 +951,7 @@
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "order": 30,
+      "order": 31,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -940,7 +972,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "order": 31,
+      "order": 32,
       "type": "LevelChanged",
       "level": 12,
       "position": {
@@ -981,7 +1013,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 32
+      "order": 33
     },
     {
       "id": "evt-f2-agatha-reappears",
@@ -1001,7 +1033,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 33
+      "order": 34
     },
     {
       "id": "evt-f2-valtay-technology-discovered",
@@ -1021,7 +1053,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 34
+      "order": 35
     },
     {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
@@ -1042,7 +1074,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 35,
+      "order": 36,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1068,7 +1100,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36,
+      "order": 37,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1094,7 +1126,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 37,
+      "order": 38,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1103,7 +1135,7 @@
     },
     {
       "id": "evt-f2-011-level-13",
-      "order": 38,
+      "order": 39,
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -1145,11 +1177,11 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 39
+      "order": 40
     },
     {
       "id": "evt-f2-012-exit",
-      "order": 40,
+      "order": 41,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1186,7 +1218,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 41
+      "order": 42
     }
   ],
   "observations": [
