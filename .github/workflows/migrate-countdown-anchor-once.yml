@@ -41,3 +41,5 @@ jobs:
           git diff --cached --check
           git commit -m "Replace countdown anchor order with event ID"
           git push origin HEAD:codex/party-replay-aware-membership
+
+# One-shot migration trigger 3
