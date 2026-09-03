@@ -17,7 +17,7 @@ test("bounded and unknown telemetry format without claiming exact values", () =>
 });
 
 test("projectObservationValue produces exact stated fact when target sequence matches observation", () => {
-  const magicSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence;
+  const magicSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-trollskin-shirt").sequence;
   const projected = projectObservationValue(compiledTimeline, magicSequence, "crawler-condition.currentMana");
   assert.ok(projected);
   assert.equal(projected.status, "stated");
@@ -110,11 +110,11 @@ test("projectObservations returns exact point-in-time HUD telemetry state when s
 });
 
 test("floor population is exact, floor-scoped telemetry and never interpolated", () => {
-  const startSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-001-countdown-start").sequence;
+  const startSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-countdown-start").sequence;
   const firstPopulation = projectObservations(compiledTimeline, startSequence);
   assert.equal(firstPopulation.floor.remainingCrawlers.value, 1292526);
 
-  const laterSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-countdown-crawlers-1033992").sequence;
+  const laterSequence = compiledTimeline.events.find((event) => event.id === "evt-f2-crawlers-1033992").sequence;
   const beforeLaterPopulation = projectObservationValue(compiledTimeline, laterSequence - 1, "floor-metrics.remainingCrawlers");
   assert.equal(beforeLaterPopulation, null, "population snapshots must not estimate deaths between reports");
 
@@ -127,7 +127,7 @@ test("floor population is exact, floor-scoped telemetry and never interpolated",
 });
 
 test("Floor 1 retains sourced boss progress and collapse telemetry", () => {
-  const bossPatchSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-countdown-floor-2-stairs").sequence;
+  const bossPatchSequence = compiledTimeline.events.find((event) => event.id === "evt-f1-floor-2-stairs").sequence;
   const bossProgress = projectObservationValue(compiledTimeline, bossPatchSequence, "floor-metrics.boroughBossesKilled");
   assert.ok(bossProgress);
   assert.equal(bossProgress.value, 15);

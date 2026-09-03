@@ -17,9 +17,9 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 845,
+    "loc": 869,
     "instability": 0,
-    "fanIn": 38,
+    "fanIn": 39,
     "fanOut": 0,
     "scanned": true
   },
@@ -64,16 +64,16 @@
     "scanned": true
   },
   "app/domain/compiler.ts": {
-    "complexity": 40,
-    "loc": 347,
+    "complexity": 41,
+    "loc": 373,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
     "scanned": true
   },
   "app/domain/validation.ts": {
-    "complexity": 71,
-    "loc": 481,
+    "complexity": 73,
+    "loc": 512,
     "instability": 0.69,
     "fanIn": 4,
     "fanOut": 9,
@@ -89,7 +89,7 @@
   },
   "app/domain/raw-adapter.ts": {
     "complexity": 6,
-    "loc": 85,
+    "loc": 82,
     "instability": 0.33,
     "fanIn": 2,
     "fanOut": 1,
@@ -112,8 +112,8 @@
     "scanned": true
   },
   "app/domain/projection.ts": {
-    "complexity": 158,
-    "loc": 675,
+    "complexity": 160,
+    "loc": 687,
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,
@@ -145,7 +145,7 @@
   },
   "app/domain/raw-compiler.ts": {
     "complexity": 8,
-    "loc": 46,
+    "loc": 47,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 4,
@@ -168,11 +168,11 @@
     "scanned": true
   },
   "src/CrawlerApp.tsx": {
-    "complexity": 36,
-    "loc": 521,
-    "instability": 0.92,
+    "complexity": 37,
+    "loc": 524,
+    "instability": 0.93,
     "fanIn": 2,
-    "fanOut": 24,
+    "fanOut": 25,
     "scanned": true
   },
   "src/features/crawler/CrawlerView.tsx": {
@@ -261,6 +261,14 @@
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/party/PartyView.tsx": {
+    "complexity": 3,
+    "loc": 35,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {
@@ -352,8 +360,8 @@
     "scanned": true
   },
   "src/shell/navigation/RootNavigation.tsx": {
-    "complexity": 10,
-    "loc": 29,
+    "complexity": 12,
+    "loc": 30,
     "instability": 0,
     "fanIn": 2,
     "fanOut": 0,

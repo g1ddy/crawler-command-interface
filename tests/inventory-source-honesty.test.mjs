@@ -10,7 +10,7 @@ const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json",
 
 test("compiler preserves missing authored item rarity as unknown", () => {
   const compiled = compileFloorFiles([floor1AuthoredDoc]);
-  const acquired = compiled.events.find((event) => event.id === "evt-f1-006-trollskin-shirt");
+  const acquired = compiled.events.find((event) => event.id === "evt-f1-trollskin-shirt");
 
   assert.ok(acquired);
   assert.ok("item" in acquired && acquired.item);

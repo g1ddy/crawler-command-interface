@@ -8,7 +8,7 @@ import { projectObservations } from "../app/domain/observations.ts";
 import { validateRawCrawlerFloor } from "../app/domain/validation.ts";
 
 const rawFloor2 = JSON.parse(fs.readFileSync("data/raw/floors/floor-2.json", "utf8"));
-const secondChance = compiledTimeline.events.find((event) => event.id === "evt-f2-005-dungeon-book-club");
+const secondChance = compiledTimeline.events.find((event) => event.id === "evt-f2-dungeon-book-club");
 const basicHealing = compiledTimeline.events.find((event) => event.id === "evt-f1-basic-healing-spell");
 const puddleJumper = compiledTimeline.events.find((event) => event.id === "evt-f1-puddle-jumper-granted");
 const protectiveShell = compiledTimeline.events.find((event) => event.id === "evt-f2-protective-shell-granted");
@@ -58,7 +58,7 @@ test("the Floors 1–2 spell grants preserve the smallest sourced acquisition fa
 
 test("malformed spell grants fail raw schema validation", () => {
   const malformed = structuredClone(rawFloor2);
-  const event = malformed.events.find((candidate) => candidate.id === "evt-f2-005-dungeon-book-club");
+  const event = malformed.events.find((candidate) => candidate.id === "evt-f2-dungeon-book-club");
   delete event.spell.owner;
   const result = validateRawCrawlerFloor(malformed);
   assert.equal(result.valid, false);

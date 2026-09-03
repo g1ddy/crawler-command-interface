@@ -28,6 +28,10 @@ Awards and Boxes appear only after an explicit, source-backed award-to-inventory
 Broadcast-domain observations are presented in canon-aligned Ratings groups without renaming the underlying data model.
 ![Ratings view](images/screenshot-ratings.png)
 
+### Party
+The Party roster appears only after the sourced Floor 1 formation sequence and shows no inferred teammate state.
+![Party view](images/screenshot-party.png)
+
 ### Notifications
 Only source-backed crawler-visible semantics are represented; generic Timeline activity remains separate.
 ![Notifications view](images/screenshot-notifications.png)

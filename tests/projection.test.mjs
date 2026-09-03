@@ -262,16 +262,16 @@ test("compiler produces a valid runtime timeline document from authored floor fi
   assert.deepEqual(
     floor2Countdown.references.slice(0, 3).map((reference) => [reference.sequence, reference.remainingSeconds]),
     [
-      [doc.events.find((event) => event.id === "evt-f2-001-early-access").sequence, 540000],
-      [doc.events.find((event) => event.id === "evt-f2-001-entered").sequence, 525600],
-      [doc.events.find((event) => event.id === "evt-f2-001-countdown-start").sequence, 518400],
+      [doc.events.find((event) => event.id === "evt-f2-early-access").sequence, 540000],
+      [doc.events.find((event) => event.id === "evt-f2-entered").sequence, 525600],
+      [doc.events.find((event) => event.id === "evt-f2-countdown-start").sequence, 518400],
     ]
   );
   const floor2End = projectState(doc, doc.events.at(-1).sequence);
   assert.equal(floor2End.crawler.level, 13);
   assert.equal(floor2End.broadcast.viewers, 212000000000);
   assert.equal(doc.sources.find((s) => s.id === "src-book-1")?.citationStyle, "Chapter {chapter}");
-  assert.equal(doc.events.find((event) => event.id === "evt-f1-001-entered")?.position.chapter, 1);
+  assert.equal(doc.events.find((event) => event.id === "evt-f1-entered")?.position.chapter, 1);
 });
 
 test("compiler rejects floor files with conflicting item definitions", () => {
@@ -279,6 +279,17 @@ test("compiler rejects floor files with conflicting item definitions", () => {
   const docB = JSON.parse(JSON.stringify(floor1AuthoredDoc));
   docB.floor.id = "floor-2";
   docB.floor.ordinal = 2;
+  const remapFloorScopedIds = (value) => {
+    if (typeof value === "string") {
+      return value.replace(/^evt-f1-/, "evt-f2-").replace(/^countdown-floor-1-/, "countdown-floor-2-");
+    }
+    if (Array.isArray(value)) return value.map(remapFloorScopedIds);
+    if (value && typeof value === "object") {
+      return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, remapFloorScopedIds(child)]));
+    }
+    return value;
+  };
+  Object.assign(docB, remapFloorScopedIds(docB));
   docB.events.forEach((e) => {
     e.position.floor = 2;
   });
@@ -326,7 +337,7 @@ test("ItemCrafted events project crafted items into inventory", () => {
 });
 
 test("cross-floor item provenance is preserved when replaying later events", () => {
-  const shirtAcquiredAt = compiledTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt")?.sequence;
+  const shirtAcquiredAt = compiledTimeline.events.find((event) => event.id === "evt-f1-trollskin-shirt")?.sequence;
   assert.ok(shirtAcquiredAt);
   const stateAtEnd = projectState(compiledTimeline, shirtAcquiredAt);
   const shirt = stateAtEnd.inventory.find((i) => i.itemId === "item-trollskin-shirt-of-pummeling");
@@ -526,4 +537,23 @@ test("Awards / Boxes require an explicit, source-backed inventory transition", (
 
   const afterOpening = projectState(compiledTimeline, opened.sequence);
   assert.equal(afterOpening.inventory.some((item) => item.instanceId === "inst-f1-award-silver-adventurer-box"), false);
+});
+
+
+test("timeline validation rejects a snapshot that omits an already formed Party", () => {
+  const doc = JSON.parse(fs.readFileSync("data/compiled-timeline.json", "utf8"));
+  const partyEvent = doc.events.find((event) => event.type === "PartyFormed");
+  assert.ok(partyEvent);
+  const projected = projectState(doc, partyEvent.sequence);
+  assert.ok(projected.party);
+
+  doc.snapshots = [{
+    sequence: partyEvent.sequence,
+    state: { ...doc.initialState },
+  }];
+  delete doc.snapshots[0].state.party;
+
+  const validation = validateCrawlerTimeline(doc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((error) => error.includes("omits Party state")));
 });

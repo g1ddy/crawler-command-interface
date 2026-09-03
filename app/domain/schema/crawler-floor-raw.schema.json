@@ -591,13 +591,13 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "anchorOrder",
+        "anchorEventId",
         "remainingSeconds",
         "evidence"
       ],
       "properties": {
-        "anchorOrder": {
-          "$ref": "#/$defs/positiveInteger"
+        "anchorEventId": {
+          "$ref": "#/$defs/id"
         },
         "remainingSeconds": {
           "$ref": "#/$defs/nonNegativeInteger"
@@ -643,7 +643,6 @@
       "type": "object",
       "required": [
         "id",
-        "order",
         "type",
         "position",
         "summary",
@@ -652,9 +651,6 @@
       "properties": {
         "id": {
           "$ref": "#/$defs/id"
-        },
-        "order": {
-          "$ref": "#/$defs/positiveInteger"
         },
         "type": {
           "type": "string"
@@ -727,7 +723,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "kind",
             "position",
@@ -736,10 +731,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "NarrativeEvent"
@@ -827,7 +819,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "achievementId",
             "position",
@@ -836,10 +827,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "AchievementUnlocked"
@@ -913,7 +901,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "item",
             "position",
@@ -922,10 +909,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "enum": [
@@ -1019,7 +1003,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "entitlement",
             "position",
@@ -1028,10 +1011,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "PermanentEntitlementGranted"
@@ -1127,7 +1107,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "itemInstanceId",
             "position",
@@ -1136,10 +1115,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "enum": [
@@ -1220,7 +1196,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "level",
             "position",
@@ -1229,10 +1204,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "LevelChanged"
@@ -1312,7 +1284,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "skillId",
             "name",
@@ -1323,10 +1294,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "SkillGranted"
@@ -1424,7 +1392,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "effectId",
             "name",
@@ -1436,10 +1403,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "EffectApplied"
@@ -1541,7 +1505,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "attribute",
             "delta",
@@ -1551,10 +1514,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "AttributeModified"
@@ -1646,7 +1606,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "position",
             "summary",
@@ -1654,10 +1613,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "ConditionChanged"
@@ -1758,7 +1714,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "position",
             "summary",
@@ -1766,10 +1721,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "XPChanged"
@@ -1852,7 +1804,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "itemInstanceId",
             "position",
@@ -1861,10 +1812,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "ItemConsumed"
@@ -1950,7 +1898,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "itemInstanceId",
             "position",
@@ -1959,10 +1906,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "ItemDiscarded"
@@ -2042,7 +1986,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "itemInstanceId",
             "delta",
@@ -2052,10 +1995,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "ItemQuantityChanged"
@@ -2138,7 +2078,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "questId",
             "status",
@@ -2148,10 +2087,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "QuestUpdated"
@@ -2251,7 +2187,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "position",
             "summary",
@@ -2259,10 +2194,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "HotlistUpdated"
@@ -2358,7 +2290,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "effectId",
             "position",
@@ -2367,10 +2298,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "EffectExpired"
@@ -2447,7 +2375,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "countdownId",
             "position",
@@ -2456,10 +2383,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "CountdownReset"
@@ -2542,7 +2466,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "countdownId",
             "position",
@@ -2551,10 +2474,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "CountdownPaused"
@@ -2634,7 +2554,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "countdownId",
             "position",
@@ -2643,10 +2562,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "CountdownResumed"
@@ -2726,7 +2642,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "countdownId",
             "position",
@@ -2735,10 +2650,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "CountdownPhaseChanged"
@@ -2824,7 +2736,6 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
             "type",
             "position",
             "summary",
@@ -2833,10 +2744,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "SpellGranted"
@@ -2961,7 +2869,88 @@
           "additionalProperties": false,
           "required": [
             "id",
-            "order",
+            "type",
+            "position",
+            "summary",
+            "evidence",
+            "party"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/eventId"
+            },
+            "type": {
+              "const": "PartyFormed"
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "correlationId": {
+              "$ref": "#/$defs/id"
+            },
+            "causationId": {
+              "$ref": "#/$defs/id"
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/evidence"
+              }
+            },
+            "notificationDelivery": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "delivered",
+                "kind",
+                "severity"
+              ],
+              "properties": {
+                "delivered": {
+                  "const": true
+                },
+                "kind": {
+                  "enum": [
+                    "achievement",
+                    "progression",
+                    "skill",
+                    "quest",
+                    "reward",
+                    "system",
+                    "floor"
+                  ]
+                },
+                "severity": {
+                  "enum": [
+                    "info",
+                    "success",
+                    "warning",
+                    "critical"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "party": {
+              "$ref": "#/$defs/party"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
             "type",
             "position",
             "summary",
@@ -2969,10 +2958,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
-            },
-            "order": {
-              "$ref": "#/$defs/positiveInteger"
+              "$ref": "#/$defs/eventId"
             },
             "type": {
               "const": "BroadcastUpdated"
@@ -3117,13 +3103,13 @@
       ],
       "properties": {
         "id": {
-          "$ref": "#/$defs/id"
+          "$ref": "#/$defs/observationId"
         },
         "kind": {
           "type": "string"
         },
         "eventId": {
-          "$ref": "#/$defs/id"
+          "$ref": "#/$defs/eventId"
         },
         "interpolation": {
           "const": "linear"
@@ -3155,13 +3141,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "countdown-remaining"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "countdownId": {
               "$ref": "#/$defs/id"
@@ -3229,13 +3215,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "crawler-condition"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "interpolation": {
               "const": "linear"
@@ -3286,13 +3272,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "crawler-attributes"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "interpolation": {
               "const": "linear"
@@ -3349,13 +3335,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "xp-progress"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "interpolation": {
               "const": "linear"
@@ -3426,13 +3412,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "broadcast-metrics"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "interpolation": {
               "const": "linear"
@@ -3502,13 +3488,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "floor-metrics"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "remainingCrawlers": {
               "$ref": "#/$defs/metricQuantity"
@@ -3567,13 +3553,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "inventory-state"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "itemInstanceId": {
               "$ref": "#/$defs/id"
@@ -3616,13 +3602,13 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/observationId"
             },
             "kind": {
               "const": "equipment-state"
             },
             "eventId": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "slot": {
               "type": "string",
@@ -3652,6 +3638,108 @@
           }
         }
       ]
+    },
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "partyId",
+        "name",
+        "members"
+      ],
+      "properties": {
+        "partyId": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "members": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "crawlerId",
+              "name",
+              "role"
+            ],
+            "properties": {
+              "crawlerId": {
+                "$ref": "#/$defs/id"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "enum": [
+                  "leader",
+                  "member"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "eventId": {
+      "type": "string",
+      "pattern": "^evt-f[1-9][0-9]*-[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "observationId": {
+      "type": "string",
+      "pattern": "^obs-[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "sourceId": {
+      "type": "string",
+      "pattern": "^src-[a-z0-9][a-z0-9-]*$"
+    },
+    "countdownId": {
+      "type": "string",
+      "pattern": "^countdown-[a-z0-9][a-z0-9-]*$"
+    },
+    "itemId": {
+      "type": "string",
+      "pattern": "^item-[a-z0-9][a-z0-9-]*$"
+    },
+    "achievementId": {
+      "type": "string",
+      "pattern": "^achievement-[a-z0-9][a-z0-9-]*$"
+    },
+    "instanceId": {
+      "type": "string",
+      "pattern": "^inst-[a-z0-9][a-z0-9-]*$"
+    },
+    "skillId": {
+      "type": "string",
+      "pattern": "^skill-[a-z0-9][a-z0-9-]*$"
+    },
+    "spellId": {
+      "type": "string",
+      "pattern": "^spell-[a-z0-9][a-z0-9-]*$"
+    },
+    "partyId": {
+      "type": "string",
+      "pattern": "^party-[a-z0-9][a-z0-9-]*$"
+    },
+    "crawlerId": {
+      "type": "string",
+      "pattern": "^crawler-[a-z0-9][a-z0-9-]*$"
+    },
+    "effectId": {
+      "type": "string",
+      "pattern": "^effect-[a-z0-9][a-z0-9-]*$"
+    },
+    "questId": {
+      "type": "string",
+      "pattern": "^quest-[a-z0-9][a-z0-9-]*$"
+    },
+    "entitlementId": {
+      "type": "string",
+      "pattern": "^entitlement-[a-z0-9][a-z0-9-]*$"
     }
   }
 }

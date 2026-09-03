@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-09-02T20:26:41.114Z",
-    "updatedAt": "2026-09-02T20:26:41.114Z"
+    "createdAt": "2026-09-03T19:51:29.860Z",
+    "updatedAt": "2026-09-03T19:51:29.860Z"
   },
   "floors": [
     {
@@ -22,7 +22,7 @@
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
       "startSequence": 1,
-      "endSequence": 78
+      "endSequence": 79
     },
     {
       "id": "floor-2",
@@ -30,8 +30,8 @@
       "title": "Second Floor",
       "book": 1,
       "bookTitle": "Dungeon Crawler Carl",
-      "startSequence": 79,
-      "endSequence": 120
+      "startSequence": 80,
+      "endSequence": 121
     }
   ],
   "sources": [
@@ -98,6 +98,13 @@
       "trust": "corroborating",
       "title": "Bookworm Wiki: Dungeon Crawler Carl, Book 1 timeline",
       "url": "https://wiki.bookwormai.app/dungeon-crawler-carl/timeline"
+    },
+    {
+      "id": "src-booklovers-book-1",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "A Book Lover's Digest: Dungeon Crawler Carl, Book 1",
+      "url": "https://www.abookloversdigest.com/post/dungeon-crawler-carl-book-1"
     },
     {
       "id": "src-wiki-carl-floor-2",
@@ -181,7 +188,7 @@
       ]
     },
     {
-      "id": "evt-f1-001-entered",
+      "id": "evt-f1-entered",
       "sequence": 2,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
@@ -209,8 +216,51 @@
       ]
     },
     {
-      "id": "evt-f1-achievement-crazy-cat-lady",
+      "id": "evt-f1-party-royal-court-formed",
       "sequence": 3,
+      "type": "PartyFormed",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "After Donut becomes a crawler, she forms the two-member Royal Court of Princess Donut with Carl.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        },
+        {
+          "sourceId": "src-booklovers-book-1",
+          "locator": {
+            "section": "Book 1 review"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "party": {
+        "partyId": "party-royal-court",
+        "name": "The Royal Court of Princess Donut",
+        "members": [
+          {
+            "crawlerId": "crawler-donut",
+            "name": "Princess Donut",
+            "role": "leader"
+          },
+          {
+            "crawlerId": "crawler-carl",
+            "name": "Carl",
+            "role": "member"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evt-f1-achievement-crazy-cat-lady",
+      "sequence": 4,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -249,7 +299,7 @@
     },
     {
       "id": "evt-f1-achievement-trailblazing-crazy-cat-lady",
-      "sequence": 4,
+      "sequence": 5,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -288,7 +338,7 @@
     },
     {
       "id": "evt-f1-achievement-early-adopter",
-      "sequence": 5,
+      "sequence": 6,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -327,7 +377,7 @@
     },
     {
       "id": "evt-f1-award-early-adopter-box",
-      "sequence": 6,
+      "sequence": 7,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -365,8 +415,8 @@
       }
     },
     {
-      "id": "evt-f1-002-empty-pockets",
-      "sequence": 7,
+      "id": "evt-f1-empty-pockets",
+      "sequence": 8,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -405,7 +455,7 @@
     },
     {
       "id": "evt-f1-award-empty-pockets-box",
-      "sequence": 8,
+      "sequence": 9,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -413,7 +463,7 @@
         "chapter": 2
       },
       "summary": "The Dungeon System awards Carl a Bronze Adventurer Box for Empty Pockets.",
-      "causationId": "evt-f1-002-empty-pockets",
+      "causationId": "evt-f1-empty-pockets",
       "evidence": [
         {
           "sourceId": "src-book-1",
@@ -443,8 +493,8 @@
       }
     },
     {
-      "id": "evt-f1-003-no-pants",
-      "sequence": 9,
+      "id": "evt-f1-no-pants",
+      "sequence": 10,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -483,7 +533,7 @@
     },
     {
       "id": "evt-f1-award-no-pants-box",
-      "sequence": 10,
+      "sequence": 11,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -491,7 +541,7 @@
         "chapter": 2
       },
       "summary": "The Dungeon System awards Carl a Gold Apparel Box for Why Aren't You Wearing Pants?.",
-      "causationId": "evt-f1-003-no-pants",
+      "causationId": "evt-f1-no-pants",
       "evidence": [
         {
           "sourceId": "src-book-1",
@@ -521,8 +571,8 @@
       }
     },
     {
-      "id": "evt-f1-004-unarmed-combat",
-      "sequence": 11,
+      "id": "evt-f1-unarmed-combat",
+      "sequence": 12,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -561,7 +611,7 @@
     },
     {
       "id": "evt-f1-award-unarmed-combat-box",
-      "sequence": 12,
+      "sequence": 13,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -569,7 +619,7 @@
         "chapter": 2
       },
       "summary": "The Dungeon System awards Carl a Bronze Weapon Box for Unarmed Combat.",
-      "causationId": "evt-f1-004-unarmed-combat",
+      "causationId": "evt-f1-unarmed-combat",
       "evidence": [
         {
           "sourceId": "src-book-1",
@@ -600,7 +650,7 @@
     },
     {
       "id": "evt-f1-open-early-adopter-box",
-      "sequence": 13,
+      "sequence": 14,
       "type": "ItemDiscarded",
       "position": {
         "floor": 1,
@@ -622,7 +672,7 @@
     },
     {
       "id": "evt-f1-open-empty-pockets-box",
-      "sequence": 14,
+      "sequence": 15,
       "type": "ItemDiscarded",
       "position": {
         "floor": 1,
@@ -644,7 +694,7 @@
     },
     {
       "id": "evt-f1-open-no-pants-box",
-      "sequence": 15,
+      "sequence": 16,
       "type": "ItemDiscarded",
       "position": {
         "floor": 1,
@@ -666,7 +716,7 @@
     },
     {
       "id": "evt-f1-open-unarmed-combat-box",
-      "sequence": 16,
+      "sequence": 17,
       "type": "ItemDiscarded",
       "position": {
         "floor": 1,
@@ -688,7 +738,7 @@
     },
     {
       "id": "evt-f1-achievement-loner",
-      "sequence": 17,
+      "sequence": 18,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -724,8 +774,8 @@
       }
     },
     {
-      "id": "evt-f1-countdown-tutorial-start",
-      "sequence": 18,
+      "id": "evt-f1-tutorial-start",
+      "sequence": 19,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -744,8 +794,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-cascadia-announcement",
-      "sequence": 19,
+      "id": "evt-f1-cascadia-announcement",
+      "sequence": 20,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -771,8 +821,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-tutorial-complete",
-      "sequence": 20,
+      "id": "evt-f1-tutorial-complete",
+      "sequence": 21,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -792,7 +842,7 @@
     },
     {
       "id": "evt-f1-achievement-fall-into-obvious-trap",
-      "sequence": 21,
+      "sequence": 22,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -829,7 +879,7 @@
     },
     {
       "id": "evt-f1-achievement-read-official-dungeon-sign",
-      "sequence": 22,
+      "sequence": 23,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -866,7 +916,7 @@
     },
     {
       "id": "evt-f1-achievement-inflicted-damage-on-mob",
-      "sequence": 23,
+      "sequence": 24,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -903,7 +953,7 @@
     },
     {
       "id": "evt-f1-achievement-killed-a-mob",
-      "sequence": 24,
+      "sequence": 25,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -940,7 +990,7 @@
     },
     {
       "id": "evt-f1-achievement-armed-mob-bare-hands",
-      "sequence": 25,
+      "sequence": 26,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -979,7 +1029,7 @@
     },
     {
       "id": "evt-f1-achievement-higher-level-mob",
-      "sequence": 26,
+      "sequence": 27,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1018,7 +1068,7 @@
     },
     {
       "id": "evt-f1-achievement-entered-a-guildhall",
-      "sequence": 27,
+      "sequence": 28,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1054,8 +1104,8 @@
       }
     },
     {
-      "id": "evt-f1-017-podophilia",
-      "sequence": 28,
+      "id": "evt-f1-podophilia",
+      "sequence": 29,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1093,8 +1143,8 @@
       }
     },
     {
-      "id": "evt-f1-015-boom",
-      "sequence": 29,
+      "id": "evt-f1-boom",
+      "sequence": 30,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1133,7 +1183,7 @@
     },
     {
       "id": "evt-f1-achievement-level-up-baby",
-      "sequence": 30,
+      "sequence": 31,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1170,7 +1220,7 @@
     },
     {
       "id": "evt-f1-level-2",
-      "sequence": 31,
+      "sequence": 32,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -1194,8 +1244,8 @@
       }
     },
     {
-      "id": "evt-f1-005-goblin-pass",
-      "sequence": 32,
+      "id": "evt-f1-goblin-pass",
+      "sequence": 33,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -1224,8 +1274,8 @@
       }
     },
     {
-      "id": "evt-f1-006-trollskin-shirt",
-      "sequence": 33,
+      "id": "evt-f1-trollskin-shirt",
+      "sequence": 34,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1259,7 +1309,7 @@
     },
     {
       "id": "evt-f1-basic-healing-spell",
-      "sequence": 34,
+      "sequence": 35,
       "type": "SpellGranted",
       "position": {
         "floor": 1,
@@ -1289,7 +1339,7 @@
     },
     {
       "id": "evt-f1-achievement-loot",
-      "sequence": 35,
+      "sequence": 36,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1325,8 +1375,8 @@
       }
     },
     {
-      "id": "evt-f1-009-first-magic-gear",
-      "sequence": 36,
+      "id": "evt-f1-first-magic-gear",
+      "sequence": 37,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1365,7 +1415,7 @@
     },
     {
       "id": "evt-f1-achievement-boss-babe",
-      "sequence": 37,
+      "sequence": 38,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1401,8 +1451,8 @@
       }
     },
     {
-      "id": "evt-f1-007-nightgaunt-cloak",
-      "sequence": 38,
+      "id": "evt-f1-nightgaunt-cloak",
+      "sequence": 39,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1438,8 +1488,8 @@
       }
     },
     {
-      "id": "evt-f1-008-toe-ring",
-      "sequence": 39,
+      "id": "evt-f1-toe-ring",
+      "sequence": 40,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1476,7 +1526,7 @@
     },
     {
       "id": "evt-f1-toe-ring-equipped",
-      "sequence": 40,
+      "sequence": 41,
       "type": "ItemEquipped",
       "position": {
         "floor": 1,
@@ -1498,7 +1548,7 @@
     },
     {
       "id": "evt-f1-level-3",
-      "sequence": 41,
+      "sequence": 42,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -1522,8 +1572,8 @@
       }
     },
     {
-      "id": "evt-f1-010-silver-ring-plus-1-con",
-      "sequence": 42,
+      "id": "evt-f1-silver-ring-plus-1-con",
+      "sequence": 43,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1559,7 +1609,7 @@
     },
     {
       "id": "evt-f1-level-5",
-      "sequence": 43,
+      "sequence": 44,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -1583,8 +1633,8 @@
       }
     },
     {
-      "id": "evt-f1-countdown-crawlers-4322395",
-      "sequence": 44,
+      "id": "evt-f1-crawlers-4322395",
+      "sequence": 45,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1603,8 +1653,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-crawlers-4148111",
-      "sequence": 45,
+      "id": "evt-f1-crawlers-4148111",
+      "sequence": 46,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1623,8 +1673,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-royal-court-hoarder",
-      "sequence": 46,
+      "id": "evt-f1-royal-court-hoarder",
+      "sequence": 47,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1643,8 +1693,8 @@
       ]
     },
     {
-      "id": "evt-f1-011-shade-gnoll-kneepads",
-      "sequence": 47,
+      "id": "evt-f1-shade-gnoll-kneepads",
+      "sequence": 48,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1680,8 +1730,8 @@
       }
     },
     {
-      "id": "evt-f1-countdown-episode-1",
-      "sequence": 48,
+      "id": "evt-f1-episode-1",
+      "sequence": 49,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -1707,8 +1757,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-floor-2-stairs",
-      "sequence": 49,
+      "id": "evt-f1-floor-2-stairs",
+      "sequence": 50,
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -1728,7 +1778,7 @@
     },
     {
       "id": "evt-f1-level-7",
-      "sequence": 50,
+      "sequence": 51,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -1753,7 +1803,7 @@
     },
     {
       "id": "evt-f1-level-8",
-      "sequence": 51,
+      "sequence": 52,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -1777,8 +1827,8 @@
       }
     },
     {
-      "id": "evt-f1-012-goblin-copper-chopper",
-      "sequence": 52,
+      "id": "evt-f1-goblin-copper-chopper",
+      "sequence": 53,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1811,7 +1861,7 @@
     },
     {
       "id": "evt-f1-achievement-you-monster",
-      "sequence": 53,
+      "sequence": 54,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1850,7 +1900,7 @@
     },
     {
       "id": "evt-f1-achievement-war-criminal",
-      "sequence": 54,
+      "sequence": 55,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1888,8 +1938,8 @@
       }
     },
     {
-      "id": "evt-f1-countdown-crawlers-3594517",
-      "sequence": 55,
+      "id": "evt-f1-crawlers-3594517",
+      "sequence": 56,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1908,8 +1958,8 @@
       ]
     },
     {
-      "id": "evt-f1-013-desperado-pass",
-      "sequence": 56,
+      "id": "evt-f1-desperado-pass",
+      "sequence": 57,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -1938,8 +1988,8 @@
       }
     },
     {
-      "id": "evt-f1-014-silver-ring-plus-2-con",
-      "sequence": 57,
+      "id": "evt-f1-silver-ring-plus-2-con",
+      "sequence": 58,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1975,7 +2025,7 @@
     },
     {
       "id": "evt-f1-level-9",
-      "sequence": 58,
+      "sequence": 59,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -2000,7 +2050,7 @@
     },
     {
       "id": "evt-f1-level-10",
-      "sequence": 59,
+      "sequence": 60,
       "type": "LevelChanged",
       "position": {
         "floor": 1,
@@ -2024,8 +2074,8 @@
       }
     },
     {
-      "id": "evt-f1-countdown-episode-2",
-      "sequence": 60,
+      "id": "evt-f1-episode-2",
+      "sequence": 61,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2044,8 +2094,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-system-patch",
-      "sequence": 61,
+      "id": "evt-f1-system-patch",
+      "sequence": 62,
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2065,7 +2115,7 @@
     },
     {
       "id": "evt-f1-puddle-jumper-granted",
-      "sequence": 62,
+      "sequence": 63,
       "type": "SpellGranted",
       "position": {
         "floor": 1,
@@ -2094,8 +2144,8 @@
       }
     },
     {
-      "id": "evt-f1-016-war-gauntlet",
-      "sequence": 63,
+      "id": "evt-f1-war-gauntlet",
+      "sequence": 64,
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2133,7 +2183,7 @@
     },
     {
       "id": "evt-f1-achievement-bitchmeat",
-      "sequence": 64,
+      "sequence": 65,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2168,7 +2218,7 @@
     },
     {
       "id": "evt-f1-achievement-two-chicks-same-time",
-      "sequence": 65,
+      "sequence": 66,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2206,8 +2256,8 @@
       }
     },
     {
-      "id": "evt-f1-countdown-meadow-lark",
-      "sequence": 66,
+      "id": "evt-f1-meadow-lark",
+      "sequence": 67,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2226,8 +2276,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-crawlers-2552085",
-      "sequence": 67,
+      "id": "evt-f1-crawlers-2552085",
+      "sequence": 68,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2246,8 +2296,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-system-patch-late",
-      "sequence": 68,
+      "id": "evt-f1-system-patch-late",
+      "sequence": 69,
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2266,8 +2316,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-ball-of-swine",
-      "sequence": 69,
+      "id": "evt-f1-ball-of-swine",
+      "sequence": 70,
       "type": "NarrativeEvent",
       "kind": "encounter-resolved",
       "position": {
@@ -2286,8 +2336,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-floor-2-descent",
-      "sequence": 70,
+      "id": "evt-f1-floor-2-descent",
+      "sequence": 71,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2307,7 +2357,7 @@
     },
     {
       "id": "evt-f1-achievement-borough-boss",
-      "sequence": 71,
+      "sequence": 72,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2344,7 +2394,7 @@
     },
     {
       "id": "evt-f1-achievement-bully-and-a-thief",
-      "sequence": 72,
+      "sequence": 73,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2382,8 +2432,8 @@
       }
     },
     {
-      "id": "evt-f1-018-battlefield-construction",
-      "sequence": 73,
+      "id": "evt-f1-battlefield-construction",
+      "sequence": 74,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2422,7 +2472,7 @@
     },
     {
       "id": "evt-f1-achievement-little-piggy-went-to-market",
-      "sequence": 74,
+      "sequence": 75,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2461,7 +2511,7 @@
     },
     {
       "id": "evt-f1-achievement-found-stairs",
-      "sequence": 75,
+      "sequence": 76,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2497,8 +2547,8 @@
       }
     },
     {
-      "id": "evt-f1-019-exit",
-      "sequence": 76,
+      "id": "evt-f1-exit",
+      "sequence": 77,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2519,7 +2569,7 @@
     },
     {
       "id": "evt-f1-floor-collapse",
-      "sequence": 77,
+      "sequence": 78,
       "type": "NarrativeEvent",
       "kind": "floor-collapsed",
       "position": {
@@ -2538,8 +2588,8 @@
       ]
     },
     {
-      "id": "evt-f1-countdown-episode-4",
-      "sequence": 78,
+      "id": "evt-f1-episode-4",
+      "sequence": 79,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2558,8 +2608,8 @@
       ]
     },
     {
-      "id": "evt-f2-001-early-access",
-      "sequence": 79,
+      "id": "evt-f2-early-access",
+      "sequence": 80,
       "type": "NarrativeEvent",
       "kind": "location-discovered",
       "position": {
@@ -2579,8 +2629,8 @@
       ]
     },
     {
-      "id": "evt-f2-001-entered",
-      "sequence": 80,
+      "id": "evt-f2-entered",
+      "sequence": 81,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -2600,8 +2650,8 @@
       ]
     },
     {
-      "id": "evt-f2-001-countdown-start",
-      "sequence": 81,
+      "id": "evt-f2-countdown-start",
+      "sequence": 82,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2621,8 +2671,8 @@
       ]
     },
     {
-      "id": "evt-f2-002-goo-inator",
-      "sequence": 82,
+      "id": "evt-f2-goo-inator",
+      "sequence": 83,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2654,8 +2704,8 @@
       }
     },
     {
-      "id": "evt-f2-003-pedicure-kit",
-      "sequence": 83,
+      "id": "evt-f2-pedicure-kit",
+      "sequence": 84,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2690,8 +2740,8 @@
       }
     },
     {
-      "id": "evt-f2-countdown-cascadia-intro",
-      "sequence": 84,
+      "id": "evt-f2-cascadia-intro",
+      "sequence": 85,
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2710,8 +2760,8 @@
       ]
     },
     {
-      "id": "evt-f2-countdown-crawlers-1033992",
-      "sequence": 85,
+      "id": "evt-f2-crawlers-1033992",
+      "sequence": 86,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2730,8 +2780,8 @@
       ]
     },
     {
-      "id": "evt-f2-countdown-episode-5",
-      "sequence": 86,
+      "id": "evt-f2-episode-5",
+      "sequence": 87,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2750,8 +2800,8 @@
       ]
     },
     {
-      "id": "evt-f2-countdown-system-patch",
-      "sequence": 87,
+      "id": "evt-f2-system-patch",
+      "sequence": 88,
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2771,7 +2821,7 @@
     },
     {
       "id": "evt-f2-rage-elemental-defeated",
-      "sequence": 88,
+      "sequence": 89,
       "type": "NarrativeEvent",
       "kind": "encounter-resolved",
       "position": {
@@ -2791,7 +2841,7 @@
     },
     {
       "id": "evt-f2-meadow-lark-descended",
-      "sequence": 89,
+      "sequence": 90,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2810,8 +2860,8 @@
       ]
     },
     {
-      "id": "evt-f2-004-bigboi-boxers",
-      "sequence": 90,
+      "id": "evt-f2-bigboi-boxers",
+      "sequence": 91,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -2848,7 +2898,7 @@
     },
     {
       "id": "evt-f2-protective-shell-granted",
-      "sequence": 91,
+      "sequence": 92,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -2856,7 +2906,7 @@
         "chapter": 31
       },
       "summary": "The Enchanted BigBoi Boxers grant Carl Protective Shell.",
-      "causationId": "evt-f2-004-bigboi-boxers",
+      "causationId": "evt-f2-bigboi-boxers",
       "evidence": [
         {
           "sourceId": "src-wiki-carl-floor-2",
@@ -2879,8 +2929,8 @@
       }
     },
     {
-      "id": "evt-f2-005-dungeon-book-club",
-      "sequence": 92,
+      "id": "evt-f2-dungeon-book-club",
+      "sequence": 93,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -2910,7 +2960,7 @@
     },
     {
       "id": "evt-f2-level-11",
-      "sequence": 93,
+      "sequence": 94,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -2935,7 +2985,7 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "sequence": 94,
+      "sequence": 95,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -2968,7 +3018,7 @@
     },
     {
       "id": "evt-f2-achievement-dungeonpreneur",
-      "sequence": 95,
+      "sequence": 96,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3005,7 +3055,7 @@
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "sequence": 96,
+      "sequence": 97,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -3034,8 +3084,8 @@
       }
     },
     {
-      "id": "evt-f2-007-proximity-trigger",
-      "sequence": 97,
+      "id": "evt-f2-proximity-trigger",
+      "sequence": 98,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -3067,8 +3117,8 @@
       }
     },
     {
-      "id": "evt-f2-countdown-episode-6",
-      "sequence": 98,
+      "id": "evt-f2-episode-6",
+      "sequence": 99,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -3087,8 +3137,8 @@
       ]
     },
     {
-      "id": "evt-f2-countdown-crawlers-990303",
-      "sequence": 99,
+      "id": "evt-f2-crawlers-990303",
+      "sequence": 100,
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -3107,8 +3157,8 @@
       ]
     },
     {
-      "id": "evt-f2-009-broadcast-snapshot",
-      "sequence": 100,
+      "id": "evt-f2-broadcast-snapshot",
+      "sequence": 101,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -3130,7 +3180,7 @@
     },
     {
       "id": "evt-f2-death-watch-appearance",
-      "sequence": 101,
+      "sequence": 102,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -3150,7 +3200,7 @@
     },
     {
       "id": "evt-f2-maestro-rescue",
-      "sequence": 102,
+      "sequence": 103,
       "type": "NarrativeEvent",
       "kind": "encounter-resolved",
       "position": {
@@ -3170,7 +3220,7 @@
     },
     {
       "id": "evt-f2-snick-video-viral",
-      "sequence": 103,
+      "sequence": 104,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -3189,8 +3239,8 @@
       ]
     },
     {
-      "id": "evt-f2-countdown-episode-7",
-      "sequence": 104,
+      "id": "evt-f2-episode-7",
+      "sequence": 105,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -3210,7 +3260,7 @@
     },
     {
       "id": "evt-f2-achievement-what-goes-up",
-      "sequence": 105,
+      "sequence": 106,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3247,7 +3297,7 @@
     },
     {
       "id": "evt-f2-achievement-like-a-moth-to-the-flame",
-      "sequence": 106,
+      "sequence": 107,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3286,7 +3336,7 @@
     },
     {
       "id": "evt-f2-achievement-grease-monkey",
-      "sequence": 107,
+      "sequence": 108,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3325,7 +3375,7 @@
     },
     {
       "id": "evt-f2-achievement-you-call-that-a-trap",
-      "sequence": 108,
+      "sequence": 109,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3363,8 +3413,8 @@
       }
     },
     {
-      "id": "evt-f2-010-mongo-bonded",
-      "sequence": 109,
+      "id": "evt-f2-mongo-bonded",
+      "sequence": 110,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -3385,7 +3435,7 @@
     },
     {
       "id": "evt-f2-level-12",
-      "sequence": 110,
+      "sequence": 111,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -3409,8 +3459,8 @@
       }
     },
     {
-      "id": "evt-f2-countdown-episode-8",
-      "sequence": 111,
+      "id": "evt-f2-episode-8",
+      "sequence": 112,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -3430,7 +3480,7 @@
     },
     {
       "id": "evt-f2-agatha-reappears",
-      "sequence": 112,
+      "sequence": 113,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -3450,7 +3500,7 @@
     },
     {
       "id": "evt-f2-valtay-technology-discovered",
-      "sequence": 113,
+      "sequence": 114,
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -3470,7 +3520,7 @@
     },
     {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
-      "sequence": 114,
+      "sequence": 115,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3507,7 +3557,7 @@
     },
     {
       "id": "evt-f2-achievement-menagerie",
-      "sequence": 115,
+      "sequence": 116,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3544,7 +3594,7 @@
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
-      "sequence": 116,
+      "sequence": 117,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 2,
@@ -3575,8 +3625,8 @@
       }
     },
     {
-      "id": "evt-f2-011-level-13",
-      "sequence": 117,
+      "id": "evt-f2-level-13",
+      "sequence": 118,
       "type": "LevelChanged",
       "position": {
         "floor": 2,
@@ -3601,8 +3651,8 @@
       }
     },
     {
-      "id": "evt-f2-countdown-floor-3-descent",
-      "sequence": 118,
+      "id": "evt-f2-floor-3-descent",
+      "sequence": 119,
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -3621,8 +3671,8 @@
       ]
     },
     {
-      "id": "evt-f2-012-exit",
-      "sequence": 119,
+      "id": "evt-f2-exit",
+      "sequence": 120,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -3642,8 +3692,8 @@
       ]
     },
     {
-      "id": "evt-f2-countdown-collapse",
-      "sequence": 120,
+      "id": "evt-f2-collapse",
+      "sequence": 121,
       "type": "NarrativeEvent",
       "kind": "floor-collapsed",
       "position": {
@@ -3698,7 +3748,7 @@
           "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse."
         },
         {
-          "sequence": 18,
+          "sequence": 19,
           "remainingSeconds": 429660,
           "evidence": [
             {
@@ -3712,7 +3762,7 @@
           "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)"
         },
         {
-          "sequence": 19,
+          "sequence": 20,
           "remainingSeconds": 428400,
           "evidence": [
             {
@@ -3726,7 +3776,7 @@
           "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)"
         },
         {
-          "sequence": 20,
+          "sequence": 21,
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -3740,7 +3790,7 @@
           "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)"
         },
         {
-          "sequence": 44,
+          "sequence": 45,
           "remainingSeconds": 405420,
           "evidence": [
             {
@@ -3754,7 +3804,7 @@
           "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)"
         },
         {
-          "sequence": 45,
+          "sequence": 46,
           "remainingSeconds": 356580,
           "evidence": [
             {
@@ -3768,7 +3818,7 @@
           "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)"
         },
         {
-          "sequence": 46,
+          "sequence": 47,
           "remainingSeconds": 345600,
           "evidence": [
             {
@@ -3782,7 +3832,7 @@
           "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)"
         },
         {
-          "sequence": 48,
+          "sequence": 49,
           "remainingSeconds": 324000,
           "evidence": [
             {
@@ -3796,7 +3846,7 @@
           "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)"
         },
         {
-          "sequence": 49,
+          "sequence": 50,
           "remainingSeconds": 320400,
           "evidence": [
             {
@@ -3810,7 +3860,7 @@
           "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)"
         },
         {
-          "sequence": 55,
+          "sequence": 56,
           "remainingSeconds": 237600,
           "evidence": [
             {
@@ -3824,7 +3874,7 @@
           "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)"
         },
         {
-          "sequence": 60,
+          "sequence": 61,
           "remainingSeconds": 216000,
           "evidence": [
             {
@@ -3838,7 +3888,7 @@
           "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)"
         },
         {
-          "sequence": 61,
+          "sequence": 62,
           "remainingSeconds": 212400,
           "evidence": [
             {
@@ -3852,7 +3902,7 @@
           "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)"
         },
         {
-          "sequence": 66,
+          "sequence": 67,
           "remainingSeconds": 144000,
           "evidence": [
             {
@@ -3866,7 +3916,7 @@
           "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)"
         },
         {
-          "sequence": 67,
+          "sequence": 68,
           "remainingSeconds": 108000,
           "evidence": [
             {
@@ -3880,7 +3930,7 @@
           "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)"
         },
         {
-          "sequence": 68,
+          "sequence": 69,
           "remainingSeconds": 104400,
           "evidence": [
             {
@@ -3894,7 +3944,7 @@
           "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)"
         },
         {
-          "sequence": 69,
+          "sequence": 70,
           "remainingSeconds": 23400,
           "evidence": [
             {
@@ -3908,7 +3958,7 @@
           "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)"
         },
         {
-          "sequence": 70,
+          "sequence": 71,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -3922,7 +3972,7 @@
           "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "sequence": 77,
+          "sequence": 78,
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -3944,7 +3994,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "sequence": 79,
+          "sequence": 80,
           "remainingSeconds": 540000,
           "activationOffset": -21600,
           "evidence": [
@@ -3959,7 +4009,7 @@
           "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse."
         },
         {
-          "sequence": 80,
+          "sequence": 81,
           "remainingSeconds": 525600,
           "activationOffset": -7200,
           "evidence": [
@@ -3974,7 +4024,7 @@
           "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse."
         },
         {
-          "sequence": 81,
+          "sequence": 82,
           "remainingSeconds": 518400,
           "activationOffset": 0,
           "evidence": [
@@ -3989,7 +4039,7 @@
           "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse."
         },
         {
-          "sequence": 84,
+          "sequence": 85,
           "remainingSeconds": 514800,
           "evidence": [
             {
@@ -4003,7 +4053,7 @@
           "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)"
         },
         {
-          "sequence": 85,
+          "sequence": 86,
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -4017,7 +4067,7 @@
           "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)"
         },
         {
-          "sequence": 86,
+          "sequence": 87,
           "remainingSeconds": 410400,
           "evidence": [
             {
@@ -4031,7 +4081,7 @@
           "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)"
         },
         {
-          "sequence": 87,
+          "sequence": 88,
           "remainingSeconds": 406800,
           "evidence": [
             {
@@ -4045,7 +4095,7 @@
           "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
         },
         {
-          "sequence": 90,
+          "sequence": 91,
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -4059,7 +4109,7 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         },
         {
-          "sequence": 98,
+          "sequence": 99,
           "remainingSeconds": 302400,
           "evidence": [
             {
@@ -4073,7 +4123,7 @@
           "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
         },
         {
-          "sequence": 99,
+          "sequence": 100,
           "remainingSeconds": 298800,
           "evidence": [
             {
@@ -4087,7 +4137,7 @@
           "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
         },
         {
-          "sequence": 104,
+          "sequence": 105,
           "remainingSeconds": 194400,
           "evidence": [
             {
@@ -4101,7 +4151,7 @@
           "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
         },
         {
-          "sequence": 111,
+          "sequence": 112,
           "remainingSeconds": 86400,
           "evidence": [
             {
@@ -4115,7 +4165,7 @@
           "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
         },
         {
-          "sequence": 118,
+          "sequence": 119,
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -4129,7 +4179,7 @@
           "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "sequence": 120,
+          "sequence": 121,
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -4151,7 +4201,7 @@
       "target": "safe-room-closure",
       "references": [
         {
-          "sequence": 87,
+          "sequence": 88,
           "remainingSeconds": 403200,
           "evidence": [
             {
@@ -4183,7 +4233,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 33
+      "sequence": 34
     },
     {
       "id": "obs-f1-intelligence-baseline",
@@ -4201,7 +4251,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 33
+      "sequence": 34
     },
     {
       "id": "obs-f1-toe-ring-equipped",
@@ -4217,7 +4267,7 @@
           "confidence": "confirmed"
         }
       ],
-      "sequence": 40
+      "sequence": 41
     },
     {
       "id": "obs-f1-level-2",
@@ -4232,7 +4282,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 31
+      "sequence": 32
     },
     {
       "id": "obs-f1-level-3",
@@ -4247,7 +4297,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 41
+      "sequence": 42
     },
     {
       "id": "obs-f1-level-5",
@@ -4262,7 +4312,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 43
+      "sequence": 44
     },
     {
       "id": "obs-f1-level-7",
@@ -4277,7 +4327,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 50
+      "sequence": 51
     },
     {
       "id": "obs-f1-level-8",
@@ -4292,7 +4342,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 51
+      "sequence": 52
     },
     {
       "id": "obs-f1-level-9",
@@ -4307,7 +4357,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 58
+      "sequence": 59
     },
     {
       "id": "obs-f1-level-10",
@@ -4322,7 +4372,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 59
+      "sequence": 60
     },
     {
       "id": "obs-f1-attributes-nightgaunt",
@@ -4343,7 +4393,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 38
+      "sequence": 39
     },
     {
       "id": "obs-f1-attributes-toe-ring",
@@ -4364,7 +4414,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 40
+      "sequence": 41
     },
     {
       "id": "obs-f1-attributes-ring-plus-1",
@@ -4385,7 +4435,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 42
+      "sequence": 43
     },
     {
       "id": "obs-f1-attributes-ring-plus-2",
@@ -4406,7 +4456,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 57
+      "sequence": 58
     },
     {
       "id": "obs-countdown-floor-1-collapse-entered",
@@ -4457,7 +4507,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 18
+      "sequence": 19
     },
     {
       "id": "obs-countdown-floor-1-collapse-cascadia-announcement",
@@ -4474,7 +4524,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 19
+      "sequence": 20
     },
     {
       "id": "obs-countdown-floor-1-collapse-tutorial-complete",
@@ -4491,7 +4541,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 20
+      "sequence": 21
     },
     {
       "id": "obs-countdown-floor-1-collapse-crawlers-4322395",
@@ -4508,7 +4558,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 44
+      "sequence": 45
     },
     {
       "id": "obs-countdown-floor-1-collapse-crawlers-4148111",
@@ -4525,7 +4575,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 45
+      "sequence": 46
     },
     {
       "id": "obs-countdown-floor-1-collapse-royal-court-hoarder",
@@ -4542,7 +4592,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 46
+      "sequence": 47
     },
     {
       "id": "obs-countdown-floor-1-collapse-episode-1",
@@ -4559,7 +4609,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 48
+      "sequence": 49
     },
     {
       "id": "obs-countdown-floor-1-collapse-floor-2-stairs",
@@ -4576,7 +4626,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 49
+      "sequence": 50
     },
     {
       "id": "obs-countdown-floor-1-collapse-crawlers-3594517",
@@ -4593,7 +4643,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 55
+      "sequence": 56
     },
     {
       "id": "obs-countdown-floor-1-collapse-episode-2",
@@ -4610,7 +4660,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 60
+      "sequence": 61
     },
     {
       "id": "obs-countdown-floor-1-collapse-system-patch",
@@ -4627,7 +4677,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 61
+      "sequence": 62
     },
     {
       "id": "obs-countdown-floor-1-collapse-meadow-lark",
@@ -4644,7 +4694,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 66
+      "sequence": 67
     },
     {
       "id": "obs-countdown-floor-1-collapse-crawlers-2552085",
@@ -4661,7 +4711,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 67
+      "sequence": 68
     },
     {
       "id": "obs-countdown-floor-1-collapse-system-patch-late",
@@ -4678,7 +4728,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 68
+      "sequence": 69
     },
     {
       "id": "obs-countdown-floor-1-collapse-ball-of-swine",
@@ -4695,7 +4745,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 69
+      "sequence": 70
     },
     {
       "id": "obs-countdown-floor-1-collapse-floor-2-descent",
@@ -4712,7 +4762,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 70
+      "sequence": 71
     },
     {
       "id": "obs-f1-floor-metrics-crawlers-4322395",
@@ -4727,7 +4777,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 44
+      "sequence": 45
     },
     {
       "id": "obs-f1-floor-metrics-crawlers-4148111",
@@ -4742,7 +4792,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 45
+      "sequence": 46
     },
     {
       "id": "obs-f1-floor-metrics-crawlers-3594517",
@@ -4757,7 +4807,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 55
+      "sequence": 56
     },
     {
       "id": "obs-f1-floor-metrics-crawlers-2552085",
@@ -4772,7 +4822,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 67
+      "sequence": 68
     },
     {
       "id": "obs-f1-floor-metrics-borough-bosses-15",
@@ -4792,7 +4842,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 49
+      "sequence": 50
     },
     {
       "id": "obs-f1-floor-metrics-collapse",
@@ -4812,7 +4862,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 77
+      "sequence": 78
     },
     {
       "id": "obs-countdown-floor-1-collapse-complete",
@@ -4829,7 +4879,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 77
+      "sequence": 78
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-early-access",
@@ -4847,7 +4897,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 79
+      "sequence": 80
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-entered",
@@ -4865,7 +4915,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 80
+      "sequence": 81
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-001-countdown-start",
@@ -4883,7 +4933,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 81
+      "sequence": 82
     },
     {
       "id": "obs-f2-floor-population-start",
@@ -4899,7 +4949,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 81
+      "sequence": 82
     },
     {
       "id": "obs-countdown-floor-2-collapse-f2-004-bigboi-boxers",
@@ -4916,7 +4966,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 90
+      "sequence": 91
     },
     {
       "id": "obs-f2-level-11",
@@ -4931,7 +4981,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 93
+      "sequence": 94
     },
     {
       "id": "obs-f2-level-12",
@@ -4946,7 +4996,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 110
+      "sequence": 111
     },
     {
       "id": "obs-f2-level-13",
@@ -4961,7 +5011,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 117
+      "sequence": 118
     },
     {
       "id": "obs-f2-attributes-bigboi-boxers",
@@ -4982,7 +5032,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 90
+      "sequence": 91
     },
     {
       "id": "obs-f2-broadcast-ratings",
@@ -4998,7 +5048,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 100
+      "sequence": 101
     },
     {
       "id": "obs-countdown-floor-2-collapse-cascadia-intro",
@@ -5015,7 +5065,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 84
+      "sequence": 85
     },
     {
       "id": "obs-countdown-floor-2-collapse-crawlers-1033992",
@@ -5032,7 +5082,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 85
+      "sequence": 86
     },
     {
       "id": "obs-f2-floor-population-1033992",
@@ -5048,7 +5098,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 85
+      "sequence": 86
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-5",
@@ -5065,7 +5115,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 86
+      "sequence": 87
     },
     {
       "id": "obs-countdown-floor-2-collapse-system-patch",
@@ -5082,7 +5132,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 87
+      "sequence": 88
     },
     {
       "id": "obs-countdown-floor-2-safe-room-closure-system-patch",
@@ -5099,7 +5149,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 87
+      "sequence": 88
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-6",
@@ -5116,7 +5166,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 98
+      "sequence": 99
     },
     {
       "id": "obs-countdown-floor-2-collapse-crawlers-990303",
@@ -5133,7 +5183,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 99
+      "sequence": 100
     },
     {
       "id": "obs-f2-floor-population-990303",
@@ -5149,7 +5199,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 99
+      "sequence": 100
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-7",
@@ -5166,7 +5216,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 104
+      "sequence": 105
     },
     {
       "id": "obs-countdown-floor-2-collapse-episode-8",
@@ -5183,7 +5233,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 111
+      "sequence": 112
     },
     {
       "id": "obs-countdown-floor-2-collapse-floor-3-descent",
@@ -5200,7 +5250,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 118
+      "sequence": 119
     },
     {
       "id": "obs-countdown-floor-2-collapse-collapse",
@@ -5217,7 +5267,7 @@
           "confidence": "corroborated"
         }
       ],
-      "sequence": 120
+      "sequence": 121
     }
   ]
 }

@@ -61,6 +61,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
   const itemsCatalog = new Map<string, CatalogItem>();
   const achCatalog = new Map<string, CatalogAchievement>();
   const globalEventIds = new Set<string>();
+  const sequenceByEventId = new Map<string, number>();
   const countdowns: TimelineCountdown[] = [];
   const countdownIds = new Set<string>();
 
@@ -127,6 +128,7 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
       globalEventIds.add(rawEv.id);
 
       const seq = globalSequence++;
+      sequenceByEventId.set(rawEv.id, seq);
       const pos = {
         floor: doc.floor.ordinal,
         book: rawEv.position.book ?? doc.floor.book,
@@ -219,6 +221,19 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
           notificationDelivery: rawEv.notificationDelivery,
           spell: rawEv.spell!,
         });
+      } else if (rawEv.type === 'PartyFormed') {
+        compiledEvents.push({
+          id: rawEv.id,
+          sequence: seq,
+          type: 'PartyFormed',
+          position: pos,
+          summary: rawEv.summary,
+          correlationId: rawEv.correlationId,
+          causationId: rawEv.causationId,
+          evidence: rawEv.evidence,
+          notificationDelivery: rawEv.notificationDelivery,
+          party: rawEv.party!,
+        });
       } else if (rawEv.type === 'NarrativeEvent') {
         compiledEvents.push({
           id: rawEv.id,
@@ -234,7 +249,10 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
         });
       } else {
         // Preserve all structured event properties losslessly
-        const { id, order, position, ...payload } = rawEv;
+        const payload = { ...rawEv } as Record<string, unknown>;
+        delete payload.id;
+        delete payload.order;
+        delete payload.position;
         compiledEvents.push({
           id: rawEv.id,
           sequence: seq,
@@ -270,13 +288,21 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
         title: countdown.title,
         floor: doc.floor.ordinal,
         target: countdown.target,
-        references: countdown.references.map((reference) => ({
-          sequence: startSequence + reference.anchorOrder - 1,
-          remainingSeconds: reference.remainingSeconds,
-          ...(reference.activationOffset !== undefined ? { activationOffset: reference.activationOffset } : {}),
-          evidence: reference.evidence,
-          note: reference.note,
-        })),
+        references: countdown.references.map((reference) => {
+          const sequence = sequenceByEventId.get(reference.anchorEventId);
+          if (sequence === undefined) {
+            throw new Error(
+              `Compiler error: Countdown "${countdown.id}" references missing anchor event ID "${reference.anchorEventId}".`
+            );
+          }
+          return {
+            sequence,
+            remainingSeconds: reference.remainingSeconds,
+            ...(reference.activationOffset !== undefined ? { activationOffset: reference.activationOffset } : {}),
+            evidence: reference.evidence,
+            note: reference.note,
+          };
+        }),
       });
     }
   }

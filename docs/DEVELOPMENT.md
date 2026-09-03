@@ -142,9 +142,12 @@ The canonical screenshot set is written directly to `docs/images/`:
 - `screenshot-inventory.png`
 - `screenshot-skills.png`
 - `screenshot-quests.png`
-- `screenshot-crawler-overview.png`
-- `screenshot-crawler-achievements.png`
-- `screenshot-crawler-broadcast.png`
+- `screenshot-ratings.png`
+- `screenshot-party.png`
+- `screenshot-notifications.png`
+- `screenshot-awards.png`
+- `screenshot-crawler-stats.png`
+- `screenshot-crawler-health.png`
 - `screenshot-floor-rules.png`
 - `screenshot-timeline-history.png`
 

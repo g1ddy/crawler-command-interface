@@ -13,6 +13,7 @@ export const SCREENSHOTS = {
   crawlerStats: "screenshot-crawler-stats.png",
   crawlerHealth: "screenshot-crawler-health.png",
   ratings: "screenshot-ratings.png",
+  party: "screenshot-party.png",
   notifications: "screenshot-notifications.png",
   floorRules: "screenshot-floor-rules.png",
   timelineHistory: "screenshot-timeline-history.png",

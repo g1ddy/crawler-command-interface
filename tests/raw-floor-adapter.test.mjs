@@ -30,8 +30,37 @@ test("raw Floor 1 and Floor 2 documents validate and adapt losslessly to the leg
   for (const [raw, legacy] of [[rawFloor1, legacyFloor1], [rawFloor2, legacyFloor2]]) {
     const validation = validateRawCrawlerFloor(raw);
     assert.equal(validation.valid, true, validation.errors.join("; "));
-    assert.deepEqual(adaptRawFloorDocument(raw), legacy);
+    assert.ok(raw.events.every((event) => !("order" in event)));
+
+    const adapted = adaptRawFloorDocument(raw);
+    assert.deepEqual(adapted.events.map((event) => event.order), raw.events.map((_, index) => index + 1));
+    assert.ok((adapted.countdowns || []).every((countdown) => countdown.references.every(
+      (reference) => typeof reference.anchorEventId === "string" && !("anchorOrder" in reference),
+    )));
+    assert.deepEqual(adapted, legacy);
   }
+});
+
+test("raw array order deterministically becomes compiled global sequence", () => {
+  const compiled = compileRawFloorFiles([rawFloor1, rawFloor2]);
+
+  for (const raw of [rawFloor1, rawFloor2]) {
+    const floor = compiled.floors.find((candidate) => candidate.ordinal === raw.floor.ordinal);
+    assert.ok(floor);
+    raw.events.forEach((event, index) => {
+      const compiledEvent = compiled.events.find((candidate) => candidate.id === event.id);
+      assert.ok(compiledEvent);
+      assert.equal(compiledEvent.sequence, floor.startSequence + index);
+    });
+  }
+});
+
+test("raw authoring rejects duplicated numeric order", () => {
+  const raw = JSON.parse(JSON.stringify(rawFloor1));
+  raw.events[0].order = 1;
+  const validation = validateRawCrawlerFloor(raw);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((error) => error.includes("additional properties")));
 });
 
 test("raw adapter preserves every compiled timeline projection and countdown result", () => {
@@ -61,7 +90,7 @@ test("raw HUD observations are compiled at their event sequences without changin
   const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
   const mana = rawTimeline.observations.find((observation) => observation.id === "obs-f1-magic-baseline");
   assert.ok(mana);
-  assert.equal(mana.sequence, rawTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence);
+  assert.equal(mana.sequence, rawTimeline.events.find((event) => event.id === "evt-f1-trollskin-shirt").sequence);
   assert.equal(mana.eventId, undefined);
 
   const projected = projectObservationValue(rawTimeline, mana.sequence, "crawler-condition.currentMana");
@@ -88,7 +117,7 @@ test("raw adapter resolves every supported observation kind without turning evid
     "crawler-condition", "crawler-attributes", "xp-progress", "broadcast-metrics",
     "inventory-state", "equipment-state", "countdown-remaining",
   ]);
-  assert.ok(adapted.every(({ observation, anchorOrder }) => observation.eventId === eventId && anchorOrder === 1));
+  assert.ok(adapted.every(({ observation }) => observation.eventId === eventId));
 
   const compiled = compileRawFloorFiles([rawDoc]);
   assert.deepEqual(compiled.observations.map((observation) => observation.kind), adapted.map(({ observation }) => observation.kind));
@@ -145,7 +174,8 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   const crazyCatLady = achievements.find((event) => event.achievement.id === "achievement-crazy-cat-lady");
   assert.equal(crazyCatLady?.achievement.recipient, "carl");
   assert.equal(crazyCatLady?.achievement.reward?.[0]?.description, "Bronze Pet Box");
-  assert.equal(crazyCatLady?.sequence, 3);
+  // Party formation is an authored Floor 1 transition before achievement delivery.
+  assert.equal(crazyCatLady?.sequence, 4);
 
   const trailblazingCrazyCatLady = achievements.find((event) => event.achievement.id === "achievement-trailblazing-crazy-cat-lady");
   assert.equal(trailblazingCrazyCatLady?.achievement.recipient, "donut");
@@ -155,7 +185,7 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   assert.equal(menagerie?.achievement.recipient, "donut");
   assert.ok(menagerie?.achievement.description);
 
-  const floor1Exit = rawTimeline.events.find((event) => event.id === "evt-f1-019-exit");
+  const floor1Exit = rawTimeline.events.find((event) => event.id === "evt-f1-exit");
   assert.ok(floor1Exit);
   const atFloor1Exit = projectState(rawTimeline, floor1Exit.sequence);
   assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-found-stairs"));
@@ -198,12 +228,12 @@ test("numeric HUD readings interpolate only when both evidence anchors opt in", 
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
   const evidence = [{ sourceId: "src-book-1", confidence: "confirmed" }];
   rawDoc.observations.push(
-    { id: "obs-linear-mana-start", kind: "crawler-condition", eventId: "evt-f1-006-trollskin-shirt", interpolation: "linear", currentMana: 10, evidence },
-    { id: "obs-linear-mana-end", kind: "crawler-condition", eventId: "evt-f1-009-first-magic-gear", interpolation: "linear", currentMana: 40, evidence },
+    { id: "obs-linear-mana-start", kind: "crawler-condition", eventId: "evt-f1-trollskin-shirt", interpolation: "linear", currentMana: 10, evidence },
+    { id: "obs-linear-mana-end", kind: "crawler-condition", eventId: "evt-f1-first-magic-gear", interpolation: "linear", currentMana: 40, evidence },
   );
   const compiled = compileRawFloorFiles([rawDoc]);
-  const startSequence = compiled.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence;
-  const endSequence = compiled.events.find((event) => event.id === "evt-f1-009-first-magic-gear").sequence;
+  const startSequence = compiled.events.find((event) => event.id === "evt-f1-trollskin-shirt").sequence;
+  const endSequence = compiled.events.find((event) => event.id === "evt-f1-first-magic-gear").sequence;
   const targetSequence = Math.floor((startSequence + endSequence) / 2);
   const estimated = projectObservationValue(compiled, targetSequence, "crawler-condition.currentMana");
   assert.equal(estimated?.status, "estimated");
@@ -237,7 +267,7 @@ test("raw countdown observations reject missing event IDs and increasing values"
   });
   const duplicateValidation = validateRawCrawlerFloor(duplicateAnchor);
   assert.equal(duplicateValidation.valid, false);
-  assert.ok(duplicateValidation.errors.some((error) => error.includes("duplicate anchor order")));
+  assert.ok(duplicateValidation.errors.some((error) => error.includes("duplicate anchor event ID")));
 
   const legacyIncrease = JSON.parse(JSON.stringify(legacyFloor2));
   legacyIncrease.countdowns[0].references[1].remainingSeconds = 600000;
@@ -265,11 +295,10 @@ test("countdown phase breaks permit a later reset observation without interpolat
   const resetCountdown = JSON.parse(JSON.stringify(rawFloor2));
   const resetObservationIndex = resetCountdown.observations.findIndex((observation) => observation.id === "obs-countdown-floor-2-collapse-cascadia-intro");
   const resetObservation = resetCountdown.observations[resetObservationIndex];
-  const resetEventIndex = resetCountdown.events.findIndex((event) => event.id === "evt-f2-002-goo-inator");
+  const resetEventIndex = resetCountdown.events.findIndex((event) => event.id === "evt-f2-goo-inator");
   const resetEvent = resetCountdown.events[resetEventIndex];
   resetCountdown.events[resetEventIndex] = {
     id: resetEvent.id,
-    order: resetEvent.order,
     type: "CountdownReset",
     countdownId: "countdown-floor-2-collapse",
     newRemainingSeconds: 600000,
@@ -295,12 +324,10 @@ test("countdown phase breaks permit a later reset observation without interpolat
 
 test("Phase 2: raw schema accepts all expanded HUD event variants and rejects malformed payloads", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
-  let nextOrder = rawDoc.events.length + 1;
 
   rawDoc.events.push(
     {
       id: "evt-f1-phase2-attr",
-      order: nextOrder++,
       type: "AttributeModified",
       attribute: "Dexterity",
       delta: 2,
@@ -312,7 +339,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-cond",
-      order: nextOrder++,
       type: "ConditionChanged",
       currentHealth: 2000,
       healthDelta: -1100,
@@ -322,7 +348,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-xp",
-      order: nextOrder++,
       type: "XPChanged",
       xp: 25000,
       xpDelta: 3500,
@@ -332,7 +357,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-disc",
-      order: nextOrder++,
       type: "ItemDiscarded",
       itemInstanceId: "inst-f1-trollskin-shirt",
       reason: "Torn beyond repair",
@@ -342,7 +366,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-qty",
-      order: nextOrder++,
       type: "ItemQuantityChanged",
       itemInstanceId: "inst-f1-goblin-copper-chopper",
       delta: 1,
@@ -352,7 +375,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-quest",
-      order: nextOrder++,
       type: "QuestUpdated",
       questId: "q-floor1-clear",
       title: "Clear Floor 1 Boss",
@@ -366,7 +388,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-hotlist",
-      order: nextOrder++,
       type: "HotlistUpdated",
       skillId: "sk-f1-power-strike",
       index: 1,
@@ -376,7 +397,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-effexp",
-      order: nextOrder++,
       type: "EffectExpired",
       effectId: "eff-f1-potion-buff",
       reason: "Duration ran out",
@@ -386,7 +406,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-cdreset",
-      order: nextOrder++,
       type: "CountdownReset",
       countdownId: "countdown-floor-1-collapse",
       newRemainingSeconds: 500000,
@@ -398,7 +417,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-broadcast",
-      order: nextOrder++,
       type: "BroadcastUpdated",
       viewers: 120000,
       patrons: [{ id: "patron-1", name: "High Sponsor", tier: "Gold", contribution: "5000 Gold" }],
@@ -425,11 +443,9 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
 
 test("Phase 2: raw-floor validation verifies referenced IDs and structured countdown phase transitions without keywords", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
-  const nextOrder = rawDoc.events.length + 1;
 
   rawDoc.events.push({
     id: "evt-f1-reset-no-keyword",
-    order: nextOrder,
     type: "CountdownReset",
     countdownId: "countdown-floor-1-collapse",
     newRemainingSeconds: 600000,
@@ -453,12 +469,10 @@ test("Phase 2: raw-floor validation verifies referenced IDs and structured count
 
 test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycle, countdown reset, and projection reached", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
-  let nextOrder = rawDoc.events.length + 1;
 
   rawDoc.events.push(
     {
       id: "evt-f1-p2-hp",
-      order: nextOrder++,
       type: "ConditionChanged",
       currentHealth: 1200,
       maxHealth: 2000,
@@ -468,7 +482,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-xp",
-      order: nextOrder++,
       type: "XPChanged",
       xp: 28000,
       maxXp: 80000,
@@ -478,7 +491,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-attr",
-      order: nextOrder++,
       type: "AttributeModified",
       attribute: "Strength",
       delta: 2,
@@ -489,7 +501,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-acq-ring",
-      order: nextOrder++,
       type: "ItemAcquired",
       position: { floor: 1, book: 1, chapter: 20 },
       summary: "Acquired Silver Ring +1 CON",
@@ -502,7 +513,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-consume",
-      order: nextOrder++,
       type: "ItemConsumed",
       itemInstanceId: "inst-f1-temp-ring",
       quantity: { known: true, value: 1 },
@@ -513,7 +523,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-discard",
-      order: nextOrder++,
       type: "ItemDiscarded",
       itemInstanceId: "inst-f1-toe-ring",
       reason: "Discarded toe ring",
@@ -523,7 +532,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-cdreset",
-      order: nextOrder++,
       type: "CountdownReset",
       countdownId: "countdown-floor-1-collapse",
       newRemainingSeconds: 500000,
@@ -597,7 +605,7 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   crossFloorDoc.observations.push({
     id: "obs-f1-interp-end",
     kind: "crawler-condition",
-    eventId: crossFloorDoc.events[crossFloorDoc.events.length - 1].id,
+    eventId: crossFloorDoc.events[crossFloorDoc.events.length - 2].id,
     interpolation: "linear",
     currentHealth: 1000,
     evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
@@ -612,8 +620,8 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   });
 
   const compiledCrossFloor = compileRawFloorFiles([crossFloorDoc, f2Doc]);
-  const targetBetweenFloors = crossFloorDoc.events[crossFloorDoc.events.length - 1].sequence;
-  const hpInterp = projectObservationValue(compiledCrossFloor, targetBetweenFloors + 1, "crawler-condition.currentHealth");
+  const targetBetweenFloors = compiledCrossFloor.events.find((event) => event.id === crossFloorDoc.events[crossFloorDoc.events.length - 1].id).sequence;
+  const hpInterp = projectObservationValue(compiledCrossFloor, targetBetweenFloors, "crawler-condition.currentHealth");
   assert.equal(hpInterp, null, "interpolation must not cross floor boundaries");
 
   // Interpolation must not cross countdown phase break
@@ -643,7 +651,6 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   // Insert CountdownReset between event 1 and 2
   phaseBreakDoc.events[1] = {
     id: phaseBreakDoc.events[1].id,
-    order: phaseBreakDoc.events[1].order,
     type: "CountdownReset",
     countdownId: "countdown-floor-1-collapse",
     newRemainingSeconds: 500000,
@@ -653,7 +660,8 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   };
 
   const compiledPhaseBreak = compileRawFloorFiles([phaseBreakDoc]);
-  const manaInterp = projectObservationValue(compiledPhaseBreak, phaseBreakDoc.events[1].sequence, "crawler-condition.currentMana");
+  const phaseBreakSequence = compiledPhaseBreak.events.find((event) => event.id === phaseBreakDoc.events[1].id).sequence;
+  const manaInterp = projectObservationValue(compiledPhaseBreak, phaseBreakSequence, "crawler-condition.currentMana");
   assert.equal(manaInterp, null, "interpolation must not cross countdown phase breaks");
 
   // Verify that observation projection does not alter causal event state or countdown projection
@@ -662,4 +670,29 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   projectObservations(rawTimeline, 10);
   assert.deepEqual(projectState(rawTimeline, 10), causalStateBefore);
   assert.deepEqual(projectCountdownState(rawTimeline, 10, 1), countdownStateBefore);
+});
+
+
+test("raw event and observation IDs enforce their schema namespaces", () => {
+  const badEvent = structuredClone(rawFloor1);
+  badEvent.events[0].id = "event-f1-invalid";
+  assert.equal(validateRawCrawlerFloor(badEvent).valid, false);
+
+  const badObservation = structuredClone(rawFloor1);
+  if (!badObservation.observations?.length) throw new Error("fixture needs observations");
+  badObservation.observations[0].id = "reading-f1-invalid";
+  assert.equal(validateRawCrawlerFloor(badObservation).valid, false);
+});
+
+test("raw event IDs must match their authored floor ordinal", () => {
+  const doc = structuredClone(rawFloor1);
+  const originalId = doc.events[0].id;
+  const wrongFloorId = originalId.replace(/^evt-f1-/, "evt-f2-");
+  doc.events[0].id = wrongFloorId;
+  for (const observation of doc.observations || []) {
+    if (observation.eventId === originalId) observation.eventId = wrongFloorId;
+  }
+  const validation = validateRawCrawlerFloor(doc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((error) => error.includes("must use prefix \"evt-f1-\"")));
 });

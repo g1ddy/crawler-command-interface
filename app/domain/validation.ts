@@ -111,15 +111,16 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
     }
     countdownIds.add(countdown.id);
 
-    const anchorOrders = new Set<number>();
+    const eventById = new Map(floorDoc.events.map((event) => [event.id, event]));
+    const anchorEventIds = new Set<string>();
     for (const reference of countdown.references) {
-      if (!floorDoc.events.some((event) => event.order === reference.anchorOrder)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor order #${reference.anchorOrder}.`);
+      if (!eventById.has(reference.anchorEventId)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor event ID "${reference.anchorEventId}".`);
       }
-      if (anchorOrders.has(reference.anchorOrder)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate anchor order #${reference.anchorOrder}.`);
+      if (anchorEventIds.has(reference.anchorEventId)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate anchor event ID "${reference.anchorEventId}".`);
       }
-      anchorOrders.add(reference.anchorOrder);
+      anchorEventIds.add(reference.anchorEventId);
       for (const evidence of reference.evidence) {
         if (!sourceIds.has(evidence.sourceId)) {
           errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in floor sources catalog.`);
@@ -127,25 +128,33 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
       }
     }
 
-    const referencesByOrder = [...countdown.references].sort((a, b) => a.anchorOrder - b.anchorOrder);
+    const referencesByOrder = [...countdown.references].sort(
+      (a, b) =>
+        (eventById.get(a.anchorEventId)?.order ?? Number.MAX_SAFE_INTEGER) -
+        (eventById.get(b.anchorEventId)?.order ?? Number.MAX_SAFE_INTEGER),
+    );
     for (let i = 1; i < referencesByOrder.length; i++) {
       const previous = referencesByOrder[i - 1];
       const current = referencesByOrder[i];
+      const previousOrder = eventById.get(previous.anchorEventId)?.order;
+      const currentOrder = eventById.get(current.anchorEventId)?.order;
+      if (previousOrder === undefined || currentOrder === undefined) continue;
       const hasPhaseBreak = floorDoc.events.some(
         (event) =>
-          event.order > previous.anchorOrder &&
-          event.order <= current.anchorOrder &&
+          event.order > previousOrder &&
+          event.order <= currentOrder &&
           isCountdownPhaseBreakEvent(event, countdown.id)
       );
       if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
         errors.push(
-          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at order #${previous.anchorOrder} to ${current.remainingSeconds}s at order #${current.anchorOrder}. Model an explicit reset before increasing remaining time.`
+          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at event "${previous.anchorEventId}" to ${current.remainingSeconds}s at event "${current.anchorEventId}". Model an explicit reset before increasing remaining time.`
         );
       }
     }
   }
 
   // c) Event IDs uniqueness, contiguous floor-local order, source & position checks
+  const expectedEventPrefix = `evt-f${floorDoc.floor.ordinal}-`;
   const eventIds = new Set<string>();
   let expectedOrder = 1;
   const floorOrdinal = floorDoc.floor?.ordinal;
@@ -156,6 +165,11 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
       const eventRef = `Event order #${event.order} (${event.id || 'unknown'})`;
 
       if (event.id) {
+        if (!event.id.startsWith(expectedEventPrefix)) {
+          errors.push(
+            `Domain error: Event "${event.id}" belongs to floor ${floorDoc.floor.ordinal} and must use prefix "${expectedEventPrefix}".`
+          );
+        }
         if (eventIds.has(event.id)) {
           errors.push(`Domain error: Duplicate event ID "${event.id}" found at ${eventRef}.`);
         }
@@ -259,6 +273,14 @@ export function validateRawCrawlerFloor(doc: unknown): ValidationResult {
   }
 
   const rawDoc = doc as RawCrawlerFloorDocument;
+  const expectedEventPrefix = `evt-f${rawDoc.floor.ordinal}-`;
+  for (const event of rawDoc.events) {
+    if (!event.id.startsWith(expectedEventPrefix)) {
+      errors.push(
+        `Raw domain error: Event "${event.id}" belongs to floor ${rawDoc.floor.ordinal} and must use prefix "${expectedEventPrefix}".`
+      );
+    }
+  }
   const rawEventIds = new Set(rawDoc.events.map((event) => event.id));
   const rawSourceIds = new Set(rawDoc.sources.map((source) => source.id));
   const observationIds = new Set<string>();
@@ -470,6 +492,15 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
         errors.push(`Domain error: Duplicate snapshot sequence #${snap.sequence}.`);
       }
       snapshotSeqs.add(snap.sequence);
+
+      const partyFormation = timelineDoc.events.find(
+        (event) => event.type === 'PartyFormed' && event.sequence <= snap.sequence
+      );
+      if (partyFormation && !snap.state.party) {
+        errors.push(
+          `Domain error: Snapshot sequence #${snap.sequence} omits Party state established by event "${partyFormation.id}". Regenerate or reject the stale snapshot.`
+        );
+      }
     }
   }
 

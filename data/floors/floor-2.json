@@ -231,7 +231,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "anchorOrder": 1,
+          "anchorEventId": "evt-f2-early-access",
           "remainingSeconds": 540000,
           "activationOffset": -21600,
           "evidence": [
@@ -246,7 +246,7 @@
           "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse."
         },
         {
-          "anchorOrder": 2,
+          "anchorEventId": "evt-f2-entered",
           "remainingSeconds": 525600,
           "activationOffset": -7200,
           "evidence": [
@@ -261,7 +261,7 @@
           "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse."
         },
         {
-          "anchorOrder": 3,
+          "anchorEventId": "evt-f2-countdown-start",
           "remainingSeconds": 518400,
           "activationOffset": 0,
           "evidence": [
@@ -276,7 +276,7 @@
           "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse."
         },
         {
-          "anchorOrder": 6,
+          "anchorEventId": "evt-f2-cascadia-intro",
           "remainingSeconds": 514800,
           "evidence": [
             {
@@ -290,7 +290,7 @@
           "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)"
         },
         {
-          "anchorOrder": 7,
+          "anchorEventId": "evt-f2-crawlers-1033992",
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -304,7 +304,7 @@
           "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)"
         },
         {
-          "anchorOrder": 8,
+          "anchorEventId": "evt-f2-episode-5",
           "remainingSeconds": 410400,
           "evidence": [
             {
@@ -318,7 +318,7 @@
           "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 9,
+          "anchorEventId": "evt-f2-system-patch",
           "remainingSeconds": 406800,
           "evidence": [
             {
@@ -332,7 +332,7 @@
           "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
         },
         {
-          "anchorOrder": 12,
+          "anchorEventId": "evt-f2-bigboi-boxers",
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -346,7 +346,7 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         },
         {
-          "anchorOrder": 20,
+          "anchorEventId": "evt-f2-episode-6",
           "remainingSeconds": 302400,
           "evidence": [
             {
@@ -360,7 +360,7 @@
           "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
         },
         {
-          "anchorOrder": 21,
+          "anchorEventId": "evt-f2-crawlers-990303",
           "remainingSeconds": 298800,
           "evidence": [
             {
@@ -374,7 +374,7 @@
           "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
         },
         {
-          "anchorOrder": 26,
+          "anchorEventId": "evt-f2-episode-7",
           "remainingSeconds": 194400,
           "evidence": [
             {
@@ -388,7 +388,7 @@
           "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 33,
+          "anchorEventId": "evt-f2-episode-8",
           "remainingSeconds": 86400,
           "evidence": [
             {
@@ -402,7 +402,7 @@
           "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
         },
         {
-          "anchorOrder": 40,
+          "anchorEventId": "evt-f2-floor-3-descent",
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -416,7 +416,7 @@
           "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 42,
+          "anchorEventId": "evt-f2-collapse",
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -437,7 +437,7 @@
       "target": "safe-room-closure",
       "references": [
         {
-          "anchorOrder": 9,
+          "anchorEventId": "evt-f2-system-patch",
           "remainingSeconds": 403200,
           "evidence": [
             {
@@ -455,8 +455,7 @@
   ],
   "events": [
     {
-      "id": "evt-f2-001-early-access",
-      "order": 1,
+      "id": "evt-f2-early-access",
       "type": "NarrativeEvent",
       "kind": "location-discovered",
       "position": {
@@ -473,11 +472,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 1
     },
     {
-      "id": "evt-f2-001-entered",
-      "order": 2,
+      "id": "evt-f2-entered",
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -494,11 +493,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 2
     },
     {
-      "id": "evt-f2-001-countdown-start",
-      "order": 3,
+      "id": "evt-f2-countdown-start",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -515,11 +514,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 3
     },
     {
-      "id": "evt-f2-002-goo-inator",
-      "order": 4,
+      "id": "evt-f2-goo-inator",
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -543,11 +542,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 4
     },
     {
-      "id": "evt-f2-003-pedicure-kit",
-      "order": 5,
+      "id": "evt-f2-pedicure-kit",
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -571,10 +570,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 5
     },
     {
-      "id": "evt-f2-countdown-cascadia-intro",
+      "id": "evt-f2-cascadia-intro",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -594,7 +594,7 @@
       "order": 6
     },
     {
-      "id": "evt-f2-countdown-crawlers-1033992",
+      "id": "evt-f2-crawlers-1033992",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -614,7 +614,7 @@
       "order": 7
     },
     {
-      "id": "evt-f2-countdown-episode-5",
+      "id": "evt-f2-episode-5",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -634,7 +634,7 @@
       "order": 8
     },
     {
-      "id": "evt-f2-countdown-system-patch",
+      "id": "evt-f2-system-patch",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -694,8 +694,7 @@
       "order": 11
     },
     {
-      "id": "evt-f2-004-bigboi-boxers",
-      "order": 12,
+      "id": "evt-f2-bigboi-boxers",
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -719,18 +718,18 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 12
     },
     {
       "id": "evt-f2-protective-shell-granted",
-      "order": 13,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
         "book": 1,
         "chapter": 31
       },
-      "causationId": "evt-f2-004-bigboi-boxers",
+      "causationId": "evt-f2-bigboi-boxers",
       "summary": "The Enchanted BigBoi Boxers grant Carl Protective Shell.",
       "evidence": [
         {
@@ -751,11 +750,11 @@
           "name": "Enchanted BigBoi Boxers",
           "itemInstanceId": "inst-f2-bigboi-boxers"
         }
-      }
+      },
+      "order": 13
     },
     {
-      "id": "evt-f2-005-dungeon-book-club",
-      "order": 14,
+      "id": "evt-f2-dungeon-book-club",
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -781,11 +780,11 @@
           "kind": "dungeon-book",
           "name": "Dungeon Book of the Floor Club"
         }
-      }
+      },
+      "order": 14
     },
     {
       "id": "evt-f2-level-11",
-      "order": 15,
       "type": "LevelChanged",
       "level": 11,
       "position": {
@@ -806,11 +805,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 15
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "order": 16,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -834,7 +833,8 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 16
     },
     {
       "id": "evt-f2-achievement-dungeonpreneur",
@@ -855,16 +855,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 17
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "order": 18,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -890,11 +889,11 @@
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 18
     },
     {
-      "id": "evt-f2-007-proximity-trigger",
-      "order": 19,
+      "id": "evt-f2-proximity-trigger",
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -918,10 +917,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 19
     },
     {
-      "id": "evt-f2-countdown-episode-6",
+      "id": "evt-f2-episode-6",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -941,7 +941,7 @@
       "order": 20
     },
     {
-      "id": "evt-f2-countdown-crawlers-990303",
+      "id": "evt-f2-crawlers-990303",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -961,8 +961,7 @@
       "order": 21
     },
     {
-      "id": "evt-f2-009-broadcast-snapshot",
-      "order": 22,
+      "id": "evt-f2-broadcast-snapshot",
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -980,7 +979,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 22
     },
     {
       "id": "evt-f2-death-watch-appearance",
@@ -1043,7 +1043,7 @@
       "order": 25
     },
     {
-      "id": "evt-f2-countdown-episode-7",
+      "id": "evt-f2-episode-7",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -1081,12 +1081,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 27
     },
     {
       "id": "evt-f2-achievement-like-a-moth-to-the-flame",
@@ -1107,12 +1107,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 28
     },
     {
       "id": "evt-f2-achievement-grease-monkey",
@@ -1133,12 +1133,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 29
     },
     {
       "id": "evt-f2-achievement-you-call-that-a-trap",
@@ -1159,16 +1159,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 30,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 30
     },
     {
-      "id": "evt-f2-010-mongo-bonded",
-      "order": 31,
+      "id": "evt-f2-mongo-bonded",
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -1185,11 +1184,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 31
     },
     {
       "id": "evt-f2-level-12",
-      "order": 32,
       "type": "LevelChanged",
       "level": 12,
       "position": {
@@ -1210,10 +1209,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 32
     },
     {
-      "id": "evt-f2-countdown-episode-8",
+      "id": "evt-f2-episode-8",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -1291,12 +1291,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 36
     },
     {
       "id": "evt-f2-achievement-menagerie",
@@ -1317,12 +1317,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 37,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 37
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
@@ -1343,16 +1343,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 38,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 38
     },
     {
-      "id": "evt-f2-011-level-13",
-      "order": 39,
+      "id": "evt-f2-level-13",
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -1374,10 +1373,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 39
     },
     {
-      "id": "evt-f2-countdown-floor-3-descent",
+      "id": "evt-f2-floor-3-descent",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -1397,8 +1397,7 @@
       "order": 40
     },
     {
-      "id": "evt-f2-012-exit",
-      "order": 41,
+      "id": "evt-f2-exit",
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1415,10 +1414,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 41
     },
     {
-      "id": "evt-f2-countdown-collapse",
+      "id": "evt-f2-collapse",
       "type": "NarrativeEvent",
       "kind": "floor-collapsed",
       "position": {

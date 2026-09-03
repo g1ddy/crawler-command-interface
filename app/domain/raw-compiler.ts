@@ -31,7 +31,8 @@ export function compileRawFloorFiles(rawDocs: RawCrawlerFloorDocument[]): Crawle
           `Raw compiler error: Observation "${observation.id}" references missing event ID "${observation.eventId}".`
         );
       }
-      const { eventId: _eventId, ...payload } = observation;
+      const payload = { ...observation } as Record<string, unknown>;
+      delete payload.eventId;
       observations.push({ ...payload, sequence } as TimelineObservation);
     }
   }

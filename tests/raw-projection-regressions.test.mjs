@@ -14,10 +14,8 @@ function clone(value) {
 }
 
 function appendRawEvent(doc, event) {
-  const maxOrder = Math.max(...doc.events.map((entry) => entry.order));
   doc.events.push({
-    id: `evt-regression-${maxOrder + 1}`,
-    order: maxOrder + 1,
+    id: `evt-f${doc.floor.ordinal}-regression-${doc.events.length + 1}`,
     position: { floor: doc.floor.ordinal, book: doc.floor.book },
     summary: "Regression fixture event",
     evidence: [{ sourceId: doc.sources[0].id, confidence: "confirmed" }],

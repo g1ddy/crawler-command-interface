@@ -127,6 +127,19 @@ export interface Spell {
   acquisitionSource: SpellAcquisitionSource;
 }
 
+/** A sourced crawler roster. It deliberately excludes pets and social groups. */
+export interface PartyMember {
+  crawlerId: string;
+  name: string;
+  role: 'leader' | 'member';
+}
+
+export interface Party {
+  partyId: string;
+  name: string;
+  members: PartyMember[];
+}
+
 export interface TimelineState {
   crawler: {
     name: string;
@@ -142,6 +155,7 @@ export interface TimelineState {
   achievements?: TimelineAchievement[];
   skills?: Record<string, unknown>[];
   spells?: Spell[];
+  party?: Party;
   quests?: Record<string, unknown>[];
   entitlements?: TimelineEntitlement[];
 }
@@ -229,6 +243,11 @@ export interface PermanentEntitlementGrantedEvent extends TimelineEventBase {
 export interface SpellGrantedEvent extends TimelineEventBase {
   type: 'SpellGranted';
   spell: Spell;
+}
+
+export interface PartyFormedEvent extends TimelineEventBase {
+  type: 'PartyFormed';
+  party: Party;
 }
 
 export interface NarrativeEvent extends TimelineEventBase {
@@ -361,6 +380,7 @@ export type TimelineEvent =
   | ItemUnequippedEvent
   | PermanentEntitlementGrantedEvent
   | SpellGrantedEvent
+  | PartyFormedEvent
   | NarrativeEvent
   | LevelChangedEvent
   | AttributeModifiedEvent
@@ -635,7 +655,7 @@ export interface FloorEventBase {
 }
 
 export interface FloorCountdownReference {
-  anchorOrder: number;
+  anchorEventId: string;
   remainingSeconds: number;
   activationOffset?: number;
   evidence: TimelineEvidence[];
@@ -698,9 +718,12 @@ export interface RawFloorCountdown {
   target: 'floor-collapse' | 'safe-room-closure';
 }
 
-export interface RawCrawlerFloorDocument extends Omit<CrawlerFloorDocument, 'authoringVersion' | 'countdowns'> {
+export type RawFloorEvent = Omit<FloorEventBase, 'order'>;
+
+export interface RawCrawlerFloorDocument extends Omit<CrawlerFloorDocument, 'authoringVersion' | 'countdowns' | 'events'> {
   authoringVersion: 'crawler-floor-raw/v1';
   countdowns?: RawFloorCountdown[];
+  events: RawFloorEvent[];
   observations?: RawObservation[];
 }
 
@@ -817,6 +840,7 @@ export interface CrawlerState {
   effects: ActiveEffect[];
   skills: Skill[];
   spells: Spell[];
+  party?: Party;
   hotlist: string[]; // skillIds
   quests: Quest[];
   achievements: Achievement[];

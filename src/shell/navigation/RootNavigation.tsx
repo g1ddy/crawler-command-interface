@@ -1,4 +1,4 @@
-export type RootView = "crawler" | "inventory" | "skills" | "quests" | "ratings" | "notifications";
+export type RootView = "crawler" | "inventory" | "skills" | "quests" | "ratings" | "party" | "notifications";
 
 export function RootNavigation({
   active,
@@ -21,6 +21,7 @@ export function RootNavigation({
         <button className={active === "quests" ? "active" : ""} aria-pressed={active === "quests"} onClick={() => set("quests")}>QUESTS</button>
       )}
       {capabilities.ratings && <button className={active === "ratings" ? "active" : ""} aria-pressed={active === "ratings"} onClick={() => set("ratings")}>RATINGS</button>}
+      {capabilities.party && <button className={active === "party" ? "active" : ""} aria-pressed={active === "party"} onClick={() => set("party")}>PARTY</button>}
       {capabilities.notifications && <button className={active === "notifications" ? "active" : ""} aria-pressed={active === "notifications"} onClick={() => set("notifications")}>NOTIFICATIONS</button>}
       <button className="secondary-tools" onClick={onOpenTools} aria-label="Open data tools" title="Import, export, or reset timeline data">⚙ TOOLS</button>
     </nav>

@@ -79,6 +79,13 @@
       "trust": "corroborating",
       "title": "Bookworm Wiki: Dungeon Crawler Carl, Book 1 timeline",
       "url": "https://wiki.bookwormai.app/dungeon-crawler-carl/timeline"
+    },
+    {
+      "id": "src-booklovers-book-1",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "A Book Lover's Digest: Dungeon Crawler Carl, Book 1",
+      "url": "https://www.abookloversdigest.com/post/dungeon-crawler-carl-book-1"
     }
   ],
   "catalog": {
@@ -587,7 +594,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "anchorOrder": 1,
+          "anchorEventId": "evt-f1-countdown-start",
           "remainingSeconds": 432000,
           "evidence": [
             {
@@ -601,7 +608,7 @@
           "note": "The First Floor opens and its five-day collapse countdown is displayed. (5d until floor collapse.)"
         },
         {
-          "anchorOrder": 2,
+          "anchorEventId": "evt-f1-entered",
           "remainingSeconds": 431280,
           "evidence": [
             {
@@ -615,7 +622,7 @@
           "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse."
         },
         {
-          "anchorOrder": 18,
+          "anchorEventId": "evt-f1-tutorial-start",
           "remainingSeconds": 429660,
           "evidence": [
             {
@@ -629,7 +636,7 @@
           "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)"
         },
         {
-          "anchorOrder": 19,
+          "anchorEventId": "evt-f1-cascadia-announcement",
           "remainingSeconds": 428400,
           "evidence": [
             {
@@ -643,7 +650,7 @@
           "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)"
         },
         {
-          "anchorOrder": 20,
+          "anchorEventId": "evt-f1-tutorial-complete",
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -657,7 +664,7 @@
           "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)"
         },
         {
-          "anchorOrder": 44,
+          "anchorEventId": "evt-f1-crawlers-4322395",
           "remainingSeconds": 405420,
           "evidence": [
             {
@@ -671,7 +678,7 @@
           "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)"
         },
         {
-          "anchorOrder": 45,
+          "anchorEventId": "evt-f1-crawlers-4148111",
           "remainingSeconds": 356580,
           "evidence": [
             {
@@ -685,7 +692,7 @@
           "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)"
         },
         {
-          "anchorOrder": 46,
+          "anchorEventId": "evt-f1-royal-court-hoarder",
           "remainingSeconds": 345600,
           "evidence": [
             {
@@ -699,7 +706,7 @@
           "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)"
         },
         {
-          "anchorOrder": 48,
+          "anchorEventId": "evt-f1-episode-1",
           "remainingSeconds": 324000,
           "evidence": [
             {
@@ -713,7 +720,7 @@
           "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 49,
+          "anchorEventId": "evt-f1-floor-2-stairs",
           "remainingSeconds": 320400,
           "evidence": [
             {
@@ -727,7 +734,7 @@
           "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)"
         },
         {
-          "anchorOrder": 55,
+          "anchorEventId": "evt-f1-crawlers-3594517",
           "remainingSeconds": 237600,
           "evidence": [
             {
@@ -741,7 +748,7 @@
           "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 60,
+          "anchorEventId": "evt-f1-episode-2",
           "remainingSeconds": 216000,
           "evidence": [
             {
@@ -755,7 +762,7 @@
           "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)"
         },
         {
-          "anchorOrder": 61,
+          "anchorEventId": "evt-f1-system-patch",
           "remainingSeconds": 212400,
           "evidence": [
             {
@@ -769,7 +776,7 @@
           "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)"
         },
         {
-          "anchorOrder": 66,
+          "anchorEventId": "evt-f1-meadow-lark",
           "remainingSeconds": 144000,
           "evidence": [
             {
@@ -783,7 +790,7 @@
           "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)"
         },
         {
-          "anchorOrder": 67,
+          "anchorEventId": "evt-f1-crawlers-2552085",
           "remainingSeconds": 108000,
           "evidence": [
             {
@@ -797,7 +804,7 @@
           "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 68,
+          "anchorEventId": "evt-f1-system-patch-late",
           "remainingSeconds": 104400,
           "evidence": [
             {
@@ -811,7 +818,7 @@
           "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)"
         },
         {
-          "anchorOrder": 69,
+          "anchorEventId": "evt-f1-ball-of-swine",
           "remainingSeconds": 23400,
           "evidence": [
             {
@@ -825,7 +832,7 @@
           "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)"
         },
         {
-          "anchorOrder": 70,
+          "anchorEventId": "evt-f1-floor-2-descent",
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -839,7 +846,7 @@
           "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 77,
+          "anchorEventId": "evt-f1-floor-collapse",
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -877,8 +884,7 @@
       "order": 1
     },
     {
-      "id": "evt-f1-001-entered",
-      "order": 2,
+      "id": "evt-f1-entered",
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -902,7 +908,51 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 2
+    },
+    {
+      "id": "evt-f1-party-royal-court-formed",
+      "type": "PartyFormed",
+      "position": {
+        "floor": 1,
+        "book": 1,
+        "chapter": 2
+      },
+      "summary": "After Donut becomes a crawler, she forms the two-member Royal Court of Princess Donut with Carl.",
+      "party": {
+        "partyId": "party-royal-court",
+        "name": "The Royal Court of Princess Donut",
+        "members": [
+          {
+            "crawlerId": "crawler-donut",
+            "name": "Princess Donut",
+            "role": "leader"
+          },
+          {
+            "crawlerId": "crawler-carl",
+            "name": "Carl",
+            "role": "member"
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 2
+          },
+          "confidence": "confirmed"
+        },
+        {
+          "sourceId": "src-booklovers-book-1",
+          "locator": {
+            "section": "Book 1 review"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 3
     },
     {
       "id": "evt-f1-achievement-crazy-cat-lady",
@@ -923,12 +973,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 3,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 4
     },
     {
       "id": "evt-f1-achievement-trailblazing-crazy-cat-lady",
@@ -949,12 +999,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 4,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 5
     },
     {
       "id": "evt-f1-achievement-early-adopter",
@@ -975,12 +1025,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 5,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 6
     },
     {
       "id": "evt-f1-award-early-adopter-box",
@@ -1009,16 +1059,15 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 6,
       "notificationDelivery": {
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 7
     },
     {
-      "id": "evt-f1-002-empty-pockets",
-      "order": 7,
+      "id": "evt-f1-empty-pockets",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1040,7 +1089,8 @@
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 8
     },
     {
       "id": "evt-f1-award-empty-pockets-box",
@@ -1050,7 +1100,7 @@
         "book": 1,
         "chapter": 2
       },
-      "causationId": "evt-f1-002-empty-pockets",
+      "causationId": "evt-f1-empty-pockets",
       "item": {
         "instanceId": "inst-f1-award-bronze-adventurer-box",
         "itemId": "item-award-bronze-adventurer-box",
@@ -1069,16 +1119,15 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 8,
       "notificationDelivery": {
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 9
     },
     {
-      "id": "evt-f1-003-no-pants",
-      "order": 9,
+      "id": "evt-f1-no-pants",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1100,7 +1149,8 @@
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 10
     },
     {
       "id": "evt-f1-award-no-pants-box",
@@ -1110,7 +1160,7 @@
         "book": 1,
         "chapter": 2
       },
-      "causationId": "evt-f1-003-no-pants",
+      "causationId": "evt-f1-no-pants",
       "item": {
         "instanceId": "inst-f1-award-gold-apparel-box",
         "itemId": "item-award-gold-apparel-box",
@@ -1129,16 +1179,15 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 10,
       "notificationDelivery": {
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 11
     },
     {
-      "id": "evt-f1-004-unarmed-combat",
-      "order": 11,
+      "id": "evt-f1-unarmed-combat",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1160,7 +1209,8 @@
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 12
     },
     {
       "id": "evt-f1-award-unarmed-combat-box",
@@ -1170,7 +1220,7 @@
         "book": 1,
         "chapter": 2
       },
-      "causationId": "evt-f1-004-unarmed-combat",
+      "causationId": "evt-f1-unarmed-combat",
       "item": {
         "instanceId": "inst-f1-award-bronze-weapon-box",
         "itemId": "item-award-bronze-weapon-box",
@@ -1189,12 +1239,12 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 12,
       "notificationDelivery": {
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 13
     },
     {
       "id": "evt-f1-open-early-adopter-box",
@@ -1216,7 +1266,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 13
+      "order": 14
     },
     {
       "id": "evt-f1-open-empty-pockets-box",
@@ -1238,7 +1288,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 14
+      "order": 15
     },
     {
       "id": "evt-f1-open-no-pants-box",
@@ -1260,7 +1310,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 15
+      "order": 16
     },
     {
       "id": "evt-f1-open-unarmed-combat-box",
@@ -1282,7 +1332,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 16
+      "order": 17
     },
     {
       "id": "evt-f1-achievement-loner",
@@ -1303,15 +1353,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 18
     },
     {
-      "id": "evt-f1-countdown-tutorial-start",
+      "id": "evt-f1-tutorial-start",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1328,10 +1378,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 19
     },
     {
-      "id": "evt-f1-countdown-cascadia-announcement",
+      "id": "evt-f1-cascadia-announcement",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1355,10 +1405,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19
+      "order": 20
     },
     {
-      "id": "evt-f1-countdown-tutorial-complete",
+      "id": "evt-f1-tutorial-complete",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1375,7 +1425,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 20
+      "order": 21
     },
     {
       "id": "evt-f1-achievement-fall-into-obvious-trap",
@@ -1396,12 +1446,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 21,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 22
     },
     {
       "id": "evt-f1-achievement-read-official-dungeon-sign",
@@ -1422,12 +1472,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 22,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 23
     },
     {
       "id": "evt-f1-achievement-inflicted-damage-on-mob",
@@ -1448,12 +1498,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 23,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 24
     },
     {
       "id": "evt-f1-achievement-killed-a-mob",
@@ -1474,12 +1524,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 24,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 25
     },
     {
       "id": "evt-f1-achievement-armed-mob-bare-hands",
@@ -1500,12 +1550,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 25,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 26
     },
     {
       "id": "evt-f1-achievement-higher-level-mob",
@@ -1526,12 +1576,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 26,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 27
     },
     {
       "id": "evt-f1-achievement-entered-a-guildhall",
@@ -1552,16 +1602,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 28
     },
     {
-      "id": "evt-f1-017-podophilia",
-      "order": 28,
+      "id": "evt-f1-podophilia",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1583,11 +1632,11 @@
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 29
     },
     {
-      "id": "evt-f1-015-boom",
-      "order": 29,
+      "id": "evt-f1-boom",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1609,7 +1658,8 @@
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 30
     },
     {
       "id": "evt-f1-achievement-level-up-baby",
@@ -1630,16 +1680,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 30,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 31
     },
     {
       "id": "evt-f1-level-2",
-      "order": 31,
       "type": "LevelChanged",
       "level": 2,
       "position": {
@@ -1660,11 +1709,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 32
     },
     {
-      "id": "evt-f1-005-goblin-pass",
-      "order": 32,
+      "id": "evt-f1-goblin-pass",
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -1690,11 +1739,11 @@
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 33
     },
     {
-      "id": "evt-f1-006-trollskin-shirt",
-      "order": 33,
+      "id": "evt-f1-trollskin-shirt",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1718,11 +1767,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 34
     },
     {
       "id": "evt-f1-basic-healing-spell",
-      "order": 34,
       "type": "SpellGranted",
       "position": {
         "floor": 1,
@@ -1748,7 +1797,8 @@
           "kind": "crawler-menu",
           "name": "Magic menu tutorial"
         }
-      }
+      },
+      "order": 35
     },
     {
       "id": "evt-f1-achievement-loot",
@@ -1769,16 +1819,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 35,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 36
     },
     {
-      "id": "evt-f1-009-first-magic-gear",
-      "order": 36,
+      "id": "evt-f1-first-magic-gear",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1800,7 +1849,8 @@
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 37
     },
     {
       "id": "evt-f1-achievement-boss-babe",
@@ -1821,16 +1871,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 37,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 38
     },
     {
-      "id": "evt-f1-007-nightgaunt-cloak",
-      "order": 38,
+      "id": "evt-f1-nightgaunt-cloak",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1854,11 +1903,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 39
     },
     {
-      "id": "evt-f1-008-toe-ring",
-      "order": 39,
+      "id": "evt-f1-toe-ring",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1882,11 +1931,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 40
     },
     {
       "id": "evt-f1-toe-ring-equipped",
-      "order": 40,
       "type": "ItemEquipped",
       "position": {
         "floor": 1,
@@ -1904,11 +1953,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 41
     },
     {
       "id": "evt-f1-level-3",
-      "order": 41,
       "type": "LevelChanged",
       "level": 3,
       "position": {
@@ -1929,11 +1978,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 42
     },
     {
-      "id": "evt-f1-010-silver-ring-plus-1-con",
-      "order": 42,
+      "id": "evt-f1-silver-ring-plus-1-con",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1957,11 +2006,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 43
     },
     {
       "id": "evt-f1-level-5",
-      "order": 43,
       "type": "LevelChanged",
       "level": 5,
       "position": {
@@ -1982,10 +2031,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 44
     },
     {
-      "id": "evt-f1-countdown-crawlers-4322395",
+      "id": "evt-f1-crawlers-4322395",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2002,10 +2052,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 44
+      "order": 45
     },
     {
-      "id": "evt-f1-countdown-crawlers-4148111",
+      "id": "evt-f1-crawlers-4148111",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2022,10 +2072,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 45
+      "order": 46
     },
     {
-      "id": "evt-f1-countdown-royal-court-hoarder",
+      "id": "evt-f1-royal-court-hoarder",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2042,11 +2092,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 46
+      "order": 47
     },
     {
-      "id": "evt-f1-011-shade-gnoll-kneepads",
-      "order": 47,
+      "id": "evt-f1-shade-gnoll-kneepads",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2070,10 +2119,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 48
     },
     {
-      "id": "evt-f1-countdown-episode-1",
+      "id": "evt-f1-episode-1",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2097,10 +2147,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 48
+      "order": 49
     },
     {
-      "id": "evt-f1-countdown-floor-2-stairs",
+      "id": "evt-f1-floor-2-stairs",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2117,11 +2167,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 49
+      "order": 50
     },
     {
       "id": "evt-f1-level-7",
-      "order": 50,
       "type": "LevelChanged",
       "level": 7,
       "position": {
@@ -2142,11 +2191,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 51
     },
     {
       "id": "evt-f1-level-8",
-      "order": 51,
       "type": "LevelChanged",
       "level": 8,
       "position": {
@@ -2167,11 +2216,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 52
     },
     {
-      "id": "evt-f1-012-goblin-copper-chopper",
-      "order": 52,
+      "id": "evt-f1-goblin-copper-chopper",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2195,7 +2244,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 53
     },
     {
       "id": "evt-f1-achievement-you-monster",
@@ -2216,12 +2266,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 53,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 54
     },
     {
       "id": "evt-f1-achievement-war-criminal",
@@ -2242,15 +2292,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 54,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 55
     },
     {
-      "id": "evt-f1-countdown-crawlers-3594517",
+      "id": "evt-f1-crawlers-3594517",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2267,11 +2317,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55
+      "order": 56
     },
     {
-      "id": "evt-f1-013-desperado-pass",
-      "order": 56,
+      "id": "evt-f1-desperado-pass",
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -2297,11 +2346,11 @@
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 57
     },
     {
-      "id": "evt-f1-014-silver-ring-plus-2-con",
-      "order": 57,
+      "id": "evt-f1-silver-ring-plus-2-con",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2325,11 +2374,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 58
     },
     {
       "id": "evt-f1-level-9",
-      "order": 58,
       "type": "LevelChanged",
       "level": 9,
       "position": {
@@ -2350,11 +2399,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 59
     },
     {
       "id": "evt-f1-level-10",
-      "order": 59,
       "type": "LevelChanged",
       "level": 10,
       "position": {
@@ -2375,10 +2424,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 60
     },
     {
-      "id": "evt-f1-countdown-episode-2",
+      "id": "evt-f1-episode-2",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2395,10 +2445,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 60
+      "order": 61
     },
     {
-      "id": "evt-f1-countdown-system-patch",
+      "id": "evt-f1-system-patch",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2415,11 +2465,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 61
+      "order": 62
     },
     {
       "id": "evt-f1-puddle-jumper-granted",
-      "order": 62,
       "type": "SpellGranted",
       "position": {
         "floor": 1,
@@ -2445,11 +2494,11 @@
           "kind": "loot-box",
           "name": "Post-Juicer loot boxes"
         }
-      }
+      },
+      "order": 63
     },
     {
-      "id": "evt-f1-016-war-gauntlet",
-      "order": 63,
+      "id": "evt-f1-war-gauntlet",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2473,7 +2522,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 64
     },
     {
       "id": "evt-f1-achievement-bitchmeat",
@@ -2493,12 +2543,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 64,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 65
     },
     {
       "id": "evt-f1-achievement-two-chicks-same-time",
@@ -2519,15 +2569,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 65,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 66
     },
     {
-      "id": "evt-f1-countdown-meadow-lark",
+      "id": "evt-f1-meadow-lark",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2544,10 +2594,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 66
+      "order": 67
     },
     {
-      "id": "evt-f1-countdown-crawlers-2552085",
+      "id": "evt-f1-crawlers-2552085",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2564,10 +2614,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 67
+      "order": 68
     },
     {
-      "id": "evt-f1-countdown-system-patch-late",
+      "id": "evt-f1-system-patch-late",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2584,10 +2634,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 68
+      "order": 69
     },
     {
-      "id": "evt-f1-countdown-ball-of-swine",
+      "id": "evt-f1-ball-of-swine",
       "type": "NarrativeEvent",
       "kind": "encounter-resolved",
       "position": {
@@ -2604,10 +2654,10 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 69
+      "order": 70
     },
     {
-      "id": "evt-f1-countdown-floor-2-descent",
+      "id": "evt-f1-floor-2-descent",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2624,7 +2674,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 70
+      "order": 71
     },
     {
       "id": "evt-f1-achievement-borough-boss",
@@ -2645,12 +2695,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 71,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 72
     },
     {
       "id": "evt-f1-achievement-bully-and-a-thief",
@@ -2671,16 +2721,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 72,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 73
     },
     {
-      "id": "evt-f1-018-battlefield-construction",
-      "order": 73,
+      "id": "evt-f1-battlefield-construction",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2702,7 +2751,8 @@
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 74
     },
     {
       "id": "evt-f1-achievement-little-piggy-went-to-market",
@@ -2723,12 +2773,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 74,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 75
     },
     {
       "id": "evt-f1-achievement-found-stairs",
@@ -2749,16 +2799,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 75,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 76
     },
     {
-      "id": "evt-f1-019-exit",
-      "order": 76,
+      "id": "evt-f1-exit",
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2775,11 +2824,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 77
     },
     {
       "id": "evt-f1-floor-collapse",
-      "order": 77,
       "type": "NarrativeEvent",
       "kind": "floor-collapsed",
       "position": {
@@ -2795,11 +2844,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 78
     },
     {
-      "id": "evt-f1-countdown-episode-4",
-      "order": 78,
+      "id": "evt-f1-episode-4",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2815,7 +2864,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 79
     }
   ]
 }
