@@ -55,7 +55,7 @@ countdownTest = countdownTest
   .replaceAll('anchorEventId: "e1"', 'anchorEventId: "evt-f1-reset-initial"')
   .replaceAll('anchorEventId: "e2"', 'anchorEventId: "evt-f1-reset-boundary"')
   .replaceAll('anchorEventId: "e3"', 'anchorEventId: "evt-f1-reset-phase-2"')
-  .replaceAll('at event \\"e1\\" to 500000s at event \\"e2\\"', 'at event \\"evt-f1-reset-initial\\" to 500000s at event \\"evt-f1-reset-boundary\\"');
+  .replaceAll('increases from 100s at event "e1" to 500000s at event "e2"', 'increases from 100s at event "evt-f1-reset-initial" to 500000s at event "evt-f1-reset-boundary"');
 write('tests/countdowns.test.mjs', countdownTest);
 
 // Keep the conflict test valid for every invariant except the catalog conflict it
