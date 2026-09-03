@@ -17,7 +17,7 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 866,
+    "loc": 869,
     "instability": 0,
     "fanIn": 39,
     "fanOut": 0,
@@ -65,15 +65,15 @@
   },
   "app/domain/compiler.ts": {
     "complexity": 41,
-    "loc": 360,
+    "loc": 373,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
     "scanned": true
   },
   "app/domain/validation.ts": {
-    "complexity": 71,
-    "loc": 481,
+    "complexity": 73,
+    "loc": 512,
     "instability": 0.69,
     "fanIn": 4,
     "fanOut": 9,
@@ -89,7 +89,7 @@
   },
   "app/domain/raw-adapter.ts": {
     "complexity": 6,
-    "loc": 85,
+    "loc": 82,
     "instability": 0.33,
     "fanIn": 2,
     "fanOut": 1,
@@ -145,7 +145,7 @@
   },
   "app/domain/raw-compiler.ts": {
     "complexity": 8,
-    "loc": 46,
+    "loc": 47,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 4,
