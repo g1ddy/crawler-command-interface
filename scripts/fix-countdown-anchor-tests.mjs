@@ -22,6 +22,10 @@ update('tests/raw-floor-adapter.test.mjs', (content) => content
   .replace(/^\s*order: resetEvent\.order,\n/gm, '')
   .replace(/^\s*order: phaseBreakDoc\.events\[1\]\.order,\n/gm, '')
   .replace(
+    'eventId: crossFloorDoc.events[crossFloorDoc.events.length - 1].id,',
+    'eventId: crossFloorDoc.events[crossFloorDoc.events.length - 2].id,',
+  )
+  .replace(
     'const targetBetweenFloors = crossFloorDoc.events[crossFloorDoc.events.length - 1].sequence;',
     'const targetBetweenFloors = compiledCrossFloor.events.find((event) => event.id === crossFloorDoc.events[crossFloorDoc.events.length - 1].id).sequence;',
   )
