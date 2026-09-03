@@ -76,6 +76,9 @@ A summary such as `The countdown resets` is descriptive text. The structured `ty
 The order of entries in the raw `events` array is the authoritative floor-local chronology. Raw events do not carry a duplicated numeric `order` field. The adapter derives floor-local `order` for compatibility output, and the compiler derives globally increasing `sequence` values for the runtime timeline. `position` separately records where the event belongs in the story.
 
 - Keep event IDs stable once published; IDs are references, not display labels.
+- Author floor event IDs as `evt-f<floor>-<semantic-event>[-<qualifier>...]`. Do not encode array position, generated order, or compiled sequence. Numbers are appropriate only when intrinsic to the fact (for example `episode-8`, `floor-3-descent`, or `crawlers-990303`).
+- Author observation IDs in the `obs-...` namespace. Event identity describes what happened; observation identity describes what was measured about it.
+- Schema owns ID syntax. Domain/build validation checks relationships schema cannot express, such as matching the `evt-fN-` prefix to `floor.ordinal` and resolving referenced event IDs.
 - Insert new events at the intended chronological position in the raw array.
 - Use the correct floor/book position and add more precise position data only when supported.
 - Place lifecycle events between the observations they are intended to separate. Validation reasons about ordering, especially for countdown phases.

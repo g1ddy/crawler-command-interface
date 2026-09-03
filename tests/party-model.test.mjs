@@ -55,7 +55,7 @@ test("Party schema rejects a roster without its crawler roles", () => {
 });
 
 test("the Floor 2 Mongo narrative event cannot alter the crawler Party roster", () => {
-  const mongo = compiledTimeline.events.find((event) => event.id === "evt-f2-010-mongo-bonded");
+  const mongo = compiledTimeline.events.find((event) => event.id === "evt-f2-mongo-bonded");
   assert.ok(mongo);
   const afterMongo = projectState(compiledTimeline, mongo.sequence);
   assert.deepEqual(afterMongo.party?.members.map((member) => member.crawlerId), ["crawler-donut", "crawler-carl"]);

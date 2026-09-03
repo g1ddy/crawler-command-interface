@@ -33,7 +33,7 @@ Primary evidence is preferred for new mechanics and persistent state when availa
 | --- | --- | --- | --- |
 | Carl receives the basic healing spell while his HUD shows 3/3 mana. | Primary; Book 1, ch. 6. | `evt-f1-basic-healing-spell` grants `Basic healing spell` to Carl through the Magic menu tutorial. | Mechanics remain intentionally unmodeled. |
 | Donut receives Puddle Jumper from post-Juicer loot boxes. | Corroborating; Bookworm Wiki, Book 1 timeline, ch. 25. | `evt-f1-puddle-jumper-granted` records the distinct spell and its loot-box acquisition. | A primary locator and mechanics remain intentionally unmodeled. |
-| Donut joins the Dungeon Book of the Floor Club and receives Second Chance. | Primary; Book 1, ch. 31. | `evt-f2-005-dungeon-book-club` grants the distinct spell `Second Chance` to Donut and names the Dungeon Book as its acquisition source. | Effect mechanics and any independently evidenced persistent club unlock. |
+| Donut joins the Dungeon Book of the Floor Club and receives Second Chance. | Primary; Book 1, ch. 31. | `evt-f2-dungeon-book-club` grants the distinct spell `Second Chance` to Donut and names the Dungeon Book as its acquisition source. | Effect mechanics and any independently evidenced persistent club unlock. |
 | Enchanted BigBoi Boxers grant Protective Shell to Carl. | Corroborating; Floor 2 gear acquisition, ch. 31. | `evt-f2-protective-shell-granted` retains the source equipment instance as acquisition provenance. | Mechanics and any behavior after the equipment is lost or unequipped remain intentionally unmodeled. |
 
 Spells remain distinct from the current `Skill` model. The projected Magic state has an explicit spell discriminator, known owner, and acquisition source, without rank, cooldown, mana cost, duration, or effect details. These four known spells are preserved for replay but do not yet provide useful management behavior, so Magic navigation remains unavailable.
@@ -44,7 +44,7 @@ Useful discovery sources include the [Book 1 guide](https://www.abookloversdiges
 
 | Claim | Source tier and locator | Current representation | What is missing |
 | --- | --- | --- | --- |
-| Mongo bonds to Donut and joins the Royal Court. | Primary; Book 1, ch. 40. | `evt-f2-010-mongo-bonded` is a `NarrativeEvent(kind: party-changed)`. | Machine-readable pet identity, bond holder, and any explicitly stated persistent state. |
+| Mongo bonds to Donut and joins the Royal Court. | Primary; Book 1, ch. 40. | `evt-f2-mongo-bonded` is a `NarrativeEvent(kind: party-changed)`. | Machine-readable pet identity, bond holder, and any explicitly stated persistent state. |
 | Mongo is present at Floor 2 exit. | Corroborating; Floor 2 exit summary, ch. 47. | Narrative summary only. | Primary check only if an independent persistence anchor is needed. |
 
 A future pet transition should project only sourced fields. A compact Pet view could appear after the bonding sequence and disappear when replaying before it. It must not infer species, combat statistics, commands, equipment, or later-story behavior.

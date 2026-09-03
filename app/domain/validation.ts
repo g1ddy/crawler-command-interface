@@ -154,6 +154,7 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
   }
 
   // c) Event IDs uniqueness, contiguous floor-local order, source & position checks
+  const expectedEventPrefix = `evt-f${floorDoc.floor.ordinal}-`;
   const eventIds = new Set<string>();
   let expectedOrder = 1;
   const floorOrdinal = floorDoc.floor?.ordinal;
@@ -164,6 +165,11 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
       const eventRef = `Event order #${event.order} (${event.id || 'unknown'})`;
 
       if (event.id) {
+        if (!event.id.startsWith(expectedEventPrefix)) {
+          errors.push(
+            `Domain error: Event "${event.id}" belongs to floor ${floorDoc.floor.ordinal} and must use prefix "${expectedEventPrefix}".`
+          );
+        }
         if (eventIds.has(event.id)) {
           errors.push(`Domain error: Duplicate event ID "${event.id}" found at ${eventRef}.`);
         }
@@ -267,6 +273,14 @@ export function validateRawCrawlerFloor(doc: unknown): ValidationResult {
   }
 
   const rawDoc = doc as RawCrawlerFloorDocument;
+  const expectedEventPrefix = `evt-f${rawDoc.floor.ordinal}-`;
+  for (const event of rawDoc.events) {
+    if (!event.id.startsWith(expectedEventPrefix)) {
+      errors.push(
+        `Raw domain error: Event "${event.id}" belongs to floor ${rawDoc.floor.ordinal} and must use prefix "${expectedEventPrefix}".`
+      );
+    }
+  }
   const rawEventIds = new Set(rawDoc.events.map((event) => event.id));
   const rawSourceIds = new Set(rawDoc.sources.map((source) => source.id));
   const observationIds = new Set<string>();
@@ -478,6 +492,15 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
         errors.push(`Domain error: Duplicate snapshot sequence #${snap.sequence}.`);
       }
       snapshotSeqs.add(snap.sequence);
+
+      const partyFormation = timelineDoc.events.find(
+        (event) => event.type === 'PartyFormed' && event.sequence <= snap.sequence
+      );
+      if (partyFormation && !snap.state.party) {
+        errors.push(
+          `Domain error: Snapshot sequence #${snap.sequence} omits Party state established by event "${partyFormation.id}". Regenerate or reject the stale snapshot.`
+        );
+      }
     }
   }
 

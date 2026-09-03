@@ -249,7 +249,10 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
         });
       } else {
         // Preserve all structured event properties losslessly
-        const { id, order, position, ...payload } = rawEv;
+        const payload = { ...rawEv } as Record<string, unknown>;
+        delete payload.id;
+        delete payload.order;
+        delete payload.position;
         compiledEvents.push({
           id: rawEv.id,
           sequence: seq,

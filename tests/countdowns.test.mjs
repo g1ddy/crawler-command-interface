@@ -29,9 +29,9 @@ test("formatCountdownDuration formats scheduled, active, and completed durations
 });
 
 test("projection at pre-activation sequence returns scheduled countdown state with starts-in display", () => {
-  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
-  const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-entered").sequence;
-  const startSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-countdown-start").sequence;
+  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-early-access").sequence;
+  const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-entered").sequence;
+  const startSeq = compiledDoc.events.find((e) => e.id === "evt-f2-countdown-start").sequence;
 
   const earlyAccessState = projectCountdownState(compiledDoc, earlyAccessSeq, 2);
   assert.ok(earlyAccessState);
@@ -69,7 +69,7 @@ test("validation rejects negative remainingSeconds while accepting valid activat
     sources: [{ id: "src-1", kind: "official-text", trust: "primary", title: "S1", url: "https://example.com" }],
     catalog: { items: [], achievements: [] },
     events: [{ id: "e1", order: 1, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Obs", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }],
-    countdowns: [{ id: "cd-neg", title: "Neg Countdown", target: "floor-collapse", references: [{ anchorEventId: "e1", remainingSeconds: -500, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }] }],
+    countdowns: [{ id: "cd-neg", title: "Neg Countdown", target: "floor-collapse", references: [{ anchorEventId: "evt-f1-reset-initial", remainingSeconds: -500, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }] }],
   };
 
   const res = validateCrawlerFloor(invalidNegativeRemaining);
@@ -92,13 +92,13 @@ test("evidence boundary: returns null before the first sourced countdown referen
   assert.equal(projectCountdownState(compiledDoc, 0, 1), null);
 
   // Sequence 1 is also before Floor 2's first countdown reference (early access)
-  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
+  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-early-access").sequence;
   assert.equal(projectCountdownState(compiledDoc, earlyAccessSeq - 1, 2), null);
 });
 
 test("scheduled countdown references retain time-to-collapse as well as time-to-activation", () => {
-  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-early-access").sequence;
-  const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-001-entered").sequence;
+  const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-early-access").sequence;
+  const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-entered").sequence;
 
   const earlyAccessState = projectCountdownState(compiledDoc, earlyAccessSeq, 2);
   assert.ok(earlyAccessState);
@@ -149,7 +149,7 @@ test("Floor 1 retains sourced readings through the sourced descent window", () =
   assert.ok(stated);
   assert.equal(stated.status, "stated");
   assert.equal(stated.remainingSeconds, 432000);
-  const descentSequence = compiledDoc.events.find((event) => event.id === "evt-f1-countdown-floor-2-descent").sequence;
+  const descentSequence = compiledDoc.events.find((event) => event.id === "evt-f1-floor-2-descent").sequence;
   const descent = projectCountdownState(compiledDoc, descentSequence, 1);
   assert.ok(descent);
   assert.equal(descent.remainingSeconds, 21600);
@@ -359,9 +359,9 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
     sources: [{ id: "src-1", kind: "official-text", trust: "primary", title: "S1", url: "https://example.com" }],
     catalog: { items: [], achievements: [] },
     events: [
-      { id: "e1", order: 1, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Initial observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-      { id: "e2", order: 2, type: "CountdownReset", countdownId: "cd-reset", position: { floor: 1 }, summary: "System countdown reset for phase 2", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-      { id: "e3", order: 3, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Phase 2 observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "evt-f1-reset-initial", order: 1, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Initial observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "evt-f1-reset-boundary", order: 2, type: "CountdownReset", countdownId: "cd-reset", position: { floor: 1 }, summary: "System countdown reset for phase 2", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+      { id: "evt-f1-reset-phase-2", order: 3, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Phase 2 observation", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
     ],
     countdowns: [
       {
@@ -369,9 +369,9 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
         title: "Phase Reset Countdown",
         target: "floor-collapse",
         references: [
-          { anchorEventId: "e1", remainingSeconds: 100, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-          { anchorEventId: "e2", remainingSeconds: 500000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-          { anchorEventId: "e3", remainingSeconds: 400000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorEventId: "evt-f1-reset-initial", remainingSeconds: 100, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorEventId: "evt-f1-reset-boundary", remainingSeconds: 500000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorEventId: "evt-f1-reset-phase-2", remainingSeconds: 400000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
         ],
       },
     ],
@@ -388,14 +388,14 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
 
   const invalidFloorResult = validateCrawlerFloor(floorWithoutReset);
   assert.equal(invalidFloorResult.valid, false);
-  assert.ok(invalidFloorResult.errors.some((err) => err.includes('increases from 100s at event "e1" to 500000s at event "e2"')));
+  assert.ok(invalidFloorResult.errors.some((err) => err.includes('increases from 100s at event "evt-f1-reset-initial" to 500000s at event "evt-f1-reset-boundary"')));
 
   const floorWithSecondIncrease = JSON.parse(JSON.stringify(floorWithReset));
   floorWithSecondIncrease.countdowns[0].references[2].remainingSeconds = 600000;
 
   const invalidSecondIncreaseResult = validateCrawlerFloor(floorWithSecondIncrease);
   assert.equal(invalidSecondIncreaseResult.valid, false);
-  assert.ok(invalidSecondIncreaseResult.errors.some((err) => err.includes('increases from 500000s at event "e2" to 600000s at event "e3"')));
+  assert.ok(invalidSecondIncreaseResult.errors.some((err) => err.includes('increases from 500000s at event "evt-f1-reset-boundary" to 600000s at event "evt-f1-reset-phase-2"')));
 
   const timelineWithReset = {
     schemaVersion: "crawler-timeline/v2",

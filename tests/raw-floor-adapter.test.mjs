@@ -90,7 +90,7 @@ test("raw HUD observations are compiled at their event sequences without changin
   const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
   const mana = rawTimeline.observations.find((observation) => observation.id === "obs-f1-magic-baseline");
   assert.ok(mana);
-  assert.equal(mana.sequence, rawTimeline.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence);
+  assert.equal(mana.sequence, rawTimeline.events.find((event) => event.id === "evt-f1-trollskin-shirt").sequence);
   assert.equal(mana.eventId, undefined);
 
   const projected = projectObservationValue(rawTimeline, mana.sequence, "crawler-condition.currentMana");
@@ -185,7 +185,7 @@ test("Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with re
   assert.equal(menagerie?.achievement.recipient, "donut");
   assert.ok(menagerie?.achievement.description);
 
-  const floor1Exit = rawTimeline.events.find((event) => event.id === "evt-f1-019-exit");
+  const floor1Exit = rawTimeline.events.find((event) => event.id === "evt-f1-exit");
   assert.ok(floor1Exit);
   const atFloor1Exit = projectState(rawTimeline, floor1Exit.sequence);
   assert.ok(atFloor1Exit.achievements.some((achievement) => achievement.achievementId === "achievement-found-stairs"));
@@ -228,12 +228,12 @@ test("numeric HUD readings interpolate only when both evidence anchors opt in", 
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
   const evidence = [{ sourceId: "src-book-1", confidence: "confirmed" }];
   rawDoc.observations.push(
-    { id: "obs-linear-mana-start", kind: "crawler-condition", eventId: "evt-f1-006-trollskin-shirt", interpolation: "linear", currentMana: 10, evidence },
-    { id: "obs-linear-mana-end", kind: "crawler-condition", eventId: "evt-f1-009-first-magic-gear", interpolation: "linear", currentMana: 40, evidence },
+    { id: "obs-linear-mana-start", kind: "crawler-condition", eventId: "evt-f1-trollskin-shirt", interpolation: "linear", currentMana: 10, evidence },
+    { id: "obs-linear-mana-end", kind: "crawler-condition", eventId: "evt-f1-first-magic-gear", interpolation: "linear", currentMana: 40, evidence },
   );
   const compiled = compileRawFloorFiles([rawDoc]);
-  const startSequence = compiled.events.find((event) => event.id === "evt-f1-006-trollskin-shirt").sequence;
-  const endSequence = compiled.events.find((event) => event.id === "evt-f1-009-first-magic-gear").sequence;
+  const startSequence = compiled.events.find((event) => event.id === "evt-f1-trollskin-shirt").sequence;
+  const endSequence = compiled.events.find((event) => event.id === "evt-f1-first-magic-gear").sequence;
   const targetSequence = Math.floor((startSequence + endSequence) / 2);
   const estimated = projectObservationValue(compiled, targetSequence, "crawler-condition.currentMana");
   assert.equal(estimated?.status, "estimated");
@@ -295,7 +295,7 @@ test("countdown phase breaks permit a later reset observation without interpolat
   const resetCountdown = JSON.parse(JSON.stringify(rawFloor2));
   const resetObservationIndex = resetCountdown.observations.findIndex((observation) => observation.id === "obs-countdown-floor-2-collapse-cascadia-intro");
   const resetObservation = resetCountdown.observations[resetObservationIndex];
-  const resetEventIndex = resetCountdown.events.findIndex((event) => event.id === "evt-f2-002-goo-inator");
+  const resetEventIndex = resetCountdown.events.findIndex((event) => event.id === "evt-f2-goo-inator");
   const resetEvent = resetCountdown.events[resetEventIndex];
   resetCountdown.events[resetEventIndex] = {
     id: resetEvent.id,
@@ -670,4 +670,29 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   projectObservations(rawTimeline, 10);
   assert.deepEqual(projectState(rawTimeline, 10), causalStateBefore);
   assert.deepEqual(projectCountdownState(rawTimeline, 10, 1), countdownStateBefore);
+});
+
+
+test("raw event and observation IDs enforce their schema namespaces", () => {
+  const badEvent = structuredClone(rawFloor1);
+  badEvent.events[0].id = "event-f1-invalid";
+  assert.equal(validateRawCrawlerFloor(badEvent).valid, false);
+
+  const badObservation = structuredClone(rawFloor1);
+  if (!badObservation.observations?.length) throw new Error("fixture needs observations");
+  badObservation.observations[0].id = "reading-f1-invalid";
+  assert.equal(validateRawCrawlerFloor(badObservation).valid, false);
+});
+
+test("raw event IDs must match their authored floor ordinal", () => {
+  const doc = structuredClone(rawFloor1);
+  const originalId = doc.events[0].id;
+  const wrongFloorId = originalId.replace(/^evt-f1-/, "evt-f2-");
+  doc.events[0].id = wrongFloorId;
+  for (const observation of doc.observations || []) {
+    if (observation.eventId === originalId) observation.eventId = wrongFloorId;
+  }
+  const validation = validateRawCrawlerFloor(doc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((error) => error.includes("must use prefix \"evt-f1-\"")));
 });

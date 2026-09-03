@@ -608,7 +608,7 @@
           "note": "The First Floor opens and its five-day collapse countdown is displayed. (5d until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-001-entered",
+          "anchorEventId": "evt-f1-entered",
           "remainingSeconds": 431280,
           "evidence": [
             {
@@ -622,7 +622,7 @@
           "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse."
         },
         {
-          "anchorEventId": "evt-f1-countdown-tutorial-start",
+          "anchorEventId": "evt-f1-tutorial-start",
           "remainingSeconds": 429660,
           "evidence": [
             {
@@ -636,7 +636,7 @@
           "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-cascadia-announcement",
+          "anchorEventId": "evt-f1-cascadia-announcement",
           "remainingSeconds": 428400,
           "evidence": [
             {
@@ -650,7 +650,7 @@
           "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-tutorial-complete",
+          "anchorEventId": "evt-f1-tutorial-complete",
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -664,7 +664,7 @@
           "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-crawlers-4322395",
+          "anchorEventId": "evt-f1-crawlers-4322395",
           "remainingSeconds": 405420,
           "evidence": [
             {
@@ -678,7 +678,7 @@
           "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-crawlers-4148111",
+          "anchorEventId": "evt-f1-crawlers-4148111",
           "remainingSeconds": 356580,
           "evidence": [
             {
@@ -692,7 +692,7 @@
           "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-royal-court-hoarder",
+          "anchorEventId": "evt-f1-royal-court-hoarder",
           "remainingSeconds": 345600,
           "evidence": [
             {
@@ -706,7 +706,7 @@
           "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-episode-1",
+          "anchorEventId": "evt-f1-episode-1",
           "remainingSeconds": 324000,
           "evidence": [
             {
@@ -720,7 +720,7 @@
           "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-floor-2-stairs",
+          "anchorEventId": "evt-f1-floor-2-stairs",
           "remainingSeconds": 320400,
           "evidence": [
             {
@@ -734,7 +734,7 @@
           "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-crawlers-3594517",
+          "anchorEventId": "evt-f1-crawlers-3594517",
           "remainingSeconds": 237600,
           "evidence": [
             {
@@ -748,7 +748,7 @@
           "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-episode-2",
+          "anchorEventId": "evt-f1-episode-2",
           "remainingSeconds": 216000,
           "evidence": [
             {
@@ -762,7 +762,7 @@
           "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-system-patch",
+          "anchorEventId": "evt-f1-system-patch",
           "remainingSeconds": 212400,
           "evidence": [
             {
@@ -776,7 +776,7 @@
           "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-meadow-lark",
+          "anchorEventId": "evt-f1-meadow-lark",
           "remainingSeconds": 144000,
           "evidence": [
             {
@@ -790,7 +790,7 @@
           "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-crawlers-2552085",
+          "anchorEventId": "evt-f1-crawlers-2552085",
           "remainingSeconds": 108000,
           "evidence": [
             {
@@ -804,7 +804,7 @@
           "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-system-patch-late",
+          "anchorEventId": "evt-f1-system-patch-late",
           "remainingSeconds": 104400,
           "evidence": [
             {
@@ -818,7 +818,7 @@
           "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-ball-of-swine",
+          "anchorEventId": "evt-f1-ball-of-swine",
           "remainingSeconds": 23400,
           "evidence": [
             {
@@ -832,7 +832,7 @@
           "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)"
         },
         {
-          "anchorEventId": "evt-f1-countdown-floor-2-descent",
+          "anchorEventId": "evt-f1-floor-2-descent",
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -884,7 +884,7 @@
       "order": 1
     },
     {
-      "id": "evt-f1-001-entered",
+      "id": "evt-f1-entered",
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -1067,7 +1067,7 @@
       "order": 7
     },
     {
-      "id": "evt-f1-002-empty-pockets",
+      "id": "evt-f1-empty-pockets",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1100,7 +1100,7 @@
         "book": 1,
         "chapter": 2
       },
-      "causationId": "evt-f1-002-empty-pockets",
+      "causationId": "evt-f1-empty-pockets",
       "item": {
         "instanceId": "inst-f1-award-bronze-adventurer-box",
         "itemId": "item-award-bronze-adventurer-box",
@@ -1127,7 +1127,7 @@
       "order": 9
     },
     {
-      "id": "evt-f1-003-no-pants",
+      "id": "evt-f1-no-pants",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1160,7 +1160,7 @@
         "book": 1,
         "chapter": 2
       },
-      "causationId": "evt-f1-003-no-pants",
+      "causationId": "evt-f1-no-pants",
       "item": {
         "instanceId": "inst-f1-award-gold-apparel-box",
         "itemId": "item-award-gold-apparel-box",
@@ -1187,7 +1187,7 @@
       "order": 11
     },
     {
-      "id": "evt-f1-004-unarmed-combat",
+      "id": "evt-f1-unarmed-combat",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1220,7 +1220,7 @@
         "book": 1,
         "chapter": 2
       },
-      "causationId": "evt-f1-004-unarmed-combat",
+      "causationId": "evt-f1-unarmed-combat",
       "item": {
         "instanceId": "inst-f1-award-bronze-weapon-box",
         "itemId": "item-award-bronze-weapon-box",
@@ -1361,7 +1361,7 @@
       "order": 18
     },
     {
-      "id": "evt-f1-countdown-tutorial-start",
+      "id": "evt-f1-tutorial-start",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1381,7 +1381,7 @@
       "order": 19
     },
     {
-      "id": "evt-f1-countdown-cascadia-announcement",
+      "id": "evt-f1-cascadia-announcement",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1408,7 +1408,7 @@
       "order": 20
     },
     {
-      "id": "evt-f1-countdown-tutorial-complete",
+      "id": "evt-f1-tutorial-complete",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -1610,7 +1610,7 @@
       "order": 28
     },
     {
-      "id": "evt-f1-017-podophilia",
+      "id": "evt-f1-podophilia",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1636,7 +1636,7 @@
       "order": 29
     },
     {
-      "id": "evt-f1-015-boom",
+      "id": "evt-f1-boom",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1713,7 +1713,7 @@
       "order": 32
     },
     {
-      "id": "evt-f1-005-goblin-pass",
+      "id": "evt-f1-goblin-pass",
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -1743,7 +1743,7 @@
       "order": 33
     },
     {
-      "id": "evt-f1-006-trollskin-shirt",
+      "id": "evt-f1-trollskin-shirt",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1827,7 +1827,7 @@
       "order": 36
     },
     {
-      "id": "evt-f1-009-first-magic-gear",
+      "id": "evt-f1-first-magic-gear",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -1879,7 +1879,7 @@
       "order": 38
     },
     {
-      "id": "evt-f1-007-nightgaunt-cloak",
+      "id": "evt-f1-nightgaunt-cloak",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1907,7 +1907,7 @@
       "order": 39
     },
     {
-      "id": "evt-f1-008-toe-ring",
+      "id": "evt-f1-toe-ring",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -1982,7 +1982,7 @@
       "order": 42
     },
     {
-      "id": "evt-f1-010-silver-ring-plus-1-con",
+      "id": "evt-f1-silver-ring-plus-1-con",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2035,7 +2035,7 @@
       "order": 44
     },
     {
-      "id": "evt-f1-countdown-crawlers-4322395",
+      "id": "evt-f1-crawlers-4322395",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2055,7 +2055,7 @@
       "order": 45
     },
     {
-      "id": "evt-f1-countdown-crawlers-4148111",
+      "id": "evt-f1-crawlers-4148111",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2075,7 +2075,7 @@
       "order": 46
     },
     {
-      "id": "evt-f1-countdown-royal-court-hoarder",
+      "id": "evt-f1-royal-court-hoarder",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2095,7 +2095,7 @@
       "order": 47
     },
     {
-      "id": "evt-f1-011-shade-gnoll-kneepads",
+      "id": "evt-f1-shade-gnoll-kneepads",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2123,7 +2123,7 @@
       "order": 48
     },
     {
-      "id": "evt-f1-countdown-episode-1",
+      "id": "evt-f1-episode-1",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2150,7 +2150,7 @@
       "order": 49
     },
     {
-      "id": "evt-f1-countdown-floor-2-stairs",
+      "id": "evt-f1-floor-2-stairs",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2220,7 +2220,7 @@
       "order": 52
     },
     {
-      "id": "evt-f1-012-goblin-copper-chopper",
+      "id": "evt-f1-goblin-copper-chopper",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2300,7 +2300,7 @@
       "order": 55
     },
     {
-      "id": "evt-f1-countdown-crawlers-3594517",
+      "id": "evt-f1-crawlers-3594517",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2320,7 +2320,7 @@
       "order": 56
     },
     {
-      "id": "evt-f1-013-desperado-pass",
+      "id": "evt-f1-desperado-pass",
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 1,
@@ -2350,7 +2350,7 @@
       "order": 57
     },
     {
-      "id": "evt-f1-014-silver-ring-plus-2-con",
+      "id": "evt-f1-silver-ring-plus-2-con",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2428,7 +2428,7 @@
       "order": 60
     },
     {
-      "id": "evt-f1-countdown-episode-2",
+      "id": "evt-f1-episode-2",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2448,7 +2448,7 @@
       "order": 61
     },
     {
-      "id": "evt-f1-countdown-system-patch",
+      "id": "evt-f1-system-patch",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2498,7 +2498,7 @@
       "order": 63
     },
     {
-      "id": "evt-f1-016-war-gauntlet",
+      "id": "evt-f1-war-gauntlet",
       "type": "ItemAcquired",
       "position": {
         "floor": 1,
@@ -2577,7 +2577,7 @@
       "order": 66
     },
     {
-      "id": "evt-f1-countdown-meadow-lark",
+      "id": "evt-f1-meadow-lark",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2597,7 +2597,7 @@
       "order": 67
     },
     {
-      "id": "evt-f1-countdown-crawlers-2552085",
+      "id": "evt-f1-crawlers-2552085",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -2617,7 +2617,7 @@
       "order": 68
     },
     {
-      "id": "evt-f1-countdown-system-patch-late",
+      "id": "evt-f1-system-patch-late",
       "type": "NarrativeEvent",
       "kind": "rule-changed",
       "position": {
@@ -2637,7 +2637,7 @@
       "order": 69
     },
     {
-      "id": "evt-f1-countdown-ball-of-swine",
+      "id": "evt-f1-ball-of-swine",
       "type": "NarrativeEvent",
       "kind": "encounter-resolved",
       "position": {
@@ -2657,7 +2657,7 @@
       "order": 70
     },
     {
-      "id": "evt-f1-countdown-floor-2-descent",
+      "id": "evt-f1-floor-2-descent",
       "type": "NarrativeEvent",
       "kind": "other",
       "position": {
@@ -2729,7 +2729,7 @@
       "order": 73
     },
     {
-      "id": "evt-f1-018-battlefield-construction",
+      "id": "evt-f1-battlefield-construction",
       "type": "AchievementUnlocked",
       "position": {
         "floor": 1,
@@ -2807,7 +2807,7 @@
       "order": 76
     },
     {
-      "id": "evt-f1-019-exit",
+      "id": "evt-f1-exit",
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -2848,7 +2848,7 @@
       "order": 78
     },
     {
-      "id": "evt-f1-countdown-episode-4",
+      "id": "evt-f1-episode-4",
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {

@@ -528,7 +528,7 @@
       ],
       "properties": {
         "anchorEventId": {
-          "$ref": "#/$defs/id"
+          "$ref": "#/$defs/eventId"
         },
         "remainingSeconds": {
           "$ref": "#/$defs/nonNegativeInteger"
@@ -678,7 +678,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -778,7 +778,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -864,7 +864,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -970,7 +970,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1078,7 +1078,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1171,7 +1171,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1265,7 +1265,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1378,7 +1378,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1493,7 +1493,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1596,7 +1596,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1708,7 +1708,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1803,7 +1803,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1901,7 +1901,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -1994,7 +1994,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2090,7 +2090,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2201,7 +2201,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2309,7 +2309,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2398,7 +2398,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2493,7 +2493,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2585,7 +2585,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2677,7 +2677,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2775,7 +2775,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2912,7 +2912,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -2997,7 +2997,7 @@
           ],
           "properties": {
             "id": {
-              "$ref": "#/$defs/id"
+              "$ref": "#/$defs/eventId"
             },
             "order": {
               "$ref": "#/$defs/positiveInteger"
@@ -3152,6 +3152,58 @@
           }
         }
       }
+    },
+    "eventId": {
+      "type": "string",
+      "pattern": "^evt-f[1-9][0-9]*-[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "sourceId": {
+      "type": "string",
+      "pattern": "^src-[a-z0-9][a-z0-9-]*$"
+    },
+    "countdownId": {
+      "type": "string",
+      "pattern": "^countdown-[a-z0-9][a-z0-9-]*$"
+    },
+    "itemId": {
+      "type": "string",
+      "pattern": "^item-[a-z0-9][a-z0-9-]*$"
+    },
+    "achievementId": {
+      "type": "string",
+      "pattern": "^achievement-[a-z0-9][a-z0-9-]*$"
+    },
+    "instanceId": {
+      "type": "string",
+      "pattern": "^inst-[a-z0-9][a-z0-9-]*$"
+    },
+    "skillId": {
+      "type": "string",
+      "pattern": "^skill-[a-z0-9][a-z0-9-]*$"
+    },
+    "spellId": {
+      "type": "string",
+      "pattern": "^spell-[a-z0-9][a-z0-9-]*$"
+    },
+    "partyId": {
+      "type": "string",
+      "pattern": "^party-[a-z0-9][a-z0-9-]*$"
+    },
+    "crawlerId": {
+      "type": "string",
+      "pattern": "^crawler-[a-z0-9][a-z0-9-]*$"
+    },
+    "effectId": {
+      "type": "string",
+      "pattern": "^effect-[a-z0-9][a-z0-9-]*$"
+    },
+    "questId": {
+      "type": "string",
+      "pattern": "^quest-[a-z0-9][a-z0-9-]*$"
+    },
+    "entitlementId": {
+      "type": "string",
+      "pattern": "^entitlement-[a-z0-9][a-z0-9-]*$"
     }
   }
 }
