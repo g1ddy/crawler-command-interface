@@ -136,6 +136,7 @@
         "src/features/floor/FloorRules.tsx",
         "src/features/timeline/SequenceBadge.tsx",
         "src/features/inventory/InventoryView.tsx",
+        "src/features/party/PartyView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/skills/SkillsView.tsx",
@@ -186,6 +187,7 @@
         "src/features/inventory/awardHistory.ts",
         "src/features/notifications/NotificationsView.tsx",
         "src/features/notifications/notification-presentation.ts",
+        "src/features/party/PartyView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/ratings/RatingsView.tsx",
@@ -1502,6 +1504,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "./features/party/PartyView",
+          "resolved": "src/features/party/PartyView.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./features/quests/QuestsView",
           "resolved": "src/features/quests/QuestsView.tsx",
           "valid": true,
@@ -2342,6 +2361,51 @@
       "orphan": false
     },
     {
+      "source": "src/features/party/PartyView.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/features/quests/QuestsView.tsx",
       "valid": true,
       "dependencies": [
@@ -3166,8 +3230,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 59,
-    "totalDependenciesCruised": 139,
+    "totalCruised": 60,
+    "totalDependenciesCruised": 142,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
