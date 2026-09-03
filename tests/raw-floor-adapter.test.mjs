@@ -34,6 +34,9 @@ test("raw Floor 1 and Floor 2 documents validate and adapt losslessly to the leg
 
     const adapted = adaptRawFloorDocument(raw);
     assert.deepEqual(adapted.events.map((event) => event.order), raw.events.map((_, index) => index + 1));
+    assert.ok((adapted.countdowns || []).every((countdown) => countdown.references.every(
+      (reference) => typeof reference.anchorEventId === "string" && !("anchorOrder" in reference),
+    )));
     assert.deepEqual(adapted, legacy);
   }
 });
@@ -114,7 +117,7 @@ test("raw adapter resolves every supported observation kind without turning evid
     "crawler-condition", "crawler-attributes", "xp-progress", "broadcast-metrics",
     "inventory-state", "equipment-state", "countdown-remaining",
   ]);
-  assert.ok(adapted.every(({ observation, anchorOrder }) => observation.eventId === eventId && anchorOrder === 1));
+  assert.ok(adapted.every(({ observation }) => observation.eventId === eventId));
 
   const compiled = compileRawFloorFiles([rawDoc]);
   assert.deepEqual(compiled.observations.map((observation) => observation.kind), adapted.map(({ observation }) => observation.kind));
@@ -264,7 +267,7 @@ test("raw countdown observations reject missing event IDs and increasing values"
   });
   const duplicateValidation = validateRawCrawlerFloor(duplicateAnchor);
   assert.equal(duplicateValidation.valid, false);
-  assert.ok(duplicateValidation.errors.some((error) => error.includes("duplicate anchor order")));
+  assert.ok(duplicateValidation.errors.some((error) => error.includes("duplicate anchor event ID")));
 
   const legacyIncrease = JSON.parse(JSON.stringify(legacyFloor2));
   legacyIncrease.countdowns[0].references[1].remainingSeconds = 600000;
@@ -296,7 +299,6 @@ test("countdown phase breaks permit a later reset observation without interpolat
   const resetEvent = resetCountdown.events[resetEventIndex];
   resetCountdown.events[resetEventIndex] = {
     id: resetEvent.id,
-    order: resetEvent.order,
     type: "CountdownReset",
     countdownId: "countdown-floor-2-collapse",
     newRemainingSeconds: 600000,
@@ -322,12 +324,10 @@ test("countdown phase breaks permit a later reset observation without interpolat
 
 test("Phase 2: raw schema accepts all expanded HUD event variants and rejects malformed payloads", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
-  let nextOrder = rawDoc.events.length + 1;
 
   rawDoc.events.push(
     {
       id: "evt-f1-phase2-attr",
-      order: nextOrder++,
       type: "AttributeModified",
       attribute: "Dexterity",
       delta: 2,
@@ -339,7 +339,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-cond",
-      order: nextOrder++,
       type: "ConditionChanged",
       currentHealth: 2000,
       healthDelta: -1100,
@@ -349,7 +348,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-xp",
-      order: nextOrder++,
       type: "XPChanged",
       xp: 25000,
       xpDelta: 3500,
@@ -359,7 +357,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-disc",
-      order: nextOrder++,
       type: "ItemDiscarded",
       itemInstanceId: "inst-f1-trollskin-shirt",
       reason: "Torn beyond repair",
@@ -369,7 +366,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-qty",
-      order: nextOrder++,
       type: "ItemQuantityChanged",
       itemInstanceId: "inst-f1-goblin-copper-chopper",
       delta: 1,
@@ -379,7 +375,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-quest",
-      order: nextOrder++,
       type: "QuestUpdated",
       questId: "q-floor1-clear",
       title: "Clear Floor 1 Boss",
@@ -393,7 +388,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-hotlist",
-      order: nextOrder++,
       type: "HotlistUpdated",
       skillId: "sk-f1-power-strike",
       index: 1,
@@ -403,7 +397,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-effexp",
-      order: nextOrder++,
       type: "EffectExpired",
       effectId: "eff-f1-potion-buff",
       reason: "Duration ran out",
@@ -413,7 +406,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-cdreset",
-      order: nextOrder++,
       type: "CountdownReset",
       countdownId: "countdown-floor-1-collapse",
       newRemainingSeconds: 500000,
@@ -425,7 +417,6 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
     },
     {
       id: "evt-f1-phase2-broadcast",
-      order: nextOrder++,
       type: "BroadcastUpdated",
       viewers: 120000,
       patrons: [{ id: "patron-1", name: "High Sponsor", tier: "Gold", contribution: "5000 Gold" }],
@@ -452,11 +443,9 @@ test("Phase 2: raw schema accepts all expanded HUD event variants and rejects ma
 
 test("Phase 2: raw-floor validation verifies referenced IDs and structured countdown phase transitions without keywords", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
-  const nextOrder = rawDoc.events.length + 1;
 
   rawDoc.events.push({
     id: "evt-f1-reset-no-keyword",
-    order: nextOrder,
     type: "CountdownReset",
     countdownId: "countdown-floor-1-collapse",
     newRemainingSeconds: 600000,
@@ -480,12 +469,10 @@ test("Phase 2: raw-floor validation verifies referenced IDs and structured count
 
 test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycle, countdown reset, and projection reached", () => {
   const rawDoc = JSON.parse(JSON.stringify(rawFloor1));
-  let nextOrder = rawDoc.events.length + 1;
 
   rawDoc.events.push(
     {
       id: "evt-f1-p2-hp",
-      order: nextOrder++,
       type: "ConditionChanged",
       currentHealth: 1200,
       maxHealth: 2000,
@@ -495,7 +482,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-xp",
-      order: nextOrder++,
       type: "XPChanged",
       xp: 28000,
       maxXp: 80000,
@@ -505,7 +491,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-attr",
-      order: nextOrder++,
       type: "AttributeModified",
       attribute: "Strength",
       delta: 2,
@@ -516,7 +501,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-acq-ring",
-      order: nextOrder++,
       type: "ItemAcquired",
       position: { floor: 1, book: 1, chapter: 20 },
       summary: "Acquired Silver Ring +1 CON",
@@ -529,7 +513,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-consume",
-      order: nextOrder++,
       type: "ItemConsumed",
       itemInstanceId: "inst-f1-temp-ring",
       quantity: { known: true, value: 1 },
@@ -540,7 +523,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-discard",
-      order: nextOrder++,
       type: "ItemDiscarded",
       itemInstanceId: "inst-f1-toe-ring",
       reason: "Discarded toe ring",
@@ -550,7 +532,6 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
     },
     {
       id: "evt-f1-p2-cdreset",
-      order: nextOrder++,
       type: "CountdownReset",
       countdownId: "countdown-floor-1-collapse",
       newRemainingSeconds: 500000,
@@ -624,7 +605,7 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   crossFloorDoc.observations.push({
     id: "obs-f1-interp-end",
     kind: "crawler-condition",
-    eventId: crossFloorDoc.events[crossFloorDoc.events.length - 1].id,
+    eventId: crossFloorDoc.events[crossFloorDoc.events.length - 2].id,
     interpolation: "linear",
     currentHealth: 1000,
     evidence: [{ sourceId: "src-book-1", confidence: "confirmed" }],
@@ -639,8 +620,8 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   });
 
   const compiledCrossFloor = compileRawFloorFiles([crossFloorDoc, f2Doc]);
-  const targetBetweenFloors = crossFloorDoc.events[crossFloorDoc.events.length - 1].sequence;
-  const hpInterp = projectObservationValue(compiledCrossFloor, targetBetweenFloors + 1, "crawler-condition.currentHealth");
+  const targetBetweenFloors = compiledCrossFloor.events.find((event) => event.id === crossFloorDoc.events[crossFloorDoc.events.length - 1].id).sequence;
+  const hpInterp = projectObservationValue(compiledCrossFloor, targetBetweenFloors, "crawler-condition.currentHealth");
   assert.equal(hpInterp, null, "interpolation must not cross floor boundaries");
 
   // Interpolation must not cross countdown phase break
@@ -670,7 +651,6 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   // Insert CountdownReset between event 1 and 2
   phaseBreakDoc.events[1] = {
     id: phaseBreakDoc.events[1].id,
-    order: phaseBreakDoc.events[1].order,
     type: "CountdownReset",
     countdownId: "countdown-floor-1-collapse",
     newRemainingSeconds: 500000,
@@ -680,7 +660,8 @@ test("projectObservations returns latest observations across Floor 1-2 with prov
   };
 
   const compiledPhaseBreak = compileRawFloorFiles([phaseBreakDoc]);
-  const manaInterp = projectObservationValue(compiledPhaseBreak, phaseBreakDoc.events[1].sequence, "crawler-condition.currentMana");
+  const phaseBreakSequence = compiledPhaseBreak.events.find((event) => event.id === phaseBreakDoc.events[1].id).sequence;
+  const manaInterp = projectObservationValue(compiledPhaseBreak, phaseBreakSequence, "crawler-condition.currentMana");
   assert.equal(manaInterp, null, "interpolation must not cross countdown phase breaks");
 
   // Verify that observation projection does not alter causal event state or countdown projection

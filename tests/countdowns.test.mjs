@@ -69,7 +69,7 @@ test("validation rejects negative remainingSeconds while accepting valid activat
     sources: [{ id: "src-1", kind: "official-text", trust: "primary", title: "S1", url: "https://example.com" }],
     catalog: { items: [], achievements: [] },
     events: [{ id: "e1", order: 1, type: "NarrativeEvent", kind: "other", position: { floor: 1 }, summary: "Obs", evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }],
-    countdowns: [{ id: "cd-neg", title: "Neg Countdown", target: "floor-collapse", references: [{ anchorOrder: 1, remainingSeconds: -500, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }] }],
+    countdowns: [{ id: "cd-neg", title: "Neg Countdown", target: "floor-collapse", references: [{ anchorEventId: "e1", remainingSeconds: -500, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] }] }],
   };
 
   const res = validateCrawlerFloor(invalidNegativeRemaining);
@@ -369,9 +369,9 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
         title: "Phase Reset Countdown",
         target: "floor-collapse",
         references: [
-          { anchorOrder: 1, remainingSeconds: 100, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-          { anchorOrder: 2, remainingSeconds: 500000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
-          { anchorOrder: 3, remainingSeconds: 400000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorEventId: "e1", remainingSeconds: 100, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorEventId: "e2", remainingSeconds: 500000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
+          { anchorEventId: "e3", remainingSeconds: 400000, evidence: [{ sourceId: "src-1", confidence: "confirmed" }] },
         ],
       },
     ],
@@ -388,14 +388,14 @@ test("phase-aware countdown monotonicity accepts legitimate reset boundaries and
 
   const invalidFloorResult = validateCrawlerFloor(floorWithoutReset);
   assert.equal(invalidFloorResult.valid, false);
-  assert.ok(invalidFloorResult.errors.some((err) => err.includes("increases from 100s at order #1 to 500000s at order #2")));
+  assert.ok(invalidFloorResult.errors.some((err) => err.includes('increases from 100s at event "e1" to 500000s at event "e2"')));
 
   const floorWithSecondIncrease = JSON.parse(JSON.stringify(floorWithReset));
   floorWithSecondIncrease.countdowns[0].references[2].remainingSeconds = 600000;
 
   const invalidSecondIncreaseResult = validateCrawlerFloor(floorWithSecondIncrease);
   assert.equal(invalidSecondIncreaseResult.valid, false);
-  assert.ok(invalidSecondIncreaseResult.errors.some((err) => err.includes("increases from 500000s at order #2 to 600000s at order #3")));
+  assert.ok(invalidSecondIncreaseResult.errors.some((err) => err.includes('increases from 500000s at event "e2" to 600000s at event "e3"')));
 
   const timelineWithReset = {
     schemaVersion: "crawler-timeline/v2",

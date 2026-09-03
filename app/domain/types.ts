@@ -655,7 +655,7 @@ export interface FloorEventBase {
 }
 
 export interface FloorCountdownReference {
-  anchorOrder: number;
+  anchorEventId: string;
   remainingSeconds: number;
   activationOffset?: number;
   evidence: TimelineEvidence[];

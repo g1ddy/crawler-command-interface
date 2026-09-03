@@ -111,15 +111,16 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
     }
     countdownIds.add(countdown.id);
 
-    const anchorOrders = new Set<number>();
+    const eventById = new Map(floorDoc.events.map((event) => [event.id, event]));
+    const anchorEventIds = new Set<string>();
     for (const reference of countdown.references) {
-      if (!floorDoc.events.some((event) => event.order === reference.anchorOrder)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor order #${reference.anchorOrder}.`);
+      if (!eventById.has(reference.anchorEventId)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" references missing anchor event ID "${reference.anchorEventId}".`);
       }
-      if (anchorOrders.has(reference.anchorOrder)) {
-        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate anchor order #${reference.anchorOrder}.`);
+      if (anchorEventIds.has(reference.anchorEventId)) {
+        errors.push(`Domain error: Countdown "${countdown.id}" has duplicate anchor event ID "${reference.anchorEventId}".`);
       }
-      anchorOrders.add(reference.anchorOrder);
+      anchorEventIds.add(reference.anchorEventId);
       for (const evidence of reference.evidence) {
         if (!sourceIds.has(evidence.sourceId)) {
           errors.push(`Domain error: Countdown "${countdown.id}" evidence sourceId "${evidence.sourceId}" does not exist in floor sources catalog.`);
@@ -127,19 +128,26 @@ export function validateCrawlerFloor(doc: unknown): ValidationResult {
       }
     }
 
-    const referencesByOrder = [...countdown.references].sort((a, b) => a.anchorOrder - b.anchorOrder);
+    const referencesByOrder = [...countdown.references].sort(
+      (a, b) =>
+        (eventById.get(a.anchorEventId)?.order ?? Number.MAX_SAFE_INTEGER) -
+        (eventById.get(b.anchorEventId)?.order ?? Number.MAX_SAFE_INTEGER),
+    );
     for (let i = 1; i < referencesByOrder.length; i++) {
       const previous = referencesByOrder[i - 1];
       const current = referencesByOrder[i];
+      const previousOrder = eventById.get(previous.anchorEventId)?.order;
+      const currentOrder = eventById.get(current.anchorEventId)?.order;
+      if (previousOrder === undefined || currentOrder === undefined) continue;
       const hasPhaseBreak = floorDoc.events.some(
         (event) =>
-          event.order > previous.anchorOrder &&
-          event.order <= current.anchorOrder &&
+          event.order > previousOrder &&
+          event.order <= currentOrder &&
           isCountdownPhaseBreakEvent(event, countdown.id)
       );
       if (!hasPhaseBreak && current.remainingSeconds > previous.remainingSeconds) {
         errors.push(
-          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at order #${previous.anchorOrder} to ${current.remainingSeconds}s at order #${current.anchorOrder}. Model an explicit reset before increasing remaining time.`
+          `Domain error: Countdown "${countdown.id}" increases from ${previous.remainingSeconds}s at event "${previous.anchorEventId}" to ${current.remainingSeconds}s at event "${current.anchorEventId}". Model an explicit reset before increasing remaining time.`
         );
       }
     }

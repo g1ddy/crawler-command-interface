@@ -591,13 +591,13 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "anchorOrder",
+        "anchorEventId",
         "remainingSeconds",
         "evidence"
       ],
       "properties": {
-        "anchorOrder": {
-          "$ref": "#/$defs/positiveInteger"
+        "anchorEventId": {
+          "$ref": "#/$defs/id"
         },
         "remainingSeconds": {
           "$ref": "#/$defs/nonNegativeInteger"

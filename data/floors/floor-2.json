@@ -231,7 +231,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "anchorOrder": 1,
+          "anchorEventId": "evt-f2-001-early-access",
           "remainingSeconds": 540000,
           "activationOffset": -21600,
           "evidence": [
@@ -246,7 +246,7 @@
           "note": "Stairwell portal early access opens 6 hours before the formal 6-day countdown; 6 days and 6 hours remain until collapse."
         },
         {
-          "anchorOrder": 2,
+          "anchorEventId": "evt-f2-001-entered",
           "remainingSeconds": 525600,
           "activationOffset": -7200,
           "evidence": [
@@ -261,7 +261,7 @@
           "note": "Carl and Donut arrive 2 hours before formal activation; 6 days and 2 hours remain until collapse."
         },
         {
-          "anchorOrder": 3,
+          "anchorEventId": "evt-f2-001-countdown-start",
           "remainingSeconds": 518400,
           "activationOffset": 0,
           "evidence": [
@@ -276,7 +276,7 @@
           "note": "Formal Second Floor collapse countdown activation: full 6 days (518,400s) remaining until collapse."
         },
         {
-          "anchorOrder": 6,
+          "anchorEventId": "evt-f2-countdown-cascadia-intro",
           "remainingSeconds": 514800,
           "evidence": [
             {
@@ -290,7 +290,7 @@
           "note": "Cascadia introduces the Second Floor and ratings become active. (5d 23h until floor collapse.)"
         },
         {
-          "anchorOrder": 7,
+          "anchorEventId": "evt-f2-countdown-crawlers-1033992",
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -304,7 +304,7 @@
           "note": "The system reports 1,033,992 crawlers remaining on the Second Floor. (4d 20h until floor collapse.)"
         },
         {
-          "anchorOrder": 8,
+          "anchorEventId": "evt-f2-countdown-episode-5",
           "remainingSeconds": 410400,
           "evidence": [
             {
@@ -318,7 +318,7 @@
           "note": "Dungeon Crawler World episode five airs while the Royal Court is in a safe room. (4d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 9,
+          "anchorEventId": "evt-f2-countdown-system-patch",
           "remainingSeconds": 406800,
           "evidence": [
             {
@@ -332,7 +332,7 @@
           "note": "A Second Floor patch announces hedgehogs and the safe-room closure rule. (4d 17h until floor collapse.)"
         },
         {
-          "anchorOrder": 12,
+          "anchorEventId": "evt-f2-004-bigboi-boxers",
           "remainingSeconds": 360000,
           "evidence": [
             {
@@ -346,7 +346,7 @@
           "note": "The BigBoi Boxers are documented at roughly 4 days and 4 hours remaining."
         },
         {
-          "anchorOrder": 20,
+          "anchorEventId": "evt-f2-countdown-episode-6",
           "remainingSeconds": 302400,
           "evidence": [
             {
@@ -360,7 +360,7 @@
           "note": "Dungeon Crawler World episode six airs. (3d 12h until floor collapse.)"
         },
         {
-          "anchorOrder": 21,
+          "anchorEventId": "evt-f2-countdown-crawlers-990303",
           "remainingSeconds": 298800,
           "evidence": [
             {
@@ -374,7 +374,7 @@
           "note": "The system reports 990,303 crawlers remaining in the daily announcement. (3d 11h until floor collapse.)"
         },
         {
-          "anchorOrder": 26,
+          "anchorEventId": "evt-f2-countdown-episode-7",
           "remainingSeconds": 194400,
           "evidence": [
             {
@@ -388,7 +388,7 @@
           "note": "Dungeon Crawler World episode seven airs. (2d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 33,
+          "anchorEventId": "evt-f2-countdown-episode-8",
           "remainingSeconds": 86400,
           "evidence": [
             {
@@ -402,7 +402,7 @@
           "note": "Dungeon Crawler World episode eight airs. (1d until floor collapse.)"
         },
         {
-          "anchorOrder": 40,
+          "anchorEventId": "evt-f2-countdown-floor-3-descent",
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -416,7 +416,7 @@
           "note": "Crawlers can descend to Floor 3 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 42,
+          "anchorEventId": "evt-f2-countdown-collapse",
           "remainingSeconds": 0,
           "evidence": [
             {
@@ -437,7 +437,7 @@
       "target": "safe-room-closure",
       "references": [
         {
-          "anchorOrder": 9,
+          "anchorEventId": "evt-f2-countdown-system-patch",
           "remainingSeconds": 403200,
           "evidence": [
             {

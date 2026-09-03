@@ -594,7 +594,7 @@
       "target": "floor-collapse",
       "references": [
         {
-          "anchorOrder": 1,
+          "anchorEventId": "evt-f1-countdown-start",
           "remainingSeconds": 432000,
           "evidence": [
             {
@@ -608,7 +608,7 @@
           "note": "The First Floor opens and its five-day collapse countdown is displayed. (5d until floor collapse.)"
         },
         {
-          "anchorOrder": 2,
+          "anchorEventId": "evt-f1-001-entered",
           "remainingSeconds": 431280,
           "evidence": [
             {
@@ -622,7 +622,7 @@
           "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse."
         },
         {
-          "anchorOrder": 19,
+          "anchorEventId": "evt-f1-countdown-tutorial-start",
           "remainingSeconds": 429660,
           "evidence": [
             {
@@ -636,7 +636,7 @@
           "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)"
         },
         {
-          "anchorOrder": 20,
+          "anchorEventId": "evt-f1-countdown-cascadia-announcement",
           "remainingSeconds": 428400,
           "evidence": [
             {
@@ -650,7 +650,7 @@
           "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)"
         },
         {
-          "anchorOrder": 21,
+          "anchorEventId": "evt-f1-countdown-tutorial-complete",
           "remainingSeconds": 417600,
           "evidence": [
             {
@@ -664,7 +664,7 @@
           "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)"
         },
         {
-          "anchorOrder": 45,
+          "anchorEventId": "evt-f1-countdown-crawlers-4322395",
           "remainingSeconds": 405420,
           "evidence": [
             {
@@ -678,7 +678,7 @@
           "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)"
         },
         {
-          "anchorOrder": 46,
+          "anchorEventId": "evt-f1-countdown-crawlers-4148111",
           "remainingSeconds": 356580,
           "evidence": [
             {
@@ -692,7 +692,7 @@
           "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)"
         },
         {
-          "anchorOrder": 47,
+          "anchorEventId": "evt-f1-countdown-royal-court-hoarder",
           "remainingSeconds": 345600,
           "evidence": [
             {
@@ -706,7 +706,7 @@
           "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)"
         },
         {
-          "anchorOrder": 49,
+          "anchorEventId": "evt-f1-countdown-episode-1",
           "remainingSeconds": 324000,
           "evidence": [
             {
@@ -720,7 +720,7 @@
           "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 50,
+          "anchorEventId": "evt-f1-countdown-floor-2-stairs",
           "remainingSeconds": 320400,
           "evidence": [
             {
@@ -734,7 +734,7 @@
           "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)"
         },
         {
-          "anchorOrder": 56,
+          "anchorEventId": "evt-f1-countdown-crawlers-3594517",
           "remainingSeconds": 237600,
           "evidence": [
             {
@@ -748,7 +748,7 @@
           "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)"
         },
         {
-          "anchorOrder": 61,
+          "anchorEventId": "evt-f1-countdown-episode-2",
           "remainingSeconds": 216000,
           "evidence": [
             {
@@ -762,7 +762,7 @@
           "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)"
         },
         {
-          "anchorOrder": 62,
+          "anchorEventId": "evt-f1-countdown-system-patch",
           "remainingSeconds": 212400,
           "evidence": [
             {
@@ -776,7 +776,7 @@
           "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)"
         },
         {
-          "anchorOrder": 67,
+          "anchorEventId": "evt-f1-countdown-meadow-lark",
           "remainingSeconds": 144000,
           "evidence": [
             {
@@ -790,7 +790,7 @@
           "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)"
         },
         {
-          "anchorOrder": 68,
+          "anchorEventId": "evt-f1-countdown-crawlers-2552085",
           "remainingSeconds": 108000,
           "evidence": [
             {
@@ -804,7 +804,7 @@
           "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 69,
+          "anchorEventId": "evt-f1-countdown-system-patch-late",
           "remainingSeconds": 104400,
           "evidence": [
             {
@@ -818,7 +818,7 @@
           "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)"
         },
         {
-          "anchorOrder": 70,
+          "anchorEventId": "evt-f1-countdown-ball-of-swine",
           "remainingSeconds": 23400,
           "evidence": [
             {
@@ -832,7 +832,7 @@
           "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)"
         },
         {
-          "anchorOrder": 71,
+          "anchorEventId": "evt-f1-countdown-floor-2-descent",
           "remainingSeconds": 21600,
           "evidence": [
             {
@@ -846,7 +846,7 @@
           "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)"
         },
         {
-          "anchorOrder": 78,
+          "anchorEventId": "evt-f1-floor-collapse",
           "remainingSeconds": 0,
           "evidence": [
             {

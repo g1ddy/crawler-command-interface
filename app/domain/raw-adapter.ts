@@ -6,28 +6,23 @@ import type {
 } from './types.ts';
 
 /**
- * A raw observation with its resolved legacy floor anchor. This deliberately
- * retains the original observation rather than converting a sourced reading
- * into a state-changing event.
+ * A raw observation whose stable event anchor has been validated. This retains
+ * the source reading rather than converting evidence into a state-changing event.
  */
 export interface AdaptedRawObservation {
   observation: RawObservation;
-  anchorOrder: number;
 }
 
 /**
- * Resolves every source-backed observation to its event order. The legacy
- * floor document only consumes countdown readings, but callers compiling the
- * runtime timeline use this complete mapping so non-countdown HUD evidence is
- * never silently discarded.
+ * Validates every source-backed observation's stable event anchor. Raw event
+ * array position establishes chronology, but relationships are expressed by ID.
  */
 export function adaptRawFloorObservations(rawDoc: RawCrawlerFloorDocument): AdaptedRawObservation[] {
-  const orderByEventId = new Map(rawDoc.events.map((event, index) => [event.id, index + 1]));
+  const eventIds = new Set(rawDoc.events.map((event) => event.id));
   const countdownById = new Map((rawDoc.countdowns || []).map((countdown) => [countdown.id, countdown]));
 
   return (rawDoc.observations || []).map((observation) => {
-    const anchorOrder = orderByEventId.get(observation.eventId);
-    if (anchorOrder === undefined) {
+    if (!eventIds.has(observation.eventId)) {
       throw new Error(
         `Raw adapter error: Observation "${observation.id}" references missing event ID "${observation.eventId}".`
       );
@@ -37,27 +32,27 @@ export function adaptRawFloorObservations(rawDoc: RawCrawlerFloorDocument): Adap
         `Raw adapter error: Observation "${observation.id}" references missing countdown ID "${observation.countdownId}".`
       );
     }
-    return { observation, anchorOrder };
+    return { observation };
   });
 }
 
 /**
  * Converts raw, source-backed observations into the existing Floor v2
- * compatibility contract. The adapter deliberately performs no estimation;
- * it only resolves stable event IDs to the legacy local order references.
+ * compatibility contract. Event order remains generated for compatibility,
+ * while countdown relationships retain their stable event IDs.
  */
 export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerFloorDocument {
   const referencesByCountdown = new Map<string, FloorCountdownReference[]>();
+  const eventIndexById = new Map(rawDoc.events.map((event, index) => [event.id, index]));
 
-  for (const { observation, anchorOrder } of adaptRawFloorObservations(rawDoc)) {
-    // Countdown readings participate in the legacy countdown compatibility
-    // projection. Every observation kind is still resolved above and remains
-    // available to the runtime compiler through adaptRawFloorObservations.
+  for (const { observation } of adaptRawFloorObservations(rawDoc)) {
+    // Countdown readings participate in the floor compatibility projection.
+    // Every observation kind remains available to the runtime compiler.
     if (observation.kind !== 'countdown-remaining') continue;
 
     const references = referencesByCountdown.get(observation.countdownId) || [];
     references.push({
-      anchorOrder,
+      anchorEventId: observation.eventId,
       remainingSeconds: observation.remainingSeconds,
       ...(observation.activationOffset !== undefined ? { activationOffset: observation.activationOffset } : {}),
       evidence: observation.evidence,
@@ -76,7 +71,9 @@ export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerF
     countdowns: (rawDoc.countdowns || []).map((countdown) => ({
       ...countdown,
       references: (referencesByCountdown.get(countdown.id) || []).sort(
-        (left, right) => left.anchorOrder - right.anchorOrder,
+        (left, right) =>
+          (eventIndexById.get(left.anchorEventId) ?? Number.MAX_SAFE_INTEGER) -
+          (eventIndexById.get(right.anchorEventId) ?? Number.MAX_SAFE_INTEGER),
       ),
     })),
     events: rawDoc.events.map((event, index) => ({ ...event, order: index + 1 })),
