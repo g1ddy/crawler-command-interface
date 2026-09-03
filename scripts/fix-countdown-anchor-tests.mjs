@@ -30,6 +30,10 @@ update('tests/raw-floor-adapter.test.mjs', (content) => content
     'const targetBetweenFloors = compiledCrossFloor.events.find((event) => event.id === crossFloorDoc.events[crossFloorDoc.events.length - 1].id).sequence;',
   )
   .replace(
+    'projectObservationValue(compiledCrossFloor, targetBetweenFloors + 1, "crawler-condition.currentHealth")',
+    'projectObservationValue(compiledCrossFloor, targetBetweenFloors, "crawler-condition.currentHealth")',
+  )
+  .replace(
     'const manaInterp = projectObservationValue(compiledPhaseBreak, phaseBreakDoc.events[1].sequence, "crawler-condition.currentMana");',
     'const phaseBreakSequence = compiledPhaseBreak.events.find((event) => event.id === phaseBreakDoc.events[1].id).sequence;\n  const manaInterp = projectObservationValue(compiledPhaseBreak, phaseBreakSequence, "crawler-condition.currentMana");',
   ));
