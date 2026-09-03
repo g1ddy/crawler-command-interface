@@ -22,12 +22,12 @@ export interface AdaptedRawObservation {
  * never silently discarded.
  */
 export function adaptRawFloorObservations(rawDoc: RawCrawlerFloorDocument): AdaptedRawObservation[] {
-  const eventById = new Map(rawDoc.events.map((event) => [event.id, event]));
+  const orderByEventId = new Map(rawDoc.events.map((event, index) => [event.id, index + 1]));
   const countdownById = new Map((rawDoc.countdowns || []).map((countdown) => [countdown.id, countdown]));
 
   return (rawDoc.observations || []).map((observation) => {
-    const event = eventById.get(observation.eventId);
-    if (!event) {
+    const anchorOrder = orderByEventId.get(observation.eventId);
+    if (anchorOrder === undefined) {
       throw new Error(
         `Raw adapter error: Observation "${observation.id}" references missing event ID "${observation.eventId}".`
       );
@@ -37,7 +37,7 @@ export function adaptRawFloorObservations(rawDoc: RawCrawlerFloorDocument): Adap
         `Raw adapter error: Observation "${observation.id}" references missing countdown ID "${observation.countdownId}".`
       );
     }
-    return { observation, anchorOrder: event.order };
+    return { observation, anchorOrder };
   });
 }
 
@@ -79,6 +79,6 @@ export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerF
         (left, right) => left.anchorOrder - right.anchorOrder,
       ),
     })),
-    events: rawDoc.events,
+    events: rawDoc.events.map((event, index) => ({ ...event, order: index + 1 })),
   };
 }

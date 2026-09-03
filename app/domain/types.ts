@@ -718,9 +718,12 @@ export interface RawFloorCountdown {
   target: 'floor-collapse' | 'safe-room-closure';
 }
 
-export interface RawCrawlerFloorDocument extends Omit<CrawlerFloorDocument, 'authoringVersion' | 'countdowns'> {
+export type RawFloorEvent = Omit<FloorEventBase, 'order'>;
+
+export interface RawCrawlerFloorDocument extends Omit<CrawlerFloorDocument, 'authoringVersion' | 'countdowns' | 'events'> {
   authoringVersion: 'crawler-floor-raw/v1';
   countdowns?: RawFloorCountdown[];
+  events: RawFloorEvent[];
   observations?: RawObservation[];
 }
 

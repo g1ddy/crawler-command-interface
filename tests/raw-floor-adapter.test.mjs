@@ -30,8 +30,34 @@ test("raw Floor 1 and Floor 2 documents validate and adapt losslessly to the leg
   for (const [raw, legacy] of [[rawFloor1, legacyFloor1], [rawFloor2, legacyFloor2]]) {
     const validation = validateRawCrawlerFloor(raw);
     assert.equal(validation.valid, true, validation.errors.join("; "));
-    assert.deepEqual(adaptRawFloorDocument(raw), legacy);
+    assert.ok(raw.events.every((event) => !("order" in event)));
+
+    const adapted = adaptRawFloorDocument(raw);
+    assert.deepEqual(adapted.events.map((event) => event.order), raw.events.map((_, index) => index + 1));
+    assert.deepEqual(adapted, legacy);
   }
+});
+
+test("raw array order deterministically becomes compiled global sequence", () => {
+  const compiled = compileRawFloorFiles([rawFloor1, rawFloor2]);
+
+  for (const raw of [rawFloor1, rawFloor2]) {
+    const floor = compiled.floors.find((candidate) => candidate.ordinal === raw.floor.ordinal);
+    assert.ok(floor);
+    raw.events.forEach((event, index) => {
+      const compiledEvent = compiled.events.find((candidate) => candidate.id === event.id);
+      assert.ok(compiledEvent);
+      assert.equal(compiledEvent.sequence, floor.startSequence + index);
+    });
+  }
+});
+
+test("raw authoring rejects duplicated numeric order", () => {
+  const raw = JSON.parse(JSON.stringify(rawFloor1));
+  raw.events[0].order = 1;
+  const validation = validateRawCrawlerFloor(raw);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((error) => error.includes("additional properties")));
 });
 
 test("raw adapter preserves every compiled timeline projection and countdown result", () => {

@@ -116,14 +116,14 @@
       {
         "id": "achievement-peta-enthusiast",
         "title": "PETA Enthusiast!",
-        "description": "Removed an aggravated non-sapient enemy\u2019s hostility and caused it to fight other enemies.",
+        "description": "Removed an aggravated non-sapient enemy’s hostility and caused it to fight other enemies.",
         "reward": [],
         "recipient": "carl"
       },
       {
         "id": "achievement-dungeonpreneur",
         "title": "Dungeonpreneur",
-        "description": "Invented Carl\u2019s Jug O\u2019 Boom, a stackable dungeon device.",
+        "description": "Invented Carl’s Jug O’ Boom, a stackable dungeon device.",
         "reward": [
           {
             "kind": "other",
@@ -239,7 +239,6 @@
   "events": [
     {
       "id": "evt-f2-001-early-access",
-      "order": 1,
       "type": "NarrativeEvent",
       "kind": "location-discovered",
       "position": {
@@ -260,7 +259,6 @@
     },
     {
       "id": "evt-f2-001-entered",
-      "order": 2,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -281,7 +279,6 @@
     },
     {
       "id": "evt-f2-001-countdown-start",
-      "order": 3,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -302,7 +299,6 @@
     },
     {
       "id": "evt-f2-002-goo-inator",
-      "order": 4,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -330,7 +326,6 @@
     },
     {
       "id": "evt-f2-003-pedicure-kit",
-      "order": 5,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -373,8 +368,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 6
+      ]
     },
     {
       "id": "evt-f2-countdown-crawlers-1033992",
@@ -393,8 +387,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 7
+      ]
     },
     {
       "id": "evt-f2-countdown-episode-5",
@@ -413,8 +406,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 8
+      ]
     },
     {
       "id": "evt-f2-countdown-system-patch",
@@ -433,8 +425,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 9
+      ]
     },
     {
       "id": "evt-f2-rage-elemental-defeated",
@@ -453,8 +444,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 10
+      ]
     },
     {
       "id": "evt-f2-meadow-lark-descended",
@@ -473,12 +463,10 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 11
+      ]
     },
     {
       "id": "evt-f2-004-bigboi-boxers",
-      "order": 12,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -506,7 +494,6 @@
     },
     {
       "id": "evt-f2-protective-shell-granted",
-      "order": 13,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -538,7 +525,6 @@
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "order": 14,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -568,7 +554,6 @@
     },
     {
       "id": "evt-f2-level-11",
-      "order": 15,
       "type": "LevelChanged",
       "level": 11,
       "position": {
@@ -593,7 +578,6 @@
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "order": 16,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -638,7 +622,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -647,7 +630,6 @@
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "order": 18,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -677,7 +659,6 @@
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "order": 19,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -720,8 +701,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 20
+      ]
     },
     {
       "id": "evt-f2-countdown-crawlers-990303",
@@ -740,12 +720,10 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 21
+      ]
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "order": 22,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -782,8 +760,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 23
+      ]
     },
     {
       "id": "evt-f2-maestro-rescue",
@@ -802,8 +779,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 24
+      ]
     },
     {
       "id": "evt-f2-snick-video-viral",
@@ -822,8 +798,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 25
+      ]
     },
     {
       "id": "evt-f2-countdown-episode-7",
@@ -842,8 +817,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 26
+      ]
     },
     {
       "id": "evt-f2-achievement-what-goes-up",
@@ -864,7 +838,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -890,7 +863,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -916,7 +888,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -942,7 +913,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 30,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -951,7 +921,6 @@
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "order": 31,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -972,7 +941,6 @@
     },
     {
       "id": "evt-f2-level-12",
-      "order": 32,
       "type": "LevelChanged",
       "level": 12,
       "position": {
@@ -1012,8 +980,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 33
+      ]
     },
     {
       "id": "evt-f2-agatha-reappears",
@@ -1032,8 +999,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 34
+      ]
     },
     {
       "id": "evt-f2-valtay-technology-discovered",
@@ -1052,8 +1018,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 35
+      ]
     },
     {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
@@ -1074,7 +1039,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1100,7 +1064,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 37,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1126,7 +1089,6 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 38,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
@@ -1135,7 +1097,6 @@
     },
     {
       "id": "evt-f2-011-level-13",
-      "order": 39,
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -1176,12 +1137,10 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 40
+      ]
     },
     {
       "id": "evt-f2-012-exit",
-      "order": 41,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1217,8 +1176,7 @@
           },
           "confidence": "corroborated"
         }
-      ],
-      "order": 42
+      ]
     }
   ],
   "observations": [

@@ -456,7 +456,6 @@
   "events": [
     {
       "id": "evt-f2-001-early-access",
-      "order": 1,
       "type": "NarrativeEvent",
       "kind": "location-discovered",
       "position": {
@@ -473,11 +472,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 1
     },
     {
       "id": "evt-f2-001-entered",
-      "order": 2,
       "type": "NarrativeEvent",
       "kind": "floor-entered",
       "position": {
@@ -494,11 +493,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 2
     },
     {
       "id": "evt-f2-001-countdown-start",
-      "order": 3,
       "type": "NarrativeEvent",
       "kind": "episode-released",
       "position": {
@@ -515,11 +514,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 3
     },
     {
       "id": "evt-f2-002-goo-inator",
-      "order": 4,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -543,11 +542,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 4
     },
     {
       "id": "evt-f2-003-pedicure-kit",
-      "order": 5,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -571,7 +570,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 5
     },
     {
       "id": "evt-f2-countdown-cascadia-intro",
@@ -695,7 +695,6 @@
     },
     {
       "id": "evt-f2-004-bigboi-boxers",
-      "order": 12,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -719,11 +718,11 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 12
     },
     {
       "id": "evt-f2-protective-shell-granted",
-      "order": 13,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -751,11 +750,11 @@
           "name": "Enchanted BigBoi Boxers",
           "itemInstanceId": "inst-f2-bigboi-boxers"
         }
-      }
+      },
+      "order": 13
     },
     {
       "id": "evt-f2-005-dungeon-book-club",
-      "order": 14,
       "type": "SpellGranted",
       "position": {
         "floor": 2,
@@ -781,11 +780,11 @@
           "kind": "dungeon-book",
           "name": "Dungeon Book of the Floor Club"
         }
-      }
+      },
+      "order": 14
     },
     {
       "id": "evt-f2-level-11",
-      "order": 15,
       "type": "LevelChanged",
       "level": 11,
       "position": {
@@ -806,11 +805,11 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 15
     },
     {
       "id": "evt-f2-jug-o-boom-crafted",
-      "order": 16,
       "type": "ItemCrafted",
       "position": {
         "floor": 2,
@@ -834,7 +833,8 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 16
     },
     {
       "id": "evt-f2-achievement-dungeonpreneur",
@@ -855,16 +855,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 17
     },
     {
       "id": "evt-f2-dungeonpreneur-royalty",
-      "order": 18,
       "type": "PermanentEntitlementGranted",
       "position": {
         "floor": 2,
@@ -890,11 +889,11 @@
         "delivered": true,
         "kind": "reward",
         "severity": "success"
-      }
+      },
+      "order": 18
     },
     {
       "id": "evt-f2-007-proximity-trigger",
-      "order": 19,
       "type": "ItemAcquired",
       "position": {
         "floor": 2,
@@ -918,7 +917,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 19
     },
     {
       "id": "evt-f2-countdown-episode-6",
@@ -962,7 +962,6 @@
     },
     {
       "id": "evt-f2-009-broadcast-snapshot",
-      "order": 22,
       "type": "BroadcastUpdated",
       "position": {
         "floor": 2,
@@ -980,7 +979,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 22
     },
     {
       "id": "evt-f2-death-watch-appearance",
@@ -1081,12 +1081,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 27
     },
     {
       "id": "evt-f2-achievement-like-a-moth-to-the-flame",
@@ -1107,12 +1107,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 28
     },
     {
       "id": "evt-f2-achievement-grease-monkey",
@@ -1133,12 +1133,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 29
     },
     {
       "id": "evt-f2-achievement-you-call-that-a-trap",
@@ -1159,16 +1159,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 30,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 30
     },
     {
       "id": "evt-f2-010-mongo-bonded",
-      "order": 31,
       "type": "NarrativeEvent",
       "kind": "party-changed",
       "position": {
@@ -1185,11 +1184,11 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "order": 31
     },
     {
       "id": "evt-f2-level-12",
-      "order": 32,
       "type": "LevelChanged",
       "level": 12,
       "position": {
@@ -1210,7 +1209,8 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 32
     },
     {
       "id": "evt-f2-countdown-episode-8",
@@ -1291,12 +1291,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 36,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 36
     },
     {
       "id": "evt-f2-achievement-menagerie",
@@ -1317,12 +1317,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 37,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 37
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
@@ -1343,16 +1343,15 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 38,
       "notificationDelivery": {
         "delivered": true,
         "kind": "achievement",
         "severity": "success"
-      }
+      },
+      "order": 38
     },
     {
       "id": "evt-f2-011-level-13",
-      "order": 39,
       "type": "LevelChanged",
       "level": 13,
       "position": {
@@ -1374,7 +1373,8 @@
         "delivered": true,
         "kind": "progression",
         "severity": "success"
-      }
+      },
+      "order": 39
     },
     {
       "id": "evt-f2-countdown-floor-3-descent",
@@ -1398,7 +1398,6 @@
     },
     {
       "id": "evt-f2-012-exit",
-      "order": 41,
       "type": "NarrativeEvent",
       "kind": "floor-exited",
       "position": {
@@ -1415,7 +1414,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "order": 41
     },
     {
       "id": "evt-f2-countdown-collapse",

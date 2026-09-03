@@ -73,12 +73,13 @@ A summary such as `The countdown resets` is descriptive text. The structured `ty
 
 ## Position and ordering
 
-`order` establishes event ordering within a raw floor file. `position` establishes where the observation belongs in the story.
+The order of entries in the raw `events` array is the authoritative floor-local chronology. Raw events do not carry a duplicated numeric `order` field. The adapter derives floor-local `order` for compatibility output, and the compiler derives globally increasing `sequence` values for the runtime timeline. `position` separately records where the event belongs in the story.
 
 - Keep event IDs stable once published; IDs are references, not display labels.
-- Give new observations unique, monotonically sensible `order` values.
+- Insert new events at the intended chronological position in the raw array.
 - Use the correct floor/book position and add more precise position data only when supported.
 - Place lifecycle events between the observations they are intended to separate. Validation reasons about ordering, especially for countdown phases.
+- Treat generated `order` and `sequence` as sanity checks on compilation, not facts authors maintain by hand.
 - Do not reorder existing observations casually. A reorder can change projected point-in-time state even when no payload changes.
 
 ## Prefer explicit event types
