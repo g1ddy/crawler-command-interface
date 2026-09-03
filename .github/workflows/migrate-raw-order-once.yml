@@ -33,7 +33,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/floors app/domain/schema/crawler-floor-raw.schema.json app/domain/types.ts app/domain/raw-adapter.ts RAW_OBSERVATIONS.md tests/raw-floor-adapter.test.mjs data/floors data/compiled-timeline.json .github/workflows/migrate-raw-order-once.yml
+          git add -A -- data/raw/floors app/domain/schema/crawler-floor-raw.schema.json app/domain/types.ts app/domain/raw-adapter.ts RAW_OBSERVATIONS.md tests/raw-floor-adapter.test.mjs data/floors data/compiled-timeline.json .github/workflows
           git diff --cached --check
           git commit -m "Remove authored raw event order"
           git push origin HEAD:codex/party-replay-aware-membership
