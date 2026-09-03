@@ -25,6 +25,8 @@ jobs:
         run: npm ci
       - name: Run migration
         run: node scripts/migrate-countdown-anchor-event-id.mjs
+      - name: Update migration tests
+        run: node scripts/fix-countdown-anchor-tests.mjs
       - name: Regenerate derived fixtures
         run: npm run generate:fixture
       - name: Run focused tests
@@ -35,7 +37,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- app/domain scripts/migrate-countdown-anchor-event-id.mjs tests data/floors data/compiled-timeline.json RAW_OBSERVATIONS.md .github/workflows
+          git add -A -- app/domain scripts tests data/floors data/compiled-timeline.json RAW_OBSERVATIONS.md .github/workflows
           git diff --cached --check
           git commit -m "Replace countdown anchor order with event ID"
           git push origin HEAD:codex/party-replay-aware-membership
