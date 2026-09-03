@@ -43,13 +43,19 @@ Use snapshots only when the source actually supports a point-in-time collection 
 
 Collect claims before authoring JSON. Keep a short claim ledger for each floor that records the fact, its source, the exact locator, source tier, and whether it is an event, an observation, or both. Then author only the claims that the source directly supports. The current conditional-domain research ledger is [docs/FLOORS_1_2_CANON_READINESS.md](docs/FLOORS_1_2_CANON_READINESS.md); update it when new evidence changes a capability decision.
 
-Use sources in this order:
+`Source-backed` means that a claim is traceable to evidence of sufficient quality and specificity for that claim. It does **not** require a directly accessible book citation.
 
-1. **Primary** — published text, licensed audiobook, or an official preview. Use `trust: "primary"` and `confidence: "confirmed"` when the cited passage or timestamp establishes the payload.
-2. **Corroborating** — maintained fan databases and wikis. Use these to find candidate moments and to corroborate a claim, but retain their actual source tier and confidence. Do not upgrade a fan transcription to primary evidence.
-3. **Candidate** — discussions, unverified lists, and search snippets. Use these only to identify material needing verification; do not treat them as a sole basis for a precise state transition.
+Use sources in this order of preference:
 
-For every accepted claim, capture the narrowest stable locator available: book and chapter for primary text, timestamp for audio, and a page/section heading or revision marker for community sources. If a source supports only a level change, author a level transition or `xp-progress` level anchor; do not infer numeric XP. If a source supports a single stat, item, or broadcast metric, preserve only that field rather than constructing a complete HUD snapshot.
+1. **Primary** — published text, licensed audiobook, or an official preview. Use `trust: "primary"` and normally `confidence: "confirmed"` only when the cited passage or timestamp was actually inspected and establishes the payload.
+2. **Corroborating** — maintained fan databases, wikis, reference sites, and substantive editorial sources. A reliable corroborating source may independently support a production claim when it states the fact explicitly, offers a reasonably stable locator, and the authored payload contains nothing beyond what that source establishes. Preserve `trust: "corroborating"` and normally `confidence: "corroborated"`; do not upgrade secondary evidence to primary or `confirmed` merely because it attributes the fact to the book.
+3. **Candidate** — discussions, unverified lists, comments, and search snippets. Use these to identify material needing verification; do not normally use them as the sole basis for projected state or a precise causal transition.
+
+For durable causal transitions, identity/relationship claims, or capability-enabling state, multiple independent corroborating sources are preferred when primary evidence is unavailable. Evidence requirements should scale with precision: an explicit qualitative fact such as a named party membership may be supportable from a reliable secondary reference, while exact numbers, timestamps, countdown values, causation, notification delivery, item quantities, or similarly precise claims require stronger evidence.
+
+Never synthesize primary provenance. If the book, audiobook, or official preview was not directly verified, do not add a primary citation or `confirmed` confidence merely because a secondary source names a chapter or says the fact came from the book. Add the verified secondary evidence honestly and upgrade the provenance later if primary material becomes available.
+
+For every accepted claim, capture the narrowest stable locator available: book and chapter for primary text, timestamp for audio, and a page/section heading or revision marker for community or editorial sources. If a source supports only a level change, author a level transition or `xp-progress` level anchor; do not infer numeric XP. If a source supports a single stat, item, or broadcast metric, preserve only that field rather than constructing a complete HUD snapshot.
 
 When a corroborating source supplies a page-derived table, note the page in the locator's `section` text until the evidence schema gains a dedicated page field. Add the source once to the floor's `sources` catalog, reuse its stable ID, and retain each claim's individual locator and confidence. Recheck community-sourced facts against a primary source when one becomes available, updating the evidence rather than silently changing the payload.
 
@@ -59,7 +65,7 @@ Every authored event should remain traceable to a declared source.
 
 - Add the source to the floor's `sources` collection before referencing it.
 - Use stable source IDs and reference them from `evidence`.
-- Set confidence according to what the source establishes; do not upgrade inference to confirmed fact.
+- Set confidence according to what the source establishes; do not upgrade inference or secondary provenance to confirmed fact.
 - Keep `summary` human-readable, but never depend on summary text to drive domain behavior.
 - When multiple sources corroborate an observation, preserve the useful evidence rather than collapsing provenance into prose.
 
