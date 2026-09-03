@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getFloorEndSequence } from "../app/domain/floors.ts";
+import { getFloorEndSequence } from "../../app/domain/floors.ts";
 
 test("getFloorEndSequence returns fallback when events array is empty", () => {
   const result = getFloorEndSequence([], 1, 100);

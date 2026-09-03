@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
 import {
   LocalDeviceStorageAdapter,
   InMemoryStorageAdapter,
   OptionalRemoteStorageAdapter,
   DEFAULT_STORAGE_KEY,
-} from "../app/domain/persistence.ts";
+} from "../../app/domain/persistence.ts";
 
 class MockStorage {
   constructor() {

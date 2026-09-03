@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
 import {
   formatProjectedObservationValue,
   projectObservationValue,
   projectObservations,
   projectedObservationSemantics,
-} from "../app/domain/observations.ts";
+} from "../../app/domain/observations.ts";
 
 test("bounded and unknown telemetry format without claiming exact values", () => {
   const base = { key: "floor-metrics.test", value: 0, status: "stated", basis: "exact-observation", evidence: [], referenceObservationIds: [] };

@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
-import { compileFloorFiles } from "../app/domain/compiler.ts";
-import { projectCountdownState, formatCountdownDuration } from "../app/domain/projection.ts";
-import { getFloorEndSequence } from "../app/domain/floors.ts";
-import { validateCrawlerFloor, validateCrawlerTimeline } from "../app/domain/validation.ts";
+import { compileFloorFiles } from "../../app/domain/compiler.ts";
+import { projectCountdownState, formatCountdownDuration } from "../../app/domain/projection.ts";
+import { getFloorEndSequence } from "../../app/domain/floors.ts";
+import { validateCrawlerFloor, validateCrawlerTimeline } from "../../app/domain/validation.ts";
 
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));

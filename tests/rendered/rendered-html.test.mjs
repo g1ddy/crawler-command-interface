@@ -6,7 +6,7 @@ const developmentPreviewMeta =
   /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
 
 test("renders development preview metadata", async (t) => {
-  const workerPath = new URL("../dist/server/index.js", import.meta.url);
+  const workerPath = new URL("../../dist/server/index.js", import.meta.url);
   if (!fs.existsSync(workerPath)) {
     t.skip("dist/server/index.js build output required");
     return;

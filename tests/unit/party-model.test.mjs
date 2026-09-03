@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
-import { projectObservations } from "../app/domain/observations.ts";
-import { projectState } from "../app/domain/projection.ts";
-import { validateRawCrawlerFloor } from "../app/domain/validation.ts";
-import { selectedSequenceCapabilities } from "../src/shell/navigation/capabilities.ts";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
+import { projectObservations } from "../../app/domain/observations.ts";
+import { projectState } from "../../app/domain/projection.ts";
+import { validateRawCrawlerFloor } from "../../app/domain/validation.ts";
+import { selectedSequenceCapabilities } from "../../src/shell/navigation/capabilities.ts";
 
 const rawFloor1 = JSON.parse(fs.readFileSync("data/raw/floors/floor-1.json", "utf8"));
 const formation = compiledTimeline.events.find((event) => event.id === "evt-f1-party-royal-court-formed");

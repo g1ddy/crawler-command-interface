@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { projectNotifications } from "../src/features/notifications/notification-presentation.ts";
+import { projectNotifications } from "../../src/features/notifications/notification-presentation.ts";
 
 const base = { occurred_at: "2025-01-01", category: "system", position: { floor: 1 }, evidence: [] };
 const events = [

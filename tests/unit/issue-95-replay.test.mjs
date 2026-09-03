@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createInitialState, applyEvent } from "../app/domain/projection.ts";
-import { projectNotifications } from "../src/features/notifications/notification-presentation.ts";
-import { projectRatingsMetrics } from "../src/features/ratings/ratings-presentation.ts";
-import { groupConditions } from "../src/features/crawler/health/condition-presentation.ts";
-import { availableRootViews, resolveRootView, selectedSequenceCapabilities } from "../src/shell/navigation/capabilities.ts";
+import { createInitialState, applyEvent } from "../../app/domain/projection.ts";
+import { projectNotifications } from "../../src/features/notifications/notification-presentation.ts";
+import { projectRatingsMetrics } from "../../src/features/ratings/ratings-presentation.ts";
+import { groupConditions } from "../../src/features/crawler/health/condition-presentation.ts";
+import { availableRootViews, resolveRootView, selectedSequenceCapabilities } from "../../src/shell/navigation/capabilities.ts";
 
 const base = { occurred_at: "2025-01-01", category: "system", position: { floor: 1 }, evidence: [] };
 const delivered = { delivered: true, kind: "achievement", severity: "warning" };

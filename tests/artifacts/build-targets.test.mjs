@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const rootDirectory = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "..",
+  "../..",
 );
 const pagesDirectory = path.join(rootDirectory, "dist-pages");
 const liveDirectory = path.join(rootDirectory, "dist");

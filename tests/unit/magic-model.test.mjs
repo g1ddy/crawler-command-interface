@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
-import { applyEvent, createInitialState, projectState } from "../app/domain/projection.ts";
-import { selectedSequenceCapabilities } from "../src/shell/navigation/capabilities.ts";
-import { projectObservations } from "../app/domain/observations.ts";
-import { validateRawCrawlerFloor } from "../app/domain/validation.ts";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
+import { applyEvent, createInitialState, projectState } from "../../app/domain/projection.ts";
+import { selectedSequenceCapabilities } from "../../src/shell/navigation/capabilities.ts";
+import { projectObservations } from "../../app/domain/observations.ts";
+import { validateRawCrawlerFloor } from "../../app/domain/validation.ts";
 
 const rawFloor2 = JSON.parse(fs.readFileSync("data/raw/floors/floor-2.json", "utf8"));
 const secondChance = compiledTimeline.events.find((event) => event.id === "evt-f2-dungeon-book-club");

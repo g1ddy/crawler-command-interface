@@ -155,7 +155,7 @@ Keeping raw validation and compilation in Node tooling prevents Ajv code generat
 │   ├── floors/             # Generated compatibility floor JSON
 │   └── compiled-timeline.json # Generated runtime timeline data
 ├── scripts/                # Node build, fixture-sync, and environment scripts
-├── tests/                  # Node unit/integration tests
+├── tests/                  # Node tests (unit/, rendered/, artifacts/, benchmark/, e2e/, screenshots/)
 ├── worker/                 # Worker runtime configuration/support
 ├── index.html              # Static Vite Pages entry point
 ├── vite.config.ts          # ChatGPT Sites / local development configuration

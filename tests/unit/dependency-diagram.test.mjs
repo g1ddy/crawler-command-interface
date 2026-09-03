@@ -5,7 +5,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 test("repository-local graph renderer script is removed", () => {
   const scriptPath = join(repositoryRoot, "scripts/generate-dependency-diagram.mjs");

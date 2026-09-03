@@ -197,7 +197,7 @@ For faster iteration on domain changes:
 npm run test:unit
 ```
 
-Any new unit-test file intended to protect production behavior must actually be included by `test:unit`. At present the script enumerates its unit-test files explicitly, so creating a `*.test.mjs` file alone does not guarantee CI will execute it.
+Any new unit-test file intended to protect production behavior must be placed under `tests/unit/` so `npm run test:unit` discovers it automatically.
 
 Tests for invalid fixtures should assert the specific invariant/error being exercised. Avoid tests that merely assert `valid === false`, because an unrelated schema error can make such a test pass without reaching the intended domain validation.
 
@@ -232,4 +232,4 @@ Before submitting raw observations, verify:
 
 **Treating partial removal as full removal.** Quantity remaining on an equipped item means the instance still exists and remains equipped unless a separate observation says otherwise.
 
-**Adding tests that CI never runs.** Check `package.json` whenever adding a unit-test file and verify it executes through `npm run test:unit`.
+**Adding tests outside `tests/unit/`.** Always place new unit tests in `tests/unit/**/*.test.mjs` so they are automatically discovered by `npm run test:unit`.

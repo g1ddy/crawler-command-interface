@@ -40,10 +40,12 @@ test("Performance Benchmark: Array.find vs Map.get for Inventory", () => {
 
   // Baseline: O(N) Array.find
   const startArray = performance.now();
+  let dummyCount = 0;
   for (let it = 0; it < iterations; it++) {
     for (const [name] of slots.map(s => [s])) {
       const occupantId = equippedSlots[name];
       const occupant = inventory.find((item) => item.instanceId === occupantId);
+      if (occupant) dummyCount++;
     }
   }
   const endArray = performance.now();
@@ -62,6 +64,7 @@ test("Performance Benchmark: Array.find vs Map.get for Inventory", () => {
     for (const [name] of slots.map(s => [s])) {
       const occupantId = equippedSlots[name];
       const occupant = occupantId ? map.get(occupantId) : undefined;
+      if (occupant) dummyCount++;
     }
   }
   const endMap = performance.now();
@@ -78,4 +81,5 @@ test("Performance Benchmark: Array.find vs Map.get for Inventory", () => {
   console.log(`Speedup (Total time):     ${speedup}x`);
 
   assert.ok(timeMapTotal < timeArray, "Map approach should be faster than Array.find for large inventory");
+  assert.ok(dummyCount > 0, "Benchmark should access matched occupants");
 });
