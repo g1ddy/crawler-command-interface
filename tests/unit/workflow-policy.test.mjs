@@ -37,6 +37,8 @@ test("artifact workflow keeps verification read-only and gates the only writer",
     "only the publish job should receive contents: write");
   assert.match(content, /cancel-in-progress:\s*true/,
     "publish workflow must use cancel-in-progress concurrency");
+  assert.match(content, /resolve-pr:[\s\S]*?if:\s*\$\{\{\s*github\.event_name == 'workflow_dispatch' \|\| github\.actor != 'github-actions\[bot\]'\s*\}\}/,
+    "artifact workflow must suppress its own bot-generated PR synchronize event while allowing manual dispatch");
   assert.match(content, /git add -- 'docs\/images\/screenshot-\*\.png' \.maritime docs\/images\/dependency-graph\.svg/,
     "the single approved writer must promote screenshots and Maritime evidence together");
   assert.match(content, /git commit -m "chore: publish generated artifacts"/,
