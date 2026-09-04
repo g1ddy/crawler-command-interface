@@ -17,58 +17,10 @@
   },
   "app/domain/types.ts": {
     "complexity": 1,
-    "loc": 2,
-    "instability": 0.02,
-    "fanIn": 48,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/types/index.ts": {
-    "complexity": 1,
-    "loc": 6,
-    "instability": 0.83,
-    "fanIn": 1,
-    "fanOut": 5,
-    "scanned": true
-  },
-  "app/domain/types/catalogs.ts": {
-    "complexity": 1,
-    "loc": 79,
+    "loc": 869,
     "instability": 0,
-    "fanIn": 5,
+    "fanIn": 40,
     "fanOut": 0,
-    "scanned": true
-  },
-  "app/domain/types/countdowns.ts": {
-    "complexity": 1,
-    "loc": 66,
-    "instability": 0.33,
-    "fanIn": 2,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/types/events.ts": {
-    "complexity": 1,
-    "loc": 408,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "app/domain/types/observations.ts": {
-    "complexity": 1,
-    "loc": 111,
-    "instability": 0.25,
-    "fanIn": 3,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/types/state.ts": {
-    "complexity": 1,
-    "loc": 246,
-    "instability": 0.8,
-    "fanIn": 1,
-    "fanOut": 4,
     "scanned": true
   },
   "app/components/StatInspectorModal.tsx": {
@@ -112,8 +64,8 @@
     "scanned": true
   },
   "app/domain/compiler.ts": {
-    "complexity": 30,
-    "loc": 384,
+    "complexity": 41,
+    "loc": 373,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -160,83 +112,11 @@
     "scanned": true
   },
   "app/domain/projection.ts": {
-    "complexity": 1,
-    "loc": 2,
-    "instability": 0.33,
+    "complexity": 160,
+    "loc": 687,
+    "instability": 0.6,
     "fanIn": 2,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/projection/index.ts": {
-    "complexity": 15,
-    "loc": 187,
-    "instability": 0.92,
-    "fanIn": 1,
-    "fanOut": 11,
-    "scanned": true
-  },
-  "app/domain/projection/achievements.ts": {
-    "complexity": 11,
-    "loc": 37,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "app/domain/projection/helpers.ts": {
-    "complexity": 66,
-    "loc": 202,
-    "instability": 0.4,
-    "fanIn": 3,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "app/domain/projection/broadcast.ts": {
-    "complexity": 6,
-    "loc": 12,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/projection/crawler.ts": {
-    "complexity": 13,
-    "loc": 89,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/projection/inventory.ts": {
-    "complexity": 16,
-    "loc": 170,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "app/domain/projection/magic.ts": {
-    "complexity": 10,
-    "loc": 36,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/projection/party.ts": {
-    "complexity": 2,
-    "loc": 9,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/projection/quests.ts": {
-    "complexity": 7,
-    "loc": 17,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
+    "fanOut": 3,
     "scanned": true
   },
   "app/domain/floors.ts": {

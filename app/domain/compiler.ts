@@ -6,7 +6,6 @@ import type {
   CrawlerTimelineDocument,
   FloorEventBase,
   FloorSegment,
-  NarrativeEventKind,
   TimelineEvent,
   TimelineItem,
   TimelinePosition,
@@ -58,8 +57,8 @@ function compileIdentityEvent(
     type: rawEv.type,
     position: ctx.pos,
     summary: rawEv.summary,
-    correlationId: rawEv.correlationId,
-    causationId: rawEv.causationId,
+    ...(rawEv.correlationId !== undefined ? { correlationId: rawEv.correlationId } : {}),
+    ...(rawEv.causationId !== undefined ? { causationId: rawEv.causationId } : {}),
     evidence: rawEv.evidence,
     ...payload,
   } as TimelineEvent;
@@ -79,15 +78,15 @@ const specializedCompilers: Record<string, SpecializedCompilerHandler> = {
       type: 'AchievementUnlocked',
       position: ctx.pos,
       summary: rawEv.summary,
-      correlationId: rawEv.correlationId,
-      causationId: rawEv.causationId,
+      ...(rawEv.correlationId !== undefined ? { correlationId: rawEv.correlationId } : {}),
+      ...(rawEv.causationId !== undefined ? { causationId: rawEv.causationId } : {}),
       evidence: rawEv.evidence,
-      notificationDelivery: rawEv.notificationDelivery,
+      ...(rawEv.notificationDelivery ? { notificationDelivery: rawEv.notificationDelivery } : {}),
       achievement: {
         id: achDef.id,
         title: achDef.title,
-        recipient: achDef.recipient,
-        description: achDef.description,
+        ...(achDef.recipient !== undefined ? { recipient: achDef.recipient } : {}),
+        ...(achDef.description !== undefined ? { description: achDef.description } : {}),
         reward: achDef.reward,
       },
     };
@@ -95,21 +94,6 @@ const specializedCompilers: Record<string, SpecializedCompilerHandler> = {
 
   ItemAcquired: (rawEv, ctx) => compileItemEvent(rawEv, ctx),
   ItemCrafted: (rawEv, ctx) => compileItemEvent(rawEv, ctx),
-
-  NarrativeEvent: (rawEv, ctx) => {
-    return {
-      id: rawEv.id,
-      sequence: ctx.seq,
-      type: 'NarrativeEvent',
-      kind: (rawEv.kind as NarrativeEventKind) || 'other',
-      position: ctx.pos,
-      summary: rawEv.summary,
-      correlationId: rawEv.correlationId,
-      causationId: rawEv.causationId,
-      evidence: rawEv.evidence,
-      notificationDelivery: rawEv.notificationDelivery,
-    };
-  },
 };
 
 function compileItemEvent(
@@ -128,10 +112,10 @@ function compileItemEvent(
     itemId: itemDef.id,
     name: itemDef.name,
     category: itemDef.category,
-    slot: itemDef.slot,
+    ...(itemDef.slot !== undefined ? { slot: itemDef.slot } : {}),
     rarity: itemDef.rarity || 'unknown',
-    description: itemDef.description,
-    stats: itemDef.stats,
+    ...(itemDef.description !== undefined ? { description: itemDef.description } : {}),
+    ...(itemDef.stats !== undefined ? { stats: itemDef.stats } : {}),
     quantity: rawEv.item!.quantity,
     sourceDescription: `${ctx.doc.floor.title}`,
   };
@@ -142,10 +126,10 @@ function compileItemEvent(
     type: rawEv.type,
     position: ctx.pos,
     summary: rawEv.summary,
-    correlationId: rawEv.correlationId,
-    causationId: rawEv.causationId,
+    ...(rawEv.correlationId !== undefined ? { correlationId: rawEv.correlationId } : {}),
+    ...(rawEv.causationId !== undefined ? { causationId: rawEv.causationId } : {}),
     evidence: rawEv.evidence,
-    notificationDelivery: rawEv.notificationDelivery,
+    ...(rawEv.notificationDelivery ? { notificationDelivery: rawEv.notificationDelivery } : {}),
     item: itemObj,
   } as TimelineEvent;
 }
@@ -259,12 +243,12 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
 
       const seq = globalSequence++;
       sequenceByEventId.set(rawEv.id, seq);
-      const pos = {
+      const pos: TimelinePosition = {
         floor: doc.floor.ordinal,
-        book: rawEv.position.book ?? doc.floor.book,
-        chapter: rawEv.position.chapter,
-        scene: rawEv.position.scene,
-        elapsedSeconds: rawEv.position.elapsedSeconds,
+        ...(rawEv.position.book !== undefined || doc.floor.book !== undefined ? { book: rawEv.position.book ?? doc.floor.book } : {}),
+        ...(rawEv.position.chapter !== undefined ? { chapter: rawEv.position.chapter } : {}),
+        ...(rawEv.position.scene !== undefined ? { scene: rawEv.position.scene } : {}),
+        ...(rawEv.position.elapsedSeconds !== undefined ? { elapsedSeconds: rawEv.position.elapsedSeconds } : {}),
       };
 
       const ctx: EventCompilerContext = {

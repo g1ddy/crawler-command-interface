@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-09-04T19:47:02.223Z",
-    "updatedAt": "2026-09-04T19:47:02.224Z"
+    "createdAt": "2026-09-04T21:19:53.171Z",
+    "updatedAt": "2026-09-04T21:19:53.171Z"
   },
   "floors": [
     {
@@ -171,7 +171,6 @@
       "id": "evt-f1-countdown-start",
       "sequence": 1,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -185,13 +184,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-entered",
       "sequence": 2,
       "type": "NarrativeEvent",
-      "kind": "floor-entered",
       "position": {
         "floor": 1,
         "book": 1,
@@ -213,7 +212,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "floor-entered"
     },
     {
       "id": "evt-f1-party-royal-court-formed",
@@ -777,7 +777,6 @@
       "id": "evt-f1-tutorial-start",
       "sequence": 19,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -791,13 +790,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-cascadia-announcement",
       "sequence": 20,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -818,13 +817,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-tutorial-complete",
       "sequence": 21,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -838,7 +837,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-achievement-fall-into-obvious-trap",
@@ -1636,7 +1636,6 @@
       "id": "evt-f1-crawlers-4322395",
       "sequence": 45,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -1650,13 +1649,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-crawlers-4148111",
       "sequence": 46,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -1670,13 +1669,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-royal-court-hoarder",
       "sequence": 47,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -1690,7 +1689,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-shade-gnoll-kneepads",
@@ -1733,7 +1733,6 @@
       "id": "evt-f1-episode-1",
       "sequence": 49,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
@@ -1754,13 +1753,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f1-floor-2-stairs",
       "sequence": 50,
       "type": "NarrativeEvent",
-      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
@@ -1774,7 +1773,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "rule-changed"
     },
     {
       "id": "evt-f1-level-7",
@@ -1941,7 +1941,6 @@
       "id": "evt-f1-crawlers-3594517",
       "sequence": 56,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -1955,7 +1954,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-desperado-pass",
@@ -2077,7 +2077,6 @@
       "id": "evt-f1-episode-2",
       "sequence": 61,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
@@ -2091,13 +2090,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f1-system-patch",
       "sequence": 62,
       "type": "NarrativeEvent",
-      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
@@ -2111,7 +2110,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "rule-changed"
     },
     {
       "id": "evt-f1-puddle-jumper-granted",
@@ -2259,7 +2259,6 @@
       "id": "evt-f1-meadow-lark",
       "sequence": 67,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -2273,13 +2272,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-crawlers-2552085",
       "sequence": 68,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
@@ -2293,13 +2292,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f1-system-patch-late",
       "sequence": 69,
       "type": "NarrativeEvent",
-      "kind": "rule-changed",
       "position": {
         "floor": 1,
         "book": 1
@@ -2313,13 +2312,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "rule-changed"
     },
     {
       "id": "evt-f1-ball-of-swine",
       "sequence": 70,
       "type": "NarrativeEvent",
-      "kind": "encounter-resolved",
       "position": {
         "floor": 1,
         "book": 1
@@ -2333,13 +2332,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "encounter-resolved"
     },
     {
       "id": "evt-f1-floor-2-descent",
       "sequence": 71,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 1,
         "book": 1
@@ -2353,7 +2352,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f1-achievement-borough-boss",
@@ -2550,7 +2550,6 @@
       "id": "evt-f1-exit",
       "sequence": 77,
       "type": "NarrativeEvent",
-      "kind": "floor-exited",
       "position": {
         "floor": 1,
         "book": 1,
@@ -2565,13 +2564,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "floor-exited"
     },
     {
       "id": "evt-f1-floor-collapse",
       "sequence": 78,
       "type": "NarrativeEvent",
-      "kind": "floor-collapsed",
       "position": {
         "floor": 1,
         "book": 1
@@ -2585,13 +2584,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "floor-collapsed"
     },
     {
       "id": "evt-f1-episode-4",
       "sequence": 79,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 1,
         "book": 1
@@ -2605,13 +2604,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f2-early-access",
       "sequence": 80,
       "type": "NarrativeEvent",
-      "kind": "location-discovered",
       "position": {
         "floor": 2,
         "book": 1,
@@ -2626,13 +2625,13 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "kind": "location-discovered"
     },
     {
       "id": "evt-f2-entered",
       "sequence": 81,
       "type": "NarrativeEvent",
-      "kind": "floor-entered",
       "position": {
         "floor": 2,
         "book": 1,
@@ -2647,13 +2646,13 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "kind": "floor-entered"
     },
     {
       "id": "evt-f2-countdown-start",
       "sequence": 82,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1,
@@ -2668,7 +2667,8 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f2-goo-inator",
@@ -2743,7 +2743,6 @@
       "id": "evt-f2-cascadia-intro",
       "sequence": 85,
       "type": "NarrativeEvent",
-      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -2757,13 +2756,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "rule-changed"
     },
     {
       "id": "evt-f2-crawlers-1033992",
       "sequence": 86,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 2,
         "book": 1
@@ -2777,13 +2776,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f2-episode-5",
       "sequence": 87,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -2797,13 +2796,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f2-system-patch",
       "sequence": 88,
       "type": "NarrativeEvent",
-      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -2817,13 +2816,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "rule-changed"
     },
     {
       "id": "evt-f2-rage-elemental-defeated",
       "sequence": 89,
       "type": "NarrativeEvent",
-      "kind": "encounter-resolved",
       "position": {
         "floor": 2,
         "book": 1
@@ -2837,13 +2836,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "encounter-resolved"
     },
     {
       "id": "evt-f2-meadow-lark-descended",
       "sequence": 90,
       "type": "NarrativeEvent",
-      "kind": "floor-exited",
       "position": {
         "floor": 2,
         "book": 1
@@ -2857,7 +2856,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "floor-exited"
     },
     {
       "id": "evt-f2-bigboi-boxers",
@@ -3120,7 +3120,6 @@
       "id": "evt-f2-episode-6",
       "sequence": 99,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -3134,13 +3133,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f2-crawlers-990303",
       "sequence": 100,
       "type": "NarrativeEvent",
-      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -3154,7 +3153,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "rule-changed"
     },
     {
       "id": "evt-f2-broadcast-snapshot",
@@ -3182,7 +3182,6 @@
       "id": "evt-f2-death-watch-appearance",
       "sequence": 102,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 2,
         "book": 1
@@ -3196,13 +3195,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f2-maestro-rescue",
       "sequence": 103,
       "type": "NarrativeEvent",
-      "kind": "encounter-resolved",
       "position": {
         "floor": 2,
         "book": 1
@@ -3216,13 +3215,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "encounter-resolved"
     },
     {
       "id": "evt-f2-snick-video-viral",
       "sequence": 104,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 2,
         "book": 1
@@ -3236,13 +3235,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f2-episode-7",
       "sequence": 105,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -3256,7 +3255,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f2-achievement-what-goes-up",
@@ -3416,7 +3416,6 @@
       "id": "evt-f2-mongo-bonded",
       "sequence": 110,
       "type": "NarrativeEvent",
-      "kind": "party-changed",
       "position": {
         "floor": 2,
         "book": 1,
@@ -3431,7 +3430,8 @@
           },
           "confidence": "confirmed"
         }
-      ]
+      ],
+      "kind": "party-changed"
     },
     {
       "id": "evt-f2-level-12",
@@ -3462,7 +3462,6 @@
       "id": "evt-f2-episode-8",
       "sequence": 112,
       "type": "NarrativeEvent",
-      "kind": "episode-released",
       "position": {
         "floor": 2,
         "book": 1
@@ -3476,13 +3475,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "episode-released"
     },
     {
       "id": "evt-f2-agatha-reappears",
       "sequence": 113,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 2,
         "book": 1
@@ -3496,13 +3495,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f2-valtay-technology-discovered",
       "sequence": 114,
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 2,
         "book": 1
@@ -3516,7 +3515,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "other"
     },
     {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
@@ -3654,7 +3654,6 @@
       "id": "evt-f2-floor-3-descent",
       "sequence": 119,
       "type": "NarrativeEvent",
-      "kind": "rule-changed",
       "position": {
         "floor": 2,
         "book": 1
@@ -3668,13 +3667,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "rule-changed"
     },
     {
       "id": "evt-f2-exit",
       "sequence": 120,
       "type": "NarrativeEvent",
-      "kind": "floor-exited",
       "position": {
         "floor": 2,
         "book": 1,
@@ -3689,13 +3688,13 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "floor-exited"
     },
     {
       "id": "evt-f2-collapse",
       "sequence": 121,
       "type": "NarrativeEvent",
-      "kind": "floor-collapsed",
       "position": {
         "floor": 2,
         "book": 1
@@ -3709,7 +3708,8 @@
           },
           "confidence": "corroborated"
         }
-      ]
+      ],
+      "kind": "floor-collapsed"
     }
   ],
   "countdowns": [
