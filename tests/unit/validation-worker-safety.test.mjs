@@ -8,7 +8,7 @@ test("runtime fixture import path does not compile Ajv schemas", async () => {
   };
 
   try {
-    await import(`../app/domain/fixtures/compiled-timeline.ts?worker-safe-import=${Date.now()}`);
+    await import(`../../app/domain/fixtures/compiled-timeline.ts?worker-safe-import=${Date.now()}`);
   } finally {
     globalThis.Function = originalFunction;
   }

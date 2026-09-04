@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-import { compileFloorFiles } from "../app/domain/compiler.ts";
-import { applyEvent, createInitialState } from "../app/domain/projection.ts";
-import { deriveAwardHistory } from "../src/features/inventory/awardHistory.ts";
+import { compileFloorFiles } from "../../app/domain/compiler.ts";
+import { applyEvent, createInitialState } from "../../app/domain/projection.ts";
+import { deriveAwardHistory } from "../../src/features/inventory/awardHistory.ts";
 
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 

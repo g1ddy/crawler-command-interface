@@ -61,7 +61,7 @@ The Pages adapter defaults to base path `/crawler-command-interface/`.
 | `npm run generate:fixture` | Generate `data/floors/*.json` and `data/compiled-timeline.json` from raw floor documents |
 | `npm run build` / `npm run build:live` | Build deployable ChatGPT live-app Worker artifact (`dist/`) |
 | `npm run build:pages` | Build deployable static GitHub Pages artifact (`dist-pages/`) |
-| `npm run test:unit` | Run domain unit tests via Node test runner |
+| `npm run test:unit` | Run domain unit tests (`tests/unit/**/*.test.mjs`) via Node test runner |
 | `npm run test:artifacts` | Verify build artifact capture contracts and commit provenance matching |
 | `npm run test:pages:custom-base` | Test custom domain Pages build (`PAGES_BASE_PATH=/`) and restore default Pages build |
 | `npm run test:rendered` | Verify development preview metadata rendering |

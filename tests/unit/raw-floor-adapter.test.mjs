@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { compileFloorFiles } from "../app/domain/compiler.ts";
-import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
-import { projectCountdownState, projectObservationValue, projectObservations, projectState } from "../app/domain/projection.ts";
-import { adaptRawFloorDocument, adaptRawFloorObservations } from "../app/domain/raw-adapter.ts";
-import { compileRawFloorFiles } from "../app/domain/raw-compiler.ts";
-import { validateCrawlerFloor, validateRawCrawlerFloor, validateCrawlerTimeline } from "../app/domain/validation.ts";
+import { compileFloorFiles } from "../../app/domain/compiler.ts";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
+import { projectCountdownState, projectObservationValue, projectObservations, projectState } from "../../app/domain/projection.ts";
+import { adaptRawFloorDocument, adaptRawFloorObservations } from "../../app/domain/raw-adapter.ts";
+import { compileRawFloorFiles } from "../../app/domain/raw-compiler.ts";
+import { validateCrawlerFloor, validateRawCrawlerFloor, validateCrawlerTimeline } from "../../app/domain/validation.ts";
 
 const legacyFloor1 = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 const legacyFloor2 = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));

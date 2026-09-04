@@ -5,9 +5,9 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { validateMaritimeArtifacts } from "../scripts/validate-maritime-artifacts.mjs";
+import { validateMaritimeArtifacts } from "../../scripts/validate-maritime-artifacts.mjs";
 
-const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const comparisonScript = join(repositoryRoot, "scripts/has-substantive-maritime-changes.mjs");
 
 function writeJson(path, value) {

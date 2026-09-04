@@ -46,6 +46,7 @@ Always preserve the following invariants:
 | Generated Runtime Timeline | `data/compiled-timeline.json` |
 | Runtime Import Wrapper | `app/domain/fixtures/compiled-timeline.ts` |
 | Fixture Sync Script | `scripts/sync-derived-fixtures.mjs` |
+| Unit Tests | `tests/unit/` |
 | Documentation Screenshot Spec | `tests/screenshots/crawler-views.spec.ts` |
 | Documentation Screenshot Config | `playwright.screenshots.config.ts` |
 | Canonical Visual Documentation | `docs/SCREENSHOTS.md`, `docs/images/` |

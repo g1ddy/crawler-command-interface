@@ -5,9 +5,9 @@ import {
   genericEventsAtOrBefore,
   getNarrativePresentation,
   narrativeEventsAtOrBefore,
-} from '../app/domain/narrative-presentation.ts';
-import { projectCountdownState } from '../app/domain/countdowns.ts';
-import { projectState } from '../app/domain/projection.ts';
+} from '../../app/domain/narrative-presentation.ts';
+import { projectCountdownState } from '../../app/domain/countdowns.ts';
+import { projectState } from '../../app/domain/projection.ts';
 
 test('maps all narrative kinds and safely falls back', () => {
   for (const kind of ['rule-changed', 'episode-released', 'floor-collapsed', 'encounter-resolved', 'floor-entered', 'floor-exited', 'encounter-started', 'location-discovered', 'dialogue', 'choice-made', 'transformation', 'party-changed', 'other']) {

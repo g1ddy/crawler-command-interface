@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
-import { floor6Events, floor6Snapshots, floor6Timeline, legacyFloor6Quests } from "../app/domain/fixtures/floor6.ts";
-import { projectState, createInitialState, applyEvent } from "../app/domain/projection.ts";
-import { validateCrawlerTimeline, validateCrawlerFloor } from "../app/domain/validation.ts";
-import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../app/domain/stats.ts";
-import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline.ts";
-import { compileFloorFiles } from "../app/domain/compiler.ts";
-import { getFloorEndSequence } from "../app/domain/floors.ts";
+import { floor6Events, floor6Snapshots, floor6Timeline, legacyFloor6Quests } from "../../app/domain/fixtures/floor6.ts";
+import { projectState, createInitialState, applyEvent } from "../../app/domain/projection.ts";
+import { validateCrawlerTimeline, validateCrawlerFloor } from "../../app/domain/validation.ts";
+import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../../app/domain/stats.ts";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
+import { compileFloorFiles } from "../../app/domain/compiler.ts";
+import { getFloorEndSequence } from "../../app/domain/floors.ts";
 
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));
