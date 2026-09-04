@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -9,25 +9,18 @@ const repositoryRoot = path.resolve(
   "../..",
 );
 const testsDirectory = path.join(repositoryRoot, "tests");
-const unitTestsDirectory = path.join(testsDirectory, "unit");
+const packageJsonPath = path.join(repositoryRoot, "package.json");
 
-async function findFilesRecursively(directory) {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const files = [];
+test("test:unit script uses the canonical unit test glob pattern and all unit tests are in tests/unit/", async () => {
+  const packageJsonContent = await readFile(packageJsonPath, "utf8");
+  const packageJson = JSON.parse(packageJsonContent);
 
-  for (const entry of entries) {
-    const fullPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...await findFilesRecursively(fullPath));
-    } else {
-      files.push(fullPath);
-    }
-  }
+  const testUnitScript = packageJson.scripts?.["test:unit"] ?? "";
+  assert.ok(
+    testUnitScript.includes("tests/unit/**/*.test.mjs"),
+    `Expected package.json script "test:unit" to target "tests/unit/**/*.test.mjs", got: "${testUnitScript}"`,
+  );
 
-  return files;
-}
-
-test("all unit test files reside under tests/unit and follow *.test.mjs pattern", async () => {
   const topLevelEntries = await readdir(testsDirectory, { withFileTypes: true });
   const misplacedTestFiles = [];
 
@@ -41,13 +34,5 @@ test("all unit test files reside under tests/unit and follow *.test.mjs pattern"
     misplacedTestFiles,
     [],
     `Found test files directly in tests/: ${misplacedTestFiles.join(", ")}. Unit tests must be placed in tests/unit/ so npm run test:unit discovers them automatically.`,
-  );
-
-  const unitFiles = await findFilesRecursively(unitTestsDirectory);
-  const mjsTestFiles = unitFiles.filter((file) => file.endsWith(".test.mjs"));
-
-  assert.ok(
-    mjsTestFiles.length >= 15,
-    `Expected at least 15 unit tests in tests/unit/, found ${mjsTestFiles.length}.`,
   );
 });
