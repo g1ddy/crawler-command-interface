@@ -17,8 +17,32 @@ export function loadCatalogAchievements(baseDir: string = DEFAULT_RAW_DIR): Cata
 }
 
 export interface RawFloorCatalogRefs {
-  items?: string[];
-  achievements?: string[];
+  items: string[];
+  achievements: string[];
+}
+
+function resolveFloorCatalogEntries<T extends { id: string }>(
+  ids: string[],
+  sharedEntries: T[],
+  kind: 'item' | 'achievement',
+  sharedCatalogPath: string,
+  floorDirPath: string,
+): T[] {
+  const byId = new Map(sharedEntries.map((entry) => [entry.id, entry]));
+  const seen = new Set<string>();
+
+  return ids.map((id) => {
+    if (seen.has(id)) {
+      throw new Error(`Raw floor loader error: Floor "${floorDirPath}" catalog references duplicate ${kind} ID "${id}".`);
+    }
+    seen.add(id);
+
+    const entry = byId.get(id);
+    if (!entry) {
+      throw new Error(`Raw floor loader error: Floor "${floorDirPath}" catalog references ${kind} ID "${id}" which was not found in ${sharedCatalogPath}.`);
+    }
+    return entry;
+  });
 }
 
 export function loadRawFloorDocument(floorFolderOrPath: string, baseDir: string = DEFAULT_RAW_DIR): RawCrawlerFloorDocument {
@@ -41,47 +65,39 @@ export function loadRawFloorDocument(floorFolderOrPath: string, baseDir: string 
   if (!fs.existsSync(floorMetadataPath)) {
     throw new Error(`Raw floor loader error: Could not find "${floorMetadataPath}".`);
   }
+  if (!fs.existsSync(catalogRefsPath)) {
+    throw new Error(`Raw floor loader error: Could not find required floor catalog membership file "${catalogRefsPath}".`);
+  }
 
   const floorMeta = JSON.parse(fs.readFileSync(floorMetadataPath, 'utf8'));
   const events = fs.existsSync(eventsPath) ? JSON.parse(fs.readFileSync(eventsPath, 'utf8')) : [];
   const observations = fs.existsSync(observationsPath) ? JSON.parse(fs.readFileSync(observationsPath, 'utf8')) : [];
   const countdowns = fs.existsSync(countdownsPath) ? JSON.parse(fs.readFileSync(countdownsPath, 'utf8')) : [];
   const sources = fs.existsSync(sourcesPath) ? JSON.parse(fs.readFileSync(sourcesPath, 'utf8')) : [];
+  const catalogRefs: RawFloorCatalogRefs = JSON.parse(fs.readFileSync(catalogRefsPath, 'utf8'));
+
+  if (!Array.isArray(catalogRefs.items) || !Array.isArray(catalogRefs.achievements)) {
+    throw new Error(`Raw floor loader error: Floor catalog membership file "${catalogRefsPath}" must contain items and achievements arrays.`);
+  }
 
   const rawBaseDir = path.resolve(floorDirPath, '../..');
   const sharedItems = loadCatalogItems(rawBaseDir);
   const sharedAchievements = loadCatalogAchievements(rawBaseDir);
 
-  const sharedItemsById = new Map(sharedItems.map((item) => [item.id, item]));
-  const sharedAchievementsById = new Map(sharedAchievements.map((ach) => [ach.id, ach]));
-
-  let floorItems: CatalogItem[] = [];
-  let floorAchievements: CatalogAchievement[] = [];
-
-  if (fs.existsSync(catalogRefsPath)) {
-    const catalogRefs: RawFloorCatalogRefs = JSON.parse(fs.readFileSync(catalogRefsPath, 'utf8'));
-    if (Array.isArray(catalogRefs.items)) {
-      floorItems = catalogRefs.items.map((id) => {
-        const item = sharedItemsById.get(id);
-        if (!item) {
-          throw new Error(`Raw floor loader error: Floor "${floorDirPath}" catalog references item ID "${id}" which was not found in shared catalogs/items.json.`);
-        }
-        return item;
-      });
-    }
-    if (Array.isArray(catalogRefs.achievements)) {
-      floorAchievements = catalogRefs.achievements.map((id) => {
-        const ach = sharedAchievementsById.get(id);
-        if (!ach) {
-          throw new Error(`Raw floor loader error: Floor "${floorDirPath}" catalog references achievement ID "${id}" which was not found in shared catalogs/achievements.json.`);
-        }
-        return ach;
-      });
-    }
-  } else {
-    floorItems = sharedItems;
-    floorAchievements = sharedAchievements;
-  }
+  const floorItems = resolveFloorCatalogEntries(
+    catalogRefs.items,
+    sharedItems,
+    'item',
+    'shared catalogs/items.json',
+    floorDirPath,
+  );
+  const floorAchievements = resolveFloorCatalogEntries(
+    catalogRefs.achievements,
+    sharedAchievements,
+    'achievement',
+    'shared catalogs/achievements.json',
+    floorDirPath,
+  );
 
   return {
     $schema: floorMeta.$schema || 'https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json',
