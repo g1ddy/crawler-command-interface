@@ -18,6 +18,7 @@ import type {
   RawFloorEvent,
   SpoilerScope,
   Spell,
+  TimelineAchievement,
   TimelineEntitlement,
   TimelineEvent,
   TimelineItem,
