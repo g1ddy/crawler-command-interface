@@ -153,7 +153,7 @@
   },
   "app/domain/raw-loader.ts": {
     "complexity": 18,
-    "loc": 120,
+    "loc": 136,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 3,

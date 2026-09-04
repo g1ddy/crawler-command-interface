@@ -36,5 +36,5 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/timeline/TimelineScrubber.tsx` | **40** | 834 |
 | `src/CrawlerApp.tsx` | **37** | 524 |
 | `app/domain/observations.ts` | **29** | 322 |
-| `app/domain/raw-loader.ts` | **18** | 120 |
+| `app/domain/raw-loader.ts` | **18** | 136 |
 | `src/features/crawler/stats/PlayerStats.tsx` | **18** | 36 |
