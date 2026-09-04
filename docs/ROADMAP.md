@@ -9,7 +9,7 @@ The following core constraints guide all ongoing and future roadmap work:
 - **Browser-First Primary Runtime**: The core HUD, timeline scrubber, event state projection, and immutable historical projection execute entirely in the browser without requiring a server, account, API, or Cloudflare binding.
 - **Dual Deployment Targets**: A single shared browser core (`src/CrawlerApp.tsx`) is used by thin adapters for ChatGPT Sites / Vinext Worker (`app/page.tsx`) and static GitHub Pages (`src/main.pages.tsx`). Shared runtime code remains compatible with both targets, including the more restrictive ChatGPT Worker import/render path.
 - **Deterministic Historical Replay**: State at sequence $N$ is derived from event/observation history. Historical state is immutable, but interactions remain available: resulting mutations append new events to the live endpoint rather than rewriting historical sequences.
-- **Raw Story Authoring Source**: Story evidence is authored strictly in `data/raw/floors/`. `data/floors/*.json` and `data/compiled-timeline.json` are generated via `npm run generate:fixture`.
+- **Raw Story Authoring Source**: Story evidence is authored strictly under `data/raw/` (`catalogs/` and `floors/floor-*/`). `data/floors/*.json` and `data/compiled-timeline.json` are generated via `npm run generate:fixture`.
 
 Host-specific Worker, static Pages, authentication, and tooling boundaries are documented in [ARCHITECTURE.md](ARCHITECTURE.md) rather than duplicated here.
 

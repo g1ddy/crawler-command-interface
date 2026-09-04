@@ -1,12 +1,12 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-03
+**Last Updated:** 2026-09-04
 
-### 🏥 Repository Health Score: **70.0 / 100**
+### 🏥 Repository Health Score: **69.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 47
-*   **Measured Files**: 47
+*   **Total Graph Files**: 48
+*   **Measured Files**: 48
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -36,5 +36,5 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/timeline/TimelineScrubber.tsx` | **40** | 834 |
 | `src/CrawlerApp.tsx` | **37** | 524 |
 | `app/domain/observations.ts` | **29** | 322 |
+| `app/domain/raw-loader.ts` | **18** | 136 |
 | `src/features/crawler/stats/PlayerStats.tsx` | **18** | 36 |
-| `app/domain/stats.ts` | **17** | 183 |

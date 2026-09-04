@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 869,
     "instability": 0,
-    "fanIn": 39,
+    "fanIn": 40,
     "fanOut": 0,
     "scanned": true
   },
@@ -149,6 +149,14 @@
     "instability": 1,
     "fanIn": 0,
     "fanOut": 4,
+    "scanned": true
+  },
+  "app/domain/raw-loader.ts": {
+    "complexity": 18,
+    "loc": 136,
+    "instability": 1,
+    "fanIn": 0,
+    "fanOut": 3,
     "scanned": true
   },
   "app/layout.tsx": {

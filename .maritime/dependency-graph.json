@@ -176,6 +176,7 @@
         "app/domain/narrative-presentation.ts",
         "app/domain/persistence.ts",
         "app/domain/raw-compiler.ts",
+        "app/domain/raw-loader.ts",
         "src/CrawlerApp.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/crawler/health/HealthConditions.tsx",
@@ -1143,6 +1144,102 @@
       ],
       "dependents": [],
       "orphan": false
+    },
+    {
+      "source": "app/domain/raw-loader.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": true,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "core",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "protocol": "node:",
+          "moduleSystem": "es6",
+          "module": "fs",
+          "resolved": "fs",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": true,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "core",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "protocol": "node:",
+          "moduleSystem": "es6",
+          "module": "path",
+          "resolved": "path",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [],
+      "orphan": false
+    },
+    {
+      "source": "fs",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/raw-loader.ts"
+      ],
+      "coreModule": true,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "core",
+        "import"
+      ]
+    },
+    {
+      "source": "path",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/raw-loader.ts"
+      ],
+      "coreModule": true,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "core",
+        "import"
+      ]
     },
     {
       "source": "app/layout.tsx",
@@ -3230,8 +3327,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 60,
-    "totalDependenciesCruised": 142,
+    "totalCruised": 63,
+    "totalDependenciesCruised": 145,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

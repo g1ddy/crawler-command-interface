@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
-import fs from "node:fs";
 import test from "node:test";
 
 import { compileRawFloorFiles } from "../../app/domain/raw-compiler.ts";
 import { applyEvent, createInitialState } from "../../app/domain/projection.ts";
+import { loadRawFloorDocument } from "../../app/domain/raw-loader.ts";
 import { validateCrawlerTimeline, validateRawCrawlerFloor } from "../../app/domain/validation.ts";
 
-const rawFloor1 = JSON.parse(fs.readFileSync("data/raw/floors/floor-1.json", "utf8"));
-const rawFloor2 = JSON.parse(fs.readFileSync("data/raw/floors/floor-2.json", "utf8"));
+const rawFloor1 = loadRawFloorDocument("floor-1");
+const rawFloor2 = loadRawFloorDocument("floor-2");
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));

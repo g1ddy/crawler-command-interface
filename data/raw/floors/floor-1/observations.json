@@ -1,0 +1,665 @@
+[
+  {
+    "id": "obs-f1-magic-baseline",
+    "kind": "crawler-condition",
+    "eventId": "evt-f1-trollskin-shirt",
+    "currentMana": 3,
+    "maxMana": 3,
+    "note": "Carl's HUD shows three mana points when the basic healing spell is introduced; no mana-change event is asserted.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 6
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-intelligence-baseline",
+    "kind": "crawler-attributes",
+    "eventId": "evt-f1-trollskin-shirt",
+    "attributes": {
+      "Intelligence": 3
+    },
+    "note": "HUD attribute reading, not an attributed Intelligence change.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 6
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-toe-ring-equipped",
+    "kind": "equipment-state",
+    "eventId": "evt-f1-toe-ring-equipped",
+    "slot": "FEET",
+    "itemInstanceId": "inst-f1-toe-ring",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 6
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-level-2",
+    "kind": "xp-progress",
+    "eventId": "evt-f1-level-2",
+    "level": 2,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 50)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-level-3",
+    "kind": "xp-progress",
+    "eventId": "evt-f1-level-3",
+    "level": 3,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 78)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-level-5",
+    "kind": "xp-progress",
+    "eventId": "evt-f1-level-5",
+    "level": 5,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 92)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-level-7",
+    "kind": "xp-progress",
+    "eventId": "evt-f1-level-7",
+    "level": 7,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 120)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-level-8",
+    "kind": "xp-progress",
+    "eventId": "evt-f1-level-8",
+    "level": 8,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 138)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-level-9",
+    "kind": "xp-progress",
+    "eventId": "evt-f1-level-9",
+    "level": 9,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 194)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-level-10",
+    "kind": "xp-progress",
+    "eventId": "evt-f1-level-10",
+    "level": 10,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 218)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-attributes-nightgaunt",
+    "kind": "crawler-attributes",
+    "eventId": "evt-f1-nightgaunt-cloak",
+    "attributes": {
+      "Strength": 6,
+      "Intelligence": 3,
+      "Constitution": 9,
+      "Dexterity": 5,
+      "Charisma": 4
+    },
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Stats (page 56)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-attributes-toe-ring",
+    "kind": "crawler-attributes",
+    "eventId": "evt-f1-toe-ring-equipped",
+    "attributes": {
+      "Strength": 9,
+      "Intelligence": 3,
+      "Constitution": 9,
+      "Dexterity": 5,
+      "Charisma": 4
+    },
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Stats (page 59)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-attributes-ring-plus-1",
+    "kind": "crawler-attributes",
+    "eventId": "evt-f1-silver-ring-plus-1-con",
+    "attributes": {
+      "Strength": 9,
+      "Intelligence": 3,
+      "Constitution": 10,
+      "Dexterity": 5,
+      "Charisma": 4
+    },
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Stats (page 83)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-attributes-ring-plus-2",
+    "kind": "crawler-attributes",
+    "eventId": "evt-f1-silver-ring-plus-2-con",
+    "attributes": {
+      "Strength": 9,
+      "Intelligence": 3,
+      "Constitution": 12,
+      "Dexterity": 5,
+      "Charisma": 4
+    },
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Stats (page 146)"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-entered",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-entered",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 431280,
+    "note": "Carl and Donut enter the First Floor with 4 days, 23 hours, and 48 minutes remaining until collapse.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-start",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-countdown-start",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 432000,
+    "note": "The First Floor opens and its five-day collapse countdown is displayed. (5d until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-tutorial-start",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-tutorial-start",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 429660,
+    "note": "Carl and Donut begin the First Floor tutorial. (4d 23.85h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-cascadia-announcement",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-cascadia-announcement",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 428400,
+    "note": "Cascadia issues the First Floor announcement as the surface stairwells close. (4d 23h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-tutorial-complete",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-tutorial-complete",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 417600,
+    "note": "Carl and Donut complete the First Floor tutorial. (4d 20h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-crawlers-4322395",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-crawlers-4322395",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 405420,
+    "note": "The system reports 4,322,395 crawlers remaining on the First Floor. (4d 16.616666666666667h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-crawlers-4148111",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-crawlers-4148111",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 356580,
+    "note": "The system reports 4,148,111 crawlers remaining on the First Floor. (4d 3.05h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-royal-court-hoarder",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-royal-court-hoarder",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 345600,
+    "note": "The Royal Court confronts the Hoarder. (4d until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-episode-1",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-episode-1",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 324000,
+    "note": "Dungeon Crawler World episode one airs. (3d 18h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-floor-2-stairs",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-floor-2-stairs",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 320400,
+    "note": "A Cascadia patch populates the Floor 2 stairs and announces the descent head-start rule. (3d 17h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-crawlers-3594517",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-crawlers-3594517",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 237600,
+    "note": "The system reports 3,594,517 crawlers remaining on the First Floor. (2d 18h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-episode-2",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-episode-2",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 216000,
+    "note": "Dungeon Crawler World episode two airs. (2d 12h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-system-patch",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-system-patch",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 212400,
+    "note": "A First Floor system patch is announced. (2d 11h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-meadow-lark",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-meadow-lark",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 144000,
+    "note": "The Royal Court meets Meadow Lark. (1d 16h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-crawlers-2552085",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-crawlers-2552085",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 108000,
+    "note": "The system reports 2,552,085 crawlers remaining as Dungeon Crawler World episode three airs. (1d 6h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-system-patch-late",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-system-patch-late",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 104400,
+    "note": "A late First Floor system patch is announced. (1d 5h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-ball-of-swine",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-ball-of-swine",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 23400,
+    "note": "Carl and Donut encounter the Ball of Swine. (0d 6.5h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-floor-2-descent",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-floor-2-descent",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 21600,
+    "note": "Crawlers can descend to Floor 2 without the usual six-hour loss. (0d 6h until floor collapse.)",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-floor-metrics-crawlers-4322395",
+    "kind": "floor-metrics",
+    "eventId": "evt-f1-crawlers-4322395",
+    "remainingCrawlers": 4322395,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-floor-metrics-crawlers-4148111",
+    "kind": "floor-metrics",
+    "eventId": "evt-f1-crawlers-4148111",
+    "remainingCrawlers": 4148111,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-floor-metrics-crawlers-3594517",
+    "kind": "floor-metrics",
+    "eventId": "evt-f1-crawlers-3594517",
+    "remainingCrawlers": 3594517,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-floor-metrics-crawlers-2552085",
+    "kind": "floor-metrics",
+    "eventId": "evt-f1-crawlers-2552085",
+    "remainingCrawlers": 2552085,
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-floor-metrics-borough-bosses-15",
+    "kind": "floor-metrics",
+    "eventId": "evt-f1-floor-2-stairs",
+    "boroughBossesKilled": 15,
+    "neighborhoodBossesKilled": {
+      "kind": "lower-bound",
+      "value": 1500
+    },
+    "note": "The patch reports 15 Borough Bosses and more than 1,500 Neighborhood Bosses killed; the inequality is preserved as a lower bound.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-f1-floor-metrics-collapse",
+    "kind": "floor-metrics",
+    "eventId": "evt-f1-floor-collapse",
+    "remainingCrawlers": 1292526,
+    "collapseDeaths": {
+      "kind": "lower-bound",
+      "value": 700000
+    },
+    "note": "The source states that more than 700,000 crawlers died in the collapse; the inequality is preserved as a lower bound.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "obs-countdown-floor-1-collapse-complete",
+    "kind": "countdown-remaining",
+    "eventId": "evt-f1-floor-collapse",
+    "countdownId": "countdown-floor-1-collapse",
+    "remainingSeconds": 0,
+    "note": "The First Floor collapses.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  }
+]
