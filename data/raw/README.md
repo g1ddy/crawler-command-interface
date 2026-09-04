@@ -2,7 +2,7 @@
 
 `data/raw/` is the authoritative Phase 1 source for the checked-in Floor 1 and Floor 2 timeline fixture.
 
-Raw authoring data is decomposed into concern-specific files under `data/raw/catalogs/` (shared crawlers, items, achievements, skills, spells) and `data/raw/floors/floor-*/` (`floor.json`, `events.json`, `observations.json`, `countdowns.json`, `sources.json`). `app/domain/raw-loader.ts` assembles these files into domain raw floor documents (`RawCrawlerFloorDocument`).
+Raw authoring data is decomposed into concern-specific files under `data/raw/catalogs/` (shared item and achievement definitions, with reserved placeholder files `crawlers.json`, `skills.json`, `spells.json`) and `data/raw/floors/floor-*/` (`floor.json`, `catalog.json`, `events.json`, `observations.json`, `countdowns.json`, `sources.json`). `app/domain/raw-loader.ts` assembles these files into domain raw floor documents (`RawCrawlerFloorDocument`) by resolving floor-local `catalog.json` ID references against shared catalog definitions.
 
 Raw documents preserve sourced events and record point-in-time HUD facts as observations linked to stable `eventId` values. An event records a documented state transition; an observation records what the HUD shows without inventing a cause.
 

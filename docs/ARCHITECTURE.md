@@ -161,7 +161,7 @@ Keeping raw validation and compilation in Node tooling prevents Ajv code generat
 ├── data/
 │   ├── raw/                # Hand-authored decomposed story evidence
 │   │   ├── catalogs/       # Shared item, achievement, crawler, skill, spell definitions
-│   │   └── floors/floor-*/ # Floor metadata, events.json, observations.json, countdowns.json, sources.json
+│   │   └── floors/floor-*/ # Floor metadata, catalog.json, events.json, observations.json, countdowns.json, sources.json
 │   ├── floors/             # Generated compatibility floor JSON
 │   └── compiled-timeline.json # Generated runtime timeline data
 ├── scripts/                # Node build, fixture-sync, and environment scripts

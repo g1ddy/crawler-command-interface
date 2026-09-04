@@ -8,8 +8,8 @@ Use this guide when adding or correcting storyline data. The goal is to record w
 
 Keep the layers distinct:
 
-1. **Decomposed raw source** — `data/raw/catalogs/` and `data/raw/floors/floor-*/`; concern-specific authored files (events, observations, countdowns, sources, and shared catalogs).
-2. **Raw floor loader** — `app/domain/raw-loader.ts`; assembles decomposed authored files into the established `RawCrawlerFloorDocument` domain input contract.
+1. **Decomposed raw source** — `data/raw/catalogs/` and `data/raw/floors/floor-*/`; concern-specific authored files (events, observations, countdowns, sources, floor-local catalog membership, and shared catalog definitions).
+2. **Raw floor loader** — `app/domain/raw-loader.ts`; assembles decomposed authored files into the established `RawCrawlerFloorDocument` domain input contract by resolving catalog IDs against shared catalog definitions.
 3. **Raw schema** — `app/domain/schema/crawler-floor-raw.schema.json`; what authors may record.
 4. **Compiler / compatibility representation** — `app/domain/raw-compiler.ts` and the floor/timeline schemas; preserves structured observations for runtime use.
 5. **Projection** — `app/domain/projection.ts`; applies event types that have a defined HUD-state effect.
@@ -32,12 +32,14 @@ data/raw/
 └── floors/
     ├── floor-1/
     │   ├── floor.json
+    │   ├── catalog.json
     │   ├── events.json
     │   ├── observations.json
     │   ├── countdowns.json
     │   └── sources.json
     └── floor-2/
         ├── floor.json
+        ├── catalog.json
         ├── events.json
         ├── observations.json
         ├── countdowns.json
@@ -52,7 +54,8 @@ data/raw/
 - **`countdowns.json`**: Owns countdown definitions for that floor. Point-in-time countdown readings remain in `observations.json`.
 - **`sources.json`**: Owns source metadata and provenance definitions for that floor.
 - **`floor.json`**: Contains floor metadata (`ordinal`, `title`, `book`, `continuity`, `coverage`).
-- **`catalogs/`**: Contains shared static catalog definitions (`crawlers.json`, `items.json`, `achievements.json`, `skills.json`, `spells.json`) referenced across floors.
+- **`catalog.json`**: Declares floor-local item and achievement membership by ID (`items: string[]`, `achievements: string[]`).
+- **`catalogs/`**: Contains shared static catalog definitions (`items.json`, `achievements.json`, with reserved files `crawlers.json`, `skills.json`, `spells.json`) referenced across floors.
 
 ## Scrubbing and projected HUD state
 

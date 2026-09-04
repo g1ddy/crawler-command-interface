@@ -16,6 +16,11 @@ export function loadCatalogAchievements(baseDir: string = DEFAULT_RAW_DIR): Cata
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
+export interface RawFloorCatalogRefs {
+  items?: string[];
+  achievements?: string[];
+}
+
 export function loadRawFloorDocument(floorFolderOrPath: string, baseDir: string = DEFAULT_RAW_DIR): RawCrawlerFloorDocument {
   let floorDirPath: string;
   if (floorFolderOrPath.endsWith('floor.json')) {
@@ -31,6 +36,7 @@ export function loadRawFloorDocument(floorFolderOrPath: string, baseDir: string 
   const observationsPath = path.join(floorDirPath, 'observations.json');
   const countdownsPath = path.join(floorDirPath, 'countdowns.json');
   const sourcesPath = path.join(floorDirPath, 'sources.json');
+  const catalogRefsPath = path.join(floorDirPath, 'catalog.json');
 
   if (!fs.existsSync(floorMetadataPath)) {
     throw new Error(`Raw floor loader error: Could not find "${floorMetadataPath}".`);
@@ -43,8 +49,39 @@ export function loadRawFloorDocument(floorFolderOrPath: string, baseDir: string 
   const sources = fs.existsSync(sourcesPath) ? JSON.parse(fs.readFileSync(sourcesPath, 'utf8')) : [];
 
   const rawBaseDir = path.resolve(floorDirPath, '../..');
-  const items = loadCatalogItems(rawBaseDir);
-  const achievements = loadCatalogAchievements(rawBaseDir);
+  const sharedItems = loadCatalogItems(rawBaseDir);
+  const sharedAchievements = loadCatalogAchievements(rawBaseDir);
+
+  const sharedItemsById = new Map(sharedItems.map((item) => [item.id, item]));
+  const sharedAchievementsById = new Map(sharedAchievements.map((ach) => [ach.id, ach]));
+
+  let floorItems: CatalogItem[] = [];
+  let floorAchievements: CatalogAchievement[] = [];
+
+  if (fs.existsSync(catalogRefsPath)) {
+    const catalogRefs: RawFloorCatalogRefs = JSON.parse(fs.readFileSync(catalogRefsPath, 'utf8'));
+    if (Array.isArray(catalogRefs.items)) {
+      floorItems = catalogRefs.items.map((id) => {
+        const item = sharedItemsById.get(id);
+        if (!item) {
+          throw new Error(`Raw floor loader error: Floor "${floorDirPath}" catalog references item ID "${id}" which was not found in shared catalogs/items.json.`);
+        }
+        return item;
+      });
+    }
+    if (Array.isArray(catalogRefs.achievements)) {
+      floorAchievements = catalogRefs.achievements.map((id) => {
+        const ach = sharedAchievementsById.get(id);
+        if (!ach) {
+          throw new Error(`Raw floor loader error: Floor "${floorDirPath}" catalog references achievement ID "${id}" which was not found in shared catalogs/achievements.json.`);
+        }
+        return ach;
+      });
+    }
+  } else {
+    floorItems = sharedItems;
+    floorAchievements = sharedAchievements;
+  }
 
   return {
     $schema: floorMeta.$schema || 'https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor-raw.v1.schema.json',
@@ -53,8 +90,8 @@ export function loadRawFloorDocument(floorFolderOrPath: string, baseDir: string 
     floor: floorMeta.floor,
     sources,
     catalog: {
-      items,
-      achievements,
+      items: floorItems,
+      achievements: floorAchievements,
     },
     countdowns: countdowns.length > 0 ? countdowns : undefined,
     events,
