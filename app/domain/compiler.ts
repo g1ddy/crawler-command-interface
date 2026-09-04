@@ -4,10 +4,12 @@ import type {
   CatalogItem,
   CrawlerFloorDocument,
   CrawlerTimelineDocument,
+  FloorEventBase,
   FloorSegment,
   NarrativeEventKind,
   TimelineEvent,
   TimelineItem,
+  TimelinePosition,
   TimelineSource,
   TimelineCountdown,
 } from './types.ts';
@@ -26,6 +28,134 @@ function areItemsIdentical(a: CatalogItem, b: CatalogItem): boolean {
   const statsA = JSON.stringify(a.stats || {});
   const statsB = JSON.stringify(b.stats || {});
   return statsA === statsB;
+}
+
+export type EventCompilerContext = {
+  seq: number;
+  pos: TimelinePosition;
+  doc: CrawlerFloorDocument;
+  itemsCatalog: Map<string, CatalogItem>;
+  achCatalog: Map<string, CatalogAchievement>;
+};
+
+export type SpecializedCompilerHandler = (
+  rawEv: FloorEventBase,
+  ctx: EventCompilerContext
+) => TimelineEvent;
+
+function compileIdentityEvent(
+  rawEv: FloorEventBase,
+  ctx: EventCompilerContext
+): TimelineEvent {
+  const payload = { ...rawEv } as Record<string, unknown>;
+  delete payload.id;
+  delete payload.order;
+  delete payload.position;
+
+  return {
+    id: rawEv.id,
+    sequence: ctx.seq,
+    type: rawEv.type,
+    position: ctx.pos,
+    summary: rawEv.summary,
+    correlationId: rawEv.correlationId,
+    causationId: rawEv.causationId,
+    evidence: rawEv.evidence,
+    ...payload,
+  } as TimelineEvent;
+}
+
+const specializedCompilers: Record<string, SpecializedCompilerHandler> = {
+  AchievementUnlocked: (rawEv, ctx) => {
+    const achDef = ctx.achCatalog.get(rawEv.achievementId!);
+    if (!achDef) {
+      throw new Error(
+        `Compiler error: Event "${rawEv.id}" references unmapped achievement ID "${rawEv.achievementId}".`
+      );
+    }
+    return {
+      id: rawEv.id,
+      sequence: ctx.seq,
+      type: 'AchievementUnlocked',
+      position: ctx.pos,
+      summary: rawEv.summary,
+      correlationId: rawEv.correlationId,
+      causationId: rawEv.causationId,
+      evidence: rawEv.evidence,
+      notificationDelivery: rawEv.notificationDelivery,
+      achievement: {
+        id: achDef.id,
+        title: achDef.title,
+        recipient: achDef.recipient,
+        description: achDef.description,
+        reward: achDef.reward,
+      },
+    };
+  },
+
+  ItemAcquired: (rawEv, ctx) => compileItemEvent(rawEv, ctx),
+  ItemCrafted: (rawEv, ctx) => compileItemEvent(rawEv, ctx),
+
+  NarrativeEvent: (rawEv, ctx) => {
+    return {
+      id: rawEv.id,
+      sequence: ctx.seq,
+      type: 'NarrativeEvent',
+      kind: (rawEv.kind as NarrativeEventKind) || 'other',
+      position: ctx.pos,
+      summary: rawEv.summary,
+      correlationId: rawEv.correlationId,
+      causationId: rawEv.causationId,
+      evidence: rawEv.evidence,
+      notificationDelivery: rawEv.notificationDelivery,
+    };
+  },
+};
+
+function compileItemEvent(
+  rawEv: FloorEventBase,
+  ctx: EventCompilerContext
+): TimelineEvent {
+  const itemDef = ctx.itemsCatalog.get(rawEv.item!.itemId);
+  if (!itemDef) {
+    throw new Error(
+      `Compiler error: Event "${rawEv.id}" references unmapped item ID "${rawEv.item!.itemId}".`
+    );
+  }
+
+  const itemObj: TimelineItem = {
+    instanceId: rawEv.item!.instanceId,
+    itemId: itemDef.id,
+    name: itemDef.name,
+    category: itemDef.category,
+    slot: itemDef.slot,
+    rarity: itemDef.rarity || 'unknown',
+    description: itemDef.description,
+    stats: itemDef.stats,
+    quantity: rawEv.item!.quantity,
+    sourceDescription: `${ctx.doc.floor.title}`,
+  };
+
+  return {
+    id: rawEv.id,
+    sequence: ctx.seq,
+    type: rawEv.type,
+    position: ctx.pos,
+    summary: rawEv.summary,
+    correlationId: rawEv.correlationId,
+    causationId: rawEv.causationId,
+    evidence: rawEv.evidence,
+    notificationDelivery: rawEv.notificationDelivery,
+    item: itemObj,
+  } as TimelineEvent;
+}
+
+export function compileEvent(
+  rawEv: FloorEventBase,
+  ctx: EventCompilerContext
+): TimelineEvent {
+  const handler = specializedCompilers[rawEv.type];
+  return handler ? handler(rawEv, ctx) : compileIdentityEvent(rawEv, ctx);
 }
 
 export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTimelineDocument {
@@ -137,134 +267,15 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
         elapsedSeconds: rawEv.position.elapsedSeconds,
       };
 
-      if (rawEv.type === 'AchievementUnlocked') {
-        const achDef = achCatalog.get(rawEv.achievementId!);
-        if (!achDef) {
-          throw new Error(
-            `Compiler error: Event "${rawEv.id}" references unmapped achievement ID "${rawEv.achievementId}".`
-          );
-        }
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: 'AchievementUnlocked',
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          notificationDelivery: rawEv.notificationDelivery,
-          achievement: {
-            id: achDef.id,
-            title: achDef.title,
-            recipient: achDef.recipient,
-            description: achDef.description,
-            reward: achDef.reward,
-          },
-        });
-      } else if (rawEv.type === 'ItemAcquired' || rawEv.type === 'ItemCrafted') {
-        const itemDef = itemsCatalog.get(rawEv.item!.itemId);
-        if (!itemDef) {
-          throw new Error(
-            `Compiler error: Event "${rawEv.id}" references unmapped item ID "${rawEv.item!.itemId}".`
-          );
-        }
+      const ctx: EventCompilerContext = {
+        seq,
+        pos,
+        doc,
+        itemsCatalog,
+        achCatalog,
+      };
 
-        const itemObj: TimelineItem = {
-          instanceId: rawEv.item!.instanceId,
-          itemId: itemDef.id,
-          name: itemDef.name,
-          category: itemDef.category,
-          slot: itemDef.slot,
-          rarity: itemDef.rarity || 'unknown',
-          description: itemDef.description,
-          stats: itemDef.stats,
-          quantity: rawEv.item!.quantity,
-          sourceDescription: `${doc.floor.title}`,
-        };
-
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: rawEv.type,
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          notificationDelivery: rawEv.notificationDelivery,
-          item: itemObj,
-        });
-      } else if (rawEv.type === 'PermanentEntitlementGranted') {
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: 'PermanentEntitlementGranted',
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          notificationDelivery: rawEv.notificationDelivery,
-          entitlement: rawEv.entitlement!,
-        });
-      } else if (rawEv.type === 'SpellGranted') {
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: 'SpellGranted',
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          notificationDelivery: rawEv.notificationDelivery,
-          spell: rawEv.spell!,
-        });
-      } else if (rawEv.type === 'PartyFormed') {
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: 'PartyFormed',
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          notificationDelivery: rawEv.notificationDelivery,
-          party: rawEv.party!,
-        });
-      } else if (rawEv.type === 'NarrativeEvent') {
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: 'NarrativeEvent',
-          kind: (rawEv.kind as NarrativeEventKind) || 'other',
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          notificationDelivery: rawEv.notificationDelivery,
-        });
-      } else {
-        // Preserve all structured event properties losslessly
-        const payload = { ...rawEv } as Record<string, unknown>;
-        delete payload.id;
-        delete payload.order;
-        delete payload.position;
-        compiledEvents.push({
-          id: rawEv.id,
-          sequence: seq,
-          type: rawEv.type,
-          position: pos,
-          summary: rawEv.summary,
-          correlationId: rawEv.correlationId,
-          causationId: rawEv.causationId,
-          evidence: rawEv.evidence,
-          ...payload,
-        } as TimelineEvent);
-      }
+      compiledEvents.push(compileEvent(rawEv, ctx));
     }
 
     const endSequence = globalSequence - 1;

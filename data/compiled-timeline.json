@@ -11,8 +11,8 @@
         "floor": 2
       }
     },
-    "createdAt": "2026-09-03T19:51:29.860Z",
-    "updatedAt": "2026-09-03T19:51:29.860Z"
+    "createdAt": "2026-09-04T19:47:02.223Z",
+    "updatedAt": "2026-09-04T19:47:02.224Z"
   },
   "floors": [
     {
@@ -1262,15 +1262,15 @@
           "confidence": "corroborated"
         }
       ],
-      "notificationDelivery": {
-        "delivered": true,
-        "kind": "reward",
-        "severity": "success"
-      },
       "entitlement": {
         "id": "entitlement-goblin-pass-tattoo",
         "name": "Goblin Pass Tattoo",
         "location": "left inner forearm"
+      },
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
       }
     },
     {
@@ -1976,15 +1976,15 @@
           "confidence": "corroborated"
         }
       ],
-      "notificationDelivery": {
-        "delivered": true,
-        "kind": "reward",
-        "severity": "success"
-      },
       "entitlement": {
         "id": "entitlement-desperado-pass-tattoo",
         "name": "Desperado Pass Tattoo",
         "location": "neck"
+      },
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
       }
     },
     {
@@ -3072,15 +3072,15 @@
           "confidence": "confirmed"
         }
       ],
-      "notificationDelivery": {
-        "delivered": true,
-        "kind": "reward",
-        "severity": "success"
-      },
       "entitlement": {
         "id": "entitlement-f2-dungeonpreneur-royalty",
         "name": "Dungeonpreneur royalty",
         "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+      },
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "reward",
+        "severity": "success"
       }
     },
     {
