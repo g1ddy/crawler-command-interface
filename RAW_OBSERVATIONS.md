@@ -1,6 +1,6 @@
 # Raw Observation Authoring Guide
 
-The files under `data/raw/floors/` are the source-of-truth authoring format for sourced Dungeon Crawler Carl observations. They are intentionally more expressive than the current UI. The compiler turns these floor-scoped source files into the runtime timeline; projection then applies supported events to the point-in-time HUD state.
+The files under `data/raw/` are the source-of-truth authoring format for sourced Dungeon Crawler Carl observations. Story evidence is decomposed into concern-specific files under `data/raw/catalogs/` and `data/raw/floors/floor-*/`. They are intentionally more expressive than the current UI. The loader assembles these files into domain raw floor documents (`RawCrawlerFloorDocument`), the compiler turns them into the runtime timeline, and projection applies supported events to the point-in-time HUD state.
 
 Use this guide when adding or correcting storyline data. The goal is to record what a source actually establishes without inventing a complete snapshot around a partial observation.
 
@@ -8,13 +8,51 @@ Use this guide when adding or correcting storyline data. The goal is to record w
 
 Keep the layers distinct:
 
-1. **Raw floor source** — `data/raw/floors/floor-*.json`; sourced observations and evidence.
-2. **Raw schema** — `app/domain/schema/crawler-floor-raw.schema.json`; what authors may record.
-3. **Compiler / compatibility representation** — `app/domain/raw-compiler.ts` and the floor/timeline schemas; preserves structured observations for runtime use.
-4. **Projection** — `app/domain/projection.ts`; applies event types that have a defined HUD-state effect.
-5. **UI** — renders the projected state. A raw observation may be valid and preserved before every field has a dedicated widget.
+1. **Decomposed raw source** — `data/raw/catalogs/` and `data/raw/floors/floor-*/`; concern-specific authored files (events, observations, countdowns, sources, and shared catalogs).
+2. **Raw floor loader** — `app/domain/raw-loader.ts`; assembles decomposed authored files into the established `RawCrawlerFloorDocument` domain input contract.
+3. **Raw schema** — `app/domain/schema/crawler-floor-raw.schema.json`; what authors may record.
+4. **Compiler / compatibility representation** — `app/domain/raw-compiler.ts` and the floor/timeline schemas; preserves structured observations for runtime use.
+5. **Projection** — `app/domain/projection.ts`; applies event types that have a defined HUD-state effect.
+6. **UI** — renders the projected state. A raw observation may be valid and preserved before every field has a dedicated widget.
 
 Do not reshape source data merely to fit the current UI. Prefer preserving a structured observation and adding projection/UI support deliberately later.
+
+## Decomposed Directory Structure
+
+Raw authoring data is organized cleanly by concern under `data/raw/`:
+
+```
+data/raw/
+├── catalogs/
+│   ├── crawlers.json
+│   ├── items.json
+│   ├── achievements.json
+│   ├── skills.json
+│   └── spells.json
+└── floors/
+    ├── floor-1/
+    │   ├── floor.json
+    │   ├── events.json
+    │   ├── observations.json
+    │   ├── countdowns.json
+    │   └── sources.json
+    └── floor-2/
+        ├── floor.json
+        ├── events.json
+        ├── observations.json
+        ├── countdowns.json
+        ├── sources.json
+        └── claim-ledger.md
+```
+
+### File Ownership Rules
+
+- **`events.json`**: Answers what happened and when. Its array order remains the single authoritative authored chronological event ledger for that floor. Do not create parallel per-domain or per-view event files (such as `party-events.json` or `spell-events.json`) that duplicate historical facts.
+- **`observations.json`**: Answers what was measured or read at a point in time, referencing stable event IDs (`eventId`).
+- **`countdowns.json`**: Owns countdown definitions for that floor. Point-in-time countdown readings remain in `observations.json`.
+- **`sources.json`**: Owns source metadata and provenance definitions for that floor.
+- **`floor.json`**: Contains floor metadata (`ordinal`, `title`, `book`, `continuity`, `coverage`).
+- **`catalogs/`**: Contains shared static catalog definitions (`crawlers.json`, `items.json`, `achievements.json`, `skills.json`, `spells.json`) referenced across floors.
 
 ## Scrubbing and projected HUD state
 
@@ -57,13 +95,13 @@ Never synthesize primary provenance. If the book, audiobook, or official preview
 
 For every accepted claim, capture the narrowest stable locator available: book and chapter for primary text, timestamp for audio, and a page/section heading or revision marker for community or editorial sources. If a source supports only a level change, author a level transition or `xp-progress` level anchor; do not infer numeric XP. If a source supports a single stat, item, or broadcast metric, preserve only that field rather than constructing a complete HUD snapshot.
 
-When a corroborating source supplies a page-derived table, note the page in the locator's `section` text until the evidence schema gains a dedicated page field. Add the source once to the floor's `sources` catalog, reuse its stable ID, and retain each claim's individual locator and confidence. Recheck community-sourced facts against a primary source when one becomes available, updating the evidence rather than silently changing the payload.
+When a corroborating source supplies a page-derived table, note the page in the locator's `section` text until the evidence schema gains a dedicated page field. Add the source once to the floor's `sources.json`, reuse its stable ID, and retain each claim's individual locator and confidence. Recheck community-sourced facts against a primary source when one becomes available, updating the evidence rather than silently changing the payload.
 
 ## Evidence is part of the observation
 
 Every authored event should remain traceable to a declared source.
 
-- Add the source to the floor's `sources` collection before referencing it.
+- Add the source to the floor's `sources.json` collection before referencing it.
 - Use stable source IDs and reference them from `evidence`.
 - Set confidence according to what the source establishes; do not upgrade inference or secondary provenance to confirmed fact.
 - Keep `summary` human-readable, but never depend on summary text to drive domain behavior.
@@ -73,14 +111,14 @@ A summary such as `The countdown resets` is descriptive text. The structured `ty
 
 ## Position and ordering
 
-The order of entries in the raw `events` array is the authoritative floor-local chronology. Raw events do not carry a duplicated numeric `order` field. The adapter derives floor-local `order` for compatibility output, and the compiler derives globally increasing `sequence` values for the runtime timeline. `position` separately records where the event belongs in the story.
+The order of entries in the raw `events.json` array is the authoritative floor-local chronology. Raw events do not carry a duplicated numeric `order` field. The adapter derives floor-local `order` for compatibility output, and the compiler derives globally increasing `sequence` values for the runtime timeline. `position` separately records where the event belongs in the story.
 
 - Keep event IDs stable once published; IDs are references, not display labels.
 - Author floor event IDs as `evt-f<floor>-<semantic-event>[-<qualifier>...]`. Do not encode array position, generated order, or compiled sequence. Numbers are appropriate only when intrinsic to the fact (for example `episode-8`, `floor-3-descent`, or `crawlers-990303`).
 - Author observation IDs in the `obs-...` namespace. Event identity describes what happened; observation identity describes what was measured about it.
 - Reserve semantic namespaces for other stable authored identities as they are adopted: `src-`, `countdown-`, `item-`, `achievement-`, `inst-`, `skill-`, `spell-`, `party-`, `crawler-`, `effect-`, `quest-`, and `entitlement-`. The schema exposes reusable definitions for these prefixes so individual fields can migrate to them incrementally without duplicating regexes.
 - Schema owns ID syntax. Domain/build validation checks relationships schema cannot express, such as matching the `evt-fN-` prefix to `floor.ordinal` and resolving referenced event IDs.
-- Insert new events at the intended chronological position in the raw array.
+- Insert new events at the intended chronological position in the raw `events.json` array.
 - Use the correct floor/book position and add more precise position data only when supported.
 - Place lifecycle events between the observations they are intended to separate. Validation reasons about ordering, especially for countdown phases.
 - Treat generated `order` and `sequence` as sanity checks on compilation, not facts authors maintain by hand.

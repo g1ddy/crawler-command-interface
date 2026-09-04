@@ -1,0 +1,492 @@
+[
+  {
+    "id": "achievement-empty-pockets",
+    "title": "Empty Pockets",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "adventurer",
+        "rarity": "bronze",
+        "description": "Bronze Adventurer Box"
+      }
+    ],
+    "recipient": "carl",
+    "description": "Entered the dungeon without supplies."
+  },
+  {
+    "id": "achievement-why-no-pants",
+    "title": "Why Aren't You Wearing Pants?",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "apparel",
+        "rarity": "gold",
+        "description": "Gold Apparel Box"
+      }
+    ],
+    "recipient": "carl",
+    "description": "Entered the dungeon without pants."
+  },
+  {
+    "id": "achievement-unarmed-combat",
+    "title": "Unarmed Combat",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "weapon",
+        "rarity": "bronze",
+        "description": "Bronze Weapon Box"
+      }
+    ],
+    "recipient": "carl",
+    "description": "Entered the World Dungeon without a weapon."
+  },
+  {
+    "id": "achievement-oooh-magic",
+    "title": "Oooh, Magic!",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "adventurer",
+        "rarity": "bronze",
+        "description": "Bronze Adventurer Box"
+      }
+    ],
+    "recipient": "carl",
+    "description": "Wore magical gear for the first time."
+  },
+  {
+    "id": "achievement-boom",
+    "title": "Boom!",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "goblin",
+        "rarity": "silver",
+        "description": "Silver Goblin Box"
+      }
+    ],
+    "recipient": "carl",
+    "description": "Caused a wall-shaking explosion in the dungeon."
+  },
+  {
+    "id": "achievement-podophilia",
+    "title": "Podophilia!",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "shoe",
+        "rarity": "gold",
+        "description": "Gold Shoe Box containing the Enchanted Pedicure Kit of the Sylph"
+      }
+    ],
+    "recipient": "carl",
+    "description": "Killed an opponent by crushing it with bare feet."
+  },
+  {
+    "id": "achievement-battlefield-construction",
+    "title": "Battlefield Construction!",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "mechanic",
+        "rarity": "silver",
+        "description": "Silver Mechanic Box"
+      }
+    ],
+    "recipient": "carl",
+    "description": "Built and deployed a structure in battle."
+  },
+  {
+    "id": "achievement-trailblazing-crazy-cat-lady",
+    "title": "Trailblazing Crazy Cat Lady",
+    "recipient": "donut",
+    "description": "The first crawler to enter the World Dungeon with a cat.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "pet",
+        "rarity": "legendary",
+        "description": "Legendary Pet Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-early-adopter",
+    "title": "Early Adopter",
+    "recipient": "carl",
+    "description": "One of the first 5,000 crawlers to enter a new World Dungeon.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "adventurer",
+        "rarity": "silver",
+        "description": "Silver Adventurer Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-loner",
+    "title": "Loner",
+    "recipient": "carl",
+    "description": "Entered without any human companions.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No reward."
+      }
+    ]
+  },
+  {
+    "id": "achievement-fall-into-obvious-trap",
+    "title": "Fall into an Obvious Trap",
+    "recipient": "carl",
+    "description": "No achievement notification text is preserved by the source.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "A warning that Carl is about to meet his maker."
+      }
+    ]
+  },
+  {
+    "id": "achievement-read-official-dungeon-sign",
+    "title": "You've Discovered and Read an Official Dungeon Sign",
+    "recipient": "carl",
+    "description": "Read an official dungeon sign.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "Official signs are highlighted and nearby guilds appear on the minimap."
+      }
+    ]
+  },
+  {
+    "id": "achievement-inflicted-damage-on-mob",
+    "title": "You've Inflicted Damage on a Mob",
+    "recipient": "carl",
+    "description": "Damaged a mob for the first time.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "The mob will probably hit back."
+      }
+    ]
+  },
+  {
+    "id": "achievement-killed-a-mob",
+    "title": "You've Killed a Mob!",
+    "recipient": "carl",
+    "description": "Killed a mob for the first time.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "Carl can now gain experience."
+      }
+    ]
+  },
+  {
+    "id": "achievement-armed-mob-bare-hands",
+    "title": "You've Killed an Armed Mob with Your Bare Fucking Hands!",
+    "recipient": "carl",
+    "description": "Killed an armed mob with bare hands.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "weapon",
+        "rarity": "bronze",
+        "description": "Bronze Weapon Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-higher-level-mob",
+    "title": "You've Killed a Mob a Higher Level Than Yourself!",
+    "recipient": "carl",
+    "description": "Killed a mob above Carl’s level.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "adventurer",
+        "rarity": "bronze",
+        "description": "Bronze Adventurer Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-entered-a-guildhall",
+    "title": "You've Entered a Guildhall!",
+    "recipient": "carl",
+    "description": "Entered a guildhall.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No material reward."
+      }
+    ]
+  },
+  {
+    "id": "achievement-level-up-baby",
+    "title": "Level-Up, Baby!",
+    "recipient": "carl",
+    "description": "Gained enough experience to reach a new level.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No extra reward beyond the level."
+      }
+    ]
+  },
+  {
+    "id": "achievement-loot",
+    "title": "Loot!",
+    "recipient": "carl",
+    "description": "Wore an item found in the dungeon.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No material reward."
+      }
+    ]
+  },
+  {
+    "id": "achievement-boss-babe",
+    "title": "Boss Babe",
+    "recipient": "carl",
+    "description": "Damaged a dungeon boss.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No immediate reward recorded."
+      }
+    ]
+  },
+  {
+    "id": "achievement-you-monster",
+    "title": "You Monster!",
+    "recipient": "carl",
+    "description": "Killed goblin children during the goblin chieftain-room explosion.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "asshole",
+        "rarity": "bronze",
+        "description": "Bronze Asshole's Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-war-criminal",
+    "title": "War Criminal",
+    "recipient": "carl",
+    "description": "Killed more than twenty noncombatants with one attack.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "asshole",
+        "rarity": "gold",
+        "description": "Gold Asshole's Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-two-chicks-same-time",
+    "title": "Two Chicks at the Same Time",
+    "recipient": "carl",
+    "description": "Killed two mobs at once by using their bodies against one another.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "brawler",
+        "rarity": "gold",
+        "description": "Gold Brawler Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-borough-boss",
+    "title": "Borough Boss!",
+    "recipient": "party",
+    "description": "Entered a borough-boss chamber.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No reward."
+      }
+    ]
+  },
+  {
+    "id": "achievement-bully-and-a-thief",
+    "title": "Bully and a Thief!",
+    "recipient": "carl",
+    "description": "Inadvertently took Agatha’s shopping cart into inventory during the Ball of Swine fight.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "asshole",
+        "rarity": "bronze",
+        "description": "Bronze Asshole's Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-little-piggy-went-to-market",
+    "title": "This Little Piggy Went to Market!",
+    "recipient": "carl",
+    "description": "Killed more than five opponents in boss fights with bare feet.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "shoe",
+        "rarity": "platinum",
+        "description": "Platinum Shoe Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-found-stairs",
+    "title": "You Found Stairs!",
+    "recipient": "party",
+    "description": "Found a stairwell down to the next floor.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No material reward; surviving to read the notification is the reward."
+      }
+    ]
+  },
+  {
+    "id": "achievement-crazy-cat-lady",
+    "title": "Crazy Cat Lady",
+    "recipient": "carl",
+    "description": "Entered the World Dungeon accompanied by a cat.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "pet",
+        "rarity": "bronze",
+        "description": "Bronze Pet Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-bitchmeat",
+    "title": "Bitchmeat",
+    "description": "Was attacked by a fellow crawler in a safe room and required the system’s help.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No reward."
+      }
+    ]
+  },
+  {
+    "id": "achievement-peta-enthusiast",
+    "title": "PETA Enthusiast!",
+    "description": "Removed an aggravated non-sapient enemy’s hostility and caused it to fight other enemies.",
+    "reward": [],
+    "recipient": "carl"
+  },
+  {
+    "id": "achievement-dungeonpreneur",
+    "title": "Dungeonpreneur",
+    "description": "Invented Carl’s Jug O’ Boom, a stackable dungeon device.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "A lifetime gold-coin royalty for kills other crawlers make with the invention."
+      }
+    ],
+    "recipient": "carl"
+  },
+  {
+    "id": "achievement-what-goes-up",
+    "title": "What Goes Up...",
+    "recipient": "carl",
+    "description": "Survived the Reverse Gravity spell.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "Carl can truthfully say he is more durable than Albert II, a rhesus monkey."
+      }
+    ]
+  },
+  {
+    "id": "achievement-like-a-moth-to-the-flame",
+    "title": "Like a Moth to the Flame",
+    "recipient": "party",
+    "description": "Damaged a mob more than 75 levels above the crawler.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "lucky-bastard",
+        "rarity": "platinum",
+        "description": "Platinum Lucky Bastard Box containing a lottery scratch-off ticket"
+      }
+    ]
+  },
+  {
+    "id": "achievement-grease-monkey",
+    "title": "Grease Monkey!",
+    "recipient": "carl",
+    "description": "Built and deployed a wheeled device.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "mechanic",
+        "rarity": "silver",
+        "description": "Silver Mechanic Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-you-call-that-a-trap",
+    "title": "You Call That a Trap?",
+    "recipient": "carl",
+    "description": "A mob was hurt by something Carl deliberately left in the dungeon.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "sapper",
+        "rarity": "gold",
+        "description": "Gold Sapper Box"
+      }
+    ]
+  },
+  {
+    "id": "achievement-ceramic-dalmatian-pat",
+    "title": "I'll Take the Ceramic Dalmatian, Pat!",
+    "recipient": "party",
+    "description": "Discovered a reward room.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "No material reward; the reward room is the reward."
+      }
+    ]
+  },
+  {
+    "id": "achievement-menagerie",
+    "title": "Menagerie!",
+    "recipient": "donut",
+    "description": "Discovered a pet reward room.",
+    "reward": [
+      {
+        "kind": "other",
+        "description": "A key that opens one cage in the pet reward room."
+      }
+    ]
+  },
+  {
+    "id": "achievement-bosses-can-leave-rooms",
+    "title": "Wait, Bosses Can Leave Their Rooms?",
+    "description": "Encountered a boss that left its chamber before crawlers entered.",
+    "reward": []
+  },
+  {
+    "id": "achievement-you-found-stairs",
+    "title": "You Found Stairs",
+    "description": "Found a stairwell down.",
+    "reward": []
+  }
+]

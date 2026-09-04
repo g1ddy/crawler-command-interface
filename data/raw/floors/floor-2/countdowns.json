@@ -1,0 +1,12 @@
+[
+  {
+    "id": "countdown-floor-2-collapse",
+    "title": "Second Floor Collapse",
+    "target": "floor-collapse"
+  },
+  {
+    "id": "countdown-floor-2-safe-room-closure",
+    "title": "Time to Safe Room Closure",
+    "target": "safe-room-closure"
+  }
+]

@@ -1,0 +1,943 @@
+[
+  {
+    "id": "evt-f2-early-access",
+    "type": "NarrativeEvent",
+    "kind": "location-discovered",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "summary": "Early Floor 2 stairwell portal access opens before the formal floor countdown begins.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 31
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-entered",
+    "type": "NarrativeEvent",
+    "kind": "floor-entered",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "summary": "Carl and Donut enter the Second Floor prior to collapse countdown activation.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 31
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-countdown-start",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "summary": "The formal 6-day Second Floor collapse countdown activates as Dungeon Crawler World: Earth episode four airs, recapping the final 30 hours of Floor 1.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 31
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-goo-inator",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "item": {
+      "instanceId": "inst-f2-goo-inator-3000",
+      "itemId": "item-goo-inator-3000",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Goo-Inator 3000.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-pedicure-kit",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "item": {
+      "instanceId": "inst-f2-pedicure-kit",
+      "itemId": "item-enchanted-pedicure-kit-of-sylph",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Enchanted Pedicure Kit of the Sylph.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-cascadia-intro",
+    "type": "NarrativeEvent",
+    "kind": "rule-changed",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Cascadia's introductory announcement activates ratings, follows, and favorites; establishes three-patron limits and future auction rules; and activates the human-born bathroom-violation penalty, which summons a Level 93 Rage Elemental.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-crawlers-1033992",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "The system reports 1,033,992 crawlers remaining on the Second Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-episode-5",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode five airs while Carl, Donut, and the Meadow Lark party camp in a safe room with a Rage Elemental outside; Carl's Jug O' Boom is added to the Dungeon Codex.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-system-patch",
+    "type": "NarrativeEvent",
+    "kind": "rule-changed",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Cascadia's follow-up patch relocates Satan's Lil' Hedgehogs to a deeper floor and establishes that safe rooms close one hour before floor collapse, teleporting remaining occupants outside; it also introduces the safe-room-only Time to Safe Room Closure countdown.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-rage-elemental-defeated",
+    "type": "NarrativeEvent",
+    "kind": "encounter-resolved",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Carl kills a Level 93 Rage Elemental by luring it into a stairwell with the Mother of All Bombs, an oil slick, and Donut's Puddle Jumper; the kill awards no experience.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Story"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-meadow-lark-descended",
+    "type": "NarrativeEvent",
+    "kind": "floor-exited",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "The surviving Meadow Lark residents descend safely to the Third Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Story"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-bigboi-boxers",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "item": {
+      "instanceId": "inst-f2-bigboi-boxers",
+      "itemId": "item-enchanted-bigboi-boxers",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Enchanted BigBoi Boxers.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-protective-shell-granted",
+    "type": "SpellGranted",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "causationId": "evt-f2-bigboi-boxers",
+    "summary": "The Enchanted BigBoi Boxers grant Carl Protective Shell.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "spell": {
+      "spellId": "spell-protective-shell",
+      "name": "Protective Shell",
+      "owner": "carl",
+      "abilityKind": "spell",
+      "acquisitionSource": {
+        "kind": "equipment",
+        "name": "Enchanted BigBoi Boxers",
+        "itemInstanceId": "inst-f2-bigboi-boxers"
+      }
+    }
+  },
+  {
+    "id": "evt-f2-dungeon-book-club",
+    "type": "SpellGranted",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 31
+    },
+    "summary": "Donut joins the Dungeon Book of the Floor Club and receives Second Chance.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 31
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "spell": {
+      "spellId": "spell-second-chance",
+      "name": "Second Chance",
+      "owner": "donut",
+      "abilityKind": "spell",
+      "acquisitionSource": {
+        "kind": "dungeon-book",
+        "name": "Dungeon Book of the Floor Club"
+      }
+    }
+  },
+  {
+    "id": "evt-f2-level-11",
+    "type": "LevelChanged",
+    "level": 11,
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 11.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-jug-o-boom-crafted",
+    "type": "ItemCrafted",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 33
+    },
+    "item": {
+      "instanceId": "inst-f2-carls-jug-o-boom",
+      "itemId": "item-carls-jug-o-boom",
+      "quantity": {
+        "known": false,
+        "note": "The source establishes Carl's invention but not a stable carried quantity."
+      }
+    },
+    "summary": "Carl invents Carl's Jug O' Boom.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 33
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-achievement-dungeonpreneur",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 35
+    },
+    "achievementId": "achievement-dungeonpreneur",
+    "summary": "Carl unlocks Dungeonpreneur.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-dungeonpreneur-royalty",
+    "type": "PermanentEntitlementGranted",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 33
+    },
+    "entitlement": {
+      "id": "entitlement-f2-dungeonpreneur-royalty",
+      "name": "Dungeonpreneur royalty",
+      "description": "Carl receives a gold-coin royalty for kills made with his invention by other crawlers."
+    },
+    "summary": "Dungeonpreneur grants Carl a royalty entitlement for kills made with his invention.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 33
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "reward",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-proximity-trigger",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 34
+    },
+    "item": {
+      "instanceId": "inst-f2-proximity-trigger",
+      "itemId": "item-proximity-trigger",
+      "quantity": {
+        "known": false,
+        "note": "The source confirms acquisition but not a stable count."
+      }
+    },
+    "summary": "Carl acquires a Proximity Trigger for use with non-static traps.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-episode-6",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode six airs.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-crawlers-990303",
+    "type": "NarrativeEvent",
+    "kind": "rule-changed",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Cascadia's daily announcement reports 990,303 crawlers remaining; permits Game Guides to explain Third Floor race/class selection; stops non-sapient mobs from disintegrating in stairwells; halves Brindled Vespas and slightly lowers their acid-spit damage; and reduces Brindle Grub pupa advancement to 50% while retaining corpse generation.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-broadcast-snapshot",
+    "type": "BroadcastUpdated",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 39
+    },
+    "viewers": 212000000000,
+    "followers": 4400000000,
+    "summary": "The Royal Court reaches 212 billion views and 4.4 billion followers.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Ratings"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-death-watch-appearance",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Mukta overrides Zev's scheduling and forces Carl and Donut onto Death Watch Extreme Dungeon Mayhem.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Story"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-maestro-rescue",
+    "type": "NarrativeEvent",
+    "kind": "encounter-resolved",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Carl goads the Maestro into rescuing Li Jun, Li Na, Zhang, and their manager.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Story"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-snick-video-viral",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "A fabricated snick video goes viral, increasing Carl and Donut's view counts without a sourced numeric change.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Story"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-episode-7",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode seven airs.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-achievement-what-goes-up",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 39
+    },
+    "achievementId": "achievement-what-goes-up",
+    "summary": "Carl unlocks What Goes Up....",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-achievement-like-a-moth-to-the-flame",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 39
+    },
+    "achievementId": "achievement-like-a-moth-to-the-flame",
+    "summary": "The party unlocks Like a Moth to the Flame.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-achievement-grease-monkey",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 41
+    },
+    "achievementId": "achievement-grease-monkey",
+    "summary": "Carl unlocks Grease Monkey!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-achievement-you-call-that-a-trap",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 41
+    },
+    "achievementId": "achievement-you-call-that-a-trap",
+    "summary": "Carl unlocks You Call That a Trap?.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-mongo-bonded",
+    "type": "NarrativeEvent",
+    "kind": "party-changed",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 40
+    },
+    "summary": "Mongo bonds to Donut and joins the Royal Court.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 40
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-level-12",
+    "type": "LevelChanged",
+    "level": 12,
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 12.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-episode-8",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode eight airs.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-agatha-reappears",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Agatha reappears alive at the stairwell.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Story"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-valtay-technology-discovered",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Carl realizes that Agatha's absorbed shopping-cart contents include illegal Valtay Corporation technology.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-second-floor",
+        "locator": {
+          "section": "Story"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-achievement-ceramic-dalmatian-pat",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 46
+    },
+    "achievementId": "achievement-ceramic-dalmatian-pat",
+    "summary": "The party unlocks I'll Take the Ceramic Dalmatian, Pat!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-achievement-menagerie",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 46
+    },
+    "achievementId": "achievement-menagerie",
+    "summary": "Donut unlocks Menagerie!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-achievement-peta-enthusiast",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 47
+    },
+    "achievementId": "achievement-peta-enthusiast",
+    "summary": "Carl unlocks PETA Enthusiast!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-2-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-level-13",
+    "type": "LevelChanged",
+    "level": 13,
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 47
+    },
+    "summary": "Carl reaches Level 13 before leaving the Second Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Levels & Stats"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f2-floor-3-descent",
+    "type": "NarrativeEvent",
+    "kind": "rule-changed",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "Crawlers can descend to Floor 3 without the usual six-hour loss.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-exit",
+    "type": "NarrativeEvent",
+    "kind": "floor-exited",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 47
+    },
+    "summary": "Carl, Donut, and Mongo descend to the Third Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-2",
+        "locator": {
+          "section": "Floor Exit"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-collapse",
+    "type": "NarrativeEvent",
+    "kind": "floor-collapsed",
+    "position": {
+      "floor": 2,
+      "book": 1
+    },
+    "summary": "The Second Floor collapses and the human-born bathroom-violation penalty is lifted.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-2",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  }
+]

@@ -1,0 +1,156 @@
+[
+  {
+    "id": "item-trollskin-shirt-of-pummeling",
+    "name": "Enchanted Trollskin Shirt of Pummeling",
+    "category": "equipment",
+    "slot": "UNDERSHIRT",
+    "persistent": true,
+    "description": "A regenerating enchanted undershirt that resists several disruptive combat effects."
+  },
+  {
+    "id": "item-nightgaunt-cloak-of-stoutness",
+    "name": "Enchanted Nightgaunt Cloak of Stoutness",
+    "category": "equipment",
+    "slot": "NECK",
+    "persistent": true,
+    "description": "A cloak that adds 4 Constitution and provides poison, ice, and anti-piercing protection.",
+    "stats": {
+      "Constitution": 4
+    }
+  },
+  {
+    "id": "item-toe-ring-of-splatter-skunk",
+    "name": "Enchanted Toe Ring of the Splatter Skunk",
+    "category": "equipment",
+    "slot": "FEET",
+    "persistent": true,
+    "description": "A toe ring that adds 3 Strength and improves Powerful Strike.",
+    "stats": {
+      "Strength": 3
+    }
+  },
+  {
+    "id": "item-silver-ring-plus-1-con",
+    "name": "Silver Ring of +1 CON",
+    "category": "equipment",
+    "slot": "RING",
+    "persistent": true,
+    "stats": {
+      "Constitution": 1
+    }
+  },
+  {
+    "id": "item-spiked-kneepads-shade-gnoll",
+    "name": "Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces",
+    "category": "equipment",
+    "slot": "KNEES",
+    "persistent": true,
+    "description": "Spiked kneepads that reflect 10% of damage and cancel momentum-based attacks.",
+    "stats": {
+      "Damage Reflect Percent": 10
+    }
+  },
+  {
+    "id": "item-goblin-copper-chopper",
+    "name": "Goblin Copper Chopper",
+    "category": "vehicle",
+    "persistent": true,
+    "description": "A goblin-built chopper used for traversal and battlefield construction."
+  },
+  {
+    "id": "item-silver-ring-plus-2-con",
+    "name": "Silver Ring of +2 CON",
+    "category": "equipment",
+    "slot": "RING",
+    "persistent": true,
+    "stats": {
+      "Constitution": 2
+    }
+  },
+  {
+    "id": "item-war-gauntlet-exalted-grull",
+    "name": "Enchanted War Gauntlet of the Exalted Grull",
+    "category": "equipment",
+    "slot": "WRISTS",
+    "persistent": true,
+    "description": "A wrist brace that transforms into a spiked war gauntlet when Carl makes a fist, adding 1 Dexterity and 3 Strength in fist mode.",
+    "stats": {
+      "Dexterity": 1,
+      "Strength (Fist Mode)": 3
+    }
+  },
+  {
+    "id": "item-award-silver-adventurer-box",
+    "name": "Silver Adventurer Box",
+    "category": "box",
+    "rarity": "silver",
+    "persistent": false,
+    "description": "Awarded for the Early Adopter achievement. Its later contents are not modeled here."
+  },
+  {
+    "id": "item-award-bronze-adventurer-box",
+    "name": "Bronze Adventurer Box",
+    "category": "box",
+    "rarity": "bronze",
+    "persistent": false,
+    "description": "Awarded for the Empty Pockets achievement. Its later contents are not modeled here."
+  },
+  {
+    "id": "item-award-gold-apparel-box",
+    "name": "Gold Apparel Box",
+    "category": "box",
+    "rarity": "gold",
+    "persistent": false,
+    "description": "Awarded for the Why Aren't You Wearing Pants? achievement. Its later contents are not modeled here."
+  },
+  {
+    "id": "item-award-bronze-weapon-box",
+    "name": "Bronze Weapon Box",
+    "category": "box",
+    "rarity": "bronze",
+    "persistent": false,
+    "description": "Awarded for the Unarmed Combat achievement. Its later contents are not modeled here."
+  },
+  {
+    "id": "item-goo-inator-3000",
+    "name": "Goo-Inator 3000",
+    "category": "tool",
+    "persistent": true,
+    "description": "A shaping tool that can be used at a workbench."
+  },
+  {
+    "id": "item-enchanted-pedicure-kit-of-sylph",
+    "name": "Enchanted Pedicure Kit of the Sylph",
+    "category": "tool",
+    "persistent": true,
+    "description": "A limited-use kit that adds 15% bare-foot attack damage, makes Carl's feet unbreakable, and warns of foot-triggered traps five seconds before activation.",
+    "stats": {
+      "Barefoot Attack Damage Percent": 15
+    }
+  },
+  {
+    "id": "item-enchanted-bigboi-boxers",
+    "name": "Enchanted BigBoi Boxers",
+    "category": "equipment",
+    "slot": "LEGS",
+    "persistent": true,
+    "description": "Enchanted boxers that add 2 Constitution and grant the Protective Shell spell.",
+    "stats": {
+      "Constitution": 2
+    }
+  },
+  {
+    "id": "item-proximity-trigger",
+    "name": "Proximity Trigger",
+    "category": "crafting",
+    "persistent": false,
+    "description": "A Sapper's-table component that can be attached to a non-static trap."
+  },
+  {
+    "id": "item-carls-jug-o-boom",
+    "name": "Carl's Jug O' Boom",
+    "category": "crafting",
+    "persistent": false,
+    "description": "Carl's stackable incendiary dungeon invention."
+  }
+]

@@ -1,11 +1,10 @@
 import { writeFileSync } from 'node:fs';
 
-import floor1RawDocument from '../data/raw/floors/floor-1.json' with { type: 'json' };
-import floor2RawDocument from '../data/raw/floors/floor-2.json' with { type: 'json' };
+import { loadAllRawFloorDocuments } from '../app/domain/raw-loader.ts';
 import { adaptRawFloorDocument } from '../app/domain/raw-adapter.ts';
 import { compileRawFloorFiles } from '../app/domain/raw-compiler.ts';
 
-const rawFloors = [floor1RawDocument, floor2RawDocument];
+const rawFloors = loadAllRawFloorDocuments();
 
 for (const rawFloor of rawFloors) {
   const derivedFloor = adaptRawFloorDocument(rawFloor);
