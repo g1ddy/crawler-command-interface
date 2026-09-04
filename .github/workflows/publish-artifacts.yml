@@ -23,6 +23,11 @@ concurrency:
 jobs:
   resolve-pr:
     name: Resolve Target Pull Request
+    # The approved publish job pushes generated artifacts back to the PR as
+    # github-actions[bot], which emits another pull_request synchronize event.
+    # Ordinary CI still validates that new head; skip this workflow on the
+    # self-generated synchronize event so one approval cannot create another.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-24.04
     outputs:
       pr_repo: ${{ steps.resolve.outputs.pr_repo }}
@@ -284,8 +289,9 @@ jobs:
           fi
 
           # 3. Commit and push both generated artifact families in one approved write.
-          # Keep the commit message free of workflow-skip directives so a rebase or
-          # squash merge cannot suppress the required push-to-main CI/deploy chain.
+          # Do not add workflow-skip directives: ordinary PR CI validates the new
+          # artifact commit, and push-to-main CI must still run after merge. The
+          # artifact workflow itself suppresses its bot-generated synchronize event.
           git add -- 'docs/images/screenshot-*.png' .maritime docs/images/dependency-graph.svg
           git commit -m "chore: publish generated artifacts"
           git push origin "HEAD:${HEAD_BRANCH}"
