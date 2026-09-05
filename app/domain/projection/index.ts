@@ -2,6 +2,7 @@ import type {
   CrawlerEvent,
   CrawlerState,
   CrawlerTimelineDocument,
+  ProjectedEventType,
   Snapshot,
   TimelineEvent,
 } from '../types.ts';
@@ -51,7 +52,7 @@ export type EventReducer = (
   sequence: number
 ) => void;
 
-const eventReducers: Record<string, EventReducer> = {
+const eventReducers: Record<ProjectedEventType, EventReducer> = {
   ItemAcquired: (state, event, sequence) => applyItemAcquiredOrCrafted(state, event, sequence),
   ItemCrafted: (state, event, sequence) => applyItemAcquiredOrCrafted(state, event, sequence),
   ItemQuantityChanged: (state, event) => applyItemQuantityChanged(state, event),
@@ -81,6 +82,22 @@ const eventReducers: Record<string, EventReducer> = {
   QuestUpdated: (state, event) => applyQuestUpdated(state, event),
   BroadcastUpdated: (state, event) => applyBroadcastUpdated(state, event),
   ConditionChanged: (state, event) => applyConditionChanged(state, event),
+  CountdownReset: () => {
+    // Countdown reset events participate in countdown projection in countdowns.ts
+    // and do not alter crawler state.
+  },
+  CountdownPaused: () => {
+    // Countdown paused events participate in countdown projection in countdowns.ts
+    // and do not alter crawler state.
+  },
+  CountdownResumed: () => {
+    // Countdown resumed events participate in countdown projection in countdowns.ts
+    // and do not alter crawler state.
+  },
+  CountdownPhaseChanged: () => {
+    // Countdown phase change events participate in countdown projection in countdowns.ts
+    // and do not alter crawler state.
+  },
 };
 
 export function applyEvent(currentState: CrawlerState, rawEvent: unknown): CrawlerState {
@@ -114,7 +131,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     ].slice(0, 30);
   }
 
-  const reducer = eventReducers[String(event.type)];
+  const reducer = eventReducers[event.type as ProjectedEventType];
   if (reducer) {
     reducer(state, event, sequence);
   }

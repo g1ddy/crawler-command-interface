@@ -557,3 +557,35 @@ test("timeline validation rejects a snapshot that omits an already formed Party"
   assert.equal(validation.valid, false);
   assert.ok(validation.errors.some((error) => error.includes("omits Party state")));
 });
+
+test("projection-neutral countdown events and narrative events execute cleanly through applyEvent without mutating crawler state", () => {
+  const initial = createInitialState();
+  const countdownTypes = [
+    "CountdownReset",
+    "CountdownPaused",
+    "CountdownResumed",
+    "CountdownPhaseChanged",
+  ];
+
+  for (const eventType of countdownTypes) {
+    const projected = applyEvent(initial, {
+      id: `evt-test-${eventType}`,
+      sequence: 1,
+      type: eventType,
+      countdownId: "countdown-test",
+      summary: `Test ${eventType}`,
+    });
+    assert.deepEqual(projected.crawler, initial.crawler);
+    assert.equal(projected.recentLogs[0].message, `Test ${eventType}`);
+  }
+
+  const narrativeProjected = applyEvent(initial, {
+    id: "evt-test-narrative",
+    sequence: 1,
+    type: "NarrativeEvent",
+    kind: "floor-entered",
+    summary: "Entered floor",
+  });
+  assert.deepEqual(narrativeProjected.crawler, initial.crawler);
+  assert.equal(narrativeProjected.recentLogs.length, 0);
+});

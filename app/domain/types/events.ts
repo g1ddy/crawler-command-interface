@@ -310,8 +310,8 @@ export interface FloorEventItemRef {
   quantity: import('./observations.ts').QuantityObject;
 }
 
-/** Event discriminators accepted by the authored/generated floor contracts. */
-export type FloorEventType =
+/** Closed set of event discriminators expected to participate in state projection. */
+export type ProjectedEventType =
   | 'NarrativeEvent'
   | 'AchievementUnlocked'
   | 'ItemAcquired'
@@ -342,6 +342,9 @@ export type FloorEventType =
   | 'CountdownResumed'
   | 'CountdownPhaseChanged'
   | 'BroadcastUpdated';
+
+/** Event discriminators accepted by the authored/generated floor contracts. */
+export type FloorEventType = ProjectedEventType;
 
 interface FloorEventCommon {
   id: string;
