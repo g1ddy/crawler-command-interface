@@ -49,7 +49,7 @@
   },
   "app/domain/types/events.ts": {
     "complexity": 1,
-    "loc": 408,
+    "loc": 457,
     "instability": 0.67,
     "fanIn": 2,
     "fanOut": 4,
