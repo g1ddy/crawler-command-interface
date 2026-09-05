@@ -310,20 +310,52 @@ export interface FloorEventItemRef {
   quantity: import('./observations.ts').QuantityObject;
 }
 
-export interface FloorEventBase {
+/** Event discriminators accepted by the authored/generated floor contracts. */
+export type FloorEventType =
+  | 'NarrativeEvent'
+  | 'AchievementUnlocked'
+  | 'ItemAcquired'
+  | 'ItemCrafted'
+  | 'ItemConsumed'
+  | 'ItemDiscarded'
+  | 'ItemQuantityChanged'
+  | 'ItemEquipped'
+  | 'ItemUnequipped'
+  | 'ItemLocked'
+  | 'ItemUnlocked'
+  | 'ItemLockToggled'
+  | 'ItemRepaired'
+  | 'PermanentEntitlementGranted'
+  | 'SpellGranted'
+  | 'PartyFormed'
+  | 'LevelChanged'
+  | 'AttributeModified'
+  | 'ConditionChanged'
+  | 'XPChanged'
+  | 'QuestUpdated'
+  | 'HotlistUpdated'
+  | 'EffectApplied'
+  | 'EffectExpired'
+  | 'SkillGranted'
+  | 'CountdownReset'
+  | 'CountdownPaused'
+  | 'CountdownResumed'
+  | 'CountdownPhaseChanged'
+  | 'BroadcastUpdated';
+
+interface FloorEventCommon {
   id: string;
   order: number;
-  type: string;
   position: TimelinePosition;
   summary: string;
   correlationId?: string;
   causationId?: string;
   evidence: TimelineEvidence[];
-  kind?: string;
   achievementId?: string;
   item?: FloorEventItemRef;
   entitlement?: TimelineEntitlement;
   spell?: Spell;
+  party?: Party;
   itemInstanceId?: string;
   slot?: string;
   level?: number;
@@ -384,7 +416,24 @@ export interface FloorEventBase {
   metrics?: Record<string, unknown>;
 }
 
-export type RawFloorEvent = Omit<FloorEventBase, 'order'>;
+type NonNarrativeFloorEventType = Exclude<FloorEventType, 'NarrativeEvent'>;
+
+/**
+ * Floor authoring is schema-shaped: NarrativeEvent always carries an authored
+ * kind. The compiler preserves it rather than inventing a fallback value.
+ */
+export type FloorEventBase =
+  | (FloorEventCommon & {
+      type: 'NarrativeEvent';
+      kind: NarrativeEventKind;
+    })
+  | (FloorEventCommon & {
+      type: NonNarrativeFloorEventType;
+      kind?: never;
+    });
+
+type WithoutOrder<T> = T extends unknown ? Omit<T, 'order'> : never;
+export type RawFloorEvent = WithoutOrder<FloorEventBase>;
 
 // UI State Types
 export interface BaseEvent {
