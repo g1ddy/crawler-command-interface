@@ -3,6 +3,7 @@ import type {
   CrawlerState,
   CrawlerTimelineDocument,
   ProjectedEventType,
+  ProjectionNeutralEventType,
   Snapshot,
   TimelineEvent,
 } from '../types.ts';
@@ -52,6 +53,15 @@ export type EventReducer = (
   sequence: number
 ) => void;
 
+/** Events explicitly recognized as projection-neutral for CrawlerState mutation. */
+export const PROJECTION_NEUTRAL_EVENTS: Record<ProjectionNeutralEventType, true> = {
+  NarrativeEvent: true,
+  CountdownReset: true,
+  CountdownPaused: true,
+  CountdownResumed: true,
+  CountdownPhaseChanged: true,
+};
+
 const eventReducers: Record<ProjectedEventType, EventReducer> = {
   ItemAcquired: (state, event, sequence) => applyItemAcquiredOrCrafted(state, event, sequence),
   ItemCrafted: (state, event, sequence) => applyItemAcquiredOrCrafted(state, event, sequence),
@@ -66,10 +76,6 @@ const eventReducers: Record<ProjectedEventType, EventReducer> = {
   ItemDiscarded: (state, event) => applyItemDiscarded(state, event),
   AchievementUnlocked: (state, event, sequence) => applyAchievementUnlocked(state, event, sequence),
   PermanentEntitlementGranted: (state, event) => applyPermanentEntitlementGranted(state, event),
-  NarrativeEvent: () => {
-    // Narrative events retain their typed payload in the immutable timeline and
-    // are rendered from there.
-  },
   AttributeModified: (state, event) => applyAttributeModified(state, event),
   LevelChanged: (state, event) => applyLevelChanged(state, event),
   XPChanged: (state, event) => applyXPChanged(state, event),
@@ -82,22 +88,6 @@ const eventReducers: Record<ProjectedEventType, EventReducer> = {
   QuestUpdated: (state, event) => applyQuestUpdated(state, event),
   BroadcastUpdated: (state, event) => applyBroadcastUpdated(state, event),
   ConditionChanged: (state, event) => applyConditionChanged(state, event),
-  CountdownReset: () => {
-    // Countdown reset events participate in countdown projection in countdowns.ts
-    // and do not alter crawler state.
-  },
-  CountdownPaused: () => {
-    // Countdown paused events participate in countdown projection in countdowns.ts
-    // and do not alter crawler state.
-  },
-  CountdownResumed: () => {
-    // Countdown resumed events participate in countdown projection in countdowns.ts
-    // and do not alter crawler state.
-  },
-  CountdownPhaseChanged: () => {
-    // Countdown phase change events participate in countdown projection in countdowns.ts
-    // and do not alter crawler state.
-  },
 };
 
 export function applyEvent(currentState: CrawlerState, rawEvent: unknown): CrawlerState {
@@ -131,8 +121,9 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     ].slice(0, 30);
   }
 
-  const reducer = eventReducers[event.type as ProjectedEventType];
-  if (reducer) {
+  const eventType = String(event.type);
+  if (eventType in eventReducers) {
+    const reducer = eventReducers[eventType as ProjectedEventType];
     reducer(state, event, sequence);
   }
 

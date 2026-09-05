@@ -49,7 +49,7 @@
   },
   "app/domain/types/events.ts": {
     "complexity": 1,
-    "loc": 460,
+    "loc": 457,
     "instability": 0.67,
     "fanIn": 2,
     "fanOut": 4,
@@ -169,7 +169,7 @@
   },
   "app/domain/projection/index.ts": {
     "complexity": 15,
-    "loc": 204,
+    "loc": 187,
     "instability": 0.92,
     "fanIn": 1,
     "fanOut": 11,
