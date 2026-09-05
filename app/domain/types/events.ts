@@ -310,38 +310,53 @@ export interface FloorEventItemRef {
   quantity: import('./observations.ts').QuantityObject;
 }
 
+/** Authoritative list of floor event discriminators. */
+export const FLOOR_EVENT_TYPES = [
+  'NarrativeEvent',
+  'AchievementUnlocked',
+  'ItemAcquired',
+  'ItemCrafted',
+  'ItemConsumed',
+  'ItemDiscarded',
+  'ItemQuantityChanged',
+  'ItemEquipped',
+  'ItemUnequipped',
+  'ItemLocked',
+  'ItemUnlocked',
+  'ItemLockToggled',
+  'ItemRepaired',
+  'PermanentEntitlementGranted',
+  'SpellGranted',
+  'PartyFormed',
+  'LevelChanged',
+  'AttributeModified',
+  'ConditionChanged',
+  'XPChanged',
+  'QuestUpdated',
+  'HotlistUpdated',
+  'EffectApplied',
+  'EffectExpired',
+  'SkillGranted',
+  'CountdownReset',
+  'CountdownPaused',
+  'CountdownResumed',
+  'CountdownPhaseChanged',
+  'BroadcastUpdated',
+] as const;
+
 /** Event discriminators accepted by the authored/generated floor contracts. */
-export type FloorEventType =
+export type FloorEventType = typeof FLOOR_EVENT_TYPES[number];
+
+/** Closed set of event discriminators that are explicitly projection-neutral for CrawlerState. */
+export type ProjectionNeutralEventType =
   | 'NarrativeEvent'
-  | 'AchievementUnlocked'
-  | 'ItemAcquired'
-  | 'ItemCrafted'
-  | 'ItemConsumed'
-  | 'ItemDiscarded'
-  | 'ItemQuantityChanged'
-  | 'ItemEquipped'
-  | 'ItemUnequipped'
-  | 'ItemLocked'
-  | 'ItemUnlocked'
-  | 'ItemLockToggled'
-  | 'ItemRepaired'
-  | 'PermanentEntitlementGranted'
-  | 'SpellGranted'
-  | 'PartyFormed'
-  | 'LevelChanged'
-  | 'AttributeModified'
-  | 'ConditionChanged'
-  | 'XPChanged'
-  | 'QuestUpdated'
-  | 'HotlistUpdated'
-  | 'EffectApplied'
-  | 'EffectExpired'
-  | 'SkillGranted'
   | 'CountdownReset'
   | 'CountdownPaused'
   | 'CountdownResumed'
-  | 'CountdownPhaseChanged'
-  | 'BroadcastUpdated';
+  | 'CountdownPhaseChanged';
+
+/** Closed set of event discriminators expected to participate in state projection reducers. */
+export type ProjectedEventType = Exclude<FloorEventType, ProjectionNeutralEventType>;
 
 interface FloorEventCommon {
   id: string;

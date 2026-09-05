@@ -2,6 +2,8 @@ import type {
   CrawlerEvent,
   CrawlerState,
   CrawlerTimelineDocument,
+  ProjectedEventType,
+  ProjectionNeutralEventType,
   Snapshot,
   TimelineEvent,
 } from '../types.ts';
@@ -51,7 +53,16 @@ export type EventReducer = (
   sequence: number
 ) => void;
 
-const eventReducers: Record<string, EventReducer> = {
+/** Events explicitly recognized as projection-neutral for CrawlerState mutation. */
+export const PROJECTION_NEUTRAL_EVENTS: Record<ProjectionNeutralEventType, true> = {
+  NarrativeEvent: true,
+  CountdownReset: true,
+  CountdownPaused: true,
+  CountdownResumed: true,
+  CountdownPhaseChanged: true,
+};
+
+const eventReducers: Record<ProjectedEventType, EventReducer> = {
   ItemAcquired: (state, event, sequence) => applyItemAcquiredOrCrafted(state, event, sequence),
   ItemCrafted: (state, event, sequence) => applyItemAcquiredOrCrafted(state, event, sequence),
   ItemQuantityChanged: (state, event) => applyItemQuantityChanged(state, event),
@@ -65,10 +76,6 @@ const eventReducers: Record<string, EventReducer> = {
   ItemDiscarded: (state, event) => applyItemDiscarded(state, event),
   AchievementUnlocked: (state, event, sequence) => applyAchievementUnlocked(state, event, sequence),
   PermanentEntitlementGranted: (state, event) => applyPermanentEntitlementGranted(state, event),
-  NarrativeEvent: () => {
-    // Narrative events retain their typed payload in the immutable timeline and
-    // are rendered from there.
-  },
   AttributeModified: (state, event) => applyAttributeModified(state, event),
   LevelChanged: (state, event) => applyLevelChanged(state, event),
   XPChanged: (state, event) => applyXPChanged(state, event),
@@ -114,8 +121,9 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     ].slice(0, 30);
   }
 
-  const reducer = eventReducers[String(event.type)];
-  if (reducer) {
+  const eventType = String(event.type);
+  if (eventType in eventReducers) {
+    const reducer = eventReducers[eventType as ProjectedEventType];
     reducer(state, event, sequence);
   }
 

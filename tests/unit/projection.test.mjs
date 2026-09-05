@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import { floor6Events, floor6Snapshots, floor6Timeline, legacyFloor6Quests } from "../../app/domain/fixtures/floor6.ts";
-import { projectState, createInitialState, applyEvent } from "../../app/domain/projection.ts";
+import { projectState, createInitialState, applyEvent, PROJECTION_NEUTRAL_EVENTS } from "../../app/domain/projection.ts";
+import { FLOOR_EVENT_TYPES } from "../../app/domain/types/events.ts";
 import { validateCrawlerTimeline, validateCrawlerFloor } from "../../app/domain/validation.ts";
 import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../../app/domain/stats.ts";
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
@@ -556,4 +557,118 @@ test("timeline validation rejects a snapshot that omits an already formed Party"
   const validation = validateCrawlerTimeline(doc);
   assert.equal(validation.valid, false);
   assert.ok(validation.errors.some((error) => error.includes("omits Party state")));
+});
+
+test("projection-neutral countdown events and narrative events execute cleanly through applyEvent without mutating crawler state", () => {
+  const initial = createInitialState();
+  const countdownTypes = [
+    "CountdownReset",
+    "CountdownPaused",
+    "CountdownResumed",
+    "CountdownPhaseChanged",
+  ];
+
+  for (const eventType of countdownTypes) {
+    const projected = applyEvent(initial, {
+      id: `evt-test-${eventType}`,
+      sequence: 1,
+      type: eventType,
+      countdownId: "countdown-test",
+      summary: `Test ${eventType}`,
+    });
+    assert.deepEqual(projected.crawler, initial.crawler);
+    assert.equal(projected.recentLogs[0].message, `Test ${eventType}`);
+  }
+
+  const narrativeProjected = applyEvent(initial, {
+    id: "evt-test-narrative",
+    sequence: 1,
+    type: "NarrativeEvent",
+    kind: "floor-entered",
+    summary: "Entered floor",
+  });
+  assert.deepEqual(narrativeProjected.crawler, initial.crawler);
+  assert.equal(narrativeProjected.recentLogs.length, 0);
+});
+
+function extractSchemaEventTypes(schemaPath) {
+  const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+  const types = new Set();
+  function search(obj) {
+    if (!obj || typeof obj !== "object") return;
+    if (obj.properties && obj.properties.type) {
+      const t = obj.properties.type;
+      if (t.const) types.add(t.const);
+      if (t.enum) t.enum.forEach((x) => types.add(x));
+    }
+    for (const key of Object.keys(obj)) {
+      search(obj[key]);
+    }
+  }
+  search(schema.$defs?.event || schema);
+  return Array.from(types).sort();
+}
+
+test("schema event discriminators match FLOOR_EVENT_TYPES runtime const array", () => {
+  const schemaPaths = [
+    "app/domain/schema/crawler-floor.schema.json",
+    "app/domain/schema/crawler-floor-raw.schema.json",
+    "app/domain/schema/crawler-timeline.schema.json",
+  ];
+
+  const floorEventTypesSet = new Set(FLOOR_EVENT_TYPES);
+
+  for (const path of schemaPaths) {
+    const schemaTypes = extractSchemaEventTypes(path);
+    assert.ok(schemaTypes.length > 0, `Failed to extract event types from ${path}`);
+    for (const type of schemaTypes) {
+      assert.ok(
+        floorEventTypesSet.has(type),
+        `Schema ${path} defines event type "${type}" which is missing from FLOOR_EVENT_TYPES`
+      );
+    }
+  }
+});
+
+test("every FLOOR_EVENT_TYPES discriminator is accounted for as either state-projecting or projection-neutral", () => {
+  const stateProjectingEvents = [
+    "ItemAcquired",
+    "ItemCrafted",
+    "ItemQuantityChanged",
+    "ItemEquipped",
+    "ItemUnequipped",
+    "ItemLocked",
+    "ItemUnlocked",
+    "ItemLockToggled",
+    "ItemRepaired",
+    "ItemConsumed",
+    "ItemDiscarded",
+    "AchievementUnlocked",
+    "PermanentEntitlementGranted",
+    "AttributeModified",
+    "LevelChanged",
+    "XPChanged",
+    "HotlistUpdated",
+    "EffectApplied",
+    "EffectExpired",
+    "SkillGranted",
+    "SpellGranted",
+    "PartyFormed",
+    "QuestUpdated",
+    "BroadcastUpdated",
+    "ConditionChanged",
+  ];
+
+  for (const type of FLOOR_EVENT_TYPES) {
+    const isStateProjecting = stateProjectingEvents.includes(type);
+    const isNeutral = type in PROJECTION_NEUTRAL_EVENTS;
+    assert.ok(
+      isStateProjecting || isNeutral,
+      `Event type "${type}" in FLOOR_EVENT_TYPES is missing from both state reducers and PROJECTION_NEUTRAL_EVENTS`
+    );
+    assert.ok(
+      !(isStateProjecting && isNeutral),
+      `Event type "${type}" cannot be both state-projecting and projection-neutral`
+    );
+  }
 });
