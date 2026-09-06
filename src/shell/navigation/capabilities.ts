@@ -1,5 +1,5 @@
 import type { CrawlerEvent, CrawlerState, ProjectedObservationsState } from "../../../app/domain/types";
-import { ROOT_VIEW_ORDER, type RootView } from "./navigation-model";
+import { ROOT_VIEW_ORDER, type RootView } from "./navigation-model.ts";
 
 export type RootCapabilities = Record<RootView, boolean>;
 
