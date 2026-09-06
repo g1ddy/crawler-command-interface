@@ -12,7 +12,6 @@ interface PersistentHudProps {
   viewers: number;
   floorTitle: string;
   countdown: ProjectedCountdownState | null;
-  fallbackCountdown: string;
   isLive: boolean;
   sequence: number;
   occurredAt: string;
@@ -21,14 +20,15 @@ interface PersistentHudProps {
   onReturnToLive: () => void;
 }
 
-export function PersistentHud(props: PersistentHudProps) {
-  const { countdown } = props;
-  const countdownLabel = countdown?.isStale
-    ? `LATEST SOURCED COLLAPSE TIME: ${countdown.formattedTime.toUpperCase()}`
-    : countdown?.lifecycleStatus === "scheduled"
-      ? countdown.formattedTime.toUpperCase()
-      : `LEVEL COLLAPSE IN ${countdown ? countdown.formattedTime.toUpperCase() : props.fallbackCountdown}`;
+function countdownLabel(countdown: ProjectedCountdownState | null): string {
+  if (!countdown) return "COLLAPSE TIME UNAVAILABLE";
+  if (countdown.isStale) return `LATEST SOURCED COLLAPSE TIME: ${countdown.formattedTime.toUpperCase()}`;
+  if (countdown.lifecycleStatus === "scheduled") return `COLLAPSE SCHEDULED · ${countdown.formattedTime.toUpperCase()}`;
+  if (countdown.lifecycleStatus === "active") return `LEVEL COLLAPSE IN ${countdown.formattedTime.toUpperCase()}`;
+  return `${countdown.title.toUpperCase()} · ${countdown.formattedTime.toUpperCase()}`;
+}
 
+export function PersistentHud(props: PersistentHudProps) {
   return <>
     <div className="mobile-status-bar">
       <div className="mobile-crawler-info"><b>{props.crawlerName}</b> (LVL {props.level} {props.crawlerClass || "CLASS UNKNOWN"})</div>
@@ -37,7 +37,7 @@ export function PersistentHud(props: PersistentHudProps) {
     </div>
     <div className="timer">
       <span>{props.floorTitle.toUpperCase()}</span>
-      <b title={countdown ? `${countdown.status} · ${countdown.basis}` : undefined}>{countdownLabel}</b>
+      <b title={props.countdown ? `${props.countdown.status} · ${props.countdown.basis}` : "No countdown is sourced at this replay point"}>{countdownLabel(props.countdown)}</b>
       <span data-testid="hud-audience-mode">{props.isLive ? "● LIVE" : "↺ REPLAY"} · {props.viewers.toLocaleString()} VIEWERS</span>
     </div>
     <Hotlist hotlist={props.hotlist} skills={props.skills} />
