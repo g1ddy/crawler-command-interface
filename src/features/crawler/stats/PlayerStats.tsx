@@ -1,5 +1,5 @@
 import type { AttributeName, CrawlerEvent, CrawlerState, ProjectedObservationsState, ProjectedObservationValue } from "../../../../app/domain/types";
-import { TelemetryBadge } from "../../../../app/components/TelemetryBadge";
+import { TelemetryBadge } from "../../timeline/evidence/TelemetryBadge";
 import { Panel } from "../../../shared/ui/Panel";
 
 export function PlayerStats({ state, observations, onInspectStat, onInspectObservation, onEmitEvent }: {
