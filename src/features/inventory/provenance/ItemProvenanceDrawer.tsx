@@ -8,14 +8,6 @@ interface ItemProvenanceDrawerProps {
   onNavigateToSequence?: (seq: number) => void;
 }
 
-function formatElapsedSeconds(seconds: number): string {
-  const total = 4 * 3600 + seconds;
-  const h = String(Math.floor(total / 3600)).padStart(2, "0");
-  const m = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
-  const s = String(total % 60).padStart(2, "0");
-  return `${h}:${m}:${s}`;
-}
-
 export function ItemProvenanceDrawer({ item, events, onClose, onNavigateToSequence }: ItemProvenanceDrawerProps) {
   const itemEvents: ItemHistoryEntry[] = events
     .filter((event) => {
@@ -28,7 +20,7 @@ export function ItemProvenanceDrawer({ item, events, onClose, onNavigateToSequen
       const occurredAt = typeof event.occurred_at === "string"
         ? event.occurred_at
         : position && typeof position.elapsedSeconds === "number"
-        ? formatElapsedSeconds(position.elapsedSeconds)
+        ? `+${position.elapsedSeconds}s from floor start`
         : "exact time not sourced";
       return { sequence: event.sequence, occurredAt, eventType: event.type, description: event.summary };
     });
