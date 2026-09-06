@@ -7,9 +7,9 @@
     "fanOut": 2,
     "scanned": true
   },
-  "app/components/ItemProvenanceDrawer.tsx": {
-    "complexity": 7,
-    "loc": 130,
+  "app/domain/compiler.ts": {
+    "complexity": 35,
+    "loc": 368,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.02,
-    "fanIn": 48,
+    "fanIn": 54,
     "fanOut": 1,
     "scanned": true
   },
@@ -71,54 +71,6 @@
     "fanOut": 4,
     "scanned": true
   },
-  "app/components/StatInspectorModal.tsx": {
-    "complexity": 4,
-    "loc": 90,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "app/domain/stats.ts": {
-    "complexity": 17,
-    "loc": 183,
-    "instability": 0.25,
-    "fanIn": 3,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/components/TelemetryBadge.tsx": {
-    "complexity": 15,
-    "loc": 81,
-    "instability": 0.25,
-    "fanIn": 6,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "app/components/TelemetryInspectorModal.tsx": {
-    "complexity": 15,
-    "loc": 186,
-    "instability": 0.75,
-    "fanIn": 1,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "app/domain/observations.ts": {
-    "complexity": 29,
-    "loc": 322,
-    "instability": 0.25,
-    "fanIn": 3,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "app/domain/compiler.ts": {
-    "complexity": 35,
-    "loc": 368,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
-    "scanned": true
-  },
   "app/domain/validation.ts": {
     "complexity": 60,
     "loc": 459,
@@ -130,8 +82,8 @@
   "app/domain/countdowns.ts": {
     "complexity": 92,
     "loc": 401,
-    "instability": 0.25,
-    "fanIn": 3,
+    "instability": 0.2,
+    "fanIn": 4,
     "fanOut": 1,
     "scanned": true
   },
@@ -173,6 +125,14 @@
     "instability": 0.92,
     "fanIn": 1,
     "fanOut": 11,
+    "scanned": true
+  },
+  "app/domain/observations.ts": {
+    "complexity": 29,
+    "loc": 322,
+    "instability": 0.25,
+    "fanIn": 3,
+    "fanOut": 1,
     "scanned": true
   },
   "app/domain/projection/achievements.ts": {
@@ -279,9 +239,17 @@
     "fanOut": 3,
     "scanned": true
   },
+  "app/domain/stats.ts": {
+    "complexity": 17,
+    "loc": 183,
+    "instability": 0.2,
+    "fanIn": 4,
+    "fanOut": 1,
+    "scanned": true
+  },
   "app/layout.tsx": {
     "complexity": 1,
-    "loc": 38,
+    "loc": 16,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 2,
@@ -296,11 +264,83 @@
     "scanned": true
   },
   "src/CrawlerApp.tsx": {
-    "complexity": 37,
-    "loc": 524,
-    "instability": 0.93,
+    "complexity": 28,
+    "loc": 79,
+    "instability": 0.91,
     "fanIn": 2,
-    "fanOut": 25,
+    "fanOut": 20,
+    "scanned": true
+  },
+  "src/features/crawler/stats/StatInspectorModal.tsx": {
+    "complexity": 4,
+    "loc": 7,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/floor/FloorRules.tsx": {
+    "complexity": 5,
+    "loc": 98,
+    "instability": 0.83,
+    "fanIn": 1,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/shared/ui/Panel.tsx": {
+    "complexity": 2,
+    "loc": 11,
+    "instability": 0.1,
+    "fanIn": 9,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/timeline/SequenceBadge.tsx": {
+    "complexity": 2,
+    "loc": 10,
+    "instability": 0.43,
+    "fanIn": 4,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/TelemetryInspectorModal.tsx": {
+    "complexity": 14,
+    "loc": 13,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/TimelineEvidence.tsx": {
+    "complexity": 12,
+    "loc": 41,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/TelemetryBadge.tsx": {
+    "complexity": 15,
+    "loc": 12,
+    "instability": 0.13,
+    "fanIn": 7,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/timeline/history/TimelineHistory.tsx": {
+    "complexity": 6,
+    "loc": 126,
+    "instability": 0.83,
+    "fanIn": 1,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/shell/ActiveFeatureView.tsx": {
+    "complexity": 8,
+    "loc": 41,
+    "instability": 0.9,
+    "fanIn": 1,
+    "fanOut": 9,
     "scanned": true
   },
   "src/features/crawler/CrawlerView.tsx": {
@@ -319,14 +359,6 @@
     "fanOut": 4,
     "scanned": true
   },
-  "src/shared/ui/Panel.tsx": {
-    "complexity": 2,
-    "loc": 11,
-    "instability": 0.11,
-    "fanIn": 8,
-    "fanOut": 1,
-    "scanned": true
-  },
   "src/features/crawler/health/condition-presentation.ts": {
     "complexity": 1,
     "loc": 5,
@@ -343,33 +375,33 @@
     "fanOut": 3,
     "scanned": true
   },
-  "src/features/floor/FloorRules.tsx": {
-    "complexity": 5,
-    "loc": 98,
-    "instability": 0.83,
-    "fanIn": 1,
-    "fanOut": 5,
-    "scanned": true
-  },
-  "src/features/timeline/SequenceBadge.tsx": {
-    "complexity": 2,
-    "loc": 10,
-    "instability": 0.5,
-    "fanIn": 3,
-    "fanOut": 3,
-    "scanned": true
-  },
   "src/features/inventory/InventoryView.tsx": {
     "complexity": 45,
-    "loc": 793,
-    "instability": 0.88,
+    "loc": 74,
+    "instability": 0.89,
     "fanIn": 1,
-    "fanOut": 7,
+    "fanOut": 8,
     "scanned": true
   },
   "src/features/inventory/awardHistory.ts": {
     "complexity": 16,
     "loc": 87,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/inventory/equipment/EquipmentView.tsx": {
+    "complexity": 27,
+    "loc": 55,
+    "instability": 0.83,
+    "fanIn": 1,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/features/inventory/provenance/ItemProvenanceDrawer.tsx": {
+    "complexity": 7,
+    "loc": 43,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -439,32 +471,16 @@
     "fanOut": 3,
     "scanned": true
   },
-  "src/features/timeline/evidence/TimelineEvidence.tsx": {
-    "complexity": 12,
-    "loc": 152,
-    "instability": 0.83,
-    "fanIn": 1,
-    "fanOut": 5,
-    "scanned": true
-  },
-  "src/features/timeline/history/TimelineHistory.tsx": {
-    "complexity": 6,
-    "loc": 126,
-    "instability": 0.83,
-    "fanIn": 1,
-    "fanOut": 5,
-    "scanned": true
-  },
-  "src/features/timeline/TimelineScrubber.tsx": {
-    "complexity": 40,
-    "loc": 834,
-    "instability": 0.88,
-    "fanIn": 1,
-    "fanOut": 7,
+  "src/shell/navigation/navigation-model.ts": {
+    "complexity": 1,
+    "loc": 14,
+    "instability": 0,
+    "fanIn": 4,
+    "fanOut": 0,
     "scanned": true
   },
   "src/shell/hud/PersistentHud.tsx": {
-    "complexity": 11,
+    "complexity": 6,
     "loc": 47,
     "instability": 0.67,
     "fanIn": 1,
@@ -481,23 +497,71 @@
   },
   "src/shell/navigation/capabilities.ts": {
     "complexity": 3,
-    "loc": 12,
+    "loc": 32,
+    "instability": 0.5,
+    "fanIn": 2,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/shell/navigation/RootNavigation.tsx": {
+    "complexity": 2,
+    "loc": 39,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
     "scanned": true
   },
-  "src/shell/navigation/RootNavigation.tsx": {
-    "complexity": 12,
-    "loc": 30,
+  "src/shell/replay/ReplaySurface.tsx": {
+    "complexity": 8,
+    "loc": 54,
+    "instability": 0.88,
+    "fanIn": 1,
+    "fanOut": 7,
+    "scanned": true
+  },
+  "src/features/timeline/diagnostics/TimelineDiagnostics.tsx": {
+    "complexity": 21,
+    "loc": 48,
+    "instability": 0.83,
+    "fanIn": 1,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/features/timeline/diagnostics/SequenceInspector.tsx": {
+    "complexity": 25,
+    "loc": 50,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/CountdownEvidenceModal.tsx": {
+    "complexity": 5,
+    "loc": 7,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/shell/replay/ReplayControls.tsx": {
+    "complexity": 11,
+    "loc": 82,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/shell/tools/TimelineToolsModal.tsx": {
+    "complexity": 2,
+    "loc": 4,
     "instability": 0,
-    "fanIn": 2,
+    "fanIn": 1,
     "fanOut": 0,
     "scanned": true
   },
   "src/main.pages.tsx": {
     "complexity": 1,
-    "loc": 17,
+    "loc": 9,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 4,

@@ -1,12 +1,12 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-05
+**Last Updated:** 2026-09-06
 
-### 🏥 Repository Health Score: **66.0 / 100**
+### 🏥 Repository Health Score: **68.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 63
-*   **Measured Files**: 63
+*   **Total Graph Files**: 71
+*   **Measured Files**: 71
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -14,16 +14,16 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `app/domain/countdowns.ts` | **231.1** | 401 | 92 | 1 | 0.25 |
-| `src/features/inventory/InventoryView.tsx` | **200.8** | 793 | 45 | 7 | 0.88 |
+| `app/domain/countdowns.ts` | **230.1** | 401 | 92 | 1 | 0.2 |
 | `app/domain/validation.ts` | **197.7** | 459 | 60 | 9 | 0.69 |
-| `src/CrawlerApp.tsx` | **194.9** | 524 | 37 | 25 | 0.93 |
-| `src/features/timeline/TimelineScrubber.tsx` | **194.9** | 834 | 40 | 7 | 0.88 |
 | `app/domain/projection/helpers.ts` | **164.2** | 202 | 66 | 2 | 0.4 |
+| `src/features/inventory/InventoryView.tsx` | **131.2** | 74 | 45 | 8 | 0.89 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
+| `src/CrawlerApp.tsx` | **122.1** | 79 | 28 | 20 | 0.91 |
 | `app/domain/fixtures/floor6.ts` | **103.4** | 774 | 1 | 2 | 1 |
 | `app/domain/observations.ts` | **97.2** | 322 | 29 | 1 | 0.25 |
 | `app/domain/projection/index.ts` | **89.8** | 195 | 15 | 11 | 0.92 |
+| `src/features/inventory/equipment/EquipmentView.tsx` | **86.2** | 55 | 27 | 5 | 0.83 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
@@ -31,10 +31,10 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/countdowns.ts` | **92** | 401 |
 | `app/domain/projection/helpers.ts` | **66** | 202 |
 | `app/domain/validation.ts` | **60** | 459 |
-| `src/features/inventory/InventoryView.tsx` | **45** | 793 |
-| `src/features/timeline/TimelineScrubber.tsx` | **40** | 834 |
-| `src/CrawlerApp.tsx` | **37** | 524 |
+| `src/features/inventory/InventoryView.tsx` | **45** | 74 |
 | `app/domain/compiler.ts` | **35** | 368 |
 | `app/domain/observations.ts` | **29** | 322 |
-| `app/domain/raw-loader.ts` | **18** | 136 |
-| `src/features/crawler/stats/PlayerStats.tsx` | **18** | 36 |
+| `src/CrawlerApp.tsx` | **28** | 79 |
+| `src/features/inventory/equipment/EquipmentView.tsx` | **27** | 55 |
+| `src/features/timeline/diagnostics/SequenceInspector.tsx` | **25** | 50 |
+| `src/features/timeline/diagnostics/TimelineDiagnostics.tsx` | **21** | 48 |
