@@ -184,6 +184,7 @@
         "src/features/inventory/EquippedGearSummary.tsx",
         "src/features/inventory/InventoryCategories.tsx",
         "src/features/inventory/InventoryItemBrowser.tsx",
+        "src/features/inventory/inventoryItemBrowserModel.ts",
         "src/features/inventory/ItemInspector.tsx",
         "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
         "src/features/notifications/NotificationsView.tsx",
@@ -2283,7 +2284,6 @@
         "src/features/crawler/CrawlerView.tsx",
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
-        "src/features/inventory/InventoryItemBrowser.tsx",
         "src/features/party/PartyView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
@@ -3351,6 +3351,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "./inventoryItemBrowserModel",
+          "resolved": "src/features/inventory/inventoryItemBrowserModel.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./ItemInspector",
           "resolved": "src/features/inventory/ItemInspector.tsx",
           "valid": true,
@@ -3700,21 +3717,51 @@
           "coreModule": false,
           "couldNotResolve": false,
           "dependencyTypes": [
-            "npm",
+            "local",
+            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
-          "followable": false,
+          "followable": true,
           "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
+          "module": "./inventoryItemBrowserModel",
+          "resolved": "src/features/inventory/inventoryItemBrowserModel.ts",
           "valid": true,
-          "matchesDoNotFollow": true
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
         "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/inventoryItemBrowserModel.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx",
+        "src/features/inventory/InventoryItemBrowser.tsx"
       ],
       "orphan": false
     },
@@ -4846,12 +4893,12 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 91,
-    "totalDependenciesCruised": 214,
+    "totalCruised": 92,
+    "totalDependenciesCruised": 216,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/app",
+      "baseDir": "/home/runner/work/crawler-command-interface/crawler-command-interface",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,

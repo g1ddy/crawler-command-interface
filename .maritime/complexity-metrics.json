@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.02,
-    "fanIn": 58,
+    "fanIn": 59,
     "fanOut": 1,
     "scanned": true
   },
@@ -376,11 +376,11 @@
     "scanned": true
   },
   "src/features/inventory/InventoryView.tsx": {
-    "complexity": 10,
-    "loc": 178,
+    "complexity": 9,
+    "loc": 169,
     "instability": 0.92,
     "fanIn": 1,
-    "fanOut": 11,
+    "fanOut": 12,
     "scanned": true
   },
   "src/features/inventory/awardHistory.ts": {
@@ -424,11 +424,19 @@
     "scanned": true
   },
   "src/features/inventory/InventoryItemBrowser.tsx": {
-    "complexity": 11,
-    "loc": 146,
+    "complexity": 6,
+    "loc": 106,
     "instability": 0.75,
     "fanIn": 1,
     "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/inventory/inventoryItemBrowserModel.ts": {
+    "complexity": 10,
+    "loc": 84,
+    "instability": 0.33,
+    "fanIn": 2,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/inventory/ItemInspector.tsx": {
