@@ -22,7 +22,7 @@ export function PlayerStats({ state, observations, onInspectStat, onInspectObser
       <div><p className="eyebrow">PLAYER STATS · ACTIVE CRAWLER</p><h1>{crawler.name}</h1><i>LEVEL {level ?? "—"}</i><i>RACE: {crawler.race || "—"}</i><i>CLASS: {crawler.class || "—"}</i></div>
       <div className="xp"><span>EXPERIENCE <b>{xp?.toLocaleString() ?? "—"} / {maxXp?.toLocaleString() ?? "—"}</b><TelemetryBadge observation={observations.xpProgress.xp || observations.xpProgress.maxXp} causalValue={crawler.xp} onClick={() => { const observation = observations.xpProgress.xp || observations.xpProgress.maxXp; if (observation) onInspectObservation(observation); }} /></span><em><b style={{ width: `${xpPercent}%` }} /></em></div>
     </header>
-    <Panel title="PLAYER ATTRIBUTES · CLICK TO INSPECT PROVENANCE">
+    <Panel title="PLAYER ATTRIBUTES">
       <div className="stats">{attributes.map(([name, color]) => {
         const observation = observations.attributes[name];
         const value = observation?.value ?? crawler.attributes[name];

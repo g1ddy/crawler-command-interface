@@ -24,7 +24,6 @@ export function PartyView({ party }: { party?: Party }) {
               </article>
             ))}
           </div>
-          <p style={{ color: "#8fa4ad", fontSize: "10px", lineHeight: 1.5, margin: "16px 0 0" }}>Only source-backed crawler membership and party role are shown at this replay point.</p>
         </section>
       ) : (
         <p style={{ color: "#8fa4ad", fontSize: "10px" }}>No party state is available at this replay point.</p>
