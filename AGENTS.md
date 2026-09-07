@@ -11,7 +11,7 @@ This file is a concise map for coding agents. Detailed contracts live in the can
 - [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) — canonical source-honest product screenshots.
 - [docs/ROADMAP.md](docs/ROADMAP.md) — active product backlog and intentional deferrals.
 - [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — authoritative raw evidence authoring/projection rules.
-- [docs/FLOORS_1_2_CANON_READINESS.md](docs/FLOORS_1_2_CANON_READINESS.md) — durable readiness ledger governing conditional Crawler Menu domains.
+- [docs/CANON_READINESS.md](docs/CANON_READINESS.md) — durable readiness ledger governing conditional Crawler Menu domains.
 
 ## Durable invariants
 

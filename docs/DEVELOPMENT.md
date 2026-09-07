@@ -200,7 +200,7 @@ Every document in this repository owns a distinct, non-overlapping concern:
 | [docs/SCREENSHOTS.md](SCREENSHOTS.md) | Durable visual-state contract, canonical vs synthetic rules, screenshot regeneration |
 | [docs/ROADMAP.md](ROADMAP.md) | Unfinished product/architecture work and intentional deferrals only |
 | [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) | Sourced evidence authoring rules, JSON schemas, countdown projection contracts |
-| [docs/FLOORS_1_2_CANON_READINESS.md](FLOORS_1_2_CANON_READINESS.md) | Durable readiness ledger governing conditional Crawler Menu capabilities |
+| [docs/CANON_READINESS.md](CANON_READINESS.md) | Durable readiness ledger governing conditional Crawler Menu capabilities |
 
 - **Documentation boundaries**:
   - Refer to [README.md](../README.md) for product entry point and deployment modes.
@@ -210,4 +210,4 @@ Every document in this repository owns a distinct, non-overlapping concern:
   - Refer to [SCREENSHOTS.md](SCREENSHOTS.md) for canonical screenshot rules and visual contracts.
   - Refer to [ROADMAP.md](ROADMAP.md) for current product goals and intentional deferrals.
   - Refer to [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) for evidence authoring, JSON schemas, countdown projection contracts.
-  - Refer to [FLOORS_1_2_CANON_READINESS.md](FLOORS_1_2_CANON_READINESS.md) for domain readiness rules.
+  - Refer to [CANON_READINESS.md](CANON_READINESS.md) for domain readiness rules.

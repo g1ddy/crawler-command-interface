@@ -16,7 +16,7 @@ Root navigation and feature availability are strictly capability-driven based on
 - **Baseline Destinations**: Crawler, Inventory, and Skills are available across all sequence checkpoints.
 - **Conditional Destinations**: Ratings, Party, Notifications, Quests, and future domains become navigable only when projected state contains non-empty supported data at the active sequence.
 - **Replay Boundary Enforcement**: When scrubbing backward before a domain's activation boundary, its navigation entry disappears and active selection safely resolves to Crawler.
-- **Unnavigable Modeled Domains**: Domains like Magic are fully modeled in state projection but remain intentionally unnavigable until supported management behavior is introduced.
+- **Unnavigable Modeled Domains**: Domains like Magic are partially modeled for replay (projecting spell identity, owner, and acquisition source without mechanics) but remain intentionally unnavigable until supported management behavior is introduced.
 
 ## Top-level views
 

@@ -39,8 +39,8 @@ Each document in this repository serves as the single authoritative home for one
 - [AGENTS.md](AGENTS.md) — Concise agent operating guide, durable invariants, high-level repository map, and canonical verification entry points.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Stable responsibility/dependency boundaries, application composition root, host adapters, and data flow.
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Contributor setup, canonical commands, builds, verification, generated-artifact workflows, and documentation ownership matrix.
-- [docs/COMPLEXITY.md](docs/COMPLEXITY.md) — Metric and evidence interpretation, alongside canonical generated Maritime architecture graphs.
+- [docs/COMPLEXITY.md](docs/COMPLEXITY.md) — Metric and evidence interpretation, alongside canonical machine-readable Maritime evidence and derived graph presentation.
 - [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) — Durable visual-state contract, canonical vs. synthetic fixture rules, and screenshot regeneration semantics.
 - [docs/ROADMAP.md](docs/ROADMAP.md) — Unfinished product and architecture goals and intentional deferrals only.
 - [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Sourced evidence authoring guide, JSON schema validation, countdown anchor semantics, and observation projection contracts.
-- [docs/FLOORS_1_2_CANON_READINESS.md](docs/FLOORS_1_2_CANON_READINESS.md) — Durable domain readiness ledger governing conditional Crawler Menu capabilities.
+- [docs/CANON_READINESS.md](docs/CANON_READINESS.md) — Durable domain readiness ledger governing conditional Crawler Menu capabilities.

@@ -6,11 +6,7 @@ For authoring rules, source tiers, and the evidence contract, see [RAW_OBSERVATI
 
 ## Decision rule
 
-A domain becomes navigable only when a source-backed fact has a correct raw representation, replay projection, and useful behavior. A source tier is visible product context:
-
-- **Primary**: published text, licensed audiobook, or official preview.
-- **Corroborating**: maintained wiki, database, or structured summary.
-- **Candidate**: discussion or search lead; not a basis for authored state.
+A domain becomes navigable only when a source-backed fact has a correct raw representation, replay projection, and useful behavior. Source tier definitions (Primary, Corroborating, and Candidate) and evidence authoring contracts are defined in [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md).
 
 Primary evidence is preferred for new mechanics and persistent state when available. Corroborating evidence may preserve a clearly scoped fact at its actual tier, but it never becomes primary by implication. Missing evidence means unknown, unavailable, or no feature.
 
