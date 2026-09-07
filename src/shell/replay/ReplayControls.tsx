@@ -1,4 +1,5 @@
 import type { CrawlerEvent, FloorSegment, ProjectedCountdownState } from "../../../app/domain/types";
+import { firstCountdownEvidenceSummary } from "../../features/timeline/evidence/evidencePresentation";
 
 interface ReplayControlsProps {
   availableFloors: FloorSegment[];
@@ -50,7 +51,7 @@ export function ReplayControls(props: ReplayControlsProps) {
       <button className="mode-btn" disabled={props.selectedFloorOrdinal === "all" || currentFloorIdx >= props.availableFloors.length - 1} onClick={() => { if (currentFloorIdx >= 0 && currentFloorIdx < props.availableFloors.length - 1) selectFloor(props.availableFloors[currentFloorIdx + 1].ordinal); }} title="Next Floor Context">NEXT FLOOR ►</button>
       <button className="mode-btn" onClick={props.onOpenFloorRules} title="Inspect floor directives and rules">📜 FLOOR RULES</button>
       {props.activeCountdown && <button className="countdown-details-link" onClick={props.onOpenCountdownEvidence} title="Inspect primary countdown evidence and reference points">⏱ COLLAPSE CLOCK EVIDENCE</button>}
-      {props.secondaryCountdowns.map((countdown) => <div key={countdown.id} className="secondary-countdown" title={`${countdown.status} · ${countdown.basis} · ${countdown.target}`}><span>SECONDARY · {countdown.title.toUpperCase()}</span><b>{countdown.formattedLabel}</b><small>{countdown.target.replaceAll("-", " ").toUpperCase()}</small></div>)}
+      {props.secondaryCountdowns.map((countdown) => <div key={countdown.id} className="secondary-countdown" title={`${countdown.status} · ${countdown.basis} · ${countdown.target}`}><span>SECONDARY · {countdown.title.toUpperCase()}</span><b>{countdown.formattedLabel}</b><small>{countdown.target.replaceAll("-", " ").toUpperCase()}</small><small>EVIDENCE: {firstCountdownEvidenceSummary(countdown.referencePoints)}</small></div>)}
     </div>
 
     <div className="timeline-header">
