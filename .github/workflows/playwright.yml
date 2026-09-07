@@ -1,9 +1,16 @@
 name: Playwright E2E
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
+  workflow_call:
+    inputs:
+      checkout-repository:
+        description: Repository containing the source commit that produced the artifact
+        required: true
+        type: string
+      expected-source-sha:
+        description: Source commit recorded in the validated Pages artifact
+        required: true
+        type: string
 
 permissions:
   actions: read
@@ -11,13 +18,12 @@ permissions:
 
 jobs:
   e2e:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ github.event.workflow_run.head_sha }}
+          repository: ${{ inputs.checkout-repository }}
+          ref: ${{ inputs.expected-source-sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22.13.0
@@ -28,11 +34,9 @@ jobs:
         with:
           name: github-pages-artifact
           path: dist-pages
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
       - name: Verify artifact provenance
         env:
-          EXPECTED_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+          EXPECTED_SOURCE_SHA: ${{ inputs.expected-source-sha }}
         run: |
           test -f dist-pages/build-provenance.json
           test "$(jq -r '.sourceSha' dist-pages/build-provenance.json)" = "$EXPECTED_SOURCE_SHA"
@@ -46,7 +50,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ github.event.workflow_run.id }}
+          name: playwright-report-${{ github.run_id }}
           path: |
             playwright-report/
             test-results/
