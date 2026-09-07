@@ -27,9 +27,15 @@ function assertProvenance(provenance, target) {
   assert.equal(provenance.target, target);
   assert.match(provenance.commitSha, /^[0-9a-f]{7,40}$/i);
   assert.match(provenance.sourceSha, /^[0-9a-f]{7,40}$/i);
+  assert.match(provenance.buildSha, /^[0-9a-f]{7,40}$/i);
+  assert.equal(provenance.commitSha, provenance.sourceSha);
 
   if (process.env.BUILD_SOURCE_SHA) {
     assert.equal(provenance.sourceSha, process.env.BUILD_SOURCE_SHA);
+  }
+
+  if (process.env.GITHUB_SHA) {
+    assert.equal(provenance.buildSha, process.env.GITHUB_SHA);
   }
 }
 
@@ -87,4 +93,5 @@ test("both deployment targets capture the same build and source revisions", () =
 
   assert.equal(liveProvenance.commitSha, pagesProvenance.commitSha);
   assert.equal(liveProvenance.sourceSha, pagesProvenance.sourceSha);
+  assert.equal(liveProvenance.buildSha, pagesProvenance.buildSha);
 });
