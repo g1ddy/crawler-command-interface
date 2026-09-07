@@ -36,10 +36,11 @@ npx vite --config vite.pages.config.ts
 
 Each document in this repository serves as the single authoritative home for one concern:
 
-- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Prerequisites, local environment setup, npm commands, build targets, fixture generation, verification workflows, and generated screenshot rules.
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Shared browser core, ChatGPT Sites and GitHub Pages adapters, raw-to-compiled fixture pipeline, and Worker-safe runtime boundaries.
-- [docs/COMPLEXITY.md](docs/COMPLEXITY.md) — Canonical generated Maritime architecture and complexity evidence.
-- [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) — Living visual documentation for the canonical conditional top-level views and Crawler profile views, backed by generated `docs/images/` assets.
-- [docs/ROADMAP.md](docs/ROADMAP.md) — Product backlog, upcoming milestones, and active architectural constraints.
-- [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Sourced evidence authoring rules, JSON schema validation, countdown anchor semantics, and observation projection interpretations.
-- [AGENTS.md](AGENTS.md) — Repository operating guide and durable invariants for coding agents and contributors.
+- [AGENTS.md](AGENTS.md) — Concise agent operating guide, durable invariants, high-level repository map, and canonical verification entry points.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Stable responsibility/dependency boundaries, application composition root, host adapters, and data flow.
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Contributor setup, canonical commands, builds, verification, generated-artifact workflows, and documentation ownership matrix.
+- [docs/COMPLEXITY.md](docs/COMPLEXITY.md) — Metric and evidence interpretation, alongside canonical generated Maritime architecture graphs.
+- [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) — Durable visual-state contract, canonical vs. synthetic fixture rules, and screenshot regeneration semantics.
+- [docs/ROADMAP.md](docs/ROADMAP.md) — Unfinished product and architecture goals and intentional deferrals only.
+- [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — Sourced evidence authoring guide, JSON schema validation, countdown anchor semantics, and observation projection contracts.
+- [docs/FLOORS_1_2_CANON_READINESS.md](docs/FLOORS_1_2_CANON_READINESS.md) — Durable domain readiness ledger governing conditional Crawler Menu capabilities.

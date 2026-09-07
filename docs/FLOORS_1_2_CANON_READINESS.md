@@ -1,6 +1,6 @@
-# Floors 1–2 Canon Domain Readiness Ledger
+# Canon Domain Readiness Ledger
 
-This ledger records what the current Floors 1–2 evidence can support for conditional Crawler Menu domains. It is a research and product-readiness artifact, not authored story data.
+This document is the durable readiness ledger for conditional Crawler Menu domains. It records what authored story evidence supports for conditional interface domains across active and future floor scopes. It is a research and capability-readiness artifact, not authored story data.
 
 For authoring rules, source tiers, and the evidence contract, see [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md). The authoritative event and observation records remain [data/raw/floors/floor-1/](../data/raw/floors/floor-1/) and [data/raw/floors/floor-2/](../data/raw/floors/floor-2/).
 
