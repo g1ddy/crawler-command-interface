@@ -62,6 +62,35 @@ test("Return to Live restores the latest projection", async ({ page }) => {
   await expect(page.locator(".mobile-mode")).toContainText("LIVE");
 });
 
+test("inventory browser and inspector resolve the same visible selection", async ({ page }) => {
+  await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
+
+  const itemCards = page.locator(".grid .item");
+  await expect(itemCards).not.toHaveCount(0);
+  await expect(itemCards.locator(".selected")).toHaveCount(0);
+  await expect(itemCards.first()).toHaveClass(/selected/);
+
+  const secondItem = itemCards.nth(1);
+  await expect(secondItem).toBeVisible();
+  const secondItemName =
+    (await secondItem.getAttribute("aria-label"))?.replace(/ \([^)]+\)$/, "") ?? "";
+  expect(secondItemName).not.toBe("");
+
+  await page.getByRole("textbox", { name: "Search items" }).fill(secondItemName);
+
+  const visibleCard = page.locator(".grid .item").first();
+  await expect(visibleCard).toHaveClass(/selected/);
+  await expect(page.getByRole("heading", { name: secondItemName.toUpperCase() })).toBeVisible();
+
+  await page.getByRole("textbox", { name: "Search items" }).fill("");
+  await page.getByRole("combobox", { name: "Sort items" }).selectOption("oldest");
+  const oldestCard = page.locator(".grid .item").first();
+  const oldestItemName =
+    (await oldestCard.getAttribute("aria-label"))?.replace(/ \([^)]+\)$/, "") ?? "";
+  await expect(oldestCard).toHaveClass(/selected/);
+  await expect(page.getByRole("heading", { name: oldestItemName.toUpperCase() })).toBeVisible();
+});
+
 test("live interactions append events without rewriting historical state", async ({ page }) => {
   await selectSequence(page, floor1EndSequence);
   await expect(page.getByText(`HISTORICAL VIEW · REPLAYING SEQUENCE #${floor1EndSequence}`)).toBeVisible();
