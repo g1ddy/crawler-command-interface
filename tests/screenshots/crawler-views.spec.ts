@@ -1,28 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
-import {
-  SCREENSHOTS,
-  stagedScreenshotPath,
-} from "./canonical-screenshots.ts";
+import { SCREENSHOTS, stagedScreenshotPath } from "./canonical-screenshots.ts";
 
 async function preparePage(page: Page) {
   await page.goto("/crawler-command-interface/");
   await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Main Navigation" })).toBeVisible();
-
-  await page.addStyleTag({
-    content: `
-      *, *::before, *::after {
-        animation: none !important;
-        caret-color: transparent !important;
-        transition: none !important;
-      }
-    `,
-  });
-
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    window.scrollTo(0, 0);
-  });
+  await page.addStyleTag({ content: `*, *::before, *::after { animation: none !important; caret-color: transparent !important; transition: none !important; }` });
+  await page.evaluate(async () => { await document.fonts.ready; window.scrollTo(0, 0); });
 }
 
 async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS" | "RATINGS" | "PARTY" | "NOTIFICATIONS") {
@@ -41,229 +25,56 @@ async function selectCrawlerSubTab(page: Page, name: "STATS" | "HEALTH / CONDITI
 
 async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.screenshot({
-    path: stagedScreenshotPath(key),
-    fullPage: false,
-    animations: "disabled",
-  });
+  await page.screenshot({ path: stagedScreenshotPath(key), fullPage: false, animations: "disabled" });
 }
 
 async function seedHotlistSkillsScenario(page: Page) {
   await page.evaluate(() => {
-    const docWithSkill = {
-      schemaVersion: "crawler-timeline/v1",
-      timeline: {
-        id: "tl-hotlist-doc",
-        title: "Hotlist Skills Timeline Document",
-        story: { id: "st-hotlist", title: "Crawler Story" },
-      },
-      sources: [
-        {
-          id: "src-wda-skill-log",
-          kind: "official-text",
-          trust: "primary",
-          title: "Test-only source",
-          url: "https://example.com/test-hotlist",
-        },
-      ],
-      initialState: {
-        crawler: {
-          name: "CARL G.",
-          level: 42,
-          race: "PRIMAL",
-          class: "SCOUT",
-          xp: 21500,
-          maxXp: 74000,
-          attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 },
-          condition: { currentHealth: 3100, maxHealth: 4200, currentMana: 800, maxMana: 1360, currentStamina: 200, maxStamina: 280 },
-        },
-        skills: [
-          {
-            skillId: "skill-hotlist-demo",
-            name: "Test Skill",
-            icon: "✦",
-            rank: "RANK 1",
-            category: "utility",
-            description: "An isolated test skill used to verify Hotlist assignment presentation.",
-            cooldown: "READY",
-          },
-        ],
-      },
-      events: [
-        {
-          id: "evt-hotlist-floor-entry",
-          sequence: 1,
-          type: "NarrativeEvent",
-          kind: "floor-entered",
-          position: { floor: 1 },
-          summary: "Entered Floor 1",
-          evidence: [{ sourceId: "src-wda-skill-log" }],
-        },
-      ],
-    };
+    const docWithSkill = { schemaVersion: "crawler-timeline/v1", timeline: { id: "tl-hotlist-doc", title: "Hotlist Skills Timeline Document", story: { id: "st-hotlist", title: "Crawler Story" } }, sources: [{ id: "src-wda-skill-log", kind: "official-text", trust: "primary", title: "Test-only source", url: "https://example.com/test-hotlist" }], initialState: { crawler: { name: "CARL G.", level: 42, race: "PRIMAL", class: "SCOUT", xp: 21500, maxXp: 74000, attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 }, condition: { currentHealth: 3100, maxHealth: 4200, currentMana: 800, maxMana: 1360, currentStamina: 200, maxStamina: 280 } }, skills: [{ skillId: "skill-hotlist-demo", name: "Test Skill", icon: "✦", rank: "RANK 1", category: "utility", description: "An isolated test skill used to verify Hotlist assignment presentation.", cooldown: "READY" }] }, events: [{ id: "evt-hotlist-floor-entry", sequence: 1, type: "NarrativeEvent", kind: "floor-entered", position: { floor: 1 }, summary: "Entered Floor 1", evidence: [{ sourceId: "src-wda-skill-log" }] }] };
     localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(docWithSkill));
   });
   await page.reload();
   await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
 }
 
-test.beforeEach(async ({ page }) => {
-  await preparePage(page);
-});
+test.beforeEach(async ({ page }) => { await preparePage(page); });
 
-test("export top-level Crawler tab", async ({ page }) => {
-  await selectCrawlerSubTab(page, "STATS");
-  await expect(page.getByText("PLAYER ATTRIBUTES · CLICK TO INSPECT PROVENANCE", { exact: true })).toBeVisible();
-  await capture(page, "crawler");
-});
+test("export top-level Crawler tab", async ({ page }) => { await selectCrawlerSubTab(page, "STATS"); await expect(page.getByText("PLAYER ATTRIBUTES · CLICK TO INSPECT PROVENANCE", { exact: true })).toBeVisible(); await capture(page, "crawler"); });
+test("export top-level Inventory tab", async ({ page }) => { await selectTopLevelTab(page, "INVENTORY"); await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/\bon\b/); await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible(); await capture(page, "inventory"); });
+test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => { await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click(); await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13"); await selectTopLevelTab(page, "INVENTORY"); await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click(); await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible(); await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible(); await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible(); await capture(page, "awards"); });
+test("export top-level Skills tab", async ({ page }) => { await selectTopLevelTab(page, "SKILLS"); await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible(); await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible(); await capture(page, "skills"); });
+test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => { await seedHotlistSkillsScenario(page); await selectTopLevelTab(page, "SKILLS"); await page.getByRole("button", { name: "Slot #1", exact: true }).click(); await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible(); await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1"); });
 
-test("export top-level Inventory tab", async ({ page }) => {
-  await selectTopLevelTab(page, "INVENTORY");
-  await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/\bon\b/);
-  await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible();
-  await capture(page, "inventory");
-});
-
-test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => {
-  await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click();
-  // Party formation now occupies the Floor 1 sequence immediately before the
-  // pre-existing award transitions.
-  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13");
-  await selectTopLevelTab(page, "INVENTORY");
-  await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click();
-  await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible();
-  await capture(page, "awards");
-});
-
-test("export top-level Skills tab", async ({ page }) => {
-  await selectTopLevelTab(page, "SKILLS");
-  await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible();
-  await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible();
-  await capture(page, "skills");
-});
-
-test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => {
-  await seedHotlistSkillsScenario(page);
-  await selectTopLevelTab(page, "SKILLS");
-  await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Slot #1", exact: true }).click();
-  await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible();
-  await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1");
-});
-
-test("export top-level Quests tab", async ({ page }) => {
+test("renders Quests from an isolated noncanonical fixture without publishing a canonical screenshot", async ({ page }) => {
   await page.evaluate(() => {
-    const docWithQuests = {
-      schemaVersion: "crawler-timeline/v1",
-      timeline: {
-        id: "tl-quests-doc",
-        title: "Quests Timeline Document",
-        story: { id: "st-quests", title: "Crawler Story" },
-      },
-      sources: [
-        {
-          id: "src-wda-log",
-          kind: "official-text",
-          trust: "primary",
-          title: "World Dungeon Authority System Log",
-          url: "https://example.com/log",
-        },
-      ],
-      initialState: {
-        crawler: {
-          name: "CARL G.",
-          level: 42,
-          race: "PRIMAL",
-          class: "SCOUT",
-          xp: 21500,
-          maxXp: 74000,
-          attributes: { Strength: 24, Dexterity: 34, Constitution: 30, Intelligence: 18, Charisma: 20 },
-          condition: { currentHealth: 3100, maxHealth: 4200, currentMana: 800, maxMana: 1360, currentStamina: 200, maxStamina: 280 },
-        },
-        quests: [
-          {
-            questId: "q-stairwell",
-            title: "Tutorial: Reach the Stairs",
-            urgency: "URGENT",
-            goals: ["Find the emergency stairwell", "Bypass security lockdown"],
-            rewards: "150 XP · Bronze Box",
-            status: "active",
-          },
-          {
-            questId: "q-clear-mobs",
-            title: "Clear Entry Sector",
-            urgency: "STANDARD",
-            goals: ["Defeat sector guardians"],
-            rewards: "50 XP",
-            status: "completed",
-          },
-        ],
-      },
-      events: [
-        {
-          id: "evt-q-1",
-          sequence: 1,
-          type: "NarrativeEvent",
-          kind: "floor-entered",
-          position: { floor: 1 },
-          summary: "Entered Floor 1",
-          evidence: [{ sourceId: "src-wda-log" }],
-        },
-      ],
-    };
-    localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(docWithQuests));
+    const documentWithQuests = { schemaVersion: "crawler-timeline/v1", timeline: { id: "tl-quests-test", title: "Quests component scenario", story: { id: "st-quests-test", title: "Test story" } }, sources: [{ id: "src-test-quests", kind: "official-text", trust: "primary", title: "Test-only source", url: "https://example.com/test-quests" }], initialState: { crawler: { name: "TEST CRAWLER", level: 1, race: "UNKNOWN", class: "UNKNOWN", xp: 0, maxXp: 1, attributes: {}, condition: {} }, quests: [{ questId: "q-test", title: "Test Quest", urgency: "URGENT", goals: ["Exercise quest presentation"], rewards: "Test-only reward", status: "active" }] }, events: [{ id: "evt-test-floor", sequence: 1, type: "NarrativeEvent", kind: "floor-entered", position: { floor: 1 }, summary: "Test floor", evidence: [{ sourceId: "src-test-quests" }] }] };
+    localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(documentWithQuests));
   });
   await page.reload();
   await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
-
   await selectTopLevelTab(page, "QUESTS");
   await expect(page.getByRole("heading", { name: "QUESTS", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: /^ACTIVE\b/ })).toHaveClass(/\bon\b/);
-  await capture(page, "quests");
+  await expect(page.getByText("Test Quest", { exact: true })).toBeVisible();
 });
 
-test("export Crawler Stats", async ({ page }) => {
-  await selectCrawlerSubTab(page, "STATS");
-  await expect(page.getByText("AVAILABLE STAT POINTS", { exact: true })).toBeVisible();
-  await capture(page, "crawlerStats");
-});
-
-test("export Crawler Health and Conditions", async ({ page }) => {
-  await selectCrawlerSubTab(page, "HEALTH / CONDITIONS");
-  await expect(page.getByText("VITALS", { exact: true })).toBeVisible();
-  await capture(page, "crawlerHealth");
-});
-
-test("export Ratings", async ({ page }) => {
-  await selectTopLevelTab(page, "RATINGS");
-  await expect(page.getByRole("heading", { name: "RATINGS", exact: true })).toBeVisible();
-  await capture(page, "ratings");
-});
-
-test("export Party after the sourced formation sequence", async ({ page }) => {
+test("root navigation follows the real Party capability boundary during replay", async ({ page }) => {
+  const navigation = page.getByRole("navigation", { name: "Main Navigation" });
+  await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click();
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("2");
+  await expect(navigation.getByRole("button", { name: "PARTY", exact: true })).toHaveCount(0);
+  await slider.fill("3");
+  await expect(navigation.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
   await selectTopLevelTab(page, "PARTY");
-  await expect(page.getByRole("heading", { name: "PARTY", exact: true })).toBeVisible();
-  await expect(page.getByLabel("The Royal Court of Princess Donut roster", { exact: true })).toContainText("Princess Donut");
-  await capture(page, "party");
+  await slider.fill("2");
+  await expect(navigation.getByRole("button", { name: "PARTY", exact: true })).toHaveCount(0);
+  await expect(navigation.getByRole("button", { name: "CRAWLER", exact: true })).toHaveAttribute("aria-pressed", "true");
 });
 
-test("export Notifications", async ({ page }) => {
-  await selectTopLevelTab(page, "NOTIFICATIONS");
-  await expect(page.getByRole("heading", { name: "NOTIFICATIONS", exact: true })).toBeVisible();
-  await capture(page, "notifications");
-});
-
-test("export Floor Rules modal view", async ({ page }) => {
-  await page.getByRole("button", { name: "📜 FLOOR RULES", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "FLOOR RULES", exact: true })).toBeVisible();
-  await capture(page, "floorRules");
-});
-
-test("export Timeline History modal view", async ({ page }) => {
-  await page.getByRole("button", { name: "📜 HISTORY", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "EVENT & NARRATIVE LOG", exact: true })).toBeVisible();
-  await capture(page, "timelineHistory");
-});
+test("export Crawler Stats", async ({ page }) => { await selectCrawlerSubTab(page, "STATS"); await expect(page.getByText("AVAILABLE STAT POINTS", { exact: true })).toBeVisible(); await capture(page, "crawlerStats"); });
+test("export Crawler Health and Conditions", async ({ page }) => { await selectCrawlerSubTab(page, "HEALTH / CONDITIONS"); await expect(page.getByText("VITALS", { exact: true })).toBeVisible(); await capture(page, "crawlerHealth"); });
+test("export Ratings", async ({ page }) => { await selectTopLevelTab(page, "RATINGS"); await expect(page.getByRole("heading", { name: "RATINGS", exact: true })).toBeVisible(); await capture(page, "ratings"); });
+test("export Party after the sourced formation sequence", async ({ page }) => { await selectTopLevelTab(page, "PARTY"); await expect(page.getByRole("heading", { name: "PARTY", exact: true })).toBeVisible(); await expect(page.getByLabel("The Royal Court of Princess Donut roster", { exact: true })).toContainText("Princess Donut"); await capture(page, "party"); });
+test("export Notifications", async ({ page }) => { await selectTopLevelTab(page, "NOTIFICATIONS"); await expect(page.getByRole("heading", { name: "NOTIFICATIONS", exact: true })).toBeVisible(); await capture(page, "notifications"); });
+test("export Floor Rules modal view", async ({ page }) => { await page.getByRole("button", { name: "📜 FLOOR RULES", exact: true }).click(); await expect(page.getByRole("heading", { name: "FLOOR RULES", exact: true })).toBeVisible(); await capture(page, "floorRules"); });
+test("export Timeline History modal view", async ({ page }) => { await page.getByRole("button", { name: "📜 HISTORY", exact: true }).click(); await expect(page.getByRole("heading", { name: "EVENT & NARRATIVE LOG", exact: true })).toBeVisible(); await capture(page, "timelineHistory"); });

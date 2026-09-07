@@ -13,17 +13,22 @@ const outputDirectory = resolve(
   target === "live" ? "dist" : "dist-pages",
 );
 
-const commitSha =
+const buildSha =
   process.env.GITHUB_SHA ??
   execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+const sourceSha = process.env.BUILD_SOURCE_SHA ?? buildSha;
+// `commitSha` is retained as the source revision for compatibility with the
+// existing downstream workflow_run validator on main. `buildSha` records the
+// exact checked-out revision (for PR CI, GitHub's synthetic merge commit).
+const commitSha = sourceSha;
 
-if (!commitSha) {
-  throw new Error("Unable to determine the source commit for this build.");
+if (!buildSha || !sourceSha) {
+  throw new Error("Unable to determine build provenance.");
 }
 
 await mkdir(outputDirectory, { recursive: true });
 await writeFile(
   resolve(outputDirectory, "build-provenance.json"),
-  `${JSON.stringify({ target, commitSha }, null, 2)}\n`,
+  `${JSON.stringify({ target, commitSha, sourceSha, buildSha }, null, 2)}\n`,
   "utf8",
 );

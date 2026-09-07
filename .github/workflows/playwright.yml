@@ -32,10 +32,11 @@ jobs:
           github-token: ${{ github.token }}
       - name: Verify artifact provenance
         env:
-          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          EXPECTED_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           test -f dist-pages/build-provenance.json
-          test "$(jq -r '.commitSha' dist-pages/build-provenance.json)" = "$EXPECTED_SHA"
+          test "$(jq -r '.sourceSha' dist-pages/build-provenance.json)" = "$EXPECTED_SOURCE_SHA"
+          test "$(jq -r '.commitSha' dist-pages/build-provenance.json)" != "null"
       - run: npx playwright install --with-deps chromium
       - name: Run Playwright against validated artifact
         env:
