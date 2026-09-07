@@ -4,7 +4,7 @@ import { Panel } from "../../shared/ui/Panel";
 export type RatingsMetricGroup = "audience" | "engagement" | "patronage" | "ranking" | "bounty";
 import { projectRatingsMetrics } from "./ratings-presentation";
 const headings: Record<RatingsMetricGroup, string> = { audience: "AUDIENCE", engagement: "ENGAGEMENT", patronage: "PATRONAGE", ranking: "RANKING", bounty: "BOUNTY" };
-export function RatingsView({ observations, isLive, onInspectObservation }: { observations: Record<string, ProjectedObservationValue>; isLive: boolean; sequence?: number; onInspectObservation: (o: ProjectedObservationValue) => void }) {
+export function RatingsView({ observations, isLive, onInspectObservation }: { observations: Record<string, ProjectedObservationValue>; isLive: boolean; onInspectObservation: (o: ProjectedObservationValue) => void }) {
   const metrics = projectRatingsMetrics(observations);
   const activeGroups = (Object.keys(headings) as RatingsMetricGroup[]).filter(group => metrics.some(metric => metric.group === group));
   const viewers = observations.viewers;

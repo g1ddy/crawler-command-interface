@@ -417,7 +417,7 @@
   },
   "src/features/inventory/InventoryAwardsView.tsx": {
     "complexity": 3,
-    "loc": 113,
+    "loc": 114,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -481,7 +481,7 @@
   },
   "src/features/party/PartyView.tsx": {
     "complexity": 3,
-    "loc": 34,
+    "loc": 35,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
