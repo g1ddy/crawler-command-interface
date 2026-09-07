@@ -18,7 +18,14 @@ function floorEndSequence(ordinal: number) {
   return floor.endSequence;
 }
 
+function eventSequence(id: string) {
+  const event = compiledTimeline.events.find((candidate) => candidate.id === id);
+  if (!event) throw new Error(`Missing event ${id} in the compiled timeline.`);
+  return event.sequence;
+}
+
 const floor1EndSequence = floorEndSequence(1);
+const floor2SystemPatchSequence = eventSequence("evt-f2-system-patch");
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/crawler-command-interface/");
@@ -49,6 +56,29 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
   await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
   await expect(floors).toHaveValue("2");
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
+});
+
+test("timeline evidence surfaces preserve source locators and confidence", async ({ page }) => {
+  await selectSequence(page, floor2SystemPatchSequence);
+
+  const secondaryCountdown = page.locator(".secondary-countdown").filter({ hasText: "TIME TO SAFE ROOM CLOSURE" });
+  await expect(secondaryCountdown).toContainText("EVIDENCE: src-dcc-database-floor-2");
+  await expect(secondaryCountdown).toContainText("Floor Timeline & Patch Notes");
+  await expect(secondaryCountdown).toContainText("CORROBORATED");
+
+  await page.getByRole("button", { name: /COLLAPSE CLOCK EVIDENCE/ }).click();
+  const countdownModal = page.locator(".modal-content").filter({ hasText: "COUNTDOWN ESTIMATE & PROVENANCE" });
+  await expect(countdownModal).toContainText("Evidence: src-dcc-database-floor-2");
+  await expect(countdownModal).toContainText("Floor Timeline & Patch Notes");
+  await expect(countdownModal).toContainText("CORROBORATED");
+  await countdownModal.getByRole("button", { name: "✕" }).click();
+
+  await page.getByRole("button", { name: "📡 TELEMETRY", exact: true }).click();
+  const evidenceModal = page.locator(".modal-content").filter({ hasText: "SOURCED HUD OBSERVATIONS" });
+  await evidenceModal.getByText("SOURCE", { exact: true }).first().click();
+  const inspectorModal = page.locator(".modal-content").filter({ hasText: "TELEMETRY OBSERVATION & PROVENANCE" });
+  await expect(inspectorModal).toContainText("CORROBORATED");
+  await expect(inspectorModal).toContainText("Locator:");
 });
 
 test("Return to Live restores the latest projection", async ({ page }) => {
