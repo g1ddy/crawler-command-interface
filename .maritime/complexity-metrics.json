@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.02,
-    "fanIn": 54,
+    "fanIn": 58,
     "fanOut": 1,
     "scanned": true
   },
@@ -265,7 +265,7 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 28,
-    "loc": 79,
+    "loc": 433,
     "instability": 0.91,
     "fanIn": 2,
     "fanOut": 20,
@@ -290,8 +290,8 @@
   "src/shared/ui/Panel.tsx": {
     "complexity": 2,
     "loc": 11,
-    "instability": 0.1,
-    "fanIn": 9,
+    "instability": 0.07,
+    "fanIn": 13,
     "fanOut": 1,
     "scanned": true
   },
@@ -376,18 +376,18 @@
     "scanned": true
   },
   "src/features/inventory/InventoryView.tsx": {
-    "complexity": 45,
-    "loc": 74,
-    "instability": 0.89,
+    "complexity": 10,
+    "loc": 178,
+    "instability": 0.92,
     "fanIn": 1,
-    "fanOut": 8,
+    "fanOut": 11,
     "scanned": true
   },
   "src/features/inventory/awardHistory.ts": {
     "complexity": 16,
     "loc": 87,
-    "instability": 0.5,
-    "fanIn": 1,
+    "instability": 0.33,
+    "fanIn": 2,
     "fanOut": 1,
     "scanned": true
   },
@@ -397,6 +397,46 @@
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
+    "scanned": true
+  },
+  "src/features/inventory/EquippedGearSummary.tsx": {
+    "complexity": 3,
+    "loc": 35,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/inventory/InventoryAwardsView.tsx": {
+    "complexity": 3,
+    "loc": 114,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/inventory/InventoryCategories.tsx": {
+    "complexity": 4,
+    "loc": 49,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/inventory/InventoryItemBrowser.tsx": {
+    "complexity": 11,
+    "loc": 146,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/inventory/ItemInspector.tsx": {
+    "complexity": 33,
+    "loc": 247,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
     "scanned": true
   },
   "src/features/inventory/provenance/ItemProvenanceDrawer.tsx": {
