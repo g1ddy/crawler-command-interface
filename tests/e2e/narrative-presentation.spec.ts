@@ -54,6 +54,12 @@ async function openTimelineHistory(page: Page) {
   await page.getByRole('button', { name: '📜 HISTORY', exact: true }).click();
 }
 
+async function openReplayDiagnostics(page: Page) {
+  const toggle = page.getByRole('button', { name: /REPLAY DIAGNOSTICS/ });
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/crawler-command-interface/');
   await expect(page.getByText('FLOOR NAVIGATOR:')).toBeVisible();
@@ -82,8 +88,10 @@ test('episode, collapse, and encounter resolution render as typed timeline marke
   const encounter = requireNarrative('encounter-resolved');
 
   // The application opens on the latest floor. These assertions intentionally
-  // span floors, so establish Whole Story scope before locating any marker.
+  // span floors, so establish Whole Story scope and reveal the diagnostics
+  // surface before locating any marker.
   await page.getByRole('combobox', { name: 'Floor timeline scope' }).selectOption('all');
+  await openReplayDiagnostics(page);
 
   const episodeMarker = markerFor(page, episode);
   await expect(episodeMarker).toBeVisible();
