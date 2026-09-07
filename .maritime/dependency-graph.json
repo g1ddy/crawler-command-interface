@@ -170,6 +170,7 @@
         "src/features/floor/FloorRules.tsx",
         "src/features/timeline/SequenceBadge.tsx",
         "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
+        "src/features/timeline/evidence/evidencePresentation.ts",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/timeline/evidence/TelemetryBadge.tsx",
         "src/features/timeline/history/TimelineHistory.tsx",
@@ -2569,10 +2570,57 @@
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
         "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/timeline/evidence/evidencePresentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
+        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+        "src/shell/replay/ReplayControls.tsx"
       ],
       "orphan": false
     },
@@ -4751,6 +4799,23 @@
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -4777,6 +4842,23 @@
           "moduleSystem": "es6",
           "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/timeline/evidence/evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -4893,8 +4975,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 92,
-    "totalDependenciesCruised": 216,
+    "totalCruised": 93,
+    "totalDependenciesCruised": 220,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

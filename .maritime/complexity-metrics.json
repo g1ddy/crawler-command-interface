@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.02,
-    "fanIn": 59,
+    "fanIn": 60,
     "fanOut": 1,
     "scanned": true
   },
@@ -305,10 +305,18 @@
   },
   "src/features/timeline/evidence/TelemetryInspectorModal.tsx": {
     "complexity": 14,
-    "loc": 13,
-    "instability": 0.67,
+    "loc": 14,
+    "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 2,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/evidencePresentation.ts": {
+    "complexity": 8,
+    "loc": 31,
+    "instability": 0.25,
+    "fanIn": 3,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/timeline/evidence/TimelineEvidence.tsx": {
@@ -584,19 +592,19 @@
     "scanned": true
   },
   "src/features/timeline/evidence/CountdownEvidenceModal.tsx": {
-    "complexity": 5,
-    "loc": 7,
-    "instability": 0.67,
+    "complexity": 6,
+    "loc": 8,
+    "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 2,
+    "fanOut": 3,
     "scanned": true
   },
   "src/shell/replay/ReplayControls.tsx": {
     "complexity": 11,
-    "loc": 82,
-    "instability": 0.5,
+    "loc": 83,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/shell/tools/TimelineToolsModal.tsx": {
