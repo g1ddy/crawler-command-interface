@@ -16,8 +16,7 @@ export function InventoryAwardsView({
     >
       <Panel title="AWARDS / BOXES">
         <p style={{ fontSize: "11px", color: "#9db3bd", marginTop: 0 }}>
-          Source-backed awards are shown even after a box is opened. This is
-          award history, not an assertion that every box remains in inventory.
+          Historical record of earned awards and boxes.
         </p>
         {awards.length > 0 ? (
           <div

@@ -100,7 +100,7 @@ export function InventoryView({
           <h1>INVENTORY</h1>
         </div>
         <b>
-          {items.length} SOURCED ITEM{items.length === 1 ? "" : "S"}
+          {items.length} ITEM{items.length === 1 ? "" : "S"}
         </b>
       </header>
       <div className="inventory">
