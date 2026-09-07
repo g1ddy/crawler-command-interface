@@ -18,6 +18,11 @@ import { InventoryAwardsView } from "./InventoryAwardsView";
 import { InventoryItemBrowser } from "./InventoryItemBrowser";
 import { EquippedGearSummary } from "./EquippedGearSummary";
 import { ItemInspector } from "./ItemInspector";
+import {
+  resolveSelectedInventoryItem,
+  visibleInventoryItems,
+  type InventorySortOrder,
+} from "./inventoryItemBrowserModel";
 
 export function InventoryView({
   state,
@@ -59,6 +64,8 @@ export function InventoryView({
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(
     null,
   );
+  const [sortOrder, setSortOrder] = useState<InventorySortOrder>("newest");
+  const [search, setSearch] = useState("");
 
   const items = state.inventory;
   const awards = useMemo(
@@ -67,34 +74,14 @@ export function InventoryView({
   );
   const effectiveFilter = filter;
 
-  // We find the currently selected item globally so the Inspector has access to it.
-  const selectedItem = useMemo(() => {
-    // Determine the matched items conceptually based on filter to default selection correctly
-    const matched = items.filter((item) => {
-      const matchesCategory =
-        effectiveFilter === "ALL ITEMS"
-          ? true
-          : effectiveFilter === "EQUIPMENT"
-            ? item.category === "EQUIPMENT" || item.category === "equipment"
-            : effectiveFilter === "CONSUMABLES"
-              ? item.category === "CONSUMABLES" ||
-                item.category === "consumable"
-              : effectiveFilter === "QUEST ITEMS"
-                ? item.category === "QUEST ITEMS" ||
-                  item.category === "quest-item"
-                : effectiveFilter === "CRAFTING"
-                  ? item.category === "CRAFTING" || item.category === "crafting"
-                  : true;
-      return matchesCategory;
-    });
-    if (selectedInstanceId) {
-      const found = matched.find(
-        (item) => item.instanceId === selectedInstanceId,
-      );
-      if (found) return found;
-    }
-    return matched[0] ?? items[0];
-  }, [items, effectiveFilter, selectedInstanceId]);
+  const visibleItems = useMemo(
+    () => visibleInventoryItems(items, effectiveFilter, search, sortOrder),
+    [items, effectiveFilter, search, sortOrder],
+  );
+  const selectedItem = useMemo(
+    () => resolveSelectedInventoryItem(visibleItems, selectedInstanceId),
+    [visibleItems, selectedInstanceId],
+  );
 
   const selectedItemRequirements = useMemo(
     () => checkItemRequirements(liveState.crawler, selectedItem?.requirements),
@@ -129,10 +116,14 @@ export function InventoryView({
         ) : effectiveFilter !== "EQUIPMENT" ? (
           <>
             <InventoryItemBrowser
-              items={items}
+              visibleItems={visibleItems}
               observations={observations}
               filter={effectiveFilter}
-              selectedInstanceId={selectedInstanceId}
+              search={search}
+              setSearch={setSearch}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+              selectedInstanceId={selectedItem?.instanceId ?? null}
               setSelectedInstanceId={setSelectedInstanceId}
             />
             <div className="right">
