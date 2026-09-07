@@ -1,12 +1,12 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-06
+**Last Updated:** 2026-09-07
 
-### 🏥 Repository Health Score: **68.0 / 100**
+### 🏥 Repository Health Score: **66.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 71
-*   **Measured Files**: 71
+*   **Total Graph Files**: 76
+*   **Measured Files**: 76
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -17,9 +17,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/countdowns.ts` | **230.1** | 401 | 92 | 1 | 0.2 |
 | `app/domain/validation.ts` | **197.7** | 459 | 60 | 9 | 0.69 |
 | `app/domain/projection/helpers.ts` | **164.2** | 202 | 66 | 2 | 0.4 |
-| `src/features/inventory/InventoryView.tsx` | **131.2** | 74 | 45 | 8 | 0.89 |
+| `src/CrawlerApp.tsx` | **157.5** | 433 | 28 | 20 | 0.91 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
-| `src/CrawlerApp.tsx` | **122.1** | 79 | 28 | 20 | 0.91 |
+| `src/features/inventory/ItemInspector.tsx` | **111.7** | 247 | 33 | 3 | 0.75 |
 | `app/domain/fixtures/floor6.ts` | **103.4** | 774 | 1 | 2 | 1 |
 | `app/domain/observations.ts` | **97.2** | 322 | 29 | 1 | 0.25 |
 | `app/domain/projection/index.ts` | **89.8** | 195 | 15 | 11 | 0.92 |
@@ -31,10 +31,10 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/countdowns.ts` | **92** | 401 |
 | `app/domain/projection/helpers.ts` | **66** | 202 |
 | `app/domain/validation.ts` | **60** | 459 |
-| `src/features/inventory/InventoryView.tsx` | **45** | 74 |
 | `app/domain/compiler.ts` | **35** | 368 |
+| `src/features/inventory/ItemInspector.tsx` | **33** | 247 |
 | `app/domain/observations.ts` | **29** | 322 |
-| `src/CrawlerApp.tsx` | **28** | 79 |
+| `src/CrawlerApp.tsx` | **28** | 433 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **27** | 55 |
 | `src/features/timeline/diagnostics/SequenceInspector.tsx` | **25** | 50 |
 | `src/features/timeline/diagnostics/TimelineDiagnostics.tsx` | **21** | 48 |

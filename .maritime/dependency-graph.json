@@ -181,6 +181,10 @@
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/awardHistory.ts",
         "src/features/inventory/equipment/EquipmentView.tsx",
+        "src/features/inventory/EquippedGearSummary.tsx",
+        "src/features/inventory/InventoryCategories.tsx",
+        "src/features/inventory/InventoryItemBrowser.tsx",
+        "src/features/inventory/ItemInspector.tsx",
         "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
         "src/features/notifications/NotificationsView.tsx",
         "src/features/notifications/notification-presentation.ts",
@@ -2279,6 +2283,7 @@
         "src/features/crawler/CrawlerView.tsx",
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
+        "src/features/inventory/InventoryItemBrowser.tsx",
         "src/features/party/PartyView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
@@ -2450,8 +2455,12 @@
         "src/features/timeline/history/TimelineHistory.tsx",
         "src/features/crawler/health/HealthConditions.tsx",
         "src/features/crawler/stats/PlayerStats.tsx",
-        "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
+        "src/features/inventory/EquippedGearSummary.tsx",
+        "src/features/inventory/InventoryAwardsView.tsx",
+        "src/features/inventory/InventoryCategories.tsx",
+        "src/features/inventory/InventoryItemBrowser.tsx",
+        "src/features/inventory/ItemInspector.tsx",
         "src/features/ratings/RatingsView.tsx",
         "src/features/skills/SkillsView.tsx"
       ],
@@ -2673,8 +2682,8 @@
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/crawler/health/HealthConditions.tsx",
         "src/features/crawler/stats/PlayerStats.tsx",
-        "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
+        "src/features/inventory/ItemInspector.tsx",
         "src/features/ratings/RatingsView.tsx",
         "src/features/timeline/diagnostics/SequenceInspector.tsx"
       ],
@@ -3240,40 +3249,6 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel",
-          "resolved": "src/shared/ui/Panel.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../timeline/evidence/TelemetryBadge",
-          "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "./awardHistory",
           "resolved": "src/features/inventory/awardHistory.ts",
           "valid": true,
@@ -3293,6 +3268,91 @@
           "moduleSystem": "es6",
           "module": "./equipment/EquipmentView",
           "resolved": "src/features/inventory/equipment/EquipmentView.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./EquippedGearSummary",
+          "resolved": "src/features/inventory/EquippedGearSummary.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./InventoryAwardsView",
+          "resolved": "src/features/inventory/InventoryAwardsView.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./InventoryCategories",
+          "resolved": "src/features/inventory/InventoryCategories.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./InventoryItemBrowser",
+          "resolved": "src/features/inventory/InventoryItemBrowser.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./ItemInspector",
+          "resolved": "src/features/inventory/ItemInspector.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3360,7 +3420,8 @@
         }
       ],
       "dependents": [
-        "src/features/inventory/InventoryView.tsx"
+        "src/features/inventory/InventoryView.tsx",
+        "src/features/inventory/InventoryAwardsView.tsx"
       ],
       "orphan": false
     },
@@ -3453,6 +3514,265 @@
           "resolved": "node_modules/react/index.js",
           "valid": true,
           "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/EquippedGearSummary.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/InventoryAwardsView.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./awardHistory",
+          "resolved": "src/features/inventory/awardHistory.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/InventoryCategories.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/InventoryItemBrowser.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/ItemInspector.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../timeline/evidence/TelemetryBadge",
+          "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -4526,12 +4846,12 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 86,
-    "totalDependenciesCruised": 199,
+    "totalCruised": 91,
+    "totalDependenciesCruised": 214,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/home/runner/work/crawler-command-interface/crawler-command-interface",
+      "baseDir": "/app",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
