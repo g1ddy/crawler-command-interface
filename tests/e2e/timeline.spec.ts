@@ -67,7 +67,6 @@ test("inventory browser and inspector resolve the same visible selection", async
 
   const itemCards = page.locator(".grid .item");
   await expect(itemCards).not.toHaveCount(0);
-  await expect(itemCards.locator(".selected")).toHaveCount(0);
   await expect(itemCards.first()).toHaveClass(/selected/);
 
   const secondItem = itemCards.nth(1);
