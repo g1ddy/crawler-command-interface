@@ -1,73 +1,31 @@
-import { useMemo, useState } from "react";
 import type {
   InventoryItem,
-
-
-
   ProjectedObservationsState,
 } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
+import type { InventorySortOrder } from "./inventoryItemBrowserModel";
 
 export function InventoryItemBrowser({
-  items,
+  visibleItems,
   observations,
   filter,
+  search,
+  setSearch,
+  sortOrder,
+  setSortOrder,
   selectedInstanceId,
   setSelectedInstanceId,
 }: {
-  items: InventoryItem[];
+  visibleItems: InventoryItem[];
   observations: ProjectedObservationsState;
   filter: string;
+  search: string;
+  setSearch: (search: string) => void;
+  sortOrder: InventorySortOrder;
+  setSortOrder: (sortOrder: InventorySortOrder) => void;
   selectedInstanceId: string | null;
   setSelectedInstanceId: (id: string | null) => void;
 }) {
-  const [sortOrder, setSortOrder] = useState("newest");
-  const [search, setSearch] = useState("");
-
-  const filteredItems = useMemo(() => {
-    const rarityRank: Record<string, number> = {
-      celestial: 6,
-      legendary: 5,
-      epic: 4,
-      rare: 3,
-      uncommon: 2,
-      common: 1,
-    };
-    const matched = items.filter((item) => {
-      const matchesCategory =
-        filter === "ALL ITEMS"
-          ? true
-          : filter === "EQUIPMENT"
-            ? item.category === "EQUIPMENT" || item.category === "equipment"
-            : filter === "CONSUMABLES"
-              ? item.category === "CONSUMABLES" ||
-                item.category === "consumable"
-              : filter === "QUEST ITEMS"
-                ? item.category === "QUEST ITEMS" ||
-                  item.category === "quest-item"
-                : filter === "CRAFTING"
-                  ? item.category === "CRAFTING" || item.category === "crafting"
-                  : true;
-      return (
-        matchesCategory &&
-        item.name.toLowerCase().includes(search.toLowerCase())
-      );
-    });
-    return matched.sort((a, b) =>
-      sortOrder === "newest"
-        ? b.acquiredAtSequence - a.acquiredAtSequence
-        : sortOrder === "oldest"
-          ? a.acquiredAtSequence - b.acquiredAtSequence
-          : sortOrder === "rarity"
-            ? (rarityRank[b.rarity] || 0) - (rarityRank[a.rarity] || 0)
-            : sortOrder === "value"
-              ? b.value - a.value
-              : sortOrder === "name"
-                ? a.name.localeCompare(b.name)
-                : 0,
-    );
-  }, [items, filter, search, sortOrder]);
-
   return (
     <Panel title={filter}>
       <div className="tools">
@@ -80,7 +38,9 @@ export function InventoryItemBrowser({
         <select
           aria-label="Sort items"
           value={sortOrder}
-          onChange={(event) => setSortOrder(event.target.value)}
+          onChange={(event) =>
+            setSortOrder(event.target.value as InventorySortOrder)
+          }
           style={{
             border: "1px solid #294650",
             background: "#09141d",
@@ -97,9 +57,9 @@ export function InventoryItemBrowser({
           <option value="name">SORT: NAME ⌄</option>
         </select>
       </div>
-      {filteredItems.length > 0 ? (
+      {visibleItems.length > 0 ? (
         <div className="grid">
-          {filteredItems.map((item) => {
+          {visibleItems.map((item) => {
             const observation = observations.inventory[item.instanceId];
             return (
               <button
