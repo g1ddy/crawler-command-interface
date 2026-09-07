@@ -5,6 +5,10 @@ on:
   push:
     branches: [main]
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -29,3 +33,14 @@ jobs:
           name: github-pages-artifact
           path: dist-pages
           if-no-files-found: error
+
+  e2e:
+    name: Playwright E2E
+    needs: verify
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/playwright.yml
+    with:
+      checkout-repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+      expected-source-sha: ${{ github.event.pull_request.head.sha || github.sha }}

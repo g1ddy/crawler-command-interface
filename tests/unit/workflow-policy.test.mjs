@@ -23,6 +23,28 @@ test("ordinary PR verification workflows do not commit or push to active branche
   }
 });
 
+test("Playwright is a PR-associated reusable job consuming the current CI artifact", async () => {
+  const ci = await readFile(join(repositoryRoot, ".github/workflows/ci.yml"), "utf8");
+  const playwright = await readFile(join(repositoryRoot, ".github/workflows/playwright.yml"), "utf8");
+
+  assert.match(ci, /e2e:[\s\S]*?needs: verify[\s\S]*?uses: \.\/\.github\/workflows\/playwright\.yml/,
+    "CI must invoke Playwright after verification in the originating check suite");
+  assert.match(ci, /expected-source-sha: \$\{\{ github\.event\.pull_request\.head\.sha \|\| github\.sha \}\}/,
+    "CI must pass the PR head SHA, with a push SHA fallback, to Playwright");
+  assert.match(playwright, /workflow_call:/,
+    "Playwright must be reusable from the PR-associated CI workflow");
+  assert.doesNotMatch(playwright, /workflow_run:/,
+    "Playwright must not run as a detached downstream workflow");
+  assert.match(playwright, /name: github-pages-artifact\s+path: dist-pages/,
+    "Playwright must download the Pages artifact from the current CI run");
+  assert.doesNotMatch(playwright, /run-id:/,
+    "Playwright must not select an artifact from a detached workflow run");
+  assert.match(playwright, /Verify artifact provenance[\s\S]*?EXPECTED_SOURCE_SHA:[\s\S]*?build-provenance\.json/,
+    "Playwright must verify artifact provenance before browser execution");
+  assert.ok(playwright.indexOf("Verify artifact provenance") < playwright.indexOf("playwright install"),
+    "artifact provenance must be checked before browsers are installed");
+});
+
 test("artifact workflow keeps verification read-only and gates the only writer", async () => {
   const publishWorkflowPath = join(repositoryRoot, ".github/workflows/publish-artifacts.yml");
   const content = await readFile(publishWorkflowPath, "utf8");
