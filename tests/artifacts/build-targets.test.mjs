@@ -23,6 +23,16 @@ function readRequiredFile(filePath) {
   return fs.readFileSync(filePath, "utf8");
 }
 
+function assertProvenance(provenance, target) {
+  assert.equal(provenance.target, target);
+  assert.match(provenance.commitSha, /^[0-9a-f]{7,40}$/i);
+  assert.match(provenance.sourceSha, /^[0-9a-f]{7,40}$/i);
+
+  if (process.env.BUILD_SOURCE_SHA) {
+    assert.equal(provenance.sourceSha, process.env.BUILD_SOURCE_SHA);
+  }
+}
+
 test("live-app build retains the Sites Worker capture contract", () => {
   const workerPath = path.join(liveDirectory, "server", "index.js");
   const packagedHostingPath = path.join(liveDirectory, ".openai", "hosting.json");
@@ -38,9 +48,7 @@ test("live-app build retains the Sites Worker capture contract", () => {
     "The captured live-app artifact must retain its hosting identity",
   );
 
-  const provenance = JSON.parse(readRequiredFile(provenancePath));
-  assert.equal(provenance.target, "live");
-  assert.match(provenance.commitSha, /^[0-9a-f]{7,40}$/i);
+  assertProvenance(JSON.parse(readRequiredFile(provenancePath)), "live");
 });
 
 test("GitHub Pages build is a self-contained static application", () => {
@@ -66,12 +74,10 @@ test("GitHub Pages build is a self-contained static application", () => {
     assert.ok(fs.existsSync(artifactPath), `Expected emitted static asset: ${url}`);
   }
 
-  const provenance = JSON.parse(readRequiredFile(provenancePath));
-  assert.equal(provenance.target, "pages");
-  assert.match(provenance.commitSha, /^[0-9a-f]{7,40}$/i);
+  assertProvenance(JSON.parse(readRequiredFile(provenancePath)), "pages");
 });
 
-test("both deployment targets capture the same source commit", () => {
+test("both deployment targets capture the same build and source revisions", () => {
   const liveProvenance = JSON.parse(
     readRequiredFile(path.join(liveDirectory, "build-provenance.json")),
   );
@@ -80,4 +86,5 @@ test("both deployment targets capture the same source commit", () => {
   );
 
   assert.equal(liveProvenance.commitSha, pagesProvenance.commitSha);
+  assert.equal(liveProvenance.sourceSha, pagesProvenance.sourceSha);
 });
