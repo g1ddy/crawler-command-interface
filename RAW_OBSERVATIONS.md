@@ -82,7 +82,7 @@ Use snapshots only when the source actually supports a point-in-time collection 
 
 ## Raw-data collection methodology
 
-Collect claims before authoring JSON. Keep a short claim ledger for each floor that records the fact, its source, the exact locator, source tier, and whether it is an event, an observation, or both. Then author only the claims that the source directly supports. The current conditional-domain research ledger is [docs/FLOORS_1_2_CANON_READINESS.md](docs/FLOORS_1_2_CANON_READINESS.md); update it when new evidence changes a capability decision.
+Collect claims before authoring JSON. Keep a short claim ledger for each floor that records the fact, its source, the exact locator, source tier, and whether it is an event, an observation, or both. Then author only the claims that the source directly supports. The durable domain readiness ledger is [docs/CANON_READINESS.md](docs/CANON_READINESS.md); update it when new evidence changes a capability decision.
 
 `Source-backed` means that a claim is traceable to evidence of sufficient quality and specificity for that claim. It does **not** require a directly accessible book citation.
 

@@ -1,18 +1,12 @@
-# Floors 1–2 Canon Domain Readiness Ledger
+# Canon Domain Readiness Ledger
 
-This ledger records what the current Floors 1–2 evidence can support for conditional Crawler Menu domains. It is a research and product-readiness artifact, not authored story data.
+This document is the durable readiness ledger for conditional Crawler Menu domains. It records what authored story evidence supports for conditional interface domains across active and future floor scopes. It is a research and capability-readiness artifact, not authored story data.
 
 For authoring rules, source tiers, and the evidence contract, see [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md). The authoritative event and observation records remain [data/raw/floors/floor-1/](../data/raw/floors/floor-1/) and [data/raw/floors/floor-2/](../data/raw/floors/floor-2/).
 
 ## Decision rule
 
-A domain becomes navigable only when a source-backed fact has a correct raw representation, replay projection, and useful behavior. A source tier is visible product context:
-
-- **Primary**: published text, licensed audiobook, or official preview.
-- **Corroborating**: maintained wiki, database, or structured summary.
-- **Candidate**: discussion or search lead; not a basis for authored state.
-
-Primary evidence is preferred for new mechanics and persistent state when available. Corroborating evidence may preserve a clearly scoped fact at its actual tier, but it never becomes primary by implication. Missing evidence means unknown, unavailable, or no feature.
+A domain becomes navigable only when a source-backed fact has a correct raw representation, replay projection, and useful behavior. Source tier definitions (Primary, Corroborating, and Candidate) and evidence authoring contracts are defined in [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md). Missing or insufficient evidence leaves a capability unknown or unavailable.
 
 ## Focused readiness
 

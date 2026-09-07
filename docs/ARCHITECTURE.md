@@ -46,7 +46,7 @@ GitHub Pages adapter ───┘        │
 
 `src/CrawlerApp.tsx` is the application composition/state root. It owns timeline-document lifecycle, selected sequence/floor/live state, top-level projections, capability coordination, and global modal state. Detailed feature rendering is delegated to `src/shell/ActiveFeatureView.tsx`; persistent replay rendering is delegated to `src/shell/replay/ReplaySurface.tsx`; data tools are delegated to `src/shell/tools/TimelineToolsModal.tsx`.
 
-The current generic feature-facing event mutation callback remains a known transition point. #143 owns replacing it with typed application commands; #97 intentionally preserves valid write behavior while reconciling the read/composition architecture.
+User interactions emit events that append to the live timeline endpoint without mutating historical sequence states. Shared state composition is centralized at the state root and projected deterministically.
 
 ## Navigation and capability ownership
 
@@ -136,7 +136,7 @@ Shared browser UI must not depend on host-specific UI/assets. `app/domain/` rema
 
 ## Domain and data lifecycle
 
-Authoritative story evidence lives under `data/raw/`. The raw authoring/storage decomposition and compiler/projection contracts are defined by #137/#138 and the authoring guide in [`RAW_OBSERVATIONS.md`](../RAW_OBSERVATIONS.md); this document does not duplicate those rules.
+Authoritative story evidence lives under `data/raw/`. The raw authoring/storage decomposition and compiler/projection contracts are defined by the authoring guide in [`RAW_OBSERVATIONS.md`](../RAW_OBSERVATIONS.md); this document does not duplicate those rules.
 
 The runtime pipeline is:
 
@@ -208,7 +208,11 @@ During development preserve these boundaries:
 - shared browser code must not depend on ChatGPT-host-specific UI/assets;
 - Worker-reachable modules must not execute Node-only behavior or dynamic schema compilation during import/render.
 
-#144 owns converting the stable rules above into machine-enforced CI policy. Maritime remains generated structural evidence and should be regenerated/reviewed after architecture changes rather than hand-edited.
+Maritime remains generated structural evidence and should be regenerated and reviewed after architecture changes rather than hand-edited.
+
+### Conceptual vs. generated architecture views
+
+Conceptual diagrams document architectural intent and layer ownership. Generated diagrams (such as Maritime architecture graphs in [COMPLEXITY.md](COMPLEXITY.md)) document observed repository structure and static module dependencies. Neither replaces the other.
 
 ## Verification
 

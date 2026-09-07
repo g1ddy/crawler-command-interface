@@ -186,7 +186,28 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 - **Generated documentation screenshots**: Treat `docs/images/screenshot-*.png` as generated canonical documentation assets. Regenerate them with `npm run test:screenshots` locally or use the approval-gated artifact publication workflow; do not retouch or replace them manually.
 - **Shared runtime portability**: Code shared by the adapters must continue to work in both browser-only Pages mode and the more restrictive ChatGPT Worker import/render path.
 - **Verification**: Ensure `npm run verify` passes completely before submitting code.
+## Documentation Ownership Matrix
+
+Every document in this repository owns a distinct, non-overlapping concern:
+
+| Document | Authoritative Ownership |
+| --- | --- |
+| [README.md](../README.md) | Product entry point, deployment modes, quick start, documentation index |
+| [AGENTS.md](../AGENTS.md) | Agent operating rules, durable invariants, repository map, canonical verification entry points |
+| [docs/ARCHITECTURE.md](ARCHITECTURE.md) | Responsibility/dependency boundaries, composition root, host adapters, data flow |
+| [docs/DEVELOPMENT.md](DEVELOPMENT.md) | Contributor setup, canonical commands, builds, verification, generated-artifact workflows, documentation matrix |
+| [docs/COMPLEXITY.md](COMPLEXITY.md) | Complexity metrics interpretation and canonical generated Maritime evidence |
+| [docs/SCREENSHOTS.md](SCREENSHOTS.md) | Durable visual-state contract, canonical vs synthetic rules, screenshot regeneration |
+| [docs/ROADMAP.md](ROADMAP.md) | Unfinished product/architecture work and intentional deferrals only |
+| [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) | Sourced evidence authoring rules, JSON schemas, countdown projection contracts |
+| [docs/CANON_READINESS.md](CANON_READINESS.md) | Durable readiness ledger governing conditional Crawler Menu capabilities |
+
 - **Documentation boundaries**:
+  - Refer to [README.md](../README.md) for product entry point and deployment modes.
+  - Refer to [AGENTS.md](../AGENTS.md) for coding agent guidelines and durable invariants.
   - Refer to [ARCHITECTURE.md](ARCHITECTURE.md) for system architecture, run modes, host-specific constraints, and data flow.
-  - Refer to [ROADMAP.md](ROADMAP.md) for current product goals and task backlogs.
-  - Refer to [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) for evidence authoring, JSON schemas, countdown projection semantics.
+  - Refer to [COMPLEXITY.md](COMPLEXITY.md) for generated Maritime architecture and complexity evidence.
+  - Refer to [SCREENSHOTS.md](SCREENSHOTS.md) for canonical screenshot rules and visual contracts.
+  - Refer to [ROADMAP.md](ROADMAP.md) for current product goals and intentional deferrals.
+  - Refer to [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) for evidence authoring, JSON schemas, countdown projection contracts.
+  - Refer to [CANON_READINESS.md](CANON_READINESS.md) for domain readiness rules.

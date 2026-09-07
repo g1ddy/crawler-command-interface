@@ -11,12 +11,12 @@ This file is a concise map for coding agents. Detailed contracts live in the can
 - [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) — canonical source-honest product screenshots.
 - [docs/ROADMAP.md](docs/ROADMAP.md) — active product backlog and intentional deferrals.
 - [RAW_OBSERVATIONS.md](RAW_OBSERVATIONS.md) — authoritative raw evidence authoring/projection rules.
-- [docs/FLOORS_1_2_CANON_READINESS.md](docs/FLOORS_1_2_CANON_READINESS.md) — readiness ledger for conditional canon domains.
+- [docs/CANON_READINESS.md](docs/CANON_READINESS.md) — durable readiness ledger governing conditional Crawler Menu domains.
 
 ## Durable invariants
 
 1. **Deterministic replay** — selecting a sequence reconstructs the same historical state.
-2. **Immutable history** — user actions never rewrite an earlier sequence; current generic mutation plumbing is transitional and #143 owns typed commands.
+2. **Immutable history** — user actions never rewrite an earlier sequence; live interactions append new events to the endpoint rather than mutating historical sequences.
 3. **Authoritative raw evidence** — story evidence is authored under `data/raw/`; generated floor/timeline files are regenerated rather than hand-edited.
 4. **Source honesty** — missing state remains unknown/unavailable. Do not invent fallback clocks, timestamps, stats, roster details, or other plausible values.
 5. **Capability-driven navigation** — modeled domains appear in root navigation only after projected state provides useful supported behavior.
@@ -67,7 +67,7 @@ shell / application composition
 host adapter
 ```
 
-Keep `src/shared/` generic, features below shell, and host-specific assets outside the shared browser core. Do not create feature-to-shell imports or domain-to-React imports. #144 owns durable machine enforcement after the structure stabilizes.
+Keep `src/shared/` generic, features below shell, and host-specific assets outside the shared browser core. Do not create feature-to-shell imports or domain-to-React imports.
 
 ## Verification
 

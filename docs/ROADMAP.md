@@ -39,16 +39,9 @@ Host-specific Worker, static Pages, authentication, and tooling boundaries are d
 
 ### 5. Deployment and Delivery
 
-- [x] Promote the canonical, provenance-checked Pages artifact from deterministic CI to deployment and Playwright through independent downstream workflows; keep browser E2E visible but non-blocking for deployment.
 - [ ] Record reviewed `main` commit SHA during ChatGPT live-app releases, or automate release metadata generation in CI/CD.
 
 ### 6. Quality, Governance, and Disclaimers
 
-- [x] Implement Playwright E2E browser tests:
-  - [x] Verify scrubbing backward clears later inventory/stat/telemetry state.
-  - [x] Verify floor navigation updates sequence to derived floor endpoints.
-  - [x] Verify **Return to Live** restores latest projected state.
-  - [x] Verify live interactions initiated during replay append endpoint events without altering earlier sequences.
-  - [x] Smoke-test the normal GitHub Pages project path and a mobile viewport.
 - [ ] Add Dependabot configuration, GitHub code scanning, `.editorconfig`, issue templates, and PR template.
 - [ ] Add clear non-commercial fan-project disclaimer prior to wider public promotion.
