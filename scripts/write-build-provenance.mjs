@@ -16,14 +16,15 @@ const outputDirectory = resolve(
 const commitSha =
   process.env.GITHUB_SHA ??
   execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+const sourceSha = process.env.BUILD_SOURCE_SHA ?? commitSha;
 
-if (!commitSha) {
-  throw new Error("Unable to determine the source commit for this build.");
+if (!commitSha || !sourceSha) {
+  throw new Error("Unable to determine build provenance.");
 }
 
 await mkdir(outputDirectory, { recursive: true });
 await writeFile(
   resolve(outputDirectory, "build-provenance.json"),
-  `${JSON.stringify({ target, commitSha }, null, 2)}\n`,
+  `${JSON.stringify({ target, commitSha, sourceSha }, null, 2)}\n`,
   "utf8",
 );
