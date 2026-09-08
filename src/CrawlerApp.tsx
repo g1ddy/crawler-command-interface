@@ -8,11 +8,7 @@ import {
   projectObservations,
   projectState,
 } from "../app/domain/projection";
-import {
-  checkItemRequirements,
-  getStatBreakdown,
-  type StatBreakdown,
-} from "../app/domain/stats";
+import { getStatBreakdown, type StatBreakdown } from "../app/domain/stats";
 import type {
   CrawlerEvent,
   CrawlerState,
@@ -40,6 +36,7 @@ import { RootNavigation } from "./shell/navigation/RootNavigation";
 import type { RootView } from "./shell/navigation/navigation-model";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
 import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
+import { createApplicationActions, type ActionResult, type EquipmentSlot } from "./application/crawler-actions";
 
 export default function CrawlerApp() {
   const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
@@ -84,7 +81,7 @@ export default function CrawlerApp() {
   const [showTimelineHistory, setShowTimelineHistory] = useState(false);
   const [showTimelineEvidence, setShowTimelineEvidence] = useState(false);
   const [inventoryFilter, setInventoryFilter] = useState("ALL ITEMS");
-  const [equipmentSlot, setEquipmentSlot] = useState("TORSO");
+  const [equipmentSlot, setEquipmentSlot] = useState<EquipmentSlot>("TORSO");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   useEffect(() => {
     if (!toastMessage) return;
@@ -163,46 +160,14 @@ export default function CrawlerApp() {
     setSelectedSeq(end);
     setIsLive(end === maxSeq);
   };
-  const handleEmitEvent = (eventData: Partial<CrawlerEvent>) => {
-    if (eventData.type === "ItemEquipped") {
-      const state = projectState(timelineDoc, maxSeq);
-      const item = state.inventory.find(
-        (candidate) => candidate.instanceId === eventData.itemInstanceId,
-      );
-      if (
-        !item ||
-        !checkItemRequirements(state.crawler, item.requirements).met
-      ) {
-        setToastMessage("⚠️ Cannot equip: Requirements not met!");
-        return;
-      }
-    }
-    const nextSeq = maxSeq + 1;
-    const summary = eventData.summary || `Recorded ${eventData.type}`;
-    const event = {
-      id: `evt-user-${Date.now()}`,
-      sequence: nextSeq,
-      occurred_at: projectedState.occurredAt,
-      type: eventData.type || "ItemEquipped",
-      summary,
-      category: eventData.category || "system",
-      position: { floor: latestFloor, elapsedSeconds: 0 },
-      evidence: [{ sourceId: "src-wda-system-log", confidence: "confirmed" }],
-      ...eventData,
-    } as CrawlerEvent;
-    updateTimeline({
-      ...timelineDoc,
-      events: [...timelineDoc.events, event],
-      floors: timelineDoc.floors?.map((floor) =>
-        floor.ordinal === latestFloor
-          ? { ...floor, endSequence: Math.max(floor.endSequence, nextSeq) }
-          : floor,
-      ),
-    } as CrawlerTimelineDocument);
-    setSelectedSeq(nextSeq);
+  const handleActionResult = (result: ActionResult) => {
+    if (!result.ok) { setToastMessage(`⚠️ ${result.error}`); return; }
+    updateTimeline(result.document);
+    setSelectedSeq(result.event.sequence);
     setIsLive(true);
-    setToastMessage(`⚡ ${summary}`);
+    setToastMessage(`⚡ ${result.message}`);
   };
+  const actions = createApplicationActions(timelineDoc, handleActionResult);
   const handleExportJson = () => {
     const anchor = document.createElement("a");
     anchor.href =
@@ -362,7 +327,7 @@ export default function CrawlerApp() {
           equipmentSlot={equipmentSlot}
           setEquipmentSlot={setEquipmentSlot}
           onNavigateToSequence={navigateToSequence}
-          onEmitEvent={handleEmitEvent}
+          actions={actions}
           onInspectObservation={setInspectObservation}
           onInspectStat={setInspectStat}
         />

@@ -1,13 +1,14 @@
 import { useMemo, useState } from "react";
-import type { CrawlerEvent, CrawlerState } from "../../../app/domain/types";
+import type { CrawlerState } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
+import type { SkillActions } from "../../application/crawler-actions";
 
 export function SkillsView({
   state,
-  onEmitEvent,
+  actions,
 }: {
   state: CrawlerState;
-  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
+  actions: SkillActions;
 }) {
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [filter, setFilter] = useState<string>("ALL SKILLS");
@@ -26,12 +27,7 @@ export function SkillsView({
 
   const handleAssignHotlist = (hotlistIndex: number) => {
     if (!selectedSkill) return;
-    onEmitEvent({
-      type: "HotlistUpdated",
-      index: hotlistIndex,
-      skillId: selectedSkill.skillId,
-      summary: `Assigned ${selectedSkill.name} to hotlist slot #${hotlistIndex + 1}`,
-    });
+    actions.assignHotlistSlot(hotlistIndex, selectedSkill.skillId);
   };
 
   return (

@@ -10,6 +10,7 @@ import type {
   TimelineSource,
 } from "../../../app/domain/types";
 import { checkItemRequirements } from "../../../app/domain/stats";
+import type { EquipmentSlot, InventoryActions } from "../../application/crawler-actions";
 import { deriveAwardHistory } from "./awardHistory";
 import { EquipmentView } from "./equipment/EquipmentView";
 import { ItemProvenanceDrawer } from "./provenance/ItemProvenanceDrawer";
@@ -37,7 +38,7 @@ export function InventoryView({
   slot,
   setSlot,
   onNavigateToSequence,
-  onEmitEvent,
+  actions,
   onInspectObservation,
 }: {
   state: CrawlerState;
@@ -50,10 +51,10 @@ export function InventoryView({
   setProvenanceItem: (item: InventoryItem | null) => void;
   filter: string;
   setFilter: (f: string) => void;
-  slot: string;
-  setSlot: (s: string) => void;
+  slot: EquipmentSlot;
+  setSlot: (s: EquipmentSlot) => void;
   onNavigateToSequence: (seq: number) => void;
-  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
+  actions: InventoryActions;
   onInspectObservation: (
     obs:
       | ProjectedObservationValue
@@ -134,7 +135,7 @@ export function InventoryView({
                   selectedItem={selectedItem}
                   observation={selectedItemObservation}
                   requirementResult={selectedItemRequirements}
-                  onEmitEvent={onEmitEvent}
+                  actions={actions}
                   onOpenProvenance={(item) => setProvenanceItem(item)}
                   onInspectObservation={onInspectObservation}
                 />
@@ -157,7 +158,7 @@ export function InventoryView({
             observations={observations}
             slot={slot}
             setSlot={setSlot}
-            onEmitEvent={onEmitEvent}
+            actions={actions}
             onOpenProvenance={(item) => setProvenanceItem(item)}
             onInspectObservation={onInspectObservation}
           />

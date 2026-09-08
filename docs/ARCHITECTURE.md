@@ -48,6 +48,24 @@ GitHub Pages adapter ───┘        │
 
 User interactions emit events that append to the live timeline endpoint without mutating historical sequence states. Shared state composition is centralized at the state root and projected deterministically.
 
+## Application mutation boundary
+
+Feature UI expresses crawler intent through the focused action contracts in
+`src/application/crawler-actions.ts`; it does not construct persisted timeline
+events. The command executor validates requests against the projected live state,
+reuses domain eligibility helpers, assigns runtime identity and sequence metadata,
+and appends one immutable event at the live endpoint. Runtime actions carry an
+explicit `user-runtime` origin and empty evidence instead of claiming authored
+story provenance.
+
+Crawler, inventory, and skills actions belong at this boundary. Import, export,
+and reset remain secondary shell tooling because they replace, serialize, or clear
+the timeline document rather than representing actions performed by the crawler.
+To add an interactive domain mutation, add a focused intent and validation/event
+mapping here, expose only its domain action interface to the feature, and test both
+rejection and live-endpoint append behavior. Do not duplicate projection reducers
+in the application layer.
+
 ## Navigation and capability ownership
 
 `src/shell/navigation/navigation-model.ts` is the single non-React source of truth for root destination IDs, order, and labels. `capabilities.ts` evaluates replay-aware availability from projected state, and `RootNavigation.tsx` renders only available destinations. Keyboard navigation consumes the same filtered ordering.

@@ -1,13 +1,14 @@
-import type { AttributeName, CrawlerEvent, CrawlerState, ProjectedObservationsState, ProjectedObservationValue } from "../../../../app/domain/types";
+import type { AttributeName, CrawlerState, ProjectedObservationsState, ProjectedObservationValue } from "../../../../app/domain/types";
 import { TelemetryBadge } from "../../timeline/evidence/TelemetryBadge";
 import { Panel } from "../../../shared/ui/Panel";
+import type { CrawlerActions } from "../../../application/crawler-actions";
 
-export function PlayerStats({ state, observations, onInspectStat, onInspectObservation, onEmitEvent }: {
+export function PlayerStats({ state, observations, onInspectStat, onInspectObservation, actions }: {
   state: CrawlerState;
   observations: ProjectedObservationsState;
   onInspectStat: (stat: string) => void;
   onInspectObservation: (observation: ProjectedObservationValue) => void;
-  onEmitEvent: (event: Partial<CrawlerEvent>) => void;
+  actions: CrawlerActions;
 }) {
   const crawler = state.crawler;
   const level = observations.xpProgress.level?.value ?? crawler.level;
@@ -27,7 +28,7 @@ export function PlayerStats({ state, observations, onInspectStat, onInspectObser
         const observation = observations.attributes[name];
         const value = observation?.value ?? crawler.attributes[name];
         const canAllocate = crawler.availableAttributePoints > 0;
-        return <div key={name} className="stat-row"><p className="stat-clickable" onClick={() => onInspectStat(name)}><span>{name} 🔍</span><b>{value ?? "—"}</b><TelemetryBadge observation={observation} causalValue={crawler.attributes[name]} onClick={() => observation && onInspectObservation(observation)} /><em><i className={color} style={{ width: `${Math.min(100, Number(value || 0) * 2)}%` }} /></em></p><div className="attr-actions"><button className="attr-btn add" disabled={!canAllocate} onClick={() => canAllocate && onEmitEvent({ type: "AttributeModified", attribute: name, source: "allocation", delta: 1, summary: `Allocated +1 point to ${name}` })}>+1</button></div></div>;
+        return <div key={name} className="stat-row"><p className="stat-clickable" onClick={() => onInspectStat(name)}><span>{name} 🔍</span><b>{value ?? "—"}</b><TelemetryBadge observation={observation} causalValue={crawler.attributes[name]} onClick={() => observation && onInspectObservation(observation)} /><em><i className={color} style={{ width: `${Math.min(100, Number(value || 0) * 2)}%` }} /></em></p><div className="attr-actions"><button className="attr-btn add" disabled={!canAllocate} onClick={() => canAllocate && actions.allocateAttribute(name)}>+1</button></div></div>;
       })}</div>
       <div className="points-banner"><span>AVAILABLE STAT POINTS</span><b className={crawler.availableAttributePoints > 0 ? "has-points" : ""}>{crawler.availableAttributePoints}</b><TelemetryBadge observation={observations.attributes.availableAttributePoints} causalValue={crawler.availableAttributePoints} onClick={() => observations.attributes.availableAttributePoints && onInspectObservation(observations.attributes.availableAttributePoints)} /></div>
     </Panel>

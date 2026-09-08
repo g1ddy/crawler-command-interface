@@ -747,21 +747,21 @@
                   "name"
                 ],
                 "properties": {
-                    "kind": {
-                      "enum": [
-                        "crawler-menu",
-                        "loot-box",
-                        "equipment",
-                        "dungeon-book"
-                      ]
-                    },
-                    "name": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "itemInstanceId": {
-                      "$ref": "#/$defs/id"
-                    }
+                  "kind": {
+                    "enum": [
+                      "crawler-menu",
+                      "loot-box",
+                      "equipment",
+                      "dungeon-book"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "itemInstanceId": {
+                    "$ref": "#/$defs/id"
+                  }
                 }
               }
             }
@@ -811,7 +811,6 @@
         },
         "evidence": {
           "type": "array",
-          "minItems": 1,
           "items": {
             "$ref": "#/$defs/evidence"
           }
@@ -854,8 +853,41 @@
               "type": "string"
             }
           }
+        },
+        "origin": {
+          "const": "user-runtime"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "origin"
+            ],
+            "properties": {
+              "origin": {
+                "const": "user-runtime"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "evidence": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
     },
     "event": {
       "oneOf": [
@@ -904,7 +936,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -950,6 +981,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1003,7 +1037,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1049,6 +1082,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1099,7 +1135,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1157,6 +1192,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1211,7 +1249,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1266,6 +1303,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1317,7 +1357,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1372,6 +1411,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1422,7 +1464,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1487,6 +1528,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1537,7 +1581,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1603,6 +1646,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1654,7 +1700,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1751,6 +1796,9 @@
                       }
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1802,7 +1850,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -1848,6 +1895,9 @@
                 },
                 "party": {
                   "$ref": "#/$defs/party"
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               }
             }
@@ -1912,7 +1962,6 @@
                 },
                 "evidence": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "$ref": "#/$defs/evidence"
                   }
@@ -2169,6 +2218,9 @@
                       "type": "string"
                     }
                   }
+                },
+                "origin": {
+                  "const": "user-runtime"
                 }
               },
               "allOf": [

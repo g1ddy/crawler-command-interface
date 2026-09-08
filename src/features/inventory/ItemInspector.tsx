@@ -1,5 +1,4 @@
 import type {
-  CrawlerEvent,
   InventoryItem,
   ProjectedEquipmentObservation,
   ProjectedItemObservation,
@@ -7,19 +6,20 @@ import type {
 } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
 import { TelemetryBadge } from "../timeline/evidence/TelemetryBadge";
+import type { InventoryActions } from "../../application/crawler-actions";
 
 export function ItemInspector({
   selectedItem,
   observation,
   requirementResult,
-  onEmitEvent,
+  actions,
   onOpenProvenance,
   onInspectObservation,
 }: {
   selectedItem: InventoryItem;
   observation?: ProjectedItemObservation | ProjectedEquipmentObservation;
   requirementResult: { met: boolean; details: { key: string; required: number; current: number; met: boolean }[] };
-  onEmitEvent: (evt: Partial<CrawlerEvent>) => void;
+  actions: InventoryActions;
   onOpenProvenance: (item: InventoryItem) => void;
   onInspectObservation: (
     obs:
@@ -127,17 +127,7 @@ export function ItemInspector({
               color: "#62ef98",
             }}
             onClick={() =>
-              onEmitEvent({
-                type: "ItemConsumed",
-                itemInstanceId: selectedItem.instanceId,
-                quantity: 1,
-                healthRestored: selectedItem.name
-                  .toLowerCase()
-                  .includes("health")
-                  ? 500
-                  : undefined,
-                summary: `Consumed ${selectedItem.name}`,
-              })
+              actions.consumeItem(selectedItem.instanceId)
             }
           >
             USE CONSUMABLE 🧪
@@ -169,14 +159,8 @@ export function ItemInspector({
             disabled={!selectedItem.isEquipped && !requirementResult.met}
             onClick={() => {
               if (!selectedItem.isEquipped && !requirementResult.met) return;
-              onEmitEvent({
-                type: selectedItem.isEquipped
-                  ? "ItemUnequipped"
-                  : "ItemEquipped",
-                itemInstanceId: selectedItem.instanceId,
-                slot: selectedItem.slot || "SPECIAL",
-                summary: `${selectedItem.isEquipped ? "Unequipped" : "Equipped"} ${selectedItem.name}`,
-              });
+              if (selectedItem.isEquipped) actions.unequipItem(selectedItem.instanceId);
+              else actions.equipItem(selectedItem.instanceId);
             }}
           >
             {selectedItem.isEquipped ? "UNEQUIP GEAR ✕" : "EQUIP GEAR ⚔"}
@@ -208,11 +192,7 @@ export function ItemInspector({
             color: "#86cbff",
           }}
           onClick={() =>
-            onEmitEvent({
-              type: "ItemLockToggled",
-              itemInstanceId: selectedItem.instanceId,
-              summary: `${selectedItem.isLocked ? "Unlocked" : "Locked"} ${selectedItem.name}`,
-            })
+            actions.toggleItemLock(selectedItem.instanceId)
           }
         >
           {selectedItem.isLocked ? "UNLOCK 🔒" : "LOCK 🔓"}
@@ -230,11 +210,7 @@ export function ItemInspector({
             }}
             disabled={selectedItem.isLocked}
             onClick={() =>
-              onEmitEvent({
-                type: "ItemDiscarded",
-                itemInstanceId: selectedItem.instanceId,
-                summary: `Discarded ${selectedItem.name}`,
-              })
+              actions.discardItem(selectedItem.instanceId)
             }
           >
             DISCARD 🗑️
