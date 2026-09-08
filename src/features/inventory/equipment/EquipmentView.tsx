@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import type { CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue } from "../../../../app/domain/types";
 import { compareGearStats, checkItemRequirements } from "../../../../app/domain/stats";
-import { TelemetryBadge } from "../../timeline/evidence/TelemetryBadge";
+import { TelemetryBadge } from "../../timeline/public";
 import { Panel } from "../../../shared/ui/Panel";
-import type { EquipmentSlot, InventoryActions } from "../../../application/crawler-actions";
+import type { EquipmentSlot, InventoryActions } from "../../../application/crawler-action-contracts";
 
 export function EquipmentView({ state, liveState, observations, slot, setSlot, actions, onOpenProvenance, onInspectObservation }: {
   state: CrawlerState;

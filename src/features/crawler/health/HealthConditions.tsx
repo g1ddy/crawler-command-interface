@@ -1,5 +1,5 @@
 import type { CrawlerState, ProjectedObservationsState, ProjectedObservationValue } from "../../../../app/domain/types";
-import { TelemetryBadge } from "../../timeline/evidence/TelemetryBadge";
+import { TelemetryBadge } from "../../timeline/public";
 import { Panel } from "../../../shared/ui/Panel";
 import { groupConditions } from "./condition-presentation";
 

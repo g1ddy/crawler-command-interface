@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.02,
-    "fanIn": 61,
+    "fanIn": 62,
     "fanOut": 1,
     "scanned": true
   },
@@ -265,18 +265,26 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 28,
-    "loc": 398,
-    "instability": 0.91,
+    "loc": 399,
+    "instability": 0.92,
     "fanIn": 2,
-    "fanOut": 21,
+    "fanOut": 22,
+    "scanned": true
+  },
+  "src/application/crawler-action-contracts.ts": {
+    "complexity": 1,
+    "loc": 21,
+    "instability": 0.11,
+    "fanIn": 8,
+    "fanOut": 1,
     "scanned": true
   },
   "src/application/crawler-actions.ts": {
     "complexity": 49,
-    "loc": 157,
-    "instability": 0.27,
-    "fanIn": 8,
-    "fanOut": 3,
+    "loc": 128,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
     "scanned": true
   },
   "src/features/crawler/stats/StatInspectorModal.tsx": {
@@ -300,6 +308,22 @@
     "loc": 11,
     "instability": 0.07,
     "fanIn": 13,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/timeline/public.ts": {
+    "complexity": 1,
+    "loc": 4,
+    "instability": 0.25,
+    "fanIn": 6,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/TelemetryBadge.tsx": {
+    "complexity": 15,
+    "loc": 12,
+    "instability": 0.25,
+    "fanIn": 3,
     "fanOut": 1,
     "scanned": true
   },
@@ -333,14 +357,6 @@
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
-    "scanned": true
-  },
-  "src/features/timeline/evidence/TelemetryBadge.tsx": {
-    "complexity": 15,
-    "loc": 12,
-    "instability": 0.13,
-    "fanIn": 7,
-    "fanOut": 1,
     "scanned": true
   },
   "src/features/timeline/history/TimelineHistory.tsx": {

@@ -216,17 +216,76 @@ The same rule applies to visual documentation. `tests/screenshots/canonical-scre
 
 ## Dependency direction
 
-During development preserve these boundaries:
+The repository machine-enforces these boundaries against imports parsed directly
+from the current working source:
 
-- domain/projection must not import React feature/shell UI;
-- `src/shared/` must remain domain-neutral;
-- features must not import shell orchestration;
+- domain/projection must not import anything under `src/` or host-specific modules
+  elsewhere in `app/`;
+- `src/shared/` must remain domain-neutral and can depend only on other shared
+  modules (plus external generic libraries), not root application composition,
+  domain, application, feature, shell, or host modules;
+- features must not import shell orchestration, root composition entry points, or
+  sibling feature internals;
+- `src/application/` may depend only on itself and downward on `app/domain/`; it
+  cannot import root application composition, React, feature/shell/shared UI, or
+  host adapters;
 - shell may compose feature entry points;
-- feature-to-feature dependencies should be narrow and explicit;
+- shared browser code cannot import ChatGPT/Vinext-specific `app/` modules (the
+  documented `app/domain/` runtime boundary is the sole exception);
+- browser/Worker entry points cannot transitively reach Node-only authoring
+  modules or Node built-ins (including bare built-in names); Vinext's `app/page.tsx`
+  and `app/layout.tsx` are explicit roots because their reachability is hidden
+  behind the external Vinext Worker handler;
 - shared browser code must not depend on ChatGPT-host-specific UI/assets;
 - Worker-reachable modules must not execute Node-only behavior or dynamic schema compilation during import/render.
 
-Maritime remains generated structural evidence and should be regenerated and reviewed after architecture changes rather than hand-edited.
+The reviewable policy is [`architecture-policy.json`](../architecture-policy.json),
+and [`scripts/check-architecture.mjs`](../scripts/check-architecture.mjs) performs
+the lightweight dependency analysis. `npm run test:architecture` includes focused
+positive and negative fixtures, and is part of `npm run verify`. Its analysis is
+always derived from the exact source being verified; a previously committed
+`.maritime/dependency-graph.json` cannot satisfy this gate.
+Configured TypeScript path aliases, including `@/*`, are resolved before policy
+rules run, so alias imports cannot bypass a local dependency boundary.
+Unresolved relative imports are also checked against common stylesheet, image,
+and font extensions. These assets remain local dependency edges, so host-owned
+assets cannot cross into the shared browser application merely because they are
+not TypeScript modules.
+
+Runtime traversal treats every module under `scripts/` as Node-only build or
+authoring code in addition to the explicitly listed domain authoring modules.
+Scripts are included in dependency analysis, so runtime reachability cannot hide
+a Node built-in or another Node-only dependency behind an intermediate helper.
+
+### Application mutation contracts
+
+`src/application/` is the typed mutation boundary. Features consume only the
+focused interfaces in `src/application/crawler-action-contracts.ts`; they cannot
+import `crawler-actions.ts`, its executor, append mechanics, command/event mapping,
+or future implementation modules. The composition root constructs those action
+implementations and distributes the narrow interfaces. New mutation domains
+should extend a focused application contract and implement it in this layer using
+domain projection, eligibility, and type helpers—never construct persisted events
+inside a feature.
+
+### Intentional cross-feature contracts
+
+A feature may expose semantics that another feature genuinely needs through the
+single narrow entry point `src/features/<feature>/public.ts`. For example,
+Timeline's public contract exposes its evidence-aware `TelemetryBadge` to crawler,
+inventory, and ratings presentation without pretending that domain-aware evidence
+UI is a generic `src/shared/ui` primitive. Arbitrary sibling implementation imports
+fail architecture verification.
+
+To introduce another intentional contract, add or extend the owning feature's
+`public.ts`, keep its exports focused, document why the concept is owned there,
+and add a positive architecture fixture. Do not add path-specific exceptions to
+the checker or move crawler semantics into `src/shared/` to evade the boundary.
+
+Maritime remains generated structural evidence describing dependencies and should
+be regenerated and reviewed after architecture changes rather than hand-edited.
+The independent policy defines whether dependencies are allowed; developers do
+not need to inspect the generated SVG to understand a policy failure.
 
 ### Conceptual vs. generated architecture views
 

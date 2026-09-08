@@ -36,7 +36,8 @@ import { RootNavigation } from "./shell/navigation/RootNavigation";
 import type { RootView } from "./shell/navigation/navigation-model";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
 import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
-import { createApplicationActions, type ActionResult, type EquipmentSlot } from "./application/crawler-actions";
+import { createApplicationActions } from "./application/crawler-actions";
+import type { ActionResult, EquipmentSlot } from "./application/crawler-action-contracts";
 
 export default function CrawlerApp() {
   const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);

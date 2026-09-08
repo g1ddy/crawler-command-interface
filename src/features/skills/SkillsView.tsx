@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { CrawlerState } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
-import type { SkillActions } from "../../application/crawler-actions";
+import type { SkillActions } from "../../application/crawler-action-contracts";
 
 export function SkillsView({
   state,

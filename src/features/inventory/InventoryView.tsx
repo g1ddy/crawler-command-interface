@@ -10,7 +10,7 @@ import type {
   TimelineSource,
 } from "../../../app/domain/types";
 import { checkItemRequirements } from "../../../app/domain/stats";
-import type { EquipmentSlot, InventoryActions } from "../../application/crawler-actions";
+import type { EquipmentSlot, InventoryActions } from "../../application/crawler-action-contracts";
 import { deriveAwardHistory } from "./awardHistory";
 import { EquipmentView } from "./equipment/EquipmentView";
 import { ItemProvenanceDrawer } from "./provenance/ItemProvenanceDrawer";
