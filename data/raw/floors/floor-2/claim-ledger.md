@@ -11,6 +11,36 @@ Claims that can be represented faithfully with the current raw timeline are no l
 - the complete 3d11h daily patch; and
 - bathroom-penalty removal at floor collapse, plus the missing boss-room achievement definition.
 
+## Pet-domain research
+
+The community [Pets & Dungeon Familiars](https://dungeon-crawler-carl.fandom.com/wiki/Pets_%26_Dungeon_Familiars) reference is corroborating evidence only. Its citations identify useful Book 1 chapter leads, but those citations must not be promoted to primary/confirmed provenance until the published text or licensed audio is directly inspected. Because this PR introduces no raw Pet event, the reference is intentionally kept in this research ledger rather than added to executable `sources.json`.
+
+| Claim | Current evidence | Authoring decision |
+| --- | --- | --- |
+| Donut claims a caged mongoliensis from a Second Floor pet reward room. | Pets & Dungeon Familiars, Crawler Pets / Story; cites Book 1 ch. 46. | This is a distinct acquisition boundary and should eventually precede the bond transition. The current schema lacks a typed pet acquisition event, so retain it here rather than hide the fact in an unrelated item or Party event. |
+| The acquired creature is initially a `pet-class mob` and is not yet bonded with a crawler. | Pets & Dungeon Familiars, AI Description / Story; cites Book 1 ch. 46. | Supports an explicit unbonded Pet state. Do not treat acquisition as immediate ownership/bond completion. |
+| Mongo remains hostile after acquisition; Donut has to remove the automatic aggression before bonding can complete. | Pets & Dungeon Familiars, Bonding and the Pet Menu / Story; cites Book 1 ch. 47 for the relevant Mongo explanation. | Supports a pre-bond progression state, but exact minimap color/state semantics should remain corroborating until primary text is verified. |
+| Donut hunts alongside Mongo and feeds/trains him until the bond completes late on Floor 2. | Pets & Dungeon Familiars, Bonding and the Pet Menu / Story. | Supports a causal bond-completion transition distinct from acquisition. Do not infer numeric bond progress. |
+| Once bonded, Mongo is named Mongo and receives the title `Royal Steed`. | Pets & Dungeon Familiars, Bonding and the Pet Menu / Story. | Candidate fields for the bonded Pet projection. Keep title/name separate from crawler Party membership. |
+| Bonding is required for the pet to continue with the crawler across a floor collapse; the reference says an unbonded pet must be left behind. | Pets & Dungeon Familiars, Bonding and the Pet Menu. | Combined with Mongo's continued presence after Floor 2, this supports persistence of the bonded relationship across the Floor 2→3 boundary. The general rule itself should remain corroborating until primary verification. |
+| Bonding unlocks a Pet Menu and exposes pet-specific management/state. | Pets & Dungeon Familiars, Bonding and the Pet Menu. | This is evidence that Pet can become a useful application capability after bond completion, but #130 should decide the minimal UI only from fields actually sourced by the current story scope. |
+
+### Current raw-model mismatch
+
+The existing `evt-f2-mongo-bonded` remains a `NarrativeEvent(kind: party-changed)` even though Mongo is not a crawler Party member. The Party regression test correctly prevents this event from modifying the crawler roster, but the event kind is still a transitional representation.
+
+Do **not** add another generic narrative Pet event merely to make the ledger executable. #130 should replace the transitional representation with the smallest typed Pet acquisition/bond contract that can express:
+
+- stable pet identity;
+- dungeon-origin pet classification;
+- acquisition before bonding;
+- bond holder (`crawler-donut`);
+- bonded/unbonded state and replay boundary;
+- sourced name/title when verified; and
+- persistence into the next floor without implying crawler Party membership.
+
+Exact level, XP, stats, combat values, weaknesses, gear slots, carrier state, commands, and growth rules remain outside the Floor 2 projection unless independently sourced and represented deliberately.
+
 ## Remaining evidence that cannot yet be authored as a precise replay fact
 
 | Claim | Why it remains | Follow-up |
@@ -38,3 +68,5 @@ Keep these as floor/mechanics reference rather than manufacturing replay events:
 - Floor population remains `floor-metrics`, never `broadcast-metrics`, and is never interpolated.
 - Do not fabricate Carl's health, attributes, inventory, or social-number snapshots from this page.
 - Keep the wiki corroborating; supplement causal story events with primary chapter evidence.
+- Keep Mongo out of crawler Party state; Pet and Party are distinct domains even when narrative language says he joins the Royal Court.
+- Do not backport later-book pet mechanics into Floor 2 merely because the Pets/Familiars reference explains them on the same page.
