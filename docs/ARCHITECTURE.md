@@ -229,7 +229,9 @@ from the current working source:
 - shared browser code cannot import ChatGPT/Vinext-specific `app/` modules (the
   documented `app/domain/` runtime boundary is the sole exception);
 - browser/Worker entry points cannot transitively reach Node-only authoring
-  modules or Node built-ins;
+  modules or Node built-ins (including bare built-in names); Vinext's `app/page.tsx`
+  and `app/layout.tsx` are explicit roots because their reachability is hidden
+  behind the external Vinext Worker handler;
 - shared browser code must not depend on ChatGPT-host-specific UI/assets;
 - Worker-reachable modules must not execute Node-only behavior or dynamic schema compilation during import/render.
 
@@ -239,6 +241,8 @@ the lightweight dependency analysis. `npm run test:architecture` includes focuse
 positive and negative fixtures, and is part of `npm run verify`. Its analysis is
 always derived from the exact source being verified; a previously committed
 `.maritime/dependency-graph.json` cannot satisfy this gate.
+Configured TypeScript path aliases, including `@/*`, are resolved before policy
+rules run, so alias imports cannot bypass a local dependency boundary.
 
 ### Application mutation contracts
 

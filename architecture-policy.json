@@ -3,7 +3,13 @@
   "featureApplicationContracts": [
     "src/application/crawler-action-contracts.ts"
   ],
-  "runtimeRoots": ["src/CrawlerApp.tsx", "src/main.pages.tsx", "worker/index.ts"],
+  "runtimeRoots": [
+    "app/layout.tsx",
+    "app/page.tsx",
+    "src/CrawlerApp.tsx",
+    "src/main.pages.tsx",
+    "worker/index.ts"
+  ],
   "nodeAuthoringModules": [
     "app/domain/compiler.ts",
     "app/domain/raw-compiler.ts",

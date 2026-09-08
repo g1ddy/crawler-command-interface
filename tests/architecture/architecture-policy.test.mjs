@@ -9,6 +9,9 @@ const policy = JSON.parse(fs.readFileSync(new URL("../../architecture-policy.jso
 
 function analyze(files, overrides = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "crawler-architecture-"));
+  fs.writeFileSync(path.join(root, "tsconfig.json"), JSON.stringify({
+    compilerOptions: { moduleResolution: "bundler", paths: { "@/*": ["./*"] } },
+  }));
   for (const [file, contents] of Object.entries(files)) {
     fs.mkdirSync(path.join(root, path.dirname(file)), { recursive: true });
     fs.writeFileSync(path.join(root, file), contents);
@@ -48,6 +51,32 @@ test("rejects Node-only authoring code reachable from a browser runtime root", (
   });
   assert.ok(violations.some(({ rule }) => rule === "runtime-must-not-reach-node-authoring"));
   assert.ok(violations.some(({ rule }) => rule === "runtime-must-not-import-node-builtins"));
+});
+
+test("resolves configured path aliases before enforcing local boundaries", () => {
+  const violations = analyze({
+    "src/features/crawler/View.ts": 'import "@/src/shell/Nav";',
+    "src/shell/Nav.ts": "export {};",
+  });
+  assert.ok(violations.some(({ rule }) => rule === "features-must-not-depend-on-shell"));
+});
+
+test("treats Vinext route modules as Worker runtime roots", () => {
+  for (const route of ["app/page.tsx", "app/layout.tsx"]) {
+    const violations = analyze({
+      [route]: 'import "./route-helper";',
+      "app/route-helper.ts": 'import "./domain/raw-loader";',
+      "app/domain/raw-loader.ts": "export {};",
+    });
+    assert.ok(violations.some(({ rule }) => rule === "runtime-must-not-reach-node-authoring"), route);
+  }
+});
+
+test("rejects bare and node-prefixed built-in module specifiers in runtime code", () => {
+  for (const specifier of ["fs", "fs/promises", "node:fs", "node:fs/promises", "path", "crypto"]) {
+    const violations = analyze({ "src/CrawlerApp.tsx": `import ${JSON.stringify(specifier)};` });
+    assert.ok(violations.some(({ rule }) => rule === "runtime-must-not-import-node-builtins"), specifier);
+  }
 });
 
 test("allows domain dependencies and an explicit feature public contract", () => {

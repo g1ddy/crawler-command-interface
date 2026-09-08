@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { builtinModules } from "node:module";
 import ts from "typescript";
 import { fileURLToPath } from "node:url";
 
@@ -25,12 +26,19 @@ function sourceFiles(root) {
   return files.sort();
 }
 
-function resolveLocal(root, importer, specifier) {
-  if (!specifier.startsWith(".")) return null;
-  const base = path.resolve(root, path.dirname(importer), specifier);
-  const candidates = [base, ...SOURCE_EXTENSIONS.map((extension) => base + extension), ...SOURCE_EXTENSIONS.map((extension) => path.join(base, "index" + extension))];
-  const target = candidates.find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile());
-  return target ? slash(path.relative(root, target)) : null;
+function compilerOptions(root) {
+  const configFile = path.join(root, "tsconfig.json");
+  if (!fs.existsSync(configFile)) return {};
+  const config = ts.readConfigFile(configFile, ts.sys.readFile);
+  if (config.error) throw new Error(ts.flattenDiagnosticMessageText(config.error.messageText, "\n"));
+  return ts.parseJsonConfigFileContent(config.config, ts.sys, root).options;
+}
+
+function resolveLocal(root, importer, specifier, options) {
+  const resolved = ts.resolveModuleName(specifier, path.join(root, importer), options, ts.sys).resolvedModule?.resolvedFileName;
+  if (!resolved) return null;
+  const relative = slash(path.relative(root, resolved));
+  return relative.startsWith("../") || path.isAbsolute(relative) ? null : relative;
 }
 
 function importsFor(root, file) {
@@ -48,7 +56,8 @@ function importsFor(root, file) {
 
 export function analyzeArchitecture(root = ROOT, policy = JSON.parse(fs.readFileSync(path.join(root, "architecture-policy.json"), "utf8"))) {
   const files = sourceFiles(root);
-  const edges = files.flatMap((from) => importsFor(root, from).map((specifier) => ({ from, specifier, to: resolveLocal(root, from, specifier) })));
+  const options = compilerOptions(root);
+  const edges = files.flatMap((from) => importsFor(root, from).map((specifier) => ({ from, specifier, to: resolveLocal(root, from, specifier, options) })));
   const violations = [];
   const add = (rule, edge) => violations.push({ rule, ...edge });
 
@@ -75,7 +84,8 @@ export function analyzeArchitecture(root = ROOT, policy = JSON.parse(fs.readFile
       if (!reached.has(edge.to)) { reached.add(edge.to); pending.push(edge.to); }
     }
   }
-  for (const edge of edges) if (reached.has(edge.from) && !edge.to && /^node:/.test(edge.specifier)) add("runtime-must-not-import-node-builtins", edge);
+  const nodeBuiltins = new Set(builtinModules.flatMap((name) => [name, `node:${name}`]));
+  for (const edge of edges) if (reached.has(edge.from) && !edge.to && nodeBuiltins.has(edge.specifier)) add("runtime-must-not-import-node-builtins", edge);
   return violations;
 }
 
