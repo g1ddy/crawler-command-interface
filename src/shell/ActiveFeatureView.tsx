@@ -7,7 +7,7 @@ import { QuestsView } from "../features/quests/QuestsView";
 import { RatingsView } from "../features/ratings/RatingsView";
 import { SkillsView } from "../features/skills/SkillsView";
 import type { RootView } from "./navigation/navigation-model";
-import type { ApplicationActions } from "../application/crawler-actions";
+import type { ApplicationActions, EquipmentSlot } from "../application/crawler-actions";
 
 export function ActiveFeatureView({ view, state, liveState, observations, sources, events, sequence, isLive, provenanceItem, setProvenanceItem, inventoryFilter, setInventoryFilter, equipmentSlot, setEquipmentSlot, onNavigateToSequence, actions, onInspectObservation, onInspectStat }: {
   view: RootView;
@@ -22,8 +22,8 @@ export function ActiveFeatureView({ view, state, liveState, observations, source
   setProvenanceItem: (item: InventoryItem | null) => void;
   inventoryFilter: string;
   setInventoryFilter: (filter: string) => void;
-  equipmentSlot: string;
-  setEquipmentSlot: (slot: string) => void;
+  equipmentSlot: EquipmentSlot;
+  setEquipmentSlot: (slot: EquipmentSlot) => void;
   onNavigateToSequence: (sequence: number) => void;
   actions: ApplicationActions;
   onInspectObservation: (observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;

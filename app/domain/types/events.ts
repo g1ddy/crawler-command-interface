@@ -95,6 +95,8 @@ export interface TimelineEventBase {
   causationId?: string;
   correlationId?: string;
   evidence: TimelineEvidence[];
+  /** Omitted for authored events; runtime actions never claim story evidence. */
+  origin?: 'user-runtime';
   notificationDelivery?: NotificationDelivery;
 }
 

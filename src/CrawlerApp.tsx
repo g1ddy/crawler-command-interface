@@ -36,7 +36,7 @@ import { RootNavigation } from "./shell/navigation/RootNavigation";
 import type { RootView } from "./shell/navigation/navigation-model";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
 import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
-import { createApplicationActions, type ActionResult } from "./application/crawler-actions";
+import { createApplicationActions, type ActionResult, type EquipmentSlot } from "./application/crawler-actions";
 
 export default function CrawlerApp() {
   const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
@@ -81,7 +81,7 @@ export default function CrawlerApp() {
   const [showTimelineHistory, setShowTimelineHistory] = useState(false);
   const [showTimelineEvidence, setShowTimelineEvidence] = useState(false);
   const [inventoryFilter, setInventoryFilter] = useState("ALL ITEMS");
-  const [equipmentSlot, setEquipmentSlot] = useState("TORSO");
+  const [equipmentSlot, setEquipmentSlot] = useState<EquipmentSlot>("TORSO");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   useEffect(() => {
     if (!toastMessage) return;

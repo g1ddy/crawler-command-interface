@@ -5,10 +5,11 @@ import type {
   CrawlerEvent,
   CrawlerTimelineDocument,
   InventoryItem,
+  TimelineEvent,
 } from "../../app/domain/types.ts";
 
 export type ActionResult =
-  | { ok: true; document: CrawlerTimelineDocument; event: CrawlerEvent; message: string }
+  | { ok: true; document: CrawlerTimelineDocument; event: TimelineEvent; message: string }
   | { ok: false; error: string };
 
 export interface CrawlerActions {
@@ -16,7 +17,7 @@ export interface CrawlerActions {
 }
 
 export interface InventoryActions {
-  equipItem(instanceId: string): ActionResult;
+  equipItem(instanceId: string, requestedSlot?: EquipmentSlot): ActionResult;
   unequipItem(instanceId: string): ActionResult;
   consumeItem(instanceId: string, quantity?: number): ActionResult;
   repairItem(instanceId: string): ActionResult;
@@ -34,9 +35,12 @@ export interface ApplicationActions {
   skills: SkillActions;
 }
 
+export const EQUIPMENT_SLOTS = ["HEAD", "FACE", "NECK", "TORSO", "WRISTS", "RING", "WAIST", "LEGS", "FEET", "SPECIAL"] as const;
+export type EquipmentSlot = typeof EQUIPMENT_SLOTS[number];
+
 export type CrawlerCommand =
   | { type: "allocate-attribute"; attribute: AttributeName }
-  | { type: "equip-item"; instanceId: string }
+  | { type: "equip-item"; instanceId: string; requestedSlot?: EquipmentSlot }
   | { type: "unequip-item"; instanceId: string }
   | { type: "consume-item"; instanceId: string; quantity?: number }
   | { type: "repair-item"; instanceId: string }
@@ -64,28 +68,25 @@ export function executeCrawlerCommand(
     ? liveState.inventory.find((candidate) => candidate.instanceId === command.instanceId)
     : undefined;
   let fields: EventFields;
-  let category: CrawlerEvent["category"] = "system";
 
   switch (command.type) {
     case "allocate-attribute":
       if (!(command.attribute in liveState.crawler.attributes)) return failure("Unknown attribute.");
       if (liveState.crawler.availableAttributePoints < 1) return failure("No attribute points are available.");
       fields = { type: "AttributeModified", attribute: command.attribute, source: "allocation", delta: 1, summary: `Allocated +1 point to ${command.attribute}` };
-      category = "levelup";
       break;
     case "equip-item": {
       if (!item) return failure("Item is not present in the live inventory.");
       if (!isEquipment(item)) return failure("Only equipment can be equipped.");
       if (!checkItemRequirements(liveState.crawler, item.requirements).met) return failure("Cannot equip: requirements not met.");
-      const slot = item.slot || "SPECIAL";
+      if (command.requestedSlot && !EQUIPMENT_SLOTS.includes(command.requestedSlot)) return failure("Requested equipment slot is not supported.");
+      const slot = command.requestedSlot ?? item.slot ?? "SPECIAL";
       fields = { type: "ItemEquipped", itemInstanceId: item.instanceId, slot, summary: `Equipped ${item.name} to ${slot} slot` };
-      category = "loot";
       break;
     }
     case "unequip-item":
       if (!item?.isEquipped) return failure("Item is not equipped at the live endpoint.");
       fields = { type: "ItemUnequipped", itemInstanceId: item.instanceId, slot: findEquippedSlot(liveState.equippedSlots, item.instanceId), summary: `Unequipped ${item.name}` };
-      category = "loot";
       break;
     case "consume-item": {
       if (!item) return failure("Item is not present in the live inventory.");
@@ -93,44 +94,39 @@ export function executeCrawlerCommand(
       const quantity = command.quantity ?? 1;
       if (!Number.isInteger(quantity) || quantity < 1 || quantity > item.quantity) return failure("Consumption quantity is invalid or unavailable.");
       fields = { type: "ItemConsumed", itemInstanceId: item.instanceId, quantity, ...(item.name.toLowerCase().includes("health") ? { healthRestored: 500 } : {}), summary: `Consumed ${item.name}` };
-      category = "loot";
       break;
     }
     case "repair-item":
       if (!item?.durability) return failure("Item cannot be repaired.");
       if (item.durability.current >= item.durability.max) return failure("Item is already fully repaired.");
       fields = { type: "ItemRepaired", itemInstanceId: item.instanceId, summary: `Repaired ${item.name} to full durability` };
-      category = "loot";
       break;
     case "toggle-item-lock":
       if (!item) return failure("Item is not present in the live inventory.");
       fields = { type: "ItemLockToggled", itemInstanceId: item.instanceId, summary: `${item.isLocked ? "Unlocked" : "Locked"} ${item.name}` };
-      category = "loot";
       break;
     case "discard-item":
       if (!item) return failure("Item is not present in the live inventory.");
       if (item.isLocked) return failure("Locked items cannot be discarded.");
       if (item.isEquipped) return failure("Equipped items cannot be discarded.");
       fields = { type: "ItemDiscarded", itemInstanceId: item.instanceId, summary: `Discarded ${item.name}` };
-      category = "loot";
       break;
     case "assign-hotlist-slot": {
       if (!Number.isInteger(command.slot) || command.slot < 0 || command.slot >= 10) return failure("Hotlist slot must be between 0 and 9.");
       const skill = liveState.skills.find((candidate) => candidate.skillId === command.skillId);
       if (!skill) return failure("Skill is not available at the live endpoint.");
       fields = { type: "HotlistUpdated", index: command.slot, skillId: skill.skillId, summary: `Assigned ${skill.name} to hotlist slot #${command.slot + 1}` };
-      category = "skills";
       break;
     }
   }
 
   const sequence = liveSequence + 1;
   const event = {
-    id: createId(), sequence, occurred_at: liveState.occurredAt, category,
+    id: createId(), sequence,
     position: lastEvent?.position ? { ...lastEvent.position } : { floor: document.floors?.at(-1)?.ordinal ?? 1 },
     evidence: [], origin: "user-runtime", ...fields,
-  } as CrawlerEvent;
-  const floor = event.position?.floor;
+  } as TimelineEvent;
+  const floor = event.position.floor;
   const nextDocument = {
     ...document,
     events: [...document.events, event],
@@ -144,7 +140,7 @@ export function createApplicationActions(document: CrawlerTimelineDocument, appl
   return {
     crawler: { allocateAttribute: (attribute) => run({ type: "allocate-attribute", attribute }) },
     inventory: {
-      equipItem: (instanceId) => run({ type: "equip-item", instanceId }),
+      equipItem: (instanceId, requestedSlot) => run({ type: "equip-item", instanceId, requestedSlot }),
       unequipItem: (instanceId) => run({ type: "unequip-item", instanceId }),
       consumeItem: (instanceId, quantity) => run({ type: "consume-item", instanceId, quantity }),
       repairItem: (instanceId) => run({ type: "repair-item", instanceId }),

@@ -3,19 +3,19 @@ import type { CrawlerState, InventoryItem, ProjectedEquipmentObservation, Projec
 import { compareGearStats, checkItemRequirements } from "../../../../app/domain/stats";
 import { TelemetryBadge } from "../../timeline/evidence/TelemetryBadge";
 import { Panel } from "../../../shared/ui/Panel";
-import type { InventoryActions } from "../../../application/crawler-actions";
+import type { EquipmentSlot, InventoryActions } from "../../../application/crawler-actions";
 
 export function EquipmentView({ state, liveState, observations, slot, setSlot, actions, onOpenProvenance, onInspectObservation }: {
   state: CrawlerState;
   liveState: CrawlerState;
   observations: ProjectedObservationsState;
-  slot: string;
-  setSlot: (v: string) => void;
+  slot: EquipmentSlot;
+  setSlot: (v: EquipmentSlot) => void;
   actions: InventoryActions;
   onOpenProvenance: (item: InventoryItem) => void;
   onInspectObservation?: (obs: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
 }) {
-  const slots = [["HEAD", "◉", "Headgear"], ["FACE", "◌", "Visor/Mask"], ["NECK", "◇", "Amulet/Necklace"], ["TORSO", "◈", "Body Armor/Vest"], ["WRISTS", "▱", "Bracers"], ["RING", "💍", "Finger Ring"], ["WAIST", "▰", "Belt/Waistband"], ["LEGS", "╿", "Leg Armor"], ["FEET", "▰", "Footwear/Boots"], ["SPECIAL", "✦", "Relic/Special"]];
+  const slots: readonly (readonly [EquipmentSlot, string, string])[] = [["HEAD", "◉", "Headgear"], ["FACE", "◌", "Visor/Mask"], ["NECK", "◇", "Amulet/Necklace"], ["TORSO", "◈", "Body Armor/Vest"], ["WRISTS", "▱", "Bracers"], ["RING", "💍", "Finger Ring"], ["WAIST", "▰", "Belt/Waistband"], ["LEGS", "╿", "Leg Armor"], ["FEET", "▰", "Footwear/Boots"], ["SPECIAL", "✦", "Relic/Special"]];
   const inventoryMap = useMemo(() => { const map = new Map<string, InventoryItem>(); for (const item of state.inventory) if (item.instanceId && !map.has(item.instanceId)) map.set(item.instanceId, item); return map; }, [state.inventory]);
   const equippedInstanceId = state.equippedSlots[slot];
   const equippedItem = equippedInstanceId ? inventoryMap.get(equippedInstanceId) : undefined;
@@ -43,7 +43,7 @@ export function EquipmentView({ state, liveState, observations, slot, setSlot, a
         <div style={{ background: "#08131a", padding: "12px", border: "1px solid #1d3e4c", marginBottom: "14px" }}><p className="eyebrow">STAT DELTA BREAKDOWN</p>{statDeltas.length > 0 ? <div style={{ display: "grid", gap: "6px", fontSize: "11px", marginTop: "8px" }}>{statDeltas.map((delta) => <div key={delta.statName} style={{ display: "flex", justifyContent: "space-between", padding: "4px 8px", background: "#0c1b26", borderLeft: `3px solid ${delta.delta > 0 ? "#4ee88a" : delta.delta < 0 ? "#ff5868" : "#3b5866"}` }}><span>{delta.statName}</span><span>{delta.equippedValue} ➔ {delta.candidateValue} <strong style={{ color: delta.delta > 0 ? "#4ee88a" : delta.delta < 0 ? "#ff5868" : "#8fa8b2", marginLeft: "6px" }}>({delta.delta >= 0 ? `+${delta.delta}` : delta.delta})</strong></span></div>)}</div> : <p style={{ fontSize: "10px", color: "#8fa8b2" }}>No direct stat modifiers recorded on either item.</p>}</div>
         <div style={{ marginBottom: "14px", fontSize: "10px", color: "#a5b9c0" }}>{requirements.met ? <p style={{ color: "#62ef98" }}>✓ ITEM REQUIREMENTS MET</p> : <div style={{ color: "#ff737d" }}><p>❌ REQUIREMENTS UNMET:</p>{requirements.details.filter((detail) => !detail.met).map((detail) => <span key={detail.key} style={{ display: "block", marginLeft: "10px" }}>• Requires {detail.key}: {detail.required} (Current: {detail.current})</span>)}</div>}</div>
         <div className="actions" style={{ flexWrap: "wrap", gap: "6px" }}>
-          {activeCandidate.instanceId !== equippedItem?.instanceId && <button style={{ background: requirements.met ? "#0e3a24" : "#2a1818", borderColor: requirements.met ? "#2de079" : "#633030", color: requirements.met ? "#62ef98" : "#8a5858", cursor: requirements.met ? "pointer" : "not-allowed" }} disabled={!requirements.met} onClick={() => actions.equipItem(activeCandidate.instanceId)}>EQUIP GEAR ⚔</button>}
+          {activeCandidate.instanceId !== equippedItem?.instanceId && <button style={{ background: requirements.met ? "#0e3a24" : "#2a1818", borderColor: requirements.met ? "#2de079" : "#633030", color: requirements.met ? "#62ef98" : "#8a5858", cursor: requirements.met ? "pointer" : "not-allowed" }} disabled={!requirements.met} onClick={() => actions.equipItem(activeCandidate.instanceId, slot)}>EQUIP GEAR ⚔</button>}
           {activeCandidate.durability && activeCandidate.durability.current < activeCandidate.durability.max && <button style={{ background: "#212d12", borderColor: "#86c934", color: "#bcf26d" }} onClick={() => actions.repairItem(activeCandidate.instanceId)}>REPAIR 🛠</button>}
           <button style={{ background: "#0e2330", borderColor: "#30729e", color: "#86cbff" }} onClick={() => actions.toggleItemLock(activeCandidate.instanceId)}>{activeCandidate.isLocked ? "UNLOCK 🔒" : "LOCK 🔓"}</button>
           <button style={{ background: "#0c1b26", borderColor: "#2d5266", color: "#a1d4e6" }} onClick={() => onOpenProvenance(activeCandidate)}>PROVENANCE 🔍</button>
