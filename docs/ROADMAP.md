@@ -19,7 +19,7 @@ Host-specific Worker, static Pages, authentication, and tooling boundaries are d
 
 ### 1. Historical State and Replay
 
-- [ ] Add direct navigation links from Journal entries to their related item, skill, quest, achievement, or entitlement inspector.
+- [ ] Add direct navigation links from Timeline History entries to their related item, skill, quest, achievement, or entitlement inspector.
 - [ ] *Intentional Deferral*: Evaluate moving from `localStorage` to `IndexedDB` only if timeline size, multiple saved timelines, or offline query needs make `localStorage` inadequate.
 
 ### 2. Event-Sourced Crawler Data

@@ -136,20 +136,7 @@ so the existing verification command does not implicitly download browser binari
 
 Documentation screenshots are generated source-controlled assets, not disposable test output. `npm run test:screenshots` uses a dedicated single-browser Playwright configuration with a fixed desktop viewport, one worker, no retries, reduced motion, explicit semantic UI-state assertions, and no fixed sleeps or forced clicks.
 
-The canonical screenshot set is written directly to `docs/images/`:
-
-- `screenshot-crawler.png`
-- `screenshot-inventory.png`
-- `screenshot-skills.png`
-- `screenshot-quests.png`
-- `screenshot-ratings.png`
-- `screenshot-party.png`
-- `screenshot-notifications.png`
-- `screenshot-awards.png`
-- `screenshot-crawler-stats.png`
-- `screenshot-crawler-health.png`
-- `screenshot-floor-rules.png`
-- `screenshot-timeline-history.png`
+The executable manifest in `tests/screenshots/canonical-screenshots.ts` defines the authoritative set of generated canonical screenshot files written directly to `docs/images/` (including representative views such as `screenshot-crawler.png` and `screenshot-inventory.png`). Refer to [SCREENSHOTS.md](SCREENSHOTS.md) for visual-state semantics, canonical versus synthetic fixture rules, and individual view descriptions.
 
 These files are generated evidence of the documented interface and should not be hand-edited. On each applicable pull-request update, `.github/workflows/publish-artifacts.yml` regenerates the complete canonical set in its `verify-screenshots` job. Screenshot verification runs as a read-only check without writing back to the active PR branch; generated screenshots are uploaded as workflow artifacts for inspection before publication.
 
