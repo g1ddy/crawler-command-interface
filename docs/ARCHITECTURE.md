@@ -224,7 +224,8 @@ from the current working source:
 - `src/shared/` must remain domain-neutral and can depend only on other shared
   modules (plus external generic libraries), not root application composition,
   domain, application, feature, shell, or host modules;
-- features must not import shell orchestration and sibling feature internals;
+- features must not import shell orchestration, root composition entry points, or
+  sibling feature internals;
 - `src/application/` may depend only on itself and downward on `app/domain/`; it
   cannot import root application composition, React, feature/shell/shared UI, or
   host adapters;
@@ -246,6 +247,15 @@ always derived from the exact source being verified; a previously committed
 `.maritime/dependency-graph.json` cannot satisfy this gate.
 Configured TypeScript path aliases, including `@/*`, are resolved before policy
 rules run, so alias imports cannot bypass a local dependency boundary.
+Unresolved relative imports are also checked against common stylesheet, image,
+and font extensions. These assets remain local dependency edges, so host-owned
+assets cannot cross into the shared browser application merely because they are
+not TypeScript modules.
+
+Runtime traversal treats every module under `scripts/` as Node-only build or
+authoring code in addition to the explicitly listed domain authoring modules.
+Scripts are included in dependency analysis, so runtime reachability cannot hide
+a Node built-in or another Node-only dependency behind an intermediate helper.
 
 ### Application mutation contracts
 

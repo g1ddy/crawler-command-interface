@@ -58,6 +58,37 @@ test("rejects Node-only authoring code reachable from a browser runtime root", (
   assert.ok(violations.some(({ rule }) => rule === "runtime-must-not-import-node-builtins"));
 });
 
+test("rejects runtime imports of build scripts and follows their dependencies", () => {
+  const violations = analyze({
+    "src/CrawlerApp.tsx": 'import "../scripts/build-helper.mjs";',
+    "scripts/build-helper.mjs": 'import "./nested.mjs";',
+    "scripts/nested.mjs": 'import fs from "fs";',
+  });
+  assert.ok(violations.some(({ rule, to }) => rule === "runtime-must-not-reach-node-authoring" && to === "scripts/build-helper.mjs"));
+  assert.ok(violations.some(({ rule, from }) => rule === "runtime-must-not-import-node-builtins" && from === "scripts/nested.mjs"));
+});
+
+test("resolves relative non-TypeScript assets as local policy edges", () => {
+  const violations = analyze({
+    "src/CrawlerApp.tsx": 'import "../app/host.css";',
+    "app/host.css": ":root { color: red; }",
+  });
+  assert.ok(violations.some(({ rule, to }) => rule === "shared-browser-must-not-depend-on-host" && to === "app/host.css"));
+});
+
+test("rejects feature dependencies on application composition roots", () => {
+  for (const [target, specifier] of [
+    ["src/CrawlerApp.tsx", "../../CrawlerApp"],
+    ["src/main.pages.tsx", "../../main.pages"],
+  ]) {
+    const violations = analyze({
+      "src/features/inventory/View.ts": `import ${JSON.stringify(specifier)};`,
+      [target]: "export {};",
+    });
+    assert.ok(violations.some(({ rule }) => rule === "features-must-not-depend-on-composition"), target);
+  }
+});
+
 test("resolves configured path aliases before enforcing local boundaries", () => {
   const violations = analyze({
     "src/features/crawler/View.ts": 'import "@/src/shell/Nav";',

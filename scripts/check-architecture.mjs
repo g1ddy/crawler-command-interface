@@ -6,12 +6,13 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_EXTENSIONS = [".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".json"];
+const ASSET_EXTENSIONS = [".css", ".scss", ".sass", ".less", ".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".ico", ".woff", ".woff2", ".ttf", ".otf"];
 
 function slash(value) { return value.split(path.sep).join("/"); }
 
 function sourceFiles(root) {
   const files = [];
-  for (const sourceRoot of ["app", "src", "worker"]) {
+  for (const sourceRoot of ["app", "src", "worker", "scripts"]) {
     const directory = path.join(root, sourceRoot);
     if (!fs.existsSync(directory)) continue;
     const visit = (current) => {
@@ -36,6 +37,15 @@ function compilerOptions(root) {
 
 function resolveDependency(root, importer, specifier, options) {
   const resolved = ts.resolveModuleName(specifier, path.join(root, importer), options, ts.sys).resolvedModule;
+  if (!resolved && specifier.startsWith(".")) {
+    const candidate = path.resolve(root, path.dirname(importer), specifier);
+    const localFile = [candidate, ...ASSET_EXTENSIONS.map((extension) => `${candidate}${extension}`)]
+      .find((file) => fs.existsSync(file) && fs.statSync(file).isFile());
+    if (localFile) {
+      const relative = slash(path.relative(root, localFile));
+      if (!relative.startsWith("../") && !path.isAbsolute(relative)) return { to: relative, external: false };
+    }
+  }
   if (!resolved || resolved.isExternalLibraryImport) return { to: null, external: true };
   const relative = slash(path.relative(root, resolved.resolvedFileName));
   if (relative.startsWith("../") || path.isAbsolute(relative) || relative.startsWith("node_modules/")) return { to: null, external: true };
@@ -81,7 +91,9 @@ export function analyzeArchitecture(root = ROOT, policy = JSON.parse(fs.readFile
   const reached = new Set(pending);
   while (pending.length) {
     for (const edge of outgoing.get(pending.pop()) ?? []) {
-      if (policy.nodeAuthoringModules.includes(edge.to)) add("runtime-must-not-reach-node-authoring", edge);
+      const isNodeAuthoring = policy.nodeAuthoringModules.includes(edge.to)
+        || (policy.nodeAuthoringPatterns ?? []).some((pattern) => new RegExp(pattern).test(edge.to));
+      if (isNodeAuthoring) add("runtime-must-not-reach-node-authoring", edge);
       if (!reached.has(edge.to)) { reached.add(edge.to); pending.push(edge.to); }
     }
   }
