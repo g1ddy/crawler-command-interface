@@ -219,12 +219,15 @@ The same rule applies to visual documentation. `tests/screenshots/canonical-scre
 The repository machine-enforces these boundaries against imports parsed directly
 from the current working source:
 
-- domain/projection must not import anything under `src/`;
-- `src/shared/` must remain domain-neutral and cannot import domain, application,
-  feature, shell, or host modules;
+- domain/projection must not import anything under `src/` or host-specific modules
+  elsewhere in `app/`;
+- `src/shared/` must remain domain-neutral and can depend only on other shared
+  modules (plus external generic libraries), not root application composition,
+  domain, application, feature, shell, or host modules;
 - features must not import shell orchestration and sibling feature internals;
-- `src/application/` may depend downward on `app/domain/`, but cannot import
-  React, feature/shell UI, or host adapters;
+- `src/application/` may depend only on itself and downward on `app/domain/`; it
+  cannot import root application composition, React, feature/shell/shared UI, or
+  host adapters;
 - shell may compose feature entry points;
 - shared browser code cannot import ChatGPT/Vinext-specific `app/` modules (the
   documented `app/domain/` runtime boundary is the sole exception);

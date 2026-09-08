@@ -34,11 +34,12 @@ function compilerOptions(root) {
   return ts.parseJsonConfigFileContent(config.config, ts.sys, root).options;
 }
 
-function resolveLocal(root, importer, specifier, options) {
-  const resolved = ts.resolveModuleName(specifier, path.join(root, importer), options, ts.sys).resolvedModule?.resolvedFileName;
-  if (!resolved) return null;
-  const relative = slash(path.relative(root, resolved));
-  return relative.startsWith("../") || path.isAbsolute(relative) ? null : relative;
+function resolveDependency(root, importer, specifier, options) {
+  const resolved = ts.resolveModuleName(specifier, path.join(root, importer), options, ts.sys).resolvedModule;
+  if (!resolved || resolved.isExternalLibraryImport) return { to: null, external: true };
+  const relative = slash(path.relative(root, resolved.resolvedFileName));
+  if (relative.startsWith("../") || path.isAbsolute(relative) || relative.startsWith("node_modules/")) return { to: null, external: true };
+  return { to: relative, external: false };
 }
 
 function importsFor(root, file) {
@@ -57,7 +58,7 @@ function importsFor(root, file) {
 export function analyzeArchitecture(root = ROOT, policy = JSON.parse(fs.readFileSync(path.join(root, "architecture-policy.json"), "utf8"))) {
   const files = sourceFiles(root);
   const options = compilerOptions(root);
-  const edges = files.flatMap((from) => importsFor(root, from).map((specifier) => ({ from, specifier, to: resolveLocal(root, from, specifier, options) })));
+  const edges = files.flatMap((from) => importsFor(root, from).map((specifier) => ({ from, specifier, ...resolveDependency(root, from, specifier, options) })));
   const violations = [];
   const add = (rule, edge) => violations.push({ rule, ...edge });
 
@@ -65,7 +66,7 @@ export function analyzeArchitecture(root = ROOT, policy = JSON.parse(fs.readFile
     for (const rule of policy.rules) {
       if (!new RegExp(rule.from).test(edge.from)) continue;
       if (edge.to && rule.to && new RegExp(rule.to).test(edge.to)) add(rule.name, edge);
-      if (!edge.to && rule.external && new RegExp(rule.external).test(edge.specifier)) add(rule.name, edge);
+      if (edge.external && rule.external && new RegExp(rule.external).test(edge.specifier)) add(rule.name, edge);
     }
 
     const sourceFeature = edge.from.match(/^src\/features\/([^/]+)\//)?.[1];

@@ -23,14 +23,19 @@ const forbidden = [
   ["domain-must-not-depend-on-ui", "app/domain/model.ts", "../../src/features/crawler/View", "src/features/crawler/View.tsx"],
   ["domain-must-not-depend-on-ui", "app/domain/model.ts", "../../src/shell/Nav", "src/shell/Nav.ts"],
   ["domain-must-not-depend-on-ui", "app/domain/model.ts", "../../src/application/actions", "src/application/actions.ts"],
+  ["domain-must-not-depend-on-ui", "app/domain/model.ts", "../chatgpt-auth", "app/chatgpt-auth.ts"],
   ["shared-must-remain-generic", "src/shared/ui/Panel.ts", "../../features/crawler/View", "src/features/crawler/View.tsx"],
   ["shared-must-remain-generic", "src/shared/ui/Panel.ts", "../../shell/Nav", "src/shell/Nav.ts"],
   ["shared-must-remain-generic", "src/shared/ui/Panel.ts", "../../application/actions", "src/application/actions.ts"],
   ["shared-must-remain-generic", "src/shared/ui/Panel.ts", "../../../app/domain/types", "app/domain/types.ts"],
+  ["shared-must-remain-generic", "src/shared/ui/Panel.ts", "../../CrawlerApp", "src/CrawlerApp.tsx"],
+  ["shared-must-remain-generic", "src/shared/ui/Panel.ts", "../../main.pages", "src/main.pages.tsx"],
   ["features-must-not-depend-on-shell", "src/features/crawler/View.ts", "../../shell/Nav", "src/shell/Nav.ts"],
   ["application-must-not-depend-on-ui", "src/application/actions.ts", "../features/crawler/View", "src/features/crawler/View.tsx"],
   ["application-must-not-depend-on-ui", "src/application/actions.ts", "../shell/Nav", "src/shell/Nav.ts"],
   ["application-must-not-depend-on-ui", "src/application/actions.ts", "../../app/chatgpt-auth", "app/chatgpt-auth.ts"],
+  ["application-must-not-depend-on-ui", "src/application/actions.ts", "../CrawlerApp", "src/CrawlerApp.tsx"],
+  ["application-must-not-depend-on-ui", "src/application/actions.ts", "../main.pages", "src/main.pages.tsx"],
   ["application-must-not-depend-on-react", "src/application/actions.ts", "react", null],
   ["shared-browser-must-not-depend-on-host", "src/CrawlerApp.tsx", "../app/chatgpt-auth", "app/chatgpt-auth.ts"],
   ["features-must-use-public-contracts", "src/features/inventory/View.ts", "../timeline/private", "src/features/timeline/private.ts"],
@@ -59,6 +64,17 @@ test("resolves configured path aliases before enforcing local boundaries", () =>
     "src/shell/Nav.ts": "export {};",
   });
   assert.ok(violations.some(({ rule }) => rule === "features-must-not-depend-on-shell"));
+});
+
+test("keeps installed packages external after TypeScript resolves them", () => {
+  const violations = analyze({
+    "src/application/actions.ts": 'import React from "react";',
+    "node_modules/react/package.json": JSON.stringify({ name: "react", version: "1.0.0", types: "index.d.ts" }),
+    "node_modules/react/index.d.ts": "declare const React: unknown; export default React;",
+  });
+  const violation = violations.find(({ rule }) => rule === "application-must-not-depend-on-react");
+  assert.equal(violation?.to, null);
+  assert.equal(violation?.external, true);
 });
 
 test("treats Vinext route modules as Worker runtime roots", () => {
