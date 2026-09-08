@@ -48,5 +48,12 @@
     "trust": "corroborating",
     "title": "Second Floor",
     "url": "https://dungeon-crawler-carl.fandom.com/wiki/Second_Floor"
+  },
+  {
+    "id": "src-wiki-pets-familiars",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Pets & Dungeon Familiars",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Pets_%26_Dungeon_Familiars"
   }
 ]
