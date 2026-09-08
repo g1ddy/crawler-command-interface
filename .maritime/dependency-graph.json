@@ -167,6 +167,7 @@
         "app/domain/raw-loader.ts",
         "app/domain/stats.ts",
         "src/CrawlerApp.tsx",
+        "src/application/crawler-actions.ts",
         "src/features/floor/FloorRules.tsx",
         "src/features/timeline/SequenceBadge.tsx",
         "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
@@ -997,7 +998,8 @@
       ],
       "dependents": [
         "app/domain/fixtures/floor6.ts",
-        "src/CrawlerApp.tsx"
+        "src/CrawlerApp.tsx",
+        "src/application/crawler-actions.ts"
       ],
       "orphan": false
     },
@@ -1809,6 +1811,7 @@
       ],
       "dependents": [
         "src/CrawlerApp.tsx",
+        "src/application/crawler-actions.ts",
         "src/features/crawler/stats/StatInspectorModal.tsx",
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx"
@@ -2040,6 +2043,23 @@
           "moduleSystem": "es6",
           "module": "../app/domain/validation",
           "resolved": "app/domain/validation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2302,6 +2322,75 @@
         "npm",
         "import"
       ]
+    },
+    {
+      "source": "src/application/crawler-actions.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/projection.ts",
+          "resolved": "app/domain/projection.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/stats.ts",
+          "resolved": "app/domain/stats.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/CrawlerApp.tsx",
+        "src/shell/ActiveFeatureView.tsx",
+        "src/features/crawler/CrawlerView.tsx",
+        "src/features/crawler/stats/PlayerStats.tsx",
+        "src/features/inventory/InventoryView.tsx",
+        "src/features/inventory/equipment/EquipmentView.tsx",
+        "src/features/inventory/ItemInspector.tsx",
+        "src/features/skills/SkillsView.tsx"
+      ],
+      "orphan": false
     },
     {
       "source": "src/features/crawler/stats/StatInspectorModal.tsx",
@@ -2861,6 +2950,24 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -3017,6 +3124,24 @@
           "moduleSystem": "es6",
           "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3212,6 +3337,24 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -3282,6 +3425,24 @@
           "moduleSystem": "es6",
           "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3526,6 +3687,24 @@
           "moduleSystem": "es6",
           "module": "../../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3832,6 +4011,24 @@
           "moduleSystem": "es6",
           "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4254,6 +4451,24 @@
           "moduleSystem": "es6",
           "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../application/crawler-actions",
+          "resolved": "src/application/crawler-actions.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4975,8 +5190,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 93,
-    "totalDependenciesCruised": 220,
+    "totalCruised": 94,
+    "totalDependenciesCruised": 231,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
