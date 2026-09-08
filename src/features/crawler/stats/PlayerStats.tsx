@@ -1,7 +1,7 @@
 import type { AttributeName, CrawlerState, ProjectedObservationsState, ProjectedObservationValue } from "../../../../app/domain/types";
-import { TelemetryBadge } from "../../timeline/evidence/TelemetryBadge";
+import { TelemetryBadge } from "../../timeline/public";
 import { Panel } from "../../../shared/ui/Panel";
-import type { CrawlerActions } from "../../../application/crawler-actions";
+import type { CrawlerActions } from "../../../application/crawler-action-contracts";
 
 export function PlayerStats({ state, observations, onInspectStat, onInspectObservation, actions }: {
   state: CrawlerState;
