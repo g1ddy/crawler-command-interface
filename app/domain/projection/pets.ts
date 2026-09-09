@@ -50,6 +50,7 @@ export function applyPetHostilityChanged(state: CrawlerState, event: Record<stri
 export function applyPetBonded(state: CrawlerState, event: Record<string, unknown>): void {
   const petId = event.petId as string | undefined;
   const bondHolderCrawlerId = event.bondHolderCrawlerId as string | undefined;
+  const name = event.name as string | undefined;
   const title = event.title as string | undefined;
   if (!petId || !bondHolderCrawlerId || !state.pets) return;
 
@@ -57,10 +58,12 @@ export function applyPetBonded(state: CrawlerState, event: Record<string, unknow
   if (pet) {
     pet.bondState = 'bonded';
     pet.bondHolderCrawlerId = bondHolderCrawlerId;
+    if (name !== undefined) {
+      pet.name = name;
+    }
     if (title !== undefined) {
       pet.title = title;
     }
-    pet.hostility = 'non-hostile';
   }
 }
 

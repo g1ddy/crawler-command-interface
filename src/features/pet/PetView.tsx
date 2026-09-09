@@ -92,18 +92,24 @@ export function PetView({ pets }: { pets?: Pet[] }) {
                       {pet.bondHolderCrawlerId ? pet.bondHolderCrawlerId : "NONE (UNBONDED)"}
                     </b>
                   </div>
-                  <div>
-                    <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>LEVEL</span>
-                    <b style={{ color: "#8fa4ad" }}>{pet.level !== undefined ? `Level ${pet.level}` : "NOT SOURCED (BOOK 1)"}</b>
-                  </div>
-                  <div>
-                    <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>DEPLOYMENT</span>
-                    <b style={{ color: "#e2e8f0" }}>{(pet.deployment || "ACTIVE").toUpperCase()}</b>
-                  </div>
-                  <div>
-                    <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>CONDITION</span>
-                    <b style={{ color: "#8fa4ad" }}>{pet.condition?.status || "NOT SOURCED"}</b>
-                  </div>
+                  {pet.level !== undefined && (
+                    <div>
+                      <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>LEVEL</span>
+                      <b style={{ color: "#e2e8f0" }}>Level {pet.level}</b>
+                    </div>
+                  )}
+                  {pet.deployment !== undefined && (
+                    <div>
+                      <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>DEPLOYMENT</span>
+                      <b style={{ color: "#e2e8f0" }}>{pet.deployment.toUpperCase()}</b>
+                    </div>
+                  )}
+                  {pet.condition?.status !== undefined && (
+                    <div>
+                      <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>CONDITION</span>
+                      <b style={{ color: "#e2e8f0" }}>{pet.condition.status}</b>
+                    </div>
+                  )}
                 </div>
               </section>
             );

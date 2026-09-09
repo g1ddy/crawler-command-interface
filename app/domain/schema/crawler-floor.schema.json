@@ -3114,6 +3114,10 @@
             "bondHolderCrawlerId": {
               "$ref": "#/$defs/id"
             },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
             "title": {
               "type": "string",
               "minLength": 1

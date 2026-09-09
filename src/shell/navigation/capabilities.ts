@@ -20,7 +20,7 @@ export function selectedSequenceCapabilities(
     quests: state.quests.length > 0,
     ratings: Object.keys(observations.broadcast).length > 0,
     party: Boolean(state.party && state.party.members.length >= 2),
-    pet: Boolean(state.pets && state.pets.length > 0),
+    pet: Boolean(state.pets && state.pets.some((p) => p.bondState === "bonded")),
     notifications: events.some(
       (event) => event.sequence <= sequence && event.notificationDelivery?.delivered === true,
     ),

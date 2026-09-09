@@ -6,6 +6,7 @@ import { loadAllRawFloorDocuments } from "../../app/domain/raw-loader.ts";
 import { projectState, applyEvent } from "../../app/domain/projection.ts";
 import { validateCrawlerTimeline } from "../../app/domain/validation.ts";
 import { createInitialState } from "../../app/domain/projection/helpers.ts";
+import { selectedSequenceCapabilities } from "../../src/shell/navigation/capabilities.ts";
 
 test("Pet domain replay boundaries on Floor 2 compiled timeline", () => {
   const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
@@ -23,11 +24,11 @@ test("Pet domain replay boundaries on Floor 2 compiled timeline", () => {
   const mongoBefore = (stateBeforeAcquisition.pets || []).find((p) => p.petId === "pet-mongo");
   assert.equal(mongoBefore, undefined, "Mongo state must not exist before acquisition sequence");
 
-  // 2. At acquisition: acquired, hostile, unbonded
+  // 2. At acquisition: acquired, hostile, unbonded, unnamed (species mongoliensis)
   const stateAtAcquisition = projectState(compiledTimeline, acquiredEvent.sequence);
   const mongoAcquired = (stateAtAcquisition.pets || []).find((p) => p.petId === "pet-mongo");
   assert.ok(mongoAcquired, "Mongo pet object exists at acquisition");
-  assert.equal(mongoAcquired.name, "Mongo");
+  assert.equal(mongoAcquired.name, "mongoliensis");
   assert.equal(mongoAcquired.species, "mongoliensis");
   assert.equal(mongoAcquired.origin, "dungeon-origin");
   assert.equal(mongoAcquired.classification, "pet-class");
@@ -42,12 +43,13 @@ test("Pet domain replay boundaries on Floor 2 compiled timeline", () => {
   assert.equal(mongoHostility.hostility, "non-hostile");
   assert.equal(mongoHostility.bondState, "unbonded");
 
-  // 4. At bond completion: bonded to Donut, Royal Steed title
+  // 4. At bond completion: bonded to Donut, named Mongo, Royal Steed title
   const stateAtBonded = projectState(compiledTimeline, bondedEvent.sequence);
   const mongoBonded = (stateAtBonded.pets || []).find((p) => p.petId === "pet-mongo");
   assert.ok(mongoBonded);
   assert.equal(mongoBonded.bondState, "bonded");
   assert.equal(mongoBonded.bondHolderCrawlerId, "crawler-donut");
+  assert.equal(mongoBonded.name, "Mongo");
   assert.equal(mongoBonded.title, "Royal Steed");
   assert.equal(mongoBonded.hostility, "non-hostile");
 
@@ -68,6 +70,20 @@ test("Pet and Party domains remain strictly independent", () => {
   assert.equal(memberIds.includes("pet-mongo"), false, "Mongo must never be added to Party roster");
 });
 
+test("Pet navigation capability gates on bonded pet state", () => {
+  const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+  const acquiredEvent = compiledTimeline.events.find((e) => e.id === "evt-f2-mongo-acquired");
+  const bondedEvent = compiledTimeline.events.find((e) => e.id === "evt-f2-mongo-bonded");
+
+  const stateAtAcquisition = projectState(compiledTimeline, acquiredEvent.sequence);
+  const capsAcquisition = selectedSequenceCapabilities(stateAtAcquisition, { broadcast: {} }, compiledTimeline.events, acquiredEvent.sequence);
+  assert.equal(capsAcquisition.pet, false, "Pet navigation must remain disabled prior to bonding");
+
+  const stateAtBonded = projectState(compiledTimeline, bondedEvent.sequence);
+  const capsBonded = selectedSequenceCapabilities(stateAtBonded, { broadcast: {} }, compiledTimeline.events, bondedEvent.sequence);
+  assert.equal(capsBonded.pet, true, "Pet navigation must unlock after a pet is bonded");
+});
+
 test("Pet state reducers correctly handle acquisition, hostility, bonding, and classification changes", () => {
   let state = createInitialState();
   assert.deepEqual(state.pets, []);
@@ -77,35 +93,38 @@ test("Pet state reducers correctly handle acquisition, hostility, bonding, and c
     type: "PetAcquired",
     pet: {
       petId: "pet-test",
-      name: "Test Pet",
-      species: "cat",
+      name: "Unidentified Beast",
+      species: "felis",
       origin: "surface-origin",
       classification: "dungeon-familiar",
-      hostility: "non-hostile",
+      hostility: "hostile",
       bondState: "unbonded",
     },
   });
   assert.equal(state.pets.length, 1);
-  assert.equal(state.pets[0].name, "Test Pet");
+  assert.equal(state.pets[0].name, "Unidentified Beast");
+  assert.equal(state.pets[0].hostility, "hostile");
   assert.equal(state.pets[0].level, undefined, "Unmodeled level remains undefined");
 
   // PetHostilityChanged
   state = applyEvent(state, {
     type: "PetHostilityChanged",
     petId: "pet-test",
-    hostility: "hostile",
+    hostility: "non-hostile",
   });
-  assert.equal(state.pets[0].hostility, "hostile");
+  assert.equal(state.pets[0].hostility, "non-hostile");
 
-  // PetBonded
+  // PetBonded (does NOT implicitly alter hostility)
   state = applyEvent(state, {
     type: "PetBonded",
     petId: "pet-test",
     bondHolderCrawlerId: "crawler-carl",
+    name: "Test Pet",
     title: "Loyal Companion",
   });
   assert.equal(state.pets[0].bondState, "bonded");
   assert.equal(state.pets[0].bondHolderCrawlerId, "crawler-carl");
+  assert.equal(state.pets[0].name, "Test Pet");
   assert.equal(state.pets[0].title, "Loyal Companion");
   assert.equal(state.pets[0].hostility, "non-hostile");
 
