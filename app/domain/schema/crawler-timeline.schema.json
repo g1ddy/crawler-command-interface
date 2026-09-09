@@ -769,6 +769,12 @@
         },
         "party": {
           "$ref": "#/$defs/party"
+        },
+        "pets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pet"
+          }
         }
       }
     },
@@ -1942,7 +1948,11 @@
                     "CountdownReset",
                     "CountdownPaused",
                     "CountdownResumed",
-                    "CountdownPhaseChanged"
+                    "CountdownPhaseChanged",
+                    "PetAcquired",
+                    "PetHostilityChanged",
+                    "PetBonded",
+                    "PetClassificationChanged"
                   ]
                 },
                 "position": {
@@ -2180,6 +2190,29 @@
                 "toPhase": {
                   "type": "string"
                 },
+                "pet": {
+                  "$ref": "#/$defs/pet"
+                },
+                "petId": {
+                  "$ref": "#/$defs/id"
+                },
+                "hostility": {
+                  "enum": [
+                    "hostile",
+                    "non-hostile"
+                  ]
+                },
+                "bondHolderCrawlerId": {
+                  "$ref": "#/$defs/id"
+                },
+                "classification": {
+                  "enum": [
+                    "pet-class",
+                    "dungeon-familiar",
+                    "crawler",
+                    "animal-companion"
+                  ]
+                },
                 "notificationDelivery": {
                   "type": "object",
                   "additionalProperties": false,
@@ -2293,6 +2326,64 @@
         }
       }
     },
+    "pet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "petId",
+        "species",
+        "origin",
+        "classification",
+        "hostility",
+        "bondState"
+      ],
+      "properties": {
+        "petId": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "species": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "enum": [
+            "surface-origin",
+            "dungeon-origin"
+          ]
+        },
+        "classification": {
+          "enum": [
+            "pet-class",
+            "dungeon-familiar",
+            "crawler",
+            "animal-companion"
+          ]
+        },
+        "hostility": {
+          "enum": [
+            "hostile",
+            "non-hostile"
+          ]
+        },
+        "bondState": {
+          "enum": [
+            "unbonded",
+            "bonded"
+          ]
+        },
+        "bondHolderCrawlerId": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
     "party": {
       "type": "object",
       "additionalProperties": false,
@@ -2338,6 +2429,10 @@
           }
         }
       }
+    },
+    "petId": {
+      "type": "string",
+      "pattern": "^pet-[a-z0-9][a-z0-9-]*$"
     }
   }
 }

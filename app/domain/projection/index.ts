@@ -42,6 +42,12 @@ import {
   applySpellGranted,
 } from './magic.ts';
 import { applyPartyFormed } from './party.ts';
+import {
+  applyPetAcquired,
+  applyPetBonded,
+  applyPetClassificationChanged,
+  applyPetHostilityChanged,
+} from './pets.ts';
 import { applyQuestUpdated } from './quests.ts';
 import { applyBroadcastUpdated } from './broadcast.ts';
 
@@ -85,6 +91,10 @@ const eventReducers: Record<ProjectedEventType, EventReducer> = {
   SkillGranted: (state, event) => applySkillGranted(state, event),
   SpellGranted: (state, event) => applySpellGranted(state, event),
   PartyFormed: (state, event) => applyPartyFormed(state, event),
+  PetAcquired: (state, event) => applyPetAcquired(state, event),
+  PetHostilityChanged: (state, event) => applyPetHostilityChanged(state, event),
+  PetBonded: (state, event) => applyPetBonded(state, event),
+  PetClassificationChanged: (state, event) => applyPetClassificationChanged(state, event),
   QuestUpdated: (state, event) => applyQuestUpdated(state, event),
   BroadcastUpdated: (state, event) => applyBroadcastUpdated(state, event),
   ConditionChanged: (state, event) => applyConditionChanged(state, event),

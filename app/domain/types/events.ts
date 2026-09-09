@@ -167,6 +167,49 @@ export interface PartyFormedEvent extends TimelineEventBase {
   party: Party;
 }
 
+export type PetOrigin = 'surface-origin' | 'dungeon-origin';
+export type PetClassification = 'pet-class' | 'dungeon-familiar' | 'crawler' | 'animal-companion';
+export type PetHostility = 'hostile' | 'non-hostile';
+export type PetBondState = 'unbonded' | 'bonded';
+
+export interface PetSpec {
+  petId: string;
+  name?: string;
+  species: string;
+  title?: string;
+  origin: PetOrigin;
+  classification: PetClassification;
+  hostility: PetHostility;
+  bondState: PetBondState;
+  bondHolderCrawlerId?: string;
+}
+
+export interface PetAcquiredEvent extends TimelineEventBase {
+  type: 'PetAcquired';
+  pet: PetSpec;
+}
+
+export interface PetHostilityChangedEvent extends TimelineEventBase {
+  type: 'PetHostilityChanged';
+  petId: string;
+  hostility: PetHostility;
+}
+
+export interface PetBondedEvent extends TimelineEventBase {
+  type: 'PetBonded';
+  petId: string;
+  bondHolderCrawlerId: string;
+  name?: string;
+  title?: string;
+}
+
+export interface PetClassificationChangedEvent extends TimelineEventBase {
+  type: 'PetClassificationChanged';
+  petId: string;
+  classification: PetClassification;
+  reason?: string;
+}
+
 export interface NarrativeEvent extends TimelineEventBase {
   type: 'NarrativeEvent';
   kind: 'floor-entered' | 'floor-exited' | 'floor-collapsed' | 'encounter-started' | 'encounter-resolved' | 'episode-released' | 'rule-changed' | 'location-discovered' | 'dialogue' | 'choice-made' | 'transformation' | 'party-changed' | 'other';
@@ -291,6 +334,10 @@ export type TimelineEvent =
   | PermanentEntitlementGrantedEvent
   | SpellGrantedEvent
   | PartyFormedEvent
+  | PetAcquiredEvent
+  | PetHostilityChangedEvent
+  | PetBondedEvent
+  | PetClassificationChangedEvent
   | NarrativeEvent
   | LevelChangedEvent
   | AttributeModifiedEvent
@@ -330,6 +377,10 @@ export const FLOOR_EVENT_TYPES = [
   'PermanentEntitlementGranted',
   'SpellGranted',
   'PartyFormed',
+  'PetAcquired',
+  'PetHostilityChanged',
+  'PetBonded',
+  'PetClassificationChanged',
   'LevelChanged',
   'AttributeModified',
   'ConditionChanged',
@@ -373,6 +424,11 @@ interface FloorEventCommon {
   entitlement?: TimelineEntitlement;
   spell?: Spell;
   party?: Party;
+  pet?: PetSpec;
+  petId?: string;
+  hostility?: PetHostility;
+  bondHolderCrawlerId?: string;
+  classification?: PetClassification;
   itemInstanceId?: string;
   slot?: string;
   level?: number;
