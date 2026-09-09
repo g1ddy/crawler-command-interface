@@ -2256,6 +2256,24 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./shell/hud/hud-presentation",
+          "resolved": "src/shell/hud/hud-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -4938,6 +4956,17 @@
       "orphan": false
     },
     {
+      "source": "src/shell/hud/hud-presentation.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/CrawlerApp.tsx",
+        "src/main.concepts.tsx",
+        "src/main.pages.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/shell/hud/PersistentHud.tsx",
       "valid": true,
       "dependencies": [
@@ -5446,6 +5475,23 @@
           ],
           "dynamic": false,
           "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./shell/hud/hud-presentation",
+          "resolved": "src/shell/hud/hud-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
           "followable": false,
           "moduleSystem": "es6",
           "module": "./styles/application.css",
@@ -5513,7 +5559,8 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "src/main.concepts.tsx"
+        "src/main.concepts.tsx",
+        "src/main.pages.tsx"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -5574,10 +5621,44 @@
           ],
           "dynamic": false,
           "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./shell/hud/hud-presentation",
+          "resolved": "src/shell/hud/hud-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
           "followable": false,
           "moduleSystem": "es6",
           "module": "./styles/application.css",
           "resolved": "src/styles/application.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./styles/concepts.css",
+          "resolved": "src/styles/concepts.css",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5624,8 +5705,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 101,
-    "totalDependenciesCruised": 251,
+    "totalCruised": 102,
+    "totalDependenciesCruised": 255,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

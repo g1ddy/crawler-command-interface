@@ -5,8 +5,8 @@
 ### 🏥 Repository Health Score: **64.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 85
-*   **Measured Files**: 85
+*   **Total Graph Files**: 86
+*   **Measured Files**: 86
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -16,8 +16,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `app/domain/countdowns.ts` | **230.1** | 401 | 92 | 1 | 0.2 |
 | `app/domain/validation.ts` | **228.1** | 483 | 74 | 9 | 0.69 |
+| `src/CrawlerApp.tsx` | **175.1** | 433 | 33 | 24 | 0.89 |
 | `app/domain/projection/helpers.ts` | **169.8** | 218 | 68 | 2 | 0.4 |
-| `src/CrawlerApp.tsx` | **169.3** | 416 | 32 | 23 | 0.88 |
 | `src/application/crawler-actions.ts` | **132.1** | 128 | 49 | 4 | 0.67 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
 | `src/features/inventory/ItemInspector.tsx` | **112.3** | 223 | 33 | 4 | 0.8 |
@@ -33,8 +33,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/projection/helpers.ts` | **68** | 218 |
 | `src/application/crawler-actions.ts` | **49** | 128 |
 | `app/domain/compiler.ts` | **35** | 368 |
+| `src/CrawlerApp.tsx` | **33** | 433 |
 | `src/features/inventory/ItemInspector.tsx` | **33** | 223 |
-| `src/CrawlerApp.tsx` | **32** | 416 |
 | `app/domain/observations.ts` | **29** | 322 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **27** | 56 |
 | `src/features/timeline/diagnostics/SequenceInspector.tsx` | **25** | 50 |
