@@ -177,7 +177,13 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 
 HUD design exploration is documented in [HUD_DESIGN.md](HUD_DESIGN.md). Its isolated
 `build:concepts` / `test:concepts` workflow does not replace production builds, E2E,
-or canonical screenshot publication.
+or canonical screenshot publication. The normal Pages build also deploys the comparison
+lab at `/crawler-command-interface/concepts.html?concept=authority` and typed, URL-only
+previews at `/crawler-command-interface/?hud=authority` (also `tactical` and `theater`).
+The default URL and invalid `hud` values continue to render the current production HUD;
+none of these previews persists its selection or reads, writes, or clears the saved timeline.
+An approved future redesign requires an explicit production configuration change while the
+comparison lab remains deployed. Set `PAGES_BASE_PATH=/` to use the same routes at a domain root.
 
 Every document in this repository owns a distinct, non-overlapping concern:
 

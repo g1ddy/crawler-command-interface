@@ -1,4 +1,4 @@
-/* Experimental, host-neutral presentation. Production never imports this sheet. */
+/* Experimental, host-neutral presentation. Rules are inert without .concept-lab. */
 .concept-lab {
   --surface: #101820;
   --surface-raised: #17232c;

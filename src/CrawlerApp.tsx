@@ -28,6 +28,7 @@ import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
 import { ActiveFeatureView } from "./shell/ActiveFeatureView";
 import { PersistentHud } from "./shell/hud/PersistentHud";
 import { ConceptHud } from "./shell/hud/ConceptHud";
+import type { HudPresentation } from "./shell/hud/hud-presentation";
 import {
   availableRootViews,
   resolveRootView,
@@ -40,8 +41,16 @@ import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
 import { createApplicationActions } from "./application/crawler-actions";
 import type { ActionResult, EquipmentSlot } from "./application/crawler-action-contracts";
 
-export default function CrawlerApp({ conceptPreview = false }: { conceptPreview?: boolean } = {}) {
-  const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
+export interface CrawlerAppProps {
+  hudPresentation?: HudPresentation;
+}
+
+export default function CrawlerApp({ hudPresentation = "production" }: CrawlerAppProps = {}) {
+  const conceptPreview = hudPresentation !== "production";
+  const storageAdapter = useMemo(
+    () => conceptPreview ? null : new LocalDeviceStorageAdapter(),
+    [conceptPreview],
+  );
   const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(() =>
     !conceptPreview && typeof window !== "undefined"
       ? (new LocalDeviceStorageAdapter().loadTimeline() ?? compiledTimeline)
@@ -49,7 +58,7 @@ export default function CrawlerApp({ conceptPreview = false }: { conceptPreview?
   );
   const updateTimeline = (document: CrawlerTimelineDocument) => {
     setTimelineDoc(document);
-    if (!conceptPreview) storageAdapter.saveTimeline(document);
+    storageAdapter?.saveTimeline(document);
   };
   const events = timelineDoc.events as unknown as CrawlerEvent[];
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
@@ -212,7 +221,7 @@ export default function CrawlerApp({ conceptPreview = false }: { conceptPreview?
     }
   };
   const handleReset = () => {
-    if (!conceptPreview) storageAdapter.clearTimeline();
+    storageAdapter?.clearTimeline();
     setTimelineDoc(compiledTimeline);
     const compiledEvents = compiledTimeline.events || [];
     const last = compiledEvents.slice(-1)[0]?.sequence ?? 1;

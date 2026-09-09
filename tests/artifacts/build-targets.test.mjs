@@ -83,6 +83,26 @@ test("GitHub Pages build is a self-contained static application", () => {
   assertProvenance(JSON.parse(readRequiredFile(provenancePath)), "pages");
 });
 
+test("GitHub Pages build includes the shareable concept laboratory", () => {
+  const conceptPath = path.join(pagesDirectory, "concepts.html");
+  const html = readRequiredFile(conceptPath);
+
+  assert.match(html, /<title>Crawler HUD · Concept lab<\/title>/);
+  assert.doesNotMatch(html, /src\/main\.concepts\.tsx/);
+
+  const localAssetUrls = [...html.matchAll(/(?:src|href)="([^"]+)"/g)]
+    .map((match) => match[1])
+    .filter((url) => url.startsWith(pagesBasePath));
+
+  assert.ok(localAssetUrls.length > 0, "Expected concept HTML to reference emitted assets");
+  for (const url of localAssetUrls) {
+    assert.ok(
+      fs.existsSync(path.join(pagesDirectory, url.slice(pagesBasePath.length))),
+      `Expected emitted concept asset: ${url}`,
+    );
+  }
+});
+
 test("both deployment targets capture the same build and source revisions", () => {
   const liveProvenance = JSON.parse(
     readRequiredFile(path.join(liveDirectory, "build-provenance.json")),
