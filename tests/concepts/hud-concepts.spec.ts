@@ -26,6 +26,8 @@ test("concepts retain replay state, capability boundaries and device storage", a
   }
   await page.getByRole("button", { name: "Return to live", exact: true }).click();
   await expect(menu.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
+  await expect(page.locator('.hud-reading[data-evidence="last-known"]').getByLabel("Inspect Mana evidence"))
+    .toContainText(/Last known · sequence \d+/);
   for (const name of ["Authority", "Tactical", "Theater"]) {
     await page.getByRole("button", { name, exact: true }).click();
     await page.screenshot({ path: testInfo.outputPath(`${name.toLowerCase()}-live.png`), fullPage: true });
