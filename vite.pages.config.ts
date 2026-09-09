@@ -1,13 +1,22 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { resolve } from "node:path";
 
 // PAGES_BASE_PATH can be set to "/" for a custom domain or a user/organization
 // Pages site. The default targets this repository's project Pages URL.
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: process.env.PAGES_BASE_PATH ?? "/crawler-command-interface/",
   build: {
-    outDir: "dist-pages",
+    outDir: mode === "concepts" ? "dist-concepts" : "dist-pages",
     emptyOutDir: true,
+    rollupOptions: {
+      input: mode === "concepts"
+        ? resolve(import.meta.dirname, "concepts.html")
+        : {
+            app: resolve(import.meta.dirname, "index.html"),
+            concepts: resolve(import.meta.dirname, "concepts.html"),
+          },
+    },
   },
   plugins: [react()],
-});
+}));

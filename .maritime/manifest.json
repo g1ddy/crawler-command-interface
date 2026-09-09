@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "toolVersion": "0.1.0-beta.4",
-  "generatedAt": "2026-09-09T03:19:20.644Z",
+  "generatedAt": "2026-09-09T14:53:44.848Z",
   "sourceRoots": [
     "app",
     "src"
@@ -12,9 +12,9 @@
     "report": "complexity-report.md"
   },
   "summary": {
-    "totalFiles": 83,
-    "healthScore": 65,
-    "scannedCount": 83,
+    "totalFiles": 86,
+    "healthScore": 64,
+    "scannedCount": 86,
     "skippedCount": 0
   }
 }

@@ -175,6 +175,18 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 - **Verification**: Ensure `npm run verify` passes completely before submitting code.
 ## Documentation Ownership Matrix
 
+HUD design exploration is documented in [HUD_DESIGN.md](HUD_DESIGN.md). Its isolated
+`build:concepts` / `test:concepts` workflow does not replace production builds, E2E,
+or canonical screenshot publication. The normal Pages build also deploys the comparison
+lab at `/crawler-command-interface/concepts.html?concept=authority` and typed, URL-only
+previews at `/crawler-command-interface/?hud=authority` (also `tactical` and `theater`).
+The default URL and invalid `hud` values continue to render the current production HUD;
+none of these previews persists its selection or reads, writes, or clears the saved timeline.
+Presentation selection and persistence policy are independent typed `CrawlerApp` props. An
+approved future redesign requires an explicit production presentation change with normal
+persistence while the isolated comparison lab remains deployed. Set `PAGES_BASE_PATH=/` to
+use the same routes at a domain root.
+
 Every document in this repository owns a distinct, non-overlapping concern:
 
 | Document | Authoritative Ownership |
@@ -185,6 +197,7 @@ Every document in this repository owns a distinct, non-overlapping concern:
 | [docs/DEVELOPMENT.md](DEVELOPMENT.md) | Contributor setup, canonical commands, builds, verification, generated-artifact workflows, documentation matrix |
 | [docs/COMPLEXITY.md](COMPLEXITY.md) | Complexity metrics interpretation and canonical generated Maritime evidence |
 | [docs/SCREENSHOTS.md](SCREENSHOTS.md) | Durable visual-state contract, canonical vs synthetic rules, screenshot regeneration |
+| [docs/HUD_DESIGN.md](HUD_DESIGN.md) | #160 visual grammar, executable concept comparison, and design decisions |
 | [docs/ROADMAP.md](ROADMAP.md) | Unfinished product/architecture work and intentional deferrals only |
 | [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) | Sourced evidence authoring rules, JSON schemas, countdown projection contracts |
 | [docs/CANON_READINESS.md](CANON_READINESS.md) | Durable readiness ledger governing conditional Crawler Menu capabilities |

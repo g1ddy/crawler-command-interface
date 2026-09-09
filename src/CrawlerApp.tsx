@@ -27,6 +27,11 @@ import { TelemetryInspectorModal } from "./features/timeline/evidence/TelemetryI
 import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
 import { ActiveFeatureView } from "./shell/ActiveFeatureView";
 import { PersistentHud } from "./shell/hud/PersistentHud";
+import { ConceptHud } from "./shell/hud/ConceptHud";
+import type {
+  HudPersistence,
+  HudPresentation,
+} from "./shell/hud/hud-presentation";
 import {
   availableRootViews,
   resolveRootView,
@@ -39,16 +44,29 @@ import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
 import { createApplicationActions } from "./application/crawler-actions";
 import type { ActionResult, EquipmentSlot } from "./application/crawler-action-contracts";
 
-export default function CrawlerApp() {
-  const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
+export interface CrawlerAppProps {
+  hudPresentation?: HudPresentation;
+  hudPersistence?: HudPersistence;
+}
+
+export default function CrawlerApp({
+  hudPresentation = "production",
+  hudPersistence = "normal",
+}: CrawlerAppProps = {}) {
+  const usesConceptHud = hudPresentation !== "production";
+  const hasDevicePersistence = hudPersistence === "normal";
+  const storageAdapter = useMemo(
+    () => hasDevicePersistence ? new LocalDeviceStorageAdapter() : null,
+    [hasDevicePersistence],
+  );
   const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(() =>
-    typeof window !== "undefined"
+    hasDevicePersistence && typeof window !== "undefined"
       ? (new LocalDeviceStorageAdapter().loadTimeline() ?? compiledTimeline)
       : compiledTimeline,
   );
   const updateTimeline = (document: CrawlerTimelineDocument) => {
     setTimelineDoc(document);
-    storageAdapter.saveTimeline(document);
+    storageAdapter?.saveTimeline(document);
   };
   const events = timelineDoc.events as unknown as CrawlerEvent[];
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
@@ -131,6 +149,12 @@ export default function CrawlerApp() {
     () => projectCountdownState(timelineDoc, currentSeq, selectedFloorOrdinal),
     [timelineDoc, currentSeq, selectedFloorOrdinal],
   );
+  const observationSequences = useMemo(
+    () => new Map<string, number>((timelineDoc.observations ?? []).map(
+      (observation) => [observation.id, observation.sequence],
+    )),
+    [timelineDoc.observations],
+  );
   const navigateToSequence = (sequence: number) => {
     setSelectedSeq(sequence);
     setIsLive(sequence === maxSeq);
@@ -205,7 +229,7 @@ export default function CrawlerApp() {
     }
   };
   const handleReset = () => {
-    storageAdapter.clearTimeline();
+    storageAdapter?.clearTimeline();
     setTimelineDoc(compiledTimeline);
     const compiledEvents = compiledTimeline.events || [];
     const last = compiledEvents.slice(-1)[0]?.sequence ?? 1;
@@ -259,8 +283,18 @@ export default function CrawlerApp() {
   const sources = timelineDoc.sources as TimelineSource[];
 
   return (
-    <main>
-      <PersistentHud
+    <main data-mode={isLive ? "live" : "replay"}>
+      {usesConceptHud ? <ConceptHud
+        state={projectedState}
+        observations={projectedObservations}
+        countdown={activeCountdown}
+        floorTitle={floorHudTitle}
+        observationSequences={observationSequences}
+        isLive={isLive}
+        onReturnToLive={returnToLive}
+        onInspectObservation={setInspectObservation}
+        onNavigateToSequence={navigateToSequence}
+      /> : <PersistentHud
         crawlerName={projectedState.crawler.name}
         crawlerClass={projectedState.crawler.class}
         level={hudLevel}
@@ -277,7 +311,7 @@ export default function CrawlerApp() {
         hotlist={projectedState.hotlist}
         skills={projectedState.skills}
         onReturnToLive={returnToLive}
-      />
+      />}
       <RootNavigation
         active={resolvedView}
         set={setView}
