@@ -46,6 +46,7 @@ export interface ProjectedObservationValue {
   basis: 'exact-observation' | 'elapsed-duration' | 'sequence-position';
   evidence: TimelineEvidence[];
   referenceObservationIds: string[];
+  sequence?: number;
 }
 
 export interface ProjectedItemObservation {

@@ -93,6 +93,7 @@ export function projectObservationValue(
       basis: 'exact-observation',
       evidence: exact.observation.evidence,
       referenceObservationIds: [exact.observation.id],
+      sequence: exact.observation.sequence,
     };
   }
 
@@ -222,6 +223,7 @@ export function projectObservations(
           basis: 'exact-observation',
           evidence: latest.observation.evidence,
           referenceObservationIds: [latest.observation.id],
+          sequence: latest.observation.sequence,
         };
       }
     }

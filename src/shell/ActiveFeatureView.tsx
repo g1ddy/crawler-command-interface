@@ -32,7 +32,7 @@ export function ActiveFeatureView({ view, state, liveState, observations, source
 }) {
   switch (view) {
     case "crawler": return <CrawlerView state={state} observations={observations} onInspectStat={onInspectStat} onInspectObservation={onInspectObservation} actions={actions.crawler} />;
-    case "ratings": return <RatingsView observations={observations.broadcast} isLive={isLive} onInspectObservation={onInspectObservation} />;
+    case "ratings": return <RatingsView observations={observations.broadcast} selectedSequence={sequence} isLive={isLive} onInspectObservation={onInspectObservation} />;
     case "party": return <PartyView party={state.party} />;
     case "pet": return <PetView pets={state.pets} />;
     case "notifications": return <NotificationsView events={events} sequence={sequence} onNavigateToSequence={onNavigateToSequence} />;

@@ -1,11 +1,75 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  deriveEvidencePresentation,
   evidenceConfidenceLabel,
   evidenceSummary,
   firstCountdownEvidenceSummary,
   formatEvidenceLocator,
 } from "../../src/features/timeline/evidence/evidencePresentation.ts";
+
+test("deriveEvidencePresentation derives current, last-known, estimated, causal-only, and unknown states", () => {
+  const currentObs = {
+    key: "crawler-condition.currentHealth",
+    value: 100,
+    status: "stated",
+    basis: "exact-observation",
+    evidence: [],
+    referenceObservationIds: ["obs-1"],
+    sequence: 10,
+  };
+
+  assert.deepEqual(deriveEvidencePresentation(currentObs, 10), {
+    state: "current",
+    label: "Observed",
+    badgeLabel: "SOURCE",
+    sourceSequence: 10,
+    referenceObservationIds: ["obs-1"],
+    inspectable: true,
+  });
+
+  assert.deepEqual(deriveEvidencePresentation(currentObs, 25), {
+    state: "last-known",
+    label: "Last known · sequence 10",
+    badgeLabel: "LAST KNOWN · SEQ 10",
+    sourceSequence: 10,
+    referenceObservationIds: ["obs-1"],
+    inspectable: true,
+  });
+
+  const estimatedObs = {
+    key: "crawler-condition.currentMana",
+    value: 50,
+    status: "estimated",
+    basis: "sequence-position",
+    evidence: [],
+    referenceObservationIds: ["obs-1", "obs-2"],
+  };
+
+  assert.deepEqual(deriveEvidencePresentation(estimatedObs, 15), {
+    state: "estimated",
+    label: "Estimated",
+    badgeLabel: "📡 ESTIMATED",
+    referenceObservationIds: ["obs-1", "obs-2"],
+    inspectable: true,
+  });
+
+  assert.deepEqual(deriveEvidencePresentation(null, 15, 100), {
+    state: "causal-only",
+    label: "Causal state",
+    badgeLabel: "",
+    referenceObservationIds: [],
+    inspectable: false,
+  });
+
+  assert.deepEqual(deriveEvidencePresentation(null, 15, null), {
+    state: "unknown",
+    label: "Unknown",
+    badgeLabel: "— ABSENT",
+    referenceObservationIds: [],
+    inspectable: false,
+  });
+});
 
 test("evidence presentation preserves source, locator, and confidence", () => {
   const evidence = {

@@ -1,4 +1,84 @@
-import type { CountdownReference, TimelineEvidence } from "../../../../app/domain/types";
+import type {
+  CountdownReference,
+  ProjectedEquipmentObservation,
+  ProjectedItemObservation,
+  ProjectedObservationValue,
+  TimelineEvidence,
+} from "../../../../app/domain/types";
+
+export type EvidenceState = "current" | "last-known" | "estimated" | "causal-only" | "unknown";
+
+export interface EvidencePresentation {
+  state: EvidenceState;
+  label: string;
+  badgeLabel: string;
+  sourceSequence?: number;
+  referenceObservationIds: string[];
+  inspectable: boolean;
+}
+
+export function deriveEvidencePresentation(
+  observation?: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation | null,
+  selectedSequence?: number,
+  causalValue?: unknown
+): EvidencePresentation {
+  if (observation) {
+    const referenceObservationIds = observation.referenceObservationIds || [];
+    if ("status" in observation && observation.status === "estimated") {
+      return {
+        state: "estimated",
+        label: "Estimated",
+        badgeLabel: "📡 ESTIMATED",
+        referenceObservationIds,
+        inspectable: true,
+      };
+    }
+
+    const sourceSequence = observation.sequence;
+    const isLastKnown =
+      selectedSequence !== undefined &&
+      sourceSequence !== undefined &&
+      sourceSequence < selectedSequence;
+
+    if (isLastKnown) {
+      return {
+        state: "last-known",
+        label: `Last known · sequence ${sourceSequence}`,
+        badgeLabel: `LAST KNOWN · SEQ ${sourceSequence}`,
+        sourceSequence,
+        referenceObservationIds,
+        inspectable: true,
+      };
+    }
+
+    return {
+      state: "current",
+      label: "Observed",
+      badgeLabel: "SOURCE",
+      sourceSequence,
+      referenceObservationIds,
+      inspectable: true,
+    };
+  }
+
+  if (causalValue !== undefined && causalValue !== null) {
+    return {
+      state: "causal-only",
+      label: "Causal state",
+      badgeLabel: "",
+      referenceObservationIds: [],
+      inspectable: false,
+    };
+  }
+
+  return {
+    state: "unknown",
+    label: "Unknown",
+    badgeLabel: "— ABSENT",
+    referenceObservationIds: [],
+    inspectable: false,
+  };
+}
 
 export function evidenceConfidenceLabel(evidence: TimelineEvidence): string {
   return (evidence.confidence ?? "confirmed").toUpperCase();

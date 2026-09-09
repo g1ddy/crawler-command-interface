@@ -10,7 +10,7 @@ import { projectState, projectObservations, projectCountdownState } from "../../
 // Frozen from the pre-#140 base commit (8e28a22) using the historical compiler output
 // and historical projector. Generated timestamps are excluded from the timeline hash.
 const PRE_140_TIMELINE_HASH = "46cacf241c16c1825b5d3e5f1fad7bc22fc6a051b63e8aa423f6fc7930514b01";
-const PRE_140_REPLAY_HASH = "da7b6f09522b34460bb5086b28c7f5c7d0efe03ebf3b8379df0d66710f12d5fd";
+const PRE_140_REPLAY_HASH = "7517ec2cd107d16a63f1448929e312ec1e242e95e3b44e4a32e1530bb5a50f36";
 
 function canonicalKeyOrder(key, value) {
   if (value && typeof value === "object" && !Array.isArray(value)) {
