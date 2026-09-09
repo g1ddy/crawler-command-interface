@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.02,
-    "fanIn": 64,
+    "fanIn": 65,
     "fanOut": 1,
     "scanned": true
   },
@@ -272,11 +272,11 @@
     "scanned": true
   },
   "src/CrawlerApp.tsx": {
-    "complexity": 28,
-    "loc": 399,
-    "instability": 0.92,
-    "fanIn": 2,
-    "fanOut": 22,
+    "complexity": 32,
+    "loc": 409,
+    "instability": 0.88,
+    "fanIn": 3,
+    "fanOut": 23,
     "scanned": true
   },
   "src/application/crawler-action-contracts.ts": {
@@ -575,20 +575,36 @@
     "fanOut": 0,
     "scanned": true
   },
+  "src/shell/hud/ConceptHud.tsx": {
+    "complexity": 13,
+    "loc": 56,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/CountdownEvidenceModal.tsx": {
+    "complexity": 6,
+    "loc": 8,
+    "instability": 0.6,
+    "fanIn": 2,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/shell/hud/hotlist/Hotlist.tsx": {
+    "complexity": 6,
+    "loc": 26,
+    "instability": 0.33,
+    "fanIn": 2,
+    "fanOut": 1,
+    "scanned": true
+  },
   "src/shell/hud/PersistentHud.tsx": {
     "complexity": 6,
     "loc": 47,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
-    "scanned": true
-  },
-  "src/shell/hud/hotlist/Hotlist.tsx": {
-    "complexity": 6,
-    "loc": 26,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
     "scanned": true
   },
   "src/shell/navigation/capabilities.ts": {
@@ -631,14 +647,6 @@
     "fanOut": 3,
     "scanned": true
   },
-  "src/features/timeline/evidence/CountdownEvidenceModal.tsx": {
-    "complexity": 6,
-    "loc": 8,
-    "instability": 0.75,
-    "fanIn": 1,
-    "fanOut": 3,
-    "scanned": true
-  },
   "src/shell/replay/ReplayControls.tsx": {
     "complexity": 11,
     "loc": 83,
@@ -653,6 +661,14 @@
     "instability": 0,
     "fanIn": 1,
     "fanOut": 0,
+    "scanned": true
+  },
+  "src/main.concepts.tsx": {
+    "complexity": 1,
+    "loc": 30,
+    "instability": 1,
+    "fanIn": 0,
+    "fanOut": 5,
     "scanned": true
   },
   "src/main.pages.tsx": {
