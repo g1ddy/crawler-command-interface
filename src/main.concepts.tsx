@@ -31,7 +31,7 @@ function ConceptLab() {
       >{concept.name}</button>)}</div>
       <p className="concept-description">{selected.description}</p>
     </section>
-    <CrawlerApp hudPresentation={selected.id} />
+    <CrawlerApp hudPresentation={selected.id} hudPersistence="isolated" />
   </div>;
 }
 

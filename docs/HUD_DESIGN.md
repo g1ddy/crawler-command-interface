@@ -27,8 +27,9 @@ notifications, an autonomous ticking clock, or a fictional map.
 ## Frontend implementation choices
 
 Keep React, Vite, existing host adapters and typed actions. Concepts are real frontend
-code reusing one typed `CrawlerApp` presentation boundary, projections, feature navigation,
-actions, and inspectors—not generated screenshots or a separate simulated application.
+code reusing typed, independent `CrawlerApp` presentation and persistence boundaries,
+projections, feature navigation, actions, and inspectors—not generated screenshots or a
+separate simulated application.
 The normal Pages build emits both `dist-pages/index.html` and
 `dist-pages/concepts.html`; the default application entry retains the existing HUD.
 
@@ -110,5 +111,6 @@ After selection: create focused implementation issues for the shell, shared acce
 primitives, feature migration (including Pet once merged), notification/motion behavior,
 responsive/accessibility verification, and canonical screenshot refresh. Production
 continues to use the original presentation until a direction is approved. The eventual
-production switch must be a deliberate change to the typed presentation configuration;
-it must not be a local-storage flag. The comparison lab remains available afterward.
+production switch must be a deliberate change to the typed presentation configuration,
+paired with normal persistence; it must not be a local-storage flag. The comparison lab
+remains available afterward.

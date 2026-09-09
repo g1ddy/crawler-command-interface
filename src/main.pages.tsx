@@ -19,7 +19,7 @@ createRoot(root).render(
         data-concept={hudPresentation}
         data-hud-presentation={hudPresentation}
       >
-        <CrawlerApp hudPresentation={hudPresentation} />
+        <CrawlerApp hudPresentation={hudPresentation} hudPersistence="isolated" />
       </div>
     )}
   </StrictMode>,

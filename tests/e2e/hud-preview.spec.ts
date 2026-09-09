@@ -8,7 +8,7 @@ for (const variant of ["authority", "tactical", "theater"] as const) {
     await page.goto(`${pagesPath}?hud=${variant}`);
 
     await expect(page.locator("[data-hud-presentation]")).toHaveAttribute("data-hud-presentation", variant);
-    await expect(page.getByRole("banner", { name: "Crawler HUD" })).toBeVisible();
+    await expect(page.locator('header[aria-label="Crawler HUD"]')).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Main Navigation" }).getByText("MAGIC", { exact: true })).toHaveCount(0);
     await expect(page.locator('.hud-reading[data-evidence="last-known"]').first()).toContainText(/Last known · sequence \d+/);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

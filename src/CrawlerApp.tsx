@@ -28,7 +28,10 @@ import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
 import { ActiveFeatureView } from "./shell/ActiveFeatureView";
 import { PersistentHud } from "./shell/hud/PersistentHud";
 import { ConceptHud } from "./shell/hud/ConceptHud";
-import type { HudPresentation } from "./shell/hud/hud-presentation";
+import type {
+  HudPersistence,
+  HudPresentation,
+} from "./shell/hud/hud-presentation";
 import {
   availableRootViews,
   resolveRootView,
@@ -43,16 +46,21 @@ import type { ActionResult, EquipmentSlot } from "./application/crawler-action-c
 
 export interface CrawlerAppProps {
   hudPresentation?: HudPresentation;
+  hudPersistence?: HudPersistence;
 }
 
-export default function CrawlerApp({ hudPresentation = "production" }: CrawlerAppProps = {}) {
-  const conceptPreview = hudPresentation !== "production";
+export default function CrawlerApp({
+  hudPresentation = "production",
+  hudPersistence = "normal",
+}: CrawlerAppProps = {}) {
+  const usesConceptHud = hudPresentation !== "production";
+  const hasDevicePersistence = hudPersistence === "normal";
   const storageAdapter = useMemo(
-    () => conceptPreview ? null : new LocalDeviceStorageAdapter(),
-    [conceptPreview],
+    () => hasDevicePersistence ? new LocalDeviceStorageAdapter() : null,
+    [hasDevicePersistence],
   );
   const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(() =>
-    !conceptPreview && typeof window !== "undefined"
+    hasDevicePersistence && typeof window !== "undefined"
       ? (new LocalDeviceStorageAdapter().loadTimeline() ?? compiledTimeline)
       : compiledTimeline,
   );
@@ -276,7 +284,7 @@ export default function CrawlerApp({ hudPresentation = "production" }: CrawlerAp
 
   return (
     <main data-mode={isLive ? "live" : "replay"}>
-      {conceptPreview ? <ConceptHud
+      {usesConceptHud ? <ConceptHud
         state={projectedState}
         observations={projectedObservations}
         countdown={activeCountdown}

@@ -182,8 +182,10 @@ lab at `/crawler-command-interface/concepts.html?concept=authority` and typed, U
 previews at `/crawler-command-interface/?hud=authority` (also `tactical` and `theater`).
 The default URL and invalid `hud` values continue to render the current production HUD;
 none of these previews persists its selection or reads, writes, or clears the saved timeline.
-An approved future redesign requires an explicit production configuration change while the
-comparison lab remains deployed. Set `PAGES_BASE_PATH=/` to use the same routes at a domain root.
+Presentation selection and persistence policy are independent typed `CrawlerApp` props. An
+approved future redesign requires an explicit production presentation change with normal
+persistence while the isolated comparison lab remains deployed. Set `PAGES_BASE_PATH=/` to
+use the same routes at a domain root.
 
 Every document in this repository owns a distinct, non-overlapping concern:
 
