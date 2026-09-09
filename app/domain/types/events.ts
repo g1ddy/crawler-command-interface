@@ -174,7 +174,7 @@ export type PetBondState = 'unbonded' | 'bonded';
 
 export interface PetSpec {
   petId: string;
-  name: string;
+  name?: string;
   species: string;
   title?: string;
   origin: PetOrigin;

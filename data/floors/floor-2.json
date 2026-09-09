@@ -1314,16 +1314,15 @@
       "summary": "Donut claims a caged mongoliensis pet-class mob from a Second Floor pet reward room.",
       "evidence": [
         {
-          "sourceId": "src-wiki-second-floor",
+          "sourceId": "src-book-1",
           "locator": {
-            "section": "Story"
+            "chapter": 46
           },
-          "confidence": "corroborated"
+          "confidence": "confirmed"
         }
       ],
       "pet": {
         "petId": "pet-mongo",
-        "name": "mongoliensis",
         "species": "mongoliensis",
         "origin": "dungeon-origin",
         "classification": "pet-class",
@@ -1345,11 +1344,11 @@
       "summary": "Donut removes Mongo's automatic aggression, rendering him non-hostile while still unbonded.",
       "evidence": [
         {
-          "sourceId": "src-wiki-second-floor",
+          "sourceId": "src-book-1",
           "locator": {
-            "section": "Story"
+            "chapter": 47
           },
-          "confidence": "corroborated"
+          "confidence": "confirmed"
         }
       ],
       "order": 38
@@ -1369,11 +1368,11 @@
       "summary": "Mongo completes his bond to Donut, receiving the name Mongo and title Royal Steed.",
       "evidence": [
         {
-          "sourceId": "src-wiki-second-floor",
+          "sourceId": "src-book-1",
           "locator": {
-            "section": "Story"
+            "chapter": 47
           },
-          "confidence": "corroborated"
+          "confidence": "confirmed"
         }
       ],
       "order": 39

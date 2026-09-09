@@ -155,6 +155,10 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     hostility: pet.hostility,
     bondState: pet.bondState,
     bondHolderCrawlerId: pet.bondHolderCrawlerId,
+    acquiredAtSequence: pet.acquiredAtSequence ?? 0,
+    level: pet.level,
+    deployment: pet.deployment,
+    condition: pet.condition ? { ...pet.condition } : undefined,
   }));
   const quests = ((timelineState?.quests as unknown as import('../types.ts').Quest[]) || []).map((q) => ({
     ...q,

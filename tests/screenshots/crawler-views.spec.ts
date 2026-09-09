@@ -9,7 +9,7 @@ async function preparePage(page: Page) {
   await page.evaluate(async () => { await document.fonts.ready; window.scrollTo(0, 0); });
 }
 
-async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS" | "RATINGS" | "PARTY" | "NOTIFICATIONS") {
+async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SKILLS" | "QUESTS" | "RATINGS" | "PARTY" | "PET" | "NOTIFICATIONS") {
   const navigation = page.getByRole("navigation", { name: "Main Navigation" });
   const tab = navigation.getByRole("button", { name, exact: true });
   await tab.click();
@@ -75,6 +75,7 @@ test("export Crawler Stats", async ({ page }) => { await selectCrawlerSubTab(pag
 test("export Crawler Health and Conditions", async ({ page }) => { await selectCrawlerSubTab(page, "HEALTH / CONDITIONS"); await expect(page.getByText("VITALS", { exact: true })).toBeVisible(); await capture(page, "crawlerHealth"); });
 test("export Ratings", async ({ page }) => { await selectTopLevelTab(page, "RATINGS"); await expect(page.getByRole("heading", { name: "RATINGS", exact: true })).toBeVisible(); await capture(page, "ratings"); });
 test("export Party after the sourced formation sequence", async ({ page }) => { await selectTopLevelTab(page, "PARTY"); await expect(page.getByRole("heading", { name: "PARTY", exact: true })).toBeVisible(); await expect(page.getByLabel("The Royal Court of Princess Donut roster", { exact: true })).toContainText("Princess Donut"); await capture(page, "party"); });
+test("export Pet after the sourced bond sequence", async ({ page }) => { await selectTopLevelTab(page, "PET"); await expect(page.getByRole("heading", { name: "PETS", exact: true })).toBeVisible(); await expect(page.getByLabel("Pet Mongo", { exact: true })).toBeVisible(); await capture(page, "pet"); });
 test("export Notifications", async ({ page }) => { await selectTopLevelTab(page, "NOTIFICATIONS"); await expect(page.getByRole("heading", { name: "NOTIFICATIONS", exact: true })).toBeVisible(); await capture(page, "notifications"); });
 test("export Floor Rules modal view", async ({ page }) => { await page.getByRole("button", { name: "📜 FLOOR RULES", exact: true }).click(); await expect(page.getByRole("heading", { name: "FLOOR RULES", exact: true })).toBeVisible(); await capture(page, "floorRules"); });
 test("export Timeline History modal view", async ({ page }) => { await page.getByRole("button", { name: "📜 HISTORY", exact: true }).click(); await expect(page.getByRole("heading", { name: "EVENT & NARRATIVE LOG", exact: true })).toBeVisible(); await capture(page, "timelineHistory"); });

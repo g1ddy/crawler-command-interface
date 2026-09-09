@@ -28,7 +28,7 @@ test("Pet domain replay boundaries on Floor 2 compiled timeline", () => {
   const stateAtAcquisition = projectState(compiledTimeline, acquiredEvent.sequence);
   const mongoAcquired = (stateAtAcquisition.pets || []).find((p) => p.petId === "pet-mongo");
   assert.ok(mongoAcquired, "Mongo pet object exists at acquisition");
-  assert.equal(mongoAcquired.name, "mongoliensis");
+  assert.equal(mongoAcquired.name, undefined, "Name is undefined/unnamed until naming/bonding");
   assert.equal(mongoAcquired.species, "mongoliensis");
   assert.equal(mongoAcquired.origin, "dungeon-origin");
   assert.equal(mongoAcquired.classification, "pet-class");

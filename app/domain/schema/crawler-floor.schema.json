@@ -3331,7 +3331,6 @@
       "additionalProperties": false,
       "required": [
         "petId",
-        "name",
         "species",
         "origin",
         "classification",

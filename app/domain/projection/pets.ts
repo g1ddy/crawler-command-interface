@@ -27,6 +27,7 @@ export function applyPetAcquired(state: CrawlerState, event: Record<string, unkn
     hostility: petSpec.hostility as PetHostility,
     bondState: petSpec.bondState as PetBondState,
     bondHolderCrawlerId: petSpec.bondHolderCrawlerId,
+    acquiredAtSequence: typeof event.sequence === 'number' ? event.sequence : state.sequence,
   };
 
   if (existingIndex >= 0) {

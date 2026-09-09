@@ -12,7 +12,7 @@ export function PetView({ pets }: { pets?: Pet[] }) {
           <p className="eyebrow">PET & DUNGEON FAMILIARS</p>
           <h1>PETS</h1>
         </div>
-        {activePets.length > 0 && <b>{activePets.length} ACTIVE</b>}
+        {activePets.length > 0 && <b>{activePets.length} {activePets.length === 1 ? "PET" : "PETS"}</b>}
       </header>
 
       {activePets.length > 0 ? (
@@ -20,13 +20,14 @@ export function PetView({ pets }: { pets?: Pet[] }) {
           {activePets.map((pet) => {
             const isHostile = pet.hostility === "hostile";
             const isBonded = pet.bondState === "bonded";
+            const displayName = pet.name ?? pet.species;
 
             return (
-              <section key={pet.petId} className="panel" aria-label={`Pet ${pet.name}`}>
+              <section key={pet.petId} className="panel" aria-label={`Pet ${displayName}`}>
                 <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <h2 style={{ margin: 0 }}>{pet.name}</h2>
+                      <h2 style={{ margin: 0 }}>{displayName}</h2>
                       {pet.title && (
                         <span style={{ color: "#d29237", fontSize: "11px", fontWeight: "bold" }}>
                           «{pet.title}»
