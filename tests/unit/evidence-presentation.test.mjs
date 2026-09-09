@@ -44,12 +44,14 @@ test("deriveEvidencePresentation derives current, last-known, estimated, causal-
     basis: "sequence-position",
     evidence: [],
     referenceObservationIds: ["obs-1", "obs-2"],
+    sourceSequences: [10, 20],
   };
 
   assert.deepEqual(deriveEvidencePresentation(estimatedObs, 15), {
     state: "estimated",
     label: "Estimated",
     badgeLabel: "📡 ESTIMATED",
+    sourceSequences: [10, 20],
     referenceObservationIds: ["obs-1", "obs-2"],
     inspectable: true,
   });

@@ -13,6 +13,7 @@ export interface EvidencePresentation {
   label: string;
   badgeLabel: string;
   sourceSequence?: number;
+  sourceSequences?: [number, number];
   referenceObservationIds: string[];
   inspectable: boolean;
 }
@@ -25,10 +26,12 @@ export function deriveEvidencePresentation(
   if (observation) {
     const referenceObservationIds = observation.referenceObservationIds || [];
     if ("status" in observation && observation.status === "estimated") {
+      const sourceSequences = "sourceSequences" in observation ? observation.sourceSequences : undefined;
       return {
         state: "estimated",
         label: "Estimated",
         badgeLabel: "📡 ESTIMATED",
+        sourceSequences,
         referenceObservationIds,
         inspectable: true,
       };

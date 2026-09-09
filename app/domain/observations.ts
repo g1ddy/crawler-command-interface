@@ -158,6 +158,7 @@ export function projectObservationValue(
     basis: hasElapsedBasis ? 'elapsed-duration' : 'sequence-position',
     evidence: [...before.observation.evidence, ...after.observation.evidence],
     referenceObservationIds: [before.observation.id, after.observation.id],
+    sourceSequences: [before.observation.sequence, after.observation.sequence],
   };
 }
 

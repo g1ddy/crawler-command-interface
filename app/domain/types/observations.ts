@@ -47,6 +47,7 @@ export interface ProjectedObservationValue {
   evidence: TimelineEvidence[];
   referenceObservationIds: string[];
   sequence?: number;
+  sourceSequences?: [number, number];
 }
 
 export interface ProjectedItemObservation {
