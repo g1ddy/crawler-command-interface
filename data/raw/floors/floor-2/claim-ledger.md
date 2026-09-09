@@ -25,19 +25,21 @@ The community [Pets & Dungeon Familiars](https://dungeon-crawler-carl.fandom.com
 | Bonding is required for the pet to continue with the crawler across a floor collapse; the reference says an unbonded pet must be left behind. | Pets & Dungeon Familiars, Bonding and the Pet Menu. | Combined with Mongo's continued presence after Floor 2, this supports persistence of the bonded relationship across the Floor 2→3 boundary. The general rule itself should remain corroborating until primary verification. |
 | Bonding unlocks a Pet Menu and exposes pet-specific management/state. | Pets & Dungeon Familiars, Bonding and the Pet Menu. | This is evidence that Pet can become a useful application capability after bond completion, but #130 should decide the minimal UI only from fields actually sourced by the current story scope. |
 
-### Current raw-model mismatch
+### Typed Pet Domain Implementation (#130)
 
-The existing `evt-f2-mongo-bonded` remains a `NarrativeEvent(kind: party-changed)` even though Mongo is not a crawler Party member. The Party regression test correctly prevents this event from modifying the crawler roster, but the event kind is still a transitional representation.
+Issue #130 replaced the transitional `evt-f2-mongo-bonded` narrative event with typed Pet events:
+- `evt-f2-mongo-acquired` (`PetAcquired`): Donut claims Mongo from the Floor 2 pet reward room as an unbonded, hostile pet-class mob (`pet-mongo`).
+- `evt-f2-mongo-hostility-changed` (`PetHostilityChanged`): Donut removes Mongo's automatic aggression, transitioning hostility to `non-hostile`.
+- `evt-f2-mongo-bonded` (`PetBonded`): Mongo completes his bond to Donut (`crawler-donut`), receiving the title `Royal Steed`.
 
-Do **not** add another generic narrative Pet event merely to make the ledger executable. #130 should replace the transitional representation with the smallest typed Pet acquisition/bond contract that can express:
-
-- stable pet identity;
-- dungeon-origin pet classification;
-- acquisition before bonding;
+This model establishes:
+- stable pet identity (`pet-mongo`);
+- dungeon-origin pet classification (`pet-class`);
+- acquisition distinct from hostility removal and bonding;
 - bond holder (`crawler-donut`);
 - bonded/unbonded state and replay boundary;
-- sourced name/title when verified; and
-- persistence into the next floor without implying crawler Party membership.
+- sourced name (`Mongo`) and title (`Royal Steed`); and
+- persistence into Floor 3 without implying crawler Party membership.
 
 Exact level, XP, stats, combat values, weaknesses, gear slots, carrier state, commands, and growth rules remain outside the Floor 2 projection unless independently sourced and represented deliberately.
 

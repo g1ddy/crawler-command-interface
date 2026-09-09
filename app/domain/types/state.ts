@@ -15,6 +15,10 @@ import type {
   EventCategory,
   FloorEventBase,
   Party,
+  PetBondState,
+  PetClassification,
+  PetHostility,
+  PetOrigin,
   RawFloorEvent,
   SpoilerScope,
   Spell,
@@ -23,6 +27,26 @@ import type {
   TimelineEvent,
   TimelineItem,
 } from './events.ts';
+
+export interface Pet {
+  petId: string;
+  name?: string;
+  species: string;
+  title?: string;
+  origin: PetOrigin;
+  classification: PetClassification;
+  hostility: PetHostility;
+  bondState: PetBondState;
+  bondHolderCrawlerId?: string;
+  acquiredAtSequence: number;
+  level?: number;
+  deployment?: 'active' | 'contained' | 'stored' | 'unknown';
+  condition?: {
+    status?: string;
+    health?: number;
+    maxHealth?: number;
+  };
+}
 import type {
   QuantityObject,
   RawObservation,
@@ -47,6 +71,7 @@ export interface TimelineState {
   skills?: Record<string, unknown>[];
   spells?: Spell[];
   party?: Party;
+  pets?: Pet[];
   quests?: Record<string, unknown>[];
   entitlements?: TimelineEntitlement[];
   hotlist?: string[];
@@ -219,6 +244,7 @@ export interface CrawlerState {
   skills: Skill[];
   spells: Spell[];
   party?: Party;
+  pets: Pet[];
   hotlist: string[]; // skillIds
   quests: Quest[];
   achievements: Achievement[];

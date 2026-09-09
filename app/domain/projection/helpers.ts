@@ -145,6 +145,21 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   const party = timelineState?.party
     ? { ...timelineState.party, members: timelineState.party.members.map((member) => ({ ...member })) }
     : undefined;
+  const pets: import('../types.ts').Pet[] = (timelineState?.pets || []).map((pet) => ({
+    petId: pet.petId,
+    name: pet.name,
+    species: pet.species,
+    title: pet.title,
+    origin: pet.origin,
+    classification: pet.classification,
+    hostility: pet.hostility,
+    bondState: pet.bondState,
+    bondHolderCrawlerId: pet.bondHolderCrawlerId,
+    acquiredAtSequence: pet.acquiredAtSequence ?? 0,
+    level: pet.level,
+    deployment: pet.deployment,
+    condition: pet.condition ? { ...pet.condition } : undefined,
+  }));
   const quests = ((timelineState?.quests as unknown as import('../types.ts').Quest[]) || []).map((q) => ({
     ...q,
   }));
@@ -191,6 +206,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     skills,
     spells,
     party,
+    pets,
     hotlist: Array.isArray(timelineState?.hotlist) ? timelineState.hotlist.slice(0, 10) : [],
     quests,
     achievements,

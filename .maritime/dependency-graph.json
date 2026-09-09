@@ -159,6 +159,7 @@
         "app/domain/projection/inventory.ts",
         "app/domain/projection/magic.ts",
         "app/domain/projection/party.ts",
+        "app/domain/projection/pets.ts",
         "app/domain/projection/quests.ts",
         "app/domain/floors.ts",
         "app/domain/narrative-presentation.ts",
@@ -193,19 +194,19 @@
         "src/features/notifications/NotificationsView.tsx",
         "src/features/notifications/notification-presentation.ts",
         "src/features/party/PartyView.tsx",
+        "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/ratings/RatingsView.tsx",
         "src/features/ratings/ratings-presentation.ts",
         "src/features/skills/SkillsView.tsx",
-        "src/shell/hud/ConceptHud.tsx",
-        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-        "src/shell/hud/hotlist/Hotlist.tsx",
         "src/shell/hud/PersistentHud.tsx",
+        "src/shell/hud/hotlist/Hotlist.tsx",
         "src/shell/navigation/capabilities.ts",
         "src/shell/replay/ReplaySurface.tsx",
         "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
         "src/features/timeline/diagnostics/SequenceInspector.tsx",
+        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
         "src/shell/replay/ReplayControls.tsx"
       ],
       "orphan": false
@@ -837,8 +838,8 @@
       "dependents": [
         "app/domain/validation.ts",
         "app/domain/projection/index.ts",
-        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-        "src/shell/replay/ReplaySurface.tsx"
+        "src/shell/replay/ReplaySurface.tsx",
+        "src/features/timeline/evidence/CountdownEvidenceModal.tsx"
       ],
       "orphan": false
     },
@@ -1192,6 +1193,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "./pets.ts",
+          "resolved": "app/domain/projection/pets.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./quests.ts",
           "resolved": "app/domain/projection/quests.ts",
           "valid": true,
@@ -1456,6 +1474,34 @@
     },
     {
       "source": "app/domain/projection/party.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "app/domain/projection/index.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "app/domain/projection/pets.ts",
       "valid": true,
       "dependencies": [
         {
@@ -1869,7 +1915,6 @@
       "dependencies": [],
       "dependents": [
         "app/layout.tsx",
-        "src/main.concepts.tsx",
         "src/main.pages.tsx"
       ],
       "coreModule": false,
@@ -2198,23 +2243,6 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./shell/hud/ConceptHud",
-          "resolved": "src/shell/hud/ConceptHud.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "./shell/hud/PersistentHud",
           "resolved": "src/shell/hud/PersistentHud.tsx",
           "valid": true,
@@ -2326,7 +2354,6 @@
       ],
       "dependents": [
         "app/page.tsx",
-        "src/main.concepts.tsx",
         "src/main.pages.tsx"
       ],
       "orphan": false
@@ -2345,13 +2372,12 @@
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
         "src/features/party/PartyView.tsx",
+        "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/skills/SkillsView.tsx",
-        "src/shell/hud/ConceptHud.tsx",
         "src/shell/replay/ReplaySurface.tsx",
         "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-        "src/main.concepts.tsx",
         "src/main.pages.tsx"
       ],
       "coreModule": false,
@@ -3159,6 +3185,23 @@
           "moduleSystem": "es6",
           "module": "../features/party/PartyView",
           "resolved": "src/features/party/PartyView.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../features/pet/PetView",
+          "resolved": "src/features/pet/PetView.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4351,6 +4394,51 @@
       "orphan": false
     },
     {
+      "source": "src/features/pet/PetView.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/shell/ActiveFeatureView.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/features/quests/QuestsView.tsx",
       "valid": true,
       "dependencies": [
@@ -4657,177 +4745,6 @@
       "orphan": false
     },
     {
-      "source": "src/shell/hud/ConceptHud.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../features/timeline/evidence/CountdownEvidenceModal",
-          "resolved": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./hotlist/Hotlist",
-          "resolved": "src/shell/hud/hotlist/Hotlist.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
-        }
-      ],
-      "dependents": [
-        "src/CrawlerApp.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/countdowns",
-          "resolved": "app/domain/countdowns.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./evidencePresentation",
-          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/hud/ConceptHud.tsx",
-        "src/shell/replay/ReplaySurface.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/shell/hud/hotlist/Hotlist.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/hud/ConceptHud.tsx",
-        "src/shell/hud/PersistentHud.tsx"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/shell/hud/PersistentHud.tsx",
       "valid": true,
       "dependencies": [
@@ -4869,6 +4786,34 @@
       ],
       "dependents": [
         "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/hud/hotlist/Hotlist.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/hud/PersistentHud.tsx"
       ],
       "orphan": false
     },
@@ -5252,6 +5197,68 @@
       "orphan": false
     },
     {
+      "source": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/countdowns",
+          "resolved": "app/domain/countdowns.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/replay/ReplaySurface.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/shell/replay/ReplayControls.tsx",
       "valid": true,
       "dependencies": [
@@ -5304,134 +5311,6 @@
         "src/CrawlerApp.tsx"
       ],
       "orphan": false
-    },
-    {
-      "source": "src/main.concepts.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./CrawlerApp",
-          "resolved": "src/CrawlerApp.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./styles/application.css",
-          "resolved": "src/styles/application.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./styles/concepts.css",
-          "resolved": "src/styles/concepts.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react-dom/client",
-          "resolved": "node_modules/react-dom/client.js",
-          "valid": true,
-          "matchesDoNotFollow": true
-        }
-      ],
-      "dependents": [],
-      "orphan": false
-    },
-    {
-      "source": "src/styles/concepts.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/main.concepts.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
-    },
-    {
-      "source": "node_modules/react-dom/client.js",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/main.concepts.tsx",
-        "src/main.pages.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ]
     },
     {
       "source": "src/main.pages.tsx",
@@ -5508,14 +5387,31 @@
       ],
       "dependents": [],
       "orphan": false
+    },
+    {
+      "source": "node_modules/react-dom/client.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/main.pages.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
     }
   ],
   "summary": {
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 99,
-    "totalDependenciesCruised": 246,
+    "totalCruised": 98,
+    "totalDependenciesCruised": 241,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

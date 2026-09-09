@@ -41,6 +41,10 @@ Broadcast-domain observations are presented in canon-aligned Ratings groups with
 The Party roster appears only after the sourced Floor 1 formation sequence and shows no inferred teammate state.
 ![Party view](images/screenshot-party.png)
 
+### Pet
+The Pet view appears only after a sourced bond unlock and presents origin, classification, hostility, and bond state without Party roster confusion.
+![Pet view](images/screenshot-pet.png)
+
 ### Notifications
 Only crawler-visible delivered semantics are represented; generic Timeline activity remains separate.
 ![Notifications view](images/screenshot-notifications.png)
