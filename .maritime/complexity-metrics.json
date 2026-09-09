@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.02,
-    "fanIn": 62,
+    "fanIn": 64,
     "fanOut": 1,
     "scanned": true
   },
@@ -49,7 +49,7 @@
   },
   "app/domain/types/events.ts": {
     "complexity": 1,
-    "loc": 474,
+    "loc": 530,
     "instability": 0.67,
     "fanIn": 2,
     "fanOut": 4,
@@ -65,15 +65,15 @@
   },
   "app/domain/types/state.ts": {
     "complexity": 1,
-    "loc": 247,
+    "loc": 273,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
     "scanned": true
   },
   "app/domain/validation.ts": {
-    "complexity": 60,
-    "loc": 459,
+    "complexity": 74,
+    "loc": 483,
     "instability": 0.69,
     "fanIn": 4,
     "fanOut": 9,
@@ -121,10 +121,10 @@
   },
   "app/domain/projection/index.ts": {
     "complexity": 15,
-    "loc": 195,
+    "loc": 205,
     "instability": 0.92,
     "fanIn": 1,
-    "fanOut": 11,
+    "fanOut": 12,
     "scanned": true
   },
   "app/domain/observations.ts": {
@@ -144,8 +144,8 @@
     "scanned": true
   },
   "app/domain/projection/helpers.ts": {
-    "complexity": 66,
-    "loc": 202,
+    "complexity": 68,
+    "loc": 218,
     "instability": 0.4,
     "fanIn": 3,
     "fanOut": 2,
@@ -186,6 +186,14 @@
   "app/domain/projection/party.ts": {
     "complexity": 2,
     "loc": 9,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "app/domain/projection/pets.ts": {
+    "complexity": 7,
+    "loc": 81,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -368,11 +376,11 @@
     "scanned": true
   },
   "src/shell/ActiveFeatureView.tsx": {
-    "complexity": 8,
-    "loc": 42,
-    "instability": 0.91,
+    "complexity": 9,
+    "loc": 44,
+    "instability": 0.92,
     "fanIn": 1,
-    "fanOut": 10,
+    "fanOut": 11,
     "scanned": true
   },
   "src/features/crawler/CrawlerView.tsx": {
@@ -511,6 +519,14 @@
     "fanOut": 2,
     "scanned": true
   },
+  "src/features/pet/PetView.tsx": {
+    "complexity": 17,
+    "loc": 125,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
   "src/features/quests/QuestsView.tsx": {
     "complexity": 15,
     "loc": 118,
@@ -553,7 +569,7 @@
   },
   "src/shell/navigation/navigation-model.ts": {
     "complexity": 1,
-    "loc": 14,
+    "loc": 15,
     "instability": 0,
     "fanIn": 4,
     "fanOut": 0,
@@ -577,7 +593,7 @@
   },
   "src/shell/navigation/capabilities.ts": {
     "complexity": 3,
-    "loc": 32,
+    "loc": 33,
     "instability": 0.5,
     "fanIn": 2,
     "fanOut": 2,

@@ -159,6 +159,7 @@
         "app/domain/projection/inventory.ts",
         "app/domain/projection/magic.ts",
         "app/domain/projection/party.ts",
+        "app/domain/projection/pets.ts",
         "app/domain/projection/quests.ts",
         "app/domain/floors.ts",
         "app/domain/narrative-presentation.ts",
@@ -193,6 +194,7 @@
         "src/features/notifications/NotificationsView.tsx",
         "src/features/notifications/notification-presentation.ts",
         "src/features/party/PartyView.tsx",
+        "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/ratings/RatingsView.tsx",
@@ -1191,6 +1193,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "./pets.ts",
+          "resolved": "app/domain/projection/pets.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./quests.ts",
           "resolved": "app/domain/projection/quests.ts",
           "valid": true,
@@ -1455,6 +1474,34 @@
     },
     {
       "source": "app/domain/projection/party.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "app/domain/projection/index.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "app/domain/projection/pets.ts",
       "valid": true,
       "dependencies": [
         {
@@ -2325,6 +2372,7 @@
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
         "src/features/party/PartyView.tsx",
+        "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/skills/SkillsView.tsx",
@@ -3137,6 +3185,23 @@
           "moduleSystem": "es6",
           "module": "../features/party/PartyView",
           "resolved": "src/features/party/PartyView.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../features/pet/PetView",
+          "resolved": "src/features/pet/PetView.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4329,6 +4394,51 @@
       "orphan": false
     },
     {
+      "source": "src/features/pet/PetView.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/shell/ActiveFeatureView.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/features/quests/QuestsView.tsx",
       "valid": true,
       "dependencies": [
@@ -5300,8 +5410,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 96,
-    "totalDependenciesCruised": 236,
+    "totalCruised": 98,
+    "totalDependenciesCruised": 241,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
