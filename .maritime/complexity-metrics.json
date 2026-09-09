@@ -273,7 +273,7 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 32,
-    "loc": 409,
+    "loc": 416,
     "instability": 0.88,
     "fanIn": 3,
     "fanOut": 23,
@@ -576,8 +576,8 @@
     "scanned": true
   },
   "src/shell/hud/ConceptHud.tsx": {
-    "complexity": 13,
-    "loc": 56,
+    "complexity": 14,
+    "loc": 83,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,

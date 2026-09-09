@@ -17,7 +17,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/countdowns.ts` | **230.1** | 401 | 92 | 1 | 0.2 |
 | `app/domain/validation.ts` | **228.1** | 483 | 74 | 9 | 0.69 |
 | `app/domain/projection/helpers.ts` | **169.8** | 218 | 68 | 2 | 0.4 |
-| `src/CrawlerApp.tsx` | **168.6** | 409 | 32 | 23 | 0.88 |
+| `src/CrawlerApp.tsx` | **169.3** | 416 | 32 | 23 | 0.88 |
 | `src/application/crawler-actions.ts` | **132.1** | 128 | 49 | 4 | 0.67 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
 | `src/features/inventory/ItemInspector.tsx` | **112.3** | 223 | 33 | 4 | 0.8 |
@@ -34,7 +34,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/application/crawler-actions.ts` | **49** | 128 |
 | `app/domain/compiler.ts` | **35** | 368 |
 | `src/features/inventory/ItemInspector.tsx` | **33** | 223 |
-| `src/CrawlerApp.tsx` | **32** | 409 |
+| `src/CrawlerApp.tsx` | **32** | 416 |
 | `app/domain/observations.ts` | **29** | 322 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **27** | 56 |
 | `src/features/timeline/diagnostics/SequenceInspector.tsx` | **25** | 50 |
