@@ -4,7 +4,7 @@ import test from "node:test";
 import { compileRawFloorFiles } from "../../app/domain/raw-compiler.ts";
 import { loadAllRawFloorDocuments } from "../../app/domain/raw-loader.ts";
 import { projectState, applyEvent } from "../../app/domain/projection.ts";
-import { validateCrawlerTimeline, validateCrawlerFloor } from "../../app/domain/validation.ts";
+import { validateCrawlerTimeline } from "../../app/domain/validation.ts";
 import { createInitialState } from "../../app/domain/projection/helpers.ts";
 
 test("Pet domain replay boundaries on Floor 2 compiled timeline", () => {

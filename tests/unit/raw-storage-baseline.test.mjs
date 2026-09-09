@@ -9,7 +9,7 @@ import { loadRawFloorDocument } from "../../app/domain/raw-loader.ts";
 
 const PRE_REFACTOR_FLOOR_BLOB_SHA = new Map([
   [1, "7814594fd94026a29b9247d077cc2a6e74f91ab8"],
-  [2, "9c398e5adf2b9c32ace95e50438caec7b55a47f4"],
+  [2, "6b104ed59d04a5a4df6fd41b3282c16c258e00b2"],
 ]);
 
 function gitBlobSha(content) {

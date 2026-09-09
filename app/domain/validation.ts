@@ -368,6 +368,15 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
     }
   }
 
+  const knownPetIds = new Set<string>();
+  if (timelineDoc.initialState?.pets) {
+    for (const pet of timelineDoc.initialState.pets) {
+      if (pet.petId) {
+        knownPetIds.add(pet.petId);
+      }
+    }
+  }
+
   if (Array.isArray(timelineDoc.events)) {
     for (let i = 0; i < timelineDoc.events.length; i++) {
       const event = timelineDoc.events[i];
@@ -425,6 +434,21 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
         if (!knownItemInstanceIds.has(event.itemInstanceId)) {
           errors.push(
             `Domain error: ${eventRef} references itemInstanceId "${event.itemInstanceId}" which was not acquired prior to or at this sequence.`
+          );
+        }
+      }
+
+      if (event.type === 'PetAcquired' && 'pet' in event && (event as { pet?: { petId?: string } }).pet?.petId) {
+        knownPetIds.add((event as { pet: { petId: string } }).pet.petId);
+      } else if (
+        (event.type === 'PetHostilityChanged' || event.type === 'PetBonded' || event.type === 'PetClassificationChanged') &&
+        'petId' in event &&
+        (event as { petId?: string }).petId
+      ) {
+        const pId = (event as { petId: string }).petId;
+        if (!knownPetIds.has(pId)) {
+          errors.push(
+            `Domain error: ${eventRef} references petId "${pId}" which was not acquired prior to or at this sequence.`
           );
         }
       }
