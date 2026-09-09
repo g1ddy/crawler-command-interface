@@ -28,6 +28,10 @@ import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
 import { ActiveFeatureView } from "./shell/ActiveFeatureView";
 import { PersistentHud } from "./shell/hud/PersistentHud";
 import { ConceptHud } from "./shell/hud/ConceptHud";
+import type {
+  HudPersistence,
+  HudPresentation,
+} from "./shell/hud/hud-presentation";
 import {
   availableRootViews,
   resolveRootView,
@@ -40,16 +44,29 @@ import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
 import { createApplicationActions } from "./application/crawler-actions";
 import type { ActionResult, EquipmentSlot } from "./application/crawler-action-contracts";
 
-export default function CrawlerApp({ conceptPreview = false }: { conceptPreview?: boolean } = {}) {
-  const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
+export interface CrawlerAppProps {
+  hudPresentation?: HudPresentation;
+  hudPersistence?: HudPersistence;
+}
+
+export default function CrawlerApp({
+  hudPresentation = "production",
+  hudPersistence = "normal",
+}: CrawlerAppProps = {}) {
+  const usesConceptHud = hudPresentation !== "production";
+  const hasDevicePersistence = hudPersistence === "normal";
+  const storageAdapter = useMemo(
+    () => hasDevicePersistence ? new LocalDeviceStorageAdapter() : null,
+    [hasDevicePersistence],
+  );
   const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(() =>
-    !conceptPreview && typeof window !== "undefined"
+    hasDevicePersistence && typeof window !== "undefined"
       ? (new LocalDeviceStorageAdapter().loadTimeline() ?? compiledTimeline)
       : compiledTimeline,
   );
   const updateTimeline = (document: CrawlerTimelineDocument) => {
     setTimelineDoc(document);
-    if (!conceptPreview) storageAdapter.saveTimeline(document);
+    storageAdapter?.saveTimeline(document);
   };
   const events = timelineDoc.events as unknown as CrawlerEvent[];
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
@@ -212,7 +229,7 @@ export default function CrawlerApp({ conceptPreview = false }: { conceptPreview?
     }
   };
   const handleReset = () => {
-    if (!conceptPreview) storageAdapter.clearTimeline();
+    storageAdapter?.clearTimeline();
     setTimelineDoc(compiledTimeline);
     const compiledEvents = compiledTimeline.events || [];
     const last = compiledEvents.slice(-1)[0]?.sequence ?? 1;
@@ -267,7 +284,7 @@ export default function CrawlerApp({ conceptPreview = false }: { conceptPreview?
 
   return (
     <main data-mode={isLive ? "live" : "replay"}>
-      {conceptPreview ? <ConceptHud
+      {usesConceptHud ? <ConceptHud
         state={projectedState}
         observations={projectedObservations}
         countdown={activeCountdown}

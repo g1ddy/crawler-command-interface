@@ -43,3 +43,16 @@ test("concepts retain replay state, capability boundaries and device storage", a
   expect(await page.evaluate(() => JSON.stringify(localStorage))).toBe(initialStorage);
   expect(errors).toEqual([]);
 });
+
+test("direct and invalid concept URLs select a safe, shareable state", async ({ page }) => {
+  await page.goto("concepts.html?concept=theater");
+  await expect(page.getByRole("button", { name: "Theater", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".concept-lab")).toHaveAttribute("data-concept", "theater");
+
+  await page.getByRole("button", { name: "Tactical", exact: true }).click();
+  await expect(page).toHaveURL(/concepts\.html\?concept=tactical$/);
+
+  await page.goto("concepts.html?concept=unsupported");
+  await expect(page.getByRole("button", { name: "Authority", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".concept-lab")).toHaveAttribute("data-concept", "authority");
+});

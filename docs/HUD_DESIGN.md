@@ -27,11 +27,14 @@ notifications, an autonomous ticking clock, or a fictional map.
 ## Frontend implementation choices
 
 Keep React, Vite, existing host adapters and typed actions. Concepts are real frontend
-code reusing `CrawlerApp`, projections, feature navigation, and inspectors—not generated
-screenshots or a separate simulated application. The dedicated Vite `concepts` mode emits
-`dist-concepts/concepts.html`; production builds retain their existing entry point.
+code reusing typed, independent `CrawlerApp` presentation and persistence boundaries,
+projections, feature navigation, actions, and inspectors—not generated screenshots or a
+separate simulated application.
+The normal Pages build emits both `dist-pages/index.html` and
+`dist-pages/concepts.html`; the default application entry retains the existing HUD.
 
-Concept actions are memory-only: no loading, saving, or clearing the normal device timeline.
+Preview and concept-lab actions are memory-only: no loading, saving, or clearing the normal
+device timeline.
 Reload restores the compiled timeline. Changing visual concepts preserves the selected
 sequence and domain. Import/export remains available for testing, without device writes.
 
@@ -72,9 +75,21 @@ not yet a complete domain-by-domain redesign.
 
 ## Comparison and acceptance
 
-Run `npm run build:concepts`, then serve with
-`npx vite preview --config vite.pages.config.ts --mode concepts` and open
-`/crawler-command-interface/concepts.html` at the printed local origin.
+The deployed comparison lab is `/crawler-command-interface/concepts.html`. A selection is
+shareable as `concepts.html?concept=authority`, `concepts.html?concept=tactical`, or
+`concepts.html?concept=theater`; missing and invalid values safely select Authority. The
+picker updates the URL without remounting `CrawlerApp`, so replay position and the active
+domain survive a comparison switch.
+
+The normal deployed application also provides non-persistent review URLs:
+`/crawler-command-interface/?hud=authority`, `?hud=tactical`, and `?hud=theater`.
+The default URL—and any invalid `hud` value—renders the current production HUD. These are
+comparison previews, not Crawler Menu destinations or a production design selection. Both
+entry points honor `PAGES_BASE_PATH=/` for custom-domain builds.
+
+Run `npm run build:pages`, then serve with
+`npx vite preview --config vite.pages.config.ts` and open either deployed-style entry point.
+`npm run build:concepts` remains available as an isolated lab build for local review.
 Run `npm run test:concepts` for desktop/mobile replay checks and generated comparison PNGs
 under `test-results/concepts/`. These files are not canonical screenshots and must never
 be promoted by the canonical screenshot workflow.
@@ -91,8 +106,11 @@ emphasis only for genuinely delivered system moments. **No final design is selec
 
 ## Remaining #160 delivery
 
-This branch implements the executable comparison stage, not closure of the epic.
+This branch implements the deployed executable comparison stage, not closure of the epic.
 After selection: create focused implementation issues for the shell, shared accessible
 primitives, feature migration (including Pet once merged), notification/motion behavior,
 responsive/accessibility verification, and canonical screenshot refresh. Production
-continues to use the original presentation until a direction is approved.
+continues to use the original presentation until a direction is approved. The eventual
+production switch must be a deliberate change to the typed presentation configuration,
+paired with normal persistence; it must not be a local-storage flag. The comparison lab
+remains available afterward.
