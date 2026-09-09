@@ -175,6 +175,10 @@ The CI pipeline (`.github/workflows/ci.yml`) exercises the custom Pages base fir
 - **Verification**: Ensure `npm run verify` passes completely before submitting code.
 ## Documentation Ownership Matrix
 
+HUD design exploration is documented in [HUD_DESIGN.md](HUD_DESIGN.md). Its isolated
+`build:concepts` / `test:concepts` workflow does not replace production builds, E2E,
+or canonical screenshot publication.
+
 Every document in this repository owns a distinct, non-overlapping concern:
 
 | Document | Authoritative Ownership |
@@ -185,6 +189,7 @@ Every document in this repository owns a distinct, non-overlapping concern:
 | [docs/DEVELOPMENT.md](DEVELOPMENT.md) | Contributor setup, canonical commands, builds, verification, generated-artifact workflows, documentation matrix |
 | [docs/COMPLEXITY.md](COMPLEXITY.md) | Complexity metrics interpretation and canonical generated Maritime evidence |
 | [docs/SCREENSHOTS.md](SCREENSHOTS.md) | Durable visual-state contract, canonical vs synthetic rules, screenshot regeneration |
+| [docs/HUD_DESIGN.md](HUD_DESIGN.md) | #160 visual grammar, executable concept comparison, and design decisions |
 | [docs/ROADMAP.md](ROADMAP.md) | Unfinished product/architecture work and intentional deferrals only |
 | [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md) | Sourced evidence authoring rules, JSON schemas, countdown projection contracts |
 | [docs/CANON_READINESS.md](CANON_READINESS.md) | Durable readiness ledger governing conditional Crawler Menu capabilities |

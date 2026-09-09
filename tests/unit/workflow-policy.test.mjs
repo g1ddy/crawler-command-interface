@@ -9,6 +9,7 @@ const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
 test("ordinary PR verification workflows do not commit or push to active branches", async () => {
   const verificationWorkflows = [
     ".github/workflows/ci.yml",
+    ".github/workflows/hud-concepts.yml",
     ".github/workflows/playwright.yml",
     ".github/workflows/deploy-pages.yml",
   ];

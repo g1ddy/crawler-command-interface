@@ -27,6 +27,7 @@ import { TelemetryInspectorModal } from "./features/timeline/evidence/TelemetryI
 import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
 import { ActiveFeatureView } from "./shell/ActiveFeatureView";
 import { PersistentHud } from "./shell/hud/PersistentHud";
+import { ConceptHud } from "./shell/hud/ConceptHud";
 import {
   availableRootViews,
   resolveRootView,
@@ -39,16 +40,16 @@ import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
 import { createApplicationActions } from "./application/crawler-actions";
 import type { ActionResult, EquipmentSlot } from "./application/crawler-action-contracts";
 
-export default function CrawlerApp() {
+export default function CrawlerApp({ conceptPreview = false }: { conceptPreview?: boolean } = {}) {
   const storageAdapter = useMemo(() => new LocalDeviceStorageAdapter(), []);
   const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(() =>
-    typeof window !== "undefined"
+    !conceptPreview && typeof window !== "undefined"
       ? (new LocalDeviceStorageAdapter().loadTimeline() ?? compiledTimeline)
       : compiledTimeline,
   );
   const updateTimeline = (document: CrawlerTimelineDocument) => {
     setTimelineDoc(document);
-    storageAdapter.saveTimeline(document);
+    if (!conceptPreview) storageAdapter.saveTimeline(document);
   };
   const events = timelineDoc.events as unknown as CrawlerEvent[];
   const maxSeq = events[events.length - 1]?.sequence ?? 1;
@@ -205,7 +206,7 @@ export default function CrawlerApp() {
     }
   };
   const handleReset = () => {
-    storageAdapter.clearTimeline();
+    if (!conceptPreview) storageAdapter.clearTimeline();
     setTimelineDoc(compiledTimeline);
     const compiledEvents = compiledTimeline.events || [];
     const last = compiledEvents.slice(-1)[0]?.sequence ?? 1;
@@ -259,8 +260,17 @@ export default function CrawlerApp() {
   const sources = timelineDoc.sources as TimelineSource[];
 
   return (
-    <main>
-      <PersistentHud
+    <main data-mode={isLive ? "live" : "replay"}>
+      {conceptPreview ? <ConceptHud
+        state={projectedState}
+        observations={projectedObservations}
+        countdown={activeCountdown}
+        floorTitle={floorHudTitle}
+        isLive={isLive}
+        onReturnToLive={returnToLive}
+        onInspectObservation={setInspectObservation}
+        onNavigateToSequence={navigateToSequence}
+      /> : <PersistentHud
         crawlerName={projectedState.crawler.name}
         crawlerClass={projectedState.crawler.class}
         level={hudLevel}
@@ -277,7 +287,7 @@ export default function CrawlerApp() {
         hotlist={projectedState.hotlist}
         skills={projectedState.skills}
         onReturnToLive={returnToLive}
-      />
+      />}
       <RootNavigation
         active={resolvedView}
         set={setView}
