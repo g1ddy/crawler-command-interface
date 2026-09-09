@@ -1167,27 +1167,6 @@
       "order": 30
     },
     {
-      "id": "evt-f2-mongo-bonded",
-      "type": "NarrativeEvent",
-      "kind": "party-changed",
-      "position": {
-        "floor": 2,
-        "book": 1,
-        "chapter": 40
-      },
-      "summary": "Mongo bonds to Donut and joins the Royal Court.",
-      "evidence": [
-        {
-          "sourceId": "src-book-1",
-          "locator": {
-            "chapter": 40
-          },
-          "confidence": "confirmed"
-        }
-      ],
-      "order": 31
-    },
-    {
       "id": "evt-f2-level-12",
       "type": "LevelChanged",
       "level": 12,
@@ -1210,7 +1189,7 @@
         "kind": "progression",
         "severity": "success"
       },
-      "order": 32
+      "order": 31
     },
     {
       "id": "evt-f2-episode-8",
@@ -1230,7 +1209,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 33
+      "order": 32
     },
     {
       "id": "evt-f2-agatha-reappears",
@@ -1250,7 +1229,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 34
+      "order": 33
     },
     {
       "id": "evt-f2-valtay-technology-discovered",
@@ -1270,7 +1249,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 35
+      "order": 34
     },
     {
       "id": "evt-f2-achievement-ceramic-dalmatian-pat",
@@ -1296,7 +1275,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 36
+      "order": 35
     },
     {
       "id": "evt-f2-achievement-menagerie",
@@ -1322,7 +1301,81 @@
         "kind": "achievement",
         "severity": "success"
       },
+      "order": 36
+    },
+    {
+      "id": "evt-f2-mongo-acquired",
+      "type": "PetAcquired",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 46
+      },
+      "summary": "Donut claims a caged mongoliensis pet-class mob from a Second Floor pet reward room.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 46
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "pet": {
+        "petId": "pet-mongo",
+        "name": "Mongo",
+        "species": "mongoliensis",
+        "origin": "dungeon-origin",
+        "classification": "pet-class",
+        "hostility": "hostile",
+        "bondState": "unbonded"
+      },
       "order": 37
+    },
+    {
+      "id": "evt-f2-mongo-hostility-changed",
+      "type": "PetHostilityChanged",
+      "petId": "pet-mongo",
+      "hostility": "non-hostile",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "summary": "Donut removes Mongo's automatic aggression, rendering him non-hostile while still unbonded.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 47
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 38
+    },
+    {
+      "id": "evt-f2-mongo-bonded",
+      "type": "PetBonded",
+      "petId": "pet-mongo",
+      "bondHolderCrawlerId": "crawler-donut",
+      "title": "Royal Steed",
+      "position": {
+        "floor": 2,
+        "book": 1,
+        "chapter": 47
+      },
+      "summary": "Mongo completes his bond to Donut, receiving the title Royal Steed and remaining bonded across floor transitions.",
+      "evidence": [
+        {
+          "sourceId": "src-book-1",
+          "locator": {
+            "chapter": 47
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 39
     },
     {
       "id": "evt-f2-achievement-peta-enthusiast",
@@ -1348,7 +1401,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 38
+      "order": 40
     },
     {
       "id": "evt-f2-level-13",
@@ -1374,7 +1427,7 @@
         "kind": "progression",
         "severity": "success"
       },
-      "order": 39
+      "order": 41
     },
     {
       "id": "evt-f2-floor-3-descent",
@@ -1394,7 +1447,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 40
+      "order": 42
     },
     {
       "id": "evt-f2-exit",
@@ -1415,7 +1468,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 41
+      "order": 43
     },
     {
       "id": "evt-f2-collapse",
@@ -1435,7 +1488,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 42
+      "order": 44
     }
   ]
 }

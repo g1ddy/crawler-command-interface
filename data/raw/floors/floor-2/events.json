@@ -682,26 +682,6 @@
     }
   },
   {
-    "id": "evt-f2-mongo-bonded",
-    "type": "NarrativeEvent",
-    "kind": "party-changed",
-    "position": {
-      "floor": 2,
-      "book": 1,
-      "chapter": 40
-    },
-    "summary": "Mongo bonds to Donut and joins the Royal Court.",
-    "evidence": [
-      {
-        "sourceId": "src-book-1",
-        "locator": {
-          "chapter": 40
-        },
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
     "id": "evt-f2-level-12",
     "type": "LevelChanged",
     "level": 12,
@@ -831,6 +811,77 @@
       "kind": "achievement",
       "severity": "success"
     }
+  },
+  {
+    "id": "evt-f2-mongo-acquired",
+    "type": "PetAcquired",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 46
+    },
+    "summary": "Donut claims a caged mongoliensis pet-class mob from a Second Floor pet reward room.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 46
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "pet": {
+      "petId": "pet-mongo",
+      "name": "Mongo",
+      "species": "mongoliensis",
+      "origin": "dungeon-origin",
+      "classification": "pet-class",
+      "hostility": "hostile",
+      "bondState": "unbonded"
+    }
+  },
+  {
+    "id": "evt-f2-mongo-hostility-changed",
+    "type": "PetHostilityChanged",
+    "petId": "pet-mongo",
+    "hostility": "non-hostile",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 47
+    },
+    "summary": "Donut removes Mongo's automatic aggression, rendering him non-hostile while still unbonded.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 47
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f2-mongo-bonded",
+    "type": "PetBonded",
+    "petId": "pet-mongo",
+    "bondHolderCrawlerId": "crawler-donut",
+    "title": "Royal Steed",
+    "position": {
+      "floor": 2,
+      "book": 1,
+      "chapter": 47
+    },
+    "summary": "Mongo completes his bond to Donut, receiving the title Royal Steed and remaining bonded across floor transitions.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 47
+        },
+        "confidence": "confirmed"
+      }
+    ]
   },
   {
     "id": "evt-f2-achievement-peta-enthusiast",

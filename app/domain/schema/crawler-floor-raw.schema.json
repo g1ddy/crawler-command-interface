@@ -2954,6 +2954,205 @@
             "type",
             "position",
             "summary",
+            "evidence",
+            "pet"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/eventId"
+            },
+            "type": {
+              "const": "PetAcquired"
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "correlationId": {
+              "$ref": "#/$defs/id"
+            },
+            "causationId": {
+              "$ref": "#/$defs/id"
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/evidence"
+              }
+            },
+            "pet": {
+              "$ref": "#/$defs/pet"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type",
+            "petId",
+            "hostility",
+            "position",
+            "summary",
+            "evidence"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/eventId"
+            },
+            "type": {
+              "const": "PetHostilityChanged"
+            },
+            "petId": {
+              "$ref": "#/$defs/id"
+            },
+            "hostility": {
+              "enum": [
+                "hostile",
+                "non-hostile"
+              ]
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "correlationId": {
+              "$ref": "#/$defs/id"
+            },
+            "causationId": {
+              "$ref": "#/$defs/id"
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/evidence"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type",
+            "petId",
+            "bondHolderCrawlerId",
+            "position",
+            "summary",
+            "evidence"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/eventId"
+            },
+            "type": {
+              "const": "PetBonded"
+            },
+            "petId": {
+              "$ref": "#/$defs/id"
+            },
+            "bondHolderCrawlerId": {
+              "$ref": "#/$defs/id"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "correlationId": {
+              "$ref": "#/$defs/id"
+            },
+            "causationId": {
+              "$ref": "#/$defs/id"
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/evidence"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type",
+            "petId",
+            "classification",
+            "position",
+            "summary",
+            "evidence"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/eventId"
+            },
+            "type": {
+              "const": "PetClassificationChanged"
+            },
+            "petId": {
+              "$ref": "#/$defs/id"
+            },
+            "classification": {
+              "enum": [
+                "pet-class",
+                "dungeon-familiar",
+                "crawler",
+                "animal-companion"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "correlationId": {
+              "$ref": "#/$defs/id"
+            },
+            "causationId": {
+              "$ref": "#/$defs/id"
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/evidence"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type",
+            "position",
+            "summary",
             "evidence"
           ],
           "properties": {
@@ -3638,6 +3837,65 @@
           }
         }
       ]
+    },
+    "pet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "petId",
+        "name",
+        "species",
+        "origin",
+        "classification",
+        "hostility",
+        "bondState"
+      ],
+      "properties": {
+        "petId": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "species": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "enum": [
+            "surface-origin",
+            "dungeon-origin"
+          ]
+        },
+        "classification": {
+          "enum": [
+            "pet-class",
+            "dungeon-familiar",
+            "crawler",
+            "animal-companion"
+          ]
+        },
+        "hostility": {
+          "enum": [
+            "hostile",
+            "non-hostile"
+          ]
+        },
+        "bondState": {
+          "enum": [
+            "unbonded",
+            "bonded"
+          ]
+        },
+        "bondHolderCrawlerId": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "party": {
       "type": "object",

@@ -5,6 +5,7 @@ export const ROOT_NAVIGATION = [
   { id: "quests", label: "QUESTS" },
   { id: "ratings", label: "RATINGS" },
   { id: "party", label: "PARTY" },
+  { id: "pet", label: "PET" },
   { id: "notifications", label: "NOTIFICATIONS" },
 ] as const;
 
