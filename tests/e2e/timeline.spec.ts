@@ -13,7 +13,7 @@ async function selectSequence(page: Page, sequence: number) {
 const latestSequence = Math.max(...compiledTimeline.events.map((event) => event.sequence));
 
 function floorEndSequence(ordinal: number) {
-  const floor = compiledTimeline.floors.find((candidate) => candidate.ordinal === ordinal);
+  const floor = (compiledTimeline.floors || []).find((candidate) => candidate.ordinal === ordinal);
   if (!floor) throw new Error(`Missing Floor ${ordinal} in the compiled timeline.`);
   return floor.endSequence;
 }

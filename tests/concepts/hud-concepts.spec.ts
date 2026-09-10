@@ -20,12 +20,22 @@ test("concepts retain replay state, capability boundaries and device storage", a
     await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
     await expect(menu.getByRole("button", { name: "MAGIC", exact: true })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "QUESTS", exact: true })).toHaveCount(0);
+    await expect(menu.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
     await expect(page.locator(".hud-reading[data-evidence=unknown]").first()).toContainText("Unknown");
     await page.screenshot({ path: testInfo.outputPath(`${name.toLowerCase()}-early.png`), fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
+
+  // Verify acquired-but-unbonded Pet state (seq 117): PET remains unavailable
+  await slider.fill("117");
+  for (const name of ["Authority", "Tactical", "Theater"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await expect(menu.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
+  }
+
   await page.getByRole("button", { name: "Return to live", exact: true }).click();
   await expect(menu.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
+  await expect(menu.getByRole("button", { name: "PET", exact: true })).toBeVisible();
   await expect(page.locator('.hud-reading[data-evidence="last-known"]').getByLabel("Inspect Mana evidence"))
     .toContainText(/Last known · sequence \d+/);
   for (const name of ["Authority", "Tactical", "Theater"]) {

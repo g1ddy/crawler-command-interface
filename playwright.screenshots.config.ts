@@ -14,7 +14,7 @@ export default defineConfig({
   use: {
     baseURL: BASE_URL,
     trace: "retain-on-failure",
-    reducedMotion: "reduce",
+    contextOptions: { reducedMotion: "reduce" },
   },
   projects: [
     {

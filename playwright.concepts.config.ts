@@ -6,7 +6,7 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   reporter: "list",
-  use: { baseURL: "http://127.0.0.1:4175/crawler-command-interface/", reducedMotion: "reduce", trace: "retain-on-failure" },
+  use: { baseURL: "http://127.0.0.1:4175/crawler-command-interface/", contextOptions: { reducedMotion: "reduce" }, trace: "retain-on-failure" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 1080 } } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },

@@ -96,7 +96,7 @@ export function executeCrawlerCommand(
     id: createId(), sequence,
     position: lastEvent?.position ? { ...lastEvent.position } : { floor: document.floors?.at(-1)?.ordinal ?? 1 },
     evidence: [], origin: "user-runtime", ...fields,
-  } as TimelineEvent;
+  } as unknown as TimelineEvent;
   const floor = event.position.floor;
   const nextDocument = {
     ...document,

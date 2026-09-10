@@ -137,7 +137,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   }));
   const entitlements = (timelineState?.entitlements || []).map((entitlement) => ({ ...entitlement }));
 
-  const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
+  const skills = (((timelineState?.skills as unknown) as Skill[]) || []).map((s) => ({ ...s }));
   const spells = (timelineState?.spells || []).map((spell) => ({
     ...spell,
     acquisitionSource: { ...spell.acquisitionSource },

@@ -31,6 +31,8 @@ export interface FloorCountdown {
   references: FloorCountdownReference[];
 }
 
+export type ProjectedCountdownState = ActiveCountdownState;
+
 export interface ActiveCountdownState {
   id: string;
   title: string;

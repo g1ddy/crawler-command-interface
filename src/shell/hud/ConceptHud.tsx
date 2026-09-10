@@ -1,55 +1,33 @@
 import { useState } from "react";
 import type { CrawlerState, ProjectedCountdownState, ProjectedObservationsState, ProjectedObservationValue } from "../../../app/domain/types";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
+import { deriveEvidencePresentation } from "../../features/timeline/evidence/evidencePresentation";
 import { Hotlist } from "./hotlist/Hotlist";
 
 /** Experimental presentation only. Never infer a reading from a visual default. */
-function Reading({ label, observation, sequence, observationSequences, onInspect }: {
+function Reading({ label, observation, sequence, onInspect }: {
   label: string;
   observation?: ProjectedObservationValue;
   sequence: number;
-  observationSequences: ReadonlyMap<string, number>;
   onInspect: (reading: ProjectedObservationValue) => void;
 }) {
-  const sourceSequence = observation
-    ? observation.referenceObservationIds.reduce(
-        (latest, id) => Math.max(latest, observationSequences.get(id) ?? -Infinity),
-        -Infinity,
-      )
-    : undefined;
-  const isLastKnown =
-    observation?.status === "stated" &&
-    sourceSequence !== undefined &&
-    Number.isFinite(sourceSequence) &&
-    sourceSequence < sequence;
-  const evidenceState = !observation
-    ? "unknown"
-    : observation.status === "estimated"
-      ? "estimated"
-      : isLastKnown
-        ? "last-known"
-        : "observed";
-  const evidenceLabel = observation?.status === "estimated"
-    ? "Estimated"
-    : isLastKnown
-      ? `Last known · sequence ${sourceSequence}`
-      : "Observed";
+  const descriptor = deriveEvidencePresentation(observation, sequence);
+  const dataEvidence = descriptor.state === "current" ? "observed" : descriptor.state;
 
-  return <div className="hud-reading" data-evidence={evidenceState}>
+  return <div className="hud-reading" data-evidence={dataEvidence}>
     <span>{label}</span>
     <strong>{observation ? observation.value.toLocaleString() : "—"}</strong>
     {observation ? <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>
-      {evidenceLabel}
+      {descriptor.label}
     </button> : <small>Unknown</small>}
   </div>;
 }
 
-export function ConceptHud({ state, observations, countdown, floorTitle, observationSequences, isLive, onReturnToLive, onInspectObservation, onNavigateToSequence }: {
+export function ConceptHud({ state, observations, countdown, floorTitle, isLive, onReturnToLive, onInspectObservation, onNavigateToSequence }: {
   state: CrawlerState;
   observations: ProjectedObservationsState;
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
-  observationSequences: ReadonlyMap<string, number>;
   isLive: boolean;
   onReturnToLive: () => void;
   onInspectObservation: (reading: ProjectedObservationValue) => void;
@@ -68,9 +46,9 @@ export function ConceptHud({ state, observations, countdown, floorTitle, observa
       {countdown ? <button onClick={() => setShowEvidence(true)}>{`${countdown.isStale ? "Last known" : countdown.status === "estimated" ? "Estimated" : "Observed"} · ${countdown.lifecycleStatus}`} · Evidence</button> : <span>No sourced countdown</span>}
     </div>
     <div className="hud-readings" aria-label="Observed vitals">
-      <Reading label="Health" observation={observations.condition.currentHealth} sequence={state.sequence} observationSequences={observationSequences} onInspect={onInspectObservation} />
-      <Reading label="Mana" observation={observations.condition.currentMana} sequence={state.sequence} observationSequences={observationSequences} onInspect={onInspectObservation} />
-      <Reading label="Viewers" observation={observations.broadcast.viewers} sequence={state.sequence} observationSequences={observationSequences} onInspect={onInspectObservation} />
+      <Reading label="Health" observation={observations.condition.currentHealth} sequence={state.sequence} onInspect={onInspectObservation} />
+      <Reading label="Mana" observation={observations.condition.currentMana} sequence={state.sequence} onInspect={onInspectObservation} />
+      <Reading label="Viewers" observation={observations.broadcast.viewers} sequence={state.sequence} onInspect={onInspectObservation} />
     </div>
     <div className="hud-replay-state" data-testid="hud-audience-mode">
       <b>{isLive ? "LIVE" : "REPLAY"}</b><span>Sequence {state.sequence}</span>

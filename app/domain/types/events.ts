@@ -522,7 +522,9 @@ export interface BaseEvent {
 export interface CrawlerEventAdapter extends BaseEvent {
   id?: string;
   type: string;
-  position?: TimelinePosition;
+  position: TimelinePosition;
+  notificationDelivery?: NotificationDelivery;
+  achievement?: TimelineAchievement;
   [key: string]: unknown;
 }
 
