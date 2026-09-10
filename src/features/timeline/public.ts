@@ -5,5 +5,5 @@ export {
   deriveEvidencePresentation,
   selectDisplayedReading,
   type EvidencePresentation,
-  type DisplayedReading,
+  type EvidenceState,
 } from "./evidence/evidencePresentation";
