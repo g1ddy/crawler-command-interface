@@ -20,12 +20,13 @@ export function applyAttributeModified(state: CrawlerState, event: Record<string
       state.crawler.attributes[attr] += delta;
       state.crawler.availableAttributePoints = Math.max(0, state.crawler.availableAttributePoints - delta);
       state.causalProvenance.availableAttributePoints = sequence;
+      state.causalProvenance.attributes[attr] = sequence;
     } else if (event.source === 'permanent_modifier') {
       state.crawler.permanentAttributeModifiers[attr] += delta;
     } else {
       state.crawler.attributes[attr] += delta;
+      state.causalProvenance.attributes[attr] = sequence;
     }
-    state.causalProvenance.attributes[attr] = sequence;
   }
 }
 

@@ -100,6 +100,31 @@ const eventReducers: Record<ProjectedEventType, EventReducer> = {
   ConditionChanged: (state, event, sequence) => applyConditionChanged(state, event, sequence),
 };
 
+const causalProvenanceReducers: Partial<Record<ProjectedEventType, EventReducer>> = {
+  AttributeModified: eventReducers.AttributeModified,
+  LevelChanged: eventReducers.LevelChanged,
+  XPChanged: eventReducers.XPChanged,
+  ConditionChanged: eventReducers.ConditionChanged,
+};
+
+function projectCausalProvenance(
+  initialState: CrawlerState,
+  events: (TimelineEvent | CrawlerEvent)[],
+  targetSequence: number
+): CrawlerState['causalProvenance'] {
+  const state = JSON.parse(JSON.stringify(initialState)) as CrawlerState;
+
+  for (const event of events) {
+    const sequence = Number(event.sequence ?? 1);
+    if (sequence > targetSequence) break;
+
+    const reducer = causalProvenanceReducers[String(event.type) as ProjectedEventType];
+    if (reducer) reducer(state, event as unknown as Record<string, unknown>, sequence);
+  }
+
+  return state.causalProvenance;
+}
+
 export function applyEvent(currentState: CrawlerState, rawEvent: unknown): CrawlerState {
   const state: CrawlerState = JSON.parse(JSON.stringify(currentState));
   const event = rawEvent as Record<string, unknown>;
@@ -188,6 +213,7 @@ export function projectState(
 
   if (validSnapshots.length > 0) {
     baseState = JSON.parse(JSON.stringify(validSnapshots[0].state));
+    baseState.causalProvenance = projectCausalProvenance(baseInitialState, events, validSnapshots[0].sequence);
     startSequence = validSnapshots[0].sequence + 1;
   }
 
