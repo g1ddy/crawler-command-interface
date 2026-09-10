@@ -18,7 +18,7 @@ and spatial placement remain application interpretations.
 | Carl's HUD shows 3/3 mana during Magic tutorial | Primary citation, Book 1 ch. 6; readiness ledger Magic row | Distinct numerical vitals, with inspectable evidence | Do not invent bars, maximums, or continuing readings |
 | Party forms after Donut's reclassification | Primary/corroborating, `evt-f1-party-royal-court-formed`, Book 1 ch. 2 | Navigation must grow with the replay sequence | No always-present Party placeholder |
 | Authored achievements have explicit delivery semantics | Corroborating, Floor 1 events and their `notificationDelivery` records | A reward may receive a deliberate visual treatment | Historical event selection is not a new notification arrival |
-| Mongo's bond is distinct from Party | Corroborating, readiness ledger Pet section | Pet uses the same visual grammar as a supported replay-aware capability | Bounded by sourced bond boundary; unsupported Pet mechanics must not be invented |
+| Mongo's bond is distinct from Party | Corroborating, readiness ledger Pet section | Future Pet uses the same visual grammar but separate capability | No Pet simulation before the pending vertical slice lands |
 
 Inference: collapse pressure and repeated system deliveries justify a stronger hierarchy
 and selective theatrical emphasis. They do not justify invented AI dialogue, extra
@@ -95,7 +95,8 @@ under `test-results/concepts/`. These files are not canonical screenshots and mu
 be promoted by the canonical screenshot workflow.
 
 Review each concept on: early replay before Party formation; a sourced vital reading;
-live Floor 2; Inventory/Equipment; Notifications; Pet bond boundary; and open evidence inspectors. Quests remain a synthetic-only test subject.
+live Floor 2; Inventory/Equipment; Notifications; and open evidence inspectors. Add the
+Pet bond boundary after #159 is merged. Quests remain a synthetic-only test subject.
 
 Selection must weigh canon identity, readability, information hierarchy, system personality,
 replay clarity, source honesty, responsive behavior, accessibility, and implementation
@@ -107,7 +108,7 @@ emphasis only for genuinely delivered system moments. **No final design is selec
 
 This branch implements the deployed executable comparison stage, not closure of the epic.
 After selection: create focused implementation issues for the shell, shared accessible
-primitives, feature migration, notification/motion behavior,
+primitives, feature migration (including Pet once merged), notification/motion behavior,
 responsive/accessibility verification, and canonical screenshot refresh. Production
 continues to use the original presentation until a direction is approved. The eventual
 production switch must be a deliberate change to the typed presentation configuration,

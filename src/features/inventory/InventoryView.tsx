@@ -134,7 +134,6 @@ export function InventoryView({
                 <ItemInspector
                   selectedItem={selectedItem}
                   observation={selectedItemObservation}
-                  selectedSequence={sequence}
                   requirementResult={selectedItemRequirements}
                   actions={actions}
                   onOpenProvenance={(item) => setProvenanceItem(item)}
@@ -157,7 +156,6 @@ export function InventoryView({
             state={state}
             liveState={liveState}
             observations={observations}
-            selectedSequence={sequence}
             slot={slot}
             setSlot={setSlot}
             actions={actions}

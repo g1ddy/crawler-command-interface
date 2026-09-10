@@ -149,6 +149,12 @@ export default function CrawlerApp({
     () => projectCountdownState(timelineDoc, currentSeq, selectedFloorOrdinal),
     [timelineDoc, currentSeq, selectedFloorOrdinal],
   );
+  const observationSequences = useMemo(
+    () => new Map<string, number>((timelineDoc.observations ?? []).map(
+      (observation) => [observation.id, observation.sequence],
+    )),
+    [timelineDoc.observations],
+  );
   const navigateToSequence = (sequence: number) => {
     setSelectedSeq(sequence);
     setIsLive(sequence === maxSeq);
@@ -283,6 +289,7 @@ export default function CrawlerApp({
         observations={projectedObservations}
         countdown={activeCountdown}
         floorTitle={floorHudTitle}
+        observationSequences={observationSequences}
         isLive={isLive}
         onReturnToLive={returnToLive}
         onInspectObservation={setInspectObservation}

@@ -1,7 +1,5 @@
 import type { CrawlerEvent, InventoryItem } from "../../../app/domain/types";
 
-export type AwardHistoryItem = AwardHistoryEntry;
-
 export type AwardHistoryEntry = {
   id: string;
   name: string;

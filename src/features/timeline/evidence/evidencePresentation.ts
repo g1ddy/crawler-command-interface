@@ -18,6 +18,28 @@ export interface EvidencePresentation {
   inspectable: boolean;
 }
 
+/**
+ * Selects the authoritative display value for domain vitals/stats.
+ * When a causal transition has modified state beyond the initial default, or
+ * if no observation exists, causal state is returned.
+ * If causal state remains at its un-mutated initial default and a sourced observation exists,
+ * the sourced observation value is displayed so default state does not hide valid telemetry.
+ */
+export function selectDisplayedReading<T extends number | string | undefined>(
+  causalValue: T,
+  observationValue: T,
+  initialCausalDefault: T,
+  sequence?: number
+): T {
+  const hasObservation = observationValue !== undefined && observationValue !== null;
+  const isInitialDefault = causalValue === initialCausalDefault || sequence === 0;
+
+  if (hasObservation && isInitialDefault) {
+    return observationValue;
+  }
+  return causalValue ?? observationValue;
+}
+
 export function deriveEvidencePresentation(
   observation?: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation | null,
   selectedSequence?: number,

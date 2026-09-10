@@ -6,7 +6,22 @@ import {
   evidenceSummary,
   firstCountdownEvidenceSummary,
   formatEvidenceLocator,
+  selectDisplayedReading,
 } from "../../src/features/timeline/evidence/evidencePresentation.ts";
+
+test("selectDisplayedReading respects initial causal default vs sourced observation vs causal transition", () => {
+  // Case 1: Causal state is at initial default (50), observation exists (3) -> Sourced observation selected (3)
+  assert.equal(selectDisplayedReading(50, 3, 50, 34), 3);
+
+  // Case 2: Causal state was modified (120 != 50) -> Causal state selected (120)
+  assert.equal(selectDisplayedReading(120, 3, 50, 40), 120);
+
+  // Case 3: No observation exists -> Causal state selected (50)
+  assert.equal(selectDisplayedReading(50, undefined, 50, 34), 50);
+
+  // Case 4: Sequence 0 -> Sourced observation selected if available (3)
+  assert.equal(selectDisplayedReading(50, 3, 50, 0), 3);
+});
 
 test("deriveEvidencePresentation derives current, last-known, estimated, causal-only, and unknown states", () => {
   const currentObs = {
