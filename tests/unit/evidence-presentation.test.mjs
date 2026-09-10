@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   deriveEvidencePresentation,
+  displayedReadingAuthority,
   evidenceConfidenceLabel,
   evidenceSummary,
   firstCountdownEvidenceSummary,
@@ -9,18 +10,18 @@ import {
   selectDisplayedReading,
 } from "../../src/features/timeline/evidence/evidencePresentation.ts";
 
-test("selectDisplayedReading respects initial causal default vs sourced observation vs causal transition", () => {
-  // Case 1: Causal state is at initial default (50), observation exists (3) -> Sourced observation selected (3)
-  assert.equal(selectDisplayedReading(50, 3, 50, 34), 3);
+test("selectDisplayedReading uses causal provenance rather than a numeric default heuristic", () => {
+  // Unchanged initial state can be represented by the available observation.
+  assert.equal(selectDisplayedReading(50, 3, undefined), 3);
+  assert.equal(displayedReadingAuthority(50, 3, undefined), "observation");
 
-  // Case 2: Causal state was modified (120 != 50) -> Causal state selected (120)
-  assert.equal(selectDisplayedReading(120, 3, 50, 40), 120);
+  // A later causal event remains authoritative even when it returns to 50.
+  assert.equal(selectDisplayedReading(50, 3, 40), 50);
+  assert.equal(displayedReadingAuthority(50, 3, 40), "causal");
 
-  // Case 3: No observation exists -> Causal state selected (50)
-  assert.equal(selectDisplayedReading(50, undefined, 50, 34), 50);
-
-  // Case 4: Sequence 0 -> Sourced observation selected if available (3)
-  assert.equal(selectDisplayedReading(50, 3, 50, 0), 3);
+  // Without an observation, causal state remains the only displayable value.
+  assert.equal(selectDisplayedReading(50, undefined, undefined), 50);
+  assert.equal(displayedReadingAuthority(50, undefined, undefined), "causal");
 });
 
 test("deriveEvidencePresentation derives current, last-known, estimated, causal-only, and unknown states", () => {
@@ -74,9 +75,18 @@ test("deriveEvidencePresentation derives current, last-known, estimated, causal-
   assert.deepEqual(deriveEvidencePresentation(null, 15, 100), {
     state: "causal-only",
     label: "Causal state",
-    badgeLabel: "",
+    badgeLabel: "CAUSAL",
     referenceObservationIds: [],
     inspectable: false,
+  });
+
+  assert.deepEqual(deriveEvidencePresentation(currentObs, 25, 100, "causal"), {
+    state: "causal-only",
+    label: "Causal state · last known · sequence 10",
+    badgeLabel: "CAUSAL",
+    sourceSequence: 10,
+    referenceObservationIds: ["obs-1"],
+    inspectable: true,
   });
 
   assert.deepEqual(deriveEvidencePresentation(null, 15, null), {

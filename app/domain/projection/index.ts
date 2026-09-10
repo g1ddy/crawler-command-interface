@@ -82,9 +82,9 @@ const eventReducers: Record<ProjectedEventType, EventReducer> = {
   ItemDiscarded: (state, event) => applyItemDiscarded(state, event),
   AchievementUnlocked: (state, event, sequence) => applyAchievementUnlocked(state, event, sequence),
   PermanentEntitlementGranted: (state, event) => applyPermanentEntitlementGranted(state, event),
-  AttributeModified: (state, event) => applyAttributeModified(state, event),
-  LevelChanged: (state, event) => applyLevelChanged(state, event),
-  XPChanged: (state, event) => applyXPChanged(state, event),
+  AttributeModified: (state, event, sequence) => applyAttributeModified(state, event, sequence),
+  LevelChanged: (state, event, sequence) => applyLevelChanged(state, event, sequence),
+  XPChanged: (state, event, sequence) => applyXPChanged(state, event, sequence),
   HotlistUpdated: (state, event) => applyHotlistUpdated(state, event),
   EffectApplied: (state, event, sequence) => applyEffectApplied(state, event, sequence),
   EffectExpired: (state, event) => applyEffectExpired(state, event),
@@ -97,7 +97,7 @@ const eventReducers: Record<ProjectedEventType, EventReducer> = {
   PetClassificationChanged: (state, event) => applyPetClassificationChanged(state, event),
   QuestUpdated: (state, event) => applyQuestUpdated(state, event),
   BroadcastUpdated: (state, event) => applyBroadcastUpdated(state, event),
-  ConditionChanged: (state, event) => applyConditionChanged(state, event),
+  ConditionChanged: (state, event, sequence) => applyConditionChanged(state, event, sequence),
 };
 
 export function applyEvent(currentState: CrawlerState, rawEvent: unknown): CrawlerState {
