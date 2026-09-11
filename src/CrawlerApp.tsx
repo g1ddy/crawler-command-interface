@@ -13,12 +13,23 @@ import { RootNavigation } from "./shell/navigation/RootNavigation";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
 import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
 
-import { useCrawlerSession } from "./shell/session/useCrawlerSession";
-import type { PresentationChoice } from "./shell/session/crawler-session";
-import type { HudPersistence } from "./shell/hud/hud-presentation";
+import { useCallback, useMemo, useState } from "react";
+import { getStatBreakdown, type StatBreakdown } from "../app/domain/stats";
+import type {
+  InventoryItem,
+  ProjectedEquipmentObservation,
+  ProjectedItemObservation,
+  ProjectedObservationValue,
+} from "../app/domain/types";
+import { resolveHudPresentation, type HudPersistence, type HudPresentation } from "./shell/hud/hud-presentation";
+import { resolveRootView } from "./shell/navigation/capabilities";
+import type { RootView } from "./shell/navigation/navigation-model";
+import type { EquipmentSlot } from "./application/crawler-action-contracts";
+import { useCrawlerSession } from "./application/useCrawlerSession";
+import { LocalDeviceStorageAdapter } from "../app/domain/persistence";
 
 export interface CrawlerAppProps {
-  hudPresentation?: PresentationChoice;
+  hudPresentation?: HudPresentation;
   hudPersistence?: HudPersistence;
 }
 
@@ -26,9 +37,24 @@ export default function CrawlerApp({
   hudPresentation = "production",
   hudPersistence = "normal",
 }: CrawlerAppProps = {}) {
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleActionResult = useCallback((result: { ok: boolean; message?: string; error?: string }) => {
+    if (!result.ok) {
+      setToastMessage(`⚠️ ${result.error}`);
+    } else if (result.message) {
+      setToastMessage(`⚡ ${result.message}`);
+    }
+  }, []);
+
+  const storageAdapter = useMemo(
+    () => (hudPersistence === "normal" ? new LocalDeviceStorageAdapter() : null),
+    [hudPersistence],
+  );
+
   const { snapshot, commands } = useCrawlerSession({
-    initialPresentationChoice: hudPresentation,
-    hudPersistence,
+    storageAdapter,
+    onActionResult: handleActionResult,
   });
 
   const {
@@ -41,43 +67,80 @@ export default function CrawlerApp({
     projectedObservations,
     liveState,
     capabilities,
-    resolvedView,
-    statBreakdown,
     activeCountdown,
     replayPresentation,
     floorHudTitle,
-    presentationChoice,
-    inspectStat,
-    inspectObservation,
-    provenanceItem,
-    showJsonModal,
-    jsonText,
-    importError,
-    showFloorRules,
-    showTimelineHistory,
-    showTimelineEvidence,
-    inventoryFilter,
-    equipmentSlot,
-    toastMessage,
   } = snapshot;
+
+  const [presentationChoice, setPresentationChoiceState] = useState<HudPresentation>(() => {
+    if (typeof window !== "undefined") {
+      const urlChoice = new URLSearchParams(window.location.search).get("hud");
+      if (urlChoice) return resolveHudPresentation(urlChoice);
+    }
+    return hudPresentation;
+  });
+
+  const setPresentationChoice = useCallback((choice: HudPresentation) => {
+    setPresentationChoiceState(choice);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (choice === "production") {
+        url.searchParams.delete("hud");
+      } else {
+        url.searchParams.set("hud", choice);
+      }
+      window.history.replaceState(null, "", url);
+    }
+  }, []);
+
+  const [view, setView] = useState<RootView>("crawler");
+  const resolvedView = resolveRootView(view, capabilities);
+
+  const [inspectStat, setInspectStat] = useState<string | null>(null);
+  const [inspectObservation, setInspectObservation] = useState<
+    | ProjectedObservationValue
+    | ProjectedItemObservation
+    | ProjectedEquipmentObservation
+    | null
+  >(null);
+  const [provenanceItem, setProvenanceItem] = useState<InventoryItem | null>(null);
+  const [showJsonModal, setShowJsonModal] = useState(false);
+  const [jsonText, setJsonText] = useState("");
+  const [importError, setImportError] = useState<string | null>(null);
+  const [showFloorRules, setShowFloorRules] = useState(false);
+  const [showTimelineHistory, setShowTimelineHistory] = useState(false);
+  const [showTimelineEvidence, setShowTimelineEvidence] = useState(false);
+  const [inventoryFilter, setInventoryFilter] = useState("ALL ITEMS");
+  const [equipmentSlot, setEquipmentSlot] = useState<EquipmentSlot>("TORSO");
+
+  const statBreakdown: StatBreakdown | null = useMemo(
+    () => (inspectStat ? getStatBreakdown(projectedState, inspectStat) : null),
+    [projectedState, inspectStat],
+  );
+
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = setTimeout(() => setToastMessage(null), 3500);
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const tag = (event.target as HTMLElement)?.tagName?.toLowerCase();
       if (tag === "input" || tag === "textarea" || tag === "select") return;
       if (event.key === "Escape") {
-        if (inspectStat) commands.setInspectStat(null);
-        else if (provenanceItem) commands.setProvenanceItem(null);
-        else if (showJsonModal) commands.closeTools();
+        if (inspectStat) setInspectStat(null);
+        else if (provenanceItem) setProvenanceItem(null);
+        else if (showJsonModal) setShowJsonModal(false);
         return;
       }
       const destination =
         availableRootViews(capabilities)[Number(event.key) - 1];
-      if (destination) commands.setView(destination);
+      if (destination) setView(destination);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [inspectStat, provenanceItem, showJsonModal, capabilities, commands]);
+  }, [inspectStat, provenanceItem, showJsonModal, capabilities]);
 
   const usesConceptHud = presentationChoice !== "production";
 
@@ -100,6 +163,44 @@ export default function CrawlerApp({
     projectedObservations.broadcast.viewers?.value ??
     projectedState.broadcast.viewers;
 
+  const handleExportJson = useCallback(() => {
+    commands.exportJson();
+  }, [commands]);
+
+  const handleImportJson = useCallback(() => {
+    setImportError(null);
+    const result = commands.importJson(jsonText);
+    if (!result.ok) {
+      setImportError(result.error);
+      return;
+    }
+    setShowJsonModal(false);
+    setToastMessage("✓ Imported timeline successfully");
+  }, [commands, jsonText]);
+
+  const handleReset = useCallback(() => {
+    commands.resetTimeline();
+    setShowJsonModal(false);
+    setToastMessage("🔄 Reset timeline to default fixture");
+  }, [commands]);
+
+  const openTools = useCallback(() => {
+    setImportError(null);
+    setJsonText("");
+    setShowJsonModal(true);
+  }, []);
+
+  const replayCommandsWithInspect = useMemo(
+    () => ({
+      ...commands.replayCommands,
+      openFloorRules: () => setShowFloorRules(true),
+      openTimelineHistory: () => setShowTimelineHistory(true),
+      openTimelineEvidence: () => setShowTimelineEvidence(true),
+      inspectObservation: setInspectObservation,
+    }),
+    [commands.replayCommands],
+  );
+
   return (
     <main data-mode={isLive ? "live" : "replay"} data-presentation={presentationChoice}>
       {usesConceptHud ? (
@@ -110,7 +211,7 @@ export default function CrawlerApp({
           floorTitle={floorHudTitle}
           isLive={isLive}
           onReturnToLive={commands.returnToLive}
-          onInspectObservation={commands.setInspectObservation}
+          onInspectObservation={setInspectObservation}
           onNavigateToSequence={commands.selectSequence}
         />
       ) : (
@@ -135,9 +236,9 @@ export default function CrawlerApp({
       )}
       <RootNavigation
         active={resolvedView}
-        set={commands.setView}
+        set={setView}
         capabilities={capabilities}
-        onOpenTools={commands.openTools}
+        onOpenTools={openTools}
       />
       {toastMessage && (
         <div className="toast-notification" role="status" aria-live="polite">
@@ -147,7 +248,7 @@ export default function CrawlerApp({
       <div className="view">
         <ReplaySurface
           model={replayPresentation}
-          commands={commands.replayCommands}
+          commands={replayCommandsWithInspect}
           projectedObservations={projectedObservations}
         />
         <ActiveFeatureView
@@ -160,15 +261,15 @@ export default function CrawlerApp({
           sequence={currentSeq}
           isLive={isLive}
           provenanceItem={provenanceItem}
-          setProvenanceItem={commands.setProvenanceItem}
+          setProvenanceItem={setProvenanceItem}
           inventoryFilter={inventoryFilter}
-          setInventoryFilter={commands.setInventoryFilter}
+          setInventoryFilter={setInventoryFilter}
           equipmentSlot={equipmentSlot}
-          setEquipmentSlot={commands.setEquipmentSlot}
+          setEquipmentSlot={setEquipmentSlot}
           onNavigateToSequence={commands.selectSequence}
           actions={commands.actions}
-          onInspectObservation={commands.setInspectObservation}
-          onInspectStat={commands.setInspectStat}
+          onInspectObservation={setInspectObservation}
+          onInspectStat={setInspectStat}
         />
       </div>
       {showFloorRules && (
@@ -178,7 +279,7 @@ export default function CrawlerApp({
           selectedFloorOrdinal={selectedFloorOrdinal}
           sources={sources}
           onNavigateToSequence={commands.selectSequence}
-          onClose={() => commands.setShowFloorRules(false)}
+          onClose={() => setShowFloorRules(false)}
           isModal
         />
       )}
@@ -190,7 +291,7 @@ export default function CrawlerApp({
           recentLogs={projectedState.recentLogs}
           sources={sources}
           onNavigateToSequence={commands.selectSequence}
-          onClose={() => commands.setShowTimelineHistory(false)}
+          onClose={() => setShowTimelineHistory(false)}
           isModal
         />
       )}
@@ -199,22 +300,22 @@ export default function CrawlerApp({
           observations={projectedObservations}
           sequence={currentSeq}
           sources={sources}
-          onInspectObservation={commands.setInspectObservation}
-          onClose={() => commands.setShowTimelineEvidence(false)}
+          onInspectObservation={setInspectObservation}
+          onClose={() => setShowTimelineEvidence(false)}
           isModal
         />
       )}
       {statBreakdown && (
         <StatInspectorModal
           breakdown={statBreakdown}
-          onClose={() => commands.setInspectStat(null)}
+          onClose={() => setInspectStat(null)}
         />
       )}
       {inspectObservation && (
         <TelemetryInspectorModal
           observation={inspectObservation}
           sources={sources}
-          onClose={() => commands.setInspectObservation(null)}
+          onClose={() => setInspectObservation(null)}
         />
       )}
       {showJsonModal && (
@@ -222,12 +323,12 @@ export default function CrawlerApp({
           jsonText={jsonText}
           importError={importError}
           presentationChoice={presentationChoice}
-          onJsonTextChange={commands.setJsonText}
-          onSelectPresentation={commands.setPresentationChoice}
-          onImport={commands.importJson}
-          onExport={commands.exportJson}
-          onReset={commands.resetTimeline}
-          onClose={commands.closeTools}
+          onJsonTextChange={setJsonText}
+          onSelectPresentation={setPresentationChoice}
+          onImport={handleImportJson}
+          onExport={handleExportJson}
+          onReset={handleReset}
+          onClose={() => setShowJsonModal(false)}
         />
       )}
     </main>

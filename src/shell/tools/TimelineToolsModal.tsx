@@ -1,4 +1,6 @@
-import type { PresentationChoice } from "../session/crawler-session";
+import type { HudPresentation } from "../hud/hud-presentation";
+
+export type PresentationChoice = HudPresentation;
 
 const PRESENTATION_OPTIONS: { id: PresentationChoice; label: string }[] = [
   { id: "production", label: "Production" },
