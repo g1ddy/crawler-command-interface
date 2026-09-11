@@ -7,7 +7,7 @@ for (const variant of ["authority", "tactical", "theater"] as const) {
     await page.addInitScript(() => localStorage.setItem("crawler_timeline_doc_v2", "existing-device-data"));
     await page.goto(`${pagesPath}?hud=${variant}`);
 
-    const previewScope = page.locator(".concept-lab[data-hud-presentation]");
+    const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
     await expect(previewScope).toHaveAttribute("data-hud-presentation", variant);
     await expect(previewScope).toHaveCSS("--surface", variant === "tactical" ? "#131c18" : variant === "theater" ? "#21151b" : "#101820");
     await expect(page.locator('header[aria-label="Crawler HUD"]')).toBeVisible();
@@ -64,7 +64,7 @@ test("live presentation switching in System Tools preserves session state and up
       await expect(page.locator("[data-hud-presentation]")).toHaveCount(0);
     } else {
       await expect(page).toHaveURL(new RegExp(`hud=${choice.id}$`));
-      const previewScope = page.locator(".concept-lab[data-hud-presentation]");
+      const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
       await expect(previewScope).toHaveAttribute("data-hud-presentation", choice.id);
       await expect(previewScope).toHaveCSS(
         "--surface",
