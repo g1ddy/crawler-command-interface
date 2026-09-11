@@ -39,6 +39,7 @@ import {
 } from "./shell/navigation/capabilities";
 import { RootNavigation } from "./shell/navigation/RootNavigation";
 import type { RootView } from "./shell/navigation/navigation-model";
+import { deriveReplayPresentation } from "./shell/replay/replay-presentation";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
 import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
 import { createApplicationActions } from "./application/crawler-actions";
@@ -148,6 +149,27 @@ export default function CrawlerApp({
   const activeCountdown = useMemo(
     () => projectCountdownState(timelineDoc, currentSeq, selectedFloorOrdinal),
     [timelineDoc, currentSeq, selectedFloorOrdinal],
+  );
+  const replayPresentation = useMemo(
+    () =>
+      deriveReplayPresentation({
+        events,
+        floors: timelineDoc.floors,
+        countdowns: timelineDoc.countdowns,
+        observations: timelineDoc.observations,
+        selectedFloorOrdinal,
+        selectedSequence: currentSeq,
+        isLive,
+      }),
+    [
+      events,
+      timelineDoc.floors,
+      timelineDoc.countdowns,
+      timelineDoc.observations,
+      selectedFloorOrdinal,
+      currentSeq,
+      isLive,
+    ],
   );
   const navigateToSequence = (sequence: number) => {
     setSelectedSeq(sequence);
@@ -322,6 +344,7 @@ export default function CrawlerApp({
       )}
       <div className="view">
         <ReplaySurface
+          model={replayPresentation}
           events={events}
           floors={timelineDoc.floors}
           countdowns={timelineDoc.countdowns}
