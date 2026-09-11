@@ -346,7 +346,7 @@ export default function CrawlerApp({
   if (usesConceptHud) {
     return (
       <div
-        className="concept-hud-wrapper"
+        className="concept-lab concept-hud-wrapper"
         data-concept={presentationChoice}
         data-hud-presentation={presentationChoice}
       >
