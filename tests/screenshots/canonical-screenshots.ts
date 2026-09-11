@@ -19,6 +19,7 @@ export const SCREENSHOTS = {
   notifications: "screenshot-notifications.png",
   floorRules: "screenshot-floor-rules.png",
   timelineHistory: "screenshot-timeline-history.png",
+  systemTools: "screenshot-system-tools.png",
 } as const;
 
 export type ScreenshotKey = keyof typeof SCREENSHOTS;

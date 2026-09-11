@@ -25,7 +25,7 @@ import { resolveHudPresentation, type HudPersistence, type HudPresentation } fro
 import { resolveRootView } from "./shell/navigation/capabilities";
 import type { RootView } from "./shell/navigation/navigation-model";
 import type { EquipmentSlot } from "./application/crawler-action-contracts";
-import { useCrawlerSession } from "./application/useCrawlerSession";
+import { useCrawlerSession } from "./shell/adapters/useCrawlerSession";
 import { LocalDeviceStorageAdapter } from "../app/domain/persistence";
 
 export interface CrawlerAppProps {

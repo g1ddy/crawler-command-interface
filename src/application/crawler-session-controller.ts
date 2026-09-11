@@ -166,6 +166,7 @@ export class CrawlerSessionController {
   }
 
   public exportJson(): void {
+    if (typeof document === "undefined") return;
     const events = (this.timelineDoc.events as unknown as CrawlerEvent[]) || [];
     const currentSeq = this.isLive ? events[events.length - 1]?.sequence ?? 1 : this.selectedSeq;
     const anchor = document.createElement("a");

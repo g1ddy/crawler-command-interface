@@ -20,11 +20,41 @@ export function TelemetryBadge({
   const descriptor = deriveEvidencePresentation(observation, selectedSequence, causalValue, displayAuthority);
 
   const styleByState = {
-    current: { background: "#082a38", border: "1px solid #31515e", color: "#7895a0", fontSize: "8px", padding: "1px 3px" },
-    "last-known": { background: "#112638", border: "1px solid #2d5670", color: "#93cadb", fontSize: "8px", padding: "1px 4px" },
-    estimated: { background: "#2a1e08", border: "1px solid #ffb74d", color: "#ffd052", fontSize: "9px", padding: "1px 5px" },
-    "causal-only": { background: "#221b38", border: "1px solid #7564a8", color: "#c4b5fd", fontSize: "8px", padding: "1px 4px" },
-    unknown: { background: "#180a0c", border: "1px solid #4a1d22", color: "#a85c64", fontSize: "9px", padding: "1px 5px" },
+    current: {
+      background: "var(--hud-evidence-current-bg)",
+      border: "1px solid var(--hud-evidence-current-border)",
+      color: "var(--hud-evidence-current-text)",
+      fontSize: "8px",
+      padding: "1px 3px",
+    },
+    "last-known": {
+      background: "var(--hud-evidence-last-known-bg)",
+      border: "1px solid var(--hud-evidence-last-known-border)",
+      color: "var(--hud-evidence-last-known-text)",
+      fontSize: "8px",
+      padding: "1px 4px",
+    },
+    estimated: {
+      background: "var(--hud-evidence-estimated-bg)",
+      border: "1px solid var(--hud-evidence-estimated-border)",
+      color: "var(--hud-evidence-estimated-text)",
+      fontSize: "9px",
+      padding: "1px 5px",
+    },
+    "causal-only": {
+      background: "var(--hud-evidence-causal-bg)",
+      border: "1px solid var(--hud-evidence-causal-border)",
+      color: "var(--hud-evidence-causal-text)",
+      fontSize: "8px",
+      padding: "1px 4px",
+    },
+    unknown: {
+      background: "var(--hud-evidence-unknown-bg)",
+      border: "1px solid var(--hud-evidence-unknown-border)",
+      color: "var(--hud-evidence-unknown-text)",
+      fontSize: "9px",
+      padding: "1px 5px",
+    },
   }[descriptor.state];
 
   return (

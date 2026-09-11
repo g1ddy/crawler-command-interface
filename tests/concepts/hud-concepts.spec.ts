@@ -49,6 +49,9 @@ test("concepts retain replay state, capability boundaries and device storage", a
   }
   await page.getByRole("button", { name: "Open data tools" }).click();
   await expect(page.getByRole("heading", { name: "IMPORT / EXPORT CRAWLER TIMELINE" })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("system-tools-desktop.png"), fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: testInfo.outputPath("system-tools-mobile.png"), fullPage: true });
   await page.getByRole("button", { name: "RESET TO DEFAULT FIXTURE", exact: false }).click();
   expect(await page.evaluate(() => JSON.stringify(localStorage))).toBe(initialStorage);
   expect(errors).toEqual([]);

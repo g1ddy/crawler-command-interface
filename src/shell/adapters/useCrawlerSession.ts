@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ActionResult } from "./crawler-action-contracts";
+import type { ActionResult } from "../../application/crawler-action-contracts";
 import {
   CrawlerSessionController,
   type CreateCrawlerSessionOptions,
-} from "./crawler-session-controller.ts";
-import type { CrawlerSession } from "./crawler-session.ts";
+} from "../../application/crawler-session-controller";
+import type { CrawlerSession } from "../../application/crawler-session";
 
 export interface UseCrawlerSessionOptions extends CreateCrawlerSessionOptions {
   onActionResult?: (result: ActionResult) => void;
