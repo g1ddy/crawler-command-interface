@@ -39,8 +39,8 @@ import type {
 import {
   availableRootViews,
   resolveRootView,
-  selectedSequenceCapabilities,
 } from "./shell/navigation/capabilities";
+import { evaluateCanonCapabilities } from "./application/capabilities";
 import { RootNavigation } from "./shell/navigation/RootNavigation";
 import type { RootView } from "./shell/navigation/navigation-model";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
@@ -123,12 +123,12 @@ export default function CrawlerApp({
   );
   const capabilities = useMemo(
     () =>
-      selectedSequenceCapabilities(
-        projectedState,
-        projectedObservations,
+      evaluateCanonCapabilities({
+        state: projectedState,
+        observations: projectedObservations,
         events,
-        currentSeq,
-      ),
+        sequence: currentSeq,
+      }),
     [projectedState, projectedObservations, events, currentSeq],
   );
   const resolvedView = resolveRootView(view, capabilities);

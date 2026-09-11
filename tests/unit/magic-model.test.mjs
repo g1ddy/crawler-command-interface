@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
 import { applyEvent, createInitialState, projectState } from "../../app/domain/projection.ts";
-import { selectedSequenceCapabilities } from "../../src/shell/navigation/capabilities.ts";
+import { evaluateCanonCapabilities } from "../../src/application/capabilities.ts";
 import { projectObservations } from "../../app/domain/observations.ts";
 import { loadRawFloorDocument } from "../../app/domain/raw-loader.ts";
 import { validateRawCrawlerFloor } from "../../app/domain/validation.ts";
@@ -81,12 +81,12 @@ test("spell state obeys replay boundaries without entering skills or exposing a 
   ]);
   assert.equal(after.skills.some((skill) => ["Basic healing spell", "Puddle Jumper", "Protective Shell"].includes(skill.name)), false);
 
-  const capabilities = selectedSequenceCapabilities(
-    after,
-    projectObservations(compiledTimeline, protectiveShell.sequence),
-    compiledTimeline.events,
-    protectiveShell.sequence,
-  );
+  const capabilities = evaluateCanonCapabilities({
+    state: after,
+    observations: projectObservations(compiledTimeline, protectiveShell.sequence),
+    events: compiledTimeline.events,
+    sequence: protectiveShell.sequence,
+  });
   assert.equal(Object.hasOwn(capabilities, "magic"), false);
 });
 
