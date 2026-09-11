@@ -103,6 +103,23 @@ cost. Source honesty and functional replay are gates, not tradeable aesthetic sc
 Provisional recommendation: Authority offers the most balanced baseline; borrow theatrical
 emphasis only for genuinely delivered system moments. **No final design is selected yet.**
 
+## Production tokens and style ownership (#170)
+
+The selected production visual direction (Authority baseline) establishes a small, semantic token vocabulary in `src/styles/hud-tokens.css`:
+
+- **Surfaces and borders:** `--hud-canvas-bg`, `--hud-panel-bg`, `--hud-panel-raised-bg`, `--hud-border-color`, `--hud-border-subtle`, `--hud-border-focus`, `--hud-focus-ring`.
+- **Text and hierarchy:** `--hud-text-primary`, `--hud-text-secondary`, `--hud-text-subdued`, `--hud-text-author`, `--hud-label-compact`.
+- **State and urgency:** `--hud-state-neutral`, `--hud-state-info`, `--hud-state-success`, `--hud-state-warning`, `--hud-state-danger`, `--hud-urgency-high`.
+- **Evidence freshness:** `--hud-evidence-current-*`, `--hud-evidence-last-known-*`, `--hud-evidence-estimated-*`, `--hud-evidence-causal-*`, `--hud-evidence-unknown-*`.
+- **Layout and touch standards:** `--hud-space-xs`, `--hud-space-sm`, `--hud-space-md`, `--hud-space-lg`, `--hud-radius-sm`, `--hud-radius-md`, `--hud-touch-target-min` (44px min-height/touch area).
+
+### Scoped Style Boundaries for Feature Migration
+
+To prevent new feature presentations from depending on global `application.css` side effects:
+1. Shell components and system tools use CSS Modules (e.g. `TimelineToolsModal.module.css`) or feature-scoped selectors backed by `hud-tokens.css`.
+2. Features migrating in #172 (e.g., Crawler View) and subsequent features must consume approved semantic tokens directly or via local CSS Modules rather than inventing ad hoc hex values or relying on legacy DOM parent classes.
+3. React components remain framework bindings around framework-neutral state controllers; styling primitives handle visual grammar, accessibility (`:focus-visible`, `aria-pressed`, min touch targets), and reduced motion (`prefers-reduced-motion`) without altering application session truth or domain state.
+
 ## Remaining #160 delivery
 
 This branch implements the deployed executable comparison stage, not closure of the epic.

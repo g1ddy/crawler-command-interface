@@ -1,0 +1,131 @@
+.modalContent {
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border-color);
+  color: var(--hud-text-primary);
+  padding: var(--hud-space-md);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.75);
+}
+
+.description {
+  font-size: 11px;
+  color: var(--hud-text-secondary);
+  margin-bottom: var(--hud-space-sm);
+}
+
+.actionRow {
+  margin-bottom: var(--hud-space-sm);
+  display: flex;
+  gap: var(--hud-space-xs);
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  min-height: var(--hud-touch-target-min);
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: var(--hud-radius-sm);
+  border: 1px solid var(--hud-border-subtle);
+  background: var(--hud-panel-raised-bg);
+  color: var(--hud-text-primary);
+  cursor: pointer;
+}
+
+.actionButton:focus-visible {
+  outline: var(--hud-focus-ring);
+  outline-offset: 2px;
+}
+
+.dangerButton {
+  background: var(--hud-evidence-unknown-bg);
+  border-color: var(--hud-evidence-unknown-border);
+  color: var(--hud-state-danger);
+}
+
+.presentationSection {
+  margin-bottom: var(--hud-space-md);
+  padding-top: var(--hud-space-xs);
+  padding-bottom: var(--hud-space-xs);
+  border-top: 1px solid var(--hud-border-subtle);
+}
+
+.presentationSectionLabel {
+  color: var(--hud-text-subdued);
+  margin-bottom: var(--hud-space-xs);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.presentationGroup {
+  display: flex;
+  gap: var(--hud-space-xs);
+  flex-wrap: wrap;
+}
+
+.presentationOption {
+  min-height: var(--hud-touch-target-min);
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  font-size: 11px;
+  border: 1px solid var(--hud-border-subtle);
+  border-radius: var(--hud-radius-sm);
+  background: var(--hud-panel-raised-bg);
+  color: var(--hud-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.presentationOption:focus-visible {
+  outline: var(--hud-focus-ring);
+  outline-offset: 2px;
+}
+
+.presentationOption[aria-pressed="true"] {
+  border-color: var(--hud-state-info);
+  color: var(--hud-text-primary);
+  background: var(--hud-evidence-current-bg);
+  font-weight: bold;
+}
+
+.errorBox {
+  background: var(--hud-evidence-unknown-bg);
+  border: 1px solid var(--hud-state-danger);
+  color: var(--hud-evidence-unknown-text);
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  border-radius: var(--hud-radius-sm);
+  font-size: 10px;
+  font-family: var(--hud-font-mono);
+  white-space: pre-wrap;
+  margin-bottom: var(--hud-space-sm);
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.jsonInput {
+  width: 100%;
+  background: var(--hud-canvas-bg);
+  color: var(--hud-text-primary);
+  border: 1px solid var(--hud-border-subtle);
+  border-radius: var(--hud-radius-sm);
+  font-size: 10px;
+  padding: var(--hud-space-xs);
+  font-family: var(--hud-font-mono);
+}
+
+.jsonInput:focus-visible {
+  outline: var(--hud-focus-ring);
+  outline-offset: 2px;
+}
+
+.modalFooter {
+  margin-top: var(--hud-space-sm);
+  display: flex;
+  gap: var(--hud-space-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actionButton,
+  .presentationOption {
+    transition: none !important;
+  }
+}

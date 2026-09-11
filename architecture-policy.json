@@ -25,7 +25,7 @@
     { "name": "features-must-not-depend-on-shell", "from": "^src/features/", "to": "^src/shell/" },
     { "name": "features-must-not-depend-on-composition", "from": "^src/features/", "to": "^src/[^/]+$" },
     { "name": "application-must-not-depend-on-ui", "from": "^src/application/", "to": "^(src/(?!application/|features/timeline/replay-presentation)|app/(?!domain/))" },
-    { "name": "application-must-not-depend-on-react", "from": "^src/application/(?!useCrawlerSession)", "external": "^(react|react-dom)(/|$)" },
+    { "name": "application-must-not-depend-on-react", "from": "^src/application/", "external": "^(react|react-dom)(/|$)" },
     { "name": "shared-browser-must-not-depend-on-host", "from": "^src/", "to": "^app/(?!domain/)" }
   ]
 }

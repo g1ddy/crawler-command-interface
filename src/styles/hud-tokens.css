@@ -1,0 +1,74 @@
+/* Selected Direction (Authority) HUD Semantic Production Tokens */
+:root {
+  /* Surfaces & Borders */
+  --hud-canvas-bg: #090f15;
+  --hud-panel-bg: #101820;
+  --hud-panel-raised-bg: #17232c;
+  --hud-border-color: #435562;
+  --hud-border-subtle: #1f3e4d;
+  --hud-border-focus: #ffffff;
+  --hud-focus-ring: 3px solid #ffffff;
+
+  /* Text & Hierarchy */
+  --hud-text-primary: #eff5f6;
+  --hud-text-secondary: #b6c6cd;
+  --hud-text-subdued: #78929c;
+  --hud-text-author: #9ce8dc;
+  --hud-label-compact: 0.75rem;
+
+  /* State & Accent */
+  --hud-state-neutral: #b6c6cd;
+  --hud-state-info: #9ce8dc;
+  --hud-state-success: #4ee88a;
+  --hud-state-warning: #ffcd82;
+  --hud-state-danger: #ff8c91;
+  --hud-urgency-high: #ff8c91;
+
+  /* Evidence Freshness */
+  --hud-evidence-current-bg: #082a38;
+  --hud-evidence-current-border: #31515e;
+  --hud-evidence-current-text: #7895a0;
+
+  --hud-evidence-last-known-bg: #112638;
+  --hud-evidence-last-known-border: #2d5670;
+  --hud-evidence-last-known-text: #93cadb;
+
+  --hud-evidence-estimated-bg: #2a1e08;
+  --hud-evidence-estimated-border: #ffb74d;
+  --hud-evidence-estimated-text: #ffd052;
+
+  --hud-evidence-causal-bg: #221b38;
+  --hud-evidence-causal-border: #7564a8;
+  --hud-evidence-causal-text: #c4b5fd;
+
+  --hud-evidence-unknown-bg: #180a0c;
+  --hud-evidence-unknown-border: #4a1d22;
+  --hud-evidence-unknown-text: #a85c64;
+
+  /* Spacing, Radius & Typography */
+  --hud-space-xs: 0.25rem;
+  --hud-space-sm: 0.5rem;
+  --hud-space-md: 1rem;
+  --hud-space-lg: 1.5rem;
+
+  --hud-radius-sm: 0.25rem;
+  --hud-radius-md: 0.5rem;
+
+  --hud-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --hud-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Interaction & Density */
+  --hud-touch-target-min: 44px;
+  --hud-disabled-opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --hud-transition-duration: 0ms;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    --hud-transition-duration: 140ms;
+  }
+}
