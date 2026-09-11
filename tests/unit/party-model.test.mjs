@@ -5,7 +5,7 @@ import { projectObservations } from "../../app/domain/observations.ts";
 import { projectState } from "../../app/domain/projection.ts";
 import { loadRawFloorDocument } from "../../app/domain/raw-loader.ts";
 import { validateRawCrawlerFloor } from "../../app/domain/validation.ts";
-import { selectedSequenceCapabilities } from "../../src/shell/navigation/capabilities.ts";
+import { evaluateCanonCapabilities } from "../../src/application/capabilities.ts";
 
 const rawFloor1 = loadRawFloorDocument("floor-1");
 const formation = compiledTimeline.events.find((event) => event.id === "evt-f1-party-royal-court-formed");
@@ -26,18 +26,18 @@ test("the Royal Court formation records only the Floor 1 crawler roster", () => 
 test("Party is replay bounded to its explicit formation event", () => {
   const before = projectState(compiledTimeline, formation.sequence - 1);
   const after = projectState(compiledTimeline, formation.sequence);
-  const beforeCapabilities = selectedSequenceCapabilities(
-    before,
-    projectObservations(compiledTimeline, formation.sequence - 1),
-    compiledTimeline.events,
-    formation.sequence - 1,
-  );
-  const afterCapabilities = selectedSequenceCapabilities(
-    after,
-    projectObservations(compiledTimeline, formation.sequence),
-    compiledTimeline.events,
-    formation.sequence,
-  );
+  const beforeCapabilities = evaluateCanonCapabilities({
+    state: before,
+    observations: projectObservations(compiledTimeline, formation.sequence - 1),
+    events: compiledTimeline.events,
+    sequence: formation.sequence - 1,
+  });
+  const afterCapabilities = evaluateCanonCapabilities({
+    state: after,
+    observations: projectObservations(compiledTimeline, formation.sequence),
+    events: compiledTimeline.events,
+    sequence: formation.sequence,
+  });
 
   assert.equal(before.party, undefined);
   assert.equal(beforeCapabilities.party, false);

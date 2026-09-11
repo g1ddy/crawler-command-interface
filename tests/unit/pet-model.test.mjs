@@ -6,7 +6,7 @@ import { loadAllRawFloorDocuments } from "../../app/domain/raw-loader.ts";
 import { projectState, applyEvent } from "../../app/domain/projection.ts";
 import { validateCrawlerTimeline } from "../../app/domain/validation.ts";
 import { createInitialState } from "../../app/domain/projection/helpers.ts";
-import { selectedSequenceCapabilities } from "../../src/shell/navigation/capabilities.ts";
+import { evaluateCanonCapabilities } from "../../src/application/capabilities.ts";
 
 test("Pet domain replay boundaries on Floor 2 compiled timeline", () => {
   const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
@@ -76,11 +76,11 @@ test("Pet navigation capability gates on bonded pet state", () => {
   const bondedEvent = compiledTimeline.events.find((e) => e.id === "evt-f2-mongo-bonded");
 
   const stateAtAcquisition = projectState(compiledTimeline, acquiredEvent.sequence);
-  const capsAcquisition = selectedSequenceCapabilities(stateAtAcquisition, { broadcast: {} }, compiledTimeline.events, acquiredEvent.sequence);
+  const capsAcquisition = evaluateCanonCapabilities({ state: stateAtAcquisition, observations: { broadcast: {} }, events: compiledTimeline.events, sequence: acquiredEvent.sequence });
   assert.equal(capsAcquisition.pet, false, "Pet navigation must remain disabled prior to bonding");
 
   const stateAtBonded = projectState(compiledTimeline, bondedEvent.sequence);
-  const capsBonded = selectedSequenceCapabilities(stateAtBonded, { broadcast: {} }, compiledTimeline.events, bondedEvent.sequence);
+  const capsBonded = evaluateCanonCapabilities({ state: stateAtBonded, observations: { broadcast: {} }, events: compiledTimeline.events, sequence: bondedEvent.sequence });
   assert.equal(capsBonded.pet, true, "Pet navigation must unlock after a pet is bonded");
 });
 

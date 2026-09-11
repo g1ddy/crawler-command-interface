@@ -31,7 +31,8 @@ This file is a concise map for coding agents. Detailed contracts live in the can
 | Concern | Primary location |
 | --- | --- |
 | Application composition/state root | `src/CrawlerApp.tsx` |
-| Root navigation model/capabilities | `src/shell/navigation/` |
+| Replay-aware canon capabilities | `src/application/capabilities.ts` |
+| Root navigation model/presentation | `src/shell/navigation/` |
 | Persistent HUD | `src/shell/hud/` |
 | Persistent replay controls | `src/shell/replay/` |
 | Timeline diagnostics/history/evidence | `src/features/timeline/` |

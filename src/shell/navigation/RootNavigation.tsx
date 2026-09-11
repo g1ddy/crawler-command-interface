@@ -1,4 +1,4 @@
-import type { RootCapabilities } from "./capabilities";
+import type { CanonCapabilities } from "../../application/capabilities";
 import { ROOT_NAVIGATION, type RootView } from "./navigation-model";
 
 export function RootNavigation({
@@ -9,7 +9,7 @@ export function RootNavigation({
 }: {
   active: RootView;
   set: (view: RootView) => void;
-  capabilities: RootCapabilities;
+  capabilities: CanonCapabilities;
   onOpenTools: () => void;
 }) {
   return (

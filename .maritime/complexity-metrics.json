@@ -274,9 +274,17 @@
   "src/CrawlerApp.tsx": {
     "complexity": 33,
     "loc": 479,
-    "instability": 0.89,
+    "instability": 0.9,
     "fanIn": 3,
-    "fanOut": 25,
+    "fanOut": 26,
+    "scanned": true
+  },
+  "src/application/capabilities.ts": {
+    "complexity": 3,
+    "loc": 43,
+    "instability": 0.25,
+    "fanIn": 3,
+    "fanOut": 1,
     "scanned": true
   },
   "src/application/crawler-action-contracts.ts": {
@@ -624,10 +632,10 @@
     "scanned": true
   },
   "src/shell/navigation/capabilities.ts": {
-    "complexity": 3,
-    "loc": 33,
-    "instability": 0.5,
-    "fanIn": 2,
+    "complexity": 2,
+    "loc": 11,
+    "instability": 0.67,
+    "fanIn": 1,
     "fanOut": 2,
     "scanned": true
   },
