@@ -12,7 +12,7 @@ on:
         type: string
 
 permissions:
-  actions: read
+  actions: write
   contents: read
   pull-requests: read
 
@@ -99,7 +99,7 @@ jobs:
     needs: resolve-pr
     runs-on: ubuntu-latest
     permissions:
-      actions: read
+      actions: write
       contents: read
     steps:
       - name: Checkout PR source SHA
@@ -146,7 +146,7 @@ jobs:
     needs: resolve-pr
     runs-on: ubuntu-24.04
     permissions:
-      actions: read
+      actions: write
       contents: read
     steps:
       - name: Checkout PR source SHA
@@ -199,7 +199,7 @@ jobs:
     environment: artifact-finalization
     if: needs.resolve-pr.outputs.is_fork == 'false'
     permissions:
-      actions: read
+      actions: write
       contents: write
     steps:
       - name: Checkout PR branch
