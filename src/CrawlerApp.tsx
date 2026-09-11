@@ -199,6 +199,11 @@ export default function CrawlerApp({
     setShowJsonModal(true);
   }, []);
 
+  const handleJsonTextChange = useCallback((value: string) => {
+    setJsonText(value);
+    setImportError(null);
+  }, []);
+
   const replayCommandsWithInspect = useMemo(
     () => ({
       ...commands.replayCommands,
@@ -332,7 +337,7 @@ export default function CrawlerApp({
           jsonText={jsonText}
           importError={importError}
           presentationChoice={presentationChoice}
-          onJsonTextChange={setJsonText}
+          onJsonTextChange={handleJsonTextChange}
           onSelectPresentation={setPresentationChoice}
           onImport={handleImportJson}
           onExport={handleExportJson}
