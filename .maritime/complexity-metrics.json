@@ -273,10 +273,10 @@
   },
   "src/CrawlerApp.tsx": {
     "complexity": 33,
-    "loc": 426,
+    "loc": 449,
     "instability": 0.89,
     "fanIn": 3,
-    "fanOut": 24,
+    "fanOut": 25,
     "scanned": true
   },
   "src/application/crawler-action-contracts.ts": {
@@ -631,12 +631,20 @@
     "fanOut": 2,
     "scanned": true
   },
+  "src/shell/replay/replay-presentation.ts": {
+    "complexity": 24,
+    "loc": 283,
+    "instability": 0.5,
+    "fanIn": 3,
+    "fanOut": 3,
+    "scanned": true
+  },
   "src/shell/replay/ReplaySurface.tsx": {
-    "complexity": 8,
-    "loc": 54,
-    "instability": 0.88,
+    "complexity": 3,
+    "loc": 106,
+    "instability": 0.86,
     "fanIn": 1,
-    "fanOut": 7,
+    "fanOut": 6,
     "scanned": true
   },
   "src/features/timeline/diagnostics/TimelineDiagnostics.tsx": {
@@ -656,8 +664,8 @@
     "scanned": true
   },
   "src/shell/replay/ReplayControls.tsx": {
-    "complexity": 11,
-    "loc": 83,
+    "complexity": 7,
+    "loc": 211,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,

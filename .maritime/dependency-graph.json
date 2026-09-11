@@ -205,10 +205,10 @@
         "src/shell/hud/hotlist/Hotlist.tsx",
         "src/shell/hud/PersistentHud.tsx",
         "src/shell/navigation/capabilities.ts",
+        "src/shell/replay/replay-presentation.ts",
         "src/shell/replay/ReplaySurface.tsx",
         "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-        "src/features/timeline/diagnostics/SequenceInspector.tsx",
-        "src/shell/replay/ReplayControls.tsx"
+        "src/features/timeline/diagnostics/SequenceInspector.tsx"
       ],
       "orphan": false
     },
@@ -840,7 +840,7 @@
         "app/domain/validation.ts",
         "app/domain/projection/index.ts",
         "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-        "src/shell/replay/ReplaySurface.tsx"
+        "src/shell/replay/replay-presentation.ts"
       ],
       "orphan": false
     },
@@ -1582,7 +1582,7 @@
       ],
       "dependents": [
         "src/CrawlerApp.tsx",
-        "src/shell/replay/ReplaySurface.tsx"
+        "src/shell/replay/replay-presentation.ts"
       ],
       "orphan": false
     },
@@ -2334,6 +2334,23 @@
           "moduleSystem": "es6",
           "module": "./shell/navigation/RootNavigation",
           "resolved": "src/shell/navigation/RootNavigation.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./shell/replay/replay-presentation",
+          "resolved": "src/shell/replay/replay-presentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5157,7 +5174,7 @@
       "orphan": false
     },
     {
-      "source": "src/shell/replay/ReplaySurface.tsx",
+      "source": "src/shell/replay/replay-presentation.ts",
       "valid": true,
       "dependencies": [
         {
@@ -5172,7 +5189,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/countdowns",
+          "module": "../../../app/domain/countdowns.ts",
           "resolved": "app/domain/countdowns.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -5189,11 +5206,41 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/floors",
+          "module": "../../../app/domain/floors.ts",
           "resolved": "app/domain/floors.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/CrawlerApp.tsx",
+        "src/shell/replay/ReplaySurface.tsx",
+        "src/shell/replay/ReplayControls.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/replay/ReplaySurface.tsx",
+      "valid": true,
+      "dependencies": [
         {
           "circular": false,
           "coreModule": false,
@@ -5243,6 +5290,23 @@
           "moduleSystem": "es6",
           "module": "../../features/timeline/evidence/CountdownEvidenceModal",
           "resolved": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./replay-presentation",
+          "resolved": "src/shell/replay/replay-presentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5454,15 +5518,14 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
+          "module": "../../features/timeline/evidence/evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5472,14 +5535,15 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../features/timeline/evidence/evidencePresentation",
-          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "module": "./replay-presentation",
+          "resolved": "src/shell/replay/replay-presentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -5759,8 +5823,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 102,
-    "totalDependenciesCruised": 258,
+    "totalCruised": 103,
+    "totalDependenciesCruised": 261,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
