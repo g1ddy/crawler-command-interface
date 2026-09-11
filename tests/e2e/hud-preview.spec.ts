@@ -82,3 +82,17 @@ test("live presentation switching in System Tools preserves session state and up
   // Close System Tools
   await page.getByRole("button", { name: "CANCEL" }).click();
 });
+
+
+test("editing import JSON clears stale validation feedback", async ({ page }) => {
+  await page.goto(pagesPath);
+  await page.getByRole("button", { name: "Open data tools" }).click();
+
+  const jsonInput = page.getByPlaceholder("Paste crawler-timeline document JSON here to import...");
+  await jsonInput.fill("{");
+  await page.getByRole("button", { name: "IMPORT TIMELINE ENVELOPE" }).click();
+  await expect(page.getByText("VALIDATION FAILED:")).toBeVisible();
+
+  await jsonInput.fill("{}");
+  await expect(page.getByText("VALIDATION FAILED:")).toHaveCount(0);
+});
