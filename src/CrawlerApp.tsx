@@ -1,52 +1,32 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
-import { getFloorEndSequence } from "../app/domain/floors";
-import { LocalDeviceStorageAdapter } from "../app/domain/persistence";
-import {
-  projectCountdownState,
-  projectObservations,
-  projectState,
-} from "../app/domain/projection";
-import { getStatBreakdown, type StatBreakdown } from "../app/domain/stats";
-import type {
-  CrawlerEvent,
-  CrawlerState,
-  CrawlerTimelineDocument,
-  InventoryItem,
-  ProjectedEquipmentObservation,
-  ProjectedItemObservation,
-  ProjectedObservationValue,
-  TimelineSource,
-} from "../app/domain/types";
-import { validateCrawlerTimeline } from "../app/domain/validation";
+import { useEffect } from "react";
 import { StatInspectorModal } from "./features/crawler/stats/StatInspectorModal";
 import { FloorRules } from "./features/floor/FloorRules";
 import { TimelineEvidence } from "./features/timeline/evidence/TimelineEvidence";
 import { TelemetryInspectorModal } from "./features/timeline/evidence/TelemetryInspectorModal";
 import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
-import {
-  deriveReplayPresentation,
-  type ReplayCommandCallbacks,
-} from "./features/timeline/public";
 import { ActiveFeatureView } from "./shell/ActiveFeatureView";
 import { PersistentHud } from "./shell/hud/PersistentHud";
 import { ConceptHud } from "./shell/hud/ConceptHud";
-import type {
-  HudPersistence,
-  HudPresentation,
-} from "./shell/hud/hud-presentation";
-import {
-  availableRootViews,
-  resolveRootView,
-} from "./shell/navigation/capabilities";
-import { evaluateCanonCapabilities } from "./application/capabilities";
+import { availableRootViews } from "./shell/navigation/capabilities";
 import { RootNavigation } from "./shell/navigation/RootNavigation";
-import type { RootView } from "./shell/navigation/navigation-model";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
 import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
-import { createApplicationActions } from "./application/crawler-actions";
-import type { ActionResult, EquipmentSlot } from "./application/crawler-action-contracts";
+
+import { useCallback, useMemo, useState } from "react";
+import { getStatBreakdown, type StatBreakdown } from "../app/domain/stats";
+import type {
+  InventoryItem,
+  ProjectedEquipmentObservation,
+  ProjectedItemObservation,
+  ProjectedObservationValue,
+} from "../app/domain/types";
+import { resolveHudPresentation, type HudPersistence, type HudPresentation } from "./shell/hud/hud-presentation";
+import { resolveRootView } from "./shell/navigation/capabilities";
+import type { RootView } from "./shell/navigation/navigation-model";
+import type { EquipmentSlot } from "./application/crawler-action-contracts";
+import { useCrawlerSession } from "./application/useCrawlerSession";
+import { LocalDeviceStorageAdapter } from "../app/domain/persistence";
 
 export interface CrawlerAppProps {
   hudPresentation?: HudPresentation;
@@ -57,36 +37,74 @@ export default function CrawlerApp({
   hudPresentation = "production",
   hudPersistence = "normal",
 }: CrawlerAppProps = {}) {
-  const usesConceptHud = hudPresentation !== "production";
-  const hasDevicePersistence = hudPersistence === "normal";
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleActionResult = useCallback((result: { ok: boolean; message?: string; error?: string }) => {
+    if (!result.ok) {
+      setToastMessage(`⚠️ ${result.error}`);
+    } else if (result.message) {
+      setToastMessage(`⚡ ${result.message}`);
+    }
+  }, []);
+
   const storageAdapter = useMemo(
-    () => hasDevicePersistence ? new LocalDeviceStorageAdapter() : null,
-    [hasDevicePersistence],
+    () => (hudPersistence === "normal" ? new LocalDeviceStorageAdapter() : null),
+    [hudPersistence],
   );
-  const [timelineDoc, setTimelineDoc] = useState<CrawlerTimelineDocument>(() =>
-    hasDevicePersistence && typeof window !== "undefined"
-      ? (new LocalDeviceStorageAdapter().loadTimeline() ?? compiledTimeline)
-      : compiledTimeline,
-  );
-  const updateTimeline = (document: CrawlerTimelineDocument) => {
-    setTimelineDoc(document);
-    storageAdapter?.saveTimeline(document);
-  };
-  const events = timelineDoc.events as unknown as CrawlerEvent[];
-  const maxSeq = events[events.length - 1]?.sequence ?? 1;
-  const latestFloor = useMemo(
-    () =>
-      events[events.length - 1]?.position?.floor ??
-      timelineDoc.floors?.slice(-1)[0]?.ordinal ??
-      1,
-    [events, timelineDoc],
-  );
-  const [selectedFloorOrdinal, setSelectedFloorOrdinal] = useState<
-    number | "all"
-  >(timelineDoc.floors?.slice(-1)[0]?.ordinal ?? latestFloor);
-  const [isLive, setIsLive] = useState(true);
-  const [selectedSeq, setSelectedSeq] = useState(maxSeq);
+
+  const { snapshot, commands } = useCrawlerSession({
+    storageAdapter,
+    onActionResult: handleActionResult,
+  });
+
+  const {
+    events,
+    sources,
+    selectedFloorOrdinal,
+    currentSeq,
+    isLive,
+    projectedState,
+    projectedObservations,
+    liveState,
+    capabilities,
+    activeCountdown,
+    replayPresentation,
+    floorHudTitle,
+  } = snapshot;
+
+  const [presentationState, setPresentationState] = useState<{
+    choice: HudPresentation;
+    prop: HudPresentation;
+  }>(() => {
+    let initialChoice = hudPresentation;
+    if (typeof window !== "undefined") {
+      const urlChoice = new URLSearchParams(window.location.search).get("hud");
+      if (urlChoice) initialChoice = resolveHudPresentation(urlChoice);
+    }
+    return { choice: initialChoice, prop: hudPresentation };
+  });
+
+  const presentationChoice =
+    presentationState.prop !== hudPresentation
+      ? hudPresentation
+      : presentationState.choice;
+
+  const setPresentationChoice = useCallback((choice: HudPresentation) => {
+    setPresentationState({ choice, prop: hudPresentation });
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (choice === "production") {
+        url.searchParams.delete("hud");
+      } else {
+        url.searchParams.set("hud", choice);
+      }
+      window.history.replaceState(null, "", url);
+    }
+  }, [hudPresentation]);
+
   const [view, setView] = useState<RootView>("crawler");
+  const resolvedView = resolveRootView(view, capabilities);
+
   const [inspectStat, setInspectStat] = useState<string | null>(null);
   const [inspectObservation, setInspectObservation] = useState<
     | ProjectedObservationValue
@@ -94,9 +112,7 @@ export default function CrawlerApp({
     | ProjectedEquipmentObservation
     | null
   >(null);
-  const [provenanceItem, setProvenanceItem] = useState<InventoryItem | null>(
-    null,
-  );
+  const [provenanceItem, setProvenanceItem] = useState<InventoryItem | null>(null);
   const [showJsonModal, setShowJsonModal] = useState(false);
   const [jsonText, setJsonText] = useState("");
   const [importError, setImportError] = useState<string | null>(null);
@@ -105,204 +121,17 @@ export default function CrawlerApp({
   const [showTimelineEvidence, setShowTimelineEvidence] = useState(false);
   const [inventoryFilter, setInventoryFilter] = useState("ALL ITEMS");
   const [equipmentSlot, setEquipmentSlot] = useState<EquipmentSlot>("TORSO");
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const statBreakdown: StatBreakdown | null = useMemo(
+    () => (inspectStat ? getStatBreakdown(projectedState, inspectStat) : null),
+    [projectedState, inspectStat],
+  );
+
   useEffect(() => {
     if (!toastMessage) return;
     const timer = setTimeout(() => setToastMessage(null), 3500);
     return () => clearTimeout(timer);
   }, [toastMessage]);
-
-  const currentSeq = isLive ? maxSeq : selectedSeq;
-  const projectedState: CrawlerState = useMemo(
-    () => projectState(timelineDoc, currentSeq),
-    [timelineDoc, currentSeq],
-  );
-  const projectedObservations = useMemo(
-    () => projectObservations(timelineDoc, currentSeq),
-    [timelineDoc, currentSeq],
-  );
-  const capabilities = useMemo(
-    () =>
-      evaluateCanonCapabilities({
-        state: projectedState,
-        observations: projectedObservations,
-        events,
-        sequence: currentSeq,
-      }),
-    [projectedState, projectedObservations, events, currentSeq],
-  );
-  const resolvedView = resolveRootView(view, capabilities);
-  const liveState: CrawlerState = useMemo(
-    () => projectState(timelineDoc, maxSeq),
-    [timelineDoc, maxSeq],
-  );
-  const statBreakdown: StatBreakdown | null = useMemo(
-    () => (inspectStat ? getStatBreakdown(projectedState, inspectStat) : null),
-    [projectedState, inspectStat],
-  );
-  const currentFloorSegment = useMemo(
-    () =>
-      selectedFloorOrdinal === "all"
-        ? null
-        : timelineDoc.floors?.find(
-            (floor) => floor.ordinal === selectedFloorOrdinal,
-          ),
-    [timelineDoc, selectedFloorOrdinal],
-  );
-  const activeCountdown = useMemo(
-    () => projectCountdownState(timelineDoc, currentSeq, selectedFloorOrdinal),
-    [timelineDoc, currentSeq, selectedFloorOrdinal],
-  );
-  const replayPresentation = useMemo(
-    () =>
-      deriveReplayPresentation({
-        events,
-        floors: timelineDoc.floors,
-        countdowns: timelineDoc.countdowns,
-        observations: timelineDoc.observations,
-        selectedFloorOrdinal,
-        selectedSequence: currentSeq,
-        isLive,
-      }),
-    [
-      events,
-      timelineDoc.floors,
-      timelineDoc.countdowns,
-      timelineDoc.observations,
-      selectedFloorOrdinal,
-      currentSeq,
-      isLive,
-    ],
-  );
-  const navigateToSequence = useCallback(
-    (sequence: number) => {
-      setSelectedSeq(sequence);
-      setIsLive(sequence === maxSeq);
-    },
-    [maxSeq],
-  );
-  const returnToLive = useCallback(() => {
-    setIsLive(true);
-    setSelectedSeq(maxSeq);
-    setSelectedFloorOrdinal(latestFloor);
-  }, [maxSeq, latestFloor]);
-  const handleSelectFloorOrdinal = useCallback(
-    (ordinal: number | "all") => {
-      setSelectedFloorOrdinal(ordinal);
-      if (ordinal === "all") return;
-      const floor = timelineDoc.floors?.find(
-        (candidate) => candidate.ordinal === ordinal,
-      );
-      if (!floor) return;
-      const end = getFloorEndSequence(
-        timelineDoc.events,
-        ordinal,
-        floor.endSequence,
-      );
-      setSelectedSeq(end);
-      setIsLive(end === maxSeq);
-    },
-    [timelineDoc.floors, timelineDoc.events, maxSeq],
-  );
-  const replayCommands: ReplayCommandCallbacks = useMemo(
-    () => ({
-      selectFloor: handleSelectFloorOrdinal,
-      selectSequence: navigateToSequence,
-      stepPrevious: () => {
-        if (replayPresentation.position.previousSequence !== null) {
-          navigateToSequence(replayPresentation.position.previousSequence);
-        }
-      },
-      stepNext: () => {
-        if (replayPresentation.position.nextSequence !== null) {
-          navigateToSequence(replayPresentation.position.nextSequence);
-        }
-      },
-      returnToLive: returnToLive,
-      setLiveMode: (live) => {
-        if (live) {
-          returnToLive();
-        } else {
-          setIsLive(false);
-        }
-      },
-      openFloorRules: () => setShowFloorRules(true),
-      openTimelineHistory: () => setShowTimelineHistory(true),
-      openTimelineEvidence: () => setShowTimelineEvidence(true),
-      inspectObservation: setInspectObservation,
-    }),
-    [
-      handleSelectFloorOrdinal,
-      navigateToSequence,
-      replayPresentation.position.previousSequence,
-      replayPresentation.position.nextSequence,
-      returnToLive,
-    ],
-  );
-  const floorHudTitle = currentFloorSegment
-    ? `FLOOR ${currentFloorSegment.ordinal}: ${currentFloorSegment.title}`
-    : selectedFloorOrdinal === "all"
-      ? "ALL FLOORS (WHOLE STORY)"
-      : `FLOOR ${selectedFloorOrdinal}`;
-
-  const handleActionResult = (result: ActionResult) => {
-    if (!result.ok) { setToastMessage(`⚠️ ${result.error}`); return; }
-    updateTimeline(result.document);
-    setSelectedSeq(result.event.sequence);
-    setIsLive(true);
-    setToastMessage(`⚡ ${result.message}`);
-  };
-  const actions = createApplicationActions(timelineDoc, handleActionResult);
-  const handleExportJson = () => {
-    const anchor = document.createElement("a");
-    anchor.href =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(timelineDoc, null, 2));
-    anchor.download = `crawler-timeline-v2-seq-${projectedState.sequence}.json`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-  };
-  const handleImportJson = () => {
-    setImportError(null);
-    try {
-      const parsed = JSON.parse(jsonText) as CrawlerTimelineDocument;
-      const validation = validateCrawlerTimeline(parsed);
-      if (!validation.valid) {
-        setImportError(validation.errors.join("\n"));
-        return;
-      }
-      updateTimeline(parsed);
-      const importedEvents = parsed.events || [];
-      const last = importedEvents.slice(-1)[0]?.sequence ?? 1;
-      setSelectedSeq(last);
-      setSelectedFloorOrdinal(
-        importedEvents.slice(-1)[0]?.position?.floor ??
-          parsed.floors?.slice(-1)[0]?.ordinal ??
-          1,
-      );
-      setIsLive(true);
-      setShowJsonModal(false);
-      setToastMessage("✓ Imported timeline successfully");
-    } catch (error) {
-      setImportError(`JSON syntax error: ${(error as Error).message}`);
-    }
-  };
-  const handleReset = () => {
-    storageAdapter?.clearTimeline();
-    setTimelineDoc(compiledTimeline);
-    const compiledEvents = compiledTimeline.events || [];
-    const last = compiledEvents.slice(-1)[0]?.sequence ?? 1;
-    setSelectedSeq(last);
-    setSelectedFloorOrdinal(
-      compiledEvents.slice(-1)[0]?.position?.floor ??
-        compiledTimeline.floors?.slice(-1)[0]?.ordinal ??
-        1,
-    );
-    setIsLive(true);
-    setShowJsonModal(false);
-    setToastMessage("🔄 Reset timeline to default fixture");
-  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -322,6 +151,8 @@ export default function CrawlerApp({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [inspectStat, provenanceItem, showJsonModal, capabilities]);
 
+  const usesConceptHud = presentationChoice !== "production";
+
   const hudLevel =
     projectedObservations.xpProgress.level?.value ??
     projectedState.crawler.level;
@@ -340,46 +171,88 @@ export default function CrawlerApp({
   const hudViewers =
     projectedObservations.broadcast.viewers?.value ??
     projectedState.broadcast.viewers;
-  const sources = timelineDoc.sources as TimelineSource[];
 
-  return (
-    <main data-mode={isLive ? "live" : "replay"}>
-      {usesConceptHud ? <ConceptHud
-        state={projectedState}
-        observations={projectedObservations}
-        countdown={activeCountdown}
-        floorTitle={floorHudTitle}
-        isLive={isLive}
-        onReturnToLive={returnToLive}
-        onInspectObservation={setInspectObservation}
-        onNavigateToSequence={navigateToSequence}
-      /> : <PersistentHud
-        crawlerName={projectedState.crawler.name}
-        crawlerClass={projectedState.crawler.class}
-        level={hudLevel}
-        health={hudHealth}
-        maxHealth={hudMaxHealth}
-        mana={hudMana}
-        maxMana={hudMaxMana}
-        viewers={hudViewers}
-        floorTitle={floorHudTitle}
-        countdown={activeCountdown}
-        isLive={isLive}
-        sequence={projectedState.sequence}
-        occurredAt={projectedState.occurredAt}
-        hotlist={projectedState.hotlist}
-        skills={projectedState.skills}
-        onReturnToLive={returnToLive}
-      />}
+  const handleExportJson = useCallback(() => {
+    commands.exportJson();
+  }, [commands]);
+
+  const handleImportJson = useCallback(() => {
+    setImportError(null);
+    const result = commands.importJson(jsonText);
+    if (!result.ok) {
+      setImportError(result.error);
+      return;
+    }
+    setShowJsonModal(false);
+    setToastMessage("✓ Imported timeline successfully");
+  }, [commands, jsonText]);
+
+  const handleReset = useCallback(() => {
+    commands.resetTimeline();
+    setShowJsonModal(false);
+    setToastMessage("🔄 Reset timeline to default fixture");
+  }, [commands]);
+
+  const openTools = useCallback(() => {
+    setImportError(null);
+    setJsonText("");
+    setShowJsonModal(true);
+  }, []);
+
+  const handleJsonTextChange = useCallback((value: string) => {
+    setJsonText(value);
+    setImportError(null);
+  }, []);
+
+  const replayCommandsWithInspect = useMemo(
+    () => ({
+      ...commands.replayCommands,
+      openFloorRules: () => setShowFloorRules(true),
+      openTimelineHistory: () => setShowTimelineHistory(true),
+      openTimelineEvidence: () => setShowTimelineEvidence(true),
+      inspectObservation: setInspectObservation,
+    }),
+    [commands.replayCommands],
+  );
+
+  const mainContent = (
+    <main data-mode={isLive ? "live" : "replay"} data-presentation={presentationChoice} data-concept={presentationChoice}>
+      {usesConceptHud ? (
+        <ConceptHud
+          state={projectedState}
+          observations={projectedObservations}
+          countdown={activeCountdown}
+          floorTitle={floorHudTitle}
+          isLive={isLive}
+          onReturnToLive={commands.returnToLive}
+          onInspectObservation={setInspectObservation}
+          onNavigateToSequence={commands.selectSequence}
+        />
+      ) : (
+        <PersistentHud
+          crawlerName={projectedState.crawler.name}
+          crawlerClass={projectedState.crawler.class}
+          level={hudLevel}
+          health={hudHealth}
+          maxHealth={hudMaxHealth}
+          mana={hudMana}
+          maxMana={hudMaxMana}
+          viewers={hudViewers}
+          floorTitle={floorHudTitle}
+          countdown={activeCountdown}
+          isLive={isLive}
+          sequence={projectedState.sequence}
+          occurredAt={projectedState.occurredAt}
+          hotlist={projectedState.hotlist}
+          skills={projectedState.skills}
+          onReturnToLive={commands.returnToLive}
+        />
+      )}
       <RootNavigation
         active={resolvedView}
         set={setView}
         capabilities={capabilities}
-        onOpenTools={() => {
-          setImportError(null);
-          setJsonText("");
-          setShowJsonModal(true);
-        }}
+        onOpenTools={openTools}
       />
       {toastMessage && (
         <div className="toast-notification" role="status" aria-live="polite">
@@ -389,7 +262,7 @@ export default function CrawlerApp({
       <div className="view">
         <ReplaySurface
           model={replayPresentation}
-          commands={replayCommands}
+          commands={replayCommandsWithInspect}
           projectedObservations={projectedObservations}
         />
         <ActiveFeatureView
@@ -407,8 +280,8 @@ export default function CrawlerApp({
           setInventoryFilter={setInventoryFilter}
           equipmentSlot={equipmentSlot}
           setEquipmentSlot={setEquipmentSlot}
-          onNavigateToSequence={navigateToSequence}
-          actions={actions}
+          onNavigateToSequence={commands.selectSequence}
+          actions={commands.actions}
           onInspectObservation={setInspectObservation}
           onInspectStat={setInspectStat}
         />
@@ -419,7 +292,7 @@ export default function CrawlerApp({
           sequence={currentSeq}
           selectedFloorOrdinal={selectedFloorOrdinal}
           sources={sources}
-          onNavigateToSequence={navigateToSequence}
+          onNavigateToSequence={commands.selectSequence}
           onClose={() => setShowFloorRules(false)}
           isModal
         />
@@ -431,7 +304,7 @@ export default function CrawlerApp({
           selectedFloorOrdinal={selectedFloorOrdinal}
           recentLogs={projectedState.recentLogs}
           sources={sources}
-          onNavigateToSequence={navigateToSequence}
+          onNavigateToSequence={commands.selectSequence}
           onClose={() => setShowTimelineHistory(false)}
           isModal
         />
@@ -463,10 +336,9 @@ export default function CrawlerApp({
         <TimelineToolsModal
           jsonText={jsonText}
           importError={importError}
-          onJsonTextChange={(value) => {
-            setJsonText(value);
-            setImportError(null);
-          }}
+          presentationChoice={presentationChoice}
+          onJsonTextChange={handleJsonTextChange}
+          onSelectPresentation={setPresentationChoice}
           onImport={handleImportJson}
           onExport={handleExportJson}
           onReset={handleReset}
@@ -475,4 +347,18 @@ export default function CrawlerApp({
       )}
     </main>
   );
+
+  if (usesConceptHud) {
+    return (
+      <div
+        className="concept-hud-wrapper"
+        data-concept={presentationChoice}
+        data-hud-presentation={presentationChoice}
+      >
+        {mainContent}
+      </div>
+    );
+  }
+
+  return mainContent;
 }

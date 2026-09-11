@@ -33,8 +33,8 @@
 
 @media(max-width:680px){
   .mobile-status-bar{display:flex}
-  .modal-backdrop{align-items:flex-end;padding:0}
-  .modal-content{max-width:100%;border-radius:12px 12px 0 0;border-bottom:0;max-height:85vh;overflow-y:auto}
+  .modal-backdrop{align-items:center;padding:12px}
+  .modal-content{max-width:100%;border-radius:8px;max-height:90vh;overflow-y:auto}
   .item-provenance-drawer{position:fixed;bottom:0;left:0;right:0;z-index:90;border-radius:12px 12px 0 0;margin:0;max-height:80vh;overflow-y:auto}
 }
 

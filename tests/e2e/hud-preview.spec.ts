@@ -7,7 +7,9 @@ for (const variant of ["authority", "tactical", "theater"] as const) {
     await page.addInitScript(() => localStorage.setItem("crawler_timeline_doc_v2", "existing-device-data"));
     await page.goto(`${pagesPath}?hud=${variant}`);
 
-    await expect(page.locator("[data-hud-presentation]")).toHaveAttribute("data-hud-presentation", variant);
+    const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
+    await expect(previewScope).toHaveAttribute("data-hud-presentation", variant);
+    await expect(previewScope).toHaveCSS("--surface", variant === "tactical" ? "#131c18" : variant === "theater" ? "#21151b" : "#101820");
     await expect(page.locator('header[aria-label="Crawler HUD"]')).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Main Navigation" }).getByText("MAGIC", { exact: true })).toHaveCount(0);
     await expect(page.locator('.hud-reading[data-evidence="last-known"]').first()).toContainText(/Last known · sequence \d+/);
@@ -28,3 +30,69 @@ for (const query of ["", "?hud=unsupported"]) {
     await expect(page.locator(".system-hud")).toHaveCount(0);
   });
 }
+
+test("live presentation switching in System Tools preserves session state and updates URL", async ({ page }) => {
+  await page.goto(pagesPath);
+
+  // Enter replay mode by scrubbing slider to sequence 117 (where pet is acquired, not bonded)
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("117");
+  await expect(page.locator('[data-mode="replay"]')).toBeVisible();
+
+  const nav = page.getByRole("navigation", { name: "Main Navigation" });
+  await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
+  await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
+
+  // Open System Tools
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await expect(page.getByRole("heading", { name: "IMPORT / EXPORT CRAWLER TIMELINE" })).toBeVisible();
+
+  // Switch through each presentation choice via System Tools buttons
+  const choices = [
+    { name: "Authority (HUD Preview)", id: "authority" },
+    { name: "Tactical (HUD Preview)", id: "tactical" },
+    { name: "Theater (HUD Preview)", id: "theater" },
+    { name: "Production", id: "production" },
+  ];
+
+  for (const choice of choices) {
+    await page.getByRole("button", { name: choice.name, exact: true }).click();
+
+    // Verify URL parameter synchronization
+    if (choice.id === "production") {
+      await expect(page).not.toHaveURL(/hud=/);
+      await expect(page.locator("[data-hud-presentation]")).toHaveCount(0);
+    } else {
+      await expect(page).toHaveURL(new RegExp(`hud=${choice.id}$`));
+      const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
+      await expect(previewScope).toHaveAttribute("data-hud-presentation", choice.id);
+      await expect(previewScope).toHaveCSS(
+        "--surface",
+        choice.id === "tactical" ? "#131c18" : choice.id === "theater" ? "#21151b" : "#101820",
+      );
+    }
+
+    // Verify continuity of replay sequence, live/replay mode, and capabilities
+    await expect(slider).toHaveValue("117");
+    await expect(page.locator('[data-mode="replay"]')).toBeVisible();
+    await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
+    await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
+  }
+
+  // Close System Tools
+  await page.getByRole("button", { name: "CANCEL" }).click();
+});
+
+
+test("editing import JSON clears stale validation feedback", async ({ page }) => {
+  await page.goto(pagesPath);
+  await page.getByRole("button", { name: "Open data tools" }).click();
+
+  const jsonInput = page.getByPlaceholder("Paste crawler-timeline document JSON here to import...");
+  await jsonInput.fill("{");
+  await page.getByRole("button", { name: "IMPORT TIMELINE ENVELOPE" }).click();
+  await expect(page.getByText("VALIDATION FAILED:")).toBeVisible();
+
+  await jsonInput.fill("{}");
+  await expect(page.getByText("VALIDATION FAILED:")).toHaveCount(0);
+});

@@ -168,13 +168,15 @@
         "app/domain/raw-loader.ts",
         "app/domain/stats.ts",
         "src/CrawlerApp.tsx",
-        "src/application/capabilities.ts",
         "src/application/crawler-action-contracts.ts",
+        "src/application/crawler-session-controller.ts",
+        "src/features/timeline/replay-presentation.ts",
+        "src/application/capabilities.ts",
         "src/application/crawler-actions.ts",
+        "src/application/crawler-session.ts",
         "src/features/floor/FloorRules.tsx",
         "src/features/timeline/evidence/evidencePresentation.ts",
         "src/features/timeline/evidence/TelemetryBadge.tsx",
-        "src/features/timeline/replay-presentation.ts",
         "src/features/timeline/SequenceBadge.tsx",
         "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
@@ -706,7 +708,7 @@
         "app/domain/compiler.ts",
         "app/domain/persistence.ts",
         "app/domain/raw-compiler.ts",
-        "src/CrawlerApp.tsx"
+        "src/application/crawler-session-controller.ts"
       ],
       "orphan": false
     },
@@ -840,6 +842,7 @@
         "app/domain/validation.ts",
         "app/domain/projection/index.ts",
         "src/features/timeline/replay-presentation.ts",
+        "src/application/crawler-session.ts",
         "src/features/timeline/evidence/CountdownEvidenceModal.tsx"
       ],
       "orphan": false
@@ -914,7 +917,7 @@
         }
       ],
       "dependents": [
-        "src/CrawlerApp.tsx"
+        "src/application/crawler-session-controller.ts"
       ],
       "orphan": false
     },
@@ -1002,7 +1005,7 @@
       ],
       "dependents": [
         "app/domain/fixtures/floor6.ts",
-        "src/CrawlerApp.tsx",
+        "src/application/crawler-session-controller.ts",
         "src/application/crawler-actions.ts"
       ],
       "orphan": false
@@ -1581,7 +1584,7 @@
         }
       ],
       "dependents": [
-        "src/CrawlerApp.tsx",
+        "src/application/crawler-session-controller.ts",
         "src/features/timeline/replay-presentation.ts"
       ],
       "orphan": false
@@ -1658,7 +1661,8 @@
         }
       ],
       "dependents": [
-        "src/CrawlerApp.tsx"
+        "src/CrawlerApp.tsx",
+        "src/application/crawler-session-controller.ts"
       ],
       "orphan": false
     },
@@ -1893,6 +1897,23 @@
           "coreModule": false,
           "couldNotResolve": false,
           "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "../src/styles/concepts.css",
+          "resolved": "src/styles/concepts.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
             "npm",
             "type-only",
             "import"
@@ -1912,6 +1933,25 @@
     },
     {
       "source": "src/styles/application.css",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/layout.tsx",
+        "src/main.concepts.tsx",
+        "src/main.pages.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
+        "import"
+      ]
+    },
+    {
+      "source": "src/styles/concepts.css",
       "valid": true,
       "dependencies": [],
       "dependents": [
@@ -1988,59 +2028,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../app/domain/fixtures/compiled-timeline",
-          "resolved": "app/domain/fixtures/compiled-timeline.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../app/domain/floors",
-          "resolved": "app/domain/floors.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "../app/domain/persistence",
           "resolved": "app/domain/persistence.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../app/domain/projection",
-          "resolved": "app/domain/projection.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2085,40 +2074,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../app/domain/validation",
-          "resolved": "app/domain/validation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./application/capabilities",
-          "resolved": "src/application/capabilities.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
             "type-only",
             "import"
           ],
@@ -2143,8 +2098,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./application/crawler-actions",
-          "resolved": "src/application/crawler-actions.ts",
+          "module": "./application/useCrawlerSession",
+          "resolved": "src/application/useCrawlerSession.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2245,23 +2200,6 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./features/timeline/public",
-          "resolved": "src/features/timeline/public.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "./shell/ActiveFeatureView",
           "resolved": "src/shell/ActiveFeatureView.tsx",
           "valid": true,
@@ -2290,7 +2228,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
@@ -2436,6 +2373,7 @@
       "dependencies": [],
       "dependents": [
         "src/CrawlerApp.tsx",
+        "src/application/useCrawlerSession.ts",
         "src/features/floor/FloorRules.tsx",
         "src/shared/ui/Panel.tsx",
         "src/features/timeline/SequenceBadge.tsx",
@@ -2465,36 +2403,6 @@
       ]
     },
     {
-      "source": "src/application/capabilities.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/CrawlerApp.tsx",
-        "src/shell/navigation/capabilities.ts",
-        "src/shell/navigation/RootNavigation.tsx"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/application/crawler-action-contracts.ts",
       "valid": true,
       "dependencies": [
@@ -2519,7 +2427,10 @@
       ],
       "dependents": [
         "src/CrawlerApp.tsx",
+        "src/application/useCrawlerSession.ts",
+        "src/application/crawler-session-controller.ts",
         "src/application/crawler-actions.ts",
+        "src/application/crawler-session.ts",
         "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/crawler/stats/PlayerStats.tsx",
@@ -2527,6 +2438,381 @@
         "src/features/inventory/equipment/EquipmentView.tsx",
         "src/features/inventory/ItemInspector.tsx",
         "src/features/skills/SkillsView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/application/useCrawlerSession.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./crawler-action-contracts",
+          "resolved": "src/application/crawler-action-contracts.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./crawler-session-controller.ts",
+          "resolved": "src/application/crawler-session-controller.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./crawler-session.ts",
+          "resolved": "src/application/crawler-session.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/CrawlerApp.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/application/crawler-session-controller.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/fixtures/compiled-timeline.ts",
+          "resolved": "app/domain/fixtures/compiled-timeline.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/floors.ts",
+          "resolved": "app/domain/floors.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/persistence.ts",
+          "resolved": "app/domain/persistence.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/projection.ts",
+          "resolved": "app/domain/projection.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/validation.ts",
+          "resolved": "app/domain/validation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../features/timeline/replay-presentation.ts",
+          "resolved": "src/features/timeline/replay-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./capabilities.ts",
+          "resolved": "src/application/capabilities.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./crawler-action-contracts.ts",
+          "resolved": "src/application/crawler-action-contracts.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./crawler-actions.ts",
+          "resolved": "src/application/crawler-actions.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./crawler-session.ts",
+          "resolved": "src/application/crawler-session.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/application/useCrawlerSession.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/timeline/replay-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/countdowns.ts",
+          "resolved": "app/domain/countdowns.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/floors.ts",
+          "resolved": "app/domain/floors.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/application/crawler-session-controller.ts",
+        "src/application/crawler-session.ts",
+        "src/features/timeline/public.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/application/capabilities.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/application/crawler-session-controller.ts",
+        "src/application/crawler-session.ts",
+        "src/shell/navigation/capabilities.ts",
+        "src/shell/navigation/RootNavigation.tsx"
       ],
       "orphan": false
     },
@@ -2605,7 +2891,108 @@
         }
       ],
       "dependents": [
-        "src/CrawlerApp.tsx"
+        "src/application/crawler-session-controller.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/application/crawler-session.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/countdowns",
+          "resolved": "app/domain/countdowns.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../features/timeline/replay-presentation.ts",
+          "resolved": "src/features/timeline/replay-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./capabilities",
+          "resolved": "src/application/capabilities.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./crawler-action-contracts",
+          "resolved": "src/application/crawler-action-contracts.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/application/useCrawlerSession.ts",
+        "src/application/crawler-session-controller.ts"
       ],
       "orphan": false
     },
@@ -2847,7 +3234,6 @@
         }
       ],
       "dependents": [
-        "src/CrawlerApp.tsx",
         "src/features/floor/FloorRules.tsx",
         "src/features/crawler/health/HealthConditions.tsx",
         "src/features/crawler/stats/PlayerStats.tsx",
@@ -2936,68 +3322,6 @@
         "src/features/timeline/public.ts",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/timeline/diagnostics/SequenceInspector.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/replay-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/countdowns.ts",
-          "resolved": "app/domain/countdowns.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/floors.ts",
-          "resolved": "app/domain/floors.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/timeline/public.ts"
       ],
       "orphan": false
     },
@@ -5161,6 +5485,7 @@
       "dependencies": [],
       "dependents": [
         "src/CrawlerApp.tsx",
+        "src/shell/tools/TimelineToolsModal.tsx",
         "src/main.concepts.tsx",
         "src/main.pages.tsx"
       ],
@@ -5621,7 +5946,26 @@
     {
       "source": "src/shell/tools/TimelineToolsModal.tsx",
       "valid": true,
-      "dependencies": [],
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../hud/hud-presentation",
+          "resolved": "src/shell/hud/hud-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
       "dependents": [
         "src/CrawlerApp.tsx"
       ],
@@ -5736,24 +6080,6 @@
       ],
       "dependents": [],
       "orphan": false
-    },
-    {
-      "source": "src/styles/concepts.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/main.concepts.tsx",
-        "src/main.pages.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
     },
     {
       "source": "node_modules/react-dom/client.js",
@@ -5888,8 +6214,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 104,
-    "totalDependenciesCruised": 264,
+    "totalCruised": 107,
+    "totalDependenciesCruised": 280,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

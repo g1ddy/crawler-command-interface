@@ -13,14 +13,6 @@ const root = document.getElementById("root");
 if (!root) throw new Error("The GitHub Pages root element was not found.");
 createRoot(root).render(
   <StrictMode>
-    {hudPresentation === "production" ? <CrawlerApp /> : (
-      <div
-        className="concept-lab"
-        data-concept={hudPresentation}
-        data-hud-presentation={hudPresentation}
-      >
-        <CrawlerApp hudPresentation={hudPresentation} hudPersistence="isolated" />
-      </div>
-    )}
+    <CrawlerApp hudPresentation={hudPresentation} hudPersistence={hudPresentation === "production" ? "normal" : "isolated"} />
   </StrictMode>,
 );
