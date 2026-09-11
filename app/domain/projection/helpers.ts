@@ -137,7 +137,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   }));
   const entitlements = (timelineState?.entitlements || []).map((entitlement) => ({ ...entitlement }));
 
-  const skills = ((timelineState?.skills as Skill[]) || []).map((s) => ({ ...s }));
+  const skills = (((timelineState?.skills as unknown) as Skill[]) || []).map((s) => ({ ...s }));
   const spells = (timelineState?.spells || []).map((spell) => ({
     ...spell,
     acquisitionSource: { ...spell.acquisitionSource },
@@ -171,6 +171,10 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   return {
     sequence: 0,
     occurredAt: '04:00:00',
+    causalProvenance: {
+      attributes: {},
+      condition: {},
+    },
     crawler: {
       name: crawler?.name || 'CARL G.',
       level: crawler?.level || 42,

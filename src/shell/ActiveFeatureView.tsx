@@ -8,7 +8,7 @@ import { QuestsView } from "../features/quests/QuestsView";
 import { RatingsView } from "../features/ratings/RatingsView";
 import { SkillsView } from "../features/skills/SkillsView";
 import type { RootView } from "./navigation/navigation-model";
-import type { ApplicationActions, EquipmentSlot } from "../application/crawler-actions";
+import type { ApplicationActions, EquipmentSlot } from "../application/crawler-action-contracts";
 
 export function ActiveFeatureView({ view, state, liveState, observations, sources, events, sequence, isLive, provenanceItem, setProvenanceItem, inventoryFilter, setInventoryFilter, equipmentSlot, setEquipmentSlot, onNavigateToSequence, actions, onInspectObservation, onInspectStat }: {
   view: RootView;
@@ -32,7 +32,7 @@ export function ActiveFeatureView({ view, state, liveState, observations, source
 }) {
   switch (view) {
     case "crawler": return <CrawlerView state={state} observations={observations} onInspectStat={onInspectStat} onInspectObservation={onInspectObservation} actions={actions.crawler} />;
-    case "ratings": return <RatingsView observations={observations.broadcast} isLive={isLive} onInspectObservation={onInspectObservation} />;
+    case "ratings": return <RatingsView observations={observations.broadcast} selectedSequence={sequence} isLive={isLive} onInspectObservation={onInspectObservation} />;
     case "party": return <PartyView party={state.party} />;
     case "pet": return <PetView pets={state.pets} />;
     case "notifications": return <NotificationsView events={events} sequence={sequence} onNavigateToSequence={onNavigateToSequence} />;

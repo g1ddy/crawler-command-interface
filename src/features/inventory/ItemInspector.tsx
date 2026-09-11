@@ -11,14 +11,16 @@ import type { InventoryActions } from "../../application/crawler-action-contract
 export function ItemInspector({
   selectedItem,
   observation,
+  selectedSequence,
   requirementResult,
   actions,
   onOpenProvenance,
   onInspectObservation,
 }: {
   selectedItem: InventoryItem;
-  observation?: ProjectedItemObservation | ProjectedEquipmentObservation;
-  requirementResult: { met: boolean; details: { key: string; required: number; current: number; met: boolean }[] };
+  observation?: ProjectedItemObservation;
+  selectedSequence?: number;
+  requirementResult: { met: boolean; details: { key: string; required: number | string; current: number | string; met: boolean }[] };
   actions: InventoryActions;
   onOpenProvenance: (item: InventoryItem) => void;
   onInspectObservation: (
@@ -57,6 +59,7 @@ export function ItemInspector({
         {observation && (
           <TelemetryBadge
             observation={observation}
+            selectedSequence={selectedSequence}
             onClick={() => onInspectObservation(observation)}
           />
         )}

@@ -13,7 +13,7 @@ async function selectSequence(page: Page, sequence: number) {
 const latestSequence = Math.max(...compiledTimeline.events.map((event) => event.sequence));
 
 function floorEndSequence(ordinal: number) {
-  const floor = compiledTimeline.floors.find((candidate) => candidate.ordinal === ordinal);
+  const floor = (compiledTimeline.floors || []).find((candidate) => candidate.ordinal === ordinal);
   if (!floor) throw new Error(`Missing Floor ${ordinal} in the compiled timeline.`);
   return floor.endSequence;
 }
@@ -76,7 +76,7 @@ test("timeline evidence surfaces preserve source locators and confidence", async
   await page.getByRole("button", { name: "📡 TELEMETRY", exact: true }).click();
   const evidenceModal = page.locator(".modal-content").filter({ hasText: "SOURCED HUD OBSERVATIONS" });
   const floorMetrics = evidenceModal.getByRole("heading", { name: "FLOOR METRICS" }).locator("..");
-  await floorMetrics.getByText("SOURCE", { exact: true }).first().click();
+  await floorMetrics.locator(".telemetry-pill").first().click();
   const inspectorModal = page.locator(".modal-content").filter({ hasText: "TELEMETRY OBSERVATION & PROVENANCE" });
   await expect(inspectorModal).toContainText("CORROBORATED");
   await expect(inspectorModal).toContainText("Locator:");

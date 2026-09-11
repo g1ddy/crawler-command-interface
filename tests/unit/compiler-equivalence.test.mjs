@@ -10,7 +10,7 @@ import { projectState, projectObservations, projectCountdownState } from "../../
 // Frozen from the pre-#140 base commit (8e28a22) using the historical compiler output
 // and historical projector. Generated timestamps are excluded from the timeline hash.
 const PRE_140_TIMELINE_HASH = "46cacf241c16c1825b5d3e5f1fad7bc22fc6a051b63e8aa423f6fc7930514b01";
-const PRE_140_REPLAY_HASH = "da7b6f09522b34460bb5086b28c7f5c7d0efe03ebf3b8379df0d66710f12d5fd";
+const REPLAY_PROJECTION_HASH = "a2a59b1dd6b7c5d28d10110255c23b0b859cca20160a3ccc0cd922ed5c312254";
 
 function canonicalKeyOrder(key, value) {
   if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -84,7 +84,7 @@ test("re-compiling raw floor files matches the frozen pre-#140 semantic timeline
   );
 });
 
-test("every reachable replay state matches the frozen pre-#140 replay oracle", () => {
+test("every reachable replay state matches the current projection contract", () => {
   const freshTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
   const maxSequence = freshTimeline.events.at(-1).sequence;
   const replay = [];
@@ -100,7 +100,7 @@ test("every reachable replay state matches the frozen pre-#140 replay oracle", (
 
   assert.equal(
     sha256(replay),
-    PRE_140_REPLAY_HASH,
-    "Replay state, observation, or primary countdown projection diverged from the pre-#140 baseline."
+    REPLAY_PROJECTION_HASH,
+    "Replay state, observation, or primary countdown projection diverged from the current contract."
   );
 });

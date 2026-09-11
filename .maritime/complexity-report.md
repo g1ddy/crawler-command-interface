@@ -1,6 +1,6 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-09
+**Last Updated:** 2026-09-11
 
 ### 🏥 Repository Health Score: **64.0 / 100**
 
@@ -16,25 +16,25 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `app/domain/countdowns.ts` | **230.1** | 401 | 92 | 1 | 0.2 |
 | `app/domain/validation.ts` | **228.1** | 483 | 74 | 9 | 0.69 |
-| `src/CrawlerApp.tsx` | **175.1** | 433 | 33 | 24 | 0.89 |
-| `app/domain/projection/helpers.ts` | **169.8** | 218 | 68 | 2 | 0.4 |
-| `src/application/crawler-actions.ts` | **132.1** | 128 | 49 | 4 | 0.67 |
+| `src/CrawlerApp.tsx` | **174.4** | 426 | 33 | 24 | 0.89 |
+| `app/domain/projection/helpers.ts` | **170.2** | 222 | 68 | 2 | 0.4 |
+| `src/application/crawler-actions.ts` | **134.8** | 128 | 49 | 4 | 0.8 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
-| `src/features/inventory/ItemInspector.tsx` | **112.3** | 223 | 33 | 4 | 0.8 |
+| `src/features/inventory/ItemInspector.tsx` | **112.6** | 226 | 33 | 4 | 0.8 |
 | `app/domain/fixtures/floor6.ts` | **103.4** | 774 | 1 | 2 | 1 |
-| `app/domain/observations.ts` | **97.2** | 322 | 29 | 1 | 0.25 |
-| `app/domain/projection/index.ts` | **93** | 205 | 15 | 12 | 0.92 |
+| `app/domain/observations.ts` | **97.5** | 325 | 29 | 1 | 0.25 |
+| `app/domain/projection/index.ts` | **95.6** | 231 | 15 | 12 | 0.92 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
 | `app/domain/countdowns.ts` | **92** | 401 |
 | `app/domain/validation.ts` | **74** | 483 |
-| `app/domain/projection/helpers.ts` | **68** | 218 |
+| `app/domain/projection/helpers.ts` | **68** | 222 |
 | `src/application/crawler-actions.ts` | **49** | 128 |
 | `app/domain/compiler.ts` | **35** | 368 |
-| `src/CrawlerApp.tsx` | **33** | 433 |
-| `src/features/inventory/ItemInspector.tsx` | **33** | 223 |
-| `app/domain/observations.ts` | **29** | 322 |
-| `src/features/inventory/equipment/EquipmentView.tsx` | **27** | 56 |
+| `src/CrawlerApp.tsx` | **33** | 426 |
+| `src/features/inventory/ItemInspector.tsx` | **33** | 226 |
+| `app/domain/observations.ts` | **29** | 325 |
+| `src/features/inventory/equipment/EquipmentView.tsx` | **27** | 57 |
 | `src/features/timeline/diagnostics/SequenceInspector.tsx` | **25** | 50 |

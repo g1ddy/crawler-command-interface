@@ -171,10 +171,10 @@
         "src/application/crawler-action-contracts.ts",
         "src/application/crawler-actions.ts",
         "src/features/floor/FloorRules.tsx",
+        "src/features/timeline/evidence/evidencePresentation.ts",
         "src/features/timeline/evidence/TelemetryBadge.tsx",
         "src/features/timeline/SequenceBadge.tsx",
         "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
-        "src/features/timeline/evidence/evidencePresentation.ts",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/timeline/history/TimelineHistory.tsx",
         "src/shell/ActiveFeatureView.tsx",
@@ -2456,6 +2456,7 @@
       "dependents": [
         "src/CrawlerApp.tsx",
         "src/application/crawler-actions.ts",
+        "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/crawler/stats/PlayerStats.tsx",
         "src/features/inventory/InventoryView.tsx",
@@ -2540,8 +2541,7 @@
         }
       ],
       "dependents": [
-        "src/CrawlerApp.tsx",
-        "src/shell/ActiveFeatureView.tsx"
+        "src/CrawlerApp.tsx"
       ],
       "orphan": false
     },
@@ -2725,6 +2725,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "./evidence/evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./evidence/TelemetryBadge",
           "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
           "valid": true,
@@ -2759,6 +2776,39 @@
       "orphan": false
     },
     {
+      "source": "src/features/timeline/evidence/evidencePresentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/timeline/public.ts",
+        "src/features/timeline/evidence/TelemetryBadge.tsx",
+        "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
+        "src/shell/hud/ConceptHud.tsx",
+        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+        "src/shell/replay/ReplayControls.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/features/timeline/evidence/TelemetryBadge.tsx",
       "valid": true,
       "dependencies": [
@@ -2777,6 +2827,23 @@
           "moduleSystem": "es6",
           "module": "../../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -2912,36 +2979,6 @@
       ],
       "dependents": [
         "src/CrawlerApp.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/evidence/evidencePresentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
-        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-        "src/shell/replay/ReplayControls.tsx"
       ],
       "orphan": false
     },
@@ -3155,8 +3192,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../application/crawler-actions",
-          "resolved": "src/application/crawler-actions.ts",
+          "module": "../application/crawler-action-contracts",
+          "resolved": "src/application/crawler-action-contracts.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4835,6 +4872,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../../features/timeline/evidence/evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./hotlist/Hotlist",
           "resolved": "src/shell/hud/hotlist/Hotlist.tsx",
           "valid": true,
@@ -5706,7 +5760,7 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 102,
-    "totalDependenciesCruised": 255,
+    "totalDependenciesCruised": 258,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

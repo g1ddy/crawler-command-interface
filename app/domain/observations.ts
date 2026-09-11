@@ -93,6 +93,7 @@ export function projectObservationValue(
       basis: 'exact-observation',
       evidence: exact.observation.evidence,
       referenceObservationIds: [exact.observation.id],
+      sequence: exact.observation.sequence,
     };
   }
 
@@ -157,6 +158,7 @@ export function projectObservationValue(
     basis: hasElapsedBasis ? 'elapsed-duration' : 'sequence-position',
     evidence: [...before.observation.evidence, ...after.observation.evidence],
     referenceObservationIds: [before.observation.id, after.observation.id],
+    sourceSequences: [before.observation.sequence, after.observation.sequence],
   };
 }
 
@@ -222,6 +224,7 @@ export function projectObservations(
           basis: 'exact-observation',
           evidence: latest.observation.evidence,
           referenceObservationIds: [latest.observation.id],
+          sequence: latest.observation.sequence,
         };
       }
     }
