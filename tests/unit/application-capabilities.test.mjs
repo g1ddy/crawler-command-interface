@@ -39,9 +39,10 @@ test("Pet capability is unavailable before the useful sourced bond boundary, inc
 
   // Before acquisition
   const stateBeforeAcq = projectState(compiledTimeline, acquiredEvent.sequence - 1);
+  const obsBeforeAcq = projectObservations(compiledTimeline, acquiredEvent.sequence - 1);
   const capsBeforeAcq = evaluateCanonCapabilities({
     state: stateBeforeAcq,
-    observations: { broadcast: {} },
+    observations: obsBeforeAcq,
     events: compiledTimeline.events,
     sequence: acquiredEvent.sequence - 1,
   });
@@ -49,9 +50,10 @@ test("Pet capability is unavailable before the useful sourced bond boundary, inc
 
   // Acquired but unbonded
   const stateAtAcq = projectState(compiledTimeline, acquiredEvent.sequence);
+  const obsAtAcq = projectObservations(compiledTimeline, acquiredEvent.sequence);
   const capsAtAcq = evaluateCanonCapabilities({
     state: stateAtAcq,
-    observations: { broadcast: {} },
+    observations: obsAtAcq,
     events: compiledTimeline.events,
     sequence: acquiredEvent.sequence,
   });
@@ -59,62 +61,68 @@ test("Pet capability is unavailable before the useful sourced bond boundary, inc
 
   // Bonded
   const stateAtBond = projectState(compiledTimeline, bondedEvent.sequence);
+  const obsAtBond = projectObservations(compiledTimeline, bondedEvent.sequence);
   const capsAtBond = evaluateCanonCapabilities({
     state: stateAtBond,
-    observations: { broadcast: {} },
+    observations: obsAtBond,
     events: compiledTimeline.events,
     sequence: bondedEvent.sequence,
   });
   assert.equal(capsAtBond.pet, true, "Pet must become available once bonded");
 });
 
-test("Ratings capability is available only when replay-visible broadcast/audience state exists", () => {
-  const emptyObs = { broadcast: {} };
-  const initialState = createInitialState();
-  const capsWithoutBroadcast = evaluateCanonCapabilities({
-    state: initialState,
-    observations: emptyObs,
-    events: [],
-    sequence: 1,
-  });
-  assert.equal(capsWithoutBroadcast.ratings, false, "Ratings must be false when no broadcast observations exist");
+test("Ratings capability is available only when replay-visible broadcast/audience state exists on compiled timeline", () => {
+  const broadcastSnapshot = compiledTimeline.events.find((e) => e.id === "evt-f2-broadcast-snapshot");
+  assert.ok(broadcastSnapshot, "evt-f2-broadcast-snapshot exists in compiled timeline");
 
-  const obsWithViewers = { broadcast: { viewers: { value: 12500 } } };
-  const capsWithBroadcast = evaluateCanonCapabilities({
-    state: initialState,
-    observations: obsWithViewers,
-    events: [],
-    sequence: 1,
+  const seqBefore = broadcastSnapshot.sequence - 1;
+  const stateBefore = projectState(compiledTimeline, seqBefore);
+  const obsBefore = projectObservations(compiledTimeline, seqBefore);
+  const capsBefore = evaluateCanonCapabilities({
+    state: stateBefore,
+    observations: obsBefore,
+    events: compiledTimeline.events,
+    sequence: seqBefore,
   });
-  assert.equal(capsWithBroadcast.ratings, true, "Ratings must be true when broadcast observations exist");
+  assert.equal(capsBefore.ratings, false, "Ratings must be false before any broadcast observation exists");
+
+  const seqAt = broadcastSnapshot.sequence;
+  const stateAt = projectState(compiledTimeline, seqAt);
+  const obsAt = projectObservations(compiledTimeline, seqAt);
+  const capsAt = evaluateCanonCapabilities({
+    state: stateAt,
+    observations: obsAt,
+    events: compiledTimeline.events,
+    sequence: seqAt,
+  });
+  assert.equal(capsAt.ratings, true, "Ratings must be true when replay-visible broadcast observation exists");
 });
 
-test("Notifications capability is available only when crawler-visible delivered-notification semantics exist", () => {
-  const base = { id: "e1", sequence: 1, type: "NarrativeEvent", summary: "Undelivered event", occurred_at: "2025-01-01", category: "system", position: { floor: 1 }, evidence: [] };
-  const deliveredEvent = {
-    ...base,
-    id: "e2",
-    sequence: 2,
-    notificationDelivery: { delivered: true, kind: "achievement", severity: "warning" },
-  };
-  const events = [base, deliveredEvent];
-  const initialState = createInitialState();
+test("Notifications capability is available only when crawler-visible delivered-notification semantics exist on compiled timeline", () => {
+  const firstDeliveredEvent = compiledTimeline.events.find((e) => e.notificationDelivery?.delivered === true);
+  assert.ok(firstDeliveredEvent, "First delivered notification event exists in compiled timeline");
 
-  const capsAtSeq1 = evaluateCanonCapabilities({
-    state: initialState,
-    observations: { broadcast: {} },
-    events,
-    sequence: 1,
+  const seqBefore = firstDeliveredEvent.sequence - 1;
+  const stateBefore = projectState(compiledTimeline, seqBefore);
+  const obsBefore = projectObservations(compiledTimeline, seqBefore);
+  const capsBefore = evaluateCanonCapabilities({
+    state: stateBefore,
+    observations: obsBefore,
+    events: compiledTimeline.events,
+    sequence: seqBefore,
   });
-  assert.equal(capsAtSeq1.notifications, false, "Notifications must be false before any delivered notification event");
+  assert.equal(capsBefore.notifications, false, "Notifications must be false before any delivered notification event");
 
-  const capsAtSeq2 = evaluateCanonCapabilities({
-    state: initialState,
-    observations: { broadcast: {} },
-    events,
-    sequence: 2,
+  const seqAt = firstDeliveredEvent.sequence;
+  const stateAt = projectState(compiledTimeline, seqAt);
+  const obsAt = projectObservations(compiledTimeline, seqAt);
+  const capsAt = evaluateCanonCapabilities({
+    state: stateAt,
+    observations: obsAt,
+    events: compiledTimeline.events,
+    sequence: seqAt,
   });
-  assert.equal(capsAtSeq2.notifications, true, "Notifications must be true at/after delivered notification event");
+  assert.equal(capsAt.notifications, true, "Notifications must be true at/after delivered notification event");
 });
 
 test("Baseline domains (Crawler, Inventory, Skills) remain baseline available", () => {

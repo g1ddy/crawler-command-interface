@@ -34,6 +34,7 @@ A modeled domain does not receive a UI namespace merely for symmetry. Magic is t
 ChatGPT/Vinext adapter ─┐
                         ├─→ src/CrawlerApp.tsx
 GitHub Pages adapter ───┘        │
+                                 ├─ application/*
                                  ├─ shell/navigation
                                  ├─ shell/hud
                                  ├─ shell/replay
@@ -68,7 +69,7 @@ in the application layer.
 
 ## Navigation and capability ownership
 
-`src/shell/navigation/navigation-model.ts` is the single non-React source of truth for root destination IDs, order, and labels. `capabilities.ts` evaluates replay-aware availability from projected state, and `RootNavigation.tsx` renders only available destinations. Keyboard navigation consumes the same filtered ordering.
+`src/application/capabilities.ts` is the React-free source of truth for evaluating replay-aware canon capability availability from projected state, observations, and timeline events. `src/shell/navigation/navigation-model.ts` defines destination order and labels, while `src/shell/navigation/capabilities.ts` filters destinations and resolves safe view fallbacks using the application capability snapshot. `RootNavigation.tsx` renders only available destinations, and keyboard navigation consumes the same filtered ordering.
 
 Baseline destinations:
 
@@ -197,9 +198,10 @@ The same rule applies to visual documentation. `tests/screenshots/canonical-scre
 │   └── page.tsx                 # thin ChatGPT/Vinext adapter
 ├── src/
 │   ├── CrawlerApp.tsx           # application composition/state root
+│   ├── application/             # application action contracts, mutations, and canon capabilities
 │   ├── features/                # feature-owned UI and presentation
 │   ├── shell/
-│   │   ├── navigation/
+│   │   ├── navigation/          # navigation view presentation, ordering, and fallbacks
 │   │   ├── hud/
 │   │   ├── replay/
 │   │   └── tools/
