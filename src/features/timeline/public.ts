@@ -8,4 +8,17 @@ export {
   type DisplayAuthority,
   type EvidencePresentation,
   type EvidenceState,
-} from "./evidence/evidencePresentation";
+} from "./evidence/evidencePresentation.ts";
+export {
+  deriveReplayPresentation,
+  type ReplayAvailability,
+  type ReplayCommandCallbacks,
+  type ReplayCommands,
+  type ReplayCountdowns,
+  type ReplayInspection,
+  type ReplayMode,
+  type ReplayPosition,
+  type ReplayPresentation,
+  type ReplayPresentationInputs,
+  type ReplayScope,
+} from "./replay-presentation.ts";

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { deriveReplayPresentation } from "../../src/shell/replay/replay-presentation.ts";
+import { deriveReplayPresentation } from "../../src/features/timeline/replay-presentation.ts";
 
 const sampleEvents = [
   { sequence: 1, position: { floor: 1 }, type: "NarrativeEvent", summary: "Entered Floor 1", occurred_at: "2025-01-01T10:00:00Z" },
@@ -140,9 +140,10 @@ test("countdowns isolate primary floor collapse from secondary target countdowns
   assert.equal(countdownPres.countdowns.secondaryCountdowns[0]?.id, "cd-boss-spawn");
 });
 
-test("source-honest availability handles empty inputs without inventing data", () => {
+test("source-honest availability and inspection evaluate to false on empty inputs", () => {
   const emptyPres = deriveReplayPresentation({
     events: [],
+    observations: [],
     selectedFloorOrdinal: 1,
     selectedSequence: 1,
     isLive: true,
@@ -154,11 +155,27 @@ test("source-honest availability handles empty inputs without inventing data", (
   assert.equal(emptyPres.position.currentEvent, undefined);
   assert.equal(emptyPres.countdowns.hasActiveCountdown, false);
   assert.equal(emptyPres.countdowns.hasSecondaryCountdowns, false);
+  assert.equal(emptyPres.inspection.hasFloorRules, false);
+  assert.equal(emptyPres.inspection.hasTimelineHistory, false);
+  assert.equal(emptyPres.inspection.hasTimelineEvidence, false);
   assert.deepEqual(emptyPres.scope.scopedSequences, []);
 });
 
+test("inspection booleans report true when source events and telemetry observations exist", () => {
+  const populatedPres = deriveReplayPresentation({
+    events: sampleEvents,
+    observations: [{ id: "obs-1", kind: "crawler-condition", sequence: 1, payload: {}, evidence: [] }],
+    selectedFloorOrdinal: 1,
+    selectedSequence: 1,
+    isLive: true,
+  });
+
+  assert.equal(populatedPres.inspection.hasFloorRules, true);
+  assert.equal(populatedPres.inspection.hasTimelineHistory, true);
+  assert.equal(populatedPres.inspection.hasTimelineEvidence, true);
+});
+
 test("minimal alternate replay consumer uses model without ReplaySurface", () => {
-  // Simulate a minimal alternate shell strip or compact player component
   function renderMinimalReplayStrip(model) {
     return {
       statusText: `${model.mode.toUpperCase()} MODE - SEQ #${model.position.selectedSequence}`,

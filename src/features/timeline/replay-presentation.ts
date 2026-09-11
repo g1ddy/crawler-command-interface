@@ -2,6 +2,9 @@ import type {
   CrawlerEvent,
   FloorSegment,
   ProjectedCountdownState,
+  ProjectedEquipmentObservation,
+  ProjectedItemObservation,
+  ProjectedObservationValue,
   TimelineCountdown,
   TimelineObservation,
 } from "../../../app/domain/types.ts";
@@ -81,6 +84,25 @@ export interface ReplayPresentationInputs {
   selectedFloorOrdinal: number | "all";
   selectedSequence: number;
   isLive: boolean;
+}
+
+export interface ReplayCommandCallbacks {
+  selectFloor: (ordinal: number | "all") => void;
+  selectSequence: (sequence: number) => void;
+  stepPrevious: () => void;
+  stepNext: () => void;
+  returnToLive: () => void;
+  setLiveMode: (isLive: boolean) => void;
+  openFloorRules?: () => void;
+  openTimelineHistory?: () => void;
+  openTimelineEvidence?: () => void;
+  openCountdownEvidence?: () => void;
+  inspectObservation?: (
+    observation:
+      | ProjectedObservationValue
+      | ProjectedItemObservation
+      | ProjectedEquipmentObservation,
+  ) => void;
 }
 
 /**
@@ -234,9 +256,9 @@ export function deriveReplayPresentation(
 
   const inspection: ReplayInspection = {
     hasCountdownEvidence: Boolean(activeCountdown),
-    hasFloorRules: true,
-    hasTimelineHistory: true,
-    hasTimelineEvidence: true,
+    hasFloorRules: floorEvents.length > 0,
+    hasTimelineHistory: events.length > 0,
+    hasTimelineEvidence: observations.length > 0,
   };
 
   const availability: ReplayAvailability = {

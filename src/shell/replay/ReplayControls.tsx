@@ -1,25 +1,17 @@
-import type { ReplayPresentation } from "./replay-presentation";
+import type {
+  ReplayCommandCallbacks,
+  ReplayPresentation,
+} from "../../features/timeline/public";
 import { firstCountdownEvidenceSummary } from "../../features/timeline/evidence/evidencePresentation";
 
 export interface ReplayControlsProps {
   model: ReplayPresentation;
-  onSelectFloorOrdinal: (ordinal: number | "all") => void;
-  onSelectSequence: (sequence: number) => void;
-  onToggleLive: () => void;
-  onOpenFloorRules?: () => void;
-  onOpenTimelineHistory?: () => void;
-  onOpenTimelineEvidence?: () => void;
-  onOpenCountdownEvidence: () => void;
+  commands: ReplayCommandCallbacks;
 }
 
-export function ReplayControls(props: ReplayControlsProps) {
-  const { model } = props;
-
+export function ReplayControls({ model, commands }: ReplayControlsProps) {
   const selectFloor = (ordinal: number | "all") => {
-    props.onSelectFloorOrdinal(ordinal);
-    if (ordinal === "all") return;
-    const segment = model.scope.availableFloors.find((floor) => floor.ordinal === ordinal);
-    if (segment) props.onSelectSequence(segment.endSequence);
+    commands.selectFloor(ordinal);
   };
 
   return (
@@ -55,7 +47,9 @@ export function ReplayControls(props: ReplayControlsProps) {
           aria-label="Floor timeline scope"
           value={model.scope.selectedFloorOrdinal}
           onChange={(event) =>
-            selectFloor(event.target.value === "all" ? "all" : Number(event.target.value))
+            selectFloor(
+              event.target.value === "all" ? "all" : Number(event.target.value),
+            )
           }
           style={{
             background: "#06131c",
@@ -86,17 +80,19 @@ export function ReplayControls(props: ReplayControlsProps) {
         >
           NEXT FLOOR ►
         </button>
-        <button
-          className="mode-btn"
-          onClick={props.onOpenFloorRules}
-          title="Inspect floor directives and rules"
-        >
-          📜 FLOOR RULES
-        </button>
-        {model.countdowns.activeCountdown && (
+        {commands.openFloorRules && (
+          <button
+            className="mode-btn"
+            onClick={commands.openFloorRules}
+            title="Inspect floor directives and rules"
+          >
+            📜 FLOOR RULES
+          </button>
+        )}
+        {model.countdowns.activeCountdown && commands.openCountdownEvidence && (
           <button
             className="countdown-details-link"
-            onClick={props.onOpenCountdownEvidence}
+            onClick={commands.openCountdownEvidence}
             title="Inspect primary countdown evidence and reference points"
           >
             ⏱ COLLAPSE CLOCK EVIDENCE
@@ -111,7 +107,9 @@ export function ReplayControls(props: ReplayControlsProps) {
             <span>SECONDARY · {countdown.title.toUpperCase()}</span>
             <b>{countdown.formattedLabel}</b>
             <small>{countdown.target.replaceAll("-", " ").toUpperCase()}</small>
-            <small>EVIDENCE: {firstCountdownEvidenceSummary(countdown.referencePoints)}</small>
+            <small>
+              EVIDENCE: {firstCountdownEvidenceSummary(countdown.referencePoints)}
+            </small>
           </div>
         ))}
       </div>
@@ -121,7 +119,7 @@ export function ReplayControls(props: ReplayControlsProps) {
           <button
             className={`mode-btn ${model.isLive ? "live-on" : ""}`}
             onClick={() => {
-              if (!model.isLive) props.onToggleLive();
+              if (!model.isLive) commands.setLiveMode(true);
             }}
           >
             ● LIVE
@@ -129,7 +127,7 @@ export function ReplayControls(props: ReplayControlsProps) {
           <button
             className={`mode-btn ${!model.isLive ? "replay-on" : ""}`}
             onClick={() => {
-              if (model.isLive) props.onToggleLive();
+              if (model.isLive) commands.setLiveMode(false);
             }}
           >
             ↺ REPLAY MODE
@@ -145,46 +143,42 @@ export function ReplayControls(props: ReplayControlsProps) {
           </h2>
         </div>
         <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-          <button
-            className="mode-btn"
-            onClick={props.onOpenTimelineHistory}
-            title="Open Timeline Event History Feed"
-          >
-            📜 HISTORY
-          </button>
-          <button
-            className="mode-btn"
-            onClick={props.onOpenTimelineEvidence}
-            title="Open Telemetry & Evidence Inspector"
-          >
-            📡 TELEMETRY
-          </button>
+          {commands.openTimelineHistory && (
+            <button
+              className="mode-btn"
+              onClick={commands.openTimelineHistory}
+              title="Open Timeline Event History Feed"
+            >
+              📜 HISTORY
+            </button>
+          )}
+          {commands.openTimelineEvidence && (
+            <button
+              className="mode-btn"
+              onClick={commands.openTimelineEvidence}
+              title="Open Telemetry & Evidence Inspector"
+            >
+              📡 TELEMETRY
+            </button>
+          )}
         </div>
         <div className="step-controls">
           <button
             disabled={!model.commands.canStepPrevious}
-            onClick={() => {
-              if (model.position.previousSequence !== null) {
-                props.onSelectSequence(model.position.previousSequence);
-              }
-            }}
+            onClick={() => commands.stepPrevious()}
             title="Previous Event in Selected Scope"
           >
             ◄ PREV
           </button>
           <button
             disabled={!model.commands.canStepNext}
-            onClick={() => {
-              if (model.position.nextSequence !== null) {
-                props.onSelectSequence(model.position.nextSequence);
-              }
-            }}
+            onClick={() => commands.stepNext()}
             title="Next Event in Selected Scope"
           >
             NEXT ►
           </button>
           {!model.isLive && (
-            <button className="return-live-btn" onClick={props.onToggleLive}>
+            <button className="return-live-btn" onClick={commands.returnToLive}>
               RETURN TO LIVE ⚡
             </button>
           )}
@@ -200,7 +194,7 @@ export function ReplayControls(props: ReplayControlsProps) {
           value={model.position.selectedSequence}
           onChange={(event) => {
             const closest = model.position.closestSequence(Number(event.target.value));
-            props.onSelectSequence(closest);
+            commands.selectSequence(closest);
           }}
           className="timeline-range-slider"
         />

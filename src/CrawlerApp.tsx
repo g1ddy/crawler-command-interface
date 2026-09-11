@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { compiledTimeline } from "../app/domain/fixtures/compiled-timeline";
 import { getFloorEndSequence } from "../app/domain/floors";
 import { LocalDeviceStorageAdapter } from "../app/domain/persistence";
@@ -25,6 +25,10 @@ import { FloorRules } from "./features/floor/FloorRules";
 import { TimelineEvidence } from "./features/timeline/evidence/TimelineEvidence";
 import { TelemetryInspectorModal } from "./features/timeline/evidence/TelemetryInspectorModal";
 import { TimelineHistory } from "./features/timeline/history/TimelineHistory";
+import {
+  deriveReplayPresentation,
+  type ReplayCommandCallbacks,
+} from "./features/timeline/public";
 import { ActiveFeatureView } from "./shell/ActiveFeatureView";
 import { PersistentHud } from "./shell/hud/PersistentHud";
 import { ConceptHud } from "./shell/hud/ConceptHud";
@@ -39,7 +43,6 @@ import {
 } from "./shell/navigation/capabilities";
 import { RootNavigation } from "./shell/navigation/RootNavigation";
 import type { RootView } from "./shell/navigation/navigation-model";
-import { deriveReplayPresentation } from "./shell/replay/replay-presentation";
 import { ReplaySurface } from "./shell/replay/ReplaySurface";
 import { TimelineToolsModal } from "./shell/tools/TimelineToolsModal";
 import { createApplicationActions } from "./application/crawler-actions";
@@ -171,36 +174,77 @@ export default function CrawlerApp({
       isLive,
     ],
   );
-  const navigateToSequence = (sequence: number) => {
-    setSelectedSeq(sequence);
-    setIsLive(sequence === maxSeq);
-  };
-  const returnToLive = () => {
+  const navigateToSequence = useCallback(
+    (sequence: number) => {
+      setSelectedSeq(sequence);
+      setIsLive(sequence === maxSeq);
+    },
+    [maxSeq],
+  );
+  const returnToLive = useCallback(() => {
     setIsLive(true);
     setSelectedSeq(maxSeq);
     setSelectedFloorOrdinal(latestFloor);
-  };
+  }, [maxSeq, latestFloor]);
+  const handleSelectFloorOrdinal = useCallback(
+    (ordinal: number | "all") => {
+      setSelectedFloorOrdinal(ordinal);
+      if (ordinal === "all") return;
+      const floor = timelineDoc.floors?.find(
+        (candidate) => candidate.ordinal === ordinal,
+      );
+      if (!floor) return;
+      const end = getFloorEndSequence(
+        timelineDoc.events,
+        ordinal,
+        floor.endSequence,
+      );
+      setSelectedSeq(end);
+      setIsLive(end === maxSeq);
+    },
+    [timelineDoc.floors, timelineDoc.events, maxSeq],
+  );
+  const replayCommands: ReplayCommandCallbacks = useMemo(
+    () => ({
+      selectFloor: handleSelectFloorOrdinal,
+      selectSequence: navigateToSequence,
+      stepPrevious: () => {
+        if (replayPresentation.position.previousSequence !== null) {
+          navigateToSequence(replayPresentation.position.previousSequence);
+        }
+      },
+      stepNext: () => {
+        if (replayPresentation.position.nextSequence !== null) {
+          navigateToSequence(replayPresentation.position.nextSequence);
+        }
+      },
+      returnToLive: returnToLive,
+      setLiveMode: (live) => {
+        if (live) {
+          returnToLive();
+        } else {
+          setIsLive(false);
+        }
+      },
+      openFloorRules: () => setShowFloorRules(true),
+      openTimelineHistory: () => setShowTimelineHistory(true),
+      openTimelineEvidence: () => setShowTimelineEvidence(true),
+      inspectObservation: setInspectObservation,
+    }),
+    [
+      handleSelectFloorOrdinal,
+      navigateToSequence,
+      replayPresentation.position.previousSequence,
+      replayPresentation.position.nextSequence,
+      returnToLive,
+    ],
+  );
   const floorHudTitle = currentFloorSegment
     ? `FLOOR ${currentFloorSegment.ordinal}: ${currentFloorSegment.title}`
     : selectedFloorOrdinal === "all"
       ? "ALL FLOORS (WHOLE STORY)"
       : `FLOOR ${selectedFloorOrdinal}`;
 
-  const handleSelectFloorOrdinal = (ordinal: number | "all") => {
-    setSelectedFloorOrdinal(ordinal);
-    if (ordinal === "all") return;
-    const floor = timelineDoc.floors?.find(
-      (candidate) => candidate.ordinal === ordinal,
-    );
-    if (!floor) return;
-    const end = getFloorEndSequence(
-      timelineDoc.events,
-      ordinal,
-      floor.endSequence,
-    );
-    setSelectedSeq(end);
-    setIsLive(end === maxSeq);
-  };
   const handleActionResult = (result: ActionResult) => {
     if (!result.ok) { setToastMessage(`⚠️ ${result.error}`); return; }
     updateTimeline(result.document);
@@ -345,22 +389,8 @@ export default function CrawlerApp({
       <div className="view">
         <ReplaySurface
           model={replayPresentation}
-          events={events}
-          floors={timelineDoc.floors}
-          countdowns={timelineDoc.countdowns}
-          observations={timelineDoc.observations}
-          sources={sources}
+          commands={replayCommands}
           projectedObservations={projectedObservations}
-          selectedFloorOrdinal={selectedFloorOrdinal}
-          onSelectFloorOrdinal={handleSelectFloorOrdinal}
-          selectedSequence={currentSeq}
-          onSelectSequence={navigateToSequence}
-          isLive={isLive}
-          onToggleLive={() => (isLive ? setIsLive(false) : returnToLive())}
-          onInspectObservation={setInspectObservation}
-          onOpenFloorRules={() => setShowFloorRules(true)}
-          onOpenTimelineHistory={() => setShowTimelineHistory(true)}
-          onOpenTimelineEvidence={() => setShowTimelineEvidence(true)}
         />
         <ActiveFeatureView
           view={resolvedView}
