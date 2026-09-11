@@ -5,8 +5,8 @@
 ### 🏥 Repository Health Score: **62.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 87
-*   **Measured Files**: 87
+*   **Total Graph Files**: 88
+*   **Measured Files**: 88
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -16,7 +16,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `app/domain/countdowns.ts` | **230.1** | 401 | 92 | 1 | 0.2 |
 | `app/domain/validation.ts` | **228.1** | 483 | 74 | 9 | 0.69 |
-| `src/CrawlerApp.tsx` | **181.8** | 479 | 33 | 25 | 0.89 |
+| `src/CrawlerApp.tsx` | **183.8** | 479 | 33 | 26 | 0.9 |
 | `app/domain/projection/helpers.ts` | **170.2** | 222 | 68 | 2 | 0.4 |
 | `src/application/crawler-actions.ts` | **134.8** | 128 | 49 | 4 | 0.8 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
