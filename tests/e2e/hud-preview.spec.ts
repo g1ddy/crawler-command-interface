@@ -7,7 +7,9 @@ for (const variant of ["authority", "tactical", "theater"] as const) {
     await page.addInitScript(() => localStorage.setItem("crawler_timeline_doc_v2", "existing-device-data"));
     await page.goto(`${pagesPath}?hud=${variant}`);
 
-    await expect(page.locator("[data-hud-presentation]")).toHaveAttribute("data-hud-presentation", variant);
+    const previewScope = page.locator(".concept-lab[data-hud-presentation]");
+    await expect(previewScope).toHaveAttribute("data-hud-presentation", variant);
+    await expect(previewScope).toHaveCSS("--surface", variant === "tactical" ? "#131c18" : variant === "theater" ? "#21151b" : "#101820");
     await expect(page.locator('header[aria-label="Crawler HUD"]')).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Main Navigation" }).getByText("MAGIC", { exact: true })).toHaveCount(0);
     await expect(page.locator('.hud-reading[data-evidence="last-known"]').first()).toContainText(/Last known · sequence \d+/);
@@ -62,7 +64,12 @@ test("live presentation switching in System Tools preserves session state and up
       await expect(page.locator("[data-hud-presentation]")).toHaveCount(0);
     } else {
       await expect(page).toHaveURL(new RegExp(`hud=${choice.id}$`));
-      await expect(page.locator("[data-hud-presentation]")).toHaveAttribute("data-hud-presentation", choice.id);
+      const previewScope = page.locator(".concept-lab[data-hud-presentation]");
+      await expect(previewScope).toHaveAttribute("data-hud-presentation", choice.id);
+      await expect(previewScope).toHaveCSS(
+        "--surface",
+        choice.id === "tactical" ? "#131c18" : choice.id === "theater" ? "#21151b" : "#101820",
+      );
     }
 
     // Verify continuity of replay sequence, live/replay mode, and capabilities
