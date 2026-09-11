@@ -100,8 +100,7 @@ live Floor 2; Inventory/Equipment; Notifications; Pet bond boundary; and open ev
 Selection must weigh canon identity, readability, information hierarchy, system personality,
 replay clarity, source honesty, responsive behavior, accessibility, and implementation
 cost. Source honesty and functional replay are gates, not tradeable aesthetic scores.
-Provisional recommendation: Authority offers the most balanced baseline; borrow theatrical
-emphasis only for genuinely delivered system moments. **No final design is selected yet.**
+Selected production direction: Authority is selected as the production baseline visual direction (#160 / #170). Tokens and primitives are defined against Authority, borrowing theatrical emphasis only for genuinely delivered system moments.
 
 ## Production tokens and style ownership (#170)
 

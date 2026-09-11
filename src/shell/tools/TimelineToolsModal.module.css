@@ -1,9 +1,49 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--hud-space-md);
+}
+
 .modalContent {
+  width: 100%;
+  max-width: 540px;
   background: var(--hud-panel-bg);
   border: 1px solid var(--hud-border-color);
   color: var(--hud-text-primary);
   padding: var(--hud-space-md);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.75);
+  border-radius: var(--hud-radius-sm);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--hud-space-xs);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--hud-text-author);
+}
+
+.closeButton {
+  background: transparent;
+  border: 0;
+  font-size: 18px;
+  color: var(--hud-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.closeButton:focus-visible {
+  outline: var(--hud-focus-ring);
 }
 
 .description {
@@ -123,9 +163,28 @@
   gap: var(--hud-space-xs);
 }
 
+.outlineButton {
+  min-height: var(--hud-touch-target-min);
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--hud-text-author);
+  background: transparent;
+  color: var(--hud-text-author);
+  border-radius: var(--hud-radius-sm);
+  cursor: pointer;
+}
+
+.outlineButton:focus-visible {
+  outline: var(--hud-focus-ring);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .actionButton,
-  .presentationOption {
+  .presentationOption,
+  .outlineButton {
     transition: none !important;
   }
 }

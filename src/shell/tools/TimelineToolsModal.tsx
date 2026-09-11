@@ -32,14 +32,14 @@ export function TimelineToolsModal({
   onClose: () => void;
 }) {
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className={`modal-content panel ${styles.modalContent}`} onClick={(event) => event.stopPropagation()}>
-        <div className="modal-header">
+    <div className={styles.backdrop} onClick={onClose}>
+      <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
+        <div className={styles.header}>
           <div>
             <p className="eyebrow">PORTABLE CRAWLER TIMELINE (V1/V2)</p>
             <h2>IMPORT / EXPORT CRAWLER TIMELINE</h2>
           </div>
-          <button className="close-btn" onClick={onClose} aria-label="Close modal">
+          <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
             ✕
           </button>
         </div>
@@ -74,7 +74,7 @@ export function TimelineToolsModal({
           </div>
         )}
         {importError && (
-          <div className={`import-error-box ${styles.errorBox}`}>
+          <div className={styles.errorBox}>
             <strong>VALIDATION FAILED:</strong>
             {"\n" + importError}
           </div>
@@ -86,11 +86,11 @@ export function TimelineToolsModal({
           value={jsonText}
           onChange={(event) => onJsonTextChange(event.target.value)}
         />
-        <div className={`modal-footer ${styles.modalFooter}`}>
-          <button className="outline" onClick={onImport}>
+        <div className={styles.modalFooter}>
+          <button className={styles.outlineButton} onClick={onImport}>
             IMPORT TIMELINE ENVELOPE
           </button>
-          <button className="outline" onClick={onClose}>
+          <button className={styles.outlineButton} onClick={onClose}>
             CANCEL
           </button>
         </div>

@@ -96,3 +96,27 @@ test("editing import JSON clears stale validation feedback", async ({ page }) =>
   await jsonInput.fill("{}");
   await expect(page.getByText("VALIDATION FAILED:")).toHaveCount(0);
 });
+
+test("System Tools modal consumes token-backed styles and enforces 44px minimum touch targets", async ({ page }) => {
+  await page.goto(pagesPath);
+  await page.getByRole("button", { name: "Open data tools" }).click();
+
+  const modalCard = page.locator('div[class*="modalContent"]').first();
+  await expect(modalCard).toBeVisible();
+
+  // Verify background uses token value #101820 (rgb(16, 24, 32)) and border uses #435562 (rgb(67, 85, 98))
+  const computedBg = await modalCard.evaluate((el) => getComputedStyle(el).backgroundColor);
+  const computedBorder = await modalCard.evaluate((el) => getComputedStyle(el).borderColor);
+
+  expect(computedBg).toBe("rgb(16, 24, 32)");
+  expect(computedBorder).toBe("rgb(67, 85, 98)");
+
+  // Verify touch target heights on action buttons and presentation choices are at least 44px
+  const downloadBtn = page.getByRole("button", { name: "DOWNLOAD TIMELINE JSON" });
+  const downloadBox = await downloadBtn.boundingBox();
+  expect(downloadBox?.height).toBeGreaterThanOrEqual(44);
+
+  const presentationBtn = page.getByRole("button", { name: "Authority (HUD Preview)" });
+  const presentationBox = await presentationBtn.boundingBox();
+  expect(presentationBox?.height).toBeGreaterThanOrEqual(44);
+});

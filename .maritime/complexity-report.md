@@ -21,7 +21,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/application/crawler-actions.ts` | **134.8** | 128 | 49 | 4 | 0.8 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
 | `src/features/inventory/ItemInspector.tsx` | **112.6** | 226 | 33 | 4 | 0.8 |
-| `src/application/crawler-session-controller.ts` | **111** | 307 | 20 | 11 | 0.92 |
+| `src/application/crawler-session-controller.ts` | **110.9** | 306 | 20 | 11 | 0.92 |
 | `app/domain/fixtures/floor6.ts` | **103.4** | 774 | 1 | 2 | 1 |
 | `app/domain/observations.ts` | **97.5** | 325 | 29 | 1 | 0.25 |
 
