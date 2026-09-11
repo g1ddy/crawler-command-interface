@@ -54,6 +54,28 @@ import type {
 } from './observations.ts';
 
 export type AttributeName = 'Strength' | 'Dexterity' | 'Constitution' | 'Intelligence' | 'Charisma';
+export type CrawlerConditionMetric =
+  | 'currentHealth'
+  | 'maxHealth'
+  | 'currentMana'
+  | 'maxMana'
+  | 'currentStamina'
+  | 'maxStamina';
+
+/**
+ * Sequence provenance for fields whose current value was changed by a
+ * timeline event. An absent entry means the value still comes from the
+ * initial authored state, allowing a sourced observation to supply the
+ * displayed telemetry without treating numeric defaults as special.
+ */
+export interface CrawlerCausalProvenance {
+  level?: number;
+  xp?: number;
+  maxXp?: number;
+  availableAttributePoints?: number;
+  attributes: Partial<Record<AttributeName, number>>;
+  condition: Partial<Record<CrawlerConditionMetric, number>>;
+}
 
 export interface TimelineState {
   crawler: {
@@ -219,6 +241,7 @@ export interface Achievement {
 export interface CrawlerState {
   sequence: number;
   occurredAt: string;
+  causalProvenance: CrawlerCausalProvenance;
   crawler: {
     name: string;
     level: number;

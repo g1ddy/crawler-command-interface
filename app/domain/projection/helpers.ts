@@ -171,6 +171,10 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   return {
     sequence: 0,
     occurredAt: '04:00:00',
+    causalProvenance: {
+      attributes: {},
+      condition: {},
+    },
     crawler: {
       name: crawler?.name || 'CARL G.',
       level: crawler?.level || 42,

@@ -7,6 +7,7 @@ import type {
 } from "../../../../app/domain/types";
 
 export type EvidenceState = "current" | "last-known" | "estimated" | "causal-only" | "unknown";
+export type DisplayAuthority = "causal" | "observation";
 
 export interface EvidencePresentation {
   state: EvidenceState;
@@ -20,81 +21,97 @@ export interface EvidencePresentation {
 
 /**
  * Selects the authoritative display value for domain vitals/stats.
- * When a causal transition has modified state beyond the initial default, or
- * if no observation exists, causal state is returned.
- * If causal state remains at its un-mutated initial default and a sourced observation exists,
- * the sourced observation value is displayed so default state does not hide valid telemetry.
+ * An event-derived causal value is authoritative even when it happens to equal
+ * an initial/default value. Otherwise a source-backed observation supplies the
+ * displayed telemetry when one is available.
  */
 export function selectDisplayedReading<T extends number | string | undefined>(
   causalValue: T,
   observationValue: T,
-  initialCausalDefault: T,
-  sequence?: number
+  causalSequence?: number
 ): T {
   const hasObservation = observationValue !== undefined && observationValue !== null;
-  const isInitialDefault = causalValue === initialCausalDefault || sequence === 0;
 
-  if (hasObservation && isInitialDefault) {
+  if (hasObservation && causalSequence === undefined) {
     return observationValue;
   }
   return causalValue ?? observationValue;
 }
 
-export function deriveEvidencePresentation(
-  observation?: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation | null,
-  selectedSequence?: number,
-  causalValue?: unknown
+export function displayedReadingAuthority(
+  causalValue: unknown,
+  observationValue: unknown,
+  causalSequence?: number
+): DisplayAuthority {
+  const hasObservation = observationValue !== undefined && observationValue !== null;
+  const hasCausalValue = causalValue !== undefined && causalValue !== null;
+  return hasObservation && (!hasCausalValue || causalSequence === undefined) ? "observation" : "causal";
+}
+
+function deriveObservationPresentation(
+  observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation,
+  selectedSequence?: number
 ): EvidencePresentation {
-  if (observation) {
-    const referenceObservationIds = observation.referenceObservationIds || [];
-    if ("status" in observation && observation.status === "estimated") {
-      const sourceSequences = "sourceSequences" in observation ? observation.sourceSequences : undefined;
-      return {
-        state: "estimated",
-        label: "Estimated",
-        badgeLabel: "📡 ESTIMATED",
-        sourceSequences,
-        referenceObservationIds,
-        inspectable: true,
-      };
-    }
-
-    const sourceSequence = observation.sequence;
-    const isLastKnown =
-      selectedSequence !== undefined &&
-      sourceSequence !== undefined &&
-      sourceSequence < selectedSequence;
-
-    if (isLastKnown) {
-      return {
-        state: "last-known",
-        label: `Last known · sequence ${sourceSequence}`,
-        badgeLabel: `LAST KNOWN · SEQ ${sourceSequence}`,
-        sourceSequence,
-        referenceObservationIds,
-        inspectable: true,
-      };
-    }
-
+  const referenceObservationIds = observation.referenceObservationIds || [];
+  if ("status" in observation && observation.status === "estimated") {
+    const sourceSequences = "sourceSequences" in observation ? observation.sourceSequences : undefined;
     return {
-      state: "current",
-      label: "Observed",
-      badgeLabel: "SOURCE",
+      state: "estimated",
+      label: "Estimated",
+      badgeLabel: "📡 ESTIMATED",
+      sourceSequences,
+      referenceObservationIds,
+      inspectable: true,
+    };
+  }
+
+  const sourceSequence = observation.sequence;
+  const isLastKnown =
+    selectedSequence !== undefined &&
+    sourceSequence !== undefined &&
+    sourceSequence < selectedSequence;
+
+  if (isLastKnown) {
+    return {
+      state: "last-known",
+      label: `Last known · sequence ${sourceSequence}`,
+      badgeLabel: `LAST KNOWN · SEQ ${sourceSequence}`,
       sourceSequence,
       referenceObservationIds,
       inspectable: true,
     };
   }
 
-  if (causalValue !== undefined && causalValue !== null) {
+  return {
+    state: "current",
+    label: "Observed",
+    badgeLabel: "SOURCE",
+    sourceSequence,
+    referenceObservationIds,
+    inspectable: true,
+  };
+}
+
+export function deriveEvidencePresentation(
+  observation?: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation | null,
+  selectedSequence?: number,
+  causalValue?: unknown,
+  displayAuthority: DisplayAuthority = observation ? "observation" : "causal"
+): EvidencePresentation {
+  if (displayAuthority === "causal" && causalValue !== undefined && causalValue !== null) {
+    const observed = observation ? deriveObservationPresentation(observation, selectedSequence) : null;
     return {
       state: "causal-only",
-      label: "Causal state",
-      badgeLabel: "",
-      referenceObservationIds: [],
-      inspectable: false,
+      label: observed ? `Causal state · ${observed.label.toLowerCase()}` : "Causal state",
+      badgeLabel: "CAUSAL",
+      ...(observed?.sourceSequence !== undefined ? { sourceSequence: observed.sourceSequence } : {}),
+      ...(observed?.sourceSequences !== undefined ? { sourceSequences: observed.sourceSequences } : {}),
+      referenceObservationIds: observed?.referenceObservationIds ?? [],
+      inspectable: Boolean(observed),
     };
   }
+
+  if (observation) return deriveObservationPresentation(observation, selectedSequence);
 
   return {
     state: "unknown",
