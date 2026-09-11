@@ -28,3 +28,50 @@ for (const query of ["", "?hud=unsupported"]) {
     await expect(page.locator(".system-hud")).toHaveCount(0);
   });
 }
+
+test("live presentation switching in System Tools preserves session state and updates URL", async ({ page }) => {
+  await page.goto(pagesPath);
+
+  // Enter replay mode by scrubbing slider to sequence 117 (where pet is acquired, not bonded)
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("117");
+  await expect(page.locator('[data-mode="replay"]')).toBeVisible();
+
+  const nav = page.getByRole("navigation", { name: "Main Navigation" });
+  await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
+  await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
+
+  // Open System Tools
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await expect(page.getByRole("heading", { name: "IMPORT / EXPORT CRAWLER TIMELINE" })).toBeVisible();
+
+  // Switch through each presentation choice via System Tools buttons
+  const choices = [
+    { name: "Authority (HUD Preview)", id: "authority" },
+    { name: "Tactical (HUD Preview)", id: "tactical" },
+    { name: "Theater (HUD Preview)", id: "theater" },
+    { name: "Production", id: "production" },
+  ];
+
+  for (const choice of choices) {
+    await page.getByRole("button", { name: choice.name, exact: true }).click();
+
+    // Verify URL parameter synchronization
+    if (choice.id === "production") {
+      await expect(page).not.toHaveURL(/hud=/);
+      await expect(page.locator("[data-hud-presentation]")).toHaveCount(0);
+    } else {
+      await expect(page).toHaveURL(new RegExp(`hud=${choice.id}$`));
+      await expect(page.locator("[data-hud-presentation]")).toHaveAttribute("data-hud-presentation", choice.id);
+    }
+
+    // Verify continuity of replay sequence, live/replay mode, and capabilities
+    await expect(slider).toHaveValue("117");
+    await expect(page.locator('[data-mode="replay"]')).toBeVisible();
+    await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
+    await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
+  }
+
+  // Close System Tools
+  await page.getByRole("button", { name: "CANCEL" }).click();
+});

@@ -43,8 +43,18 @@ export function TimelineToolsModal({
           </button>
         </div>
 
+        <p style={{ fontSize: "11px", color: "#a4b7bf" }}>
+          Export current versioned crawler-timeline JSON document or import a validated timeline envelope.
+        </p>
+        <div className="actions" style={{ marginBottom: "12px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          <button onClick={onExport}>DOWNLOAD TIMELINE JSON</button>
+          <button style={{ background: "#2a1518", borderColor: "#7a2a30", color: "#ff8a90" }} onClick={onReset}>
+            RESET TO DEFAULT FIXTURE 🔄
+          </button>
+        </div>
+
         {onSelectPresentation && (
-          <div style={{ marginBottom: "16px", paddingBottom: "12px", borderBottom: "1px solid #1f3e4d" }}>
+          <div style={{ marginBottom: "16px", paddingTop: "8px", paddingBottom: "12px", borderTop: "1px solid #1f3e4d" }}>
             <p className="eyebrow" style={{ color: "#749bb0", marginBottom: "6px" }}>
               PRESENTATION PREVIEW SELECTOR (LIVE SESSION SWITCH)
             </p>
@@ -67,16 +77,6 @@ export function TimelineToolsModal({
             </div>
           </div>
         )}
-
-        <p style={{ fontSize: "11px", color: "#a4b7bf" }}>
-          Export current versioned crawler-timeline JSON document or import a validated timeline envelope.
-        </p>
-        <div className="actions" style={{ marginBottom: "12px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
-          <button onClick={onExport}>DOWNLOAD TIMELINE JSON</button>
-          <button style={{ background: "#2a1518", borderColor: "#7a2a30", color: "#ff8a90" }} onClick={onReset}>
-            RESET TO DEFAULT FIXTURE 🔄
-          </button>
-        </div>
         {importError && (
           <div
             className="import-error-box"

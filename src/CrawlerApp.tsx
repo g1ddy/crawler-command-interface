@@ -72,16 +72,25 @@ export default function CrawlerApp({
     floorHudTitle,
   } = snapshot;
 
-  const [presentationChoice, setPresentationChoiceState] = useState<HudPresentation>(() => {
+  const [presentationState, setPresentationState] = useState<{
+    choice: HudPresentation;
+    prop: HudPresentation;
+  }>(() => {
+    let initialChoice = hudPresentation;
     if (typeof window !== "undefined") {
       const urlChoice = new URLSearchParams(window.location.search).get("hud");
-      if (urlChoice) return resolveHudPresentation(urlChoice);
+      if (urlChoice) initialChoice = resolveHudPresentation(urlChoice);
     }
-    return hudPresentation;
+    return { choice: initialChoice, prop: hudPresentation };
   });
 
+  const presentationChoice =
+    presentationState.prop !== hudPresentation
+      ? hudPresentation
+      : presentationState.choice;
+
   const setPresentationChoice = useCallback((choice: HudPresentation) => {
-    setPresentationChoiceState(choice);
+    setPresentationState({ choice, prop: hudPresentation });
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       if (choice === "production") {
@@ -91,7 +100,7 @@ export default function CrawlerApp({
       }
       window.history.replaceState(null, "", url);
     }
-  }, []);
+  }, [hudPresentation]);
 
   const [view, setView] = useState<RootView>("crawler");
   const resolvedView = resolveRootView(view, capabilities);
@@ -201,8 +210,8 @@ export default function CrawlerApp({
     [commands.replayCommands],
   );
 
-  return (
-    <main data-mode={isLive ? "live" : "replay"} data-presentation={presentationChoice}>
+  const mainContent = (
+    <main data-mode={isLive ? "live" : "replay"} data-presentation={presentationChoice} data-concept={presentationChoice}>
       {usesConceptHud ? (
         <ConceptHud
           state={projectedState}
@@ -333,4 +342,18 @@ export default function CrawlerApp({
       )}
     </main>
   );
+
+  if (usesConceptHud) {
+    return (
+      <div
+        className="concept-hud-wrapper"
+        data-concept={presentationChoice}
+        data-hud-presentation={presentationChoice}
+      >
+        {mainContent}
+      </div>
+    );
+  }
+
+  return mainContent;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../src/styles/application.css";
+import "../src/styles/concepts.css";
 
 export const metadata: Metadata = {
   title: "Crawler Command Interface",
