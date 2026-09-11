@@ -50,13 +50,13 @@ test("artifact workflow keeps verification read-only and gates the only writer",
   const publishWorkflowPath = join(repositoryRoot, ".github/workflows/publish-artifacts.yml");
   const content = await readFile(publishWorkflowPath, "utf8");
 
-  assert.match(content, /^permissions:\s*\n\s*actions:\s*(?:read|write)\s*\n\s*contents:\s*read\s*\n\s*pull-requests:\s*read/m,
+  assert.match(content, /^permissions:\s*\n\s*actions:\s*read\s*\n\s*contents:\s*read\s*\n\s*pull-requests:\s*read/m,
     "workflow defaults must be read-only");
   assert.match(content, /needs:\s*\[resolve-pr,\s*verify-screenshots,\s*verify-maritime\]/,
     "publish job must depend on successful screenshot and Maritime verification");
   assert.match(content, /environment:\s*artifact-finalization/,
     "publish job must use the protected artifact-finalization environment");
-  assert.match(content, /publish:[\s\S]*?permissions:\s*\n\s*actions:\s*(?:read|write)\s*\n\s*contents:\s*write/,
+  assert.match(content, /publish:[\s\S]*?permissions:\s*\n\s*actions:\s*read\s*\n\s*contents:\s*write/,
     "only the publish job should receive contents: write");
   assert.match(content, /cancel-in-progress:\s*true/,
     "publish workflow must use cancel-in-progress concurrency");
