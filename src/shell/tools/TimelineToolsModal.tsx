@@ -33,8 +33,8 @@ export function TimelineToolsModal({
       <div className="modal-content panel" onClick={(event) => event.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <p className="eyebrow">PORTABLE CRAWLER TIMELINE & SYSTEM TOOLS</p>
-            <h2>SYSTEM TOOLS & TIMELINE DATA</h2>
+            <p className="eyebrow">PORTABLE CRAWLER TIMELINE (V1/V2)</p>
+            <h2>IMPORT / EXPORT CRAWLER TIMELINE</h2>
           </div>
           <button className="close-btn" onClick={onClose}>
             ✕
