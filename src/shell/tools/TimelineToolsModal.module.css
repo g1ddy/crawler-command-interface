@@ -18,6 +18,8 @@
   padding: var(--hud-space-md);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.75);
   border-radius: var(--hud-radius-sm);
+  max-height: calc(100dvh - 2 * var(--hud-space-md));
+  overflow-y: auto;
 }
 
 .header {
@@ -40,6 +42,8 @@
   color: var(--hud-text-secondary);
   cursor: pointer;
   padding: 4px;
+  min-width: var(--hud-touch-target-min);
+  min-height: var(--hud-touch-target-min);
 }
 
 .closeButton:focus-visible {
@@ -161,6 +165,7 @@
   margin-top: var(--hud-space-sm);
   display: flex;
   gap: var(--hud-space-xs);
+  flex-wrap: wrap;
 }
 
 .outlineButton {

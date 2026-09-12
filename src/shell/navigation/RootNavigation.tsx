@@ -1,5 +1,6 @@
 import type { CanonCapabilities } from "../../application/capabilities";
 import { ROOT_NAVIGATION, type RootView } from "./navigation-model";
+import styles from "./RootNavigation.module.css";
 
 export function RootNavigation({
   active,
@@ -13,26 +14,29 @@ export function RootNavigation({
   onOpenTools: () => void;
 }) {
   return (
-    <nav className="nav" aria-label="Main Navigation">
-      <b><span>WORLD DUNGEON</span> AUTHORITY</b>
+    <div className={styles.bar} data-shell-navigation>
+    <nav className={styles.navigation} aria-label="Main Navigation">
       {ROOT_NAVIGATION.filter((item) => capabilities[item.id]).map((item) => (
         <button
           key={item.id}
-          className={active === item.id ? "active" : ""}
+          className={styles.destination}
           aria-pressed={active === item.id}
           onClick={() => set(item.id)}
         >
           {item.label}
         </button>
       ))}
+    </nav>
+      <div className={styles.utilities} role="group" aria-label="Application tools">
       <button
-        className="secondary-tools"
+        className={styles.tools}
         onClick={onOpenTools}
         aria-label="Open data tools"
         title="Import, export, or reset timeline data"
       >
-        ⚙ TOOLS
+        ⚙ SYSTEM TOOLS
       </button>
-    </nav>
+      </div>
+    </div>
   );
 }

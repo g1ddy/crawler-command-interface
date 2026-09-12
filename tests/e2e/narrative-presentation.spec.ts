@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { compiledTimeline } from '../../app/domain/fixtures/compiled-timeline.ts';
 import { getNarrativePresentation } from '../../app/domain/narrative-presentation.ts';
+import { openReplayContext } from '../helpers/replay';
 
 interface TestTimelineEvent {
   sequence: number;
@@ -62,6 +63,7 @@ async function openReplayDiagnostics(page: Page) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/crawler-command-interface/');
+  await openReplayContext(page);
   await expect(page.getByText('FLOOR NAVIGATOR:')).toBeVisible();
 });
 
@@ -78,7 +80,9 @@ test('rule history changes at two scrub positions without hard-coded directives'
   await expect(page.getByText(secondRule.summary, { exact: true })).toHaveCount(0);
   await expect(page.getByText(/HISTORICAL CHANGE LOG/)).toBeVisible();
 
+  await page.keyboard.press('Escape');
   await page.getByRole('slider', { name: 'Selected timeline sequence' }).fill(String(secondRule.sequence));
+  await openFloorRules(page);
   await expect(page.getByText(secondRule.summary, { exact: true })).toBeVisible();
 });
 
@@ -124,7 +128,7 @@ test('unanchored Floor 2 story event never displays an inherited or undefined ti
 
   await selectSequence(page, unanchored.sequence);
 
-  await expect(page.locator('.replay-banner')).toContainText('exact time not sourced');
+  await expect(page.getByRole('complementary', { name: 'Replay controls' })).toContainText('exact time not sourced');
   await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${unanchored.sequence}\\b`) })).toContainText('exact time not sourced');
 
   await page.getByRole('button', { name: /REPLAY DIAGNOSTICS/ }).click();

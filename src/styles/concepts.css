@@ -51,10 +51,10 @@
 .hud-replay-state button { padding: .5rem; border: 1px solid currentColor; background: transparent; }
 :is(.concept-lab, .concept-hud-wrapper) [data-mode=replay] { --accent: #e4bbff; }
 .system-hud > .hotlist { grid-column: 1 / -1; }
-:is(.concept-lab, .concept-hud-wrapper) .nav { height: auto; position: static; padding: 0 2rem; flex-wrap: wrap; gap: .25rem; background: transparent; }
-:is(.concept-lab, .concept-hud-wrapper) .nav > b { display: none; }
-:is(.concept-lab, .concept-hud-wrapper) .nav button { font-size: .875rem; padding: 1rem; letter-spacing: .07em; }
-:is(.concept-lab, .concept-hud-wrapper) .nav .secondary-tools { margin-left: auto; }
+:is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] { height: auto; position: static; padding: 0 2rem; flex-wrap: wrap; gap: .25rem; background: transparent; }
+:is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] > b { display: none; }
+:is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] button { font-size: .875rem; padding: 1rem; letter-spacing: .07em; }
+:is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] [aria-label="Application tools"] { margin-left: auto; }
 :is(.concept-lab, .concept-hud-wrapper) .view { max-width: none; padding: 1.5rem 2rem 3rem; }
 :is(.concept-lab, .concept-hud-wrapper) .panel { background: var(--surface); border-color: var(--edge); padding: 1.5rem; }
 :is(.concept-lab, .concept-hud-wrapper) .panel > h2 { font-size: 1rem; letter-spacing: .08em; color: var(--accent); }
@@ -79,10 +79,10 @@
 [data-concept=tactical] main { display: grid; grid-template-columns: 210px minmax(0, 1fr); }
 [data-concept=tactical] .system-hud { grid-column: 1 / -1; padding: 1.25rem 2rem; }
 [data-concept=tactical] .hud-identity h1 { font-size: 2rem; }
-[data-concept=tactical] .nav { display: flex; flex-direction: column; align-items: stretch; align-self: start; position: sticky; top: 0; padding: 1rem; border-right: 1px solid var(--edge); border-bottom: none; }
-[data-concept=tactical] .nav button { text-align: left; border-bottom: 0; border-left: 3px solid transparent; }
-[data-concept=tactical] .nav button.active { border-left-color: var(--accent); background: var(--surface-raised); }
-[data-concept=tactical] .nav .secondary-tools { margin: 2rem 0 0; }
+[data-concept=tactical] [data-shell-navigation] { display: flex; flex-direction: column; align-items: stretch; align-self: start; position: sticky; top: 0; padding: 1rem; border-right: 1px solid var(--edge); border-bottom: none; }
+[data-concept=tactical] [data-shell-navigation] button { text-align: left; border-bottom: 0; border-left: 3px solid transparent; }
+[data-concept=tactical] [data-shell-navigation] button[aria-pressed="true"] { border-left-color: var(--accent); background: var(--surface-raised); }
+[data-concept=tactical] [data-shell-navigation] [aria-label="Application tools"] { margin: 2rem 0 0; }
 [data-concept=tactical] .view { padding: 1rem; }
 [data-concept=tactical] .two-col { grid-template-columns: 1fr; }
 
@@ -94,7 +94,7 @@
 [data-concept=theater] .hud-collapse :is(button, .hud-kicker) { color: #fff1df; }
 [data-concept=theater] .hud-readings { grid-column: 1 / -1; }
 [data-concept=theater] .hud-replay-state { grid-row: 2; grid-column: 2; justify-self: end; min-width: 180px; }
-[data-concept=theater] .nav { margin: 0 2rem; padding: .25rem; border: 1px solid var(--edge); background: #291a22; }
+[data-concept=theater] [data-shell-navigation] { margin: 0 2rem; padding: .25rem; border: 1px solid var(--edge); background: #291a22; }
 [data-concept=theater] .panel { border-top: 3px solid var(--edge); box-shadow: 0 12px 20px #0003; }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -120,10 +120,16 @@
   :is(.concept-lab, .concept-hud-wrapper) .hud-replay-state { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
   :is(.concept-lab, .concept-hud-wrapper) .view { padding: 1rem; }
   :is(.concept-lab, .concept-hud-wrapper) .two-col { grid-template-columns: 1fr; }
-  :is(.concept-lab, .concept-hud-wrapper) .nav { margin: 0; padding: .5rem; }
-  :is(.concept-lab, .concept-hud-wrapper) .nav button { padding: .75rem; }
+  :is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] { margin: 0; padding: .5rem; }
+  :is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] button { padding: .75rem; }
   [data-concept=tactical] main { display: block; }
-  [data-concept=tactical] .nav { position: static; flex-direction: row; flex-wrap: wrap; }
-  [data-concept=tactical] .nav .secondary-tools { margin: 0; }
+  [data-concept=tactical] [data-shell-navigation] { position: static; flex-direction: row; flex-wrap: wrap; }
+  [data-concept=tactical] [data-shell-navigation] [aria-label="Application tools"] { margin: 0; }
   :is(.concept-lab, .concept-hud-wrapper) .panel { padding: 1rem; }
+}
+
+/* Preview composition reuses production navigation, not legacy nav classes. */
+[data-concept=tactical] [data-shell-navigation] nav { flex-direction: column; align-items: stretch; }
+@media (max-width: 760px) {
+  [data-concept=tactical] [data-shell-navigation] nav { flex-direction: row; }
 }

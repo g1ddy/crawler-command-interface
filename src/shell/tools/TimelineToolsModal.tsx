@@ -80,6 +80,7 @@ export function TimelineToolsModal({
           </div>
         )}
         <textarea
+          aria-label="Timeline JSON"
           rows={8}
           className={styles.jsonInput}
           placeholder="Paste crawler-timeline document JSON here to import..."

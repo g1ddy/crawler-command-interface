@@ -1,5 +1,6 @@
 "use client";
 import type { CrawlerEvent, InventoryItem, ItemHistoryEntry } from "../../../../app/domain/types";
+import { ModalBoundary } from "../../../shared/ui/ModalBoundary";
 
 interface ItemProvenanceDrawerProps {
   item: InventoryItem;
@@ -25,7 +26,7 @@ export function ItemProvenanceDrawer({ item, events, onClose, onNavigateToSequen
       return { sequence: event.sequence, occurredAt, eventType: event.type, description: event.summary };
     });
 
-  return <aside className="item-provenance-drawer panel">
+  return <ModalBoundary label="Item provenance" onClose={onClose}><div className="modal-backdrop" onClick={onClose}><aside className="item-provenance-drawer panel modal-content" onClick={event => event.stopPropagation()}>
     <div className="drawer-header"><div><p className="eyebrow">ITEM PROVENANCE & LIFECYCLE</p><h2>{item.name.toUpperCase()}</h2></div><button className="close-btn" onClick={onClose}>✕</button></div>
     <div className="item-provenance-meta">
       <p><strong>INSTANCE ID:</strong> {item.instanceId}</p>
@@ -38,5 +39,5 @@ export function ItemProvenanceDrawer({ item, events, onClose, onNavigateToSequen
     </div>
     <div className="provenance-timeline"><h3>PERSONAL ITEM TIMELINE</h3>{itemEvents.length > 0 ? <div className="timeline-list">{itemEvents.map((event) => <div key={event.sequence} className="timeline-entry" onClick={() => onNavigateToSequence?.(event.sequence)}><div className="entry-header"><span className="seq">SEQ #{event.sequence}</span><span className="time">{event.occurredAt}</span><span className="type-badge">{event.eventType}</span></div><p>{event.description}</p></div>)}</div> : <p className="empty-notice">No recorded historical state changes for this item instance.</p>}</div>
     <button className="outline full-width" onClick={onClose}>CLOSE DRAWER</button>
-  </aside>;
+  </aside></div></ModalBoundary>;
 }

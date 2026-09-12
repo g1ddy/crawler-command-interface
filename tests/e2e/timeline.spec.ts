@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
+import { openReplayContext } from "../helpers/replay";
 
 const sequenceHeading = (page: Page) =>
   page.getByRole("heading", { name: /SEQ #\d+/ });
@@ -29,19 +30,20 @@ const floor2SystemPatchSequence = eventSequence("evt-f2-system-patch");
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/crawler-command-interface/");
+  await openReplayContext(page);
   await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
 });
 
 test("scrubbing backward removes state that was introduced later", async ({ page }) => {
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
-  await expect(page.locator(".mobile-crawler-info")).toContainText("LVL 13");
+  await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
 
   await selectSequence(page, 1);
 
   await expect(page.getByText(/HISTORICAL VIEW · REPLAYING SEQUENCE #1/)).toBeVisible();
   await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
   await expect(page.getByTestId("hud-audience-mode")).not.toContainText("LIVE");
-  await expect(page.locator(".mobile-crawler-info")).not.toContainText("LVL 13");
+  await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   await expect(page.locator(".grid .item")).toHaveCount(0);
 });
@@ -84,13 +86,13 @@ test("timeline evidence surfaces preserve source locators and confidence", async
 
 test("Return to Live restores the latest projection", async ({ page }) => {
   await selectSequence(page, 1);
-  await expect(page.locator(".mobile-crawler-info")).not.toContainText("LVL 13");
+  await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
 
-  await page.locator(".replay-banner").getByRole("button", { name: /RETURN TO LIVE/ }).click();
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/ }).click();
 
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
-  await expect(page.locator(".mobile-crawler-info")).toContainText("LVL 13");
-  await expect(page.locator(".mobile-mode")).toContainText("LIVE");
+  await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
 });
 
 test("inventory browser and inspector resolve the same visible selection", async ({ page }) => {
@@ -142,10 +144,10 @@ test("live interactions append events without rewriting historical state", async
 test("static bundle renders its essential HUD at desktop and mobile sizes", async ({ page }, testInfo) => {
   await expect(page.getByRole("navigation", { name: "Main Navigation" })).toBeVisible();
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
-  await expect(page.locator(".timer")).toContainText("VIEWERS");
+  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("Viewers");
 
   if (testInfo.project.name === "mobile-chromium") {
-    await expect(page.locator(".mobile-status-bar")).toBeVisible();
+    await expect(page.locator('[data-production-hud="authority"]')).toBeVisible();
     expect(page.viewportSize()?.width).toBeLessThanOrEqual(412);
   }
 });

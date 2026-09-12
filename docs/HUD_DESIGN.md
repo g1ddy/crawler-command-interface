@@ -31,12 +31,13 @@ code reusing typed, independent `CrawlerApp` presentation and persistence bounda
 projections, feature navigation, actions, and inspectors—not generated screenshots or a
 separate simulated application.
 The normal Pages build emits both `dist-pages/index.html` and
-`dist-pages/concepts.html`; the default application entry retains the existing HUD.
+`dist-pages/concepts.html`; the default application entry uses the Authority production shell.
 
-Preview and concept-lab actions are memory-only: no loading, saving, or clearing the normal
-device timeline.
-Reload restores the compiled timeline. Changing visual concepts preserves the selected
-sequence and domain. Import/export remains available for testing, without device writes.
+Direct preview URLs and concept-lab sessions are memory-only: no loading, saving, or
+clearing the normal device timeline. Reload restores the compiled timeline in those
+sessions. Changing presentation in an already-running normal session preserves its normal
+persistence policy, selected sequence, active domain, and typed actions. Presentation
+selection itself is URL/local UI state, never a timeline event or a persistence toggle.
 
 No new runtime dependency is needed for this comparison. React Aria Components remains
 the candidate for an accessible overlay migration, Motion for deliberate transitions,
@@ -63,7 +64,7 @@ not yet a complete domain-by-domain redesign.
 - Replay controls stay visible in the working surface; application tools remain separate.
 - Observed, estimated, unknown, stale, and unavailable have text labels. Dashed edges
   reinforce estimates/staleness; color never carries the distinction alone.
-- The experimental header deliberately shows **observations**, not projection defaults,
+- The production and experimental headers deliberately show **observations**, not projection defaults,
   and labels missing readings unknown. Causal state remains available in the features.
 - Readings link to their actual evidence inspector; the clock opens countdown evidence.
 - Surface, text, accent, warning, and border colors are scoped CSS tokens. Layout uses
@@ -84,7 +85,7 @@ domain survive a comparison switch.
 The normal deployed application also provides non-persistent review URLs:
 `/crawler-command-interface/?hud=authority`, `?hud=tactical`, and `?hud=theater`.
 The default URL—and any invalid `hud` value—renders the current production HUD. These are
-comparison previews, not Crawler Menu destinations or a production design selection. Both
+comparison previews, not Crawler Menu destinations. Authority is the selected production direction. Both
 entry points honor `PAGES_BASE_PATH=/` for custom-domain builds.
 
 Run `npm run build:pages`, then serve with
@@ -121,11 +122,22 @@ To prevent new feature presentations from depending on global `application.css` 
 
 ## Remaining #160 delivery
 
-This branch implements the deployed executable comparison stage, not closure of the epic.
-After selection: create focused implementation issues for the shell, shared accessible
-primitives, feature migration, notification/motion behavior,
-responsive/accessibility verification, and canonical screenshot refresh. Production
-continues to use the original presentation until a direction is approved. The eventual
-production switch must be a deliberate change to the typed presentation configuration,
-paired with normal persistence; it must not be a local-storage flag. The comparison lab
-remains available afterward.
+The default production composition now implements Authority (#173): horizontal
+identity/clock/observed-telemetry HUD, capability-driven canon navigation, a separate
+System Tools entry, and compact persistent replay. Scrubbing, stepping, sequence, and
+Live/Replay mode stay visible; floor scope, evidence, history, and diagnostics are
+progressively disclosed under **Replay context & tools**. Mobile uses a compact
+identity/mode row, a two-column reading grid, and horizontally scrollable canon navigation.
+No clock ticking, notification arrivals, or unsupported capabilities are synthesized.
+
+The shell frame is layout-only. A session-facing composition adapter supplies slots and
+retains existing feature views; it does not duplicate projection or action machinery.
+Overlays share keyboard focus trapping, Escape handling, and focus restoration. The
+comparison lab and System Tools presentation switching remain available against the same
+session; the retired production timer/mobile-strip/navigation path is removed.
+
+Next: #172 migrates feature interiors and narrows their presentation contracts one at a
+time, starting with Crawler. Legacy feature typography, dense item/stat presentation,
+and feature-owned CSS are not declared redesigned by shell integration. #171 completes
+retirement and final acceptance coverage after those migrations. Neither requires a
+second permanent production UI or another event-model refactor.

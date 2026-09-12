@@ -1,9 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 import { SCREENSHOTS, stagedScreenshotPath } from "./canonical-screenshots.ts";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
+import { openReplayContext } from "../helpers/replay";
 
 async function preparePage(page: Page) {
   await page.goto("/crawler-command-interface/");
-  await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
+  await openReplayContext(page);
   await expect(page.getByRole("navigation", { name: "Main Navigation" })).toBeVisible();
   await page.addStyleTag({ content: `*, *::before, *::after { animation: none !important; caret-color: transparent !important; transition: none !important; }` });
   await page.evaluate(async () => { await document.fonts.ready; window.scrollTo(0, 0); });
@@ -24,6 +26,11 @@ async function selectCrawlerSubTab(page: Page, name: "STATS" | "HEALTH / CONDITI
 }
 
 async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
+  // Capture the default compact replay surface, except behind an open inspector.
+  if (await page.getByRole("dialog").count() === 0) {
+    const context = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
+    if (await context.getAttribute("open") !== null) await context.locator("summary").click();
+  }
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: stagedScreenshotPath(key), fullPage: false, animations: "disabled" });
 }
@@ -34,10 +41,27 @@ async function seedHotlistSkillsScenario(page: Page) {
     localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(docWithSkill));
   });
   await page.reload();
-  await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
+  await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
 }
 
 test.beforeEach(async ({ page }) => { await preparePage(page); });
+
+test("export early replay before conditional canon capabilities", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("1");
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+  await expect(page.getByRole("button", { name: "PARTY", exact: true })).toHaveCount(0);
+  await capture(page, "earlyReplay");
+});
+
+test("export replay at the sourced Pet bond boundary", async ({ page }) => {
+  const bond = compiledTimeline.events.find(event => event.type === "PetBonded");
+  if (!bond) throw new Error("Missing canonical Pet bond");
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill(String(bond.sequence));
+  await selectTopLevelTab(page, "PET");
+  await expect(page.getByRole("heading", { name: "PETS", exact: true })).toBeVisible();
+  await capture(page, "petBoundary");
+});
 
 test("export top-level Crawler tab", async ({ page }) => { await selectCrawlerSubTab(page, "STATS"); await expect(page.getByText("PLAYER ATTRIBUTES", { exact: true })).toBeVisible(); await capture(page, "crawler"); });
 test("export top-level Inventory tab", async ({ page }) => { await selectTopLevelTab(page, "INVENTORY"); await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/\bon\b/); await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible(); await capture(page, "inventory"); });
@@ -51,7 +75,7 @@ test("renders Quests from an isolated noncanonical fixture without publishing a 
     localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(documentWithQuests));
   });
   await page.reload();
-  await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
+  await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
   await selectTopLevelTab(page, "QUESTS");
   await expect(page.getByRole("heading", { name: "QUESTS", exact: true })).toBeVisible();
   await expect(page.getByText("Test Quest", { exact: true })).toBeVisible();

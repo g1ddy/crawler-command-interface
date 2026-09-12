@@ -45,7 +45,13 @@ GitHub Pages adapter ───┘        │
                                   app/domain/*
 ```
 
-`src/CrawlerApp.tsx` is the application composition/state root. It owns timeline-document lifecycle, selected sequence/floor/live state, top-level projections, capability coordination, and global modal state. Detailed feature rendering is delegated to `src/shell/ActiveFeatureView.tsx`; persistent replay rendering is delegated to `src/shell/replay/ReplaySurface.tsx`; data tools are delegated to `src/shell/tools/TimelineToolsModal.tsx`.
+`src/CrawlerApp.tsx` bootstraps the storage binding, typed action feedback, and `useCrawlerSession`. The React-free application session owns persisted timeline lifecycle, selected sequence/floor/live state, projections, capabilities, and typed commands. Changing presentation never creates another session.
+
+`src/shell/adapters/CrawlerWorkspace.tsx` adapts a narrowed session snapshot/command surface into the production workspace. It owns active destination, presentation choice, and transient inspector state. `src/shell/ShellFrame.tsx` accepts only render slots and presentation/mode flags: it has no event, projection, persistence, or feature dependencies. HUD, navigation, replay, active feature, feedback, and overlays are independently replaceable slots.
+
+`ActiveFeatureView.tsx` and `overlays/WorkspaceOverlays.tsx` remain composition adapters for existing feature-owned views/inspectors. Events and sources needed by historical feature views terminate at these adapters; they are not passed through the layout frame. Their broad feature props are deliberate migration seams for #172, not a new general-purpose session API. Feature-specific selection state moves behind narrow feature contracts as each feature migrates; do not widen the frame to accommodate it.
+
+`shared/ui/ModalBoundary.tsx` owns generic portal placement, background inertness, focus trapping/restoration, and Escape handling. It contains no Crawler-specific state. Existing feature interiors retain ownership of their modal content. Production shell components use local CSS Modules; migrated timer/navigation/replay selectors have been removed from `application.css`.
 
 User interactions emit events that append to the live timeline endpoint without mutating historical sequence states. Shared state composition is centralized at the state root and projected deterministically.
 
@@ -197,7 +203,7 @@ The same rule applies to visual documentation. `tests/screenshots/canonical-scre
 │   ├── layout.tsx               # host layout consuming shared styles
 │   └── page.tsx                 # thin ChatGPT/Vinext adapter
 ├── src/
-│   ├── CrawlerApp.tsx           # application composition/state root
+│   ├── CrawlerApp.tsx           # session bootstrap/composition
 │   ├── application/             # application action contracts, mutations, and canon capabilities
 │   ├── features/                # feature-owned UI and presentation
 │   ├── shell/

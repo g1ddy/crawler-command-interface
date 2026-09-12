@@ -20,6 +20,8 @@ export const SCREENSHOTS = {
   floorRules: "screenshot-floor-rules.png",
   timelineHistory: "screenshot-timeline-history.png",
   systemTools: "screenshot-system-tools.png",
+  earlyReplay: "screenshot-shell-early-replay.png",
+  petBoundary: "screenshot-shell-pet-boundary.png",
 } as const;
 
 export type ScreenshotKey = keyof typeof SCREENSHOTS;

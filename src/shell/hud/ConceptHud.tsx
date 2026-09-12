@@ -3,6 +3,7 @@ import type { CrawlerState, ProjectedCountdownState, ProjectedObservationsState,
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
 import { deriveEvidencePresentation } from "../../features/timeline/evidence/evidencePresentation";
 import { Hotlist } from "./hotlist/Hotlist";
+import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 
 /** Experimental presentation only. Never infer a reading from a visual default. */
 function Reading({ label, observation, sequence, onInspect }: {
@@ -55,6 +56,6 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
       {!isLive && <button onClick={onReturnToLive}>Return to live</button>}
     </div>
     <Hotlist hotlist={state.hotlist} skills={state.skills} />
-    {showEvidence && countdown && <CountdownEvidenceModal countdown={countdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} />}
+    {showEvidence && countdown && <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}><CountdownEvidenceModal countdown={countdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} /></ModalBoundary>}
   </header>;
 }

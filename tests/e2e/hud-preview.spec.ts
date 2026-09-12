@@ -26,7 +26,7 @@ for (const query of ["", "?hud=unsupported"]) {
   test(`production HUD is the safe fallback for ${query || "a missing parameter"}`, async ({ page }) => {
     await page.goto(`${pagesPath}${query}`);
     await expect(page.locator("[data-hud-presentation]")).toHaveCount(0);
-    await expect(page.locator(".timer")).toBeVisible();
+    await expect(page.locator('[data-production-hud="authority"]')).toBeVisible();
     await expect(page.locator(".system-hud")).toHaveCount(0);
   });
 }
@@ -37,7 +37,7 @@ test("live presentation switching in System Tools preserves session state and up
   // Enter replay mode by scrubbing slider to sequence 117 (where pet is acquired, not bonded)
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("117");
-  await expect(page.locator('[data-mode="replay"]')).toBeVisible();
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
   const nav = page.getByRole("navigation", { name: "Main Navigation" });
   await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
@@ -72,11 +72,14 @@ test("live presentation switching in System Tools preserves session state and up
       );
     }
 
+    // Close the focus boundary before querying the accessible background.
+    await page.getByRole("button", { name: "CANCEL" }).click();
     // Verify continuity of replay sequence, live/replay mode, and capabilities
     await expect(slider).toHaveValue("117");
-    await expect(page.locator('[data-mode="replay"]')).toBeVisible();
+    await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
     await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
     await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Open data tools" }).click();
   }
 
   // Close System Tools

@@ -1,10 +1,12 @@
 import { expect, test } from "@playwright/test";
+import { openReplayContext } from "../helpers/replay";
 
 test("concepts retain replay state, capability boundaries and device storage", async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   await page.addInitScript(() => localStorage.setItem("crawler_timeline_doc_v2", "existing-device-data"));
   await page.goto("concepts.html");
+  await openReplayContext(page);
   const initialStorage = await page.evaluate(() => JSON.stringify(localStorage));
   const menu = page.getByRole("navigation", { name: "Main Navigation" });
   await expect(menu.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();

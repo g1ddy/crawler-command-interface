@@ -60,6 +60,15 @@ export function TelemetryBadge({
   return (
     <span
       className={`telemetry-pill ${descriptor.state}`}
+      role={onClick && descriptor.inspectable ? "button" : undefined}
+      tabIndex={onClick && descriptor.inspectable ? 0 : undefined}
+      onKeyDown={(event) => {
+        if (onClick && descriptor.inspectable && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          onClick();
+        }
+      }}
       onClick={(event) => {
         if (onClick && descriptor.inspectable) {
           event.stopPropagation();
