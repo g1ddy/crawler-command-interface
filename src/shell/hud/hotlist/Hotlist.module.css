@@ -1,0 +1,78 @@
+.hotlist {
+  display: flex;
+  align-items: center;
+  gap: var(--hud-space-md);
+  padding: 0.4375rem clamp(0.75rem, 3vw, 3rem);
+  background: var(--hud-canvas-bg);
+  border-top: 1px solid var(--hud-border-subtle);
+  color: var(--hud-text-secondary);
+}
+
+.title {
+  font-size: var(--hud-label-compact);
+  letter-spacing: 0.14em;
+  color: var(--hud-text-author);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(46px, 1fr));
+  gap: var(--hud-space-xs);
+  flex: 1;
+}
+
+.slot {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--hud-space-xs);
+  min-width: 0;
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  border: 1px solid var(--hud-border-subtle);
+  background: var(--hud-panel-bg);
+  min-height: var(--hud-touch-target-min);
+  box-sizing: border-box;
+}
+
+.slot[data-assigned="true"] {
+  border-color: var(--hud-evidence-current-border);
+  background: var(--hud-evidence-current-bg);
+}
+
+.slotNumber {
+  font-size: 0.625rem;
+  font-family: var(--hud-font-mono);
+  color: var(--hud-text-author);
+  line-height: 1;
+}
+
+.icon {
+  font-size: 0.9375rem;
+  font-style: normal;
+  text-align: center;
+}
+
+.label {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.625rem;
+  font-style: normal;
+  text-align: center;
+  color: var(--hud-text-secondary);
+}
+
+@media (max-width: 680px) {
+  .hotlist {
+    align-items: flex-start;
+    padding: 0.4375rem 0.75rem;
+    overflow-x: auto;
+  }
+  .slots {
+    min-width: 620px;
+  }
+}

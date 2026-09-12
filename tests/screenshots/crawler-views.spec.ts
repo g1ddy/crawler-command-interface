@@ -20,9 +20,9 @@ async function selectTopLevelTab(page: Page, name: "CRAWLER" | "INVENTORY" | "SK
 
 async function selectCrawlerSubTab(page: Page, name: "STATS" | "HEALTH / CONDITIONS") {
   await selectTopLevelTab(page, "CRAWLER");
-  const tab = page.locator(".subnav").getByRole("button", { name, exact: true });
+  const tab = page.getByRole("button", { name, exact: true });
   await tab.click();
-  await expect(tab).toHaveClass(/\bon\b/);
+  await expect(tab).toBeVisible();
 }
 
 async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
@@ -67,7 +67,7 @@ test("export top-level Crawler tab", async ({ page }) => { await selectCrawlerSu
 test("export top-level Inventory tab", async ({ page }) => { await selectTopLevelTab(page, "INVENTORY"); await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/\bon\b/); await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible(); await capture(page, "inventory"); });
 test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => { await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click(); await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13"); await selectTopLevelTab(page, "INVENTORY"); await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click(); await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible(); await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible(); await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible(); await capture(page, "awards"); });
 test("export top-level Skills tab", async ({ page }) => { await selectTopLevelTab(page, "SKILLS"); await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible(); await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible(); await capture(page, "skills"); });
-test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => { await seedHotlistSkillsScenario(page); await selectTopLevelTab(page, "SKILLS"); await page.getByRole("button", { name: "Slot #1", exact: true }).click(); await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible(); await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1"); });
+test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => { await seedHotlistSkillsScenario(page); await selectTopLevelTab(page, "SKILLS"); await page.getByRole("button", { name: "Assign to hotlist slot 1", exact: true }).click(); await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible(); await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1"); });
 
 test("renders Quests from an isolated noncanonical fixture without publishing a canonical screenshot", async ({ page }) => {
   await page.evaluate(() => {

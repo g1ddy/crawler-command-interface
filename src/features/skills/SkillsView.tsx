@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
-import type { CrawlerState } from "../../../app/domain/types";
-import { Panel } from "../../shared/ui/Panel";
-import type { SkillActions } from "../../application/crawler-action-contracts";
+import { useState } from "react";
+import type { CrawlerState } from "../../../app/domain/types.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import type { SkillActions } from "../../application/crawler-action-contracts.ts";
+import { deriveSkillsPresentation } from "./skills-presentation.ts";
+import styles from "./SkillsView.module.css";
 
 export function SkillsView({
   state,
@@ -10,20 +12,17 @@ export function SkillsView({
   state: CrawlerState;
   actions: SkillActions;
 }) {
-  const [selectedIdx, setSelectedIdx] = useState<number>(0);
+  const [selectedSkillId, setSelectedSkillId] = useState<string | undefined>(undefined);
   const [filter, setFilter] = useState<string>("ALL SKILLS");
 
-  const skills = state.skills;
-  const shown = useMemo(() => {
-    return skills.filter((s) => {
-      if (filter === "ALL SKILLS") return true;
-      if (filter === "ACTIVE") return s.category !== "passive";
-      if (filter === "PASSIVE") return s.category === "passive";
-      return s.category.toUpperCase() === filter;
-    });
-  }, [skills, filter]);
+  const presentation = deriveSkillsPresentation(
+    state.skills,
+    state.hotlist,
+    filter,
+    selectedSkillId,
+  );
 
-  const selectedSkill = shown[selectedIdx] || shown[0] || skills[0];
+  const { skills, filteredSkills, categoryFilters, selectedSkill, hotlistSlots } = presentation;
 
   const handleAssignHotlist = (hotlistIndex: number) => {
     if (!selectedSkill) return;
@@ -31,34 +30,38 @@ export function SkillsView({
   };
 
   return (
-    <section className="view-content">
-      <header className="title">
+    <section className={styles.viewContent}>
+      <header className={styles.title}>
         <div>
-          <p className="eyebrow">ABILITY MANAGEMENT</p>
+          <p className={styles.eyebrow}>ABILITY MANAGEMENT</p>
           <h1>SKILLS</h1>
         </div>
-        <b>{skills.length} ABILITIES DISCOVERED</b>
+        <b className={styles.titleCount}>{skills.length} ABILITIES DISCOVERED</b>
       </header>
 
-      <div className="skills">
+      <div className={styles.skillsGrid}>
         <Panel title="ABILITY TYPE">
-          <div className="categories">
-            {["ALL SKILLS", "ACTIVE", "PASSIVE", "COMBAT", "UTILITY"].map((x) => (
-              <button className={filter === x ? "on" : ""} onClick={() => setFilter(x)} key={x}>
-                {x}
-                <b>{x === "ALL SKILLS" ? skills.length : x === "ACTIVE" ? skills.filter((skill) => skill.category !== "passive").length : x === "PASSIVE" ? skills.filter((skill) => skill.category === "passive").length : skills.filter((skill) => skill.category.toUpperCase() === x).length}</b>
+          <div className={styles.categories}>
+            {categoryFilters.map((cat) => (
+              <button
+                className={filter === cat.id ? styles.on : ""}
+                onClick={() => setFilter(cat.id)}
+                key={cat.id}
+              >
+                {cat.label}
+                <b>{cat.count}</b>
               </button>
             ))}
           </div>
         </Panel>
 
         <Panel title="SKILL LIBRARY">
-          <div className="skill-list">
-            {shown.map((x, idx) => (
+          <div className={styles.skillList}>
+            {filteredSkills.map((x) => (
               <button
-                className={selectedSkill?.skillId === x.skillId ? "selected" : ""}
+                className={`${styles.skillItem} ${selectedSkill?.skillId === x.skillId ? styles.selected : ""}`}
                 key={x.skillId}
-                onClick={() => setSelectedIdx(idx)}
+                onClick={() => setSelectedSkillId(x.skillId)}
               >
                 <i>{x.icon}</i>
                 <span>
@@ -73,11 +76,11 @@ export function SkillsView({
 
         {selectedSkill && (
           <Panel title="SKILL INSPECTOR">
-            <div className="hero">{selectedSkill.icon}</div>
-            <h1>{selectedSkill.name.toUpperCase()}</h1>
-            <i>{selectedSkill.rank}</i>
-            <i className="active-tag">{selectedSkill.category.toUpperCase()} ABILITY</i>
-            <dl className="details">
+            <div className={styles.hero}>{selectedSkill.icon}</div>
+            <h1 className={styles.inspectorTitle}>{selectedSkill.name.toUpperCase()}</h1>
+            <i className={styles.badge}>{selectedSkill.rank}</i>
+            <i className={`${styles.badge} ${styles.activeTag}`}>{selectedSkill.category.toUpperCase()} ABILITY</i>
+            <dl className={styles.details}>
               <div>
                 <dt>EFFECT</dt>
                 <dd>{selectedSkill.description}</dd>
@@ -94,30 +97,27 @@ export function SkillsView({
               )}
             </dl>
 
-            <div style={{ marginTop: "14px" }}>
-              <p className="eyebrow">ASSIGN TO HOTLIST SLOT</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <button
-                    key={i}
-                    style={{
-                      padding: "5px 9px",
-                      fontSize: "9px",
-                      background: state.hotlist[i] === selectedSkill.skillId ? "#0e3443" : "#09141d",
-                      border: `1px solid ${state.hotlist[i] === selectedSkill.skillId ? "#1bd9ff" : "#244452"}`,
-                      color: state.hotlist[i] === selectedSkill.skillId ? "#1bd9ff" : "#8ca8b3",
-                    }}
-                    onClick={() => handleAssignHotlist(i)}
-                  >
-                    Slot #{i + 1}
-                  </button>
-                ))}
+            <div className={styles.assignSection}>
+              <p className={styles.eyebrow}>ASSIGN TO HOTLIST SLOT</p>
+              <div className={styles.slotButtons}>
+                {hotlistSlots.map((slot) => {
+                  const isAssignedToThisSkill = slot.skill?.skillId === selectedSkill.skillId;
+                  return (
+                    <button
+                      key={slot.slotIndex}
+                      className={`${styles.slotBtn} ${isAssignedToThisSkill ? styles.assigned : ""}`}
+                      onClick={() => handleAssignHotlist(slot.slotIndex)}
+                      aria-label={`Assign to hotlist slot ${slot.slotNumber}`}
+                    >
+                      Slot #{slot.slotNumber}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </Panel>
         )}
       </div>
-
     </section>
   );
 }
