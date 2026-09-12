@@ -5,8 +5,8 @@
 ### 🏥 Repository Health Score: **60.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 96
-*   **Measured Files**: 96
+*   **Total Graph Files**: 100
+*   **Measured Files**: 100
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
