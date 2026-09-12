@@ -1,5 +1,5 @@
 import type { ProjectedObservationValue, ActiveEffect } from "../../../../app/domain/types.ts";
-import { TelemetryBadge } from "../../timeline/public.ts";
+import { TelemetryBadge } from "../../timeline/ui-public.tsx";
 import { Panel } from "../../../shared/ui/Panel.tsx";
 import type { DerivedCrawlerPresentation, DerivedVitalPresentation } from "../crawler-presentation.ts";
 import styles from "../CrawlerView.module.css";

@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 import type { CrawlerEvent, TimelineSource } from "../../../app/domain/types";
 import { narrativeEventsAtOrBefore, formatSequencePosition } from "../../../app/domain/narrative-presentation";
-import { SequenceBadge } from "../timeline/public";
+import { SequenceBadge } from "../timeline/ui-public.tsx";
 import { Panel } from "../../shared/ui/Panel";
 
 interface FloorRulesProps {

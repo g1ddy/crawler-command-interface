@@ -4,7 +4,7 @@ import type { ProjectedObservationsState } from "../../../app/domain/types";
 import type {
   ReplayCommandCallbacks,
   ReplayPresentation,
-} from "../../features/timeline/public";
+} from "../../features/timeline/public.ts";
 import { TimelineDiagnostics } from "../../features/timeline/diagnostics/TimelineDiagnostics";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
 import { ReplayControls } from "./ReplayControls";

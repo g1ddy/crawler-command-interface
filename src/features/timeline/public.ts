@@ -1,6 +1,4 @@
-/** Evidence-aware UI intentionally supported for reuse by other features. */
-export { TelemetryBadge } from "./evidence/TelemetryBadge";
-export { SequenceBadge } from "./SequenceBadge";
+/** Framework-neutral feature contracts should remain safe for Node tests, Workers, and selectors. */
 export {
   deriveEvidencePresentation,
   displayedReadingAuthority,

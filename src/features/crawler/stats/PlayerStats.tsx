@@ -1,5 +1,5 @@
 import type { AttributeName, ProjectedObservationValue } from "../../../../app/domain/types";
-import { TelemetryBadge } from "../../timeline/public";
+import { TelemetryBadge } from "../../timeline/ui-public.tsx";
 import { Panel } from "../../../shared/ui/Panel";
 import type { CrawlerActions } from "../../../application/crawler-action-contracts";
 import type { DerivedCrawlerPresentation } from "../crawler-presentation";
@@ -69,7 +69,10 @@ export function PlayerStats({
             />
           </span>
           <em className={styles.xpTrack}>
-            <b className={styles.xpFill} style={{ width: `${xpPercent}%` }} />
+            <b
+              className={`${styles.xpFill} ${xp == null || maxXp == null ? styles.unknown : ""}`}
+              style={{ width: xp == null || maxXp == null ? "100%" : `${xpPercent}%` }}
+            />
           </em>
         </div>
       </header>

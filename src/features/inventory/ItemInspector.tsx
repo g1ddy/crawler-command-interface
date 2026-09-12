@@ -5,7 +5,7 @@ import type {
   ProjectedObservationValue,
 } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
-import { TelemetryBadge } from "../timeline/public";
+import { TelemetryBadge } from "../timeline/ui-public.tsx";
 import type { InventoryActions } from "../../application/crawler-action-contracts";
 
 export function ItemInspector({
