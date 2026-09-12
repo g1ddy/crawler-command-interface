@@ -1,8 +1,8 @@
-import type { AttributeName, ProjectedObservationValue } from "../../../../app/domain/types.ts";
-import { TelemetryBadge } from "../../timeline/public.ts";
-import { Panel } from "../../../shared/ui/Panel.tsx";
-import type { CrawlerActions } from "../../../application/crawler-action-contracts.ts";
-import type { DerivedCrawlerPresentation } from "../crawler-presentation.ts";
+import type { AttributeName, ProjectedObservationValue } from "../../../../app/domain/types";
+import { TelemetryBadge } from "../../timeline/public";
+import { Panel } from "../../../shared/ui/Panel";
+import type { CrawlerActions } from "../../../application/crawler-action-contracts";
+import type { DerivedCrawlerPresentation } from "../crawler-presentation";
 import styles from "../CrawlerView.module.css";
 
 const COLOR_MAP: Record<string, string> = {
@@ -80,9 +80,11 @@ export function PlayerStats({
             const fillClass = COLOR_MAP[color] ?? styles.redFill;
             return (
               <div key={attrName} className={styles.statRow}>
-                <button className={styles.statClickable} onClick={() => onInspectStat(attrName)}>
-                  <span>{attrName} 🔍</span>
-                  <b>{value ?? "—"}</b>
+                <div className={styles.statClickable}>
+                  <button className={styles.statNameBtn} onClick={() => onInspectStat(attrName)}>
+                    <span>{attrName} 🔍</span>
+                    <b>{value ?? "—"}</b>
+                  </button>
                   <TelemetryBadge
                     observation={observation}
                     causalValue={causalValue}
@@ -91,9 +93,12 @@ export function PlayerStats({
                     onClick={() => observation && onInspectObservation(observation)}
                   />
                   <em className={styles.meterTrack}>
-                    <i className={`${styles.meterFill} ${fillClass}`} style={{ width: `${Math.min(100, Number(value || 0) * 2)}%` }} />
+                    <i
+                      className={`${styles.meterFill} ${fillClass}`}
+                      style={{ width: `${value != null ? Math.min(100, Number(value) * 2) : 0}%` }}
+                    />
                   </em>
-                </button>
+                </div>
                 <div className={styles.attrActions}>
                   <button
                     className={styles.attrBtn}

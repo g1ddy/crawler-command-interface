@@ -133,11 +133,6 @@
 .statClickable {
   flex: 1;
   min-width: 0;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  text-align: left;
-  padding: 0;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: var(--hud-space-xs);
@@ -146,17 +141,30 @@
   text-transform: uppercase;
 }
 
-.statClickable:focus-visible {
+.statNameBtn {
+  background: transparent;
+  border: 0;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--hud-space-xs);
+  color: var(--hud-text-primary);
+  font-size: 0.875rem;
+}
+
+.statNameBtn:focus-visible {
   outline: var(--hud-focus-ring);
   outline-offset: 2px;
 }
 
-.statClickable:hover span {
+.statNameBtn:hover span {
   color: var(--hud-text-author);
   text-decoration: underline;
 }
 
-.statClickable > b {
+.statNameBtn > b {
   font-family: var(--hud-font-mono);
   color: var(--hud-text-primary);
 }
