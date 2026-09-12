@@ -30,7 +30,10 @@ This file is a concise map for coding agents. Detailed contracts live in the can
 
 | Concern | Primary location |
 | --- | --- |
-| Application composition/state root | `src/CrawlerApp.tsx` |
+| Session bootstrap/composition | `src/CrawlerApp.tsx` |
+| Session-to-presentation adapter | `src/shell/adapters/CrawlerWorkspace.tsx` |
+| Layout-only render slots | `src/shell/ShellFrame.tsx` |
+| Inspector composition / generic focus boundary | `src/shell/overlays/`, `src/shared/ui/ModalBoundary.tsx` |
 | Replay-aware canon capabilities | `src/application/capabilities.ts` |
 | Root navigation model/presentation | `src/shell/navigation/` |
 | Persistent HUD | `src/shell/hud/` |

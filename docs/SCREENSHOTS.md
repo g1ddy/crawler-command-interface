@@ -66,6 +66,26 @@ Vitals are separate from beneficial, harmful, injury, and other condition presen
 ### Timeline History
 ![Timeline history view](images/screenshot-timeline-history.png)
 
+## Persistent shell acceptance states
+
+Authority is the production shell. Feature interiors remain on their existing presentation
+contracts until their incremental migrations. These captures use the real compiled timeline;
+the early replay state has no invented telemetry or conditional canon destinations.
+
+![Early replay shell](images/screenshot-shell-early-replay.png)
+
+![Pet bond replay boundary](images/screenshot-shell-pet-boundary.png)
+
+### System Tools
+
+The pre-shell baseline was committed with #179. This capture is refreshed with the shell
+integration; presentation selection does not reset the session or change its persistence policy.
+
+![System Tools modal](images/screenshot-system-tools.png)
+
+Desktop/mobile interaction and narrow-layout captures live in the Playwright E2E artifacts;
+they are not additional fixed-size canonical manifest entries.
+
 ## Noncanonical visual scenarios and regeneration workflow
 
 Playwright may use isolated synthetic timelines for component behavior that has no source-backed Floors 1–2 product state yet. Quests currently fall into this category: the browser test verifies that a projected Quest can render and become navigable, but no Quests screenshot is published as canonical until authored source-backed quest state exists in the supported story scope.
