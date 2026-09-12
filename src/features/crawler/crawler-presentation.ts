@@ -4,7 +4,7 @@ import type {
   ProjectedObservationsState,
   ProjectedObservationValue,
   ActiveEffect,
-} from "../../../app/domain/types.ts";
+} from "../../../app/domain/types";
 import {
   displayedReadingAuthority,
   selectDisplayedReading,
