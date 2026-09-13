@@ -1,5 +1,5 @@
 import type { ProjectedObservationValue } from "../../../app/domain/types";
-import { TelemetryBadge } from "../timeline/public";
+import { TelemetryBadge } from "../timeline/ui-public.tsx";
 import { Panel } from "../../shared/ui/Panel";
 export type RatingsMetricGroup = "audience" | "engagement" | "patronage" | "ranking" | "bounty";
 import { projectRatingsMetrics } from "./ratings-presentation";

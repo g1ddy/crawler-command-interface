@@ -81,7 +81,7 @@ export function analyzeArchitecture(root = ROOT, policy = JSON.parse(fs.readFile
 
     const sourceFeature = edge.from.match(/^src\/features\/([^/]+)\//)?.[1];
     const targetFeature = edge.to?.match(/^src\/features\/([^/]+)\//)?.[1];
-    if (sourceFeature && targetFeature && sourceFeature !== targetFeature && edge.to !== `src/features/${targetFeature}/public.ts`) add("features-must-use-public-contracts", edge);
+    if (sourceFeature && targetFeature && sourceFeature !== targetFeature && !(policy.featurePublicContracts ?? []).includes(edge.to)) add("features-must-use-public-contracts", edge);
     if (sourceFeature && edge.to?.startsWith("src/application/") && !policy.featureApplicationContracts.includes(edge.to)) add("features-must-use-action-contracts", edge);
   }
 

@@ -126,13 +126,29 @@ test("rejects bare and node-prefixed built-in module specifiers in runtime code"
   }
 });
 
-test("allows domain dependencies and an explicit feature public contract", () => {
+test("allows domain dependencies and explicit feature public contracts", () => {
   assert.deepEqual(analyze({
     "src/features/inventory/View.ts": 'import { Badge } from "../timeline/public"; import type {} from "../../../app/domain/types";',
     "src/features/timeline/public.ts": 'export { Badge } from "./Badge";',
+    "src/features/crawler/View.ts": 'import { Badge } from "../timeline/ui-public.tsx";',
+    "src/features/timeline/ui-public.tsx": 'export { Badge } from "./Badge";',
     "src/features/timeline/Badge.ts": "export const Badge = 1;",
     "app/domain/types.ts": "export {};",
-  }), []);
+  }, { featurePublicContracts: ["src/features/timeline/public.ts", "src/features/timeline/ui-public.tsx"] }), []);
+});
+
+test("rejects feature dependencies on private modules inside other features", () => {
+  const violations1 = analyze({
+    "src/features/crawler/View.ts": 'import { Badge } from "../timeline/evidence/evidencePresentation.ts";',
+    "src/features/timeline/evidence/evidencePresentation.ts": "export const Badge = 1;",
+  });
+  assert.ok(violations1.some(({ rule }) => rule === "features-must-use-public-contracts"));
+
+  const violations2 = analyze({
+    "src/features/crawler/View.ts": 'import { Badge } from "../timeline/evidence/TelemetryBadge.tsx";',
+    "src/features/timeline/evidence/TelemetryBadge.tsx": "export const Badge = 1;",
+  });
+  assert.ok(violations2.some(({ rule }) => rule === "features-must-use-public-contracts"));
 });
 
 test("features may consume only focused application contracts", () => {
