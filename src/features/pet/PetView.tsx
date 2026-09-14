@@ -24,7 +24,7 @@ export function PetView({ pets }: { pets?: Pet[] }) {
             const displayName = pet.name ?? pet.species;
 
             return (
-              <Panel key={pet.petId} title={`PET · ${displayName.toUpperCase()}`}>
+              <Panel key={pet.petId} title={`PET · ${displayName.toUpperCase()}`} ariaLabel={`Pet ${displayName}`}>
                 <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>

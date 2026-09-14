@@ -15,7 +15,7 @@ export function PartyView({ party }: { party?: Party }) {
       </header>
 
       {party ? (
-        <Panel title={party.name}>
+        <Panel title={party.name} ariaLabel={`${party.name} roster`}>
           <div style={{ display: "grid", gap: "8px" }}>
             {party.members.map((member) => (
               <article key={member.crawlerId} style={{ alignItems: "center", background: "#09131b", border: "1px solid #203f4d", display: "flex", fontSize: "12px", justifyContent: "space-between", padding: "14px" }}>
