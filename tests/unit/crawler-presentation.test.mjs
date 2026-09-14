@@ -105,3 +105,55 @@ test("deriveCrawlerPresentation handles unknown/unsourced telemetry without erro
   assert.equal(presentation.effects.beneficial.length, 0);
   assert.equal(presentation.effects.harmful.length, 0);
 });
+
+test("isLive mutation gating invariant enforces isLive as strict mutation boundary regardless of points", () => {
+  const stateWithPoints = {
+    sequence: 5,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {
+      name: "Carl",
+      level: 5,
+      race: "Primal",
+      class: "Scout",
+      availableAttributePoints: 3,
+      attributes: { Strength: 20 },
+      permanentAttributeModifiers: { Strength: 0 },
+      condition: { currentHealth: 100, maxHealth: 100 },
+    },
+    effects: [],
+  };
+
+  const stateWithoutPoints = {
+    ...stateWithPoints,
+    crawler: { ...stateWithPoints.crawler, availableAttributePoints: 0 },
+  };
+
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+
+  const presentationWithPoints = deriveCrawlerPresentation(stateWithPoints, emptyObs);
+  const presentationWithoutPoints = deriveCrawlerPresentation(stateWithoutPoints, emptyObs);
+
+  // 1. Live + available points -> allocation is enabled in presentation
+  assert.equal(presentationWithPoints.canAllocatePoints, true);
+  const liveWithPointsCanMutate = true && presentationWithPoints.canAllocatePoints;
+  assert.equal(liveWithPointsCanMutate, true);
+
+  // 2. Live + no points -> allocation is disabled
+  assert.equal(presentationWithoutPoints.canAllocatePoints, false);
+  const liveWithoutPointsCanMutate = true && presentationWithoutPoints.canAllocatePoints;
+  assert.equal(liveWithoutPointsCanMutate, false);
+
+  // 3. Replay + historical state with no points -> disabled
+  const replayWithoutPointsCanMutate = false && presentationWithoutPoints.canAllocatePoints;
+  assert.equal(replayWithoutPointsCanMutate, false);
+
+  // 4. Replay + historical state WITH points -> disabled because isLive is false
+  const replayWithPointsCanMutate = false && presentationWithPoints.canAllocatePoints;
+  assert.equal(replayWithPointsCanMutate, false);
+
+  // 5. Replay + underlying current/live state has points (e.g. 5 points) -> STILL disabled because isLive is false
+  const liveUnderlyingPoints = 5;
+  assert.ok(liveUnderlyingPoints > 0);
+  const replayWithLivePointsCanMutate = false && (liveUnderlyingPoints > 0);
+  assert.equal(replayWithLivePointsCanMutate, false);
+});

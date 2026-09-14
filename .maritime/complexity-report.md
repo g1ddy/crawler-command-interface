@@ -1,12 +1,12 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-13
+**Last Updated:** 2026-09-12
 
-### 🏥 Repository Health Score: **59.0 / 100**
+### 🏥 Repository Health Score: **60.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 101
-*   **Measured Files**: 101
+*   **Total Graph Files**: 96
+*   **Measured Files**: 96
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)

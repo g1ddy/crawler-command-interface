@@ -174,12 +174,11 @@
         "src/application/capabilities.ts",
         "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
-        "src/features/crawler/crawler-presentation.ts",
-        "src/features/timeline/evidence/evidencePresentation.ts",
-        "src/features/crawler/health/condition-presentation.ts",
         "src/features/crawler/health/HealthConditions.tsx",
+        "src/features/timeline/evidence/evidencePresentation.ts",
         "src/features/timeline/evidence/TelemetryBadge.tsx",
         "src/features/timeline/SequenceBadge.tsx",
+        "src/features/crawler/health/condition-presentation.ts",
         "src/features/crawler/stats/PlayerStats.tsx",
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/awardHistory.ts",
@@ -199,7 +198,6 @@
         "src/features/ratings/RatingsView.tsx",
         "src/features/ratings/ratings-presentation.ts",
         "src/features/skills/SkillsView.tsx",
-        "src/features/skills/skills-presentation.ts",
         "src/shell/hud/ConceptHud.tsx",
         "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
         "src/shell/hud/hotlist/Hotlist.tsx",
@@ -2898,7 +2896,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
+          "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -2916,7 +2914,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../application/crawler-action-contracts.ts",
+          "module": "../../application/crawler-action-contracts",
           "resolved": "src/application/crawler-action-contracts.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -2933,41 +2931,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./crawler-presentation.ts",
-          "resolved": "src/features/crawler/crawler-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./CrawlerView.module.css",
-          "resolved": "src/features/crawler/CrawlerView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./health/HealthConditions.tsx",
+          "module": "./health/HealthConditions",
           "resolved": "src/features/crawler/health/HealthConditions.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -2984,7 +2948,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./stats/PlayerStats.tsx",
+          "module": "./stats/PlayerStats",
           "resolved": "src/features/crawler/stats/PlayerStats.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3013,198 +2977,6 @@
       "orphan": false
     },
     {
-      "source": "src/features/crawler/CrawlerView.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/crawler/CrawlerView.tsx",
-        "src/features/crawler/health/HealthConditions.tsx",
-        "src/features/crawler/stats/PlayerStats.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
-    },
-    {
-      "source": "src/features/crawler/crawler-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../timeline/public.ts",
-          "resolved": "src/features/timeline/public.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./health/condition-presentation.ts",
-          "resolved": "src/features/crawler/health/condition-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/crawler/CrawlerView.tsx",
-        "src/features/crawler/health/HealthConditions.tsx",
-        "src/features/crawler/stats/PlayerStats.tsx",
-        "src/features/crawler/public.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/public.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./evidence/evidencePresentation.ts",
-          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./replay-presentation.ts",
-          "resolved": "src/features/timeline/replay-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/crawler/crawler-presentation.ts",
-        "src/shell/replay/ReplaySurface.tsx",
-        "src/shell/replay/ReplayControls.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/evidence/evidencePresentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/timeline/public.ts",
-        "src/features/timeline/evidence/TelemetryBadge.tsx",
-        "src/shell/hud/ConceptHud.tsx",
-        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-        "src/shell/hud/PersistentHud.tsx",
-        "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
-        "src/shell/replay/ReplayControls.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/crawler/health/condition-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/crawler/crawler-presentation.ts"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/features/crawler/health/HealthConditions.tsx",
       "valid": true,
       "dependencies": [
@@ -3221,7 +2993,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../../app/domain/types.ts",
+          "module": "../../../../app/domain/types",
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3238,7 +3010,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../shared/ui/Panel.tsx",
+          "module": "../../../shared/ui/Panel",
           "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3255,8 +3027,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../timeline/ui-public.tsx",
-          "resolved": "src/features/timeline/ui-public.tsx",
+          "module": "../../timeline/public",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3266,32 +3038,14 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../crawler-presentation.ts",
-          "resolved": "src/features/crawler/crawler-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "../CrawlerView.module.css",
-          "resolved": "src/features/crawler/CrawlerView.module.css",
+          "module": "./condition-presentation",
+          "resolved": "src/features/crawler/health/condition-presentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -3342,7 +3096,7 @@
       "orphan": false
     },
     {
-      "source": "src/features/timeline/ui-public.tsx",
+      "source": "src/features/timeline/public.ts",
       "valid": true,
       "dependencies": [
         {
@@ -3357,7 +3111,24 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./evidence/TelemetryBadge.tsx",
+          "module": "./evidence/evidencePresentation.ts",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./evidence/TelemetryBadge",
           "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3374,7 +3145,24 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./SequenceBadge.tsx",
+          "module": "./replay-presentation.ts",
+          "resolved": "src/features/timeline/replay-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SequenceBadge",
           "resolved": "src/features/timeline/SequenceBadge.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3386,7 +3174,43 @@
         "src/features/inventory/equipment/EquipmentView.tsx",
         "src/features/inventory/ItemInspector.tsx",
         "src/features/ratings/RatingsView.tsx",
-        "src/features/floor/FloorRules.tsx"
+        "src/features/floor/FloorRules.tsx",
+        "src/shell/replay/ReplaySurface.tsx",
+        "src/shell/replay/ReplayControls.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/timeline/evidence/evidencePresentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/timeline/public.ts",
+        "src/features/timeline/evidence/TelemetryBadge.tsx",
+        "src/shell/hud/ConceptHud.tsx",
+        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+        "src/shell/hud/PersistentHud.tsx",
+        "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
+        "src/shell/replay/ReplayControls.tsx"
       ],
       "orphan": false
     },
@@ -3431,7 +3255,7 @@
         }
       ],
       "dependents": [
-        "src/features/timeline/ui-public.tsx",
+        "src/features/timeline/public.ts",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/timeline/diagnostics/SequenceInspector.tsx"
       ],
@@ -3495,10 +3319,38 @@
         }
       ],
       "dependents": [
-        "src/features/timeline/ui-public.tsx",
+        "src/features/timeline/public.ts",
         "src/features/timeline/history/TimelineHistory.tsx",
         "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
         "src/features/timeline/diagnostics/SequenceInspector.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/crawler/health/condition-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/crawler/health/HealthConditions.tsx"
       ],
       "orphan": false
     },
@@ -3571,43 +3423,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../timeline/ui-public.tsx",
-          "resolved": "src/features/timeline/ui-public.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../crawler-presentation",
-          "resolved": "src/features/crawler/crawler-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "../CrawlerView.module.css",
-          "resolved": "src/features/crawler/CrawlerView.module.css",
+          "module": "../../timeline/public",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -3965,8 +3782,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../timeline/ui-public.tsx",
-          "resolved": "src/features/timeline/ui-public.tsx",
+          "module": "../../timeline/public",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4289,8 +4106,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../timeline/ui-public.tsx",
-          "resolved": "src/features/timeline/ui-public.tsx",
+          "module": "../timeline/public",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -4765,8 +4582,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../timeline/ui-public.tsx",
-          "resolved": "src/features/timeline/ui-public.tsx",
+          "module": "../timeline/public",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4838,7 +4655,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
+          "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4856,7 +4673,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../application/crawler-action-contracts.ts",
+          "module": "../../application/crawler-action-contracts",
           "resolved": "src/application/crawler-action-contracts.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4873,42 +4690,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel.tsx",
+          "module": "../../shared/ui/Panel",
           "resolved": "src/shared/ui/Panel.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./skills-presentation.ts",
-          "resolved": "src/features/skills/skills-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./SkillsView.module.css",
-          "resolved": "src/features/skills/SkillsView.module.css",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4932,52 +4715,6 @@
       ],
       "dependents": [
         "src/shell/ActiveFeatureView.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/skills/SkillsView.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/skills/SkillsView.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
-    },
-    {
-      "source": "src/features/skills/skills-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/skills/SkillsView.tsx",
-        "src/features/skills/public.ts"
       ],
       "orphan": false
     },
@@ -5187,42 +4924,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../../app/domain/types.ts",
+          "module": "../../../../app/domain/types",
           "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../features/skills/public.ts",
-          "resolved": "src/features/skills/public.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./Hotlist.module.css",
-          "resolved": "src/shell/hud/hotlist/Hotlist.module.css",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -5230,50 +4933,6 @@
       "dependents": [
         "src/shell/hud/ConceptHud.tsx",
         "src/shell/hud/PersistentHud.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/shell/hud/hotlist/Hotlist.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/shell/hud/hotlist/Hotlist.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
-    },
-    {
-      "source": "src/features/skills/public.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./skills-presentation.ts",
-          "resolved": "src/features/skills/skills-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/hud/hotlist/Hotlist.tsx"
       ],
       "orphan": false
     },
@@ -5858,8 +5517,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../timeline/ui-public.tsx",
-          "resolved": "src/features/timeline/ui-public.tsx",
+          "module": "../timeline/public",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -6254,7 +5913,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../features/timeline/public.ts",
+          "module": "../../features/timeline/public",
           "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -6543,7 +6202,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../features/timeline/public.ts",
+          "module": "../../features/timeline/public",
           "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -7073,31 +6732,6 @@
       "orphan": false
     },
     {
-      "source": "src/features/crawler/public.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./crawler-presentation.ts",
-          "resolved": "src/features/crawler/crawler-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [],
-      "orphan": false
-    },
-    {
       "source": "src/main.concepts.tsx",
       "valid": true,
       "dependencies": [
@@ -7340,8 +6974,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 127,
-    "totalDependenciesCruised": 328,
+    "totalCruised": 119,
+    "totalDependenciesCruised": 313,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

@@ -5,13 +5,14 @@ import type {
   ProjectedObservationValue,
 } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
-import { TelemetryBadge } from "../timeline/ui-public.tsx";
+import { TelemetryBadge } from "../timeline/public";
 import type { InventoryActions } from "../../application/crawler-action-contracts";
 
 export function ItemInspector({
   selectedItem,
   observation,
   selectedSequence,
+  isLive = true,
   requirementResult,
   actions,
   onOpenProvenance,
@@ -20,6 +21,7 @@ export function ItemInspector({
   selectedItem: InventoryItem;
   observation?: ProjectedItemObservation;
   selectedSequence?: number;
+  isLive?: boolean;
   requirementResult: { met: boolean; details: { key: string; required: number | string; current: number | string; met: boolean }[] };
   actions: InventoryActions;
   onOpenProvenance: (item: InventoryItem) => void;
@@ -125,12 +127,14 @@ export function ItemInspector({
           selectedItem.category === "consumable") && (
           <button
             style={{
-              background: "#0e3a24",
-              borderColor: "#2de079",
-              color: "#62ef98",
+              background: isLive ? "#0e3a24" : "#1a241e",
+              borderColor: isLive ? "#2de079" : "#3b5e4c",
+              color: isLive ? "#62ef98" : "#6c8c77",
+              cursor: isLive ? "pointer" : "not-allowed",
             }}
+            disabled={!isLive}
             onClick={() =>
-              actions.consumeItem(selectedItem.instanceId)
+              isLive && actions.consumeItem(selectedItem.instanceId)
             }
           >
             USE CONSUMABLE 🧪
@@ -140,27 +144,35 @@ export function ItemInspector({
           selectedItem.category === "equipment") && (
           <button
             style={
-              selectedItem.isEquipped
+              !isLive
                 ? {
-                    background: "#2a0e12",
-                    borderColor: "#d5555e",
-                    color: "#ff8a80",
+                    background: "#1a2028",
+                    borderColor: "#2f3f4c",
+                    color: "#5c707f",
+                    cursor: "not-allowed",
                   }
-                : requirementResult.met
+                : selectedItem.isEquipped
                   ? {
-                      background: "#0e3a24",
-                      borderColor: "#2de079",
-                      color: "#62ef98",
+                      background: "#2a0e12",
+                      borderColor: "#d5555e",
+                      color: "#ff8a80",
                     }
-                  : {
-                      background: "#2a1818",
-                      borderColor: "#633030",
-                      color: "#8a5858",
-                      cursor: "not-allowed",
-                    }
+                  : requirementResult.met
+                    ? {
+                        background: "#0e3a24",
+                        borderColor: "#2de079",
+                        color: "#62ef98",
+                      }
+                    : {
+                        background: "#2a1818",
+                        borderColor: "#633030",
+                        color: "#8a5858",
+                        cursor: "not-allowed",
+                      }
             }
-            disabled={!selectedItem.isEquipped && !requirementResult.met}
+            disabled={!isLive || (!selectedItem.isEquipped && !requirementResult.met)}
             onClick={() => {
+              if (!isLive) return;
               if (!selectedItem.isEquipped && !requirementResult.met) return;
               if (selectedItem.isEquipped) actions.unequipItem(selectedItem.instanceId);
               else actions.equipItem(selectedItem.instanceId);
@@ -190,12 +202,14 @@ export function ItemInspector({
         )}
         <button
           style={{
-            background: "#0e2330",
-            borderColor: "#30729e",
-            color: "#86cbff",
+            background: isLive ? "#0e2330" : "#131b24",
+            borderColor: isLive ? "#30729e" : "#223d4f",
+            color: isLive ? "#86cbff" : "#577794",
+            cursor: isLive ? "pointer" : "not-allowed",
           }}
+          disabled={!isLive}
           onClick={() =>
-            actions.toggleItemLock(selectedItem.instanceId)
+            isLive && actions.toggleItemLock(selectedItem.instanceId)
           }
         >
           {selectedItem.isLocked ? "UNLOCK 🔒" : "LOCK 🔓"}
@@ -206,14 +220,14 @@ export function ItemInspector({
         {!selectedItem.isEquipped && (
           <button
             style={{
-              background: selectedItem.isLocked ? "#201214" : "#2e1215",
-              borderColor: selectedItem.isLocked ? "#4d2226" : "#d14b54",
-              color: selectedItem.isLocked ? "#6e4246" : "#ff8a90",
-              cursor: selectedItem.isLocked ? "not-allowed" : "pointer",
+              background: !isLive || selectedItem.isLocked ? "#201214" : "#2e1215",
+              borderColor: !isLive || selectedItem.isLocked ? "#4d2226" : "#d14b54",
+              color: !isLive || selectedItem.isLocked ? "#6e4246" : "#ff8a90",
+              cursor: !isLive || selectedItem.isLocked ? "not-allowed" : "pointer",
             }}
-            disabled={selectedItem.isLocked}
+            disabled={!isLive || selectedItem.isLocked}
             onClick={() =>
-              actions.discardItem(selectedItem.instanceId)
+              isLive && !selectedItem.isLocked && actions.discardItem(selectedItem.instanceId)
             }
           >
             DISCARD 🗑️

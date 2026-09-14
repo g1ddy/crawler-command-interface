@@ -1,8 +1,5 @@
 {
-  "featurePublicContracts": [
-    "src/features/timeline/public.ts",
-    "src/features/timeline/ui-public.tsx"
-  ],
+  "publicFeatureContract": "src/features/<feature>/public.ts",
   "featureApplicationContracts": [
     "src/application/crawler-action-contracts.ts",
     "src/application/crawler-session.ts"

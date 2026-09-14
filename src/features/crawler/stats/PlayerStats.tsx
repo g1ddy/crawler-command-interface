@@ -1,5 +1,5 @@
 import type { AttributeName, ProjectedObservationValue } from "../../../../app/domain/types";
-import { TelemetryBadge } from "../../timeline/ui-public.tsx";
+import { TelemetryBadge } from "../../timeline/public";
 import { Panel } from "../../../shared/ui/Panel";
 import type { CrawlerActions } from "../../../application/crawler-action-contracts";
 import type { DerivedCrawlerPresentation } from "../crawler-presentation";
@@ -15,11 +15,13 @@ const COLOR_MAP: Record<string, string> = {
 
 export function PlayerStats({
   presentation,
+  isLive = true,
   onInspectStat,
   onInspectObservation,
   actions,
 }: {
   presentation: DerivedCrawlerPresentation;
+  isLive?: boolean;
   onInspectStat: (stat: string) => void;
   onInspectObservation: (observation: ProjectedObservationValue) => void;
   actions: CrawlerActions;
@@ -69,10 +71,7 @@ export function PlayerStats({
             />
           </span>
           <em className={styles.xpTrack}>
-            <b
-              className={`${styles.xpFill} ${xp == null || maxXp == null ? styles.unknown : ""}`}
-              style={{ width: xp == null || maxXp == null ? "100%" : `${xpPercent}%` }}
-            />
+            <b className={styles.xpFill} style={{ width: `${xpPercent}%` }} />
           </em>
         </div>
       </header>
@@ -105,8 +104,8 @@ export function PlayerStats({
                 <div className={styles.attrActions}>
                   <button
                     className={styles.attrBtn}
-                    disabled={!canAllocatePoints}
-                    onClick={() => canAllocatePoints && actions.allocateAttribute(attrName as AttributeName)}
+                    disabled={!(isLive && canAllocatePoints)}
+                    onClick={() => isLive && canAllocatePoints && actions.allocateAttribute(attrName as AttributeName)}
                     aria-label={`Allocate attribute point to ${attrName}`}
                   >
                     +1

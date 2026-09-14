@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ReplayCommandCallbacks, ReplayPresentation } from "../../features/timeline/public.ts";
+import type { ReplayCommandCallbacks, ReplayPresentation } from "../../features/timeline/public";
 import { firstCountdownEvidenceSummary } from "../../features/timeline/evidence/evidencePresentation";
 import styles from "./ReplaySurface.module.css";
 

@@ -9,6 +9,7 @@ import styles from "./CrawlerView.module.css";
 export function CrawlerView(props: {
   state: CrawlerState;
   observations: ProjectedObservationsState;
+  isLive?: boolean;
   onInspectStat: (s: string) => void;
   onInspectObservation: (o: ProjectedObservationValue) => void;
   actions: CrawlerActions;
@@ -29,6 +30,7 @@ export function CrawlerView(props: {
       {mode === "stats" ? (
         <PlayerStats
           presentation={presentation}
+          isLive={props.isLive}
           onInspectStat={props.onInspectStat}
           onInspectObservation={props.onInspectObservation}
           actions={props.actions}

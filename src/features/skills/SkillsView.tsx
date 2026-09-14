@@ -7,9 +7,11 @@ import styles from "./SkillsView.module.css";
 
 export function SkillsView({
   state,
+  isLive = true,
   actions,
 }: {
   state: CrawlerState;
+  isLive?: boolean;
   actions: SkillActions;
 }) {
   const [selectedSkillId, setSelectedSkillId] = useState<string | undefined>(undefined);
@@ -25,7 +27,7 @@ export function SkillsView({
   const { skills, filteredSkills, categoryFilters, selectedSkill, hotlistSlots } = presentation;
 
   const handleAssignHotlist = (hotlistIndex: number) => {
-    if (!selectedSkill) return;
+    if (!isLive || !selectedSkill) return;
     actions.assignHotlistSlot(hotlistIndex, selectedSkill.skillId);
   };
 
@@ -106,6 +108,7 @@ export function SkillsView({
                     <button
                       key={slot.slotIndex}
                       className={`${styles.slotBtn} ${isAssignedToThisSkill ? styles.assigned : ""}`}
+                      disabled={!isLive}
                       onClick={() => handleAssignHotlist(slot.slotIndex)}
                       aria-label={`Assign to hotlist slot ${slot.slotNumber}`}
                     >

@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import type { Party } from "../../../app/domain/types";
+import { Panel } from "../../shared/ui/Panel";
 
 export function PartyView({ party }: { party?: Party }) {
   return (
@@ -14,8 +15,7 @@ export function PartyView({ party }: { party?: Party }) {
       </header>
 
       {party ? (
-        <section className="panel" aria-label={`${party.name} roster`}>
-          <h2>{party.name}</h2>
+        <Panel title={party.name}>
           <div style={{ display: "grid", gap: "8px" }}>
             {party.members.map((member) => (
               <article key={member.crawlerId} style={{ alignItems: "center", background: "#09131b", border: "1px solid #203f4d", display: "flex", fontSize: "12px", justifyContent: "space-between", padding: "14px" }}>
@@ -24,7 +24,7 @@ export function PartyView({ party }: { party?: Party }) {
               </article>
             ))}
           </div>
-        </section>
+        </Panel>
       ) : (
         <p style={{ color: "#8fa4ad", fontSize: "10px" }}>No party state is available at this replay point.</p>
       )}

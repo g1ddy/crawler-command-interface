@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import type { Pet } from "../../../app/domain/types";
+import { Panel } from "../../shared/ui/Panel";
 
 export function PetView({ pets }: { pets?: Pet[] }) {
   const activePets = pets || [];
@@ -23,7 +24,7 @@ export function PetView({ pets }: { pets?: Pet[] }) {
             const displayName = pet.name ?? pet.species;
 
             return (
-              <section key={pet.petId} className="panel" aria-label={`Pet ${displayName}`}>
+              <Panel key={pet.petId} title={`PET · ${displayName.toUpperCase()}`}>
                 <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -112,7 +113,7 @@ export function PetView({ pets }: { pets?: Pet[] }) {
                     </div>
                   )}
                 </div>
-              </section>
+              </Panel>
             );
           })}
         </div>

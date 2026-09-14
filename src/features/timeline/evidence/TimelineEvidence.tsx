@@ -36,5 +36,5 @@ export function TimelineEvidence({ observations, sequence, onInspectObservation,
     </Panel>
   );
   if (!isModal) return content;
-  return <div className="modal-backdrop" onClick={onClose}><div className="modal-content panel" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "800px", maxHeight: "85vh", overflowY: "auto" }}><div className="modal-header" style={{ marginBottom: "12px" }}><div><p className="eyebrow">TELEMETRY & EVIDENCE INSPECTOR</p><h2>SOURCED HUD OBSERVATIONS</h2></div>{onClose && <button className="close-btn" onClick={onClose}>✕</button>}</div>{content}<div className="modal-footer" style={{ marginTop: "12px" }}><button className="outline" onClick={onClose}>CLOSE</button></div></div></div>;
+  return <div className="modal-backdrop" onClick={onClose}><div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "800px", maxHeight: "85vh", overflowY: "auto" }}><div className="modal-header" style={{ marginBottom: "12px" }}><div><p className="eyebrow">TELEMETRY & EVIDENCE INSPECTOR</p><h2>SOURCED HUD OBSERVATIONS</h2></div>{onClose && <button className="close-btn" onClick={onClose}>✕</button>}</div>{content}<div className="modal-footer" style={{ marginTop: "12px" }}><button className="outline" onClick={onClose}>CLOSE</button></div></div></div>;
 }

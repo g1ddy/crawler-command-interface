@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.01,
-    "fanIn": 70,
+    "fanIn": 68,
     "fanOut": 1,
     "scanned": true
   },
@@ -329,50 +329,18 @@
   },
   "src/features/crawler/CrawlerView.tsx": {
     "complexity": 4,
-    "loc": 42,
-    "instability": 0.88,
-    "fanIn": 1,
-    "fanOut": 7,
-    "scanned": true
-  },
-  "src/features/crawler/crawler-presentation.ts": {
-    "complexity": 15,
-    "loc": 165,
-    "instability": 0.43,
-    "fanIn": 4,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/features/timeline/public.ts": {
-    "complexity": 1,
-    "loc": 23,
-    "instability": 0.4,
-    "fanIn": 3,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "src/features/timeline/evidence/evidencePresentation.ts": {
-    "complexity": 15,
-    "loc": 153,
-    "instability": 0.13,
-    "fanIn": 7,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/features/crawler/health/condition-presentation.ts": {
-    "complexity": 1,
-    "loc": 5,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/features/crawler/health/HealthConditions.tsx": {
-    "complexity": 8,
-    "loc": 97,
+    "loc": 10,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
+    "scanned": true
+  },
+  "src/features/crawler/health/HealthConditions.tsx": {
+    "complexity": 7,
+    "loc": 21,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
     "scanned": true
   },
   "src/shared/ui/Panel.tsx": {
@@ -383,12 +351,20 @@
     "fanOut": 1,
     "scanned": true
   },
-  "src/features/timeline/ui-public.tsx": {
+  "src/features/timeline/public.ts": {
     "complexity": 1,
-    "loc": 4,
-    "instability": 0.25,
-    "fanIn": 6,
-    "fanOut": 2,
+    "loc": 25,
+    "instability": 0.33,
+    "fanIn": 8,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/evidencePresentation.ts": {
+    "complexity": 15,
+    "loc": 153,
+    "instability": 0.13,
+    "fanIn": 7,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/timeline/evidence/TelemetryBadge.tsx": {
@@ -407,12 +383,20 @@
     "fanOut": 3,
     "scanned": true
   },
-  "src/features/crawler/stats/PlayerStats.tsx": {
-    "complexity": 12,
-    "loc": 133,
-    "instability": 0.86,
+  "src/features/crawler/health/condition-presentation.ts": {
+    "complexity": 1,
+    "loc": 5,
+    "instability": 0.5,
     "fanIn": 1,
-    "fanOut": 6,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/crawler/stats/PlayerStats.tsx": {
+    "complexity": 18,
+    "loc": 41,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
     "scanned": true
   },
   "src/features/inventory/InventoryView.tsx": {
@@ -568,19 +552,11 @@
     "scanned": true
   },
   "src/features/skills/SkillsView.tsx": {
-    "complexity": 3,
+    "complexity": 5,
     "loc": 124,
-    "instability": 0.86,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 6,
-    "scanned": true
-  },
-  "src/features/skills/skills-presentation.ts": {
-    "complexity": 4,
-    "loc": 83,
-    "instability": 0.33,
-    "fanIn": 2,
-    "fanOut": 1,
+    "fanOut": 4,
     "scanned": true
   },
   "src/shell/navigation/navigation-model.ts": {
@@ -609,17 +585,9 @@
   },
   "src/shell/hud/hotlist/Hotlist.tsx": {
     "complexity": 6,
-    "loc": 35,
-    "instability": 0.6,
+    "loc": 26,
+    "instability": 0.33,
     "fanIn": 2,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/features/skills/public.ts": {
-    "complexity": 1,
-    "loc": 11,
-    "instability": 0.5,
-    "fanIn": 1,
     "fanOut": 1,
     "scanned": true
   },
@@ -781,14 +749,6 @@
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
-    "scanned": true
-  },
-  "src/features/crawler/public.ts": {
-    "complexity": 1,
-    "loc": 7,
-    "instability": 1,
-    "fanIn": 0,
-    "fanOut": 1,
     "scanned": true
   },
   "src/main.concepts.tsx": {

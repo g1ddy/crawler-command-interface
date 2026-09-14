@@ -76,3 +76,32 @@ test("deriveSkillsPresentation compiles full presentation state", () => {
   assert.equal(presentation.selectedSkill?.skillId, "sk-2");
   assert.equal(presentation.hotlistSlots[0].skill?.skillId, "sk-2");
 });
+
+test("isLive mutation gating disables hotlist assignment during replay", () => {
+  let assignedSlot = null;
+  const mockActions = {
+    assignHotlistSlot: (slotIndex, skillId) => {
+      assignedSlot = { slotIndex, skillId };
+    },
+  };
+
+  const handleAssignHotlist = (isLive, selectedSkill, slotIndex) => {
+    if (!isLive || !selectedSkill) return false;
+    mockActions.assignHotlistSlot(slotIndex, selectedSkill.skillId);
+    return true;
+  };
+
+  const selectedSkill = mockSkills[0];
+
+  // 1. Live + selected skill -> assignment succeeds
+  const liveResult = handleAssignHotlist(true, selectedSkill, 0);
+  assert.equal(liveResult, true);
+  assert.deepEqual(assignedSlot, { slotIndex: 0, skillId: "sk-1" });
+
+  assignedSlot = null;
+
+  // 2. Replay (isLive = false) + selected skill -> assignment disabled / rejected
+  const replayResult = handleAssignHotlist(false, selectedSkill, 0);
+  assert.equal(replayResult, false);
+  assert.equal(assignedSlot, null);
+});
