@@ -77,7 +77,7 @@ export function SkillsView({
         </Panel>
 
         {selectedSkill && (
-          <Panel title="SKILL INSPECTOR">
+          <Panel title="SKILL INSPECTOR" className={styles.inspectorPanel}>
             <div className={styles.hero}>{selectedSkill.icon}</div>
             <h1 className={styles.inspectorTitle}>{selectedSkill.name.toUpperCase()}</h1>
             <i className={styles.badge}>{selectedSkill.rank}</i>
