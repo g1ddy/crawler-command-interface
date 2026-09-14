@@ -104,3 +104,42 @@ test("export Notifications", async ({ page }) => { await selectTopLevelTab(page,
 test("export Floor Rules modal view", async ({ page }) => { await page.getByRole("button", { name: "📜 FLOOR RULES", exact: true }).click(); await expect(page.getByRole("heading", { name: "FLOOR RULES", exact: true })).toBeVisible(); await capture(page, "floorRules"); });
 test("export Timeline History modal view", async ({ page }) => { await page.getByRole("button", { name: "📜 HISTORY", exact: true }).click(); await expect(page.getByRole("heading", { name: "EVENT & NARRATIVE LOG", exact: true })).toBeVisible(); await capture(page, "timelineHistory"); });
 test("export System Tools modal view", async ({ page }) => { await page.getByRole("button", { name: "Open data tools" }).click(); await expect(page.getByRole("heading", { name: "IMPORT / EXPORT CRAWLER TIMELINE", exact: true })).toBeVisible(); await capture(page, "systemTools"); });
+
+test("mutation gating: live mode behavior when points remain vs empty", async ({ page }) => {
+  await selectCrawlerSubTab(page, "STATS");
+
+  const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
+
+  // Either it is enabled (points exist) or disabled (0 points).
+  // If it's enabled, we can click it until it becomes disabled.
+  if (await allocateBtn.isEnabled()) {
+    while (await allocateBtn.isEnabled()) {
+      await allocateBtn.click();
+    }
+  }
+  await expect(allocateBtn).toBeDisabled();
+});
+
+test("mutation gating: historical replay disables stat allocation regardless of live points", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("15");
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+
+  await selectCrawlerSubTab(page, "STATS");
+  const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
+  await expect(allocateBtn).toBeDisabled();
+
+  const originalValue = await page.getByRole("button", { name: "Strength 🔍" }).locator("b").textContent();
+  try { await allocateBtn.click({ timeout: 1000 }); } catch {}
+  await expect(page.getByRole("button", { name: "Strength 🔍" }).locator("b")).toHaveText(originalValue!);
+});
+
+test("mutation gating: early replay disables stat allocation", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("2");
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+
+  await selectCrawlerSubTab(page, "STATS");
+  const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
+  await expect(allocateBtn).toBeDisabled();
+});
