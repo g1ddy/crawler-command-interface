@@ -236,7 +236,7 @@
   .skillsGrid {
     grid-template-columns: 170px 1fr;
   }
-  .skillsGrid > :global(.panel):last-child {
+  .inspectorPanel {
     grid-column: 1 / -1;
   }
 }
