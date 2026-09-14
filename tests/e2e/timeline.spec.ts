@@ -124,8 +124,6 @@ test("inventory browser and inspector resolve the same visible selection", async
 });
 
 test("live interactions append events without rewriting historical state", async ({ page }) => {
-  await selectSequence(page, floor1EndSequence);
-  await expect(page.getByText(`HISTORICAL VIEW · REPLAYING SEQUENCE #${floor1EndSequence}`)).toBeVisible();
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   const firstItem = page.locator(".grid .item").first();
   await firstItem.click();
@@ -136,7 +134,8 @@ test("live interactions append events without rewriting historical state", async
   await expect(page.getByRole("status")).toContainText(`Locked ${itemName}`);
 
   await selectSequence(page, floor1EndSequence);
-  await expect(page.getByRole("button", { name: /^LOCK/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^LOCK/ })).toBeDisabled();
+
   await page.getByRole("button", { name: /RETURN TO LIVE/ }).first().click();
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();
 });
