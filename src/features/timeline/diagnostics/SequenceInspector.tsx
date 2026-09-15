@@ -1,6 +1,5 @@
 import type { CrawlerEvent, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineObservation } from "../../../../app/domain/types";
-import { SequenceBadge } from "../SequenceBadge";
-import { TelemetryBadge } from "../evidence/TelemetryBadge";
+import { SequenceBadge, TelemetryBadge } from "../public";
 
 export type TimelineFeedMode = "all" | "events-only" | "telemetry-only";
 
