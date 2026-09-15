@@ -1,0 +1,107 @@
+.viewContent {
+  display: grid;
+  gap: var(--hud-space-lg);
+}
+
+.title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--hud-space-md);
+  flex-wrap: wrap;
+  gap: var(--hud-space-md);
+}
+
+.title h1 {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  color: var(--hud-text-author);
+  margin: 0;
+}
+
+.titleCount {
+  font-size: 0.875rem;
+  color: var(--hud-text-secondary);
+  font-family: var(--hud-font-mono);
+}
+
+.eyebrow {
+  font-size: var(--hud-label-compact);
+  letter-spacing: 0.14em;
+  color: var(--hud-text-subdued);
+  margin: 0 0 var(--hud-space-xs);
+  text-transform: uppercase;
+}
+
+.inventoryGrid {
+  display: grid;
+  grid-template-columns: 185px minmax(0, 1fr) 340px;
+  gap: var(--hud-space-lg);
+}
+
+.categories {
+  display: grid;
+  gap: var(--hud-space-xs);
+}
+
+.categories button {
+  border: 0;
+  border-left: 3px solid transparent;
+  background: transparent;
+  padding: var(--hud-space-sm) var(--hud-space-xs);
+  min-height: var(--hud-touch-target-min);
+  text-align: left;
+  color: var(--hud-text-secondary);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  border-radius: var(--hud-radius-sm);
+  transition: border-color var(--hud-transition-duration), background-color var(--hud-transition-duration), color var(--hud-transition-duration);
+}
+
+.categories button:focus-visible {
+  outline: var(--hud-focus-ring);
+  outline-offset: 2px;
+}
+
+.categories button b {
+  float: right;
+  font-family: var(--hud-font-mono);
+}
+
+.categories button.on {
+  border-left-color: var(--hud-text-author);
+  color: var(--hud-text-author);
+  background: var(--hud-evidence-current-bg);
+}
+
+.rightCol {
+  display: grid;
+  gap: var(--hud-space-lg);
+}
+
+@media (max-width: 1050px) {
+  .inventoryGrid {
+    grid-template-columns: 170px 1fr;
+  }
+  .rightCol {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .inventoryGrid {
+    grid-template-columns: 1fr;
+  }
+  .rightCol {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+  .title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--hud-space-xs);
+  }
+  .title h1 {
+    font-size: 1.75rem;
+  }
+}

@@ -1,45 +1,26 @@
-import type { InventoryItem } from "../../../app/domain/types";
+import type { InventoryCategoryPresentation } from "./inventory-presentation";
 import { Panel } from "../../shared/ui/Panel";
 
 export function InventoryCategories({
-  items,
-  awardsCount,
+  categories,
   filter,
   setFilter,
 }: {
-  items: InventoryItem[];
-  awardsCount: number;
+  categories: InventoryCategoryPresentation[];
   filter: string;
   setFilter: (f: string) => void;
 }) {
-  const categories = [
-    "ALL ITEMS",
-    "EQUIPMENT",
-    "CONSUMABLES",
-    "QUEST ITEMS",
-    "CRAFTING",
-    ...(awardsCount > 0 || filter === "AWARDS / BOXES"
-      ? ["AWARDS / BOXES"]
-      : []),
-  ];
-
   return (
     <Panel title="CATEGORIES">
       <div className="categories">
         {categories.map((category) => (
           <button
-            className={filter === category ? "on" : ""}
-            onClick={() => setFilter(category)}
-            key={category}
+            className={filter === category.id ? "on" : ""}
+            onClick={() => setFilter(category.id)}
+            key={category.id}
           >
-            {category}
-            <b>
-              {category === "AWARDS / BOXES"
-                ? awardsCount
-                : category === "ALL ITEMS"
-                  ? items.length
-                  : items.filter((item) => item.category === category).length}
-            </b>
+            {category.label}
+            <b>{category.count}</b>
           </button>
         ))}
       </div>

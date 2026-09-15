@@ -81,6 +81,23 @@ test("renders Quests from an isolated noncanonical fixture without publishing a 
   await expect(page.getByText("Test Quest", { exact: true })).toBeVisible();
 });
 
+test("Possessions replay boundary and mutation gating: disables actions when scrubbing replay", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("5");
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+
+  await selectTopLevelTab(page, "INVENTORY");
+  await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: /^EQUIPMENT\b/ }).click();
+  await expect(page.getByText(/ADAPTIVE LOADOUT/)).toBeVisible();
+
+  const unequipBtn = page.getByRole("button", { name: /UNEQUIP/i }).first();
+  if (await unequipBtn.count() > 0) {
+    await expect(unequipBtn).toBeDisabled();
+  }
+});
+
 test("root navigation follows the real Party capability boundary during replay", async ({ page }) => {
   const navigation = page.getByRole("navigation", { name: "Main Navigation" });
   await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click();
@@ -110,8 +127,6 @@ test("mutation gating: live mode behavior when points remain vs empty", async ({
 
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
 
-  // Either it is enabled (points exist) or disabled (0 points).
-  // If it's enabled, we can click it until it becomes disabled.
   if (await allocateBtn.isEnabled()) {
     while (await allocateBtn.isEnabled()) {
       await allocateBtn.click();

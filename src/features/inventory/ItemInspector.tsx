@@ -7,13 +7,15 @@ import type {
 import { Panel } from "../../shared/ui/Panel";
 import { TelemetryBadge } from "../timeline/public";
 import type { InventoryActions } from "../../application/crawler-action-contracts";
+import type { InventoryItemActionCapabilities } from "./inventory-presentation";
+import type { RequirementDetail, RequirementResult } from "../../../app/domain/stats";
 
 export function ItemInspector({
   selectedItem,
   observation,
   selectedSequence,
-  isLive = true,
   requirementResult,
+  actionCapabilities,
   actions,
   onOpenProvenance,
   onInspectObservation,
@@ -21,8 +23,8 @@ export function ItemInspector({
   selectedItem: InventoryItem;
   observation?: ProjectedItemObservation;
   selectedSequence?: number;
-  isLive?: boolean;
-  requirementResult: { met: boolean; details: { key: string; required: number | string; current: number | string; met: boolean }[] };
+  requirementResult: RequirementResult;
+  actionCapabilities: InventoryItemActionCapabilities;
   actions: InventoryActions;
   onOpenProvenance: (item: InventoryItem) => void;
   onInspectObservation: (
@@ -49,6 +51,11 @@ export function ItemInspector({
           : null,
       ].filter((detail): detail is string => detail !== null)
     : [];
+
+  const isConsumable =
+    selectedItem.category === "CONSUMABLES" || selectedItem.category === "consumable";
+  const isEquipment =
+    selectedItem.category === "EQUIPMENT" || selectedItem.category === "equipment";
 
   return (
     <Panel title="ITEM INSPECTOR">
@@ -123,59 +130,55 @@ export function ItemInspector({
         </div>
       )}
       <div className="actions" style={{ flexWrap: "wrap", gap: "6px" }}>
-        {(selectedItem.category === "CONSUMABLES" ||
-          selectedItem.category === "consumable") && (
+        {isConsumable && (
           <button
             style={{
-              background: isLive ? "#0e3a24" : "#1a241e",
-              borderColor: isLive ? "#2de079" : "#3b5e4c",
-              color: isLive ? "#62ef98" : "#6c8c77",
-              cursor: isLive ? "pointer" : "not-allowed",
+              background: actionCapabilities.canConsume ? "#0e3a24" : "#1a241e",
+              borderColor: actionCapabilities.canConsume ? "#2de079" : "#3b5e4c",
+              color: actionCapabilities.canConsume ? "#62ef98" : "#6c8c77",
+              cursor: actionCapabilities.canConsume ? "pointer" : "not-allowed",
             }}
-            disabled={!isLive}
+            disabled={!actionCapabilities.canConsume}
             onClick={() =>
-              isLive && actions.consumeItem(selectedItem.instanceId)
+              actionCapabilities.canConsume && actions.consumeItem(selectedItem.instanceId)
             }
           >
             USE CONSUMABLE 🧪
           </button>
         )}
-        {(selectedItem.category === "EQUIPMENT" ||
-          selectedItem.category === "equipment") && (
+        {isEquipment && (
           <button
             style={
-              !isLive
+              selectedItem.isEquipped
                 ? {
-                    background: "#1a2028",
-                    borderColor: "#2f3f4c",
-                    color: "#5c707f",
-                    cursor: "not-allowed",
+                    background: actionCapabilities.canUnequip ? "#2a0e12" : "#1a1214",
+                    borderColor: actionCapabilities.canUnequip ? "#d5555e" : "#4a2226",
+                    color: actionCapabilities.canUnequip ? "#ff8a80" : "#7e5256",
+                    cursor: actionCapabilities.canUnequip ? "pointer" : "not-allowed",
                   }
-                : selectedItem.isEquipped
+                : actionCapabilities.canEquip
                   ? {
-                      background: "#2a0e12",
-                      borderColor: "#d5555e",
-                      color: "#ff8a80",
+                      background: "#0e3a24",
+                      borderColor: "#2de079",
+                      color: "#62ef98",
+                      cursor: "pointer",
                     }
-                  : requirementResult.met
-                    ? {
-                        background: "#0e3a24",
-                        borderColor: "#2de079",
-                        color: "#62ef98",
-                      }
-                    : {
-                        background: "#2a1818",
-                        borderColor: "#633030",
-                        color: "#8a5858",
-                        cursor: "not-allowed",
-                      }
+                  : {
+                      background: "#2a1818",
+                      borderColor: "#633030",
+                      color: "#8a5858",
+                      cursor: "not-allowed",
+                    }
             }
-            disabled={!isLive || (!selectedItem.isEquipped && !requirementResult.met)}
+            disabled={
+              selectedItem.isEquipped ? !actionCapabilities.canUnequip : !actionCapabilities.canEquip
+            }
             onClick={() => {
-              if (!isLive) return;
-              if (!selectedItem.isEquipped && !requirementResult.met) return;
-              if (selectedItem.isEquipped) actions.unequipItem(selectedItem.instanceId);
-              else actions.equipItem(selectedItem.instanceId);
+              if (selectedItem.isEquipped) {
+                if (actionCapabilities.canUnequip) actions.unequipItem(selectedItem.instanceId);
+              } else {
+                if (actionCapabilities.canEquip) actions.equipItem(selectedItem.instanceId);
+              }
             }}
           >
             {selectedItem.isEquipped ? "UNEQUIP GEAR ✕" : "EQUIP GEAR ⚔"}
@@ -192,9 +195,9 @@ export function ItemInspector({
           >
             Requirements unmet:{" "}
             {requirementResult.details
-              .filter((detail) => !detail.met)
+              .filter((detail: RequirementDetail) => !detail.met)
               .map(
-                (detail) =>
+                (detail: RequirementDetail) =>
                   `${detail.key} ${detail.required} (current: ${detail.current})`,
               )
               .join(", ")}
@@ -202,14 +205,14 @@ export function ItemInspector({
         )}
         <button
           style={{
-            background: isLive ? "#0e2330" : "#131b24",
-            borderColor: isLive ? "#30729e" : "#223d4f",
-            color: isLive ? "#86cbff" : "#577794",
-            cursor: isLive ? "pointer" : "not-allowed",
+            background: actionCapabilities.canToggleLock ? "#0e2330" : "#131b24",
+            borderColor: actionCapabilities.canToggleLock ? "#30729e" : "#223d4f",
+            color: actionCapabilities.canToggleLock ? "#86cbff" : "#577794",
+            cursor: actionCapabilities.canToggleLock ? "pointer" : "not-allowed",
           }}
-          disabled={!isLive}
+          disabled={!actionCapabilities.canToggleLock}
           onClick={() =>
-            isLive && actions.toggleItemLock(selectedItem.instanceId)
+            actionCapabilities.canToggleLock && actions.toggleItemLock(selectedItem.instanceId)
           }
         >
           {selectedItem.isLocked ? "UNLOCK 🔒" : "LOCK 🔓"}
@@ -220,14 +223,14 @@ export function ItemInspector({
         {!selectedItem.isEquipped && (
           <button
             style={{
-              background: !isLive || selectedItem.isLocked ? "#201214" : "#2e1215",
-              borderColor: !isLive || selectedItem.isLocked ? "#4d2226" : "#d14b54",
-              color: !isLive || selectedItem.isLocked ? "#6e4246" : "#ff8a90",
-              cursor: !isLive || selectedItem.isLocked ? "not-allowed" : "pointer",
+              background: actionCapabilities.canDiscard ? "#2e1215" : "#201214",
+              borderColor: actionCapabilities.canDiscard ? "#d14b54" : "#4d2226",
+              color: actionCapabilities.canDiscard ? "#ff8a90" : "#6e4246",
+              cursor: actionCapabilities.canDiscard ? "pointer" : "not-allowed",
             }}
-            disabled={!isLive || selectedItem.isLocked}
+            disabled={!actionCapabilities.canDiscard}
             onClick={() =>
-              isLive && !selectedItem.isLocked && actions.discardItem(selectedItem.instanceId)
+              actionCapabilities.canDiscard && actions.discardItem(selectedItem.instanceId)
             }
           >
             DISCARD 🗑️

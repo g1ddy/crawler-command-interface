@@ -1,6 +1,6 @@
 import type {
   InventoryItem,
-  ProjectedObservationsState,
+  ProjectedItemObservation,
 } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
 import type { InventorySortOrder } from "./inventoryItemBrowserModel";
@@ -17,7 +17,7 @@ export function InventoryItemBrowser({
   setSelectedInstanceId,
 }: {
   visibleItems: InventoryItem[];
-  observations: ProjectedObservationsState;
+  observations: Record<string, ProjectedItemObservation | undefined>;
   filter: string;
   search: string;
   setSearch: (search: string) => void;
@@ -60,7 +60,7 @@ export function InventoryItemBrowser({
       {visibleItems.length > 0 ? (
         <div className="grid">
           {visibleItems.map((item) => {
-            const observation = observations.inventory[item.instanceId];
+            const observation = observations[item.instanceId];
             return (
               <button
                 className={`item ${item.rarity} ${
