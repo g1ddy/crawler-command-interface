@@ -49,7 +49,6 @@ export interface DeriveInventoryPresentationInput {
   equippedSlots: EquippedSlotMap | Record<string, string | null | undefined>;
   observations: Record<string, ProjectedItemObservation | undefined>;
   crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
-  liveCrawler?: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
   filter: string;
   search: string;
   sortOrder: InventorySortOrder;
@@ -66,7 +65,6 @@ export function deriveInventoryPresentation(
     equippedSlots,
     observations,
     crawler,
-    liveCrawler = crawler,
     filter,
     search,
     sortOrder,
@@ -79,7 +77,7 @@ export function deriveInventoryPresentation(
   const selectedItem = resolveSelectedInventoryItem(visibleItems, selectedInstanceId);
 
   const selectedItemRequirements = checkItemRequirements(
-    liveCrawler as Parameters<typeof checkItemRequirements>[0],
+    crawler as Parameters<typeof checkItemRequirements>[0],
     selectedItem?.requirements,
   );
 

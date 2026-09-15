@@ -10,7 +10,7 @@ import { SkillsView } from "../features/skills/SkillsView";
 import type { RootView } from "./navigation/navigation-model";
 import type { ApplicationActions, EquipmentSlot } from "../application/crawler-action-contracts";
 
-export function ActiveFeatureView({ view, state, liveState, observations, events, sequence, isLive, provenanceItem, setProvenanceItem, inventoryFilter, setInventoryFilter, equipmentSlot, setEquipmentSlot, onNavigateToSequence, actions, onInspectObservation, onInspectStat }: {
+export function ActiveFeatureView({ view, state, observations, events, sequence, isLive, provenanceItem, setProvenanceItem, inventoryFilter, setInventoryFilter, equipmentSlot, setEquipmentSlot, onNavigateToSequence, actions, onInspectObservation, onInspectStat }: {
   view: RootView;
   state: CrawlerState;
   liveState: CrawlerState;
@@ -48,7 +48,6 @@ export function ActiveFeatureView({ view, state, liveState, observations, events
         sequence={sequence}
         isLive={isLive}
         crawler={state.crawler}
-        liveCrawler={liveState.crawler}
         provenanceItem={provenanceItem}
         setProvenanceItem={setProvenanceItem}
         filter={inventoryFilter}

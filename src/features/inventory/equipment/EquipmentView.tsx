@@ -3,12 +3,13 @@ import type {
   ProjectedEquipmentObservation,
   ProjectedItemObservation,
   ProjectedObservationValue,
-} from "../../../../app/domain/types";
-import { TelemetryBadge } from "../../timeline/public";
-import { Panel } from "../../../shared/ui/Panel";
-import type { EquipmentSlot, InventoryActions } from "../../../application/crawler-action-contracts";
-import type { DerivedEquipmentPresentation } from "./equipment-presentation";
-import type { RequirementDetail } from "../../../../app/domain/stats";
+} from "../../../../app/domain/types.ts";
+import { TelemetryBadge } from "../../timeline/public.ts";
+import { Panel } from "../../../shared/ui/Panel.tsx";
+import type { EquipmentSlot, InventoryActions } from "../../../application/crawler-action-contracts.ts";
+import type { DerivedEquipmentPresentation } from "./equipment-presentation.ts";
+import type { RequirementDetail } from "../../../../app/domain/stats.ts";
+import styles from "./EquipmentView.module.css";
 
 export function EquipmentView({
   presentation,
@@ -44,19 +45,20 @@ export function EquipmentView({
   } = presentation;
 
   return (
-    <div className="equipment-workspace">
+    <div className={styles.equipmentWorkspace}>
       <Panel title="ADAPTIVE LOADOUT · PRIMAL">
-        <p className="slot-note">
+        <p className={styles.slotNote}>
           Click a body slot to inspect equipped gear, compare inventory candidates, and evaluate stat deltas.
         </p>
-        <div className="loadout-diagram">
-          <div className="body-core">◉</div>
+        <div className={styles.loadoutDiagram}>
+          <div className={styles.bodyCore}>◉</div>
           {slots.map((s, index) => {
             const isSelected = slot === s.slot;
+            const slotIndexClass = styles[`s${index}` as keyof typeof styles] ?? "";
             return (
               <button
                 key={s.slot}
-                className={`body-slot s${index} ${isSelected ? "selected" : ""}`}
+                className={`${styles.bodySlot} ${slotIndexClass} ${isSelected ? styles.selected : ""}`}
                 onClick={() => {
                   setSlot(s.slot);
                   setSelectedCandidateId(null);
@@ -82,7 +84,7 @@ export function EquipmentView({
             );
           })}
         </div>
-        <div className="slot-legend">
+        <div className={styles.slotLegend}>
           <span>◉ Occupied</span>
           <span>◇ Special</span>
           <span>— Empty Slot</span>
@@ -163,26 +165,29 @@ export function EquipmentView({
           </p>
 
           {slotCandidates.length > 0 ? (
-            <div className="candidate-grid">
-              {slotCandidates.map((candidate) => (
-                <button
-                  key={candidate.instanceId}
-                  className={`candidate ${candidate.rarity} ${
-                    activeCandidate?.instanceId === candidate.instanceId ? "selected" : ""
-                  }`}
-                  onClick={() => setSelectedCandidateId(candidate.instanceId)}
-                >
-                  <i>{candidate.icon}</i>
-                  <span>{candidate.name}</span>
-                  <b>
-                    {candidate.isEquipped
-                      ? "EQUIPPED"
-                      : candidate.isLocked
-                        ? "🔒 LOCKED"
-                        : candidate.rarity.toUpperCase()}
-                  </b>
-                </button>
-              ))}
+            <div className={styles.candidateGrid}>
+              {slotCandidates.map((candidate) => {
+                const rarityClass = styles[candidate.rarity as keyof typeof styles] ?? "";
+                return (
+                  <button
+                    key={candidate.instanceId}
+                    className={`${styles.candidate} ${rarityClass} ${
+                      activeCandidate?.instanceId === candidate.instanceId ? styles.selected : ""
+                    }`}
+                    onClick={() => setSelectedCandidateId(candidate.instanceId)}
+                  >
+                    <i>{candidate.icon}</i>
+                    <span>{candidate.name}</span>
+                    <b>
+                      {candidate.isEquipped
+                        ? "EQUIPPED"
+                        : candidate.isLocked
+                          ? "🔒 LOCKED"
+                          : candidate.rarity.toUpperCase()}
+                    </b>
+                  </button>
+                );
+              })}
             </div>
           ) : (
             <p style={{ fontSize: "11px", color: "#7fa0ac" }}>
@@ -193,14 +198,14 @@ export function EquipmentView({
 
         {activeCandidate && (
           <Panel title="GEAR STAT COMPARISON & DELTAS">
-            <div className="comparison" style={{ marginBottom: "14px" }}>
-              <div className="candidate-preview">
+            <div className={styles.comparison} style={{ marginBottom: "14px" }}>
+              <div className={styles.candidatePreview}>
                 <p className="eyebrow">EQUIPPED ({equippedItem ? slot : "NONE"})</p>
                 <h2>{equippedItem ? equippedItem.name : "EMPTY"}</h2>
                 <p>{equippedItem ? equippedItem.description : "No item equipped"}</p>
               </div>
               <b>➔</b>
-              <div className="candidate-preview">
+              <div className={styles.candidatePreview}>
                 <p className="eyebrow">CANDIDATE</p>
                 <h2>{activeCandidate.name}</h2>
                 <p>{activeCandidate.description}</p>

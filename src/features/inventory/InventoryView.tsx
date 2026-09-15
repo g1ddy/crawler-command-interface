@@ -30,7 +30,6 @@ export function InventoryView({
   sequence,
   isLive = true,
   crawler,
-  liveCrawler,
   provenanceItem,
   setProvenanceItem,
   filter,
@@ -51,7 +50,6 @@ export function InventoryView({
   sequence: number;
   isLive?: boolean;
   crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
-  liveCrawler?: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
   filter: string;
@@ -82,7 +80,6 @@ export function InventoryView({
     equippedSlots,
     observations: observations.inventory,
     crawler,
-    liveCrawler,
     filter,
     search,
     sortOrder,
@@ -96,7 +93,6 @@ export function InventoryView({
     equippedSlots,
     observations: observations.equipment,
     crawler,
-    liveCrawler,
     selectedSlot: slot,
     selectedCandidateId,
     isLive,

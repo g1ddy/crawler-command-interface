@@ -60,7 +60,6 @@ export interface DeriveEquipmentPresentationInput {
   equippedSlots: EquippedSlotMap | Record<string, string | null | undefined>;
   observations: Record<EquipmentSlot, ProjectedEquipmentObservation | undefined>;
   crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
-  liveCrawler?: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
   selectedSlot: EquipmentSlot;
   selectedCandidateId: string | null;
   isLive?: boolean;
@@ -74,7 +73,6 @@ export function deriveEquipmentPresentation(
     equippedSlots,
     observations,
     crawler,
-    liveCrawler = crawler,
     selectedSlot,
     selectedCandidateId,
     isLive = true,
@@ -102,7 +100,7 @@ export function deriveEquipmentPresentation(
     : slotCandidates.find((c) => c.instanceId !== equippedInstanceId) ?? slotCandidates[0] ?? equippedItem;
 
   const requirements = activeCandidate
-    ? checkItemRequirements(liveCrawler as Parameters<typeof checkItemRequirements>[0], activeCandidate.requirements)
+    ? checkItemRequirements(crawler as Parameters<typeof checkItemRequirements>[0], activeCandidate.requirements)
     : { met: true, details: [] };
 
   const statDeltas = compareGearStats(equippedItem, activeCandidate);

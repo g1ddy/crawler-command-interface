@@ -331,3 +331,43 @@ test("action capabilities enforce isLive gating during replay", () => {
   assert.equal(replayEquipment.candidateActions.canDiscard, false);
   assert.equal(replayEquipment.canUnequipEquipped, false);
 });
+
+test("item requirement evaluation uses the temporal crawler state during replay", () => {
+  const lowLevelReplayCrawler = {
+    level: 1,
+    race: "Primal",
+    class: "Scout",
+    attributes: { Strength: 5, Dexterity: 10, Constitution: 10, Intelligence: 10, Charisma: 10 },
+  };
+
+  const highRequirementShield = {
+    instanceId: "inst-heavy-shield",
+    itemId: "item-heavy-shield",
+    name: "Tower Shield",
+    icon: "🛡️",
+    rarity: "epic",
+    category: "EQUIPMENT",
+    slot: "TORSO",
+    quantity: 1,
+    maxStack: 1,
+    value: 200,
+    requirements: { Strength: 18 },
+    description: "Heavy shield requiring high strength.",
+    acquiredAtSequence: 10,
+    source: "Loot",
+    isEquipped: false,
+  };
+
+  const presentation = deriveEquipmentPresentation({
+    inventory: [highRequirementShield],
+    equippedSlots: {},
+    observations: {},
+    crawler: lowLevelReplayCrawler,
+    selectedSlot: "TORSO",
+    selectedCandidateId: "inst-heavy-shield",
+    isLive: false,
+  });
+
+  assert.equal(presentation.requirements.met, false);
+  assert.equal(presentation.candidateActions.canEquip, false);
+});
