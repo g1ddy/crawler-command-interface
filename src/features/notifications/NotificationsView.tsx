@@ -1,6 +1,74 @@
 import type { CrawlerEvent } from "../../../app/domain/types";
-import { projectNotifications } from "./notification-presentation";
-export function NotificationsView({ events, sequence, onNavigateToSequence }: { events: CrawlerEvent[]; sequence: number; onNavigateToSequence: (s: number) => void }) {
- const notifications = projectNotifications(events, sequence);
- return <section className="view-content"><header className="title"><div><p className="eyebrow">SYSTEM NOTICES</p><h1>NOTIFICATIONS</h1></div><b>{notifications.length} NOTICES</b></header><div className="achievements">{notifications.map(item => <div className="achievement" key={item.id}><span>{item.kind === "achievement" ? "🏆" : item.kind === "progression" ? "⬆" : "🎁"}</span><div><p className="eyebrow">{item.kind.toUpperCase()} · {item.severity.toUpperCase()} · <button className="link" onClick={() => onNavigateToSequence(item.sequence)}>SEQ #{item.sequence}</button></p><h1>{item.title}</h1><p>{item.message}</p>{item.rewards && <ul className="achievement-rewards" aria-label="Achievement rewards">{item.rewards.map((reward, index) => <li key={`${reward.kind}-${index}`}><strong>{reward.kind.toUpperCase()}</strong>{[reward.boxType, reward.rarity, reward.amount, reward.description].filter(value => value !== undefined).map(String).join(" · ") ? ` · ${[reward.boxType, reward.rarity, reward.amount, reward.description].filter(value => value !== undefined).map(String).join(" · ")}` : ""}</li>)}</ul>}</div></div>)}</div></section>;
+import { Panel } from "../../shared/ui/Panel";
+import { deriveNotificationsPresentation } from "./notification-presentation";
+import styles from "./NotificationsView.module.css";
+
+export function NotificationsView({
+  events,
+  sequence,
+  isLive = false,
+  onNavigateToSequence,
+}: {
+  events: CrawlerEvent[];
+  sequence: number;
+  isLive?: boolean;
+  onNavigateToSequence: (s: number) => void;
+}) {
+  const presentation = deriveNotificationsPresentation({ events, sequence, isLive });
+
+  return (
+    <section className={styles.viewContent}>
+      <header className={styles.title}>
+        <div>
+          <p className={styles.eyebrow}>SYSTEM NOTICES</p>
+          <h1>NOTIFICATIONS</h1>
+        </div>
+        <b className={styles.countBadge}>{presentation.badgeLabel}</b>
+      </header>
+
+      {!presentation.hasNotifications ? (
+        <Panel title="NO NOTIFICATIONS">
+          <p className={styles.emptyText}>No system notifications have been delivered up to sequence #{sequence}.</p>
+        </Panel>
+      ) : (
+        <div className={styles.noticesList}>
+          {presentation.notifications.map((item) => (
+            <div
+              className={`${styles.noticeCard} ${item.isCurrentDelivery ? styles.currentDelivery : ""}`}
+              key={item.id}
+            >
+              <span className={styles.noticeIcon} aria-hidden="true">
+                {item.icon}
+              </span>
+              <div className={styles.noticeBody}>
+                <p className={styles.eyebrow}>
+                  {item.kind.toUpperCase()} · {item.severity.toUpperCase()} ·{" "}
+                  <button
+                    type="button"
+                    className={styles.sequenceLink}
+                    onClick={() => onNavigateToSequence(item.sequence)}
+                    aria-label={`Jump to sequence #${item.sequence}`}
+                  >
+                    SEQ #{item.sequence}
+                  </button>
+                </p>
+                <h1>{item.title}</h1>
+                <p>{item.message}</p>
+                {item.formattedRewards && item.formattedRewards.length > 0 && (
+                  <ul className={styles.rewardsList} aria-label="Achievement rewards">
+                    {item.formattedRewards.map((reward, index) => (
+                      <li key={`${reward.kind}-${index}`}>
+                        <strong>{reward.kind}</strong>
+                        {reward.detail}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }

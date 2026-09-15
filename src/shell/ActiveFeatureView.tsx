@@ -42,7 +42,7 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     case "ratings": return <RatingsView observations={observations.broadcast} selectedSequence={sequence} isLive={isLive} onInspectObservation={onInspectObservation} />;
     case "party": return <PartyView party={state.party} />;
     case "pet": return <PetView pets={state.pets} />;
-    case "notifications": return <NotificationsView events={events} sequence={sequence} onNavigateToSequence={onNavigateToSequence} />;
+    case "notifications": return <NotificationsView events={events} sequence={sequence} isLive={isLive} onNavigateToSequence={onNavigateToSequence} />;
     case "inventory": return (
       <InventoryView
         inventory={state.inventory}
