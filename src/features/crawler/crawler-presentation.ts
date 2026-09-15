@@ -86,7 +86,11 @@ export function deriveCrawlerPresentation(
     state.causalProvenance.availableAttributePoints,
   );
   const availablePointsObservation = observations.attributes.availableAttributePoints;
-  const canAllocatePoints = crawler.availableAttributePoints > 0;
+  // Action availability must follow the value the user is actually seeing. If the
+  // selected replay observation says 0, the live causal value must not re-enable
+  // an allocation control. Likewise, an unavailable displayed value is not enough
+  // evidence to offer a state-changing action.
+  const canAllocatePoints = availablePoints != null && availablePoints > 0;
 
   const xpPercent = maxXp ? Math.min(100, Math.round((Number(xp ?? 0) / Number(maxXp)) * 100)) : 0;
 
