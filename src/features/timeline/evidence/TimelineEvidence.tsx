@@ -7,7 +7,7 @@ import type {
   TimelineSource,
 } from "../../../../app/domain/types";
 import { formatProjectedObservationValue } from "../../../../app/domain/observations";
-import { TelemetryBadge } from "./TelemetryBadge";
+import { TelemetryBadge } from "../public";
 import { Panel } from "../../../shared/ui/Panel";
 
 interface TimelineEvidenceProps {
