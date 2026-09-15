@@ -106,6 +106,56 @@ test("deriveCrawlerPresentation handles unknown/unsourced telemetry without erro
   assert.equal(presentation.effects.harmful.length, 0);
 });
 
+test("attribute allocation follows the displayed reading instead of causal state", () => {
+  const state = {
+    sequence: 20,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {
+      name: "Carl",
+      level: 5,
+      race: "Primal",
+      class: "Scout",
+      xp: 1500,
+      maxXp: 5000,
+      availableAttributePoints: 3,
+      attributes: { Strength: 20, Dexterity: 10, Constitution: 10, Intelligence: 10, Charisma: 10 },
+      permanentAttributeModifiers: { Strength: 0, Dexterity: 0, Constitution: 0, Intelligence: 0, Charisma: 0 },
+      condition: { currentHealth: 100, maxHealth: 100, currentMana: 50, maxMana: 50, currentStamina: 50, maxStamina: 50 },
+    },
+    effects: [],
+  };
+
+  const historicalNoPoints = {
+    xpProgress: {},
+    attributes: {
+      availableAttributePoints: { sequence: 12, key: "availableAttributePoints", value: 0 },
+    },
+    condition: {},
+  };
+
+  const historicalWithPoints = {
+    ...historicalNoPoints,
+    attributes: {
+      availableAttributePoints: { sequence: 12, key: "availableAttributePoints", value: 2 },
+    },
+  };
+
+  const historicalUnknown = {
+    xpProgress: {},
+    attributes: {},
+    condition: {},
+  };
+
+  assert.equal(deriveCrawlerPresentation(state, historicalNoPoints).availablePoints, 0);
+  assert.equal(deriveCrawlerPresentation(state, historicalNoPoints).canAllocatePoints, false);
+
+  assert.equal(deriveCrawlerPresentation(state, historicalWithPoints).availablePoints, 2);
+  assert.equal(deriveCrawlerPresentation(state, historicalWithPoints).canAllocatePoints, true);
+
+  assert.equal(deriveCrawlerPresentation(state, historicalUnknown).availablePoints, 3);
+  assert.equal(deriveCrawlerPresentation(state, historicalUnknown).canAllocatePoints, true);
+});
+
 test("isLive mutation gating invariant enforces isLive as strict mutation boundary regardless of points", () => {
   const stateWithPoints = {
     sequence: 5,
@@ -133,27 +183,16 @@ test("isLive mutation gating invariant enforces isLive as strict mutation bounda
   const presentationWithPoints = deriveCrawlerPresentation(stateWithPoints, emptyObs);
   const presentationWithoutPoints = deriveCrawlerPresentation(stateWithoutPoints, emptyObs);
 
-  // 1. Live + available points -> allocation is enabled in presentation
   assert.equal(presentationWithPoints.canAllocatePoints, true);
-  const liveWithPointsCanMutate = true && presentationWithPoints.canAllocatePoints;
-  assert.equal(liveWithPointsCanMutate, true);
+  assert.equal(true && presentationWithPoints.canAllocatePoints, true);
 
-  // 2. Live + no points -> allocation is disabled
   assert.equal(presentationWithoutPoints.canAllocatePoints, false);
-  const liveWithoutPointsCanMutate = true && presentationWithoutPoints.canAllocatePoints;
-  assert.equal(liveWithoutPointsCanMutate, false);
+  assert.equal(true && presentationWithoutPoints.canAllocatePoints, false);
 
-  // 3. Replay + historical state with no points -> disabled
-  const replayWithoutPointsCanMutate = false && presentationWithoutPoints.canAllocatePoints;
-  assert.equal(replayWithoutPointsCanMutate, false);
+  assert.equal(false && presentationWithoutPoints.canAllocatePoints, false);
+  assert.equal(false && presentationWithPoints.canAllocatePoints, false);
 
-  // 4. Replay + historical state WITH points -> disabled because isLive is false
-  const replayWithPointsCanMutate = false && presentationWithPoints.canAllocatePoints;
-  assert.equal(replayWithPointsCanMutate, false);
-
-  // 5. Replay + underlying current/live state has points (e.g. 5 points) -> STILL disabled because isLive is false
   const liveUnderlyingPoints = 5;
   assert.ok(liveUnderlyingPoints > 0);
-  const replayWithLivePointsCanMutate = false && (liveUnderlyingPoints > 0);
-  assert.equal(replayWithLivePointsCanMutate, false);
+  assert.equal(false && (liveUnderlyingPoints > 0), false);
 });
