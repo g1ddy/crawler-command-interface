@@ -1,20 +1,20 @@
-import type { CrawlerNotification } from "../../../app/domain/projection/notifications";
+import type { CrawlerEvent } from "../../../app/domain/types";
 import { Panel } from "../../shared/ui/Panel";
 import { deriveNotificationsPresentation } from "./notification-presentation";
 import styles from "./NotificationsView.module.css";
 
 export function NotificationsView({
-  notifications,
+  events,
   sequence,
   isLive = false,
   onNavigateToSequence,
 }: {
-  notifications: CrawlerNotification[];
+  events: CrawlerEvent[];
   sequence: number;
   isLive?: boolean;
   onNavigateToSequence: (s: number) => void;
 }) {
-  const presentation = deriveNotificationsPresentation({ notifications, sequence, isLive });
+  const presentation = deriveNotificationsPresentation({ events, sequence, isLive });
 
   return (
     <section className={styles.viewContent}>
