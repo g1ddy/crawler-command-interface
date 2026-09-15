@@ -42,7 +42,10 @@ export function RatingsView({
                 {group.metrics.map((metric) => (
                   <div key={metric.key} className={styles.metricRow}>
                     <span>
-                      <b className={styles.metricValue}>{metric.value}</b> {metric.label}
+                      <b className={styles.metricValue}>
+                        {typeof metric.value === "number" ? metric.value.toLocaleString() : metric.value}
+                      </b>{" "}
+                      {metric.label}
                     </span>
                     <TelemetryBadge
                       observation={metric.observation}

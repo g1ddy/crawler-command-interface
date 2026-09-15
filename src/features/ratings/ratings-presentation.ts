@@ -83,13 +83,12 @@ export function deriveRatingsPresentation(input: DeriveRatingsPresentationInput)
     const rawVal = obs.value;
     const formattedVal = typeof rawVal === "number" ? rawVal.toLocaleString() : String(rawVal);
     const displayVal = format(rawVal);
-    const finalVal = typeof displayVal === "number" ? displayVal.toLocaleString() : displayVal;
 
     return [
       {
         key,
         label,
-        value: finalVal,
+        value: displayVal,
         formattedValue: formattedVal,
         group,
         observation: obs,
