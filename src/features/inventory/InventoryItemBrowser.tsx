@@ -1,9 +1,10 @@
 import type {
   InventoryItem,
-  ProjectedObservationsState,
-} from "../../../app/domain/types";
-import { Panel } from "../../shared/ui/Panel";
-import type { InventorySortOrder } from "./inventoryItemBrowserModel";
+  ProjectedItemObservation,
+} from "../../../app/domain/types.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import type { InventorySortOrder } from "./inventoryItemBrowserModel.ts";
+import styles from "./InventoryView.module.css";
 
 export function InventoryItemBrowser({
   visibleItems,
@@ -17,7 +18,7 @@ export function InventoryItemBrowser({
   setSelectedInstanceId,
 }: {
   visibleItems: InventoryItem[];
-  observations: ProjectedObservationsState;
+  observations: Record<string, ProjectedItemObservation | undefined>;
   filter: string;
   search: string;
   setSearch: (search: string) => void;
@@ -28,7 +29,7 @@ export function InventoryItemBrowser({
 }) {
   return (
     <Panel title={filter}>
-      <div className="tools">
+      <div className={styles.tools}>
         <input
           placeholder="Search items…"
           aria-label="Search items"
@@ -41,14 +42,6 @@ export function InventoryItemBrowser({
           onChange={(event) =>
             setSortOrder(event.target.value as InventorySortOrder)
           }
-          style={{
-            border: "1px solid #294650",
-            background: "#09141d",
-            color: "#b8ced5",
-            padding: "9px",
-            fontSize: "10px",
-            borderRadius: "3px",
-          }}
         >
           <option value="newest">SORT: NEWEST ⌄</option>
           <option value="oldest">SORT: OLDEST ⌄</option>
@@ -58,13 +51,14 @@ export function InventoryItemBrowser({
         </select>
       </div>
       {visibleItems.length > 0 ? (
-        <div className="grid">
+        <div className={styles.grid}>
           {visibleItems.map((item) => {
-            const observation = observations.inventory[item.instanceId];
+            const observation = observations[item.instanceId];
+            const rarityClass = styles[item.rarity as keyof typeof styles] ?? "";
             return (
               <button
-                className={`item ${item.rarity} ${
-                  selectedInstanceId === item.instanceId ? "selected" : ""
+                className={`${styles.item} ${rarityClass} ${
+                  selectedInstanceId === item.instanceId ? styles.selected : ""
                 }`}
                 key={item.instanceId}
                 onClick={() => setSelectedInstanceId(item.instanceId)}

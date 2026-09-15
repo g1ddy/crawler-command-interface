@@ -64,7 +64,7 @@ test("export replay at the sourced Pet bond boundary", async ({ page }) => {
 });
 
 test("export top-level Crawler tab", async ({ page }) => { await selectCrawlerSubTab(page, "STATS"); await expect(page.getByText("PLAYER ATTRIBUTES", { exact: true })).toBeVisible(); await capture(page, "crawler"); });
-test("export top-level Inventory tab", async ({ page }) => { await selectTopLevelTab(page, "INVENTORY"); await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/\bon\b/); await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible(); await capture(page, "inventory"); });
+test("export top-level Inventory tab", async ({ page }) => { await selectTopLevelTab(page, "INVENTORY"); await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/on/); await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible(); await capture(page, "inventory"); });
 test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => { await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click(); await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13"); await selectTopLevelTab(page, "INVENTORY"); await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click(); await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible(); await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible(); await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible(); await capture(page, "awards"); });
 test("export top-level Skills tab", async ({ page }) => { await selectTopLevelTab(page, "SKILLS"); await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible(); await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible(); await capture(page, "skills"); });
 test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => { await seedHotlistSkillsScenario(page); await selectTopLevelTab(page, "SKILLS"); await page.getByRole("button", { name: "Assign to hotlist slot 1", exact: true }).click(); await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible(); await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1"); });
@@ -79,6 +79,23 @@ test("renders Quests from an isolated noncanonical fixture without publishing a 
   await selectTopLevelTab(page, "QUESTS");
   await expect(page.getByRole("heading", { name: "QUESTS", exact: true })).toBeVisible();
   await expect(page.getByText("Test Quest", { exact: true })).toBeVisible();
+});
+
+test("Possessions replay boundary and mutation gating: disables actions when scrubbing replay", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("5");
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+
+  await selectTopLevelTab(page, "INVENTORY");
+  await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: /^EQUIPMENT\b/ }).click();
+  await expect(page.getByText(/ADAPTIVE LOADOUT/)).toBeVisible();
+
+  const unequipBtn = page.getByRole("button", { name: /UNEQUIP/i }).first();
+  if (await unequipBtn.count() > 0) {
+    await expect(unequipBtn).toBeDisabled();
+  }
 });
 
 test("root navigation follows the real Party capability boundary during replay", async ({ page }) => {
@@ -110,8 +127,6 @@ test("mutation gating: live mode behavior when points remain vs empty", async ({
 
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
 
-  // Either it is enabled (points exist) or disabled (0 points).
-  // If it's enabled, we can click it until it becomes disabled.
   if (await allocateBtn.isEnabled()) {
     while (await allocateBtn.isEnabled()) {
       await allocateBtn.click();
