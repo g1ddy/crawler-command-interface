@@ -1,37 +1,36 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type {
+  AttributeName,
   CrawlerEvent,
-  CrawlerState,
+  EquippedSlotMap,
   InventoryItem,
   ProjectedEquipmentObservation,
   ProjectedItemObservation,
-  ProjectedObservationsState,
   ProjectedObservationValue,
-  TimelineSource,
-} from "../../../app/domain/types";
-import { checkItemRequirements } from "../../../app/domain/stats";
-import type { EquipmentSlot, InventoryActions } from "../../application/crawler-action-contracts";
-import { deriveAwardHistory } from "./awardHistory";
-import { EquipmentView } from "./equipment/EquipmentView";
-import { ItemProvenanceDrawer } from "./provenance/ItemProvenanceDrawer";
-import { InventoryCategories } from "./InventoryCategories";
-import { InventoryAwardsView } from "./InventoryAwardsView";
-import { InventoryItemBrowser } from "./InventoryItemBrowser";
-import { EquippedGearSummary } from "./EquippedGearSummary";
-import { ItemInspector } from "./ItemInspector";
-import {
-  resolveSelectedInventoryItem,
-  visibleInventoryItems,
-  type InventorySortOrder,
-} from "./inventoryItemBrowserModel";
+} from "../../../app/domain/types.ts";
+import type { EquipmentSlot, InventoryActions } from "../../application/crawler-action-contracts.ts";
+import type { AwardHistoryEntry } from "./awardHistory.ts";
+import { EquipmentView } from "./equipment/EquipmentView.tsx";
+import { ItemProvenanceDrawer } from "./provenance/ItemProvenanceDrawer.tsx";
+import { InventoryCategories } from "./InventoryCategories.tsx";
+import { InventoryAwardsView } from "./InventoryAwardsView.tsx";
+import { InventoryItemBrowser } from "./InventoryItemBrowser.tsx";
+import { EquippedGearSummary } from "./EquippedGearSummary.tsx";
+import { ItemInspector } from "./ItemInspector.tsx";
+import type { InventorySortOrder } from "./inventoryItemBrowserModel.ts";
+import { deriveInventoryPresentation } from "./inventory-presentation.ts";
+import { deriveEquipmentPresentation } from "./equipment/equipment-presentation.ts";
+import styles from "./InventoryView.module.css";
 
 export function InventoryView({
-  state,
-  liveState,
+  inventory,
+  equippedSlots,
   observations,
+  awards,
   events,
-  sequence,
+  selectedSequence,
   isLive = true,
+  crawler,
   provenanceItem,
   setProvenanceItem,
   filter,
@@ -42,13 +41,17 @@ export function InventoryView({
   actions,
   onInspectObservation,
 }: {
-  state: CrawlerState;
-  liveState: CrawlerState;
-  observations: ProjectedObservationsState;
-  sources?: TimelineSource[];
-  events: CrawlerEvent[];
-  sequence: number;
+  inventory: InventoryItem[];
+  equippedSlots: EquippedSlotMap | Record<string, string | null | undefined>;
+  observations: {
+    inventory: Record<string, ProjectedItemObservation | undefined>;
+    equipment: Record<EquipmentSlot, ProjectedEquipmentObservation | undefined>;
+  };
+  awards: AwardHistoryEntry[];
+  events?: CrawlerEvent[];
+  selectedSequence?: number;
   isLive?: boolean;
+  crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
   filter: string;
@@ -64,64 +67,62 @@ export function InventoryView({
       | ProjectedEquipmentObservation,
   ) => void;
 }) {
-  const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(
-    null,
-  );
+  const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<InventorySortOrder>("newest");
   const [search, setSearch] = useState("");
 
-  const items = state.inventory;
-  const awards = useMemo(
-    () => deriveAwardHistory(events, sequence, state.inventory),
-    [events, sequence, state.inventory],
-  );
-  const effectiveFilter = filter;
+  const inventoryPresentation = deriveInventoryPresentation({
+    inventory,
+    equippedSlots,
+    observations: observations.inventory,
+    crawler,
+    filter,
+    search,
+    sortOrder,
+    selectedInstanceId,
+    awards,
+    isLive,
+  });
 
-  const visibleItems = useMemo(
-    () => visibleInventoryItems(items, effectiveFilter, search, sortOrder),
-    [items, effectiveFilter, search, sortOrder],
-  );
-  const selectedItem = useMemo(
-    () => resolveSelectedInventoryItem(visibleItems, selectedInstanceId),
-    [visibleItems, selectedInstanceId],
-  );
+  const equipmentPresentation = deriveEquipmentPresentation({
+    inventory,
+    equippedSlots,
+    observations: observations.equipment,
+    crawler,
+    selectedSlot: slot,
+    selectedCandidateId,
+    isLive,
+  });
 
-  const selectedItemRequirements = useMemo(
-    () => checkItemRequirements(liveState.crawler, selectedItem?.requirements),
-    [liveState.crawler, selectedItem],
-  );
-
-  const selectedItemObservation = selectedItem
-    ? observations.inventory[selectedItem.instanceId]
-    : undefined;
+  const selectedItem = inventoryPresentation.selectedItem;
 
   return (
-    <section className="view-content">
-      <header className="title">
+    <section className={styles.viewContent}>
+      <header className={styles.title}>
         <div>
-          <p className="eyebrow">STORAGE SYSTEM</p>
+          <p className={styles.eyebrow}>STORAGE SYSTEM</p>
           <h1>INVENTORY</h1>
         </div>
-        <b>
-          {items.length} ITEM{items.length === 1 ? "" : "S"}
+        <b className={styles.titleCount}>
+          {inventoryPresentation.itemCount} ITEM{inventoryPresentation.itemCount === 1 ? "" : "S"}
         </b>
       </header>
-      <div className="inventory">
+      <div className={styles.inventoryGrid}>
         <InventoryCategories
-          items={items}
-          awardsCount={awards.length}
-          filter={effectiveFilter}
+          categories={inventoryPresentation.categories}
+          filter={filter}
           setFilter={setFilter}
         />
 
-        {effectiveFilter === "AWARDS / BOXES" ? (
-          <InventoryAwardsView awards={awards} />
-        ) : effectiveFilter !== "EQUIPMENT" ? (
+        {filter === "AWARDS / BOXES" ? (
+          <InventoryAwardsView awards={inventoryPresentation.awards} />
+        ) : filter !== "EQUIPMENT" ? (
           <>
             <InventoryItemBrowser
-              visibleItems={visibleItems}
-              observations={observations}
-              filter={effectiveFilter}
+              visibleItems={inventoryPresentation.visibleItems}
+              observations={observations.inventory}
+              filter={filter}
               search={search}
               setSearch={setSearch}
               sortOrder={sortOrder}
@@ -129,23 +130,26 @@ export function InventoryView({
               selectedInstanceId={selectedItem?.instanceId ?? null}
               setSelectedInstanceId={setSelectedInstanceId}
             />
-            <div className="right">
-              <EquippedGearSummary state={state} setFilter={setFilter} />
+            <div className={styles.rightCol}>
+              <EquippedGearSummary
+                equippedSummary={inventoryPresentation.equippedSummary}
+                setFilter={setFilter}
+              />
 
               {selectedItem && (
                 <ItemInspector
                   selectedItem={selectedItem}
-                  observation={selectedItemObservation}
-                  selectedSequence={sequence}
-                  isLive={isLive}
-                  requirementResult={selectedItemRequirements}
+                  observation={inventoryPresentation.selectedItemObservation}
+                  selectedSequence={selectedSequence}
+                  requirementResult={inventoryPresentation.selectedItemRequirements}
+                  actionCapabilities={inventoryPresentation.selectedItemActions}
                   actions={actions}
                   onOpenProvenance={(item) => setProvenanceItem(item)}
                   onInspectObservation={onInspectObservation}
                 />
               )}
 
-              {provenanceItem && (
+              {provenanceItem && events && (
                 <ItemProvenanceDrawer
                   item={provenanceItem}
                   events={events}
@@ -157,13 +161,11 @@ export function InventoryView({
           </>
         ) : (
           <EquipmentView
-            state={state}
-            liveState={liveState}
-            observations={observations}
-            selectedSequence={sequence}
-            isLive={isLive}
+            presentation={equipmentPresentation}
+            selectedSequence={selectedSequence}
             slot={slot}
             setSlot={setSlot}
+            setSelectedCandidateId={setSelectedCandidateId}
             actions={actions}
             onOpenProvenance={(item) => setProvenanceItem(item)}
             onInspectObservation={onInspectObservation}

@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import type { CrawlerEvent, CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineSource } from "../../app/domain/types";
 import { CrawlerView } from "../features/crawler/CrawlerView";
+import { deriveAwardHistory } from "../features/inventory/public";
 import { InventoryView } from "../features/inventory/InventoryView";
 import { NotificationsView } from "../features/notifications/NotificationsView";
 import { PartyView } from "../features/party/PartyView";
@@ -10,7 +12,7 @@ import { SkillsView } from "../features/skills/SkillsView";
 import type { RootView } from "./navigation/navigation-model";
 import type { ApplicationActions, EquipmentSlot } from "../application/crawler-action-contracts";
 
-export function ActiveFeatureView({ view, state, liveState, observations, sources, events, sequence, isLive, provenanceItem, setProvenanceItem, inventoryFilter, setInventoryFilter, equipmentSlot, setEquipmentSlot, onNavigateToSequence, actions, onInspectObservation, onInspectStat }: {
+export function ActiveFeatureView({ view, state, observations, events, sequence, isLive, provenanceItem, setProvenanceItem, inventoryFilter, setInventoryFilter, equipmentSlot, setEquipmentSlot, onNavigateToSequence, actions, onInspectObservation, onInspectStat }: {
   view: RootView;
   state: CrawlerState;
   liveState: CrawlerState;
@@ -30,13 +32,41 @@ export function ActiveFeatureView({ view, state, liveState, observations, source
   onInspectObservation: (observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
   onInspectStat: (stat: string) => void;
 }) {
+  const awards = useMemo(
+    () => deriveAwardHistory(events, sequence, state.inventory),
+    [events, sequence, state.inventory],
+  );
+
   switch (view) {
     case "crawler": return <CrawlerView state={state} observations={observations} isLive={isLive} onInspectStat={onInspectStat} onInspectObservation={onInspectObservation} actions={actions.crawler} />;
     case "ratings": return <RatingsView observations={observations.broadcast} selectedSequence={sequence} isLive={isLive} onInspectObservation={onInspectObservation} />;
     case "party": return <PartyView party={state.party} />;
     case "pet": return <PetView pets={state.pets} />;
     case "notifications": return <NotificationsView events={events} sequence={sequence} onNavigateToSequence={onNavigateToSequence} />;
-    case "inventory": return <InventoryView state={state} liveState={liveState} observations={observations} sources={sources} events={events} sequence={sequence} isLive={isLive} provenanceItem={provenanceItem} setProvenanceItem={setProvenanceItem} filter={inventoryFilter} setFilter={setInventoryFilter} slot={equipmentSlot} setSlot={setEquipmentSlot} onNavigateToSequence={onNavigateToSequence} actions={actions.inventory} onInspectObservation={onInspectObservation} />;
+    case "inventory": return (
+      <InventoryView
+        inventory={state.inventory}
+        equippedSlots={state.equippedSlots}
+        observations={{
+          inventory: observations.inventory,
+          equipment: observations.equipment,
+        }}
+        awards={awards}
+        events={events}
+        selectedSequence={sequence}
+        isLive={isLive}
+        crawler={state.crawler}
+        provenanceItem={provenanceItem}
+        setProvenanceItem={setProvenanceItem}
+        filter={inventoryFilter}
+        setFilter={setInventoryFilter}
+        slot={equipmentSlot}
+        setSlot={setEquipmentSlot}
+        onNavigateToSequence={onNavigateToSequence}
+        actions={actions.inventory}
+        onInspectObservation={onInspectObservation}
+      />
+    );
     case "skills": return <SkillsView state={state} isLive={isLive} actions={actions.skills} />;
     case "quests": return <QuestsView quests={state.quests} />;
   }

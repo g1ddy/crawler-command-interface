@@ -1,27 +1,23 @@
-import type { CrawlerState } from "../../../app/domain/types";
-import { Panel } from "../../shared/ui/Panel";
+import type { EquippedGearSummaryItem } from "./inventory-presentation.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import styles from "./InventoryView.module.css";
 
 export function EquippedGearSummary({
-  state,
+  equippedSummary,
   setFilter,
 }: {
-  state: CrawlerState;
+  equippedSummary: EquippedGearSummaryItem[];
   setFilter: (filter: string) => void;
 }) {
   return (
     <Panel title="EQUIPPED GEAR SLOTS">
-      <div className="compact">
-        {Object.entries(state.equippedSlots).filter(([, itemId]) => itemId)
-          .length > 0 ? (
-          Object.entries(state.equippedSlots)
-            .filter(([, itemId]) => itemId)
-            .map(([gearSlot, itemId]) => (
-              <span key={gearSlot}>
-                {gearSlot}:{" "}
-                {state.inventory.find((item) => item.instanceId === itemId)
-                  ?.name ?? "UNKNOWN ITEM"}
-              </span>
-            ))
+      <div className={styles.compact}>
+        {equippedSummary.length > 0 ? (
+          equippedSummary.map(({ slot, itemName }) => (
+            <span key={slot}>
+              {slot}: {itemName}
+            </span>
+          ))
         ) : (
           <span>No equipped gear is sourced at this sequence.</span>
         )}

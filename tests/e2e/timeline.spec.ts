@@ -45,7 +45,7 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   await expect(page.getByTestId("hud-audience-mode")).not.toContainText("LIVE");
   await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
-  await expect(page.locator(".grid .item")).toHaveCount(0);
+  await expect(page.locator("[class*='item']")).toHaveCount(0);
 });
 
 test("floor navigation selects derived floor endpoints", async ({ page }) => {
@@ -98,7 +98,7 @@ test("Return to Live restores the latest projection", async ({ page }) => {
 test("inventory browser and inspector resolve the same visible selection", async ({ page }) => {
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
 
-  const itemCards = page.locator(".grid .item");
+  const itemCards = page.locator("[class*='item']");
   await expect(itemCards).not.toHaveCount(0);
   await expect(itemCards.first()).toHaveClass(/selected/);
 
@@ -110,13 +110,13 @@ test("inventory browser and inspector resolve the same visible selection", async
 
   await page.getByRole("textbox", { name: "Search items" }).fill(secondItemName);
 
-  const visibleCard = page.locator(".grid .item").first();
+  const visibleCard = page.locator("[class*='item']").first();
   await expect(visibleCard).toHaveClass(/selected/);
   await expect(page.getByRole("heading", { name: secondItemName.toUpperCase() })).toBeVisible();
 
   await page.getByRole("textbox", { name: "Search items" }).fill("");
   await page.getByRole("combobox", { name: "Sort items" }).selectOption("oldest");
-  const oldestCard = page.locator(".grid .item").first();
+  const oldestCard = page.locator("[class*='item']").first();
   const oldestItemName =
     (await oldestCard.getAttribute("aria-label"))?.replace(/ \([^)]+\)$/, "") ?? "";
   await expect(oldestCard).toHaveClass(/selected/);
@@ -125,7 +125,7 @@ test("inventory browser and inspector resolve the same visible selection", async
 
 test("live interactions append events without rewriting historical state", async ({ page }) => {
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
-  const firstItem = page.locator(".grid .item").first();
+  const firstItem = page.locator("[class*='item']").first();
   await firstItem.click();
   const itemName = (await firstItem.getAttribute("aria-label"))?.replace(/ \([^)]+\)$/, "") ?? "";
   await page.getByRole("button", { name: /^LOCK/ }).click();
