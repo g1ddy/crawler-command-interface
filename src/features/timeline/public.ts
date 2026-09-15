@@ -3,14 +3,14 @@ import React, { type ComponentProps } from "react";
 import type { TelemetryBadge as TelemetryBadgeComp } from "./evidence/TelemetryBadge";
 import type { SequenceBadge as SequenceBadgeComp } from "./SequenceBadge";
 
+const LazyTelemetryBadge = React.lazy(() => import("./evidence/TelemetryBadge.tsx").then(m => ({ default: m.TelemetryBadge })));
 export const TelemetryBadge = (props: ComponentProps<typeof TelemetryBadgeComp>) => {
-  const Component = React.lazy(() => import("./evidence/TelemetryBadge.tsx").then(m => ({ default: m.TelemetryBadge })));
-  return React.createElement(React.Suspense, { fallback: null }, React.createElement(Component, props));
+  return React.createElement(React.Suspense, { fallback: null }, React.createElement(LazyTelemetryBadge, props));
 };
 
+const LazySequenceBadge = React.lazy(() => import("./SequenceBadge.tsx").then(m => ({ default: m.SequenceBadge })));
 export const SequenceBadge = (props: ComponentProps<typeof SequenceBadgeComp>) => {
-  const Component = React.lazy(() => import("./SequenceBadge.tsx").then(m => ({ default: m.SequenceBadge })));
-  return React.createElement(React.Suspense, { fallback: null }, React.createElement(Component, props));
+  return React.createElement(React.Suspense, { fallback: null }, React.createElement(LazySequenceBadge, props));
 };
 export {
   deriveEvidencePresentation,
