@@ -1,17 +1,8 @@
-import type { CrawlerEvent, NotificationKind, NotificationSeverity, RewardSpec } from "../../../app/domain/types";
-
-export interface CrawlerNotification {
-  id: string;
-  sequence: number;
-  kind: NotificationKind;
-  severity: NotificationSeverity;
-  title: string;
-  message: string;
-  rewards?: RewardSpec[];
-}
+import type { RewardSpec } from "../../../app/domain/types";
+import type { CrawlerNotification } from "../../../app/domain/projection/notifications";
 
 export interface DeriveNotificationsPresentationInput {
-  events: CrawlerEvent[];
+  notifications: CrawlerNotification[];
   sequence: number;
   isLive?: boolean;
 }
@@ -36,29 +27,6 @@ export interface DerivedNotificationsPresentation {
   notifications: DerivedNotificationItem[];
 }
 
-/** Maps only event types whose authored semantics establish crawler-visible delivery. */
-export function projectNotifications(events: CrawlerEvent[], sequence: number): CrawlerNotification[] {
-  const visible = events.filter((event) => event.sequence <= sequence);
-  const mapped: CrawlerNotification[] = [];
-  for (const event of visible) {
-    const delivery = event.notificationDelivery;
-    if (!delivery?.delivered) continue;
-    const achievement = event.type === "AchievementUnlocked" ? event.achievement : undefined;
-    const title = (delivery.title || achievement?.title || "Dungeon notification") as string;
-    const message = (delivery.message || achievement?.description || event.summary || "Dungeon notification") as string;
-    mapped.push({
-      id: event.id ?? `evt-${event.sequence}`,
-      sequence: event.sequence,
-      kind: delivery.kind,
-      severity: delivery.severity,
-      title,
-      message,
-      rewards: achievement?.reward,
-    });
-  }
-  return mapped.sort((a, b) => b.sequence - a.sequence);
-}
-
 export function formatReward(reward: RewardSpec): string {
   const details = [reward.boxType, reward.rarity, reward.amount, reward.description]
     .filter((v) => v !== undefined)
@@ -70,8 +38,7 @@ export function formatReward(reward: RewardSpec): string {
 export function deriveNotificationsPresentation(
   input: DeriveNotificationsPresentationInput
 ): DerivedNotificationsPresentation {
-  const { events = [], sequence, isLive = false } = input;
-  const rawNotices = projectNotifications(events, sequence);
+  const { notifications: rawNotices = [], sequence, isLive = false } = input;
 
   const notifications: DerivedNotificationItem[] = rawNotices.map((item) => {
     const icon = item.kind === "achievement" ? "🏆" : item.kind === "progression" ? "⬆" : "🎁";
