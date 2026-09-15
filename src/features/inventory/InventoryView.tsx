@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type {
   AttributeName,
   CrawlerEvent,
@@ -9,7 +9,7 @@ import type {
   ProjectedObservationValue,
 } from "../../../app/domain/types.ts";
 import type { EquipmentSlot, InventoryActions } from "../../application/crawler-action-contracts.ts";
-import { deriveAwardHistory } from "./awardHistory.ts";
+import type { AwardHistoryEntry } from "./awardHistory.ts";
 import { EquipmentView } from "./equipment/EquipmentView.tsx";
 import { ItemProvenanceDrawer } from "./provenance/ItemProvenanceDrawer.tsx";
 import { InventoryCategories } from "./InventoryCategories.tsx";
@@ -26,8 +26,9 @@ export function InventoryView({
   inventory,
   equippedSlots,
   observations,
+  awards,
   events,
-  sequence,
+  selectedSequence,
   isLive = true,
   crawler,
   provenanceItem,
@@ -46,8 +47,9 @@ export function InventoryView({
     inventory: Record<string, ProjectedItemObservation | undefined>;
     equipment: Record<EquipmentSlot, ProjectedEquipmentObservation | undefined>;
   };
-  events: CrawlerEvent[];
-  sequence: number;
+  awards: AwardHistoryEntry[];
+  events?: CrawlerEvent[];
+  selectedSequence?: number;
   isLive?: boolean;
   crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
   provenanceItem: InventoryItem | null;
@@ -70,11 +72,6 @@ export function InventoryView({
   const [sortOrder, setSortOrder] = useState<InventorySortOrder>("newest");
   const [search, setSearch] = useState("");
 
-  const awards = useMemo(
-    () => deriveAwardHistory(events, sequence, inventory),
-    [events, sequence, inventory],
-  );
-
   const inventoryPresentation = deriveInventoryPresentation({
     inventory,
     equippedSlots,
@@ -84,7 +81,7 @@ export function InventoryView({
     search,
     sortOrder,
     selectedInstanceId,
-    awardsCount: awards.length,
+    awards,
     isLive,
   });
 
@@ -119,7 +116,7 @@ export function InventoryView({
         />
 
         {filter === "AWARDS / BOXES" ? (
-          <InventoryAwardsView awards={awards} />
+          <InventoryAwardsView awards={inventoryPresentation.awards} />
         ) : filter !== "EQUIPMENT" ? (
           <>
             <InventoryItemBrowser
@@ -143,7 +140,7 @@ export function InventoryView({
                 <ItemInspector
                   selectedItem={selectedItem}
                   observation={inventoryPresentation.selectedItemObservation}
-                  selectedSequence={sequence}
+                  selectedSequence={selectedSequence}
                   requirementResult={inventoryPresentation.selectedItemRequirements}
                   actionCapabilities={inventoryPresentation.selectedItemActions}
                   actions={actions}
@@ -152,7 +149,7 @@ export function InventoryView({
                 />
               )}
 
-              {provenanceItem && (
+              {provenanceItem && events && (
                 <ItemProvenanceDrawer
                   item={provenanceItem}
                   events={events}
@@ -165,7 +162,7 @@ export function InventoryView({
         ) : (
           <EquipmentView
             presentation={equipmentPresentation}
-            selectedSequence={sequence}
+            selectedSequence={selectedSequence}
             slot={slot}
             setSlot={setSlot}
             setSelectedCandidateId={setSelectedCandidateId}

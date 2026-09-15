@@ -78,6 +78,177 @@
   gap: var(--hud-space-lg);
 }
 
+.tools {
+  display: flex;
+  gap: var(--hud-space-xs);
+  margin-bottom: var(--hud-space-md);
+}
+
+.tools input,
+.tools select {
+  border: 1px solid var(--hud-border-subtle);
+  background: var(--hud-panel-bg);
+  color: var(--hud-text-primary);
+  padding: var(--hud-space-sm);
+  font-size: 0.75rem;
+  border-radius: var(--hud-radius-sm);
+}
+
+.tools input {
+  flex: 1;
+}
+
+.tools select {
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(62px, 1fr));
+  gap: var(--hud-space-xs);
+}
+
+.item {
+  aspect-ratio: 1;
+  border: 1px solid var(--hud-border-subtle);
+  background: var(--hud-panel-bg);
+  position: relative;
+  font-size: 1.875rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--hud-radius-sm);
+  transition: border-color var(--hud-transition-duration), box-shadow var(--hud-transition-duration);
+}
+
+.item:focus-visible {
+  outline: var(--hud-focus-ring);
+  outline-offset: 2px;
+}
+
+.item i {
+  font-style: normal;
+}
+
+.item > b {
+  position: absolute;
+  right: 5px;
+  bottom: 19px;
+  font-size: 0.625rem;
+  font-family: var(--hud-font-mono);
+}
+
+.item small {
+  position: absolute;
+  bottom: 4px;
+  left: 3px;
+  right: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--hud-text-secondary);
+  font-size: 0.5rem;
+}
+
+.item.uncommon { border-color: #3b9f69; }
+.item.rare { border-color: #318fd0; }
+.item.epic { border-color: #a057df; }
+.item.legendary { border-color: #e5b747; }
+
+.item.selected {
+  border-color: var(--hud-text-author);
+  box-shadow: 0 0 16px rgba(27, 217, 255, 0.53);
+}
+
+.compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--hud-text-secondary);
+  flex-wrap: wrap;
+  gap: var(--hud-space-xs);
+}
+
+.compact b {
+  font-size: 2.25rem;
+  color: var(--hud-text-author);
+  font-family: var(--hud-font-mono);
+}
+
+.compact span {
+  padding: 4px 6px;
+  border: 1px solid var(--hud-border-subtle);
+  border-radius: var(--hud-radius-sm);
+  background: var(--hud-panel-bg);
+}
+
+.largeIcon {
+  float: left;
+  width: 64px;
+  height: 64px;
+  margin: 0 var(--hud-space-sm) var(--hud-space-xs) 0;
+  border: 1px solid var(--hud-text-author);
+  display: grid;
+  place-items: center;
+  font-size: 2.375rem;
+  border-radius: var(--hud-radius-sm);
+  background: var(--hud-panel-raised-bg);
+}
+
+.actions {
+  display: flex;
+  gap: var(--hud-space-xs);
+  flex-wrap: wrap;
+}
+
+.actions button {
+  flex: 1;
+  padding: var(--hud-space-sm);
+  min-height: var(--hud-touch-target-min);
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border-subtle);
+  color: var(--hud-text-primary);
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: var(--hud-radius-sm);
+  transition: border-color var(--hud-transition-duration), background-color var(--hud-transition-duration), color var(--hud-transition-duration);
+}
+
+.actions button:focus-visible {
+  outline: var(--hud-focus-ring);
+  outline-offset: 2px;
+}
+
+.awardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--hud-space-md);
+  margin-top: var(--hud-space-md);
+}
+
+.awardGrid article {
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border-subtle);
+  padding: var(--hud-space-md);
+  border-radius: var(--hud-radius-sm);
+}
+
+.awardGrid article > i {
+  font-style: normal;
+  font-size: 2rem;
+  color: #ffd056;
+}
+
+.awardGrid h2 {
+  font-size: 0.875rem;
+  margin: var(--hud-space-xs) 0 4px;
+}
+
+.awardGrid p {
+  font-size: 0.75rem;
+  color: var(--hud-state-success);
+}
+
 @media (max-width: 1050px) {
   .inventoryGrid {
     grid-template-columns: 170px 1fr;
@@ -96,6 +267,9 @@
     grid-column: auto;
     grid-template-columns: 1fr;
   }
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
   .title {
     flex-direction: column;
     align-items: flex-start;
@@ -103,5 +277,8 @@
   }
   .title h1 {
     font-size: 1.75rem;
+  }
+  .awardGrid {
+    grid-template-columns: 1fr 1fr;
   }
 }

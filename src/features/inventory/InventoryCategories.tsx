@@ -1,5 +1,6 @@
-import type { InventoryCategoryPresentation } from "./inventory-presentation";
-import { Panel } from "../../shared/ui/Panel";
+import type { InventoryCategoryPresentation } from "./inventory-presentation.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import styles from "./InventoryView.module.css";
 
 export function InventoryCategories({
   categories,
@@ -12,10 +13,10 @@ export function InventoryCategories({
 }) {
   return (
     <Panel title="CATEGORIES">
-      <div className="categories">
+      <div className={styles.categories}>
         {categories.map((category) => (
           <button
-            className={filter === category.id ? "on" : ""}
+            className={filter === category.id ? styles.on : ""}
             onClick={() => setFilter(category.id)}
             key={category.id}
           >

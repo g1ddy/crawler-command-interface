@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import type { CrawlerEvent, CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineSource } from "../../app/domain/types";
 import { CrawlerView } from "../features/crawler/CrawlerView";
+import { deriveAwardHistory } from "../features/inventory/public";
 import { InventoryView } from "../features/inventory/InventoryView";
 import { NotificationsView } from "../features/notifications/NotificationsView";
 import { PartyView } from "../features/party/PartyView";
@@ -30,6 +32,11 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
   onInspectObservation: (observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation) => void;
   onInspectStat: (stat: string) => void;
 }) {
+  const awards = useMemo(
+    () => deriveAwardHistory(events, sequence, state.inventory),
+    [events, sequence, state.inventory],
+  );
+
   switch (view) {
     case "crawler": return <CrawlerView state={state} observations={observations} isLive={isLive} onInspectStat={onInspectStat} onInspectObservation={onInspectObservation} actions={actions.crawler} />;
     case "ratings": return <RatingsView observations={observations.broadcast} selectedSequence={sequence} isLive={isLive} onInspectObservation={onInspectObservation} />;
@@ -44,8 +51,9 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
           inventory: observations.inventory,
           equipment: observations.equipment,
         }}
+        awards={awards}
         events={events}
-        sequence={sequence}
+        selectedSequence={sequence}
         isLive={isLive}
         crawler={state.crawler}
         provenanceItem={provenanceItem}

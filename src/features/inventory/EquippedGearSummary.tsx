@@ -1,5 +1,6 @@
-import type { EquippedGearSummaryItem } from "./inventory-presentation";
-import { Panel } from "../../shared/ui/Panel";
+import type { EquippedGearSummaryItem } from "./inventory-presentation.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import styles from "./InventoryView.module.css";
 
 export function EquippedGearSummary({
   equippedSummary,
@@ -10,7 +11,7 @@ export function EquippedGearSummary({
 }) {
   return (
     <Panel title="EQUIPPED GEAR SLOTS">
-      <div className="compact">
+      <div className={styles.compact}>
         {equippedSummary.length > 0 ? (
           equippedSummary.map(({ slot, itemName }) => (
             <span key={slot}>

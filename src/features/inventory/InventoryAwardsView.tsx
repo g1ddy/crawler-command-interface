@@ -1,5 +1,6 @@
-import { Panel } from "../../shared/ui/Panel";
-import type { AwardHistoryItem } from "./awardHistory";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import type { AwardHistoryItem } from "./awardHistory.ts";
+import styles from "./InventoryView.module.css";
 
 export function InventoryAwardsView({
   awards,
@@ -19,13 +20,7 @@ export function InventoryAwardsView({
           Historical record of earned awards and boxes.
         </p>
         {awards.length > 0 ? (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-              gap: "8px",
-            }}
-          >
+          <div className={styles.awardGrid}>
             {awards.map((award) => (
               <article
                 key={award.id}
@@ -84,7 +79,7 @@ export function InventoryAwardsView({
       </Panel>
       <Panel title="AWARD LEDGER">
         {awards.length > 0 ? (
-          <div className="compact">
+          <div className={styles.compact}>
             {awards.map((award) => (
               <span key={award.id}>
                 <strong>{award.name}</strong>

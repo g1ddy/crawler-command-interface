@@ -3,12 +3,13 @@ import type {
   ProjectedEquipmentObservation,
   ProjectedItemObservation,
   ProjectedObservationValue,
-} from "../../../app/domain/types";
-import { Panel } from "../../shared/ui/Panel";
-import { TelemetryBadge } from "../timeline/public";
-import type { InventoryActions } from "../../application/crawler-action-contracts";
-import type { InventoryItemActionCapabilities } from "./inventory-presentation";
-import type { RequirementDetail, RequirementResult } from "../../../app/domain/stats";
+} from "../../../app/domain/types.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import { TelemetryBadge } from "../timeline/public.ts";
+import type { InventoryActions } from "../../application/crawler-action-contracts.ts";
+import type { InventoryItemActionCapabilities } from "./inventory-presentation.ts";
+import type { RequirementDetail, RequirementResult } from "../../../app/domain/stats.ts";
+import styles from "./InventoryView.module.css";
 
 export function ItemInspector({
   selectedItem,
@@ -57,9 +58,11 @@ export function ItemInspector({
   const isEquipment =
     selectedItem.category === "EQUIPMENT" || selectedItem.category === "equipment";
 
+  const rarityClass = styles[selectedItem.rarity as keyof typeof styles] ?? "";
+
   return (
     <Panel title="ITEM INSPECTOR">
-      <div className={`large-icon ${selectedItem.rarity}`}>
+      <div className={`${styles.largeIcon} ${rarityClass}`}>
         {selectedItem.icon}
       </div>
       <h2>{selectedItem.name.toUpperCase()}</h2>
@@ -129,7 +132,7 @@ export function ItemInspector({
           ))}
         </div>
       )}
-      <div className="actions" style={{ flexWrap: "wrap", gap: "6px" }}>
+      <div className={styles.actions} style={{ flexWrap: "wrap", gap: "6px" }}>
         {isConsumable && (
           <button
             style={{

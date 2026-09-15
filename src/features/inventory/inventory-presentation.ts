@@ -11,6 +11,7 @@ import {
   type InventorySortOrder,
 } from "./inventoryItemBrowserModel.ts";
 import type { EquipmentSlot } from "../../application/crawler-action-contracts.ts";
+import type { AwardHistoryEntry } from "./awardHistory.ts";
 
 export interface InventoryCategoryPresentation {
   id: string;
@@ -42,6 +43,7 @@ export interface DerivedInventoryPresentation {
   selectedItemRequirements: RequirementResult;
   selectedItemActions: InventoryItemActionCapabilities;
   equippedSummary: EquippedGearSummaryItem[];
+  awards: AwardHistoryEntry[];
 }
 
 export interface DeriveInventoryPresentationInput {
@@ -53,7 +55,7 @@ export interface DeriveInventoryPresentationInput {
   search: string;
   sortOrder: InventorySortOrder;
   selectedInstanceId: string | null;
-  awardsCount: number;
+  awards?: AwardHistoryEntry[];
   isLive?: boolean;
 }
 
@@ -69,7 +71,7 @@ export function deriveInventoryPresentation(
     search,
     sortOrder,
     selectedInstanceId,
-    awardsCount,
+    awards = [],
     isLive = true,
   } = input;
 
@@ -108,6 +110,8 @@ export function deriveInventoryPresentation(
       itemName: inventoryByInstanceId.get(itemId)?.name ?? "UNKNOWN ITEM",
     }));
 
+  const awardsCount = awards.length;
+
   const categories = [
     "ALL ITEMS",
     "EQUIPMENT",
@@ -137,5 +141,6 @@ export function deriveInventoryPresentation(
     selectedItemRequirements,
     selectedItemActions,
     equippedSummary,
+    awards,
   };
 }
