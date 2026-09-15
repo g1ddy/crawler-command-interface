@@ -183,11 +183,11 @@
         "src/features/crawler/stats/PlayerStats.tsx",
         "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/awardHistory.ts",
-        "src/features/inventory/equipment/equipment-presentation.ts",
         "src/features/inventory/equipment/EquipmentView.tsx",
-        "src/features/inventory/inventory-presentation.ts",
-        "src/features/inventory/inventoryItemBrowserModel.ts",
+        "src/features/inventory/EquippedGearSummary.tsx",
+        "src/features/inventory/InventoryCategories.tsx",
         "src/features/inventory/InventoryItemBrowser.tsx",
+        "src/features/inventory/inventoryItemBrowserModel.ts",
         "src/features/inventory/ItemInspector.tsx",
         "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
         "src/features/notifications/NotificationsView.tsx",
@@ -1866,10 +1866,8 @@
         }
       ],
       "dependents": [
-        "src/features/inventory/equipment/equipment-presentation.ts",
+        "src/features/inventory/InventoryView.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
-        "src/features/inventory/inventory-presentation.ts",
-        "src/features/inventory/ItemInspector.tsx",
         "src/shell/overlays/WorkspaceOverlays.tsx",
         "src/features/crawler/stats/StatInspectorModal.tsx",
         "src/application/crawler-actions.ts"
@@ -2140,12 +2138,12 @@
       "dependents": [
         "src/CrawlerApp.tsx",
         "src/shell/adapters/CrawlerWorkspace.tsx",
-        "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/timeline/public.ts",
         "src/features/timeline/SequenceBadge.tsx",
         "src/shared/ui/Panel.tsx",
         "src/features/inventory/InventoryView.tsx",
+        "src/features/inventory/equipment/EquipmentView.tsx",
         "src/shared/ui/ModalBoundary.tsx",
         "src/features/party/PartyView.tsx",
         "src/features/pet/PetView.tsx",
@@ -2207,9 +2205,7 @@
         "src/features/crawler/CrawlerView.tsx",
         "src/features/crawler/stats/PlayerStats.tsx",
         "src/features/inventory/InventoryView.tsx",
-        "src/features/inventory/equipment/equipment-presentation.ts",
         "src/features/inventory/equipment/EquipmentView.tsx",
-        "src/features/inventory/inventory-presentation.ts",
         "src/features/inventory/ItemInspector.tsx",
         "src/features/skills/SkillsView.tsx",
         "src/shell/adapters/useCrawlerSession.ts",
@@ -2772,23 +2768,6 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../features/inventory/public",
-          "resolved": "src/features/inventory/public.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "../features/notifications/NotificationsView",
           "resolved": "src/features/notifications/NotificationsView.tsx",
           "valid": true,
@@ -2896,23 +2875,6 @@
           "resolved": "src/shell/navigation/navigation-model.ts",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -3747,6 +3709,23 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/stats",
+          "resolved": "app/domain/stats.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "type-only",
             "import"
           ],
@@ -3754,7 +3733,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
+          "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3772,7 +3751,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../application/crawler-action-contracts.ts",
+          "module": "../../application/crawler-action-contracts",
           "resolved": "src/application/crawler-action-contracts.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3783,14 +3762,13 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./awardHistory.ts",
+          "module": "./awardHistory",
           "resolved": "src/features/inventory/awardHistory.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3807,24 +3785,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./equipment/equipment-presentation.ts",
-          "resolved": "src/features/inventory/equipment/equipment-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./equipment/EquipmentView.tsx",
+          "module": "./equipment/EquipmentView",
           "resolved": "src/features/inventory/equipment/EquipmentView.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3841,7 +3802,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./EquippedGearSummary.tsx",
+          "module": "./EquippedGearSummary",
           "resolved": "src/features/inventory/EquippedGearSummary.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3858,24 +3819,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./inventory-presentation.ts",
-          "resolved": "src/features/inventory/inventory-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./InventoryAwardsView.tsx",
+          "module": "./InventoryAwardsView",
           "resolved": "src/features/inventory/InventoryAwardsView.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3892,7 +3836,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./InventoryCategories.tsx",
+          "module": "./InventoryCategories",
           "resolved": "src/features/inventory/InventoryCategories.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3909,7 +3853,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./InventoryItemBrowser.tsx",
+          "module": "./InventoryItemBrowser",
           "resolved": "src/features/inventory/InventoryItemBrowser.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3920,14 +3864,13 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./inventoryItemBrowserModel.ts",
+          "module": "./inventoryItemBrowserModel",
           "resolved": "src/features/inventory/inventoryItemBrowserModel.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3942,26 +3885,9 @@
           ],
           "dynamic": false,
           "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./InventoryView.module.css",
-          "resolved": "src/features/inventory/InventoryView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./ItemInspector.tsx",
+          "module": "./ItemInspector",
           "resolved": "src/features/inventory/ItemInspector.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -3978,7 +3904,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./provenance/ItemProvenanceDrawer.tsx",
+          "module": "./provenance/ItemProvenanceDrawer",
           "resolved": "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4007,28 +3933,6 @@
       "orphan": false
     },
     {
-      "source": "src/features/inventory/InventoryView.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/inventory/InventoryView.tsx",
-        "src/features/inventory/EquippedGearSummary.tsx",
-        "src/features/inventory/InventoryAwardsView.tsx",
-        "src/features/inventory/InventoryCategories.tsx",
-        "src/features/inventory/InventoryItemBrowser.tsx",
-        "src/features/inventory/ItemInspector.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
-    },
-    {
       "source": "src/features/inventory/awardHistory.ts",
       "valid": true,
       "dependencies": [
@@ -4053,74 +3957,7 @@
       ],
       "dependents": [
         "src/features/inventory/InventoryView.tsx",
-        "src/features/inventory/inventory-presentation.ts",
-        "src/features/inventory/InventoryAwardsView.tsx",
-        "src/features/inventory/public.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/inventory/equipment/equipment-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/stats.ts",
-          "resolved": "app/domain/stats.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types.ts",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../application/crawler-action-contracts.ts",
-          "resolved": "src/application/crawler-action-contracts.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/inventory/InventoryView.tsx",
-        "src/features/inventory/equipment/EquipmentView.tsx",
-        "src/features/inventory/public.ts"
+        "src/features/inventory/InventoryAwardsView.tsx"
       ],
       "orphan": false
     },
@@ -4134,14 +3971,13 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../../app/domain/stats.ts",
+          "module": "../../../../app/domain/stats",
           "resolved": "app/domain/stats.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4159,7 +3995,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../../app/domain/types.ts",
+          "module": "../../../../app/domain/types",
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4177,7 +4013,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../application/crawler-action-contracts.ts",
+          "module": "../../../application/crawler-action-contracts",
           "resolved": "src/application/crawler-action-contracts.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4194,7 +4030,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../shared/ui/Panel.tsx",
+          "module": "../../../shared/ui/Panel",
           "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4211,7 +4047,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../timeline/public.ts",
+          "module": "../../timeline/public",
           "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4221,58 +4057,23 @@
           "coreModule": false,
           "couldNotResolve": false,
           "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./equipment-presentation.ts",
-          "resolved": "src/features/inventory/equipment/equipment-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
+            "npm",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": false,
           "moduleSystem": "es6",
-          "module": "./EquipmentView.module.css",
-          "resolved": "src/features/inventory/equipment/EquipmentView.module.css",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
           "valid": true,
-          "matchesDoNotFollow": false
+          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
         "src/features/inventory/InventoryView.tsx"
       ],
       "orphan": false
-    },
-    {
-      "source": "src/features/inventory/equipment/EquipmentView.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/inventory/equipment/EquipmentView.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
     },
     {
       "source": "src/features/inventory/EquippedGearSummary.tsx",
@@ -4284,13 +4085,58 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel.tsx",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/InventoryAwardsView.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
           "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4308,25 +4154,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./inventory-presentation.ts",
-          "resolved": "src/features/inventory/inventory-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./InventoryView.module.css",
-          "resolved": "src/features/inventory/InventoryView.module.css",
+          "module": "./awardHistory",
+          "resolved": "src/features/inventory/awardHistory.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -4337,26 +4166,9 @@
       "orphan": false
     },
     {
-      "source": "src/features/inventory/inventory-presentation.ts",
+      "source": "src/features/inventory/InventoryCategories.tsx",
       "valid": true,
       "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/stats.ts",
-          "resolved": "app/domain/stats.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
         {
           "circular": false,
           "coreModule": false,
@@ -4370,7 +4182,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
+          "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4381,6 +4193,33 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/inventory/InventoryView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/inventory/InventoryItemBrowser.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "type-only",
             "import"
           ],
@@ -4388,8 +4227,25 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../application/crawler-action-contracts.ts",
-          "resolved": "src/application/crawler-action-contracts.ts",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel",
+          "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -4406,35 +4262,14 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./awardHistory.ts",
-          "resolved": "src/features/inventory/awardHistory.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./inventoryItemBrowserModel.ts",
+          "module": "./inventoryItemBrowserModel",
           "resolved": "src/features/inventory/inventoryItemBrowserModel.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
       ],
       "dependents": [
-        "src/features/inventory/InventoryView.tsx",
-        "src/features/inventory/EquippedGearSummary.tsx",
-        "src/features/inventory/InventoryCategories.tsx",
-        "src/features/inventory/ItemInspector.tsx",
-        "src/features/inventory/public.ts"
+        "src/features/inventory/InventoryView.tsx"
       ],
       "orphan": false
     },
@@ -4463,212 +4298,7 @@
       ],
       "dependents": [
         "src/features/inventory/InventoryView.tsx",
-        "src/features/inventory/inventory-presentation.ts",
         "src/features/inventory/InventoryItemBrowser.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/inventory/InventoryAwardsView.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel.tsx",
-          "resolved": "src/shared/ui/Panel.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./awardHistory.ts",
-          "resolved": "src/features/inventory/awardHistory.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./InventoryView.module.css",
-          "resolved": "src/features/inventory/InventoryView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/inventory/InventoryView.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/inventory/InventoryCategories.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel.tsx",
-          "resolved": "src/shared/ui/Panel.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./inventory-presentation.ts",
-          "resolved": "src/features/inventory/inventory-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./InventoryView.module.css",
-          "resolved": "src/features/inventory/InventoryView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/inventory/InventoryView.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/inventory/InventoryItemBrowser.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel.tsx",
-          "resolved": "src/shared/ui/Panel.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./inventoryItemBrowserModel.ts",
-          "resolved": "src/features/inventory/inventoryItemBrowserModel.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./InventoryView.module.css",
-          "resolved": "src/features/inventory/InventoryView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/inventory/InventoryView.tsx"
       ],
       "orphan": false
     },
@@ -4689,25 +4319,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/stats.ts",
-          "resolved": "app/domain/stats.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/types.ts",
+          "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4725,7 +4337,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../application/crawler-action-contracts.ts",
+          "module": "../../application/crawler-action-contracts",
           "resolved": "src/application/crawler-action-contracts.ts",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4742,7 +4354,7 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel.tsx",
+          "module": "../../shared/ui/Panel",
           "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
@@ -4759,43 +4371,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../timeline/public.ts",
+          "module": "../timeline/public",
           "resolved": "src/features/timeline/public.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./inventory-presentation.ts",
-          "resolved": "src/features/inventory/inventory-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./InventoryView.module.css",
-          "resolved": "src/features/inventory/InventoryView.module.css",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -4948,67 +4525,6 @@
         "npm",
         "import"
       ]
-    },
-    {
-      "source": "src/features/inventory/public.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./awardHistory.ts",
-          "resolved": "src/features/inventory/awardHistory.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./equipment/equipment-presentation.ts",
-          "resolved": "src/features/inventory/equipment/equipment-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./inventory-presentation.ts",
-          "resolved": "src/features/inventory/inventory-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/ActiveFeatureView.tsx"
-      ],
-      "orphan": false
     },
     {
       "source": "src/features/notifications/NotificationsView.tsx",
@@ -7940,8 +7456,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 132,
-    "totalDependenciesCruised": 357,
+    "totalCruised": 127,
+    "totalDependenciesCruised": 334,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
