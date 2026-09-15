@@ -336,8 +336,8 @@
     "scanned": true
   },
   "src/features/crawler/crawler-presentation.ts": {
-    "complexity": 15,
-    "loc": 165,
+    "complexity": 16,
+    "loc": 169,
     "instability": 0.43,
     "fanIn": 4,
     "fanOut": 3,
