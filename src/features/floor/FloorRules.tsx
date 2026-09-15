@@ -79,7 +79,7 @@ export function FloorRules({
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content panel" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "680px", maxHeight: "85vh", overflowY: "auto" }}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "680px", maxHeight: "85vh", overflowY: "auto" }}>
         <div className="modal-header" style={{ marginBottom: "12px" }}>
           <div>
             <p className="eyebrow">FLOOR DIRECTIVES & CONSTRAINTS</p>

@@ -56,16 +56,16 @@
 :is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] button { font-size: .875rem; padding: 1rem; letter-spacing: .07em; }
 :is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] [aria-label="Application tools"] { margin-left: auto; }
 :is(.concept-lab, .concept-hud-wrapper) .view { max-width: none; padding: 1.5rem 2rem 3rem; }
-:is(.concept-lab, .concept-hud-wrapper) .panel { background: var(--surface); border-color: var(--edge); padding: 1.5rem; }
-:is(.concept-lab, .concept-hud-wrapper) .panel > h2 { font-size: 1rem; letter-spacing: .08em; color: var(--accent); }
+
+
 :is(.concept-lab, .concept-hud-wrapper) .timeline-scrubber-panel { border-left: 3px solid var(--accent); background: #0b121a; }
 :is(.concept-lab, .concept-hud-wrapper) .timeline-header { gap: 1rem; flex-wrap: wrap; }
 :is(.concept-lab, .concept-hud-wrapper) .timeline-header h2 { font-size: 1.25rem; }
 :is(.concept-lab, .concept-hud-wrapper) .floor-navigator-bar { gap: .5rem !important; }
 :is(.concept-lab, .concept-hud-wrapper) :is(.mode-btn, .step-controls button, .subnav button, .categories button, .tools input, .tools button) { font-size: .875rem; }
 :is(.concept-lab, .concept-hud-wrapper) :is(.profile, .quest, .achievement) { background: var(--surface); border-color: var(--edge); }
-:is(.concept-lab, .concept-hud-wrapper) :is(.stats p, .meter, .effects p, .gear, .broadcast p, .panel dd, .panel > p, .quest > p, .quest ul, .skill-list span b, .right .panel > p) { font-size: 1rem; }
-:is(.concept-lab, .concept-hud-wrapper) :is(.eyebrow, .panel dt, .profile i, .slot-note, .skill-list span small, .item small, .candidate span) { font-size: .75rem; }
+:is(.concept-lab, .concept-hud-wrapper) :is(.stats p, .meter, .effects p, .gear, .broadcast p, .quest > p, .quest ul, .skill-list span b) { font-size: 1rem; }
+:is(.concept-lab, .concept-hud-wrapper) :is(.eyebrow, .profile i, .slot-note, .skill-list span small, .item small, .candidate span) { font-size: .75rem; }
 :is(.concept-lab, .concept-hud-wrapper) .item { min-height: 7rem; }
 :is(.concept-lab, .concept-hud-wrapper) .item small { white-space: normal; line-height: 1.2; }
 :is(.concept-lab, .concept-hud-wrapper) .inventory, :is(.concept-lab, .concept-hud-wrapper) .skills { grid-template-columns: 180px minmax(0, 1fr) minmax(250px, .7fr); }
@@ -95,7 +95,7 @@
 [data-concept=theater] .hud-readings { grid-column: 1 / -1; }
 [data-concept=theater] .hud-replay-state { grid-row: 2; grid-column: 2; justify-self: end; min-width: 180px; }
 [data-concept=theater] [data-shell-navigation] { margin: 0 2rem; padding: .25rem; border: 1px solid var(--edge); background: #291a22; }
-[data-concept=theater] .panel { border-top: 3px solid var(--edge); box-shadow: 0 12px 20px #0003; }
+
 
 @media (prefers-reduced-motion: no-preference) {
   :is(.concept-lab, .concept-hud-wrapper) button { transition: background-color 140ms ease, border-color 140ms ease; }
@@ -125,7 +125,7 @@
   [data-concept=tactical] main { display: block; }
   [data-concept=tactical] [data-shell-navigation] { position: static; flex-direction: row; flex-wrap: wrap; }
   [data-concept=tactical] [data-shell-navigation] [aria-label="Application tools"] { margin: 0; }
-  :is(.concept-lab, .concept-hud-wrapper) .panel { padding: 1rem; }
+
 }
 
 /* Preview composition reuses production navigation, not legacy nav classes. */

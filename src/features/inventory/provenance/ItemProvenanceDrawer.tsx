@@ -26,7 +26,7 @@ export function ItemProvenanceDrawer({ item, events, onClose, onNavigateToSequen
       return { sequence: event.sequence, occurredAt, eventType: event.type, description: event.summary };
     });
 
-  return <ModalBoundary label="Item provenance" onClose={onClose}><div className="modal-backdrop" onClick={onClose}><aside className="item-provenance-drawer panel modal-content" onClick={event => event.stopPropagation()}>
+  return <ModalBoundary label="Item provenance" onClose={onClose}><div className="modal-backdrop" onClick={onClose}><aside className="item-provenance-drawer modal-content" onClick={event => event.stopPropagation()}>
     <div className="drawer-header"><div><p className="eyebrow">ITEM PROVENANCE & LIFECYCLE</p><h2>{item.name.toUpperCase()}</h2></div><button className="close-btn" onClick={onClose}>✕</button></div>
     <div className="item-provenance-meta">
       <p><strong>INSTANCE ID:</strong> {item.instanceId}</p>

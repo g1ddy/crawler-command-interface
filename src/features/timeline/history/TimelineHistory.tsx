@@ -107,7 +107,7 @@ export function TimelineHistory({
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content panel" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "720px", maxHeight: "85vh", overflowY: "auto" }}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "720px", maxHeight: "85vh", overflowY: "auto" }}>
         <div className="modal-header" style={{ marginBottom: "12px" }}>
           <div>
             <p className="eyebrow">TIMELINE HISTORY FEED</p>

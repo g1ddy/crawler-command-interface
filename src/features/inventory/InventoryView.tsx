@@ -31,6 +31,7 @@ export function InventoryView({
   observations,
   events,
   sequence,
+  isLive = true,
   provenanceItem,
   setProvenanceItem,
   filter,
@@ -47,6 +48,7 @@ export function InventoryView({
   sources?: TimelineSource[];
   events: CrawlerEvent[];
   sequence: number;
+  isLive?: boolean;
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
   filter: string;
@@ -135,6 +137,7 @@ export function InventoryView({
                   selectedItem={selectedItem}
                   observation={selectedItemObservation}
                   selectedSequence={sequence}
+                  isLive={isLive}
                   requirementResult={selectedItemRequirements}
                   actions={actions}
                   onOpenProvenance={(item) => setProvenanceItem(item)}
@@ -158,6 +161,7 @@ export function InventoryView({
             liveState={liveState}
             observations={observations}
             selectedSequence={sequence}
+            isLive={isLive}
             slot={slot}
             setSlot={setSlot}
             actions={actions}

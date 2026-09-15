@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.01,
-    "fanIn": 68,
+    "fanIn": 70,
     "fanOut": 1,
     "scanned": true
   },
@@ -329,34 +329,26 @@
   },
   "src/features/crawler/CrawlerView.tsx": {
     "complexity": 4,
-    "loc": 10,
-    "instability": 0.83,
+    "loc": 44,
+    "instability": 0.88,
     "fanIn": 1,
-    "fanOut": 5,
+    "fanOut": 7,
     "scanned": true
   },
-  "src/features/crawler/health/HealthConditions.tsx": {
-    "complexity": 7,
-    "loc": 21,
-    "instability": 0.8,
-    "fanIn": 1,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/shared/ui/Panel.tsx": {
-    "complexity": 2,
-    "loc": 11,
-    "instability": 0.07,
-    "fanIn": 13,
-    "fanOut": 1,
+  "src/features/crawler/crawler-presentation.ts": {
+    "complexity": 16,
+    "loc": 169,
+    "instability": 0.43,
+    "fanIn": 4,
+    "fanOut": 3,
     "scanned": true
   },
   "src/features/timeline/public.ts": {
     "complexity": 1,
-    "loc": 25,
-    "instability": 0.33,
-    "fanIn": 8,
-    "fanOut": 4,
+    "loc": 36,
+    "instability": 0.44,
+    "fanIn": 9,
+    "fanOut": 7,
     "scanned": true
   },
   "src/features/timeline/evidence/evidencePresentation.ts": {
@@ -391,17 +383,33 @@
     "fanOut": 1,
     "scanned": true
   },
-  "src/features/crawler/stats/PlayerStats.tsx": {
-    "complexity": 18,
-    "loc": 41,
-    "instability": 0.8,
+  "src/features/crawler/health/HealthConditions.tsx": {
+    "complexity": 8,
+    "loc": 97,
+    "instability": 0.83,
     "fanIn": 1,
-    "fanOut": 4,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/shared/ui/Panel.tsx": {
+    "complexity": 2,
+    "loc": 12,
+    "instability": 0.12,
+    "fanIn": 15,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/crawler/stats/PlayerStats.tsx": {
+    "complexity": 9,
+    "loc": 132,
+    "instability": 0.86,
+    "fanIn": 1,
+    "fanOut": 6,
     "scanned": true
   },
   "src/features/inventory/InventoryView.tsx": {
-    "complexity": 9,
-    "loc": 172,
+    "complexity": 10,
+    "loc": 176,
     "instability": 0.93,
     "fanIn": 1,
     "fanOut": 13,
@@ -416,8 +424,8 @@
     "scanned": true
   },
   "src/features/inventory/equipment/EquipmentView.tsx": {
-    "complexity": 27,
-    "loc": 57,
+    "complexity": 50,
+    "loc": 58,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
@@ -464,8 +472,8 @@
     "scanned": true
   },
   "src/features/inventory/ItemInspector.tsx": {
-    "complexity": 33,
-    "loc": 226,
+    "complexity": 49,
+    "loc": 240,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
@@ -506,17 +514,17 @@
   "src/features/party/PartyView.tsx": {
     "complexity": 3,
     "loc": 34,
-    "instability": 0.67,
+    "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 2,
+    "fanOut": 3,
     "scanned": true
   },
   "src/features/pet/PetView.tsx": {
     "complexity": 17,
-    "loc": 125,
-    "instability": 0.67,
+    "loc": 126,
+    "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 2,
+    "fanOut": 3,
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {
@@ -552,11 +560,19 @@
     "scanned": true
   },
   "src/features/skills/SkillsView.tsx": {
-    "complexity": 5,
-    "loc": 124,
-    "instability": 0.8,
+    "complexity": 4,
+    "loc": 127,
+    "instability": 0.86,
     "fanIn": 1,
-    "fanOut": 4,
+    "fanOut": 6,
+    "scanned": true
+  },
+  "src/features/skills/skills-presentation.ts": {
+    "complexity": 4,
+    "loc": 83,
+    "instability": 0.33,
+    "fanIn": 2,
+    "fanOut": 1,
     "scanned": true
   },
   "src/shell/navigation/navigation-model.ts": {
@@ -585,9 +601,17 @@
   },
   "src/shell/hud/hotlist/Hotlist.tsx": {
     "complexity": 6,
-    "loc": 26,
-    "instability": 0.33,
+    "loc": 35,
+    "instability": 0.6,
     "fanIn": 2,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/skills/public.ts": {
+    "complexity": 1,
+    "loc": 11,
+    "instability": 0.5,
+    "fanIn": 1,
     "fanOut": 1,
     "scanned": true
   },
@@ -749,6 +773,14 @@
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/crawler/public.ts": {
+    "complexity": 1,
+    "loc": 7,
+    "instability": 1,
+    "fanIn": 0,
+    "fanOut": 1,
     "scanned": true
   },
   "src/main.concepts.tsx": {

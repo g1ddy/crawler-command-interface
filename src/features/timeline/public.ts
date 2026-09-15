@@ -1,6 +1,17 @@
 /** Evidence-aware UI intentionally supported for reuse by other features. */
-export { TelemetryBadge } from "./evidence/TelemetryBadge";
-export { SequenceBadge } from "./SequenceBadge";
+import React, { type ComponentProps } from "react";
+import type { TelemetryBadge as TelemetryBadgeComp } from "./evidence/TelemetryBadge";
+import type { SequenceBadge as SequenceBadgeComp } from "./SequenceBadge";
+
+export const TelemetryBadge = (props: ComponentProps<typeof TelemetryBadgeComp>) => {
+  const Component = React.lazy(() => import("./evidence/TelemetryBadge.tsx").then(m => ({ default: m.TelemetryBadge })));
+  return React.createElement(React.Suspense, { fallback: null }, React.createElement(Component, props));
+};
+
+export const SequenceBadge = (props: ComponentProps<typeof SequenceBadgeComp>) => {
+  const Component = React.lazy(() => import("./SequenceBadge.tsx").then(m => ({ default: m.SequenceBadge })));
+  return React.createElement(React.Suspense, { fallback: null }, React.createElement(Component, props));
+};
 export {
   deriveEvidencePresentation,
   displayedReadingAuthority,
