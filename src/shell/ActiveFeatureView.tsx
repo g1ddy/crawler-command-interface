@@ -43,8 +43,8 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     [observations.broadcast, isLive],
   );
   const notifications = useMemo(
-    () => deriveNotificationPresentation(events, sequence),
-    [events, sequence],
+    () => deriveNotificationPresentation(events, sequence, isLive),
+    [events, sequence, isLive],
   );
 
   switch (view) {
@@ -52,7 +52,7 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     case "ratings": return <RatingsView presentation={ratings} selectedSequence={sequence} onInspectObservation={onInspectObservation} />;
     case "party": return <PartyView party={state.party} />;
     case "pet": return <PetView pets={state.pets} />;
-    case "notifications": return <NotificationsView notifications={notifications} onNavigateToSequence={onNavigateToSequence} />;
+    case "notifications": return <NotificationsView presentation={notifications} onNavigateToSequence={onNavigateToSequence} />;
     case "inventory": return (
       <InventoryView
         inventory={state.inventory}
