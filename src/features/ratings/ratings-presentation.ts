@@ -1,4 +1,4 @@
-import type { ProjectedObservationValue } from "../../app/domain/types";
+import type { ProjectedObservationValue } from "../../../app/domain/types";
 
 export type RatingsMetricGroup = "audience" | "engagement" | "patronage" | "ranking" | "bounty";
 
@@ -56,28 +56,15 @@ export function projectRatingsMetrics(observations: Record<string, ProjectedObse
 }
 
 /** Derives the narrow Ratings surface from the selected temporal observation set. */
-export function deriveRatingsPresentation(
-  opts: { observations?: Record<string, ProjectedObservationValue>; isLive?: boolean; selectedSequence?: number } | Record<string, ProjectedObservationValue> = {},
-  argIsLive?: boolean,
-  argSequence?: number
-): DerivedRatingsPresentation {
-  let observations: Record<string, ProjectedObservationValue>;
-  let isLive: boolean;
-  let selectedSequence: number;
-
-  const isConfigObject = opts && typeof opts === 'object' && ('observations' in opts || 'isLive' in opts || 'selectedSequence' in opts) && !('viewers' in opts && typeof (opts as Record<string, unknown>).viewers !== 'undefined');
-
-  if (isConfigObject) {
-    const config = opts as { observations?: Record<string, ProjectedObservationValue>; isLive?: boolean; selectedSequence?: number };
-    observations = config.observations || {};
-    isLive = config.isLive || false;
-    selectedSequence = config.selectedSequence || 0;
-  } else {
-    observations = (opts as Record<string, ProjectedObservationValue>) || {};
-    isLive = argIsLive || false;
-    selectedSequence = argSequence || 0;
-  }
-
+export function deriveRatingsPresentation({
+  observations = {},
+  isLive = false,
+  selectedSequence = 0,
+}: {
+  observations?: Record<string, ProjectedObservationValue>;
+  isLive?: boolean;
+  selectedSequence?: number;
+}): DerivedRatingsPresentation {
   const viewers = observations.viewers;
   const totalViewersFormatted = viewers && typeof viewers.value === "number"
     ? viewers.value.toLocaleString()

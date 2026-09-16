@@ -1,4 +1,4 @@
-import type { CrawlerEvent, NotificationKind, NotificationSeverity, RewardSpec } from "../../app/domain/types";
+import type { CrawlerEvent, NotificationKind, NotificationSeverity, RewardSpec } from "../../../app/domain/types";
 
 export interface CrawlerNotification { id: string; sequence: number; kind: NotificationKind; severity: NotificationSeverity; title: string; message: string; rewards?: RewardSpec[]; }
 export interface DerivedNotificationReward { kind: string; detail: string; }
@@ -24,25 +24,15 @@ export function projectNotifications(events: CrawlerEvent[], sequence: number): 
 }
 
 /** Derives crawler-visible notification history from authored deliveries at the selected temporal boundary. */
-export function deriveNotificationPresentation(
-  opts: { events: CrawlerEvent[]; sequence: number; isLive: boolean } | CrawlerEvent[],
-  argSequence?: number,
-  argIsLive?: boolean
-): DerivedNotificationsPresentation {
-  let events: CrawlerEvent[];
-  let sequence: number;
-  let isLive: boolean;
-
-  if (Array.isArray(opts)) {
-    events = opts;
-    sequence = argSequence as number;
-    isLive = argIsLive as boolean;
-  } else {
-    events = opts.events;
-    sequence = opts.sequence;
-    isLive = opts.isLive;
-  }
-
+export function deriveNotificationPresentation({
+  events,
+  sequence,
+  isLive,
+}: {
+  events: CrawlerEvent[];
+  sequence: number;
+  isLive: boolean;
+}): DerivedNotificationsPresentation {
   const raw = projectNotifications(events, sequence);
   const notifications = raw.map(item => ({
     ...item,

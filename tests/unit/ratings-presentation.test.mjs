@@ -58,12 +58,23 @@ test("deriveRatingsPresentation groups metrics and attaches evidence presentatio
 
   // Historical evidence test
   const replayResult = deriveRatingsPresentation({ observations: obs, isLive: false, selectedSequence: 12 });
+
+  // Older observation should be last-known
   const favoritesMetric = replayResult.groups
     .flatMap((g) => g.metrics)
     .find((m) => m.key === "favorites");
   assert.ok(favoritesMetric);
   assert.equal(favoritesMetric.evidence.state, "last-known");
   assert.equal(favoritesMetric.evidence.sourceSequence, 8);
+
+  // But we can also test an observation matching exactly the selected sequence
+  const replayResult2 = deriveRatingsPresentation({ observations: obs, isLive: false, selectedSequence: 10 });
+  const viewersMetricReplay2 = replayResult2.groups
+    .flatMap((g) => g.metrics)
+    .find((m) => m.key === "viewers");
+  assert.ok(viewersMetricReplay2);
+  assert.equal(viewersMetricReplay2.evidence.state, "current");
+  assert.equal(viewersMetricReplay2.evidence.sourceSequence, 10);
 });
 
 test("projectRatingsMetrics maintains backwards compatibility with raw metric projections", () => {
