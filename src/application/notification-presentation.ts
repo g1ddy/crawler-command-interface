@@ -5,9 +5,9 @@ export interface DerivedNotificationReward { kind: string; detail: string; }
 export interface DerivedNotificationItem extends CrawlerNotification { icon: string; formattedRewards?: DerivedNotificationReward[]; isCurrentDelivery: boolean; }
 export interface DerivedNotificationsPresentation { isLive: boolean; sequence: number; totalCount: number; badgeLabel: string; hasNotifications: boolean; notifications: DerivedNotificationItem[]; }
 
-/** Derives crawler-visible notification history from authored deliveries at the selected temporal boundary. */
-export function deriveNotificationPresentation(events: CrawlerEvent[], sequence: number, isLive: boolean): DerivedNotificationsPresentation {
-  const raw = events.filter(event => event.sequence <= sequence).flatMap(event => {
+export function projectNotifications(events: CrawlerEvent[], sequence: number): CrawlerNotification[] {
+  if (!events) return [];
+  return events.filter(event => event.sequence <= sequence).flatMap(event => {
     const delivery = event.notificationDelivery;
     if (!delivery?.delivered) return [];
     const achievement = event.type === "AchievementUnlocked" ? event.achievement : undefined;
@@ -21,6 +21,29 @@ export function deriveNotificationPresentation(events: CrawlerEvent[], sequence:
       rewards: achievement?.reward,
     }];
   }).sort((a, b) => b.sequence - a.sequence);
+}
+
+/** Derives crawler-visible notification history from authored deliveries at the selected temporal boundary. */
+export function deriveNotificationPresentation(
+  opts: { events: CrawlerEvent[]; sequence: number; isLive: boolean } | CrawlerEvent[],
+  argSequence?: number,
+  argIsLive?: boolean
+): DerivedNotificationsPresentation {
+  let events: CrawlerEvent[];
+  let sequence: number;
+  let isLive: boolean;
+
+  if (Array.isArray(opts)) {
+    events = opts;
+    sequence = argSequence as number;
+    isLive = argIsLive as boolean;
+  } else {
+    events = opts.events;
+    sequence = opts.sequence;
+    isLive = opts.isLive;
+  }
+
+  const raw = projectNotifications(events, sequence);
   const notifications = raw.map(item => ({
     ...item,
     icon: item.kind === "achievement" ? "🏆" : item.kind === "progression" ? "⬆" : "🎁",

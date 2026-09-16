@@ -43,7 +43,7 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     [observations.broadcast, isLive],
   );
   const notifications = useMemo(
-    () => deriveNotificationPresentation(events, sequence, isLive),
+    () => deriveNotificationPresentation({ events, sequence, isLive }),
     [events, sequence, isLive],
   );
 
