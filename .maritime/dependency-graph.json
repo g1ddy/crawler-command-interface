@@ -190,13 +190,14 @@
         "src/features/inventory/InventoryItemBrowser.tsx",
         "src/features/inventory/ItemInspector.tsx",
         "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
+        "src/features/notifications/NotificationsView.tsx",
         "src/features/notifications/notification-presentation.ts",
         "src/features/party/PartyView.tsx",
         "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
-        "src/features/ratings/ratings-presentation.ts",
         "src/features/ratings/RatingsView.tsx",
+        "src/features/ratings/ratings-presentation.ts",
         "src/features/skills/SkillsView.tsx",
         "src/features/skills/skills-presentation.ts",
         "src/shell/hud/ConceptHud.tsx",
@@ -2146,10 +2147,12 @@
         "src/shared/ui/Panel.tsx",
         "src/features/inventory/InventoryView.tsx",
         "src/shared/ui/ModalBoundary.tsx",
+        "src/features/notifications/NotificationsView.tsx",
         "src/features/party/PartyView.tsx",
         "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
+        "src/features/ratings/RatingsView.tsx",
         "src/features/skills/SkillsView.tsx",
         "src/shell/hud/ConceptHud.tsx",
         "src/shell/hud/PersistentHud.tsx",
@@ -2788,23 +2791,6 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../features/notifications/notification-presentation",
-          "resolved": "src/features/notifications/notification-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "../features/notifications/NotificationsView",
           "resolved": "src/features/notifications/NotificationsView.tsx",
           "valid": true,
@@ -2858,23 +2844,6 @@
           "moduleSystem": "es6",
           "module": "../features/quests/QuestsView",
           "resolved": "src/features/quests/QuestsView.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../features/ratings/ratings-presentation",
-          "resolved": "src/features/ratings/ratings-presentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5043,6 +5012,102 @@
       "orphan": false
     },
     {
+      "source": "src/features/notifications/NotificationsView.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./notification-presentation",
+          "resolved": "src/features/notifications/notification-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./NotificationsView.module.css",
+          "resolved": "src/features/notifications/NotificationsView.module.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/shell/ActiveFeatureView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/notifications/NotificationsView.module.css",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/features/notifications/NotificationsView.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
+        "import"
+      ]
+    },
+    {
       "source": "src/features/notifications/notification-presentation.ts",
       "valid": true,
       "dependencies": [
@@ -5066,70 +5131,9 @@
         }
       ],
       "dependents": [
-        "src/shell/ActiveFeatureView.tsx",
         "src/features/notifications/NotificationsView.tsx"
       ],
       "orphan": false
-    },
-    {
-      "source": "src/features/notifications/NotificationsView.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./notification-presentation",
-          "resolved": "src/features/notifications/notification-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": true,
-          "dependencyTypes": [
-            "unknown"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./NotificationsView.module.css",
-          "resolved": "./NotificationsView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/ActiveFeatureView.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "./NotificationsView.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/notifications/NotificationsView.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": true,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "unknown"
-      ]
     },
     {
       "source": "src/features/party/PartyView.tsx",
@@ -5363,35 +5367,6 @@
       "orphan": false
     },
     {
-      "source": "src/features/ratings/ratings-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/ActiveFeatureView.tsx",
-        "src/features/ratings/RatingsView.tsx"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/features/ratings/RatingsView.tsx",
       "valid": true,
       "dependencies": [
@@ -5453,7 +5428,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
@@ -5468,18 +5442,36 @@
         {
           "circular": false,
           "coreModule": false,
-          "couldNotResolve": true,
+          "couldNotResolve": false,
           "dependencyTypes": [
-            "unknown"
+            "local",
+            "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": false,
           "moduleSystem": "es6",
           "module": "./RatingsView.module.css",
-          "resolved": "./RatingsView.module.css",
+          "resolved": "src/features/ratings/RatingsView.module.css",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -5488,20 +5480,49 @@
       "orphan": false
     },
     {
-      "source": "./RatingsView.module.css",
+      "source": "src/features/ratings/RatingsView.module.css",
       "valid": true,
       "dependencies": [],
       "dependents": [
         "src/features/ratings/RatingsView.tsx"
       ],
       "coreModule": false,
-      "couldNotResolve": true,
+      "couldNotResolve": false,
       "orphan": false,
       "followable": false,
       "matchesDoNotFollow": false,
       "dependencyTypes": [
-        "unknown"
+        "local",
+        "import"
       ]
+    },
+    {
+      "source": "src/features/ratings/ratings-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/ratings/RatingsView.tsx"
+      ],
+      "orphan": false
     },
     {
       "source": "src/features/skills/SkillsView.tsx",
@@ -8006,11 +8027,11 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 134,
-    "totalDependenciesCruised": 359,
+    "totalDependenciesCruised": 360,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/app",
+      "baseDir": "/home/runner/work/crawler-command-interface/crawler-command-interface",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
