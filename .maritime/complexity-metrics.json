@@ -346,8 +346,8 @@
   "src/features/timeline/public.ts": {
     "complexity": 1,
     "loc": 36,
-    "instability": 0.35,
-    "fanIn": 13,
+    "instability": 0.44,
+    "fanIn": 9,
     "fanOut": 7,
     "scanned": true
   },
@@ -362,16 +362,16 @@
   "src/features/timeline/evidence/TelemetryBadge.tsx": {
     "complexity": 10,
     "loc": 95,
-    "instability": 0.67,
-    "fanIn": 1,
+    "instability": 0.4,
+    "fanIn": 3,
     "fanOut": 2,
     "scanned": true
   },
   "src/features/timeline/SequenceBadge.tsx": {
     "complexity": 2,
     "loc": 10,
-    "instability": 0.75,
-    "fanIn": 1,
+    "instability": 0.43,
+    "fanIn": 4,
     "fanOut": 3,
     "scanned": true
   },
@@ -521,10 +521,10 @@
   },
   "src/features/notifications/NotificationsView.tsx": {
     "complexity": 4,
-    "loc": 10,
-    "instability": 0.8,
+    "loc": 7,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 4,
+    "fanOut": 2,
     "scanned": true
   },
   "src/features/notifications/notification-presentation.ts": {
@@ -569,10 +569,10 @@
   },
   "src/features/ratings/RatingsView.tsx": {
     "complexity": 4,
-    "loc": 15,
-    "instability": 0.86,
+    "loc": 13,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 6,
+    "fanOut": 4,
     "scanned": true
   },
   "src/features/ratings/ratings-presentation.ts": {
@@ -745,10 +745,10 @@
   },
   "src/features/timeline/diagnostics/SequenceInspector.tsx": {
     "complexity": 25,
-    "loc": 49,
-    "instability": 0.67,
+    "loc": 50,
+    "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 2,
+    "fanOut": 3,
     "scanned": true
   },
   "src/shell/replay/ReplayControls.tsx": {

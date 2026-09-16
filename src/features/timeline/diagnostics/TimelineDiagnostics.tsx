@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import type { CrawlerEvent, EventCategory, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineObservation } from "../../../../app/domain/types";
 import { getNarrativePresentation } from "../../../../app/domain/narrative-presentation";
-import { SequenceBadge } from "../public";
+import { SequenceBadge } from "../SequenceBadge";
 import { SequenceInspector, type TimelineFeedMode } from "./SequenceInspector";
 
 export function TimelineDiagnostics({ events, observations, selectedSequence, minSequence, maxSequence, projectedObservations, onSelectSequence, onInspectObservation }: {

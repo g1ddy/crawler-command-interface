@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import type { CrawlerEvent, TimelineSource } from "../../../../app/domain/types";
-import { SequenceBadge } from "../public";
+import { SequenceBadge } from "../SequenceBadge";
 import { formatSequencePosition, narrativeEventsAtOrBefore } from "../../../../app/domain/narrative-presentation";
 import { Panel } from "../../../shared/ui/Panel";
 

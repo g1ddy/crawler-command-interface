@@ -63,7 +63,7 @@
 :is(.concept-lab, .concept-hud-wrapper) .timeline-header h2 { font-size: 1.25rem; }
 :is(.concept-lab, .concept-hud-wrapper) .floor-navigator-bar { gap: .5rem !important; }
 :is(.concept-lab, .concept-hud-wrapper) :is(.mode-btn, .step-controls button, .subnav button, .categories button, .tools input, .tools button) { font-size: .875rem; }
-:is(.concept-lab, .concept-hud-wrapper) :is(.profile, .quest) { background: var(--surface); border-color: var(--edge); }
+:is(.concept-lab, .concept-hud-wrapper) :is(.profile, .quest, .achievement) { background: var(--surface); border-color: var(--edge); }
 :is(.concept-lab, .concept-hud-wrapper) :is(.stats p, .meter, .effects p, .gear, .broadcast p, .quest > p, .quest ul, .skill-list span b) { font-size: 1rem; }
 :is(.concept-lab, .concept-hud-wrapper) :is(.eyebrow, .profile i, .slot-note, .skill-list span small, .item small, .candidate span) { font-size: .75rem; }
 :is(.concept-lab, .concept-hud-wrapper) .item { min-height: 7rem; }
@@ -72,6 +72,7 @@
 :is(.concept-lab, .concept-hud-wrapper) .grid { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
 :is(.concept-lab, .concept-hud-wrapper) .modal-content { background: var(--surface); color: var(--ink); }
 :is(.concept-lab, .concept-hud-wrapper) .modal-backdrop { backdrop-filter: blur(8px); }
+:is(.concept-lab, .concept-hud-wrapper) .achievement { border-left: 4px solid var(--warning); }
 
 /* Tactical moves domain selection into a persistent left rail. */
 :is(.concept-lab, .concept-hud-wrapper)[data-concept=tactical] { --accent: #bade90; --surface: #131c18; --surface-raised: #1c2921; --edge: #44594a; background: #0b110e; }

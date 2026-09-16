@@ -2147,12 +2147,10 @@
         "src/shared/ui/Panel.tsx",
         "src/features/inventory/InventoryView.tsx",
         "src/shared/ui/ModalBoundary.tsx",
-        "src/features/notifications/NotificationsView.tsx",
         "src/features/party/PartyView.tsx",
         "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
-        "src/features/ratings/RatingsView.tsx",
         "src/features/skills/SkillsView.tsx",
         "src/shell/hud/ConceptHud.tsx",
         "src/shell/hud/PersistentHud.tsx",
@@ -3272,11 +3270,7 @@
         "src/features/inventory/ItemInspector.tsx",
         "src/features/ratings/RatingsView.tsx",
         "src/features/floor/FloorRules.tsx",
-        "src/features/timeline/evidence/TimelineEvidence.tsx",
-        "src/features/timeline/history/TimelineHistory.tsx",
         "src/shell/replay/ReplaySurface.tsx",
-        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-        "src/features/timeline/diagnostics/SequenceInspector.tsx",
         "src/shell/replay/ReplayControls.tsx"
       ],
       "orphan": false
@@ -3356,7 +3350,9 @@
         }
       ],
       "dependents": [
-        "src/features/timeline/public.ts"
+        "src/features/timeline/public.ts",
+        "src/features/timeline/evidence/TimelineEvidence.tsx",
+        "src/features/timeline/diagnostics/SequenceInspector.tsx"
       ],
       "orphan": false
     },
@@ -3418,7 +3414,10 @@
         }
       ],
       "dependents": [
-        "src/features/timeline/public.ts"
+        "src/features/timeline/public.ts",
+        "src/features/timeline/history/TimelineHistory.tsx",
+        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
+        "src/features/timeline/diagnostics/SequenceInspector.tsx"
       ],
       "orphan": false
     },
@@ -5049,63 +5048,12 @@
           "resolved": "src/features/notifications/notification-presentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./NotificationsView.module.css",
-          "resolved": "src/features/notifications/NotificationsView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
         "src/shell/ActiveFeatureView.tsx"
       ],
       "orphan": false
-    },
-    {
-      "source": "src/features/notifications/NotificationsView.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/notifications/NotificationsView.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
     },
     {
       "source": "src/features/notifications/notification-presentation.ts",
@@ -5438,63 +5386,12 @@
           "resolved": "src/features/ratings/ratings-presentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./RatingsView.module.css",
-          "resolved": "src/features/ratings/RatingsView.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
         "src/shell/ActiveFeatureView.tsx"
       ],
       "orphan": false
-    },
-    {
-      "source": "src/features/ratings/RatingsView.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/ratings/RatingsView.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
     },
     {
       "source": "src/features/ratings/ratings-presentation.ts",
@@ -6719,8 +6616,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../public",
-          "resolved": "src/features/timeline/public.ts",
+          "module": "./TelemetryBadge",
+          "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -6798,8 +6695,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../public",
-          "resolved": "src/features/timeline/public.ts",
+          "module": "../SequenceBadge",
+          "resolved": "src/features/timeline/SequenceBadge.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -7105,8 +7002,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../public",
-          "resolved": "src/features/timeline/public.ts",
+          "module": "../SequenceBadge",
+          "resolved": "src/features/timeline/SequenceBadge.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -7184,8 +7081,25 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../public",
-          "resolved": "src/features/timeline/public.ts",
+          "module": "../evidence/TelemetryBadge",
+          "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../SequenceBadge",
+          "resolved": "src/features/timeline/SequenceBadge.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -8026,8 +7940,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 134,
-    "totalDependenciesCruised": 360,
+    "totalCruised": 132,
+    "totalDependenciesCruised": 357,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
