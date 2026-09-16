@@ -4,10 +4,12 @@ import { CrawlerView } from "../features/crawler/CrawlerView";
 import { deriveAwardHistory } from "../features/inventory/public";
 import { InventoryView } from "../features/inventory/InventoryView";
 import { NotificationsView } from "../features/notifications/NotificationsView";
+import { projectNotifications } from "../features/notifications/notification-presentation";
 import { PartyView } from "../features/party/PartyView";
 import { PetView } from "../features/pet/PetView";
 import { QuestsView } from "../features/quests/QuestsView";
 import { RatingsView } from "../features/ratings/RatingsView";
+import { projectRatingsMetrics } from "../features/ratings/ratings-presentation";
 import { SkillsView } from "../features/skills/SkillsView";
 import type { RootView } from "./navigation/navigation-model";
 import type { ApplicationActions, EquipmentSlot } from "../application/crawler-action-contracts";
@@ -37,12 +39,22 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     [events, sequence, state.inventory],
   );
 
+  const notificationsPresentation = useMemo(
+    () => projectNotifications(events, sequence),
+    [events, sequence],
+  );
+
+  const ratingsMetrics = useMemo(
+    () => projectRatingsMetrics(observations.broadcast),
+    [observations.broadcast],
+  );
+
   switch (view) {
     case "crawler": return <CrawlerView state={state} observations={observations} isLive={isLive} onInspectStat={onInspectStat} onInspectObservation={onInspectObservation} actions={actions.crawler} />;
-    case "ratings": return <RatingsView observations={observations.broadcast} selectedSequence={sequence} isLive={isLive} onInspectObservation={onInspectObservation} />;
+    case "ratings": return <RatingsView metrics={ratingsMetrics} viewers={observations.broadcast.viewers} selectedSequence={sequence} isLive={isLive} onInspectObservation={onInspectObservation} />;
     case "party": return <PartyView party={state.party} />;
     case "pet": return <PetView pets={state.pets} />;
-    case "notifications": return <NotificationsView events={events} sequence={sequence} onNavigateToSequence={onNavigateToSequence} />;
+    case "notifications": return <NotificationsView notifications={notificationsPresentation} onNavigateToSequence={onNavigateToSequence} />;
     case "inventory": return (
       <InventoryView
         inventory={state.inventory}
