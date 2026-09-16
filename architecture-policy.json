@@ -2,7 +2,9 @@
   "publicFeatureContract": "src/features/<feature>/public.ts",
   "featureApplicationContracts": [
     "src/application/crawler-action-contracts.ts",
-    "src/application/crawler-session.ts"
+    "src/application/crawler-session.ts",
+    "src/application/notification-presentation.ts",
+    "src/application/ratings-presentation.ts"
   ],
   "runtimeRoots": [
     "app/layout.tsx",

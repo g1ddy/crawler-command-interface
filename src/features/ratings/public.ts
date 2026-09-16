@@ -1,5 +1,7 @@
+export { deriveRatingsPresentation, projectRatingsMetrics } from "../../application/ratings-presentation.ts";
+
 export type {
   DerivedRatingsPresentation,
   RatingsMetric,
   RatingsMetricGroup,
-} from "./ratings-presentation";
+} from "../../application/ratings-presentation.ts";

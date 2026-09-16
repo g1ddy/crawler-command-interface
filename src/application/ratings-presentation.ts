@@ -11,6 +11,8 @@ export interface RatingsMetric {
 
 export interface RatingsMetricPresentation extends RatingsMetric {
   key: string;
+  formattedValue?: string;
+  evidence: { state: "current" | "last-known", sourceSequence?: number };
 }
 
 export interface RatingsGroupPresentation {
@@ -35,7 +37,7 @@ const headings: Record<RatingsMetricGroup, string> = {
   bounty: "BOUNTY",
 };
 
-const definitions: Array<[string, string, RatingsMetricGroup, (value: number) => string | number]> = [
+const definitions: Array<[string, string, RatingsMetricGroup, (value: number | string) => string | number]> = [
   ["viewers", "Views", "audience", value => value],
   ["followers", "Followers", "audience", value => value],
   ["favorites", "Favorites", "engagement", value => value],
@@ -48,16 +50,34 @@ export function projectRatingsMetrics(observations: Record<string, ProjectedObse
   return definitions.flatMap(([key, label, group, format]) => {
     const observation = observations[key];
     return observation
-      ? [{ label, value: format(observation.value), group, observation }]
+      ? [{ label, value: format(observation.value as number), group, observation }]
       : [];
   });
 }
 
 /** Derives the narrow Ratings surface from the selected temporal observation set. */
 export function deriveRatingsPresentation(
-  observations: Record<string, ProjectedObservationValue> = {},
-  isLive = false,
+  opts: { observations?: Record<string, ProjectedObservationValue>; isLive?: boolean; selectedSequence?: number } | Record<string, ProjectedObservationValue> = {},
+  argIsLive?: boolean,
+  argSequence?: number
 ): DerivedRatingsPresentation {
+  let observations: Record<string, ProjectedObservationValue>;
+  let isLive: boolean;
+  let selectedSequence: number;
+
+  const isConfigObject = opts && typeof opts === 'object' && ('observations' in opts || 'isLive' in opts || 'selectedSequence' in opts) && !('viewers' in opts && typeof (opts as Record<string, unknown>).viewers !== 'undefined');
+
+  if (isConfigObject) {
+    const config = opts as { observations?: Record<string, ProjectedObservationValue>; isLive?: boolean; selectedSequence?: number };
+    observations = config.observations || {};
+    isLive = config.isLive || false;
+    selectedSequence = config.selectedSequence || 0;
+  } else {
+    observations = (opts as Record<string, ProjectedObservationValue>) || {};
+    isLive = argIsLive || false;
+    selectedSequence = argSequence || 0;
+  }
+
   const viewers = observations.viewers;
   const totalViewersFormatted = viewers && typeof viewers.value === "number"
     ? viewers.value.toLocaleString()
@@ -69,9 +89,11 @@ export function deriveRatingsPresentation(
     return [{
       key,
       label,
-      value: format(observation.value),
+      value: format(observation.value as number),
+      formattedValue: typeof observation.value === "number" ? observation.value.toLocaleString() : String(observation.value),
       group,
       observation,
+      evidence: { state: observation.sequence === selectedSequence ? "current" : "last-known", sourceSequence: observation.sequence }
     }];
   });
 
