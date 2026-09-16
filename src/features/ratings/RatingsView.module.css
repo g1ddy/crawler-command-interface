@@ -60,3 +60,8 @@
     grid-template-columns: 1fr;
   }
 }
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+}
