@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { CrawlerEvent, CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineSource } from "../../app/domain/types";
-import { deriveNotificationPresentation } from "../application/notification-presentation";
-import { deriveRatingsPresentation } from "../application/ratings-presentation";
+import { deriveNotificationsPresentation } from "../features/notifications/public";
+import { deriveRatingsPresentation } from "../features/ratings/public";
 import { CrawlerView } from "../features/crawler/CrawlerView";
 import { deriveAwardHistory } from "../features/inventory/public";
 import { InventoryView } from "../features/inventory/InventoryView";
@@ -39,11 +39,11 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     [events, sequence, state.inventory],
   );
   const ratings = useMemo(
-    () => deriveRatingsPresentation(observations.broadcast, isLive),
-    [observations.broadcast, isLive],
+    () => deriveRatingsPresentation({ observations: observations.broadcast, isLive, selectedSequence: sequence }),
+    [observations.broadcast, isLive, sequence],
   );
   const notifications = useMemo(
-    () => deriveNotificationPresentation({ events, sequence, isLive }),
+    () => deriveNotificationsPresentation({ events, sequence, isLive }),
     [events, sequence, isLive],
   );
 

@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createInitialState, applyEvent } from "../../app/domain/projection.ts";
-import { deriveNotificationPresentation } from "../../src/application/notification-presentation.ts";
-import { deriveRatingsPresentation } from "../../src/application/ratings-presentation.ts";
+import { deriveNotificationsPresentation } from "../../src/features/notifications/public.ts";
+import { deriveRatingsPresentation } from "../../src/features/ratings/public.ts";
 import { groupConditions } from "../../src/features/crawler/health/condition-presentation.ts";
 import { availableRootViews, resolveRootView } from "../../src/shell/navigation/capabilities.ts";
 import { evaluateCanonCapabilities } from "../../src/application/capabilities.ts";
@@ -16,14 +16,14 @@ const events = [
 const emptyObservations = { condition: {}, attributes: {}, xpProgress: {}, broadcast: {}, floor: {}, inventory: {}, equipment: {} };
 
 test("authored notification delivery is replay bounded and independent of event type", () => {
-  assert.equal(deriveNotificationPresentation(events, 2, false).notifications.length, 0);
-  const after = deriveNotificationPresentation(events, 3, false);
+  assert.equal(deriveNotificationsPresentation({ events, sequence: 2, isLive: false }).notifications.length, 0);
+  const after = deriveNotificationsPresentation({ events, sequence: 3, isLive: false });
   assert.deepEqual(after.notifications.map(({ id, kind, severity }) => ({ id, kind, severity })), [{ id: "delivered", kind: "achievement", severity: "warning" }]);
 });
 
 test("ratings unavailable state never presents projection defaults as sourced facts", () => {
-  assert.equal(deriveRatingsPresentation({}, false).hasMetrics, false);
-  assert.deepEqual(deriveRatingsPresentation({}, false).groups, []);
+  assert.equal(deriveRatingsPresentation({ observations: {}, isLive: false, selectedSequence: 0 }).hasMetrics, false);
+  assert.deepEqual(deriveRatingsPresentation({ observations: {}, isLive: false, selectedSequence: 0 }).groups, []);
 });
 
 test("selected-sequence capabilities cross evidence boundaries and resolve unavailable views", () => {
