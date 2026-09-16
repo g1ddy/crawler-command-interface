@@ -1,5 +1,1 @@
-export {
-  projectNotifications,
-  type CrawlerNotification,
-  type NotificationPresentation,
-} from "./notification-presentation.ts";
+export type { CrawlerNotification } from "./notification-presentation.ts";
