@@ -249,20 +249,21 @@ The probe should use the smallest reasonable Arwes package imports rather than i
 
 ### Compatibility matrix
 
-Observed results from the initial compatibility spike (#210):
+Observed evidence from the initial compatibility spike (#210 / PR #214):
 
-| Concern | Observed result | Details / Notes |
+| Concern | Observed result | Details / Evidence |
 | --- | --- | --- |
-| React 19 runtime | PASS | Renders cleanly without runtime exceptions in React 19.2.6 |
-| React Strict Mode | PASS | Renders, mounts/unmounts, and transitions safely inside `<StrictMode>` |
-| Vite development server | PASS | Vite 8 compiles and serves Arwes package modules without bundler errors |
-| production build | PASS | Production builds succeed via `vinext build` / `npm run build:live` |
-| browser runtime | PASS | Interactive components mount, unmount, re-render, and switch motion modes safely |
-| RSC boundary | PASS | Isolated under `"use client"` presentation boundary (`src/presentation/authority-arwes/**`) |
-| test environment | PASS | Node 22 test runner + `react-dom/server` SSR unit tests pass cleanly |
-| package/type compatibility | PASS | Resolved React 18 peer dependency warnings via npm `overrides` in `package.json` |
-| bundle/dependency impact | Measured | Added ~39 subpackages to node_modules without affecting production or non-Arwes HUDs |
-| Vanilla fallback viability | NOT REQUIRED | `@arwes/react` subpackages operate cleanly behind our presentation abstraction |
+| React 19 runtime | PASS | The 5 targeted Arwes subpackages (`@arwes/react-frames`, `@arwes/react-animator`, `@arwes/react-animated`, `@arwes/react-text`, `@arwes/react-bgs`) render without runtime exceptions in React 19.2.6; broader `@arwes/react` umbrella capabilities were not evaluated |
+| React Strict Mode | PARTIAL | SSR `renderToString` with `<StrictMode>` passes cleanly in Node 22 test runner; full client-side React 19 StrictMode double-mount effect behaviors remain unverified without client-side StrictMode assertion tooling |
+| Vite development server | PASS | Vite 8 dev server and bundler consume the 5 Arwes subpackage imports without build or module resolution errors |
+| production build | PASS | Production builds succeed via `vinext build`, `npm run build:live`, and `npm run build:pages` |
+| browser runtime | PASS | Playwright E2E tests in Chromium verify URL selection (`?hud=authority-arwes`), probe mounting, interactive sub-surface toggling, re-rendering, and motion mode switching |
+| RSC boundary | PARTIAL / UNKNOWN | Isolated behind a `"use client"` presentation boundary (`src/presentation/authority-arwes/**`) without altering application RSC architecture; server-side RSC component streaming/hydration consumption has not been evaluated |
+| test environment | PASS | SSR unit tests (`tests/unit/arwes-compatibility.test.mjs`) and Playwright E2E browser tests (`tests/e2e/hud-preview.spec.ts`) pass cleanly |
+| package/type compatibility | PASS | Replaced umbrella `@arwes/react` with 5 focused subpackages and resolved React 18 peer dependency warnings via npm `overrides` in `package.json` |
+| package footprint | Measured | Installs ~18 subpackage dependencies into `node_modules` for the 5 selected Arwes packages |
+| production bundle impact | Measured | Contributes to static concept client bundle (~675 kB unminified JS in `dist-pages/assets/concepts-*.js`), localized entirely to the `authority-arwes` presentation route seam |
+| Vanilla fallback viability | NOT EVALUATED | React subpackages integrated successfully behind the presentation boundary for this probe; lower-level `@arwes/*` vanilla packages were not evaluated in this spike |
 
 Do not hide failures by globally changing the application configuration.
 

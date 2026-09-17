@@ -62,7 +62,11 @@
     }
   },
   "dependencies": {
-    "@arwes/react": "^1.0.0-alpha.23",
+    "@arwes/react-animated": "^1.0.0-alpha.23",
+    "@arwes/react-animator": "^1.0.0-alpha.23",
+    "@arwes/react-bgs": "^1.0.0-alpha.23",
+    "@arwes/react-frames": "^1.0.0-alpha.23",
+    "@arwes/react-text": "^1.0.0-alpha.23",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "drizzle-orm": "0.45.2",

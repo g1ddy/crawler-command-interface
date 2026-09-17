@@ -123,9 +123,11 @@ test("AuthorityBackground renders SVG background primitives", () => {
 });
 
 test("ArwesPresentation integrates probe without breaking", () => {
-  const mockState = {
+  const mockModel = {
+    crawlerName: "AUTHORITY-UNIT",
+    floorTitle: "FLOOR 3",
     sequence: 12,
-    crawler: { name: "AUTHORITY-UNIT", class: "STRIKER" },
+    temporalMode: "replay",
   };
 
   const html = renderToString(
@@ -133,11 +135,7 @@ test("ArwesPresentation integrates probe without breaking", () => {
       StrictMode,
       null,
       React.createElement(ArwesPresentation, {
-        state: mockState,
-        observations: {},
-        countdown: null,
-        floorTitle: "FLOOR 3",
-        isLive: false,
+        model: mockModel,
       })
     )
   );
