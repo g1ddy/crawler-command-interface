@@ -57,8 +57,13 @@ export function projectRatingsMetrics(observations: Record<string, ProjectedObse
 /** Derives the narrow Ratings surface from the selected temporal observation set. */
 export function deriveRatingsPresentation({
   observations = {},
-  }: {
+  isLive,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  sequence,
+}: {
   observations?: Record<string, ProjectedObservationValue>;
+  isLive: boolean;
+  sequence: number;
 }): DerivedRatingsPresentation {
   const viewers = observations.viewers;
   const totalViewersFormatted = viewers && typeof viewers.value === "number"
@@ -75,7 +80,7 @@ export function deriveRatingsPresentation({
       formattedValue: typeof observation.value === "number" ? observation.value.toLocaleString() : String(observation.value),
       group,
       observation,
-      evidence: { state: observation.status === "stated" ? "current" : "last-known", sourceSequence: observation.sequence }
+      evidence: { state: isLive && observation.status === "stated" ? "current" : "last-known", sourceSequence: observation.sequence }
     }];
   });
 
