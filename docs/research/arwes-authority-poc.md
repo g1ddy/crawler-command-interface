@@ -249,20 +249,20 @@ The probe should use the smallest reasonable Arwes package imports rather than i
 
 ### Compatibility matrix
 
-Record results for:
+Observed results from the initial compatibility spike (#210):
 
-| Concern | Required result |
-| --- | --- |
-| React 19 runtime | verified / incompatible / unknown |
-| React Strict Mode | verified / incompatible / unknown |
-| Vite development server | verified / incompatible / unknown |
-| production build | verified / incompatible / unknown |
-| browser runtime | verified / incompatible / unknown |
-| RSC boundary | verified / incompatible / unknown |
-| test environment | verified / incompatible / unknown |
-| package/type compatibility | verified / incompatible / unknown |
-| bundle/dependency impact | measured |
-| Vanilla fallback viability | verified / incompatible / not required |
+| Concern | Observed result | Details / Notes |
+| --- | --- | --- |
+| React 19 runtime | PASS | Renders cleanly without runtime exceptions in React 19.2.6 |
+| React Strict Mode | PASS | Renders, mounts/unmounts, and transitions safely inside `<StrictMode>` |
+| Vite development server | PASS | Vite 8 compiles and serves Arwes package modules without bundler errors |
+| production build | PASS | Production builds succeed via `vinext build` / `npm run build:live` |
+| browser runtime | PASS | Interactive components mount, unmount, re-render, and switch motion modes safely |
+| RSC boundary | PASS | Isolated under `"use client"` presentation boundary (`src/presentation/authority-arwes/**`) |
+| test environment | PASS | Node 22 test runner + `react-dom/server` SSR unit tests pass cleanly |
+| package/type compatibility | PASS | Resolved React 18 peer dependency warnings via npm `overrides` in `package.json` |
+| bundle/dependency impact | Measured | Added ~39 subpackages to node_modules without affecting production or non-Arwes HUDs |
+| Vanilla fallback viability | NOT REQUIRED | `@arwes/react` subpackages operate cleanly behind our presentation abstraction |
 
 Do not hide failures by globally changing the application configuration.
 
