@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { CrawlerEvent, CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineSource } from "../../app/domain/types";
-import { projectNotifications } from "../../app/domain/notifications";
+import { projectNotifications } from "../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../features/notifications/public";
 import { deriveRatingsPresentation } from "../features/ratings/public";
 import { CrawlerView } from "../features/crawler/CrawlerView";
@@ -40,8 +40,8 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     [events, sequence, state.inventory],
   );
   const ratings = useMemo(
-    () => deriveRatingsPresentation({ observations: observations.broadcast, isLive }),
-    [observations.broadcast, isLive],
+    () => deriveRatingsPresentation({ observations: observations.broadcast, isLive, sequence }),
+    [observations.broadcast, isLive, sequence],
   );
   const notificationHistory = useMemo(
     () => projectNotifications(events, sequence),

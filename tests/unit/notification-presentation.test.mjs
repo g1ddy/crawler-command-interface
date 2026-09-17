@@ -1,9 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
-  deriveNotificationsPresentation,
-  projectNotifications,
-} from "../../src/features/notifications/public.ts";
+import { deriveNotificationsPresentation } from "../../src/features/notifications/public.ts";
+import { projectNotifications } from "../../app/domain/notifications.ts";
 
 const base = { occurred_at: "2025-01-01", category: "system", position: { floor: 1 }, evidence: [] };
 const events = [
@@ -39,14 +37,16 @@ test("notification kind remains separate from severity", () => {
 });
 
 test("deriveNotificationsPresentation returns structured presentation model for live and replay", () => {
-  const livePres = deriveNotificationsPresentation({ events, sequence: 3 });
+  const notifications = projectNotifications(events, 3);
+  const livePres = deriveNotificationsPresentation({ notifications, sequence: 3 });
 
   assert.equal(livePres.sequence, 3);
   assert.equal(livePres.totalCount, 2);
   assert.equal(livePres.hasNotifications, true);
   assert.equal(livePres.badgeLabel, "2 NOTICES");
 
-  const replayPres = deriveNotificationsPresentation({ events, sequence: 1 });
+  const replayNotifications = projectNotifications(events, 1);
+  const replayPres = deriveNotificationsPresentation({ notifications: replayNotifications, sequence: 1 });
 
   assert.equal(replayPres.sequence, 1);
   assert.equal(replayPres.totalCount, 1);
@@ -62,7 +62,8 @@ test("deriveNotificationsPresentation returns structured presentation model for 
 });
 
 test("deriveNotificationsPresentation handles empty events without fabricating notices", () => {
-  const emptyPres = deriveNotificationsPresentation({ events: [], sequence: 5 });
+  const emptyNotifications = projectNotifications([], 5);
+  const emptyPres = deriveNotificationsPresentation({ notifications: emptyNotifications, sequence: 5 });
   assert.equal(emptyPres.hasNotifications, false);
   assert.equal(emptyPres.totalCount, 0);
   assert.equal(emptyPres.notifications.length, 0);
@@ -73,7 +74,8 @@ test("events without delivered notificationDelivery do not generate notification
   const nonDelivered = [
     { ...base, id: "inv-1", sequence: 1, type: "ItemAcquired", notificationDelivery: { delivered: false, kind: "system", severity: "info" } },
   ];
-  const pres = deriveNotificationsPresentation({ events: nonDelivered, sequence: 2 });
+  const nonDeliveredNotifications = projectNotifications(nonDelivered, 2);
+  const pres = deriveNotificationsPresentation({ notifications: nonDeliveredNotifications, sequence: 2 });
   assert.equal(pres.hasNotifications, false);
   assert.equal(pres.totalCount, 0);
 });

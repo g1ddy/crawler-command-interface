@@ -1,6 +1,6 @@
-import type { CrawlerNotification } from "../../../app/domain/notifications";
+import type { CrawlerNotification } from "../../../app/domain/notifications.ts";
 
-export type { CrawlerNotification } from "../../../app/domain/notifications";
+export type { CrawlerNotification } from "../../../app/domain/notifications.ts";
 export interface DerivedNotificationReward { kind: string; detail: string; }
 export interface DerivedNotificationItem extends CrawlerNotification { icon: string; formattedRewards?: DerivedNotificationReward[]; isAuthoredAtCurrentSequence: boolean; }
 export interface DerivedNotificationsPresentation { sequence: number; totalCount: number; badgeLabel: string; hasNotifications: boolean; notifications: DerivedNotificationItem[]; }
@@ -15,7 +15,7 @@ export function deriveNotificationPresentation({
   const items = notifications.map(item => ({
     ...item,
     icon: item.kind === "achievement" ? "🏆" : item.kind === "progression" ? "⬆" : "🎁",
-    formattedRewards: item.rewards?.map(reward => {
+    formattedRewards: item.rewards?.map((reward) => {
       const detail = [reward.boxType, reward.rarity, reward.amount, reward.description]
         .filter(value => value !== undefined)
         .map(String)
