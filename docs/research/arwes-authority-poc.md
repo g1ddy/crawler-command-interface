@@ -262,10 +262,45 @@ Observed evidence from the initial compatibility spike (#210 / PR #214):
 | test environment | PASS | SSR unit tests (`tests/unit/arwes-compatibility.test.mjs`) and Playwright E2E browser tests (`tests/e2e/hud-preview.spec.ts`) pass cleanly |
 | package/type compatibility | PASS | Replaced umbrella `@arwes/react` with 5 focused subpackages and resolved React 18 peer dependency warnings via npm `overrides` in `package.json` |
 | package footprint | Measured | Installs ~18 subpackage dependencies into `node_modules` for the 5 selected Arwes packages |
-| production bundle impact | Measured | Contributes to static concept client bundle (~675 kB unminified JS in `dist-pages/assets/concepts-*.js`), localized entirely to the `authority-arwes` presentation route seam |
+| production bundle impact | Measured | Increases client JS entry chunk by +133.4 kB Raw (+28.4 kB gzip / +23.5 kB Brotli), localized to the client workspace route |
 | Vanilla fallback viability | NOT EVALUATED | React subpackages integrated successfully behind the presentation boundary for this probe; lower-level `@arwes/*` vanilla packages were not evaluated in this spike |
 
 Do not hide failures by globally changing the application configuration.
+
+## POC Bundle Impact
+
+Measured using the same production build procedure (`npm run build:live` and `npm run build:pages`) comparing the base commit (`abba853`) and the Arwes POC commit in the same Node 22 environment:
+
+### Production Vinext Live App Client JS (`dist/client`)
+
+| Build | Raw JS | gzip | Brotli |
+| --- | ---: | ---: | ---: |
+| Base (`abba853`) | 754,666 B (754.7 kB) | 185,705 B (185.7 kB) | 156,983 B (157.0 kB) |
+| Arwes POC | 888,055 B (888.1 kB) | 214,138 B (214.1 kB) | 180,490 B (180.5 kB) |
+| Delta | +133,389 B (+133.4 kB) | +28,433 B (+28.4 kB) | +23,507 B (+23.5 kB) |
+| Delta % | +17.68% | +15.31% | +14.97% |
+
+### GitHub Pages Static Concepts Client JS (`dist-pages`)
+
+| Build | Raw JS | gzip | Brotli |
+| --- | ---: | ---: | ---: |
+| Base (`abba853`) | 677,382 B (677.4 kB) | 162,473 B (162.5 kB) | 135,794 B (135.8 kB) |
+| Arwes POC | 811,529 B (811.5 kB) | 191,154 B (191.2 kB) | 159,308 B (159.3 kB) |
+| Delta | +134,147 B (+134.1 kB) | +28,681 B (+28.7 kB) | +23,514 B (+23.5 kB) |
+| Delta % | +19.80% | +17.65% | +17.32% |
+
+### Attribution
+
+The entirety of the +133.4 kB Raw JS (+28.4 kB gzip / +23.5 kB Brotli) delta is concentrated in the client entry chunk (`assets/CrawlerApp-*.js`), which expanded from 482.8 kB to 616.2 kB.
+
+The increase consists of:
+1. The 5 imported Arwes React subpackages (`@arwes/react-frames`, `@arwes/react-animator`, `@arwes/react-animated`, `@arwes/react-text`, `@arwes/react-bgs`).
+2. Transitive animation engine dependencies (`motion` and `motion-dom`) bundled by `@arwes/react-animated` and `@arwes/react-bgs`.
+3. SVG path calculation routines in `@arwes/frames` (which also triggered a bundler warning regarding direct `eval` usage in `node_modules/@arwes/frames/build/esm/internal/formatFrameDimension.js`).
+
+### Interpretation
+
+The bundle cost of including Arwes primitives via standard static imports is ~28.4 kB gzip (+15.3% client JS overhead). If Arwes is adopted for production HUD rendering, dynamic route-level or component-level `import()` code-splitting should be evaluated in subsequent issues to avoid loading Arwes animation and frame utilities for non-Arwes HUD presentation choices.
 
 ## Architecture rules for the POC
 

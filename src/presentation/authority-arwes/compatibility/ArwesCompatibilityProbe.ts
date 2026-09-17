@@ -67,7 +67,11 @@ export function ArwesCompatibilityProbe({
         ),
         createElement(
           "div",
-          { style: { textAlign: "right" } },
+          {
+            "data-testid": "hud-audience-mode",
+            "data-mode": isLive ? "live" : "replay",
+            style: { textAlign: "right" },
+          },
           createElement(
             "span",
             {
