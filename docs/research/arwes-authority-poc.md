@@ -20,6 +20,14 @@ The application already separates session bootstrap from presentation selection.
 
 `HudPresentation` currently distinguishes the production presentation from the existing HUD concepts. The Arwes POC should be added as another presentation choice rather than becoming a new application/session mode.
 
+The intended selection mechanism is therefore the existing presentation path, for example:
+
+```text
+?hud=authority-arwes
+```
+
+Do **not** introduce an Arwes-specific application flag such as `?arwesPoc=true`, `ARWES_POC=true`, or `TEST_HUD=true`. The POC is specifically testing whether the existing presentation boundary is strong enough to support a materially different renderer without changing application/session semantics.
+
 `CrawlerWorkspace` remains the current composition adapter. It owns presentation selection, navigation, replay wiring, overlays, and feature composition. The POC must not make this component increasingly aware of Arwes internals.
 
 ### Target dependency direction
@@ -47,10 +55,48 @@ presentation                presentation
                               primitives
                                    |
                                    v
-                                 Arwes
+                           Arwes React or Vanilla
 ```
 
 Arwes must remain downstream of presentation contracts.
+
+## Authority presentation model
+
+Before the Arwes widgets become substantial, the composition layer should produce an application-owned `AuthorityPresentationModel`. Both the existing/native Authority implementation and the Arwes implementation should consume this model.
+
+Conceptually:
+
+```ts
+interface AuthorityPresentationModel {
+  context: AuthorityContextPresentation;
+  temporal: TemporalPresentation;
+  navigation: NavigationPresentation;
+  crawler: CrawlerPresentation;
+  notification: NotificationPresentation | null;
+  countdown: CountdownPresentation | null;
+  party: PartyPresentation;
+  evidence: EvidencePresentation;
+}
+```
+
+The exact shape may evolve, but the architectural rule does not:
+
+```text
+CrawlerWorkspace
+       |
+       | application-owned composition adapter
+       v
+AuthorityPresentationModel
+       |
+       +------------------+
+       |                  |
+       v                  v
+Authority Native    Authority Arwes
+```
+
+The Arwes presentation must not receive `CrawlerSession`, raw events, projection state, or application commands simply because those inputs are convenient. If information is missing, improve the presentation contract or adapter rather than widening the renderer's dependency surface.
+
+This is what makes the POC an architectural test rather than a styling experiment.
 
 ## Arwes compatibility findings
 
@@ -65,6 +111,39 @@ The Arwes project README states that the project is no longer maintained and out
 **Do not disable Strict Mode globally. Do not alter the application's React/RSC architecture merely to accommodate Arwes.**
 
 The first implementation issue is therefore a compatibility spike. If the React integration cannot be isolated safely, that finding is itself a valid POC result.
+
+## React-to-Vanilla fallback strategy
+
+Compatibility failure of `@arwes/react` does not automatically mean failure of the Arwes experiment.
+
+The presentation boundary should permit two physical implementations:
+
+```text
+Authority presentation contract
+          |
+          +----------------------+
+          |                      |
+          v                      v
+   Arwes React adapter    Arwes Vanilla adapter
+          |                      |
+          v                      v
+   React Arwes APIs       Vanilla Arwes primitives
+```
+
+The compatibility spike should therefore investigate the smallest viable React integration first. If the React wrapper is incompatible with React 19, Strict Mode, or the repository's runtime boundaries, evaluate whether the lower-level Vanilla packages can be wrapped behind clean React 19 hooks/components without leaking Arwes APIs upward.
+
+The application must never be redesigned around whichever Arwes integration happens to work.
+
+The eventual disposition matrix is:
+
+| Result | Candidate disposition |
+| --- | --- |
+| React integration works cleanly | `ARWES_RUNTIME` candidate |
+| React integration fails, Vanilla primitives integrate cleanly behind our boundary | `ARWES_SELECTIVE` candidate |
+| Arwes primitives are useful mainly as visual/interaction reference | `ARWES_REFERENCE` candidate |
+| Neither runtime approach provides sufficient value for acceptable integration cost | `ARWES_REJECTED` |
+
+These are candidate outcomes, not predetermined conclusions.
 
 ## What Arwes is useful for
 
@@ -146,9 +225,11 @@ Exact filenames may evolve. The important constraint is that Arwes imports remai
 
 ## First issue: compatibility spike
 
-The first issue should **not** build the Crawler HUD.
+The first implementation issue should **not** build the Crawler HUD.
 
-It should prove that a minimal Arwes React surface can coexist with the repository's current runtime/build architecture.
+It should prove that a minimal Arwes surface can coexist with the repository's current runtime/build architecture.
+
+The first implementation should use the existing `authority-arwes` presentation selection path. The compatibility probe is the first implementation of that presentation, not a separate test-only mode.
 
 ### Probe requirements
 
@@ -181,6 +262,7 @@ Record results for:
 | test environment | verified / incompatible / unknown |
 | package/type compatibility | verified / incompatible / unknown |
 | bundle/dependency impact | measured |
+| Vanilla fallback viability | verified / incompatible / not required |
 
 Do not hide failures by globally changing the application configuration.
 
@@ -228,6 +310,10 @@ The POC must not visually imply certainty that the underlying evidence does not 
 
 Arwes animation must not be the sole carrier of information. Semantic HTML, keyboard interaction, focus behavior, and `prefers-reduced-motion` remain application responsibilities.
 
+### Rule 9 — Arwes must remain replaceable
+
+No application-facing contract may require an Arwes component, theme, animation controller, CSS class, or package-specific type. Removing Arwes must leave domain, application/session, replay, persistence, and feature presentation contracts intact.
+
 ## Proposed Authority primitives
 
 These are semantic Crawler abstractions, not necessarily direct one-to-one Arwes components:
@@ -241,6 +327,53 @@ These are semantic Crawler abstractions, not necessarily direct one-to-one Arwes
 - `AuthorityBackground` — restrained ambient system presence.
 
 A semantic region is allowed to have **no frame**. Avoid turning every piece of information into a card.
+
+## AuthorityTransition semantics
+
+`AuthorityTransition` is the semantic boundary between application-level state significance and whatever animation mechanism Arwes happens to provide.
+
+Its public contract should describe semantic flow states such as:
+
+```ts
+type AuthorityTransitionState =
+  | "entering"
+  | "entered"
+  | "exiting"
+  | "exited";
+```
+
+The exact API may evolve, but application code should reason about meaningful system transitions rather than Arwes Animator nodes or lifecycle details.
+
+The physical adapter is responsible for translating those states into Arwes `Animator`/`Animated` behavior, or into equivalent Vanilla/CSS/SVG behavior if the React package is rejected.
+
+```text
+Application significance
+        |
+        v
+AuthorityTransition
+        |
+        +---------------------+
+        |                     |
+        v                     v
+ Arwes Animator        Native/Vanilla fallback
+```
+
+This prevents the animation library from becoming the owner of Crawler transition semantics.
+
+## AuthorityText delivery semantics
+
+`AuthorityText` should distinguish ordinary information from system-delivered commentary.
+
+A proposed semantic property is:
+
+```ts
+delivery: "instant" | "decoded";
+```
+
+- `instant` — ordinary state, labels, values, and other information that should simply be present.
+- `decoded` — system commentary, notifications, dramatic messages, or other intentionally delivered system output that may use a text effect.
+
+This prevents the entire interface from becoming animated sci-fi text and keeps text effects tied to meaning.
 
 ## Significance model
 
@@ -256,6 +389,35 @@ system-interruption
 ```
 
 These are presentation semantics and may be refined during the POC.
+
+## Motion model and deterministic validation
+
+Animation is a presentation concern, but its timing must not make automated validation nondeterministic.
+
+Define an Authority-owned motion mode rather than exposing an Arwes-specific test switch:
+
+```ts
+type AuthorityMotionMode =
+  | "enabled"
+  | "reduced"
+  | "deterministic";
+```
+
+The intended semantics are:
+
+```text
+normal runtime / manual preview  -> enabled
+prefers-reduced-motion           -> reduced
+visual regression / screenshots  -> deterministic
+```
+
+`deterministic` does not mean that the UI should look like a special test version. It means the semantic presentation state is rendered at a stable point without depending on animation timing.
+
+The rule is:
+
+> Visual regression tests validate the resulting presentation state, not the timing of the animation that produced it.
+
+Do not add `ARWES_POC=true`, `DISABLE_ANIMATIONS=true`, `TEST_HUD=true`, or similar Arwes-specific application flags. The existing presentation selector chooses **what** is rendered; test/accessibility infrastructure determines **how motion behaves**.
 
 ## Evidence model
 
@@ -318,6 +480,8 @@ state changes
   -> resulting state persists
 ```
 
+`AuthorityTransition` should own this semantic sequence. Arwes should only supply the physical realization.
+
 ## Background rules
 
 Arwes backgrounds are ambient infrastructure, not decoration. Use effects such as GridLines, Dots, Puffs, or MovingLines only when they reinforce system presence. Avoid full-screen visual noise.
@@ -351,13 +515,54 @@ Candidate states:
 - evidence/estimated state;
 - mobile composition.
 
-The first compatibility issue does not need to create all screenshots. It should establish the path for later visual regression coverage.
+The first compatibility issue does not need to create all screenshots. It should establish the path for later visual regression coverage and prove that deterministic motion does not require a separate Arwes-only application mode.
 
 ## Reversibility requirement
 
 A later issue should be able to replace the Arwes implementation with native/CSS/SVG implementation while retaining the same presentation contracts.
 
-If removing Arwes requires changes to domain state, replay semantics, persistence, or application commands, the boundary has failed.
+If removing Arwes requires changes to domain state, replay semantics, persistence, application commands, or feature presentation contracts, the boundary has failed.
+
+A useful final test is to temporarily substitute a minimal native implementation behind the same `AuthorityPresentationModel` and semantic primitives. If that requires changes above the presentation implementation boundary, the POC has coupled too deeply to Arwes.
+
+## Proposed issue sequence
+
+The research baseline intentionally separates the work into small Jules-sized issues:
+
+```text
+#210 Compatibility spike
+   |
+   v
+Arwes compatibility result
+   |
+   v
+Authority presentation adapter + semantic tokens/primitives
+   |
+   +--> Authority shell
+   |
+   +--> contextual navigation
+   |
+   +--> Crawler status vertical slice
+   |
+   +--> meaningful system transition
+   |
+   +--> evidence grammar
+   |
+   +--> Live/Replay parity
+   |
+   +--> responsive/mobile
+   |
+   +--> accessibility + reduced motion
+   |
+   +--> performance/bundle
+   |
+   +--> reversibility
+   |
+   v
+Final Arwes disposition
+```
+
+The next issue after the research PR is therefore **#210: establish the Arwes compatibility boundary and record actual compatibility results**. Do not build the full Authority shell until that evidence exists.
 
 ## Disposition criteria
 
