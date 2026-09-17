@@ -1,32 +1,53 @@
 "use client";
-import React from "react";
-import type { Party } from "../../../app/domain/types";
-import { Panel } from "../../shared/ui/Panel";
 
-export function PartyView({ party }: { party?: Party }) {
+import React from "react";
+import type { Party } from "../../../app/domain/types.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import { derivePartyPresentation, type DerivedPartyPresentation } from "./party-presentation.ts";
+import styles from "./PartyView.module.css";
+
+export function PartyView({
+  presentation,
+  party,
+}: {
+  presentation?: DerivedPartyPresentation;
+  party?: Party;
+}) {
+  const partyPresentation = presentation ?? derivePartyPresentation({ party });
+
   return (
-    <section className="view-content">
-      <header className="title">
+    <section className={styles.viewContent}>
+      <header className={styles.title}>
         <div>
-          <p className="eyebrow">CRAWLER ROSTER</p>
+          <p className={styles.eyebrow}>CRAWLER ROSTER</p>
           <h1>PARTY</h1>
         </div>
-        {party && <b>{party.members.length} MEMBERS</b>}
+        {partyPresentation.hasParty && (
+          <b className={styles.memberBadge}>{partyPresentation.badgeLabel}</b>
+        )}
       </header>
 
-      {party ? (
-        <Panel title={party.name} ariaLabel={`${party.name} roster`}>
-          <div style={{ display: "grid", gap: "8px" }}>
-            {party.members.map((member) => (
-              <article key={member.crawlerId} style={{ alignItems: "center", background: "#09131b", border: "1px solid #203f4d", display: "flex", fontSize: "12px", justifyContent: "space-between", padding: "14px" }}>
+      {partyPresentation.hasParty && partyPresentation.name ? (
+        <Panel title={partyPresentation.name} ariaLabel={`${partyPresentation.name} roster`}>
+          <div className={styles.rosterList}>
+            {partyPresentation.members.map((member) => (
+              <article key={member.crawlerId} className={styles.memberCard}>
                 <span>{member.name}</span>
-                <b style={{ color: "#79e9a0", fontSize: "9px", letterSpacing: ".12em" }}>{member.role === "leader" ? "LEADER" : "MEMBER"}</b>
+                <b
+                  className={`${styles.roleTag} ${
+                    member.isLeader ? styles.leaderRole : styles.memberRole
+                  }`}
+                >
+                  {member.roleLabel}
+                </b>
               </article>
             ))}
           </div>
         </Panel>
       ) : (
-        <p style={{ color: "#8fa4ad", fontSize: "10px" }}>No party state is available at this replay point.</p>
+        <p className={styles.unavailableText}>
+          No party state is available at this replay point.
+        </p>
       )}
     </section>
   );

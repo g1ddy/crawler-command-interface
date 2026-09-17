@@ -1,124 +1,115 @@
 "use client";
-import React from "react";
-import type { Pet } from "../../../app/domain/types";
-import { Panel } from "../../shared/ui/Panel";
 
-export function PetView({ pets }: { pets?: Pet[] }) {
-  const activePets = pets || [];
+import React from "react";
+import type { Pet } from "../../../app/domain/types.ts";
+import { Panel } from "../../shared/ui/Panel.tsx";
+import { derivePetPresentation, type DerivedPetPresentation } from "./pet-presentation.ts";
+import styles from "./PetView.module.css";
+
+export function PetView({
+  presentation,
+  pets,
+}: {
+  presentation?: DerivedPetPresentation;
+  pets?: Pet[];
+}) {
+  const petPresentation = presentation ?? derivePetPresentation({ pets });
 
   return (
-    <section className="view-content">
-      <header className="title">
+    <section className={styles.viewContent}>
+      <header className={styles.title}>
         <div>
-          <p className="eyebrow">PET & DUNGEON FAMILIARS</p>
+          <p className={styles.eyebrow}>PET & DUNGEON FAMILIARS</p>
           <h1>PETS</h1>
         </div>
-        {activePets.length > 0 && <b>{activePets.length} {activePets.length === 1 ? "PET" : "PETS"}</b>}
+        {petPresentation.hasPets && (
+          <b className={styles.petBadge}>{petPresentation.badgeLabel}</b>
+        )}
       </header>
 
-      {activePets.length > 0 ? (
-        <div style={{ display: "grid", gap: "16px" }}>
-          {activePets.map((pet) => {
-            const isHostile = pet.hostility === "hostile";
-            const isBonded = pet.bondState === "bonded";
-            const displayName = pet.name ?? pet.species;
-
-            return (
-              <Panel key={pet.petId} title={`PET · ${displayName.toUpperCase()}`} ariaLabel={`Pet ${displayName}`}>
-                <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <h2 style={{ margin: 0 }}>{displayName}</h2>
-                      {pet.title && (
-                        <span style={{ color: "#d29237", fontSize: "11px", fontWeight: "bold" }}>
-                          «{pet.title}»
-                        </span>
-                      )}
-                    </div>
-                    <p style={{ color: "#8fa4ad", fontSize: "11px", margin: "2px 0 0 0" }}>
-                      Species: {pet.species}
-                    </p>
+      {petPresentation.hasPets ? (
+        <div className={styles.petList}>
+          {petPresentation.pets.map((pet) => (
+            <Panel
+              key={pet.petId}
+              title={`PET · ${pet.displayName.toUpperCase()}`}
+              ariaLabel={`Pet ${pet.displayName}`}
+            >
+              <header className={styles.petHeader}>
+                <div>
+                  <div className={styles.petIdentity}>
+                    <h2 className={styles.petName}>{pet.displayName}</h2>
+                    {pet.formattedTitle && (
+                      <span className={styles.petTitle}>{pet.formattedTitle}</span>
+                    )}
                   </div>
-                  <div style={{ display: "flex", gap: "6px" }}>
-                    <span
-                      style={{
-                        background: isBonded ? "rgba(210, 146, 55, 0.2)" : "rgba(255, 255, 255, 0.1)",
-                        border: `1px solid ${isBonded ? "#d29237" : "#555"}`,
-                        color: isBonded ? "#d29237" : "#aaa",
-                        fontSize: "9px",
-                        fontWeight: "bold",
-                        letterSpacing: ".1em",
-                        padding: "2px 6px",
-                      }}
-                    >
-                      {isBonded ? "BONDED" : "UNBONDED"}
-                    </span>
-                    <span
-                      style={{
-                        background: isHostile ? "rgba(235, 87, 87, 0.2)" : "rgba(121, 233, 160, 0.15)",
-                        border: `1px solid ${isHostile ? "#eb5757" : "#79e9a0"}`,
-                        color: isHostile ? "#eb5757" : "#79e9a0",
-                        fontSize: "9px",
-                        fontWeight: "bold",
-                        letterSpacing: ".1em",
-                        padding: "2px 6px",
-                      }}
-                    >
-                      {isHostile ? "HOSTILE" : "NON-HOSTILE"}
-                    </span>
-                  </div>
-                </header>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                    gap: "8px",
-                    background: "#09131b",
-                    border: "1px solid #203f4d",
-                    padding: "12px",
-                    fontSize: "11px",
-                  }}
-                >
-                  <div>
-                    <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>ORIGIN</span>
-                    <b style={{ color: "#e2e8f0" }}>{pet.origin.toUpperCase()}</b>
-                  </div>
-                  <div>
-                    <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>CLASSIFICATION</span>
-                    <b style={{ color: "#e2e8f0" }}>{pet.classification.toUpperCase()}</b>
-                  </div>
-                  <div>
-                    <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>BOND HOLDER</span>
-                    <b style={{ color: pet.bondHolderCrawlerId ? "#79e9a0" : "#8fa4ad" }}>
-                      {pet.bondHolderCrawlerId ? pet.bondHolderCrawlerId : "NONE (UNBONDED)"}
-                    </b>
-                  </div>
-                  {pet.level !== undefined && (
-                    <div>
-                      <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>LEVEL</span>
-                      <b style={{ color: "#e2e8f0" }}>Level {pet.level}</b>
-                    </div>
-                  )}
-                  {pet.deployment !== undefined && (
-                    <div>
-                      <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>DEPLOYMENT</span>
-                      <b style={{ color: "#e2e8f0" }}>{pet.deployment.toUpperCase()}</b>
-                    </div>
-                  )}
-                  {pet.condition?.status !== undefined && (
-                    <div>
-                      <span style={{ color: "#8fa4ad", display: "block", fontSize: "9px" }}>CONDITION</span>
-                      <b style={{ color: "#e2e8f0" }}>{pet.condition.status}</b>
-                    </div>
-                  )}
+                  <p className={styles.speciesSubtext}>{pet.speciesLabel}</p>
                 </div>
-              </Panel>
-            );
-          })}
+                <div className={styles.statusTags}>
+                  <span
+                    className={`${styles.statusTag} ${
+                      pet.isBonded ? styles.bondedTag : styles.unbondedTag
+                    }`}
+                  >
+                    {pet.bondStateLabel}
+                  </span>
+                  <span
+                    className={`${styles.statusTag} ${
+                      pet.isHostile ? styles.hostileTag : styles.nonHostileTag
+                    }`}
+                  >
+                    {pet.hostilityLabel}
+                  </span>
+                </div>
+              </header>
+
+              <div className={styles.petDetailsGrid}>
+                <div className={styles.detailField}>
+                  <span className={styles.fieldLabel}>ORIGIN</span>
+                  <b className={styles.fieldValue}>{pet.originValueFormatted}</b>
+                </div>
+                <div className={styles.detailField}>
+                  <span className={styles.fieldLabel}>CLASSIFICATION</span>
+                  <b className={styles.fieldValue}>{pet.classificationValueFormatted}</b>
+                </div>
+                <div className={styles.detailField}>
+                  <span className={styles.fieldLabel}>BOND HOLDER</span>
+                  <b
+                    className={
+                      pet.bondHolderCrawlerId
+                        ? styles.fieldValueAccent
+                        : styles.fieldValueSubdued
+                    }
+                  >
+                    {pet.bondHolderLabel}
+                  </b>
+                </div>
+                {pet.formattedLevel && (
+                  <div className={styles.detailField}>
+                    <span className={styles.fieldLabel}>LEVEL</span>
+                    <b className={styles.fieldValue}>{pet.formattedLevel}</b>
+                  </div>
+                )}
+                {pet.formattedDeployment && (
+                  <div className={styles.detailField}>
+                    <span className={styles.fieldLabel}>DEPLOYMENT</span>
+                    <b className={styles.fieldValue}>{pet.formattedDeployment}</b>
+                  </div>
+                )}
+                {pet.conditionStatus && (
+                  <div className={styles.detailField}>
+                    <span className={styles.fieldLabel}>CONDITION</span>
+                    <b className={styles.fieldValue}>{pet.conditionStatus}</b>
+                  </div>
+                )}
+              </div>
+            </Panel>
+          ))}
         </div>
       ) : (
-        <p style={{ color: "#8fa4ad", fontSize: "10px" }}>No pet state is available at this replay sequence.</p>
+        <p className={styles.unavailableText}>
+          No pet state is available at this replay sequence.
+        </p>
       )}
     </section>
   );
