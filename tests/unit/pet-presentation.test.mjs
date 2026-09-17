@@ -15,6 +15,7 @@ test("derivePetPresentation handles empty or undefined pets array", () => {
 
 test("derivePetPresentation defensively preserves unknown/unspecified fields without fabricating claims", () => {
   const incompletePet = {
+    petId: "pet-unknown",
     // species, origin, classification, hostility, bondState all omitted
   };
 
@@ -22,14 +23,46 @@ test("derivePetPresentation defensively preserves unknown/unspecified fields wit
   assert.equal(pres.hasPets, true);
   const [pet] = pres.pets;
 
-  assert.equal(pet.displayName, "UNKNOWN PET");
+  assert.equal(pet.displayName, "pet-unknown");
   assert.equal(pet.species, "unknown");
   assert.equal(pet.originValueFormatted, "UNSPECIFIED");
   assert.equal(pet.classificationValueFormatted, "UNSPECIFIED");
+  assert.equal(pet.hostilityState, "unknown");
   assert.equal(pet.hostilityLabel, "UNKNOWN");
+  assert.equal(pet.bondState, "unknown");
   assert.equal(pet.bondStateLabel, "UNKNOWN");
-  assert.equal(pet.isHostile, false);
-  assert.equal(pet.isBonded, false);
+  assert.equal(pet.bondHolderLabel, "UNKNOWN");
+});
+
+test("derivePetPresentation distinguishes unbonded, bonded-without-holder, and unknown-holder states", () => {
+  const unbondedPet = {
+    petId: "pet-1",
+    species: "felis",
+    bondState: "unbonded",
+  };
+  const bondedPetNoHolder = {
+    petId: "pet-2",
+    species: "canis",
+    bondState: "bonded",
+  };
+  const bondedPetWithHolder = {
+    petId: "pet-3",
+    species: "ursus",
+    bondState: "bonded",
+    bondHolderCrawlerId: "crawler-carl",
+  };
+
+  const pres = derivePetPresentation({ pets: [unbondedPet, bondedPetNoHolder, bondedPetWithHolder] });
+  const [p1, p2, p3] = pres.pets;
+
+  assert.equal(p1.bondState, "unbonded");
+  assert.equal(p1.bondHolderLabel, "NONE (UNBONDED)");
+
+  assert.equal(p2.bondState, "bonded");
+  assert.equal(p2.bondHolderLabel, "UNKNOWN (BONDED)");
+
+  assert.equal(p3.bondState, "bonded");
+  assert.equal(p3.bondHolderLabel, "crawler-carl");
 });
 
 test("derivePetPresentation formats acquired pet before bonding/naming", () => {
@@ -52,9 +85,9 @@ test("derivePetPresentation formats acquired pet before bonding/naming", () => {
   assert.equal(pet.displayName, "mongoliensis");
   assert.equal(pet.hasExplicitName, false);
   assert.equal(pet.speciesLabel, "Species: mongoliensis");
-  assert.equal(pet.isHostile, true);
+  assert.equal(pet.hostilityState, "hostile");
   assert.equal(pet.hostilityLabel, "HOSTILE");
-  assert.equal(pet.isBonded, false);
+  assert.equal(pet.bondState, "unbonded");
   assert.equal(pet.bondStateLabel, "UNBONDED");
   assert.equal(pet.bondHolderLabel, "NONE (UNBONDED)");
   assert.equal(pet.formattedTitle, undefined);
@@ -80,9 +113,9 @@ test("derivePetPresentation formats bonded and named pet with title", () => {
   assert.equal(pet.displayName, "Mongo");
   assert.equal(pet.hasExplicitName, true);
   assert.equal(pet.formattedTitle, "«Royal Steed»");
-  assert.equal(pet.isHostile, false);
+  assert.equal(pet.hostilityState, "non-hostile");
   assert.equal(pet.hostilityLabel, "NON-HOSTILE");
-  assert.equal(pet.isBonded, true);
+  assert.equal(pet.bondState, "bonded");
   assert.equal(pet.bondStateLabel, "BONDED");
   assert.equal(pet.bondHolderCrawlerId, "crawler-donut");
   assert.equal(pet.bondHolderLabel, "crawler-donut");
@@ -103,14 +136,14 @@ test("derivePetPresentation preserves temporal replay boundaries across compiled
   const atAcqState = projectState(compiledTimeline, acquiredEvent.sequence);
   const atAcqPres = derivePetPresentation({ pets: atAcqState.pets });
   assert.equal(atAcqPres.hasPets, true);
-  assert.equal(atAcqPres.pets[0].isBonded, false);
-  assert.equal(atAcqPres.pets[0].isHostile, true);
+  assert.equal(atAcqPres.pets[0].bondState, "unbonded");
+  assert.equal(atAcqPres.pets[0].hostilityState, "hostile");
 
   // At bonding
   const atBondedState = projectState(compiledTimeline, bondedEvent.sequence);
   const atBondedPres = derivePetPresentation({ pets: atBondedState.pets });
   assert.equal(atBondedPres.hasPets, true);
-  assert.equal(atBondedPres.pets[0].isBonded, true);
+  assert.equal(atBondedPres.pets[0].bondState, "bonded");
   assert.equal(atBondedPres.pets[0].displayName, "Mongo");
 });
 
@@ -145,10 +178,10 @@ test("shell feature presentation boundary receives replayed pet state rather tha
   const replayedPres = derivePetPresentation({ pets: replayedAcquired.pets });
   const livePres = derivePetPresentation({ pets: liveState.pets });
 
-  assert.equal(replayedPres.pets[0].isBonded, false);
+  assert.equal(replayedPres.pets[0].bondState, "unbonded");
   assert.equal(replayedPres.pets[0].hasExplicitName, false);
 
-  assert.equal(livePres.pets[0].isBonded, true);
+  assert.equal(livePres.pets[0].bondState, "bonded");
   assert.equal(livePres.pets[0].hasExplicitName, true);
   assert.equal(livePres.pets[0].displayName, "Mongo");
 });

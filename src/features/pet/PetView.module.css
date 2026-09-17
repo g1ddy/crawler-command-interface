@@ -112,6 +112,12 @@
   color: var(--hud-urgency-low);
 }
 
+.unknownTag {
+  background: var(--hud-panel-bg);
+  border: 1px dashed var(--hud-border-subtle);
+  color: var(--hud-text-subdued);
+}
+
 .petDetailsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

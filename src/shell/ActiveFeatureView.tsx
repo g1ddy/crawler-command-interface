@@ -1,8 +1,6 @@
 import { useMemo } from "react";
 import type { CrawlerEvent, CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineSource } from "../../app/domain/types";
 import { deriveNotificationsPresentation } from "../features/notifications/public";
-import { derivePartyPresentation } from "../features/party/public";
-import { derivePetPresentation } from "../features/pet/public";
 import { deriveRatingsPresentation } from "../features/ratings/public";
 import { CrawlerView } from "../features/crawler/CrawlerView";
 import { deriveAwardHistory } from "../features/inventory/public";
@@ -48,20 +46,12 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     () => deriveNotificationsPresentation({ events, sequence }),
     [events, sequence],
   );
-  const party = useMemo(
-    () => derivePartyPresentation({ party: state.party }),
-    [state.party],
-  );
-  const pet = useMemo(
-    () => derivePetPresentation({ pets: state.pets }),
-    [state.pets],
-  );
 
   switch (view) {
     case "crawler": return <CrawlerView state={state} observations={observations} isLive={isLive} onInspectStat={onInspectStat} onInspectObservation={onInspectObservation} actions={actions.crawler} />;
     case "ratings": return <RatingsView presentation={ratings} selectedSequence={sequence} onInspectObservation={onInspectObservation} />;
-    case "party": return <PartyView presentation={party} />;
-    case "pet": return <PetView presentation={pet} />;
+    case "party": return <PartyView party={state.party} />;
+    case "pet": return <PetView pets={state.pets} />;
     case "notifications": return <NotificationsView presentation={notifications} onNavigateToSequence={onNavigateToSequence} />;
     case "inventory": return (
       <InventoryView

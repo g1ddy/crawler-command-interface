@@ -3,7 +3,12 @@
 import React from "react";
 import type { Pet } from "../../../app/domain/types.ts";
 import { Panel } from "../../shared/ui/Panel.tsx";
-import { derivePetPresentation, type DerivedPetPresentation } from "./pet-presentation.ts";
+import {
+  derivePetPresentation,
+  type DerivedPetPresentation,
+  type PetBondState,
+  type PetHostilityState,
+} from "./pet-presentation.ts";
 import styles from "./PetView.module.css";
 
 export function PetView({
@@ -14,6 +19,18 @@ export function PetView({
   pets?: Pet[];
 }) {
   const petPresentation = presentation ?? derivePetPresentation({ pets });
+
+  const getBondTagClass = (state: PetBondState) => {
+    if (state === "bonded") return styles.bondedTag;
+    if (state === "unbonded") return styles.unbondedTag;
+    return styles.unknownTag;
+  };
+
+  const getHostilityTagClass = (state: PetHostilityState) => {
+    if (state === "hostile") return styles.hostileTag;
+    if (state === "non-hostile") return styles.nonHostileTag;
+    return styles.unknownTag;
+  };
 
   return (
     <section className={styles.viewContent}>
@@ -47,16 +64,14 @@ export function PetView({
                 </div>
                 <div className={styles.statusTags}>
                   <span
-                    className={`${styles.statusTag} ${
-                      pet.isBonded ? styles.bondedTag : styles.unbondedTag
-                    }`}
+                    className={`${styles.statusTag} ${getBondTagClass(pet.bondState)}`}
                   >
                     {pet.bondStateLabel}
                   </span>
                   <span
-                    className={`${styles.statusTag} ${
-                      pet.isHostile ? styles.hostileTag : styles.nonHostileTag
-                    }`}
+                    className={`${styles.statusTag} ${getHostilityTagClass(
+                      pet.hostilityState,
+                    )}`}
                   >
                     {pet.hostilityLabel}
                   </span>
