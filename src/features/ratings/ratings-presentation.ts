@@ -22,7 +22,6 @@ export interface RatingsGroupPresentation {
 }
 
 export interface DerivedRatingsPresentation {
-  isLive: boolean;
   audienceBadgeLabel: string;
   totalViewersFormatted?: string;
   hasMetrics: boolean;
@@ -58,12 +57,8 @@ export function projectRatingsMetrics(observations: Record<string, ProjectedObse
 /** Derives the narrow Ratings surface from the selected temporal observation set. */
 export function deriveRatingsPresentation({
   observations = {},
-  isLive = false,
-  selectedSequence = 0,
-}: {
+  }: {
   observations?: Record<string, ProjectedObservationValue>;
-  isLive?: boolean;
-  selectedSequence?: number;
 }): DerivedRatingsPresentation {
   const viewers = observations.viewers;
   const totalViewersFormatted = viewers && typeof viewers.value === "number"
@@ -80,7 +75,7 @@ export function deriveRatingsPresentation({
       formattedValue: typeof observation.value === "number" ? observation.value.toLocaleString() : String(observation.value),
       group,
       observation,
-      evidence: { state: observation.sequence === selectedSequence ? "current" : "last-known", sourceSequence: observation.sequence }
+      evidence: { state: observation.status === "stated" ? "current" : "last-known", sourceSequence: observation.sequence }
     }];
   });
 
@@ -89,8 +84,7 @@ export function deriveRatingsPresentation({
     .filter(group => group.metrics.length > 0);
 
   return {
-    isLive,
-    audienceBadgeLabel: `${isLive ? "● LIVE AUDIENCE" : "◷ REPLAY AUDIENCE"}${totalViewersFormatted ? ` ${totalViewersFormatted}` : ""}`,
+    audienceBadgeLabel: `AUDIENCE${totalViewersFormatted ? ` ${totalViewersFormatted}` : ""}`,
     totalViewersFormatted,
     groups,
     hasMetrics: metrics.length > 0,

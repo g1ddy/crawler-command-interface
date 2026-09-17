@@ -2,8 +2,8 @@ import type { CrawlerEvent, NotificationKind, NotificationSeverity, RewardSpec }
 
 export interface CrawlerNotification { id: string; sequence: number; kind: NotificationKind; severity: NotificationSeverity; title: string; message: string; rewards?: RewardSpec[]; }
 export interface DerivedNotificationReward { kind: string; detail: string; }
-export interface DerivedNotificationItem extends CrawlerNotification { icon: string; formattedRewards?: DerivedNotificationReward[]; isCurrentDelivery: boolean; }
-export interface DerivedNotificationsPresentation { isLive: boolean; sequence: number; totalCount: number; badgeLabel: string; hasNotifications: boolean; notifications: DerivedNotificationItem[]; }
+export interface DerivedNotificationItem extends CrawlerNotification { icon: string; formattedRewards?: DerivedNotificationReward[]; isAuthoredAtCurrentSequence: boolean; }
+export interface DerivedNotificationsPresentation { sequence: number; totalCount: number; badgeLabel: string; hasNotifications: boolean; notifications: DerivedNotificationItem[]; }
 
 export function projectNotifications(events: CrawlerEvent[], sequence: number): CrawlerNotification[] {
   if (!events) return [];
@@ -27,12 +27,10 @@ export function projectNotifications(events: CrawlerEvent[], sequence: number): 
 export function deriveNotificationPresentation({
   events,
   sequence,
-  isLive,
-}: {
+  }: {
   events: CrawlerEvent[];
   sequence: number;
-  isLive: boolean;
-}): DerivedNotificationsPresentation {
+  }): DerivedNotificationsPresentation {
   const raw = projectNotifications(events, sequence);
   const notifications = raw.map(item => ({
     ...item,
@@ -41,8 +39,8 @@ export function deriveNotificationPresentation({
       kind: reward.kind.toUpperCase(),
       detail: [reward.boxType, reward.rarity, reward.amount, reward.description].filter(value => value !== undefined).map(String).join(" · ") ? ` · ${[reward.boxType, reward.rarity, reward.amount, reward.description].filter(value => value !== undefined).map(String).join(" · ")}` : "",
     })),
-    isCurrentDelivery: item.sequence === sequence,
+    isAuthoredAtCurrentSequence: item.sequence === sequence,
   }));
   const totalCount = notifications.length;
-  return { isLive, sequence, totalCount, badgeLabel: isLive ? `${totalCount} ${totalCount === 1 ? "NOTICE" : "NOTICES"} · LIVE` : `${totalCount} ${totalCount === 1 ? "NOTICE" : "NOTICES"} · REPLAY @ SEQ #${sequence}`, hasNotifications: totalCount > 0, notifications };
+  return { sequence, totalCount, badgeLabel: `${totalCount} ${totalCount === 1 ? "NOTICE" : "NOTICES"}`, hasNotifications: totalCount > 0, notifications };
 }

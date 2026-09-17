@@ -15,7 +15,7 @@ export function NotificationsView({ presentation, onNavigateToSequence }: { pres
       ) : (
         <div className={styles.noticesList}>
           {presentation.notifications.map(item => (
-            <div className={`${styles.noticeCard} ${item.isCurrentDelivery ? styles.currentDelivery : ""}`} key={item.id}>
+            <div className={`${styles.noticeCard} ${item.isAuthoredAtCurrentSequence ? styles.currentDelivery : ""}`} key={item.id}>
               <span className={styles.noticeIcon} aria-hidden="true">{item.icon}</span>
               <div className={styles.noticeBody}>
                 <p className={styles.eyebrow}>{item.kind.toUpperCase()} · {item.severity.toUpperCase()} ·{" "}
