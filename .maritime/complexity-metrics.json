@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.01,
-    "fanIn": 70,
+    "fanIn": 68,
     "fanOut": 1,
     "scanned": true
   },
@@ -321,10 +321,10 @@
   },
   "src/shell/ActiveFeatureView.tsx": {
     "complexity": 9,
-    "loc": 74,
-    "instability": 0.93,
+    "loc": 84,
+    "instability": 0.94,
     "fanIn": 1,
-    "fanOut": 13,
+    "fanOut": 15,
     "scanned": true
   },
   "src/features/crawler/CrawlerView.tsx": {
@@ -394,8 +394,8 @@
   "src/shared/ui/Panel.tsx": {
     "complexity": 2,
     "loc": 12,
-    "instability": 0.12,
-    "fanIn": 15,
+    "instability": 0.11,
+    "fanIn": 16,
     "fanOut": 2,
     "scanned": true
   },
@@ -521,15 +521,23 @@
   },
   "src/features/notifications/NotificationsView.tsx": {
     "complexity": 4,
-    "loc": 7,
-    "instability": 0.67,
+    "loc": 36,
+    "instability": 0.75,
     "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/notifications/public.ts": {
+    "complexity": 1,
+    "loc": 10,
+    "instability": 0.5,
+    "fanIn": 2,
     "fanOut": 2,
     "scanned": true
   },
   "src/features/notifications/notification-presentation.ts": {
-    "complexity": 14,
-    "loc": 25,
+    "complexity": 13,
+    "loc": 47,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -567,20 +575,28 @@
     "fanOut": 2,
     "scanned": true
   },
-  "src/features/ratings/RatingsView.tsx": {
-    "complexity": 4,
-    "loc": 13,
-    "instability": 0.8,
-    "fanIn": 1,
-    "fanOut": 4,
+  "src/features/ratings/public.ts": {
+    "complexity": 1,
+    "loc": 8,
+    "instability": 0.5,
+    "fanIn": 2,
+    "fanOut": 2,
     "scanned": true
   },
   "src/features/ratings/ratings-presentation.ts": {
-    "complexity": 2,
-    "loc": 10,
+    "complexity": 5,
+    "loc": 93,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/ratings/RatingsView.tsx": {
+    "complexity": 2,
+    "loc": 22,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
     "scanned": true
   },
   "src/features/skills/SkillsView.tsx": {
