@@ -32,36 +32,48 @@ export function AuthorityTransition({
   style,
   "data-testid": testId,
 }: AuthorityTransitionProps) {
-  const isDeterministic = motionMode === "deterministic" || motionMode === "reduced";
   const isActive = state === "entering" || state === "entered";
 
-  const animatedStyles: CSSProperties = isDeterministic
-    ? {
-        opacity: isActive ? 1 : 0,
-        transform: "none",
-        ...style,
-      }
-    : (style ?? {});
+  if (motionMode === "deterministic") {
+    return createElement(
+      "div",
+      {
+        className,
+        style: {
+          opacity: isActive ? 1 : 0,
+          transform: "none",
+          transition: "none",
+          ...style,
+        },
+        "data-testid": testId,
+        "data-transition-state": state,
+        "data-motion-mode": "deterministic",
+      },
+      children
+    );
+  }
+
+  const isReduced = motionMode === "reduced";
 
   return createElement(
     Animator,
     {
       active: isActive,
-      duration: { enter: isDeterministic ? 0 : 0.2, exit: isDeterministic ? 0 : 0.2 },
+      duration: isReduced ? { enter: 0, exit: 0 } : { enter: 0.2, exit: 0.2 },
     },
     createElement(
       "div",
       {
         "data-testid": testId,
         "data-transition-state": state,
-        "data-motion-mode": motionMode,
+        "data-motion-mode": isReduced ? "reduced" : "enabled",
       },
       createElement(
         Animated,
         {
           className,
-          style: animatedStyles,
-          animated: isDeterministic ? false : ["fade"],
+          style,
+          animated: isReduced ? false : ["fade"],
         },
         children
       )

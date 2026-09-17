@@ -25,22 +25,21 @@ export function AuthorityText({
   style,
   "data-testid": testId,
 }: AuthorityTextProps) {
-  const isInstant = delivery === "instant" || motionMode === "deterministic" || motionMode === "reduced";
+  const textContent = typeof children === "string" ? children : String(children ?? "");
 
-  if (isInstant) {
+  if (delivery === "instant" || motionMode === "deterministic" || motionMode === "reduced") {
     return createElement(
       Component,
       {
         className,
         style,
         "data-delivery": delivery,
+        "data-motion-mode": motionMode,
         "data-testid": testId,
       },
-      children
+      textContent
     );
   }
-
-  const textContent = typeof children === "string" ? children : String(children ?? "");
 
   return createElement(
     Component,
@@ -48,6 +47,7 @@ export function AuthorityText({
       className,
       style,
       "data-delivery": delivery,
+      "data-motion-mode": motionMode,
       "data-testid": testId,
     },
     createElement(TextComponent, { as: "span" }, textContent)

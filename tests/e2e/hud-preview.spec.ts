@@ -117,6 +117,46 @@ test("authority-arwes presentation is URL-selected and renders compatibility pro
   await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
 });
 
+test("authority-arwes presentation mounts, unmounts cleanly on navigation away, and remounts without stale state", async ({ page }) => {
+  await page.goto(`${pagesPath}?hud=authority-arwes`);
+
+  // Initial mount check
+  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(1);
+
+  // Navigate away to Tactical HUD
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await page.getByRole("button", { name: "Tactical (HUD Preview)", exact: true }).click();
+  await page.getByRole("button", { name: "CANCEL" }).click();
+
+  // Verify Arwes probe unmounted cleanly
+  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(0);
+
+  // Return to authority-arwes presentation
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
+  await page.getByRole("button", { name: "CANCEL" }).click();
+
+  // Verify Arwes probe remounts cleanly with exactly 1 instance
+  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(1);
+  await expect(page.getByTestId("arwes-compatibility-probe")).toBeVisible();
+});
+
+test("captures research screenshot artifact for authority-arwes presentation probe", async ({ page }) => {
+  await page.goto(`${pagesPath}?hud=authority-arwes`);
+
+  const probe = page.getByTestId("arwes-compatibility-probe");
+  await expect(probe).toBeVisible();
+
+  // Set deterministic motion mode for a stable screenshot
+  await page.getByTestId("motion-mode-deterministic").click();
+  await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
+
+  // Capture screenshot of the probe surface for research evidence
+  await probe.screenshot({
+    path: "docs/research/images/arwes-authority-poc.png",
+  });
+});
+
 test("editing import JSON clears stale validation feedback", async ({ page }) => {
   await page.goto(pagesPath);
   await page.getByRole("button", { name: "Open data tools" }).click();

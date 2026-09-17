@@ -253,7 +253,7 @@ Observed evidence from the initial compatibility spike (#210 / PR #214):
 
 | Concern | Observed result | Details / Evidence |
 | --- | --- | --- |
-| React 19 runtime | PASS | The 5 targeted Arwes subpackages (`@arwes/react-frames`, `@arwes/react-animator`, `@arwes/react-animated`, `@arwes/react-text`, `@arwes/react-bgs`) render without runtime exceptions in React 19.2.6; broader `@arwes/react` umbrella capabilities were not evaluated |
+| React 19 runtime | PASS (experimentally validated) | Selected Arwes React subpackages (`@arwes/react-frames`, `@arwes/react-animator`, `@arwes/react-animated`, `@arwes/react-text`, `@arwes/react-bgs`) pass experimental validation in React 19.2.6. Upstream React 19 support is NOT CLAIMED by Arwes. Explicit React peer dependency OVERRIDE REQUIRED in `package.json`. |
 | React Strict Mode | PARTIAL | SSR `renderToString` with `<StrictMode>` passes cleanly in Node 22 test runner; full client-side React 19 StrictMode double-mount effect behaviors remain unverified without client-side StrictMode assertion tooling |
 | Vite development server | PASS | Vite 8 dev server and bundler consume the 5 Arwes subpackage imports without build or module resolution errors |
 | production build | PASS | Production builds succeed via `vinext build`, `npm run build:live`, and `npm run build:pages` |
@@ -301,6 +301,14 @@ The increase consists of:
 ### Interpretation
 
 The bundle cost of including Arwes primitives via standard static imports is ~28.4 kB gzip (+15.3% client JS overhead). If Arwes is adopted for production HUD rendering, dynamic route-level or component-level `import()` code-splitting should be evaluated in subsequent issues to avoid loading Arwes animation and frame utilities for non-Arwes HUD presentation choices.
+
+### Research Evidence Artifact
+
+A research screenshot artifact of the compatibility probe in deterministic motion mode was captured via Playwright E2E test execution and committed to the repository:
+
+![Arwes Authority Presentation Probe](images/arwes-authority-poc.png)
+
+*Captured via Playwright test at `?hud=authority-arwes` in `deterministic` motion mode, demonstrating `FrameHeader`, `FrameCorners`, `FrameLines`, `GridLines` background, and `Text` delivery primitives mounted within the application's presentation seam.*
 
 ## Architecture rules for the POC
 
