@@ -1,6 +1,6 @@
 import type { CrawlerNotification } from "../../../app/domain/notifications";
 
-export type { CrawlerNotification } from "../../../app/domain/notifications";
+export type { CrawlerNotification };
 export interface DerivedNotificationReward { kind: string; detail: string; }
 export interface DerivedNotificationItem extends CrawlerNotification { icon: string; formattedRewards?: DerivedNotificationReward[]; isAuthoredAtCurrentSequence: boolean; }
 export interface DerivedNotificationsPresentation { sequence: number; totalCount: number; badgeLabel: string; hasNotifications: boolean; notifications: DerivedNotificationItem[]; }

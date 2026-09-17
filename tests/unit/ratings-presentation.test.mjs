@@ -3,7 +3,7 @@ import test from "node:test";
 import { deriveRatingsPresentation, projectRatingsMetrics } from "../../src/features/ratings/public.ts";
 
 test("deriveRatingsPresentation handles empty or unobserved broadcast telemetry gracefully", () => {
-  const result = deriveRatingsPresentation({ observations: {} });
+  const result = deriveRatingsPresentation({ observations: {}, isLive: true, sequence: 1 });
 
   assert.equal(result.hasMetrics, false);
   assert.equal(result.groups.length, 0);
@@ -16,7 +16,7 @@ test("deriveRatingsPresentation formats audience badge correctly with viewers", 
     viewers: { sequence: 5, key: "viewers", value: 1250, status: "stated", basis: "exact-observation", evidence: [], referenceObservationIds: [] },
   };
 
-  const result = deriveRatingsPresentation({ observations: obs });
+  const result = deriveRatingsPresentation({ observations: obs, isLive: true, sequence: 5 });
   assert.equal(result.audienceBadgeLabel, "AUDIENCE 1,250");
   assert.equal(result.totalViewersFormatted, "1,250");
 });
@@ -27,7 +27,7 @@ test("deriveRatingsPresentation evaluates status to assign correct current or la
     favorites: { sequence: 8, key: "favorites", value: 45, status: "estimated", basis: "exact-observation", evidence: [], referenceObservationIds: [] },
   };
 
-  const result = deriveRatingsPresentation({ observations: obs });
+  const result = deriveRatingsPresentation({ observations: obs, isLive: true, sequence: 10 });
 
   assert.equal(result.hasMetrics, true);
 

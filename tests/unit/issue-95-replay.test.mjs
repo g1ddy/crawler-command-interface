@@ -15,15 +15,19 @@ const events = [
 ];
 const emptyObservations = { condition: {}, attributes: {}, xpProgress: {}, broadcast: {}, floor: {}, inventory: {}, equipment: {} };
 
+import { projectNotifications } from "../../app/domain/notifications.ts";
+
 test("authored notification delivery is replay bounded and independent of event type", () => {
-  assert.equal(deriveNotificationsPresentation({ events, sequence: 2, isLive: false }).notifications.length, 0);
-  const after = deriveNotificationsPresentation({ events, sequence: 3, isLive: false });
+  const projectedBefore = projectNotifications(events, 2);
+  assert.equal(deriveNotificationsPresentation({ notifications: projectedBefore, sequence: 2, isLive: false }).notifications.length, 0);
+  const projectedAfter = projectNotifications(events, 3);
+  const after = deriveNotificationsPresentation({ notifications: projectedAfter, sequence: 3, isLive: false });
   assert.deepEqual(after.notifications.map(({ id, kind, severity }) => ({ id, kind, severity })), [{ id: "delivered", kind: "achievement", severity: "warning" }]);
 });
 
 test("ratings unavailable state never presents projection defaults as sourced facts", () => {
-  assert.equal(deriveRatingsPresentation({ observations: {} }).hasMetrics, false);
-  assert.deepEqual(deriveRatingsPresentation({ observations: {} }).groups, []);
+  assert.equal(deriveRatingsPresentation({ observations: {}, isLive: true, sequence: 1 }).hasMetrics, false);
+  assert.deepEqual(deriveRatingsPresentation({ observations: {}, isLive: true, sequence: 1 }).groups, []);
 });
 
 test("selected-sequence capabilities cross evidence boundaries and resolve unavailable views", () => {
