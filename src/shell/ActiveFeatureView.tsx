@@ -39,12 +39,12 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     [events, sequence, state.inventory],
   );
   const ratings = useMemo(
-    () => deriveRatingsPresentation({ observations: observations.broadcast, isLive, selectedSequence: sequence }),
-    [observations.broadcast, isLive, sequence],
+    () => deriveRatingsPresentation({ observations: observations.broadcast }),
+    [observations.broadcast],
   );
   const notifications = useMemo(
-    () => deriveNotificationsPresentation({ events, sequence, isLive }),
-    [events, sequence, isLive],
+    () => deriveNotificationsPresentation({ events, sequence }),
+    [events, sequence],
   );
 
   switch (view) {

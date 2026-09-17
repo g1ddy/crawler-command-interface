@@ -3,10 +3,6 @@ name: Playwright E2E
 on:
   workflow_call:
     inputs:
-      checkout-repository:
-        description: Repository containing the source commit that produced the artifact
-        required: true
-        type: string
       expected-source-sha:
         description: Source commit recorded in the validated Pages artifact
         required: true
@@ -22,7 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: ${{ inputs.checkout-repository }}
           ref: ${{ inputs.expected-source-sha }}
       - uses: actions/setup-node@v4
         with:

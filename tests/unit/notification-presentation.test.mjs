@@ -39,41 +39,41 @@ test("notification kind remains separate from severity", () => {
 });
 
 test("deriveNotificationsPresentation returns structured presentation model for live and replay", () => {
-  const livePres = deriveNotificationsPresentation({ events, sequence: 3, isLive: true });
-  assert.equal(livePres.isLive, true);
+  const livePres = deriveNotificationsPresentation({ events, sequence: 3 });
+
   assert.equal(livePres.sequence, 3);
   assert.equal(livePres.totalCount, 2);
   assert.equal(livePres.hasNotifications, true);
-  assert.equal(livePres.badgeLabel, "2 NOTICES · LIVE");
+  assert.equal(livePres.badgeLabel, "2 NOTICES");
 
-  const replayPres = deriveNotificationsPresentation({ events, sequence: 1, isLive: false });
-  assert.equal(replayPres.isLive, false);
+  const replayPres = deriveNotificationsPresentation({ events, sequence: 1 });
+
   assert.equal(replayPres.sequence, 1);
   assert.equal(replayPres.totalCount, 1);
-  assert.equal(replayPres.badgeLabel, "1 NOTICE · REPLAY @ SEQ #1");
+  assert.equal(replayPres.badgeLabel, "1 NOTICE");
 
   const achievementNotice = replayPres.notifications[0];
   assert.equal(achievementNotice.icon, "🏆");
   assert.equal(achievementNotice.title, "First Step");
-  assert.equal(achievementNotice.isCurrentDelivery, true);
+  assert.equal(achievementNotice.isAuthoredAtCurrentSequence, true);
   assert.ok(achievementNotice.formattedRewards);
   assert.equal(achievementNotice.formattedRewards[0].kind, "BOX");
   assert.match(achievementNotice.formattedRewards[0].detail, /bronze/);
 });
 
 test("deriveNotificationsPresentation handles empty events without fabricating notices", () => {
-  const emptyPres = deriveNotificationsPresentation({ events: [], sequence: 5, isLive: false });
+  const emptyPres = deriveNotificationsPresentation({ events: [], sequence: 5 });
   assert.equal(emptyPres.hasNotifications, false);
   assert.equal(emptyPres.totalCount, 0);
   assert.equal(emptyPres.notifications.length, 0);
-  assert.equal(emptyPres.badgeLabel, "0 NOTICES · REPLAY @ SEQ #5");
+  assert.equal(emptyPres.badgeLabel, "0 NOTICES");
 });
 
 test("events without delivered notificationDelivery do not generate notifications", () => {
   const nonDelivered = [
     { ...base, id: "inv-1", sequence: 1, type: "ItemAcquired", notificationDelivery: { delivered: false, kind: "system", severity: "info" } },
   ];
-  const pres = deriveNotificationsPresentation({ events: nonDelivered, sequence: 2, isLive: true });
+  const pres = deriveNotificationsPresentation({ events: nonDelivered, sequence: 2 });
   assert.equal(pres.hasNotifications, false);
   assert.equal(pres.totalCount, 0);
 });

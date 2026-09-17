@@ -22,8 +22,8 @@ test("authored notification delivery is replay bounded and independent of event 
 });
 
 test("ratings unavailable state never presents projection defaults as sourced facts", () => {
-  assert.equal(deriveRatingsPresentation({ observations: {}, isLive: false, selectedSequence: 0 }).hasMetrics, false);
-  assert.deepEqual(deriveRatingsPresentation({ observations: {}, isLive: false, selectedSequence: 0 }).groups, []);
+  assert.equal(deriveRatingsPresentation({ observations: {} }).hasMetrics, false);
+  assert.deepEqual(deriveRatingsPresentation({ observations: {} }).groups, []);
 });
 
 test("selected-sequence capabilities cross evidence boundaries and resolve unavailable views", () => {
