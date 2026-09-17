@@ -10,6 +10,7 @@ export interface PartyMemberPresentation {
 
 export interface DerivedPartyPresentation {
   hasParty: boolean;
+  status: "established" | "unavailable";
   partyId?: string;
   name?: string;
   memberCount: number;
@@ -26,6 +27,7 @@ export function derivePartyPresentation({
   if (!party || !party.members || party.members.length === 0) {
     return {
       hasParty: false,
+      status: "unavailable",
       memberCount: 0,
       badgeLabel: "NO PARTY",
       members: [],
@@ -45,6 +47,7 @@ export function derivePartyPresentation({
 
   return {
     hasParty: true,
+    status: "established",
     partyId: party.partyId,
     name: party.name,
     memberCount: count,

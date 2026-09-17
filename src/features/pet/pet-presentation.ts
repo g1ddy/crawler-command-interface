@@ -10,10 +10,10 @@ export interface DerivedPetItem {
   originValueFormatted: string;
   classification: string;
   classificationValueFormatted: string;
-  hostility: "hostile" | "non-hostile";
+  hostility?: string;
   isHostile: boolean;
   hostilityLabel: string;
-  bondState: "unbonded" | "bonded";
+  bondState?: string;
   isBonded: boolean;
   bondStateLabel: string;
   bondHolderCrawlerId?: string;
@@ -31,6 +31,7 @@ export interface DerivedPetPresentation {
   hasPets: boolean;
   petCount: number;
   badgeLabel: string;
+  status: "established" | "unavailable";
   pets: DerivedPetItem[];
 }
 
@@ -38,7 +39,7 @@ export interface DerivedPetPresentation {
 export function derivePetPresentation({
   pets = [],
 }: {
-  pets?: Pet[];
+  pets?: Partial<Pet>[];
 }): DerivedPetPresentation {
   const activePets = pets || [];
   const petCount = activePets.length;
@@ -50,25 +51,55 @@ export function derivePetPresentation({
   const derivedPets: DerivedPetItem[] = activePets.map((pet) => {
     const isHostile = pet.hostility === "hostile";
     const isBonded = pet.bondState === "bonded";
-    const displayName = pet.name ?? pet.species;
+    const displayName = pet.name ?? pet.species ?? pet.petId ?? "UNKNOWN PET";
     const hasExplicitName = Boolean(pet.name);
 
+    const rawHostility: string | undefined = pet.hostility;
+    let hostilityLabel = "UNKNOWN";
+    if (rawHostility === "hostile") {
+      hostilityLabel = "HOSTILE";
+    } else if (rawHostility === "non-hostile") {
+      hostilityLabel = "NON-HOSTILE";
+    } else if (typeof rawHostility === "string" && rawHostility.trim().length > 0) {
+      hostilityLabel = rawHostility.toUpperCase();
+    }
+
+    const rawBondState: string | undefined = pet.bondState;
+    let bondStateLabel = "UNKNOWN";
+    if (rawBondState === "bonded") {
+      bondStateLabel = "BONDED";
+    } else if (rawBondState === "unbonded") {
+      bondStateLabel = "UNBONDED";
+    } else if (typeof rawBondState === "string" && rawBondState.trim().length > 0) {
+      bondStateLabel = rawBondState.toUpperCase();
+    }
+
+    const origin = pet.origin ?? "UNSPECIFIED";
+    const originValueFormatted = typeof pet.origin === "string" && pet.origin.trim().length > 0
+      ? pet.origin.toUpperCase()
+      : "UNSPECIFIED";
+
+    const classification = pet.classification ?? "UNSPECIFIED";
+    const classificationValueFormatted = typeof pet.classification === "string" && pet.classification.trim().length > 0
+      ? pet.classification.toUpperCase()
+      : "UNSPECIFIED";
+
     return {
-      petId: pet.petId,
+      petId: pet.petId ?? "unknown-pet-id",
       displayName,
       hasExplicitName,
-      species: pet.species,
-      speciesLabel: `Species: ${pet.species}`,
-      origin: pet.origin,
-      originValueFormatted: pet.origin.toUpperCase(),
-      classification: pet.classification,
-      classificationValueFormatted: pet.classification.toUpperCase(),
+      species: pet.species ?? "unknown",
+      speciesLabel: pet.species ? `Species: ${pet.species}` : "Species: unknown",
+      origin,
+      originValueFormatted,
+      classification,
+      classificationValueFormatted,
       hostility: pet.hostility,
       isHostile,
-      hostilityLabel: isHostile ? "HOSTILE" : "NON-HOSTILE",
+      hostilityLabel,
       bondState: pet.bondState,
       isBonded,
-      bondStateLabel: isBonded ? "BONDED" : "UNBONDED",
+      bondStateLabel,
       bondHolderCrawlerId: pet.bondHolderCrawlerId,
       bondHolderLabel: pet.bondHolderCrawlerId
         ? pet.bondHolderCrawlerId
@@ -78,7 +109,9 @@ export function derivePetPresentation({
       level: pet.level,
       formattedLevel: pet.level !== undefined ? `Level ${pet.level}` : undefined,
       deployment: pet.deployment,
-      formattedDeployment: pet.deployment ? pet.deployment.toUpperCase() : undefined,
+      formattedDeployment: typeof pet.deployment === "string" && pet.deployment.trim().length > 0
+        ? pet.deployment.toUpperCase()
+        : undefined,
       conditionStatus: pet.condition?.status,
     };
   });
@@ -87,6 +120,7 @@ export function derivePetPresentation({
     hasPets,
     petCount,
     badgeLabel,
+    status: hasPets ? "established" : "unavailable",
     pets: derivedPets,
   };
 }
