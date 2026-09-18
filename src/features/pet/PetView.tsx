@@ -6,7 +6,7 @@ import {
   type DerivedPetPresentation,
   type PetBondState,
   type PetHostilityState,
-} from "./pet-presentation.ts";
+} from "./public.ts";
 import styles from "./PetView.module.css";
 
 export function PetView({
