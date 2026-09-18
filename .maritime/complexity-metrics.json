@@ -223,6 +223,14 @@
     "fanOut": 1,
     "scanned": true
   },
+  "app/domain/notifications.ts": {
+    "complexity": 13,
+    "loc": 34,
+    "instability": 0.33,
+    "fanIn": 2,
+    "fanOut": 1,
+    "scanned": true
+  },
   "app/domain/persistence.ts": {
     "complexity": 8,
     "loc": 187,
@@ -289,10 +297,10 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 180,
+    "loc": 193,
     "instability": 0.94,
     "fanIn": 1,
-    "fanOut": 15,
+    "fanOut": 16,
     "scanned": true
   },
   "src/application/crawler-session.ts": {
@@ -319,12 +327,68 @@
     "fanOut": 1,
     "scanned": true
   },
+  "src/presentation/authority-arwes/ArwesPresentation.ts": {
+    "complexity": 1,
+    "loc": 27,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts": {
+    "complexity": 10,
+    "loc": 241,
+    "instability": 0.86,
+    "fanIn": 1,
+    "fanOut": 6,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
+    "complexity": 5,
+    "loc": 43,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityFrame.ts": {
+    "complexity": 6,
+    "loc": 70,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthoritySurface.ts": {
+    "complexity": 1,
+    "loc": 33,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityText.ts": {
+    "complexity": 9,
+    "loc": 56,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityTransition.ts": {
+    "complexity": 9,
+    "loc": 83,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
+    "scanned": true
+  },
   "src/shell/ActiveFeatureView.tsx": {
     "complexity": 9,
-    "loc": 84,
-    "instability": 0.94,
+    "loc": 89,
+    "instability": 0.95,
     "fanIn": 1,
-    "fanOut": 15,
+    "fanOut": 18,
     "scanned": true
   },
   "src/features/crawler/CrawlerView.tsx": {
@@ -346,8 +410,8 @@
   "src/features/timeline/public.ts": {
     "complexity": 1,
     "loc": 36,
-    "instability": 0.44,
-    "fanIn": 9,
+    "instability": 0.41,
+    "fanIn": 10,
     "fanOut": 7,
     "scanned": true
   },
@@ -529,34 +593,66 @@
   },
   "src/features/notifications/public.ts": {
     "complexity": 1,
-    "loc": 10,
+    "loc": 8,
     "instability": 0.5,
     "fanIn": 2,
     "fanOut": 2,
     "scanned": true
   },
   "src/features/notifications/notification-presentation.ts": {
-    "complexity": 13,
-    "loc": 47,
+    "complexity": 4,
+    "loc": 30,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
     "scanned": true
   },
   "src/features/party/PartyView.tsx": {
-    "complexity": 3,
-    "loc": 34,
-    "instability": 0.75,
+    "complexity": 5,
+    "loc": 12,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/party/public.ts": {
+    "complexity": 1,
+    "loc": 3,
+    "instability": 0.5,
+    "fanIn": 2,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/party/party-presentation.ts": {
+    "complexity": 7,
+    "loc": 12,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/pet/PetView.tsx": {
-    "complexity": 17,
-    "loc": 126,
-    "instability": 0.75,
+    "complexity": 6,
+    "loc": 128,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/pet/public.ts": {
+    "complexity": 1,
+    "loc": 9,
+    "instability": 0.5,
+    "fanIn": 2,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/pet/pet-presentation.ts": {
+    "complexity": 28,
+    "loc": 141,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {
@@ -584,11 +680,11 @@
     "scanned": true
   },
   "src/features/ratings/ratings-presentation.ts": {
-    "complexity": 5,
-    "loc": 93,
-    "instability": 0.5,
+    "complexity": 6,
+    "loc": 98,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/features/ratings/RatingsView.tsx": {
@@ -737,7 +833,7 @@
   },
   "src/shell/tools/TimelineToolsModal.tsx": {
     "complexity": 3,
-    "loc": 102,
+    "loc": 103,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,

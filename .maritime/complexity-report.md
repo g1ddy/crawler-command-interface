@@ -1,12 +1,12 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-17
+**Last Updated:** 2026-09-18
 
-### 🏥 Repository Health Score: **57.0 / 100**
+### 🏥 Repository Health Score: **55.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 105
-*   **Measured Files**: 105
+*   **Total Graph Files**: 117
+*   **Measured Files**: 117
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -37,4 +37,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/compiler.ts` | **35** | 368 |
 | `src/features/inventory/equipment/equipment-presentation.ts` | **35** | 158 |
 | `app/domain/observations.ts` | **29** | 325 |
-| `src/features/inventory/inventory-presentation.ts` | **27** | 147 |
+| `src/features/pet/pet-presentation.ts` | **28** | 141 |

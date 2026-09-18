@@ -163,6 +163,7 @@
         "app/domain/projection/quests.ts",
         "app/domain/floors.ts",
         "app/domain/narrative-presentation.ts",
+        "app/domain/notifications.ts",
         "app/domain/persistence.ts",
         "app/domain/raw-compiler.ts",
         "app/domain/raw-loader.ts",
@@ -190,9 +191,8 @@
         "src/features/inventory/InventoryItemBrowser.tsx",
         "src/features/inventory/ItemInspector.tsx",
         "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
-        "src/features/notifications/notification-presentation.ts",
-        "src/features/party/PartyView.tsx",
-        "src/features/pet/PetView.tsx",
+        "src/features/party/party-presentation.ts",
+        "src/features/pet/pet-presentation.ts",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/ratings/ratings-presentation.ts",
@@ -1622,6 +1622,35 @@
       "orphan": false
     },
     {
+      "source": "app/domain/notifications.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/ActiveFeatureView.tsx",
+        "src/features/notifications/notification-presentation.ts"
+      ],
+      "orphan": false
+    },
+    {
       "source": "app/domain/persistence.ts",
       "valid": true,
       "dependencies": [
@@ -2138,6 +2167,13 @@
       "dependents": [
         "src/CrawlerApp.tsx",
         "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/presentation/authority-arwes/ArwesPresentation.ts",
+        "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts",
+        "src/presentation/authority-arwes/primitives/AuthorityBackground.ts",
+        "src/presentation/authority-arwes/primitives/AuthorityFrame.ts",
+        "src/presentation/authority-arwes/primitives/AuthoritySurface.ts",
+        "src/presentation/authority-arwes/primitives/AuthorityText.ts",
+        "src/presentation/authority-arwes/primitives/AuthorityTransition.ts",
         "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/timeline/public.ts",
@@ -2271,6 +2307,23 @@
           "moduleSystem": "es6",
           "module": "../../application/crawler-session",
           "resolved": "src/application/crawler-session.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../presentation/authority-arwes/ArwesPresentation.ts",
+          "resolved": "src/presentation/authority-arwes/ArwesPresentation.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2685,9 +2738,596 @@
       "orphan": false
     },
     {
+      "source": "src/presentation/authority-arwes/ArwesPresentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./compatibility/ArwesCompatibilityProbe.ts",
+          "resolved": "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../primitives/AuthorityBackground.ts",
+          "resolved": "src/presentation/authority-arwes/primitives/AuthorityBackground.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../primitives/AuthorityFrame.ts",
+          "resolved": "src/presentation/authority-arwes/primitives/AuthorityFrame.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../primitives/AuthoritySurface.ts",
+          "resolved": "src/presentation/authority-arwes/primitives/AuthoritySurface.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../primitives/AuthorityText.ts",
+          "resolved": "src/presentation/authority-arwes/primitives/AuthorityText.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../primitives/AuthorityTransition.ts",
+          "resolved": "src/presentation/authority-arwes/primitives/AuthorityTransition.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/presentation/authority-arwes/ArwesPresentation.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/presentation/authority-arwes/primitives/AuthorityBackground.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "@arwes/react-bgs",
+          "resolved": "node_modules/@arwes/react-bgs/build/esm/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/@arwes/react-bgs/build/esm/index.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/presentation/authority-arwes/primitives/AuthorityBackground.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
+    },
+    {
+      "source": "src/presentation/authority-arwes/primitives/AuthorityFrame.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "@arwes/react-frames",
+          "resolved": "node_modules/@arwes/react-frames/build/esm/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/@arwes/react-frames/build/esm/index.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/presentation/authority-arwes/primitives/AuthorityFrame.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
+    },
+    {
+      "source": "src/presentation/authority-arwes/primitives/AuthoritySurface.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/presentation/authority-arwes/primitives/AuthorityText.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./AuthorityTransition.ts",
+          "resolved": "src/presentation/authority-arwes/primitives/AuthorityTransition.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "@arwes/react-text",
+          "resolved": "node_modules/@arwes/react-text/build/esm/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/@arwes/react-text/build/esm/index.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/presentation/authority-arwes/primitives/AuthorityText.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
+    },
+    {
+      "source": "src/presentation/authority-arwes/primitives/AuthorityTransition.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "@arwes/react-animated",
+          "resolved": "node_modules/@arwes/react-animated/build/esm/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "@arwes/react-animator",
+          "resolved": "node_modules/@arwes/react-animator/build/esm/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts",
+        "src/presentation/authority-arwes/primitives/AuthorityText.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/@arwes/react-animated/build/esm/index.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/presentation/authority-arwes/primitives/AuthorityTransition.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
+    },
+    {
+      "source": "node_modules/@arwes/react-animator/build/esm/index.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/presentation/authority-arwes/primitives/AuthorityTransition.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
+    },
+    {
       "source": "src/shell/ActiveFeatureView.tsx",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../app/domain/notifications",
+          "resolved": "app/domain/notifications.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -2838,8 +3478,42 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../features/party/public",
+          "resolved": "src/features/party/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../features/pet/PetView",
           "resolved": "src/features/pet/PetView.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../features/pet/public",
+          "resolved": "src/features/pet/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3300,6 +3974,7 @@
         "src/features/crawler/stats/PlayerStats.tsx",
         "src/features/inventory/equipment/EquipmentView.tsx",
         "src/features/inventory/ItemInspector.tsx",
+        "src/features/ratings/ratings-presentation.ts",
         "src/features/ratings/RatingsView.tsx",
         "src/features/floor/FloorRules.tsx",
         "src/shell/replay/ReplaySurface.tsx",
@@ -5185,8 +5860,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
+          "module": "../../../app/domain/notifications.ts",
+          "resolved": "app/domain/notifications.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -5206,15 +5881,14 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
             "import"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
+          "module": "../../shared/ui/Panel.tsx",
+          "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5228,10 +5902,28 @@
           ],
           "dynamic": false,
           "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./PartyView.module.css",
+          "resolved": "src/features/party/PartyView.module.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel",
-          "resolved": "src/shared/ui/Panel.tsx",
+          "module": "./public.ts",
+          "resolved": "src/features/party/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5259,7 +5951,70 @@
       "orphan": false
     },
     {
-      "source": "src/features/pet/PetView.tsx",
+      "source": "src/features/party/PartyView.module.css",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/features/party/PartyView.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
+        "import"
+      ]
+    },
+    {
+      "source": "src/features/party/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./party-presentation.ts",
+          "resolved": "src/features/party/party-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./party-presentation.ts",
+          "resolved": "src/features/party/party-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/ActiveFeatureView.tsx",
+        "src/features/party/PartyView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/party/party-presentation.ts",
       "valid": true,
       "dependencies": [
         {
@@ -5275,8 +6030,35 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
+          "module": "../../../app/domain/types.ts",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/party/public.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/pet/PetView.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/Panel.tsx",
+          "resolved": "src/shared/ui/Panel.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5290,10 +6072,28 @@
           ],
           "dynamic": false,
           "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./PetView.module.css",
+          "resolved": "src/features/pet/PetView.module.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../shared/ui/Panel",
-          "resolved": "src/shared/ui/Panel.tsx",
+          "module": "./public.ts",
+          "resolved": "src/features/pet/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -5317,6 +6117,97 @@
       ],
       "dependents": [
         "src/shell/ActiveFeatureView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/pet/PetView.module.css",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/features/pet/PetView.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
+        "import"
+      ]
+    },
+    {
+      "source": "src/features/pet/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./pet-presentation.ts",
+          "resolved": "src/features/pet/pet-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./pet-presentation.ts",
+          "resolved": "src/features/pet/pet-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/ActiveFeatureView.tsx",
+        "src/features/pet/PetView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/pet/pet-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/pet/public.ts"
       ],
       "orphan": false
     },
@@ -5492,6 +6383,23 @@
           "moduleSystem": "es6",
           "module": "../../../app/domain/types",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../timeline/public.ts",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -8116,8 +9024,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 136,
-    "totalDependenciesCruised": 364,
+    "totalCruised": 155,
+    "totalDependenciesCruised": 402,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
