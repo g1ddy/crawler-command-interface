@@ -1,6 +1,7 @@
 "use client";
 import { createElement } from "react";
 import { ArwesCompatibilityProbe } from "./compatibility/ArwesCompatibilityProbe.ts";
+import type { AuthorityCompositionModel } from "../../shell/authority/public.ts";
 
 export interface ArwesProbeModel {
   crawlerName: string;
@@ -9,7 +10,21 @@ export interface ArwesProbeModel {
   temporalMode: "live" | "replay";
 }
 
-export function ArwesPresentation({ model }: { model: ArwesProbeModel }) {
+export function ArwesPresentation({
+  model,
+}: {
+  model: AuthorityCompositionModel | ArwesProbeModel;
+}) {
+  const probeModel: ArwesProbeModel =
+    "system" in model
+      ? {
+          crawlerName: model.system.crawlerName,
+          floorTitle: model.system.floorTitle,
+          sequence: model.system.sequence,
+          temporalMode: model.temporal.mode,
+        }
+      : model;
+
   return createElement(
     "div",
     {
@@ -17,10 +32,10 @@ export function ArwesPresentation({ model }: { model: ArwesProbeModel }) {
       "data-presentation": "authority-arwes",
     },
     createElement(ArwesCompatibilityProbe, {
-      crawlerName: model.crawlerName,
-      floorTitle: model.floorTitle,
-      sequence: model.sequence,
-      isLive: model.temporalMode === "live",
+      crawlerName: probeModel.crawlerName,
+      floorTitle: probeModel.floorTitle,
+      sequence: probeModel.sequence,
+      isLive: probeModel.temporalMode === "live",
     })
   );
 }

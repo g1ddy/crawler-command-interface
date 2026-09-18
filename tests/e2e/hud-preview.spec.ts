@@ -87,7 +87,6 @@ test("live presentation switching in System Tools preserves session state and up
   await page.getByRole("button", { name: "CANCEL" }).click();
 });
 
-
 test("authority-arwes presentation is URL-selected and renders compatibility probe", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
@@ -141,7 +140,7 @@ test("authority-arwes presentation mounts, unmounts cleanly on navigation away, 
   await expect(page.getByTestId("arwes-compatibility-probe")).toBeVisible();
 });
 
-test("captures research screenshot artifact for authority-arwes presentation probe", async ({ page }) => {
+test("captures research screenshot artifact for authority-arwes presentation probe", async ({ page }, testInfo) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
   const probe = page.getByTestId("arwes-compatibility-probe");
@@ -151,9 +150,9 @@ test("captures research screenshot artifact for authority-arwes presentation pro
   await page.getByTestId("motion-mode-deterministic").click();
   await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
 
-  // Capture screenshot of the probe surface for research evidence
+  // Capture screenshot of the probe surface for research evidence in test output directory
   await probe.screenshot({
-    path: "docs/research/images/arwes-authority-poc.png",
+    path: testInfo.outputPath("arwes-authority-poc.png"),
   });
 });
 

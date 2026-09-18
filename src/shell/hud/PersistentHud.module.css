@@ -8,9 +8,44 @@
 .clock strong { font-size: clamp(1.25rem, 2.3vw, 2rem); line-height: 1.2; font-family: var(--hud-font-mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .clock small { padding-block: var(--hud-space-sm); color: var(--hud-text-secondary); }
 .clock[data-stale] { border-style: dashed; }
+.clock[data-urgent="true"] strong { color: #ef4444; }
 .mode { display: grid; gap: var(--hud-space-xs); font-size: 0.875rem; min-width: 8rem; }
 .mode b { color: var(--hud-state-success); font-family: var(--hud-font-mono); letter-spacing: 0.14em; }
 .mode[data-mode="replay"] b { color: var(--hud-state-warning); }
+
+.attentionBar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--hud-space-md);
+  max-width: 1404px;
+  margin: var(--hud-space-sm) auto 0;
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  background: rgba(30, 58, 138, 0.2);
+  border: 1px solid var(--hud-border-color);
+  font-size: 0.8125rem;
+}
+.attentionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hud-space-xs);
+  padding: 0.1rem 0.5rem;
+  background: rgba(59, 130, 246, 0.15);
+  border-radius: 2px;
+  font-family: var(--hud-font-mono);
+  color: var(--hud-text-author);
+}
+.alertBadge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+.attentionHeadline {
+  color: var(--hud-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .readings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--hud-space-md); max-width: 1404px; margin: var(--hud-space-lg) auto 0; border-top: 1px solid var(--hud-border-color); }
 .reading { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: var(--hud-space-xs) var(--hud-space-sm); padding-top: var(--hud-space-sm); }
 .reading > span { font-size: 0.875rem; color: var(--hud-text-secondary); }
