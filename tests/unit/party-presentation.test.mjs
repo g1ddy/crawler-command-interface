@@ -21,6 +21,23 @@ test("derivePartyPresentation preserves sourced identity and roles", () => {
   assert.deepEqual(p.members.map((m) => m.roleLabel), ["LEADER", "MEMBER"]);
 });
 
+test("derivePartyPresentation handles unknown and unrecognized roles gracefully", () => {
+  const p = derivePartyPresentation({ party: { partyId: "party-1", name: "Party", members: [
+    { crawlerId: "carl", name: "Carl", role: "unknown" },
+    { crawlerId: "custom", name: "Custom", role: "guest" },
+    { crawlerId: "missing", name: "Missing" },
+  ] } });
+
+  assert.equal(p.members[0].role, "unknown");
+  assert.equal(p.members[0].roleLabel, "UNKNOWN");
+
+  assert.equal(p.members[1].role, "unknown");
+  assert.equal(p.members[1].roleLabel, "GUEST");
+
+  assert.equal(p.members[2].role, "unknown");
+  assert.equal(p.members[2].roleLabel, "UNKNOWN");
+});
+
 test("derivePartyPresentation does not infer unsupported member mechanics", () => {
   const p = derivePartyPresentation({ party: { partyId: "party-1", name: "Party", members: [{ crawlerId: "carl", name: "Carl", role: "member" }] } });
   assert.equal(p.members[0].role, "member");

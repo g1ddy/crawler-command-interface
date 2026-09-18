@@ -40,7 +40,7 @@ export interface DerivedPetPresentation {
 export function derivePetPresentation({
   pets = [],
 }: {
-  pets?: Partial<Pet>[];
+  pets?: Pet[];
 }): DerivedPetPresentation {
   const activePets = pets || [];
   const petCount = activePets.length;
@@ -50,7 +50,7 @@ export function derivePetPresentation({
     : "NO PETS";
 
   const derivedPets: DerivedPetItem[] = activePets.map((pet) => {
-    const displayName = pet.name ?? pet.species ?? pet.petId ?? "UNKNOWN PET";
+    const displayName = pet.name ?? pet.species ?? "UNKNOWN PET";
     const hasExplicitName = Boolean(pet.name);
 
     const rawHostility = pet.hostility as string | undefined;
@@ -92,15 +92,15 @@ export function derivePetPresentation({
       bondHolderLabel = "UNKNOWN";
     }
 
-    const origin = pet.origin ?? "UNSPECIFIED";
+    const origin = pet.origin ?? "unknown";
     const originValueFormatted = typeof pet.origin === "string" && pet.origin.trim().length > 0
       ? pet.origin.toUpperCase()
-      : "UNSPECIFIED";
+      : "UNKNOWN";
 
-    const classification = pet.classification ?? "UNSPECIFIED";
+    const classification = pet.classification ?? "unknown";
     const classificationValueFormatted = typeof pet.classification === "string" && pet.classification.trim().length > 0
       ? pet.classification.toUpperCase()
-      : "UNSPECIFIED";
+      : "UNKNOWN";
 
     return {
       petId: pet.petId ?? "unknown-pet-id",

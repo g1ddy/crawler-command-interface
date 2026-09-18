@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Panel } from "../../shared/ui/Panel.tsx";
-import type { DerivedPartyPresentation } from "./party-presentation.ts";
+import type { DerivedPartyPresentation } from "./public.ts";
 import styles from "./PartyView.module.css";
 
 export function PartyView({ presentation }: { presentation: DerivedPartyPresentation }) {

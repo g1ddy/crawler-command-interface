@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { CrawlerEvent, CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineSource } from "../../app/domain/types";
+import { projectNotifications } from "../../app/domain/notifications";
 import { deriveNotificationsPresentation } from "../features/notifications/public";
 import { deriveRatingsPresentation } from "../features/ratings/public";
 import { CrawlerView } from "../features/crawler/CrawlerView";
@@ -41,13 +42,13 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     [events, sequence, state.inventory],
   );
   const ratings = useMemo(
-    () => deriveRatingsPresentation({ observations: observations.broadcast }),
-    [observations.broadcast],
+    () => deriveRatingsPresentation({ observations: observations.broadcast, isLive, sequence }),
+    [observations.broadcast, isLive, sequence],
   );
   const party = useMemo(() => derivePartyPresentation({ party: state.party }), [state.party]);
   const pet = useMemo(() => derivePetPresentation({ pets: state.pets }), [state.pets]);
   const notifications = useMemo(
-    () => deriveNotificationsPresentation({ events, sequence }),
+    () => deriveNotificationsPresentation({ notifications: projectNotifications(events, sequence), sequence }),
     [events, sequence],
   );
 
