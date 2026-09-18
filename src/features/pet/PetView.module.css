@@ -1,0 +1,165 @@
+.viewContent {
+  display: grid;
+  gap: var(--hud-space-lg);
+}
+
+.title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--hud-space-md);
+  flex-wrap: wrap;
+  gap: var(--hud-space-md);
+}
+
+.title h1 {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  color: var(--hud-text-author);
+  margin: 0;
+}
+
+.eyebrow {
+  font-size: var(--hud-label-compact);
+  letter-spacing: 0.14em;
+  color: var(--hud-text-subdued);
+  margin: 0 0 var(--hud-space-xs);
+  text-transform: uppercase;
+}
+
+.petBadge {
+  font-family: var(--hud-font-mono);
+  font-size: 0.875rem;
+  color: var(--hud-text-secondary);
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border-subtle);
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  border-radius: var(--hud-radius-sm);
+}
+
+.petList {
+  display: grid;
+  gap: var(--hud-space-lg);
+}
+
+.petHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--hud-space-md);
+  gap: var(--hud-space-sm);
+  flex-wrap: wrap;
+}
+
+.petIdentity {
+  display: flex;
+  align-items: center;
+  gap: var(--hud-space-xs);
+}
+
+.petName {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--hud-text-primary);
+}
+
+.petTitle {
+  color: var(--hud-text-author);
+  font-size: 0.8125rem;
+  font-weight: bold;
+}
+
+.speciesSubtext {
+  color: var(--hud-text-secondary);
+  font-size: 0.8125rem;
+  margin: var(--hud-space-2xs) 0 0 0;
+}
+
+.statusTags {
+  display: flex;
+  gap: var(--hud-space-xs);
+}
+
+.statusTag {
+  font-family: var(--hud-font-mono);
+  font-size: 0.6875rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  padding: var(--hud-space-2xs) var(--hud-space-xs);
+  border-radius: var(--hud-radius-sm);
+}
+
+.bondedTag {
+  background: var(--hud-panel-raised-bg);
+  border: 1px solid var(--hud-border-accent);
+  color: var(--hud-text-author);
+}
+
+.unbondedTag {
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border-subtle);
+  color: var(--hud-text-secondary);
+}
+
+.hostileTag {
+  background: var(--hud-evidence-current-bg);
+  border: 1px solid var(--hud-urgency-high);
+  color: var(--hud-urgency-high);
+}
+
+.nonHostileTag {
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-urgency-low);
+  color: var(--hud-urgency-low);
+}
+
+.unknownTag {
+  background: var(--hud-panel-bg);
+  border: 1px dashed var(--hud-border-subtle);
+  color: var(--hud-text-subdued);
+}
+
+.petDetailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--hud-space-sm);
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border-subtle);
+  border-radius: var(--hud-radius-sm);
+  padding: var(--hud-space-md);
+  font-size: 0.8125rem;
+}
+
+.detailField {
+  display: grid;
+  gap: var(--hud-space-2xs);
+}
+
+.fieldLabel {
+  color: var(--hud-text-subdued);
+  font-size: 0.6875rem;
+  font-family: var(--hud-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.fieldValue {
+  color: var(--hud-text-primary);
+  font-weight: bold;
+}
+
+.fieldValueAccent {
+  color: var(--hud-urgency-low);
+  font-weight: bold;
+}
+
+.fieldValueSubdued {
+  color: var(--hud-text-secondary);
+  font-weight: normal;
+}
+
+.unavailableText {
+  color: var(--hud-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+}
