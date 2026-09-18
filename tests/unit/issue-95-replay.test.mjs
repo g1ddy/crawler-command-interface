@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { createInitialState, applyEvent } from "../../app/domain/projection.ts";
 import { deriveNotificationsPresentation } from "../../src/features/notifications/public.ts";
-import { projectNotifications } from "../../app/domain/notifications.ts";
 import { deriveRatingsPresentation } from "../../src/features/ratings/public.ts";
 import { groupConditions } from "../../src/features/crawler/health/condition-presentation.ts";
 import { availableRootViews, resolveRootView } from "../../src/shell/navigation/capabilities.ts";
@@ -17,14 +16,14 @@ const events = [
 const emptyObservations = { condition: {}, attributes: {}, xpProgress: {}, broadcast: {}, floor: {}, inventory: {}, equipment: {} };
 
 test("authored notification delivery is replay bounded and independent of event type", () => {
-  assert.equal(deriveNotificationsPresentation({ notifications: projectNotifications(events, 2), sequence: 2 }).notifications.length, 0);
-  const after = deriveNotificationsPresentation({ notifications: projectNotifications(events, 3), sequence: 3 });
+  assert.equal(deriveNotificationsPresentation({ events, sequence: 2, isLive: false }).notifications.length, 0);
+  const after = deriveNotificationsPresentation({ events, sequence: 3, isLive: false });
   assert.deepEqual(after.notifications.map(({ id, kind, severity }) => ({ id, kind, severity })), [{ id: "delivered", kind: "achievement", severity: "warning" }]);
 });
 
 test("ratings unavailable state never presents projection defaults as sourced facts", () => {
-  assert.equal(deriveRatingsPresentation({ observations: {}, isLive: true }).hasMetrics, false);
-  assert.deepEqual(deriveRatingsPresentation({ observations: {}, isLive: true }).groups, []);
+  assert.equal(deriveRatingsPresentation({ observations: {} }).hasMetrics, false);
+  assert.deepEqual(deriveRatingsPresentation({ observations: {} }).groups, []);
 });
 
 test("selected-sequence capabilities cross evidence boundaries and resolve unavailable views", () => {

@@ -23,10 +23,10 @@ test("derivePetPresentation defensively preserves unknown/unspecified fields wit
   assert.equal(pres.hasPets, true);
   const [pet] = pres.pets;
 
-  assert.equal(pet.displayName, "pet-unknown");
+  assert.equal(pet.displayName, "UNKNOWN PET");
   assert.equal(pet.species, "unknown");
-  assert.equal(pet.originValueFormatted, "UNSPECIFIED");
-  assert.equal(pet.classificationValueFormatted, "UNSPECIFIED");
+  assert.equal(pet.originValueFormatted, "UNKNOWN");
+  assert.equal(pet.classificationValueFormatted, "UNKNOWN");
   assert.equal(pet.hostilityState, "unknown");
   assert.equal(pet.hostilityLabel, "UNKNOWN");
   assert.equal(pet.bondState, "unknown");

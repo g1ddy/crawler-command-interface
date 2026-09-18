@@ -1,20 +1,24 @@
 "use client";
 
 import React from "react";
+import type { Pet } from "../../../app/domain/types.ts";
 import { Panel } from "../../shared/ui/Panel.tsx";
 import {
+  derivePetPresentation,
   type DerivedPetPresentation,
   type PetBondState,
   type PetHostilityState,
-} from "./pet-presentation.ts";
+} from "./public.ts";
 import styles from "./PetView.module.css";
 
 export function PetView({
   presentation,
+  pets,
 }: {
-  presentation: DerivedPetPresentation;
+  presentation?: DerivedPetPresentation;
+  pets?: Pet[];
 }) {
-  const petPresentation = presentation;
+  const petPresentation = presentation ?? derivePetPresentation({ pets });
 
   const getBondTagClass = (state: PetBondState) => {
     if (state === "bonded") return styles.bondedTag;

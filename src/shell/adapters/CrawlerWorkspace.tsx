@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
-import { ArwesPresentation, type ArwesProbeModel } from "../../presentation/authority-arwes/ArwesPresentation.ts";
 import { availableRootViews } from "../navigation/capabilities";
 import { RootNavigation } from "../navigation/RootNavigation";
 import { ReplaySurface } from "../replay/ReplaySurface";
@@ -95,16 +94,6 @@ export function CrawlerWorkspace({ session: { snapshot, commands }, hudPresentat
 
   const usesConceptHud = presentationChoice !== "production";
 
-  const arwesProbeModel = useMemo<ArwesProbeModel>(
-    () => ({
-      crawlerName: projectedState.crawler.name,
-      floorTitle: floorHudTitle,
-      sequence: projectedState.sequence,
-      temporalMode: isLive ? "live" : "replay",
-    }),
-    [projectedState.crawler.name, floorHudTitle, projectedState.sequence, isLive],
-  );
-
   const handleExportJson = useCallback(() => {
     commands.exportJson();
   }, [commands]);
@@ -150,9 +139,7 @@ export function CrawlerWorkspace({ session: { snapshot, commands }, hudPresentat
 
   return <ShellFrame
     presentation={presentationChoice} isLive={isLive}
-    hud={presentationChoice === "authority-arwes" ? (
-      <ArwesPresentation model={arwesProbeModel} />
-    ) : usesConceptHud ? (
+    hud={usesConceptHud ? (
       <ConceptHud state={projectedState} observations={projectedObservations}
         countdown={activeCountdown} floorTitle={floorHudTitle} isLive={isLive}
         onReturnToLive={commands.returnToLive} onInspectObservation={setInspectObservation}

@@ -50,7 +50,6 @@ test("live presentation switching in System Tools preserves session state and up
   // Switch through each presentation choice via System Tools buttons
   const choices = [
     { name: "Authority (HUD Preview)", id: "authority" },
-    { name: "Authority (Arwes POC)", id: "authority-arwes" },
     { name: "Tactical (HUD Preview)", id: "tactical" },
     { name: "Theater (HUD Preview)", id: "theater" },
     { name: "Production", id: "production" },
@@ -87,75 +86,6 @@ test("live presentation switching in System Tools preserves session state and up
   await page.getByRole("button", { name: "CANCEL" }).click();
 });
 
-
-test("authority-arwes presentation is URL-selected and renders compatibility probe", async ({ page }) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes`);
-
-  const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
-  await expect(previewScope).toHaveAttribute("data-hud-presentation", "authority-arwes");
-
-  // Verify the Arwes compatibility probe mounts and renders
-  const probe = page.getByTestId("arwes-compatibility-probe");
-  await expect(probe).toBeVisible();
-  await expect(page.getByTestId("probe-header-frame")).toBeVisible();
-  await expect(page.getByTestId("probe-controls-frame")).toBeVisible();
-  await expect(page.getByTestId("probe-surface-frame")).toBeVisible();
-  await expect(page.getByTestId("probe-mounted-content")).toBeVisible();
-
-  // Test interactive mount/unmount behavior
-  await page.getByTestId("probe-toggle-mount").click();
-  await expect(page.getByTestId("probe-unmounted-placeholder")).toBeVisible();
-  await page.getByTestId("probe-toggle-mount").click();
-  await expect(page.getByTestId("probe-mounted-content")).toBeVisible();
-
-  // Test interactive render increment
-  await page.getByTestId("probe-increment-render").click();
-  await expect(page.getByTestId("probe-render-count")).toHaveText("1");
-
-  // Test motion mode selection
-  await page.getByTestId("motion-mode-deterministic").click();
-  await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
-});
-
-test("authority-arwes presentation mounts, unmounts cleanly on navigation away, and remounts without stale state", async ({ page }) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes`);
-
-  // Initial mount check
-  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(1);
-
-  // Navigate away to Tactical HUD
-  await page.getByRole("button", { name: "Open data tools" }).click();
-  await page.getByRole("button", { name: "Tactical (HUD Preview)", exact: true }).click();
-  await page.getByRole("button", { name: "CANCEL" }).click();
-
-  // Verify Arwes probe unmounted cleanly
-  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(0);
-
-  // Return to authority-arwes presentation
-  await page.getByRole("button", { name: "Open data tools" }).click();
-  await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
-  await page.getByRole("button", { name: "CANCEL" }).click();
-
-  // Verify Arwes probe remounts cleanly with exactly 1 instance
-  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(1);
-  await expect(page.getByTestId("arwes-compatibility-probe")).toBeVisible();
-});
-
-test("captures research screenshot artifact for authority-arwes presentation probe", async ({ page }) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes`);
-
-  const probe = page.getByTestId("arwes-compatibility-probe");
-  await expect(probe).toBeVisible();
-
-  // Set deterministic motion mode for a stable screenshot
-  await page.getByTestId("motion-mode-deterministic").click();
-  await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
-
-  // Capture screenshot of the probe surface for research evidence
-  await probe.screenshot({
-    path: "docs/research/images/arwes-authority-poc.png",
-  });
-});
 
 test("editing import JSON clears stale validation feedback", async ({ page }) => {
   await page.goto(pagesPath);
