@@ -1,0 +1,35 @@
+schemaVersion: "crawler-research/v1"
+storyId: "carl-doomsday-scenario"
+floor: 3
+sources:
+  - id: "src-book-2-carls-doomsday-scenario"
+    kind: "official-text"
+    trust: "primary"
+    title: "Dungeon Crawler Carl Book 2"
+
+claims:
+  - id: "claim-f3-pet-acq-01"
+    summary: "Donut claims Mongo with explicitly unknown quantity populated"
+    domain: "pet"
+    claimType: "event"
+    promotion: "promote"
+    confidence: "confirmed"
+    unknowns:
+      - "quantity"
+    provenance:
+      sourceId: "src-book-2-carls-doomsday-scenario"
+      trust: "primary"
+      locator:
+        book: 2
+        chapter: 10
+    stateTransition:
+      kind: "PetAcquired"
+      payload:
+        quantity: 10
+        pet:
+          petId: "pet-mongo"
+          species: "mongoliensis"
+          origin: "dungeon-origin"
+          classification: "pet-class"
+          hostility: "hostile"
+          bondState: "unbonded"

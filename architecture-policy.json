@@ -14,7 +14,10 @@
   "nodeAuthoringModules": [
     "app/domain/compiler.ts",
     "app/domain/raw-compiler.ts",
-    "app/domain/raw-loader.ts"
+    "app/domain/raw-loader.ts",
+    "app/domain/research-compiler.ts",
+    "app/domain/research-loader.ts",
+    "app/domain/research-validator.ts"
   ],
   "nodeAuthoringPatterns": [
     "^scripts/"

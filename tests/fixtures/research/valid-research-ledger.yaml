@@ -1,0 +1,110 @@
+schemaVersion: "crawler-research/v1"
+storyId: "carl-doomsday-scenario"
+floor: 3
+sources:
+  - id: "src-book-2-carls-doomsday-scenario"
+    kind: "official-text"
+    trust: "primary"
+    title: "Dungeon Crawler Carl Book 2: Carl's Doomsday Scenario"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario"
+  - id: "src-wiki-pets"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Pets & Dungeon Familiars Wiki Page"
+
+claims:
+  - id: "claim-f3-pet-acq-01"
+    summary: "Donut claims Mongo from the Floor 2 pet reward room"
+    domain: "pet"
+    claimType: "event"
+    promotion: "promote"
+    confidence: "confirmed"
+    provenance:
+      sourceId: "src-book-2-carls-doomsday-scenario"
+      trust: "primary"
+      locator:
+        book: 2
+        chapter: 10
+      note: "Acquisition boundary recorded"
+    stateTransition:
+      kind: "PetAcquired"
+      payload:
+        pet:
+          petId: "pet-mongo"
+          species: "mongoliensis"
+          origin: "dungeon-origin"
+          classification: "pet-class"
+          hostility: "hostile"
+          bondState: "unbonded"
+
+  - id: "claim-f3-pet-hostility-01"
+    summary: "Donut removes Mongo's automatic aggression, transitioning hostility to non-hostile"
+    domain: "pet"
+    claimType: "event"
+    promotion: "promote"
+    confidence: "confirmed"
+    provenance:
+      sourceId: "src-book-2-carls-doomsday-scenario"
+      trust: "primary"
+      locator:
+        book: 2
+        chapter: 12
+    dependencies:
+      - "claim-f3-pet-acq-01"
+    stateTransition:
+      kind: "PetHostilityChanged"
+      payload:
+        petId: "pet-mongo"
+        hostility: "non-hostile"
+
+  - id: "claim-f3-pet-bond-01"
+    summary: "Mongo completes his bond to Donut and receives title Royal Steed"
+    domain: "pet"
+    claimType: "event"
+    promotion: "promote"
+    confidence: "confirmed"
+    provenance:
+      sourceId: "src-book-2-carls-doomsday-scenario"
+      trust: "primary"
+      locator:
+        book: 2
+        chapter: 15
+    dependencies:
+      - "claim-f3-pet-acq-01"
+      - "claim-f3-pet-hostility-01"
+    stateTransition:
+      kind: "PetBonded"
+      payload:
+        petId: "pet-mongo"
+        bondHolderCrawlerId: "crawler-donut"
+        name: "Mongo"
+        title: "Royal Steed"
+
+  - id: "claim-f3-pet-state-01"
+    summary: "Persistent equipment state for Mongo carrier harness"
+    domain: "equipment"
+    claimType: "state"
+    promotion: "promote"
+    confidence: "confirmed"
+    provenance:
+      sourceId: "src-book-2-carls-doomsday-scenario"
+      trust: "primary"
+      locator:
+        book: 2
+        chapter: 16
+    stateTransition:
+      kind: "ItemEquipped"
+      payload:
+        itemInstanceId: "inst-mongo-harness"
+        slot: "pet-saddle"
+
+  - id: "claim-f3-pet-rule-01"
+    summary: "General mechanics note regarding unbonded pet handling at floor collapse"
+    domain: "pet"
+    claimType: "ledger_only"
+    promotion: "ledger_only"
+    confidence: "corroborated"
+    provenance:
+      sourceId: "src-wiki-pets"
+      trust: "corroborating"
+      locator: "Section: Bonding Rules"

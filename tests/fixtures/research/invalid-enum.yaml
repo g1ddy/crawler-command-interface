@@ -1,0 +1,16 @@
+schemaVersion: "crawler-research/v1"
+storyId: "carl-doomsday-scenario"
+floor: 3
+sources:
+  - id: "src-book-2-carls-doomsday-scenario"
+    kind: "official-text"
+    trust: "primary"
+    title: "Dungeon Crawler Carl Book 2"
+
+claims:
+  - id: "claim-f3-pet-acq-01"
+    summary: "Invalid promotion enum test"
+    domain: "pet"
+    claimType: "event"
+    promotion: "auto_promote"
+    confidence: "confirmed"

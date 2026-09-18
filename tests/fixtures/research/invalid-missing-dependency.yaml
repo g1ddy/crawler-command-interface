@@ -1,0 +1,18 @@
+schemaVersion: "crawler-research/v1"
+storyId: "carl-doomsday-scenario"
+floor: 3
+sources:
+  - id: "src-book-2-carls-doomsday-scenario"
+    kind: "official-text"
+    trust: "primary"
+    title: "Dungeon Crawler Carl Book 2"
+
+claims:
+  - id: "claim-f3-pet-bond-01"
+    summary: "Mongo completes bond"
+    domain: "pet"
+    claimType: "ledger_only"
+    promotion: "ledger_only"
+    confidence: "confirmed"
+    dependencies:
+      - "claim-f3-nonexistent-id"

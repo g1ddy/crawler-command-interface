@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/research-claim.v1.schema.json",
+  "title": "Structured Research Claim Ledger v1",
+  "description": "Source-backed research claim ledger and candidate transition input contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "storyId",
+    "floor",
+    "sources",
+    "claims"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schemaVersion": {
+      "const": "crawler-research/v1"
+    },
+    "storyId": {
+      "$ref": "#/$defs/id"
+    },
+    "floor": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,100}$"
+    },
+    "claimId": {
+      "type": "string",
+      "pattern": "^claim-[a-z0-9-]+$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "trust",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "official-text",
+            "official-audio",
+            "official-preview",
+            "wiki",
+            "fan-compendium",
+            "discussion",
+            "editorial"
+          ]
+        },
+        "trust": {
+          "enum": [
+            "primary",
+            "corroborating",
+            "candidate"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string"
+        },
+        "citationStyle": {
+          "type": "string"
+        }
+      }
+    },
+    "locator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "book": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "chapter": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "section": {
+              "type": "string",
+              "minLength": 1
+            },
+            "timestamp": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "trust",
+        "locator"
+      ],
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "trust": {
+          "enum": [
+            "primary",
+            "corroborating",
+            "candidate"
+          ]
+        },
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "quote": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "stateTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subjectId": {
+          "type": "string"
+        },
+        "targetId": {
+          "type": "string"
+        },
+        "fromState": {
+          "type": "string"
+        },
+        "toState": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "summary",
+        "domain",
+        "claimType",
+        "promotion",
+        "confidence"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/claimId"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "enum": [
+            "pet",
+            "crawler",
+            "inventory",
+            "equipment",
+            "party",
+            "quest",
+            "rating",
+            "floor",
+            "broadcast",
+            "general"
+          ]
+        },
+        "claimType": {
+          "enum": [
+            "event",
+            "state",
+            "ledger_only"
+          ]
+        },
+        "promotion": {
+          "enum": [
+            "promote",
+            "review",
+            "ledger_only"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "confirmed",
+            "corroborated",
+            "candidate"
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/claimId"
+          }
+        },
+        "stateTransition": {
+          "$ref": "#/$defs/stateTransition"
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    }
+  }
+}
