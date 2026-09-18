@@ -1,4 +1,4 @@
-export const HUD_CONCEPTS = ["authority", "tactical", "theater"] as const;
+export const HUD_CONCEPTS = ["authority", "authority-arwes", "tactical", "theater"] as const;
 
 export type HudConcept = (typeof HUD_CONCEPTS)[number];
 export type HudPresentation = "production" | HudConcept;

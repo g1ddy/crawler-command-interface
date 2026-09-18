@@ -6,6 +6,7 @@ export type PresentationChoice = HudPresentation;
 const PRESENTATION_OPTIONS: { id: PresentationChoice; label: string }[] = [
   { id: "production", label: "Production" },
   { id: "authority", label: "Authority (HUD Preview)" },
+  { id: "authority-arwes", label: "Authority (Arwes POC)" },
   { id: "tactical", label: "Tactical (HUD Preview)" },
   { id: "theater", label: "Theater (HUD Preview)" },
 ];
