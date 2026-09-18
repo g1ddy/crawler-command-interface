@@ -1,0 +1,418 @@
+[
+  {
+    "id": "evt-f3-entered",
+    "type": "NarrativeEvent",
+    "kind": "floor-entered",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "summary": "Carl, Donut, and Mongo descend into Floor 3.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 1
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-race-class-selected",
+    "type": "NarrativeEvent",
+    "kind": "choice-made",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "summary": "Donut selects Cat race and Former Child Actor class; Carl selects Primal race and Compensated Anarchist class at the selection terminal.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 1
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-over-city-entered",
+    "type": "NarrativeEvent",
+    "kind": "location-discovered",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 3
+    },
+    "summary": "The party enters the Over City and learns of the engineered NPC, Scolopendra, and Volcano narrative.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 3
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-starter-village-departed",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 3
+    },
+    "summary": "The party departs the starter village toward the medium settlement ruins.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 3
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-show-must-go-on-triggered",
+    "type": "QuestUpdated",
+    "questId": "quest-show-must-go-on",
+    "title": "The Show Must Go On",
+    "urgency": "STANDARD",
+    "status": "active",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 4
+    },
+    "summary": "The Show Must Go On quest is triggered following the Circus Lemur ambush.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 4
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-big-top-ticket-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 4
+    },
+    "item": {
+      "instanceId": "inst-f3-big-top-ticket",
+      "itemId": "item-big-top-ticket",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires a Big Top Ticket after Terror the Clown is defeated.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 4
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-belly-rubbed-pug-reached",
+    "type": "NarrativeEvent",
+    "kind": "location-discovered",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "The party reaches the Belly-Rubbed Pug safe room.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 5
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-show-must-go-on-completed",
+    "type": "QuestUpdated",
+    "questId": "quest-show-must-go-on",
+    "title": "The Show Must Go On",
+    "urgency": "COMPLETED",
+    "status": "completed",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 11
+    },
+    "summary": "The Show Must Go On completes as the circus disappears, exposing a hidden stairwell.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 11
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-medium-skyfowl-settlement-reached",
+    "type": "NarrativeEvent",
+    "kind": "location-discovered",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 14
+    },
+    "summary": "The party reaches the Medium Skyfowl Settlement.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 14
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-desperado-club-reached",
+    "type": "NarrativeEvent",
+    "kind": "location-discovered",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 16
+    },
+    "summary": "The party reaches the Desperado Club on the Silk Road.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 16
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-sex-workers-quest-triggered",
+    "type": "QuestUpdated",
+    "questId": "quest-sex-workers-from-heavens",
+    "title": "Sex Workers Who Fell from the Heavens",
+    "urgency": "STANDARD",
+    "status": "active",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "summary": "Sex Workers Who Fell from the Heavens quest is triggered by discovery of GumGum's corpse.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 17
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-katia-joined",
+    "type": "NarrativeEvent",
+    "kind": "party-changed",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 21
+    },
+    "summary": "Katia Grim joins Carl and Donut's party.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 21
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-magistrate-office-destroyed",
+    "type": "NarrativeEvent",
+    "kind": "encounter-resolved",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 22
+    },
+    "summary": "Carl detonates explosives in Miss Quill's office, destroying the Magistrate's office.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 22
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-achievement-ultimate-extreme-power",
+    "type": "AchievementUnlocked",
+    "achievementId": "achievement-ultimate-extreme-power",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 22
+    },
+    "summary": "Carl unlocks Ultimate Extreme Power! after inheriting the town Magistrate title.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 22
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f3-fools-who-broke-the-glass",
+    "type": "QuestUpdated",
+    "questId": "quest-fools-who-broke-the-glass",
+    "title": "Fools Who Broke the Glass",
+    "urgency": "URGENT",
+    "status": "active",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 24
+    },
+    "summary": "The Final War destabilizes and Fools Who Broke the Glass begins.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 24
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-doomsday-scenario-created",
+    "type": "ItemCrafted",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 25
+    },
+    "item": {
+      "instanceId": "inst-f3-carls-doomsday-scenario",
+      "itemId": "item-carls-doomsday-scenario",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl encapsulates the exploding Soul Crystal in a Sheol Glass Reaper Case, creating Carl's Doomsday Scenario.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 25
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-floor-4-transition",
+    "type": "NarrativeEvent",
+    "kind": "floor-exited",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 25
+    },
+    "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 25
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-odette-epilogue",
+    "type": "NarrativeEvent",
+    "kind": "dialogue",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 26
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-achievement-bandit",
+    "type": "AchievementUnlocked",
+    "achievementId": "achievement-bandit",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 26
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  }
+]

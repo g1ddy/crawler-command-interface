@@ -2,7 +2,7 @@
 
 This document is the durable readiness ledger for conditional Crawler Menu domains. It records what authored story evidence supports for conditional interface domains across active and future floor scopes. It is a research and capability-readiness artifact, not authored story data.
 
-For authoring rules, source tiers, and the evidence contract, see [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md). The authoritative event and observation records currently remain [data/raw/floors/floor-1/](../data/raw/floors/floor-1/) and [data/raw/floors/floor-2/](../data/raw/floors/floor-2/). Floor 3 material in this ledger is research staging only until a complete Floor 3 raw authoring pass establishes its chronology and source set.
+For authoring rules, source tiers, and the evidence contract, see [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md). The authoritative event and observation records are [data/raw/floors/floor-1/](../data/raw/floors/floor-1/), [data/raw/floors/floor-2/](../data/raw/floors/floor-2/), and [data/raw/floors/floor-3/](../data/raw/floors/floor-3/). Detailed Floor 3 research claims and domain handoffs are maintained in [data/raw/floors/floor-3/claim-ledger.md](../data/raw/floors/floor-3/claim-ledger.md).
 
 ## Decision rule
 
@@ -62,9 +62,9 @@ The existing Party formation remains correct and should not be overloaded with D
 
 A future Pet projection should distinguish at least pet identity, classification/origin, acquisition, bond holder, hostility, and bond state. A compact Pet view becomes plausible only after enough sourced fields make it useful. Before the bond boundary, the UI should either be unavailable or explicitly represent only the supported unbonded state; replaying before acquisition must show no Mongo state at all.
 
-### Floor 3 — complete research staging ledger, not authored chronology
+### Floor 3 — baseline established and floor-local claim ledger
 
-Floor 3 has not yet been added under `data/raw/floors/`. This section intentionally captures the full current Floor 3 Pet research so it is not lost while avoiding a loader-visible partial `floor-3/` directory. When a real Floor 3 authoring pass begins, move these claims into `data/raw/floors/floor-3/claim-ledger.md`, establish `floor.json` / `catalog.json` / `sources.json`, verify exact primary chronology, and promote only supported claims into events/observations.
+Floor 3 raw baseline files are established under `data/raw/floors/floor-3/`. Detailed research claims, source citations, and domain handoffs for child issues (#181–#186) are now maintained authoritatively in [data/raw/floors/floor-3/claim-ledger.md](../data/raw/floors/floor-3/claim-ledger.md).
 
 The research cutoff is the end of *Carl's Doomsday Scenario* / Floor 3. Later-book mechanics are explicitly excluded unless independently established inside Books 1–2.
 
@@ -196,4 +196,4 @@ Use published text or licensed audio when available through an official edition.
 
 Because this PR is research-only, Pet discovery sources that are not referenced by existing raw events are intentionally kept in ledgers rather than added to executable Floor 1/2 `sources.json` catalogs.
 
-The authoritative authored storyline currently ends at the Floor 2 collapse. Floor 3 entries in this readiness ledger are research inputs for future authoring and architecture decisions, not canonical runtime facts.
+The authoritative authored storyline includes Floor 3 (Carl's Doomsday Scenario) as an executable raw baseline.
