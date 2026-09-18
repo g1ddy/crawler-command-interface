@@ -9,22 +9,22 @@ Coverage Statement: Curated critical Floor 3 chronology and state needed to supp
 | Claim | Source Tier | Locator | Confidence | Modeling Category | Promotion |
 | --- | --- | --- | --- | --- | --- |
 | Transition to Floor 3; race/class selection terminal reached in entry space | Corroborating | Book 2, Ch. 1; Third Floor wiki | Corroborated | Narrative Event | Promoted (`evt-f3-entered`, `evt-f3-race-class-selected`) |
-| Floor 3 is the Over City, with engineered NPC/civilian narrative, Scolopendra lore, and the Volcano storyline | Corroborating | Book 2, Ch. 3 | Corroborated | Narrative Event | Promoted (`evt-f3-over-city-entered`) |
-| Floor 3 has an eight-day collapse timer and a day/night urban environment | Corroborating | Third Floor / Book 2 research | Corroborated | Floor Rule | Ledger-only (no exact timer seconds invented) |
-| Party departs the starter village toward the medium settlement ruins | Corroborating | Book 2, Ch. 3 | Corroborated | Location transition | Promoted (`evt-f3-starter-village-departed`) |
+| Floor 3 is the Over City, with engineered NPC/civilian narrative, Scolopendra lore, and the Volcano storyline | Corroborating | Book 2, Ch. 3; Third Floor wiki | Corroborated | Narrative Event | Promoted (`evt-f3-over-city-entered`) |
+| Floor 3 has an eight-day collapse timer and a day/night urban environment | Corroborating | Third Floor / Book 2 research | Corroborated | Floor Rule | Conceptual countdown declared (`countdown-floor-3-collapse`); no runtime seconds invented |
+| Party departs the starter village toward the medium settlement ruins | Corroborating | Book 2, Ch. 3; Book 2 summaries | Corroborated | Location transition | Promoted (`evt-f3-starter-village-departed`) |
 | The Show Must Go On quest triggered by Former Circus Lemur ambush | Primary | Book 2, Ch. 4 | Confirmed | Quest Event | Promoted (`evt-f3-show-must-go-on-triggered`) |
 | Terror the Clown defeated and Big Top Ticket acquired | Primary | Book 2, Ch. 4 | Confirmed | Encounter / Item | Promoted (`evt-f3-big-top-ticket-acquired`) |
 | Party reaches Belly-Rubbed Pug safe room | Primary | Book 2, Ch. 5 | Confirmed | Location transition | Promoted (`evt-f3-belly-rubbed-pug-reached`) |
 | The Show Must Go On completes; circus disappears exposing hidden stairwell | Primary | Book 2, Ch. 11 | Confirmed | Quest Event | Promoted (`evt-f3-show-must-go-on-completed`) |
-| Party reaches Medium Skyfowl Settlement | Corroborating | Book 2, Ch. 14 | Corroborated | Location transition | Promoted (`evt-f3-medium-skyfowl-settlement-reached`) |
+| Party reaches Medium Skyfowl Settlement | Corroborating | Book 2, Ch. 14; Book 2 summaries | Corroborated | Location transition | Promoted (`evt-f3-medium-skyfowl-settlement-reached`) |
 | Party reaches Desperado Club along the Silk Road | Primary | Book 2, Ch. 16 | Confirmed | Location transition | Promoted (`evt-f3-desperado-club-reached`) |
 | Sex Workers Who Fell from the Heavens triggered by GumGum's corpse discovery | Primary | Book 2, Ch. 17 | Confirmed | Quest Event | Promoted (`evt-f3-sex-workers-quest-triggered`) |
 | Katia Grim joins the party | Primary | Book 2, Ch. 21 | Confirmed | Party State | Promoted (`evt-f3-katia-joined`) |
-| Carl detonates Hobgoblin Dynamite in Miss Quill's office, destroying Magistrate's office | Primary | Book 2, Ch. 21–22 | Confirmed | Encounter / Achievement | Promoted (`evt-f3-magistrate-office-destroyed`, `evt-f3-achievement-ultimate-extreme-power`) |
+| Carl detonates explosives in Miss Quill's office; Magistrate's office is destroyed | Primary | Book 2, Ch. 21–22 | Confirmed | Encounter / Achievement | Promoted (`evt-f3-magistrate-office-destroyed`, `evt-f3-achievement-ultimate-extreme-power`) |
 | Remex revealed as Soul Leech Capacitor; Final War destabilizes and Fools Who Broke the Glass begins | Primary | Book 2, Ch. 24 | Confirmed | Quest Event | Promoted (`evt-f3-fools-who-broke-the-glass`) |
-| Carl encapsulates exploding Soul Crystal in Sheol Glass Reaper Case, creating Carl's Doomsday Scenario | Primary | Book 2, Ch. 25 | Confirmed | Item Creation | Promoted (`evt-f3-doomsday-scenario-created`) |
-| Party escapes via Red Line, Car 20 stairwell to Floor 4 | Corroborating | Book 2, Ch. 25 | Corroborated | Floor Boundary | Promoted (`evt-f3-floor-4-transition`) |
-| Epilogue interview with Odette occurs ~2.5 days after descent | Corroborating | Book 2, Ch. 26 | Corroborated | Narrative Event | Promoted (`evt-f3-odette-epilogue`) |
+| Carl encapsulates active Soul Crystal in Sheol Glass Reaper Case, creating Carl's Doomsday Scenario | Primary | Book 2, Ch. 25 | Confirmed | Item Creation | Promoted (`evt-f3-doomsday-scenario-created`) |
+| Party escapes via Red Line, Car 20 stairwell to Floor 4 | Corroborating | Book 2, Ch. 25; Third Floor wiki | Corroborated | Floor Boundary | Promoted (`evt-f3-floor-4-transition`) |
+| Epilogue interview with Odette occurs ~2.5 days after descent | Corroborating | Book 2, Ch. 26; Book 2 summaries | Corroborated | Narrative Event | Promoted (`evt-f3-odette-epilogue`) |
 | Bandit Achievement awarded for unusual Soul Crystal rescue outcome | Primary | Book 2, Ch. 26 | Confirmed | Achievement Event | Promoted (`evt-f3-achievement-bandit`) |
 
 ## Crawler Progression & Party State Research (Handoff for #182)

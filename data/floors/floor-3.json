@@ -116,7 +116,6 @@
       }
     ]
   },
-  "countdowns": [],
   "events": [
     {
       "id": "evt-f3-entered",
@@ -130,11 +129,11 @@
       "summary": "Carl, Donut, and Mongo descend into Floor 3.",
       "evidence": [
         {
-          "sourceId": "src-book-2",
+          "sourceId": "src-wiki-third-floor",
           "locator": {
-            "chapter": 1
+            "section": "Floor Entry"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 1
@@ -151,11 +150,11 @@
       "summary": "Donut selects Cat race and Former Child Actor class; Carl selects Primal race and Compensated Anarchist class at the selection terminal.",
       "evidence": [
         {
-          "sourceId": "src-book-2",
+          "sourceId": "src-wiki-book-2-summaries",
           "locator": {
             "chapter": 1
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 2
@@ -172,11 +171,11 @@
       "summary": "The party enters the Over City and learns of the engineered NPC, Scolopendra, and Volcano narrative.",
       "evidence": [
         {
-          "sourceId": "src-book-2",
+          "sourceId": "src-wiki-third-floor",
           "locator": {
-            "chapter": 3
+            "section": "Story"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 3
@@ -193,11 +192,11 @@
       "summary": "The party departs the starter village toward the medium settlement ruins.",
       "evidence": [
         {
-          "sourceId": "src-book-2",
+          "sourceId": "src-wiki-book-2-summaries",
           "locator": {
             "chapter": 3
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 4
@@ -311,11 +310,11 @@
       "summary": "The party reaches the Medium Skyfowl Settlement.",
       "evidence": [
         {
-          "sourceId": "src-book-2",
+          "sourceId": "src-wiki-book-2-summaries",
           "locator": {
             "chapter": 14
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 9
@@ -400,7 +399,7 @@
         {
           "sourceId": "src-book-2",
           "locator": {
-            "chapter": 22
+            "section": "Chapters 21–22"
           },
           "confidence": "confirmed"
         }
@@ -473,7 +472,7 @@
           "value": 1
         }
       },
-      "summary": "Carl encapsulates the exploding Soul Crystal in a Sheol Glass Reaper Case, creating Carl's Doomsday Scenario.",
+      "summary": "Carl's Doomsday Scenario is created after an active Soul Crystal is encapsulated inside a Sheol Glass Reaper Case.",
       "evidence": [
         {
           "sourceId": "src-book-2",
@@ -497,11 +496,11 @@
       "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
       "evidence": [
         {
-          "sourceId": "src-book-2",
+          "sourceId": "src-wiki-third-floor",
           "locator": {
-            "chapter": 25
+            "section": "Floor Exit"
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 17
@@ -518,11 +517,11 @@
       "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
       "evidence": [
         {
-          "sourceId": "src-book-2",
+          "sourceId": "src-wiki-book-2-summaries",
           "locator": {
             "chapter": 26
           },
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 18
