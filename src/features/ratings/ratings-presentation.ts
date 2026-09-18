@@ -1,4 +1,5 @@
 import type { ProjectedObservationValue } from "../../../app/domain/types";
+import { deriveEvidencePresentation, type EvidencePresentation } from "../timeline/public.ts";
 
 export type RatingsMetricGroup = "audience" | "engagement" | "patronage" | "ranking" | "bounty";
 
@@ -12,7 +13,7 @@ export interface RatingsMetric {
 export interface RatingsMetricPresentation extends RatingsMetric {
   key: string;
   formattedValue?: string;
-  evidence: { state: "current" | "last-known", sourceSequence?: number };
+  evidence: EvidencePresentation;
 }
 
 export interface RatingsGroupPresentation {
@@ -57,8 +58,12 @@ export function projectRatingsMetrics(observations: Record<string, ProjectedObse
 /** Derives the narrow Ratings surface from the selected temporal observation set. */
 export function deriveRatingsPresentation({
   observations = {},
-  }: {
+  isLive,
+  sequence,
+}: {
   observations?: Record<string, ProjectedObservationValue>;
+  isLive: boolean;
+  sequence?: number;
 }): DerivedRatingsPresentation {
   const viewers = observations.viewers;
   const totalViewersFormatted = viewers && typeof viewers.value === "number"
@@ -75,7 +80,7 @@ export function deriveRatingsPresentation({
       formattedValue: typeof observation.value === "number" ? observation.value.toLocaleString() : String(observation.value),
       group,
       observation,
-      evidence: { state: observation.status === "stated" ? "current" : "last-known", sourceSequence: observation.sequence }
+      evidence: deriveEvidencePresentation(observation, sequence)
     }];
   });
 
@@ -84,7 +89,7 @@ export function deriveRatingsPresentation({
     .filter(group => group.metrics.length > 0);
 
   return {
-    audienceBadgeLabel: `AUDIENCE${totalViewersFormatted ? ` ${totalViewersFormatted}` : ""}`,
+    audienceBadgeLabel: `${isLive ? "LIVE AUDIENCE" : "REPLAY AUDIENCE"}${totalViewersFormatted ? ` ${totalViewersFormatted}` : ""}`,
     totalViewersFormatted,
     groups,
     hasMetrics: metrics.length > 0,

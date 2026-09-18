@@ -32,7 +32,41 @@
     "verify:maritime": "node scripts/validate-maritime-artifacts.mjs",
     "generate:graph": "npx --yes --package=@dependency-maritime/cli@0.1.0-beta.4 maritime graph --input .maritime --output docs/images/dependency-graph.svg"
   },
+  "overrides": {
+    "@arwes/react": {
+      "react": "$react"
+    },
+    "@arwes/react-animator": {
+      "react": "$react"
+    },
+    "@arwes/react-animated": {
+      "react": "$react"
+    },
+    "@arwes/react-bgs": {
+      "react": "$react"
+    },
+    "@arwes/react-bleeps": {
+      "react": "$react"
+    },
+    "@arwes/react-core": {
+      "react": "$react"
+    },
+    "@arwes/react-frames": {
+      "react": "$react"
+    },
+    "@arwes/react-text": {
+      "react": "$react"
+    },
+    "@arwes/react-tools": {
+      "react": "$react"
+    }
+  },
   "dependencies": {
+    "@arwes/react-animated": "^1.0.0-alpha.23",
+    "@arwes/react-animator": "^1.0.0-alpha.23",
+    "@arwes/react-bgs": "^1.0.0-alpha.23",
+    "@arwes/react-frames": "^1.0.0-alpha.23",
+    "@arwes/react-text": "^1.0.0-alpha.23",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "drizzle-orm": "0.45.2",

@@ -42,4 +42,5 @@ jobs:
       contents: read
     uses: ./.github/workflows/playwright.yml
     with:
+      checkout-repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
       expected-source-sha: ${{ github.event.pull_request.head.sha || github.sha }}
