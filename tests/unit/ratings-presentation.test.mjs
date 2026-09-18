@@ -3,11 +3,11 @@ import test from "node:test";
 import { deriveRatingsPresentation, projectRatingsMetrics } from "../../src/features/ratings/public.ts";
 
 test("deriveRatingsPresentation handles empty or unobserved broadcast telemetry gracefully", () => {
-  const result = deriveRatingsPresentation({ observations: {} });
+  const result = deriveRatingsPresentation({ observations: {}, isLive: true });
 
   assert.equal(result.hasMetrics, false);
   assert.equal(result.groups.length, 0);
-  assert.equal(result.audienceBadgeLabel, "AUDIENCE");
+  assert.equal(result.audienceBadgeLabel, "LIVE AUDIENCE");
   assert.equal(result.totalViewersFormatted, undefined);
 });
 
@@ -16,18 +16,18 @@ test("deriveRatingsPresentation formats audience badge correctly with viewers", 
     viewers: { sequence: 5, key: "viewers", value: 1250, status: "stated", basis: "exact-observation", evidence: [], referenceObservationIds: [] },
   };
 
-  const result = deriveRatingsPresentation({ observations: obs });
-  assert.equal(result.audienceBadgeLabel, "AUDIENCE 1,250");
+  const result = deriveRatingsPresentation({ observations: obs, isLive: true });
+  assert.equal(result.audienceBadgeLabel, "LIVE AUDIENCE 1,250");
   assert.equal(result.totalViewersFormatted, "1,250");
 });
 
-test("deriveRatingsPresentation evaluates status to assign correct current or last-known evidence", () => {
+test("deriveRatingsPresentation evaluates status to assign correct current, estimated, or last-known evidence", () => {
   const obs = {
     viewers: { sequence: 10, key: "viewers", value: 5000, status: "stated", basis: "exact-observation", evidence: [], referenceObservationIds: [] },
     favorites: { sequence: 8, key: "favorites", value: 45, status: "estimated", basis: "exact-observation", evidence: [], referenceObservationIds: [] },
   };
 
-  const result = deriveRatingsPresentation({ observations: obs });
+  const result = deriveRatingsPresentation({ observations: obs, isLive: true, sequence: 11 });
 
   assert.equal(result.hasMetrics, true);
 
@@ -36,11 +36,11 @@ test("deriveRatingsPresentation evaluates status to assign correct current or la
 
   const viewersMetric = audienceGroup.metrics.find((m) => m.key === "viewers");
   assert.ok(viewersMetric);
-  assert.equal(viewersMetric.evidence.state, "current", "Stated observations map to current");
+  assert.equal(viewersMetric.evidence.state, "last-known", "Stated observations from past map to last-known");
 
   const favoritesMetric = result.groups.flatMap(g => g.metrics).find(m => m.key === "favorites");
   assert.ok(favoritesMetric);
-  assert.equal(favoritesMetric.evidence.state, "last-known", "Estimated observations map to last-known");
+  assert.equal(favoritesMetric.evidence.state, "estimated", "Estimated observations map to estimated");
 });
 
 test("projectRatingsMetrics maintains backwards compatibility with raw metric projections", () => {

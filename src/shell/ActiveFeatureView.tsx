@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import type { CrawlerEvent, CrawlerState, InventoryItem, ProjectedEquipmentObservation, ProjectedItemObservation, ProjectedObservationsState, ProjectedObservationValue, TimelineSource } from "../../app/domain/types";
 import { deriveNotificationsPresentation } from "../features/notifications/public";
-import { derivePartyPresentation } from "../features/party/public";
-import { derivePetPresentation } from "../features/pet/public";
 import { deriveRatingsPresentation } from "../features/ratings/public";
 import { CrawlerView } from "../features/crawler/CrawlerView";
 import { deriveAwardHistory } from "../features/inventory/public";
 import { InventoryView } from "../features/inventory/InventoryView";
 import { NotificationsView } from "../features/notifications/NotificationsView";
 import { PartyView } from "../features/party/PartyView";
+import { derivePartyPresentation } from "../features/party/public";
+import { derivePetPresentation } from "../features/pet/public";
 import { PetView } from "../features/pet/PetView";
 import { QuestsView } from "../features/quests/QuestsView";
 import { RatingsView } from "../features/ratings/RatingsView";
@@ -44,17 +44,11 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     () => deriveRatingsPresentation({ observations: observations.broadcast }),
     [observations.broadcast],
   );
+  const party = useMemo(() => derivePartyPresentation({ party: state.party }), [state.party]);
+  const pet = useMemo(() => derivePetPresentation({ pets: state.pets }), [state.pets]);
   const notifications = useMemo(
     () => deriveNotificationsPresentation({ events, sequence }),
     [events, sequence],
-  );
-  const party = useMemo(
-    () => derivePartyPresentation({ party: state.party }),
-    [state.party],
-  );
-  const pet = useMemo(
-    () => derivePetPresentation({ pets: state.pets }),
-    [state.pets],
   );
 
   switch (view) {

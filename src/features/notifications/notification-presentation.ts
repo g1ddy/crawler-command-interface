@@ -1,46 +1,29 @@
-import type { CrawlerEvent, NotificationKind, NotificationSeverity, RewardSpec } from "../../../app/domain/types";
+import type { CrawlerNotification } from "../../../app/domain/notifications.ts";
 
-export interface CrawlerNotification { id: string; sequence: number; kind: NotificationKind; severity: NotificationSeverity; title: string; message: string; rewards?: RewardSpec[]; }
+export type { CrawlerNotification } from "../../../app/domain/notifications.ts";
 export interface DerivedNotificationReward { kind: string; detail: string; }
 export interface DerivedNotificationItem extends CrawlerNotification { icon: string; formattedRewards?: DerivedNotificationReward[]; isAuthoredAtCurrentSequence: boolean; }
 export interface DerivedNotificationsPresentation { sequence: number; totalCount: number; badgeLabel: string; hasNotifications: boolean; notifications: DerivedNotificationItem[]; }
 
-export function projectNotifications(events: CrawlerEvent[], sequence: number): CrawlerNotification[] {
-  if (!events) return [];
-  return events.filter(event => event.sequence <= sequence).flatMap(event => {
-    const delivery = event.notificationDelivery;
-    if (!delivery?.delivered) return [];
-    const achievement = event.type === "AchievementUnlocked" ? event.achievement : undefined;
-    return [{
-      id: event.id ?? `evt-${event.sequence}`,
-      sequence: event.sequence,
-      kind: delivery.kind,
-      severity: delivery.severity,
-      title: delivery.title || achievement?.title || "Dungeon notification",
-      message: delivery.message || achievement?.description || event.summary || "Dungeon notification",
-      rewards: achievement?.reward,
-    }];
-  }).sort((a, b) => b.sequence - a.sequence);
-}
-
-/** Derives crawler-visible notification history from authored deliveries at the selected temporal boundary. */
 export function deriveNotificationPresentation({
-  events,
+  notifications,
   sequence,
-  }: {
-  events: CrawlerEvent[];
+}: {
+  notifications: CrawlerNotification[];
   sequence: number;
-  }): DerivedNotificationsPresentation {
-  const raw = projectNotifications(events, sequence);
-  const notifications = raw.map(item => ({
+}): DerivedNotificationsPresentation {
+  const items = notifications.map(item => ({
     ...item,
     icon: item.kind === "achievement" ? "🏆" : item.kind === "progression" ? "⬆" : "🎁",
-    formattedRewards: item.rewards?.map(reward => ({
-      kind: reward.kind.toUpperCase(),
-      detail: [reward.boxType, reward.rarity, reward.amount, reward.description].filter(value => value !== undefined).map(String).join(" · ") ? ` · ${[reward.boxType, reward.rarity, reward.amount, reward.description].filter(value => value !== undefined).map(String).join(" · ")}` : "",
-    })),
+    formattedRewards: item.rewards?.map((reward) => {
+      const detail = [reward.boxType, reward.rarity, reward.amount, reward.description]
+        .filter(value => value !== undefined)
+        .map(String)
+        .join(" · ");
+      return { kind: reward.kind.toUpperCase(), detail: detail ? ` · ${detail}` : "" };
+    }),
     isAuthoredAtCurrentSequence: item.sequence === sequence,
   }));
-  const totalCount = notifications.length;
-  return { sequence, totalCount, badgeLabel: `${totalCount} ${totalCount === 1 ? "NOTICE" : "NOTICES"}`, hasNotifications: totalCount > 0, notifications };
+  const totalCount = items.length;
+  return { sequence, totalCount, badgeLabel: `${totalCount} ${totalCount === 1 ? "NOTICE" : "NOTICES"}`, hasNotifications: totalCount > 0, notifications: items };
 }

@@ -1,57 +1,11 @@
 import type { Party } from "../../../app/domain/types.ts";
 
-export interface PartyMemberPresentation {
-  crawlerId: string;
-  name: string;
-  role: "leader" | "member";
-  isLeader: boolean;
-  roleLabel: string;
-}
+export type PartyMemberRole = "leader" | "member" | "unknown";
+export interface DerivedPartyMember { crawlerId:string; name:string; role:PartyMemberRole; roleLabel:string; }
+export interface DerivedPartyPresentation { hasParty:boolean; status:"established"|"unavailable"; partyId?:string; partyName?:string; memberCount:number; memberBadgeLabel:string; members:DerivedPartyMember[]; }
 
-export interface DerivedPartyPresentation {
-  hasParty: boolean;
-  status: "established" | "unavailable";
-  partyId?: string;
-  name?: string;
-  memberCount: number;
-  badgeLabel: string;
-  members: PartyMemberPresentation[];
-}
-
-/** Derives the narrow Party surface from the selected temporal Party state. */
-export function derivePartyPresentation({
-  party,
-}: {
-  party?: Party;
-}): DerivedPartyPresentation {
-  if (!party || !party.members || party.members.length === 0) {
-    return {
-      hasParty: false,
-      status: "unavailable",
-      memberCount: 0,
-      badgeLabel: "NO PARTY",
-      members: [],
-    };
-  }
-
-  const members: PartyMemberPresentation[] = party.members.map((member) => ({
-    crawlerId: member.crawlerId,
-    name: member.name,
-    role: member.role === "leader" ? "leader" : "member",
-    isLeader: member.role === "leader",
-    roleLabel: member.role === "leader" ? "LEADER" : "MEMBER",
-  }));
-
-  const count = members.length;
-  const badgeLabel = `${count} ${count === 1 ? "MEMBER" : "MEMBERS"}`;
-
-  return {
-    hasParty: true,
-    status: "established",
-    partyId: party.partyId,
-    name: party.name,
-    memberCount: count,
-    badgeLabel,
-    members,
-  };
+export function derivePartyPresentation({party}:{party?:Party}):DerivedPartyPresentation {
+  if (!party) return {hasParty:false,status:"unavailable",memberCount:0,memberBadgeLabel:"NO PARTY",members:[]};
+  const members=party.members.map(member=>{const raw=member.role as string|undefined; const role:PartyMemberRole=raw==="leader"?"leader":raw==="member"?"member":"unknown"; const roleLabel=role==="leader"?"LEADER":role==="member"?"MEMBER":raw?.trim()?raw.toUpperCase():"UNKNOWN"; return {crawlerId:member.crawlerId,name:member.name,role,roleLabel};});
+  return {hasParty:true,status:"established",partyId:party.partyId,partyName:party.name,memberCount:members.length,memberBadgeLabel:members.length+" "+(members.length===1?"MEMBER":"MEMBERS"),members};
 }
