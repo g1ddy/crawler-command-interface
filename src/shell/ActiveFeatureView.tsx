@@ -44,6 +44,8 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
     () => deriveRatingsPresentation({ observations: observations.broadcast }),
     [observations.broadcast],
   );
+  const party = useMemo(() => derivePartyPresentation({ party: state.party }), [state.party]);
+  const pet = useMemo(() => derivePetPresentation({ pets: state.pets }), [state.pets]);
   const notifications = useMemo(
     () => deriveNotificationsPresentation({ events, sequence }),
     [events, sequence],
