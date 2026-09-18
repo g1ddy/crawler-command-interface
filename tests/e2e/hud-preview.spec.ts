@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openReplayContext } from "../helpers/replay";
 
 const pagesPath = "/crawler-command-interface/";
 
@@ -33,6 +34,10 @@ for (const query of ["", "?hud=unsupported"]) {
 
 test("live presentation switching in System Tools preserves session state and updates URL", async ({ page }) => {
   await page.goto(pagesPath);
+  await openReplayContext(page);
+
+  // Select "all" floor timeline scope so sequence 117 is within bounds
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
 
   // Enter replay mode by scrubbing slider to sequence 117 (where pet is acquired, not bonded)
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
