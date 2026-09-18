@@ -7,6 +7,8 @@ import { deriveAwardHistory } from "../features/inventory/public";
 import { InventoryView } from "../features/inventory/InventoryView";
 import { NotificationsView } from "../features/notifications/NotificationsView";
 import { PartyView } from "../features/party/PartyView";
+import { derivePartyPresentation } from "../features/party/public";
+import { derivePetPresentation } from "../features/pet/public";
 import { PetView } from "../features/pet/PetView";
 import { QuestsView } from "../features/quests/QuestsView";
 import { RatingsView } from "../features/ratings/RatingsView";
@@ -50,8 +52,8 @@ export function ActiveFeatureView({ view, state, observations, events, sequence,
   switch (view) {
     case "crawler": return <CrawlerView state={state} observations={observations} isLive={isLive} onInspectStat={onInspectStat} onInspectObservation={onInspectObservation} actions={actions.crawler} />;
     case "ratings": return <RatingsView presentation={ratings} selectedSequence={sequence} onInspectObservation={onInspectObservation} />;
-    case "party": return <PartyView party={state.party} />;
-    case "pet": return <PetView pets={state.pets} />;
+    case "party": return <PartyView presentation={party} />;
+    case "pet": return <PetView presentation={pet} />;
     case "notifications": return <NotificationsView presentation={notifications} onNavigateToSequence={onNavigateToSequence} />;
     case "inventory": return (
       <InventoryView
