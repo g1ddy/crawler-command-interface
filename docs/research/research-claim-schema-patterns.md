@@ -839,6 +839,8 @@ A valid combination is:
 
 because the evidence may be strong while the runtime representation remains unsettled.
 
+The `promote` disposition explicitly means "accepted for a candidate CCI representation". It does not mean the evidence itself is simply high confidence. A modeling safety rule requires `promote` decisions to possess `confirmed` or `corroborated` confidence, explicitly avoiding the combination of `promote` with `candidate` or `disputed` confidence, ensuring only sufficiently supported claims project forward.
+
 ## 22. Unknowns and precision safety
 
 Unknowns must be explicit where their absence could otherwise be mistaken for omission.
@@ -887,10 +889,9 @@ Conceptually:
       disposition
       target
       rationale
-      resultingArtifacts
       omittedInformation
 
-The final names are subject to Jules' repository-derived design.
+The final names are subject to Jules' repository-derived design. (Note: `resultingArtifacts` was deliberately excluded from the current decision schema to avoid premature coupling to mutable runtime artifact IDs before a true candidate compiler exists.)
 
 ## 24. Candidate compiler contract
 

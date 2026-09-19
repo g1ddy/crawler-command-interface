@@ -11,6 +11,8 @@ import {
 import {
   validateResearchClaimDocument,
   validateSemanticModelingDecisions,
+  validateTraceCompleteness,
+  validateModelingDecisionDocument
 } from '../../app/domain/research-validator.ts';
 import { compileResearchTrace } from '../../app/domain/research-compiler.ts';
 
@@ -20,8 +22,6 @@ const VALID_MODELING_FIXTURE = 'data/raw/research/floor-3/modeling-decisions.yam
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-
-import { validateTraceCompleteness } from '../../app/domain/research-validator.ts';
 
 test('Research Ingestion Contract: valid Floor 3 research claim fixture passes validation and compilation', () => {
   const content = fs.readFileSync(VALID_RESEARCH_FIXTURE, 'utf8');
@@ -176,8 +176,6 @@ test('Research Ingestion Contract: rejects unsafe promotion with unresolved cont
   assert.equal(validation.valid, false);
   assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with unresolved contradiction')));
 });
-
-import { validateModelingDecisionDocument } from '../../app/domain/research-validator.ts';
 
 test('Research Ingestion Contract: rejects duplicate modeling decisions', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
