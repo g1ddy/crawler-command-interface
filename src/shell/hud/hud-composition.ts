@@ -16,7 +16,6 @@ export interface HudTemporalContext {
   mode: "live" | "replay";
   sequence: number;
   isLive: boolean;
-  canReturnToLive: boolean;
 }
 
 export interface HudUrgencyContext {
@@ -100,7 +99,6 @@ export function deriveHudComposition({
       mode: isLive ? "live" : "replay",
       sequence,
       isLive,
-      canReturnToLive: !isLive,
     },
     urgency: {
       activeCountdown,
