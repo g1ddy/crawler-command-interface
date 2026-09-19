@@ -438,13 +438,39 @@ These should become architectural tests or review rules:
 11. Existing CCI authoring remains authoritative for executable representation.
 12. No Floor-specific special case belongs in the generic research compiler.
 
-## Recommended decision
+---
 
-Proceed with #221 as a repository-derived design exercise, using this research as external input.
+## 15. Final Repository Contract (#221 Completion)
 
-Do not merge the current #223 implementation unchanged.
+### Concept Mapping Table
 
-The current #223 PR is a useful prototype and provides concrete implementation ideas, but the repository evidence shows that its abstraction should remain a hypothesis until Jules reconciles it against the actual Floor 1/2/3 model.
+| Existing CCI Concept | Research-Layer Concept | Executable Consequence | Intentional Mismatches & Rationale |
+| --- | --- | --- | --- |
+| Event (`RawFloorEvent`) | Research claim asserting an observed transition (`kind: "event"`) | Typed CCI event (`NarrativeEvent`, `ItemAcquired`, `PetAcquired`, etc.) | Research claim IDs (e.g. `P3-PET-001`) are independent of raw event IDs (`evt-f3-mongo-level-3`) to survive reclassification. |
+| Observation (`RawFloorObservation`) | Research claim asserting a point-in-time fact (`kind: "observation"`) | Point-in-time telemetry observation (`crawler-condition`, `floor-metrics`, etc.) | Research observations record evidence limits (e.g., `unknowns: ["exact_timestamp"]`), preventing linear interpolation. |
+| Catalog State (`CatalogItem`, `CatalogAchievement`) | Research claim asserting durable/reference state (`kind: "state"`) | Catalog entry in `catalog/items.json` or `catalog/achievements.json` | Research claims capture durable properties before specific floor assignments or instance bindings. |
+| Equipment | Research claim concerning item/equipment semantics (`domain: "equipment"`) | Inventory/Equipment state projection | Equipment research claims distinguish item existence from current equip status. |
+| Capability | Research claim concerning an available capability (`kind: "capability"`, e.g., spell or skill) | Skill/Spell grant or capability evaluation | Research claims preserve ungranted spell/skill capabilities as research context. |
+| Ledger-Only Research | Supported research claim with no safe executable projection (`decision: "ledger_only"`) | No runtime artifact (preserved in research ledger) | Research context (e.g., manager benefit, epilogue timing) is preserved without fabricating runtime events. |
+| Source / Evidence (`sources.json`) | Provenance (`sources` registry, `claim.evidence`) | Source-honest evidence catalog in raw floor authoring | Uses existing `sourceId`, `locator`, and `confidence` vocabulary (`confirmed`, `corroborated`, `candidate`, `disputed`). |
+| Unknown | Explicit precision boundary (`unknowns: [...]`) | No fabricated concrete value in candidate representations | Explicit unknowns (e.g., `exact_timestamp`) fail validation if concrete values are invented. |
+
+### PR #223 Reconciliation Matrix
+
+| PR #223 Concept | Final Action | Rationale / Implementation |
+| --- | --- | --- |
+| Immutable Claim IDs | **Retain** | Implemented as pattern `^[a-zA-Z0-9_.:-]+$` (e.g. `P3-PET-001`). Stable research identity independent of runtime event IDs. |
+| Source Registry | **Retain** | Implemented as `sources` array reusing CCI `sources.json` schema (source kinds, trust tiers, URLs, citations). |
+| Provenance References | **Retain** | Implemented as `evidence` array referencing `sourceId`, `locator`, and `confidence`. |
+| Claim Types / Classification | **Modify** | Split into orthogonal `domain` (`pet`, `crawler`, `inventory`, `equipment`, `quest`, `party`, `broadcast`, `achievement`, `skills`, `magic`, `floor-system`, `other`) and `kind` (`event`, `observation`, `state`, `capability`, `ledger-only`). |
+| Promotion Semantics | **Modify** | Implemented as `modeling.decision`: `promote` \| `review` \| `ledger_only`. Direct promotion requires `confirmed` or `corroborated` confidence, target representation, and no unresolved contradictions or violated unknowns. |
+| State Transition Field | **Discard** | Generic envelope uses `claim` (`summary`, `detail`) and optional `candidateRepresentation`. State transitions are expressed via candidate representations rather than a top-level transition field. |
+| Numerical Confidence Scoring | **Discard** | Retained qualitative `confidence` enum (`confirmed`, `corroborated`, `candidate`, `disputed`). Numerical scores like 0.83 imply false precision. |
+| Explicit Unknowns | **Retain & Enforce** | Implemented as `unknowns: string[]`. Semantic validator blocks promotion if `candidateRepresentation` invents concrete scalar values for declared unknown dimensions. |
+| Dependency References | **Retain & Validate** | Implemented as `dependencies: string[]`. Semantic validator detects broken references, self-references, and dependency cycles via DFS traversal. |
+| Contradiction Handling | **Retain Minimal** | Implemented as `contradictions`: `[{ claimId, relationship: "contradicts" | "supersedes" | "unresolved", note }]`. Promoted claims with unresolved contradictions fail validation. |
+| Deterministic Compiler | **Retain** | Implemented in `app/domain/research-compiler.ts`, mapping promoted claims to candidate events, observations, and catalog entries while attaching `originatingClaimIds`. |
+| Unrestricted Additional Properties | **Discard** | Document and claim envelopes strictly enforce `additionalProperties: false` except for `candidateRepresentation`, preventing schema drift. |
 
 ## References
 
