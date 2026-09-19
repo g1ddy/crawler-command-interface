@@ -20,9 +20,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/inventory/ItemInspector.tsx` | **148.1** | 246 | 46 | 7 | 0.88 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **143.5** | 360 | 38 | 7 | 0.88 |
 | `src/application/crawler-actions.ts` | **134.8** | 128 | 49 | 4 | 0.8 |
-| `src/shell/hud/PersistentHud.tsx` | **133.2** | 134 | 43 | 8 | 0.89 |
+| `src/shell/hud/PersistentHud.tsx` | **132.9** | 131 | 43 | 8 | 0.89 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
-| `src/shell/adapters/CrawlerWorkspace.tsx` | **120.6** | 336 | 15 | 19 | 0.95 |
+| `src/shell/adapters/CrawlerWorkspace.tsx` | **120.8** | 338 | 15 | 19 | 0.95 |
 | `src/application/crawler-session-controller.ts` | **111** | 307 | 20 | 11 | 0.92 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
@@ -33,7 +33,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/projection/helpers.ts` | **68** | 222 |
 | `src/application/crawler-actions.ts` | **49** | 128 |
 | `src/features/inventory/ItemInspector.tsx` | **46** | 246 |
-| `src/shell/hud/PersistentHud.tsx` | **43** | 134 |
+| `src/shell/hud/PersistentHud.tsx` | **43** | 131 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **38** | 360 |
 | `app/domain/compiler.ts` | **35** | 368 |
 | `src/features/inventory/equipment/equipment-presentation.ts` | **35** | 158 |
