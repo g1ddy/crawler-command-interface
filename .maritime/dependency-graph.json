@@ -173,6 +173,7 @@
         "src/application/crawler-session.ts",
         "src/features/timeline/replay-presentation.ts",
         "src/application/capabilities.ts",
+        "src/shell/hud/hud-composition.ts",
         "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/crawler/crawler-presentation.ts",
@@ -284,6 +285,23 @@
           "moduleSystem": "es6",
           "module": "./observations.ts",
           "resolved": "app/domain/types/observations.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./research.ts",
+          "resolved": "app/domain/types/research.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -460,6 +478,18 @@
         "app/domain/types/index.ts",
         "app/domain/types/events.ts",
         "app/domain/types/state.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "app/domain/types/research.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/types/index.ts",
+        "app/domain/research-compiler.ts",
+        "app/domain/research-loader.ts",
+        "app/domain/research-validator.ts"
       ],
       "orphan": false
     },
@@ -709,6 +739,7 @@
         "app/domain/compiler.ts",
         "app/domain/persistence.ts",
         "app/domain/raw-compiler.ts",
+        "app/domain/research-validator.ts",
         "src/application/crawler-session-controller.ts"
       ],
       "orphan": false
@@ -769,7 +800,8 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "app/domain/validation.ts"
+        "app/domain/validation.ts",
+        "app/domain/research-validator.ts"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -787,7 +819,8 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "app/domain/validation.ts"
+        "app/domain/validation.ts",
+        "app/domain/research-validator.ts"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -804,7 +837,8 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "app/domain/validation.ts"
+        "app/domain/validation.ts",
+        "app/domain/research-validator.ts"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -1645,8 +1679,9 @@
         }
       ],
       "dependents": [
-        "src/shell/ActiveFeatureView.tsx",
-        "src/features/notifications/notification-presentation.ts"
+        "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/features/notifications/notification-presentation.ts",
+        "src/shell/ActiveFeatureView.tsx"
       ],
       "orphan": false
     },
@@ -1840,7 +1875,8 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "app/domain/raw-loader.ts"
+        "app/domain/raw-loader.ts",
+        "app/domain/research-loader.ts"
       ],
       "coreModule": true,
       "couldNotResolve": false,
@@ -1857,7 +1893,8 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "app/domain/raw-loader.ts"
+        "app/domain/raw-loader.ts",
+        "app/domain/research-loader.ts"
       ],
       "coreModule": true,
       "couldNotResolve": false,
@@ -1866,6 +1903,311 @@
       "matchesDoNotFollow": false,
       "dependencyTypes": [
         "core",
+        "import"
+      ]
+    },
+    {
+      "source": "app/domain/research-compiler.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types/research.ts",
+          "resolved": "app/domain/types/research.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [],
+      "orphan": false
+    },
+    {
+      "source": "app/domain/research-loader.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./research-validator.ts",
+          "resolved": "app/domain/research-validator.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types/research.ts",
+          "resolved": "app/domain/types/research.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": true,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "core",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "protocol": "node:",
+          "moduleSystem": "es6",
+          "module": "fs",
+          "resolved": "fs",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm-dev",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "js-yaml",
+          "resolved": "node_modules/js-yaml/dist/js-yaml.mjs",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": true,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "core",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "protocol": "node:",
+          "moduleSystem": "es6",
+          "module": "path",
+          "resolved": "path",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/js-yaml/dist/js-yaml.mjs",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/research-loader.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm-dev",
+        "import"
+      ]
+    },
+    {
+      "source": "app/domain/research-validator.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./schema/modeling-decision.schema.json",
+          "resolved": "app/domain/schema/modeling-decision.schema.json",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./schema/research-claim.schema.json",
+          "resolved": "app/domain/schema/research-claim.schema.json",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types/research.ts",
+          "resolved": "app/domain/types/research.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./validation.ts",
+          "resolved": "app/domain/validation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "ajv",
+          "resolved": "node_modules/ajv/dist/ajv.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "ajv-formats",
+          "resolved": "node_modules/ajv-formats/dist/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "ajv/dist/2020.js",
+          "resolved": "node_modules/ajv/dist/2020.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "app/domain/research-loader.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "app/domain/schema/modeling-decision.schema.json",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/research-validator.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
+        "import"
+      ]
+    },
+    {
+      "source": "app/domain/schema/research-claim.schema.json",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/research-validator.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
         "import"
       ]
     },
@@ -2262,6 +2604,23 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/notifications.ts",
+          "resolved": "app/domain/notifications.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "type-only",
             "import"
           ],
@@ -2307,6 +2666,23 @@
           "moduleSystem": "es6",
           "module": "../../application/crawler-session",
           "resolved": "src/application/crawler-session.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/notifications/public.ts",
+          "resolved": "src/features/notifications/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2393,6 +2769,23 @@
           "moduleSystem": "es6",
           "module": "../hud/PersistentHud",
           "resolved": "src/shell/hud/PersistentHud.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../hud/public.ts",
+          "resolved": "src/shell/hud/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2738,9 +3131,102 @@
       "orphan": false
     },
     {
+      "source": "src/features/notifications/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./notification-presentation.ts",
+          "resolved": "src/features/notifications/notification-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./notification-presentation.ts",
+          "resolved": "src/features/notifications/notification-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/shell/ActiveFeatureView.tsx",
+        "src/features/notifications/NotificationsView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/notifications/notification-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/notifications.ts",
+          "resolved": "app/domain/notifications.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/notifications/public.ts"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/presentation/authority-arwes/ArwesPresentation.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shell/hud/public.ts",
+          "resolved": "src/shell/hud/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -2778,6 +3264,63 @@
       ],
       "dependents": [
         "src/shell/adapters/CrawlerWorkspace.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/hud/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./hud-composition.ts",
+          "resolved": "src/shell/hud/hud-composition.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/presentation/authority-arwes/ArwesPresentation.ts",
+        "src/shell/hud/PersistentHud.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/hud/hud-composition.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/hud/public.ts"
       ],
       "orphan": false
     },
@@ -5798,80 +6341,6 @@
       ]
     },
     {
-      "source": "src/features/notifications/public.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./notification-presentation.ts",
-          "resolved": "src/features/notifications/notification-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./notification-presentation.ts",
-          "resolved": "src/features/notifications/notification-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/ActiveFeatureView.tsx",
-        "src/features/notifications/NotificationsView.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/notifications/notification-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/notifications.ts",
-          "resolved": "app/domain/notifications.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/notifications/public.ts"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/features/party/PartyView.tsx",
       "valid": true,
       "dependencies": [
@@ -7080,6 +7549,24 @@
           "moduleSystem": "es6",
           "module": "./PersistentHud.module.css",
           "resolved": "src/shell/hud/PersistentHud.module.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./public",
+          "resolved": "src/shell/hud/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -9024,8 +9511,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 155,
-    "totalDependenciesCruised": 402,
+    "totalCruised": 164,
+    "totalDependenciesCruised": 423,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
