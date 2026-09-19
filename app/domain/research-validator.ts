@@ -2,10 +2,12 @@ import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import type { ValidateFunction } from 'ajv';
 import researchSchema from './schema/research-claim.schema.json' with { type: 'json' };
-import type { ResearchClaimDocument } from './types/research.ts';
+import modelingDecisionSchema from './schema/modeling-decision.schema.json' with { type: 'json' };
+import type { ResearchClaimDocument, ModelingDecisionDocument } from './types/research.ts';
 import type { ValidationResult } from './validation.ts';
 
 let validateResearchSchemaFn: ValidateFunction | undefined;
+let validateModelingDecisionSchemaFn: ValidateFunction | undefined;
 
 function getResearchValidator(): ValidateFunction {
   if (validateResearchSchemaFn) {
@@ -15,6 +17,16 @@ function getResearchValidator(): ValidateFunction {
   addFormats(ajv);
   validateResearchSchemaFn = ajv.compile(researchSchema);
   return validateResearchSchemaFn;
+}
+
+function getModelingDecisionValidator(): ValidateFunction {
+  if (validateModelingDecisionSchemaFn) {
+    return validateModelingDecisionSchemaFn;
+  }
+  const ajv = new Ajv2020({ allErrors: true, verbose: true });
+  addFormats(ajv);
+  validateModelingDecisionSchemaFn = ajv.compile(modelingDecisionSchema);
+  return validateModelingDecisionSchemaFn;
 }
 
 export function validateResearchClaimDocument(doc: unknown): ValidationResult {
@@ -59,7 +71,7 @@ export function validateResearchClaimDocument(doc: unknown): ValidationResult {
     claimMap.set(claim.id, claim);
   }
 
-  // c) Evidence source ID checks, dependency checks, contradiction checks, promotion safety
+  // c) Evidence source ID checks, dependency checks, contradiction checks
   for (const claim of researchDoc.claims) {
     // Evidence source references
     for (const ev of claim.evidence) {
@@ -92,36 +104,6 @@ export function validateResearchClaimDocument(doc: unknown): ValidationResult {
           errors.push(
             `Domain error: Claim "${claim.id}" references missing contradiction claim ID "${c.claimId}".`
           );
-        }
-      }
-    }
-
-    // Promotion safety checks
-    if (claim.modeling.decision === 'promote') {
-      // Check confidence
-      for (const ev of claim.evidence) {
-        if (ev.confidence === 'disputed' || ev.confidence === 'candidate') {
-          errors.push(
-            `Domain error: Claim "${claim.id}" cannot be promoted with confidence "${ev.confidence}". Promoted claims require confirmed or corroborated confidence.`
-          );
-        }
-      }
-
-      // Check targetRepresentation
-      if (!claim.modeling.targetRepresentation) {
-        errors.push(
-          `Domain error: Promoted claim "${claim.id}" must specify targetRepresentation.`
-        );
-      }
-
-      // Unresolved contradiction check
-      if (claim.contradictions) {
-        for (const c of claim.contradictions) {
-          if (c.relationship === 'unresolved' || c.relationship === 'contradicts') {
-            errors.push(
-              `Domain error: Claim "${claim.id}" cannot be promoted with unresolved contradiction against claim "${c.claimId}".`
-            );
-          }
         }
       }
     }
@@ -158,6 +140,75 @@ export function validateResearchClaimDocument(doc: unknown): ValidationResult {
   for (const id of claimIds) {
     if (!visited.has(id)) {
       dfs(id, [id]);
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+export function validateModelingDecisionDocument(doc: unknown): ValidationResult {
+  const errors: string[] = [];
+
+  if (!doc || typeof doc !== 'object') {
+    return { valid: false, errors: ['Input modeling decision document must be a non-null JSON object.'] };
+  }
+
+  const validator = getModelingDecisionValidator();
+  const isSchemaValid = validator(doc);
+  if (!isSchemaValid && validator.errors) {
+    for (const err of validator.errors) {
+      const instancePath = err.instancePath || '/';
+      errors.push(`Schema error at ${instancePath}: ${err.message || 'invalid'}`);
+    }
+    return { valid: false, errors };
+  }
+
+  return { valid: true, errors: [] };
+}
+
+export function validateSemanticModelingDecisions(
+  researchDoc: ResearchClaimDocument,
+  modelingDoc: ModelingDecisionDocument
+): ValidationResult {
+  const errors: string[] = [];
+
+  const claimMap = new Map<string, typeof researchDoc.claims[0]>();
+  for (const claim of researchDoc.claims) {
+    claimMap.set(claim.id, claim);
+  }
+
+  for (const decision of modelingDoc.decisions) {
+    const claimId = decision.claimId;
+    const claim = claimMap.get(claimId);
+
+    if (!claim) {
+      errors.push(`Domain error: Modeling decision references missing claim ID "${claimId}".`);
+      continue;
+    }
+
+    if (decision.disposition === 'promote') {
+      // Check confidence
+      for (const ev of claim.evidence) {
+        if (ev.confidence === 'disputed' || ev.confidence === 'candidate') {
+          errors.push(
+            `Domain error: Claim "${claim.id}" cannot be promoted with confidence "${ev.confidence}". Promoted claims require confirmed or corroborated confidence.`
+          );
+        }
+      }
+
+      // Unresolved contradiction check
+      if (claim.contradictions) {
+        for (const c of claim.contradictions) {
+          if (c.relationship === 'unresolved' || c.relationship === 'contradicts') {
+            errors.push(
+              `Domain error: Claim "${claim.id}" cannot be promoted with unresolved contradiction against claim "${c.claimId}".`
+            );
+          }
+        }
+      }
     }
   }
 

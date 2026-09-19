@@ -38,13 +38,6 @@ export interface ResearchClaimEvidence {
 
 export type PromotionDecision = 'promote' | 'review' | 'ledger_only';
 
-export interface ResearchClaimModeling {
-  decision: PromotionDecision;
-  targetDomain?: string;
-  targetRepresentation?: string;
-  note?: string;
-}
-
 export type ContradictionRelationship = 'contradicts' | 'supersedes' | 'unresolved';
 
 export interface ResearchClaimContradiction {
@@ -67,7 +60,7 @@ export type ResearchClaimDomain =
   | 'floor-system'
   | 'other';
 
-export type ResearchClaimKind = 'event' | 'observation' | 'state' | 'capability' | 'ledger-only';
+export type ResearchClaimKind = 'event' | 'observation' | 'state';
 
 export interface ResearchClaimContent {
   summary: string;
@@ -80,10 +73,26 @@ export interface ResearchClaim {
   kind: ResearchClaimKind;
   claim: ResearchClaimContent;
   evidence: ResearchClaimEvidence[];
-  modeling: ResearchClaimModeling;
   unknowns?: string[];
   dependencies?: string[];
   contradictions?: ResearchClaimContradiction[];
+}
+
+export interface ModelingDecision {
+  claimId: string;
+  disposition: PromotionDecision;
+  target?: {
+    domain: string;
+    concept: string;
+  };
+  rationale: string;
+  resultingArtifacts?: string[];
+}
+
+export interface ModelingDecisionDocument {
+  $schema?: string;
+  schemaVersion: 'crawler-modeling/v1';
+  decisions: ModelingDecision[];
 }
 
 export interface ResearchClaimDocument {

@@ -1,4 +1,4 @@
-import type { ResearchClaimDocument } from './types/research.ts';
+import type { ResearchClaimDocument, ModelingDecisionDocument } from './types/research.ts';
 
 export interface ResearchClaimTraceMapping {
   claimId: string;
@@ -27,15 +27,26 @@ export interface CompiledResearchOutput {
   claimMappings: ResearchClaimTraceMapping[];
 }
 
-export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResearchOutput {
+export function compileResearchTrace(
+  researchDoc: ResearchClaimDocument,
+  modelingDoc: ModelingDecisionDocument
+): CompiledResearchOutput {
   const claimMappings: ResearchClaimTraceMapping[] = [];
 
   let promotedClaimCount = 0;
   let reviewClaimCount = 0;
   let ledgerOnlyClaimCount = 0;
 
-  for (const claim of doc.claims) {
-    const decision = claim.modeling.decision;
+  const decisionMap = new Map<string, typeof modelingDoc.decisions[0]>();
+  for (const decision of modelingDoc.decisions) {
+    decisionMap.set(decision.claimId, decision);
+  }
+
+  for (const claim of researchDoc.claims) {
+    const modelingDecision = decisionMap.get(claim.id);
+    if (!modelingDecision) continue;
+
+    const decision = modelingDecision.disposition;
 
     if (decision === 'promote') {
       promotedClaimCount++;
@@ -49,9 +60,9 @@ export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResea
       claimId: claim.id,
       domain: claim.domain,
       kind: claim.kind,
-      decision: claim.modeling.decision,
-      targetDomain: claim.modeling.targetDomain,
-      targetRepresentation: claim.modeling.targetRepresentation,
+      decision: modelingDecision.disposition,
+      targetDomain: modelingDecision.target?.domain,
+      targetRepresentation: modelingDecision.target?.concept,
       summary: claim.claim.summary,
       originatingClaimIds: [claim.id],
       evidence: JSON.parse(JSON.stringify(claim.evidence)),
@@ -60,8 +71,8 @@ export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResea
   }
 
   return {
-    storyId: doc.storyId,
-    floor: doc.floor,
+    storyId: researchDoc.storyId,
+    floor: researchDoc.floor,
     promotedClaimCount,
     reviewClaimCount,
     ledgerOnlyClaimCount,

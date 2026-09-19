@@ -164,46 +164,6 @@
         }
       }
     },
-    "modeling": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "decision"
-      ],
-      "properties": {
-        "decision": {
-          "enum": [
-            "promote",
-            "review",
-            "ledger_only"
-          ]
-        },
-        "targetDomain": {
-          "type": "string",
-          "minLength": 1
-        },
-        "targetRepresentation": {
-          "type": "string",
-          "minLength": 1
-        },
-        "note": {
-          "type": "string",
-          "maxLength": 1000
-        }
-      },
-      "if": {
-        "properties": {
-          "decision": {
-            "const": "promote"
-          }
-        }
-      },
-      "then": {
-        "required": [
-          "targetRepresentation"
-        ]
-      }
-    },
     "contradiction": {
       "type": "object",
       "additionalProperties": false,
@@ -236,8 +196,7 @@
         "domain",
         "kind",
         "claim",
-        "evidence",
-        "modeling"
+        "evidence"
       ],
       "properties": {
         "id": {
@@ -263,9 +222,7 @@
           "enum": [
             "event",
             "observation",
-            "state",
-            "capability",
-            "ledger-only"
+            "state"
           ]
         },
         "claim": {
@@ -291,9 +248,6 @@
           "items": {
             "$ref": "#/$defs/evidence"
           }
-        },
-        "modeling": {
-          "$ref": "#/$defs/modeling"
         },
         "unknowns": {
           "type": "array",

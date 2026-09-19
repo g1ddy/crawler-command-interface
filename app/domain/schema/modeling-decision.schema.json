@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/modeling-decision.v1.schema.json",
+  "title": "Crawler Modeling Decision v1",
+  "description": "Architectural modeling decisions for external research claims.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "decisions"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schemaVersion": {
+      "const": "crawler-modeling/v1"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    }
+  },
+  "$defs": {
+    "claimId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_.:-]+$"
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claimId",
+        "disposition",
+        "rationale"
+      ],
+      "properties": {
+        "claimId": {
+          "$ref": "#/$defs/claimId"
+        },
+        "disposition": {
+          "enum": [
+            "promote",
+            "review",
+            "ledger_only"
+          ]
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "domain",
+            "concept"
+          ],
+          "properties": {
+            "domain": {
+              "type": "string",
+              "minLength": 1
+            },
+            "concept": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resultingArtifacts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "disposition": {
+            "const": "promote"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "target"
+        ]
+      }
+    }
+  }
+}
