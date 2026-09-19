@@ -352,7 +352,7 @@ If adding research IDs requires a runtime contract change, #221 should produce a
 - dependency references;
 - schema validation;
 - semantic validation after schema validation;
-- deterministic compilation;
+- deterministic compiler;
 - provenance mapping from candidate output back to claims;
 - negative fixtures.
 
@@ -462,15 +462,17 @@ These should become architectural tests or review rules:
 | Immutable Claim IDs | **Retain** | Implemented as pattern `^[a-zA-Z0-9_.:-]+$` (e.g. `P3-PET-001`). Stable research identity independent of runtime event IDs. |
 | Source Registry | **Retain** | Implemented as `sources` array reusing CCI `sources.json` schema (source kinds, trust tiers, URLs, citations). |
 | Provenance References | **Retain** | Implemented as `evidence` array referencing `sourceId`, `locator`, and `confidence`. |
-| Claim Types / Classification | **Modify** | Split into orthogonal `domain` (`pet`, `crawler`, `inventory`, `equipment`, `quest`, `party`, `broadcast`, `achievement`, `skills`, `magic`, `floor-system`, `other`) and `kind` (`event`, `observation`, `state`, `capability`, `ledger-only`). |
-| Promotion Semantics | **Modify** | Implemented as `modeling.decision`: `promote` \| `review` \| `ledger_only`. Direct promotion requires `confirmed` or `corroborated` confidence, target representation, and no unresolved contradictions or violated unknowns. |
-| State Transition Field | **Discard** | Generic envelope uses `claim` (`summary`, `detail`) and optional `candidateRepresentation`. State transitions are expressed via candidate representations rather than a top-level transition field. |
-| Numerical Confidence Scoring | **Discard** | Retained qualitative `confidence` enum (`confirmed`, `corroborated`, `candidate`, `disputed`). Numerical scores like 0.83 imply false precision. |
-| Explicit Unknowns | **Retain & Enforce** | Implemented as `unknowns: string[]`. Semantic validator blocks promotion if `candidateRepresentation` invents concrete scalar values for declared unknown dimensions. |
-| Dependency References | **Retain & Validate** | Implemented as `dependencies: string[]`. Semantic validator detects broken references, self-references, and dependency cycles via DFS traversal. |
-| Contradiction Handling | **Retain Minimal** | Implemented as `contradictions`: `[{ claimId, relationship: "contradicts" | "supersedes" | "unresolved", note }]`. Promoted claims with unresolved contradictions fail validation. |
-| Deterministic Compiler | **Retain** | Implemented in `app/domain/research-compiler.ts`, mapping promoted claims to candidate events, observations, and catalog entries while attaching `originatingClaimIds`. |
-| Unrestricted Additional Properties | **Discard** | Document and claim envelopes strictly enforce `additionalProperties: false` except for `candidateRepresentation`, preventing schema drift. |
+| ClaimType / Kind | **Modify** | Split into orthogonal `domain` (`pet`, `crawler`, `inventory`, `equipment`, `quest`, `party`, `broadcast`, `achievement`, `skills`, `magic`, `floor-system`, `other`) and `kind` (`event`, `observation`, `state`, `capability`, `ledger-only`). |
+| Domain | **Retain & Expand** | Enums derived from Floor 1–3 research ledgers. |
+| Confidence | **Retain Qualitative** | Qualitative `confidence` enum (`confirmed`, `corroborated`, `candidate`, `disputed`). Decoupled from promotion decisions. Numerical truth scoring discarded. |
+| Promotion | **Modify** | Implemented as `modeling.decision`: `promote` \| `review` \| `ledger_only`. Requires `targetRepresentation` for `promote`. High confidence does not auto-promote. |
+| Dependencies | **Retain & Validate** | Implemented as `dependencies: string[]`. Semantic validator detects broken references, self-references, and dependency cycles via DFS traversal. |
+| Unknowns | **Retain & Enforce** | Implemented as `unknowns: string[]`. Explicit unknown boundaries are preserved on claim trace mappings. |
+| StateTransition Field | **Discard** | Removed from research envelope. The research schema records claim summaries, evidence, and modeling targets rather than runtime transition objects. |
+| CandidateRepresentation | **Discard** | Removed from v1 schema/types. Unrestricted object escape hatch replaced by explicit `modeling.targetDomain` and `modeling.targetRepresentation` references. |
+| Deterministic Compiler | **Modify** | Implemented in `app/domain/research-compiler.ts` as a pure research trace mapping and count compilation layer without generating fake runtime events. |
+| Semantic Validation | **Retain** | Implemented in `app/domain/research-validator.ts` separating structural JSON Schema validation (Ajv) from domain rules. |
+| Negative Fixtures | **Retain** | Included in `tests/unit/research-ingestion.test.mjs` testing duplicate IDs, missing sources, dependency cycles, unsafe promotion, and missing targets. |
 
 ## References
 

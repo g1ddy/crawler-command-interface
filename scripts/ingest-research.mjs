@@ -28,10 +28,7 @@ try {
   console.log(`  - Promoted claims: ${result.promotedClaimCount}`);
   console.log(`  - Review claims: ${result.reviewClaimCount}`);
   console.log(`  - Ledger-only claims: ${result.ledgerOnlyClaimCount}`);
-  console.log(`  - Candidate events compiled: ${result.compiledEvents.length}`);
-  console.log(`  - Candidate observations compiled: ${result.compiledObservations.length}`);
-  console.log(`  - Candidate catalog items compiled: ${result.compiledCatalogItems.length}`);
-  console.log(`  - Candidate catalog achievements compiled: ${result.compiledCatalogAchievements.length}\n`);
+  console.log(`  - Trace mappings compiled: ${result.claimMappings.length}\n`);
 
 } catch (err) {
   console.error(`\n[Research Ingestion Validation Failed]`);

@@ -1,90 +1,61 @@
 import type { ResearchClaimDocument } from './types/research.ts';
 
+export interface ResearchClaimTraceMapping {
+  claimId: string;
+  domain: string;
+  kind: string;
+  decision: string;
+  targetDomain?: string;
+  targetRepresentation?: string;
+  summary: string;
+  originatingClaimIds: string[];
+  evidence: Array<{
+    sourceId: string;
+    locator?: Record<string, unknown>;
+    confidence: string;
+    note?: string;
+  }>;
+  unknowns?: string[];
+}
+
 export interface CompiledResearchOutput {
   storyId: string;
   floor: number;
   promotedClaimCount: number;
-  ledgerOnlyClaimCount: number;
   reviewClaimCount: number;
-  compiledEvents: Array<Record<string, unknown>>;
-  compiledObservations: Array<Record<string, unknown>>;
-  compiledCatalogItems: Array<Record<string, unknown>>;
-  compiledCatalogAchievements: Array<Record<string, unknown>>;
-  claimMappings: Array<{
-    claimId: string;
-    domain: string;
-    decision: string;
-    targetRepresentation?: string;
-    originatingClaimIds: string[];
-  }>;
+  ledgerOnlyClaimCount: number;
+  claimMappings: ResearchClaimTraceMapping[];
 }
 
 export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResearchOutput {
-  const compiledEvents: Array<Record<string, unknown>> = [];
-  const compiledObservations: Array<Record<string, unknown>> = [];
-  const compiledCatalogItems: Array<Record<string, unknown>> = [];
-  const compiledCatalogAchievements: Array<Record<string, unknown>> = [];
-  const claimMappings: CompiledResearchOutput['claimMappings'] = [];
+  const claimMappings: ResearchClaimTraceMapping[] = [];
 
   let promotedClaimCount = 0;
-  let ledgerOnlyClaimCount = 0;
   let reviewClaimCount = 0;
+  let ledgerOnlyClaimCount = 0;
 
   for (const claim of doc.claims) {
     const decision = claim.modeling.decision;
 
-    if (decision === 'ledger_only') {
-      ledgerOnlyClaimCount++;
+    if (decision === 'promote') {
+      promotedClaimCount++;
     } else if (decision === 'review') {
       reviewClaimCount++;
-    } else if (decision === 'promote') {
-      promotedClaimCount++;
-
-      const cand = claim.candidateRepresentation
-        ? JSON.parse(JSON.stringify(claim.candidateRepresentation))
-        : {};
-
-      // Enrich candidate representation with provenance tracing
-      cand.originatingClaimIds = [claim.id];
-      if (!cand.evidence || !Array.isArray(cand.evidence) || cand.evidence.length === 0) {
-        cand.evidence = claim.evidence;
-      }
-
-      const target = claim.modeling.targetRepresentation || cand.type || cand.kind || 'unknown';
-
-      if (
-        cand.type ||
-        claim.kind === 'event' ||
-        target.toLowerCase().includes('event')
-      ) {
-        compiledEvents.push(cand);
-      } else if (
-        cand.kind === 'inventory-state' ||
-        cand.kind === 'crawler-condition' ||
-        cand.kind === 'crawler-attributes' ||
-        cand.kind === 'xp-progress' ||
-        cand.kind === 'broadcast-metrics' ||
-        cand.kind === 'floor-metrics' ||
-        cand.kind === 'equipment-state' ||
-        cand.kind === 'countdown-remaining' ||
-        claim.kind === 'observation'
-      ) {
-        compiledObservations.push(cand);
-      } else if (cand.category || target.toLowerCase().includes('item')) {
-        compiledCatalogItems.push(cand);
-      } else if (cand.reward || target.toLowerCase().includes('achievement')) {
-        compiledCatalogAchievements.push(cand);
-      } else {
-        compiledEvents.push(cand);
-      }
+    } else if (decision === 'ledger_only') {
+      ledgerOnlyClaimCount++;
     }
 
     claimMappings.push({
       claimId: claim.id,
       domain: claim.domain,
+      kind: claim.kind,
       decision: claim.modeling.decision,
+      targetDomain: claim.modeling.targetDomain,
       targetRepresentation: claim.modeling.targetRepresentation,
+      summary: claim.claim.summary,
       originatingClaimIds: [claim.id],
+      evidence: JSON.parse(JSON.stringify(claim.evidence)),
+      unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
     });
   }
 
@@ -92,12 +63,8 @@ export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResea
     storyId: doc.storyId,
     floor: doc.floor,
     promotedClaimCount,
-    ledgerOnlyClaimCount,
     reviewClaimCount,
-    compiledEvents,
-    compiledObservations,
-    compiledCatalogItems,
-    compiledCatalogAchievements,
+    ledgerOnlyClaimCount,
     claimMappings,
   };
 }

@@ -107,10 +107,10 @@ export function validateResearchClaimDocument(doc: unknown): ValidationResult {
         }
       }
 
-      // Check target representation presence
-      if (!claim.modeling.targetRepresentation && !claim.candidateRepresentation) {
+      // Check targetRepresentation
+      if (!claim.modeling.targetRepresentation) {
         errors.push(
-          `Domain error: Promoted claim "${claim.id}" must specify targetRepresentation or candidateRepresentation.`
+          `Domain error: Promoted claim "${claim.id}" must specify targetRepresentation.`
         );
       }
 
@@ -120,37 +120,6 @@ export function validateResearchClaimDocument(doc: unknown): ValidationResult {
           if (c.relationship === 'unresolved' || c.relationship === 'contradicts') {
             errors.push(
               `Domain error: Claim "${claim.id}" cannot be promoted with unresolved contradiction against claim "${c.claimId}".`
-            );
-          }
-        }
-      }
-
-      // Explicit unknown protection
-      if (claim.unknowns && claim.unknowns.length > 0 && claim.candidateRepresentation) {
-        const cand = claim.candidateRepresentation as Record<string, unknown>;
-        for (const unknownDim of claim.unknowns) {
-          if (
-            (unknownDim === 'exact_timestamp' || unknownDim === 'timestamp') &&
-            (cand.elapsedSeconds !== undefined || (cand.position && typeof cand.position === 'object' && (cand.position as Record<string, unknown>).elapsedSeconds !== undefined))
-          ) {
-            errors.push(
-              `Domain error: Promoted claim "${claim.id}" explicitly declares unknown timestamp, but candidateRepresentation provides concrete value.`
-            );
-          }
-          if (
-            (unknownDim === 'exact_quantity' || unknownDim === 'quantity') &&
-            cand.quantity !== undefined
-          ) {
-            const q = cand.quantity;
-            if (typeof q === 'number' || (typeof q === 'object' && q !== null && (q as Record<string, unknown>).known === true)) {
-              errors.push(
-                `Domain error: Promoted claim "${claim.id}" explicitly declares unknown quantity, but candidateRepresentation provides concrete value.`
-              );
-            }
-          }
-          if (cand[unknownDim] !== undefined && cand[unknownDim] !== null) {
-            errors.push(
-              `Domain error: Promoted claim "${claim.id}" explicitly declares unknown "${unknownDim}", but candidateRepresentation provides concrete value.`
             );
           }
         }

@@ -83,7 +83,6 @@ export interface ResearchClaim {
   modeling: ResearchClaimModeling;
   unknowns?: string[];
   dependencies?: string[];
-  candidateRepresentation?: Record<string, unknown>;
   contradictions?: ResearchClaimContradiction[];
 }
 

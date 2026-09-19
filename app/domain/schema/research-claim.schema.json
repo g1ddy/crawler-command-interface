@@ -190,6 +190,18 @@
           "type": "string",
           "maxLength": 1000
         }
+      },
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "promote"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "targetRepresentation"
+        ]
       }
     },
     "contradiction": {
@@ -297,10 +309,6 @@
           "items": {
             "$ref": "#/$defs/claimId"
           }
-        },
-        "candidateRepresentation": {
-          "type": "object",
-          "additionalProperties": true
         },
         "contradictions": {
           "type": "array",

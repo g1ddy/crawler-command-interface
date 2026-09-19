@@ -39,22 +39,10 @@
         }
       ],
       "modeling": {
-        "decision": "promote",
+        "decision": "review",
         "targetDomain": "pet",
-        "targetRepresentation": "PetAcquired"
-      },
-      "candidateRepresentation": {
-        "type": "PetAcquired",
-        "pet": {
-          "petId": "pet-mongo",
-          "species": "Velociraptor",
-          "origin": "dungeon-origin",
-          "classification": "pet-class",
-          "hostility": "non-hostile",
-          "bondState": "bonded",
-          "bondHolderCrawlerId": "crawler-donut"
-        },
-        "summary": "Mongo reaches Level 3."
+        "targetRepresentation": "PetProgression",
+        "note": "Evidence is confirmed, but pet level progression runtime model is under active design (#181)."
       }
     },
     {
@@ -81,19 +69,8 @@
       "modeling": {
         "decision": "promote",
         "targetDomain": "inventory",
-        "targetRepresentation": "ItemAcquired"
-      },
-      "candidateRepresentation": {
-        "type": "ItemAcquired",
-        "item": {
-          "instanceId": "inst-f3-mongo-tracking-collar",
-          "itemId": "item-mongo-tracking-collar",
-          "quantity": {
-            "known": true,
-            "value": 1
-          }
-        },
-        "summary": "Donut receives magical tracking collar for Mongo."
+        "targetRepresentation": "ItemAcquired",
+        "note": "Authorized item acquisition representation in raw floor events."
       }
     },
     {
@@ -117,19 +94,8 @@
       "modeling": {
         "decision": "promote",
         "targetDomain": "inventory",
-        "targetRepresentation": "ItemCrafted"
-      },
-      "candidateRepresentation": {
-        "type": "ItemCrafted",
-        "item": {
-          "instanceId": "inst-f3-carls-doomsday-scenario",
-          "itemId": "item-carls-doomsday-scenario",
-          "quantity": {
-            "known": true,
-            "value": 1
-          }
-        },
-        "summary": "Carl encapsulates active Soul Crystal creating Carl's Doomsday Scenario."
+        "targetRepresentation": "ItemCrafted",
+        "note": "Authorized item crafting representation in raw floor events."
       }
     },
     {
