@@ -1,7 +1,7 @@
 "use client";
 import { createElement } from "react";
 import { ArwesCompatibilityProbe } from "./compatibility/ArwesCompatibilityProbe.ts";
-import type { AuthorityCompositionModel } from "../../shell/authority/public.ts";
+import type { HudCompositionModel } from "../../shell/hud/public.ts";
 
 export interface ArwesProbeModel {
   crawlerName: string;
@@ -13,7 +13,7 @@ export interface ArwesProbeModel {
 export function ArwesPresentation({
   model,
 }: {
-  model: AuthorityCompositionModel | ArwesProbeModel;
+  model: HudCompositionModel | ArwesProbeModel;
 }) {
   const probeModel: ArwesProbeModel =
     "system" in model

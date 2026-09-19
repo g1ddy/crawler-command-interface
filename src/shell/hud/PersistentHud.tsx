@@ -5,7 +5,7 @@ import type {
   ProjectedObservationsState,
   ProjectedObservationValue,
 } from "../../../app/domain/types";
-import type { AuthorityCompositionModel } from "../authority/public";
+import type { HudCompositionModel } from "./public";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
 import { deriveEvidencePresentation } from "../../features/timeline/evidence/evidencePresentation";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
@@ -47,7 +47,7 @@ function Reading({
   );
 }
 
-/** Authority production HUD. Contextual presentation derived from Authority composition model. */
+/** Production HUD. Contextual presentation derived from renderer-neutral HUD composition model. */
 export function PersistentHud({
   composition,
   state,
@@ -59,7 +59,7 @@ export function PersistentHud({
   onInspectObservation,
   onNavigateToSequence,
 }: {
-  composition?: AuthorityCompositionModel;
+  composition?: HudCompositionModel;
   state: Pick<CrawlerState, "crawler" | "sequence" | "hotlist" | "skills">;
   observations: Pick<ProjectedObservationsState, "condition" | "xpProgress" | "broadcast">;
   countdown: ProjectedCountdownState | null;
@@ -85,12 +85,27 @@ export function PersistentHud({
   const canReturn = composition?.temporal.canReturnToLive ?? !isLive;
 
   const attention = composition?.attention;
+  const healthObs = composition?.vitals.health ?? observations.condition.currentHealth;
+  const manaObs = composition?.vitals.mana ?? observations.condition.currentMana;
+  const levelObs = composition?.vitals.level ?? observations.xpProgress.level;
+  const viewersObs = composition?.broadcast.viewers ?? observations.broadcast.viewers;
 
   return (
     <header className={styles.hud} aria-label="Crawler HUD" data-production-hud="authority">
       <div className={styles.masthead}>
         <div className={styles.identity}>
-          <span className={styles.kicker}>CRAWLER INTERFACE</span>
+          <div className={styles.identityHeader}>
+            <span className={styles.kicker}>CRAWLER INTERFACE</span>
+            {attention?.hasActiveAlerts && (
+              <span className={styles.alertIndicator}>⚠ ALERT</span>
+            )}
+            {attention && attention.totalNotificationsCount > 0 && (
+              <span className={styles.alertIndicator}>
+                {attention.totalNotificationsCount} NOTICE
+                {attention.totalNotificationsCount === 1 ? "" : "S"}
+              </span>
+            )}
+          </div>
           <h1>{crawlerName}</h1>
           <span>{crawlerClass}</span>
         </div>
@@ -125,54 +140,29 @@ export function PersistentHud({
         >
           <b>{liveMode ? "LIVE" : "REPLAY"}</b>
           <span>Sequence {currentSeq}</span>
+          <div className={styles.broadcastContext} aria-label="Broadcast context">
+            Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}
+          </div>
           {canReturn && <button onClick={onReturnToLive}>Return to live</button>}
         </div>
       </div>
 
-      {attention && (attention.totalNotificationsCount > 0 || attention.hasActiveAlerts) && (
-        <div className={styles.attentionBar} role="status" aria-label="System attention alerts">
-          {attention.hasActiveAlerts && (
-            <span className={`${styles.attentionBadge} ${styles.alertBadge}`}>
-              ⚠ SYSTEM ALERT ACTIVE
-            </span>
-          )}
-          {attention.totalNotificationsCount > 0 && (
-            <span className={styles.attentionBadge}>
-              {attention.totalNotificationsCount} NOTIFICATION
-              {attention.totalNotificationsCount === 1 ? "" : "S"}
-            </span>
-          )}
-          {attention.recentNotifications[0] && (
-            <span className={styles.attentionHeadline}>
-              Latest: {attention.recentNotifications[0].title} —{" "}
-              {attention.recentNotifications[0].message}
-            </span>
-          )}
-        </div>
-      )}
-
       <div className={styles.readings} aria-label="Observed telemetry">
         <Reading
           label="Health"
-          observation={observations.condition.currentHealth}
+          observation={healthObs}
           sequence={currentSeq}
           onInspect={onInspectObservation}
         />
         <Reading
           label="Mana"
-          observation={observations.condition.currentMana}
+          observation={manaObs}
           sequence={currentSeq}
           onInspect={onInspectObservation}
         />
         <Reading
           label="Level"
-          observation={observations.xpProgress.level}
-          sequence={currentSeq}
-          onInspect={onInspectObservation}
-        />
-        <Reading
-          label="Viewers"
-          observation={observations.broadcast.viewers}
+          observation={levelObs}
           sequence={currentSeq}
           onInspect={onInspectObservation}
         />

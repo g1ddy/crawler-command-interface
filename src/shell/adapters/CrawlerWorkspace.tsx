@@ -4,7 +4,7 @@ import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
 import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
-import { deriveAuthorityComposition } from "../authority/public.ts";
+import { deriveHudComposition } from "../hud/public.ts";
 import { availableRootViews } from "../navigation/capabilities";
 import { RootNavigation } from "../navigation/RootNavigation";
 import { ReplaySurface } from "../replay/ReplaySurface";
@@ -145,16 +145,14 @@ export function CrawlerWorkspace({
 
   const composition = useMemo(
     () =>
-      deriveAuthorityComposition({
+      deriveHudComposition({
         projectedState,
         projectedObservations,
         activeCountdown,
-        events,
         sequence: currentSeq,
         isLive,
         floorHudTitle,
-        capabilities,
-        activeView: resolvedView,
+        events,
       }),
     [
       projectedState,
@@ -164,8 +162,6 @@ export function CrawlerWorkspace({
       currentSeq,
       isLive,
       floorHudTitle,
-      capabilities,
-      resolvedView,
     ],
   );
 
