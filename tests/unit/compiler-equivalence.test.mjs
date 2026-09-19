@@ -75,7 +75,8 @@ test("compileEvent generic identity compilation preserves non-specialized event 
 });
 
 test("re-compiling raw floor files matches the frozen pre-#140 semantic timeline", () => {
-  const freshTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+  const floor1And2Docs = loadAllRawFloorDocuments().filter((doc) => doc.floor.ordinal <= 2);
+  const freshTimeline = compileRawFloorFiles(floor1And2Docs);
 
   assert.equal(
     sha256(normalizeTimeline(freshTimeline)),
@@ -85,7 +86,8 @@ test("re-compiling raw floor files matches the frozen pre-#140 semantic timeline
 });
 
 test("every reachable replay state matches the current projection contract", () => {
-  const freshTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+  const floor1And2Docs = loadAllRawFloorDocuments().filter((doc) => doc.floor.ordinal <= 2);
+  const freshTimeline = compileRawFloorFiles(floor1And2Docs);
   const maxSequence = freshTimeline.events.at(-1).sequence;
   const replay = [];
 

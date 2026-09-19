@@ -1,0 +1,17 @@
+{
+  "authoringVersion": "crawler-floor-raw/v1",
+  "storyId": "dungeon-crawler-carl",
+  "floor": {
+    "id": "floor-3",
+    "ordinal": 3,
+    "title": "Third Floor",
+    "book": 2,
+    "bookTitle": "Carl's Doomsday Scenario",
+    "continuity": "canonical",
+    "coverage": {
+      "kind": "curated-critical",
+      "statement": "Curated critical Floor 3 chronology and state needed to support replay-aware domain research. Routine combat, drops, temporary state, and unsourced intermediate events are intentionally omitted.",
+      "completeness": "partial"
+    }
+  }
+}
