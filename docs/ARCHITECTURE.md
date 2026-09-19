@@ -92,6 +92,17 @@ Conditional destinations become available only when projected state supports the
 
 When replay crosses back before a capability boundary, the destination disappears and an unavailable active destination resolves safely to Crawler.
 
+### Navigation and System Chrome Contract (`src/shell/navigation/public.ts`)
+
+The renderer-neutral navigation contract (`deriveNavigationContract` in `src/shell/navigation/navigation-contract.ts`) organizes navigation and system chrome across four explicit information architecture levels:
+
+1. **Always Present (System Identity & Critical Awareness)**: Persistent system identity (Crawler Name/Class), level collapse clock/urgency, and attention summary.
+2. **Contextual (Primary & Domain Navigation)**: Capability-filtered root navigation items (Crawler, Inventory, Skills, etc.) and feature-local controls.
+3. **Peripheral (Temporal Controls & System Tools)**: Replay transport, sequence scrubber, floor navigator, Return to Live application capability, and System Tools modal trigger.
+4. **On Demand (Inspectors & Overlays)**: Modal overlays (`StatInspectorModal`, `TelemetryInspectorModal`, `ItemProvenanceDrawer`, `CountdownEvidenceModal`, `FloorRules`, `TimelineHistory`, `TimelineEvidence`, `TimelineToolsModal`) managed with focus trapping and deterministic `Escape` handling via `ModalBoundary`.
+
+The contract enforces single ownership and capability separation: Return to Live is an application capability (`temporalControls.canReturnToLive`), not semantic HUD state, and is never embedded inside candidate HUD renderers.
+
 ## Replay, Timeline, and Floor ownership
 
 Replay is a persistent application capability and meaningful HUD state; Timeline is a detailed inspection feature family. Replay controls are application tooling and are owned by the replay surface rather than by the fictional HUD presentation.
