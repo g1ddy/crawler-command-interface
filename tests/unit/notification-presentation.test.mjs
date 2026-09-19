@@ -44,6 +44,9 @@ test("deriveNotificationsPresentation returns structured presentation model for 
   assert.equal(livePres.totalCount, 2);
   assert.equal(livePres.hasNotifications, true);
   assert.equal(livePres.badgeLabel, "2 NOTICES");
+  assert.equal(livePres.hasActiveAlerts, false);
+  assert.equal(livePres.latestNotificationTitle, "Dungeon notification");
+  assert.equal(livePres.latestNotificationMessage, "Reached level two");
 
   const replayNotifications = projectNotifications(events, 1);
   const replayPres = deriveNotificationsPresentation({ notifications: replayNotifications, sequence: 1 });
@@ -59,6 +62,22 @@ test("deriveNotificationsPresentation returns structured presentation model for 
   assert.ok(achievementNotice.formattedRewards);
   assert.equal(achievementNotice.formattedRewards[0].kind, "BOX");
   assert.match(achievementNotice.formattedRewards[0].detail, /bronze/);
+});
+
+test("deriveNotificationsPresentation accurately derives active alert status for warning and critical severity", () => {
+  const alertEvents = [
+    {
+      ...base,
+      id: "warn-1",
+      sequence: 1,
+      type: "AchievementUnlocked",
+      summary: "Warning notice",
+      notificationDelivery: { delivered: true, kind: "system", severity: "warning" },
+    },
+  ];
+  const notices = projectNotifications(alertEvents, 1);
+  const pres = deriveNotificationsPresentation({ notifications: notices, sequence: 1 });
+  assert.equal(pres.hasActiveAlerts, true);
 });
 
 test("deriveNotificationsPresentation handles empty events without fabricating notices", () => {

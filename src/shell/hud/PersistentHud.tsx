@@ -40,9 +40,12 @@ function Reading({
 }
 
 /**
- * Persistent HUD renderer for the current composition contract.
- * Replay remains visible as system state; sequence navigation and return-to-live
- * controls are intentionally owned by the peripheral replay surface.
+ * Persistent HUD renderer consuming the renderer-neutral composition contract.
+ *
+ * PROVISIONAL IMPLEMENTATION SLICE:
+ * The current masthead arrangement (identity/clock/mode/broadcast/readings) is an implementation slice
+ * and does not constitute a final settled product layout. Replay remains visible as system state,
+ * while sequence navigation and return-to-live actions retain application capability ownership.
  */
 export function PersistentHud({
   composition,
