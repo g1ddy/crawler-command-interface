@@ -180,8 +180,16 @@ export function validateSemanticModelingDecisions(
     claimMap.set(claim.id, claim);
   }
 
+  const decisionClaimIds = new Set<string>();
+
   for (const decision of modelingDoc.decisions) {
     const claimId = decision.claimId;
+
+    if (decisionClaimIds.has(claimId)) {
+      errors.push(`Domain error: Duplicate modeling decision for claim ID "${claimId}".`);
+    }
+    decisionClaimIds.add(claimId);
+
     const claim = claimMap.get(claimId);
 
     if (!claim) {
@@ -209,6 +217,12 @@ export function validateSemanticModelingDecisions(
           }
         }
       }
+    }
+  }
+
+  for (const claimId of claimMap.keys()) {
+    if (!decisionClaimIds.has(claimId)) {
+      errors.push(`Domain error: Research claim "${claimId}" has no corresponding modeling decision.`);
     }
   }
 

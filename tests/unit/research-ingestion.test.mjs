@@ -147,6 +147,42 @@ test('Research Ingestion Contract: rejects unsafe promotion with unresolved cont
 
 import { validateModelingDecisionDocument } from '../../app/domain/research-validator.ts';
 
+test('Research Ingestion Contract: rejects duplicate modeling decisions', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  const badModelingDoc = deepClone(modelingDoc);
+
+  badModelingDoc.decisions.push(badModelingDoc.decisions[0]);
+
+  const validation = validateSemanticModelingDecisions(doc, badModelingDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((err) => err.includes('Duplicate modeling decision for claim ID "P3-PET-001"')));
+});
+
+test('Research Ingestion Contract: rejects modeling decisions referencing missing claims', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  const badModelingDoc = deepClone(modelingDoc);
+
+  badModelingDoc.decisions[0].claimId = 'P3-UNKNOWN-999';
+
+  const validation = validateSemanticModelingDecisions(doc, badModelingDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((err) => err.includes('Modeling decision references missing claim ID "P3-UNKNOWN-999"')));
+});
+
+test('Research Ingestion Contract: rejects research claims with missing modeling decisions', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  const badModelingDoc = deepClone(modelingDoc);
+
+  badModelingDoc.decisions.splice(0, 1); // Remove decision for P3-PET-001
+
+  const validation = validateSemanticModelingDecisions(doc, badModelingDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((err) => err.includes('Research claim "P3-PET-001" has no corresponding modeling decision.')));
+});
+
 test('Research Ingestion Contract: requires targetRepresentation for promoted claims in schema', () => {
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
   const badModelingDoc = deepClone(modelingDoc);

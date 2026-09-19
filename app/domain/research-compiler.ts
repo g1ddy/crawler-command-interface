@@ -44,17 +44,26 @@ export function compileResearchTrace(
 
   for (const claim of researchDoc.claims) {
     const modelingDecision = decisionMap.get(claim.id);
-    if (!modelingDecision) continue;
+    if (!modelingDecision) {
+      throw new Error(`Compiler error: Research claim "${claim.id}" has no corresponding modeling decision. Ensure semantic validation runs before compilation.`);
+    }
 
     const decision = modelingDecision.disposition;
 
     if (decision === 'promote') {
+      if (!modelingDecision.target?.domain || !modelingDecision.target?.concept) {
+        throw new Error(`Compiler error: Promoted claim "${claim.id}" lacks target domain or concept.`);
+      }
       promotedClaimCount++;
     } else if (decision === 'review') {
       reviewClaimCount++;
     } else if (decision === 'ledger_only') {
       ledgerOnlyClaimCount++;
     }
+
+    // Enforce unknown safety check:
+    // The compiler checks if explicit unknowns conflict with provided values in actual projection (if generating artifacts).
+    // Here we just record the trace properly and maintain bounds.
 
     claimMappings.push({
       claimId: claim.id,
