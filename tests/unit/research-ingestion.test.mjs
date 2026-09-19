@@ -244,6 +244,7 @@ test('Research Ingestion Contract: preserves explicit unknowns in trace output',
 test('Research Ingestion Contract: CLI ingest script executes cleanly for valid fixture', () => {
   const scriptPath = path.resolve(process.cwd(), 'scripts/ingest-research.mjs');
   const output = execFileSync('node', [
+    '--experimental-strip-types',
     scriptPath,
     VALID_RESEARCH_FIXTURE,
     VALID_MODELING_FIXTURE
