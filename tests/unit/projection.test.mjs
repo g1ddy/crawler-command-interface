@@ -346,18 +346,13 @@ test("cross-floor item provenance is preserved when replaying later events", () 
   assert.equal(shirt.source, "First Floor");
 });
 
-test("the checked-in runtime fixture includes Floor 2 and Floor 3 and preserves Floor 1 inventory", () => {
-  assert.equal(compiledTimeline.floors?.length, 3);
+test("the checked-in runtime fixture includes Floor 2 and preserves Floor 1 inventory", () => {
+  assert.equal(compiledTimeline.floors?.length, 2);
   const floor2 = compiledTimeline.floors?.find((floor) => floor.ordinal === 2);
   assert.ok(floor2);
   const endOfFloor2 = projectState(compiledTimeline, floor2.endSequence);
   assert.ok(endOfFloor2.inventory.some((item) => item.itemId === "item-trollskin-shirt-of-pummeling"));
   assert.ok(endOfFloor2.inventory.some((item) => item.itemId === "item-enchanted-bigboi-boxers"));
-
-  const floor3 = compiledTimeline.floors?.find((floor) => floor.ordinal === 3);
-  assert.ok(floor3);
-  const endOfFloor3 = projectState(compiledTimeline, floor3.endSequence);
-  assert.ok(endOfFloor3.inventory.some((item) => item.itemId === "item-carls-doomsday-scenario"));
 });
 
 test("projection preserves unknown quantity state for Floor 2 proximity trigger", () => {

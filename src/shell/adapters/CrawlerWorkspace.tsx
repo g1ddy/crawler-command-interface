@@ -252,6 +252,7 @@ export function CrawlerWorkspace({
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
+            onReturnToLive={commands.returnToLive}
             onInspectObservation={setInspectObservation}
             onNavigateToSequence={commands.selectSequence}
           />

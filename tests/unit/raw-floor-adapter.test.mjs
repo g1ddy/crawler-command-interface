@@ -65,9 +65,8 @@ test("raw authoring rejects duplicated numeric order", () => {
 });
 
 test("raw adapter preserves every compiled timeline projection and countdown result", () => {
-  const allRaw = [rawFloor1, rawFloor2, loadRawFloorDocument("floor-3")];
-  const legacyTimeline = compileFloorFiles(allRaw.map((raw) => adaptRawFloorDocument(raw)));
-  const rawTimeline = compileRawFloorFiles(allRaw);
+  const legacyTimeline = compileFloorFiles([legacyFloor1, legacyFloor2]);
+  const rawTimeline = compileRawFloorFiles([rawFloor1, rawFloor2]);
 
   assert.deepEqual(stableLegacyProjection(rawTimeline), stableTimeline(legacyTimeline));
   assert.deepEqual(stableLegacyProjection(compiledTimeline), stableLegacyProjection(rawTimeline));

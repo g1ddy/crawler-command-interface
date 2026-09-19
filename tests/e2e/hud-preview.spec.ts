@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { openReplayContext } from "../helpers/replay";
 
 const pagesPath = "/crawler-command-interface/";
 
@@ -34,10 +33,6 @@ for (const query of ["", "?hud=unsupported"]) {
 
 test("live presentation switching in System Tools preserves session state and updates URL", async ({ page }) => {
   await page.goto(pagesPath);
-  await openReplayContext(page);
-
-  // Select "all" floor timeline scope so sequence 117 is within bounds
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
 
   // Enter replay mode by scrubbing slider to sequence 117 (where pet is acquired, not bonded)
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
@@ -91,7 +86,6 @@ test("live presentation switching in System Tools preserves session state and up
   // Close System Tools
   await page.getByRole("button", { name: "CANCEL" }).click();
 });
-
 
 test("authority-arwes presentation is URL-selected and renders compatibility probe", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
@@ -156,7 +150,7 @@ test("captures research screenshot artifact for authority-arwes presentation pro
   await page.getByTestId("motion-mode-deterministic").click();
   await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
 
-  // Capture screenshot of the probe surface for research evidence
+  // Capture screenshot of the probe surface for research evidence in test output directory
   await probe.screenshot({
     path: testInfo.outputPath("arwes-authority-poc.png"),
   });

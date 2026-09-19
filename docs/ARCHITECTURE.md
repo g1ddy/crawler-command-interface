@@ -94,7 +94,7 @@ When replay crosses back before a capability boundary, the destination disappear
 
 ## Replay, Timeline, and Floor ownership
 
-Replay is a persistent application capability and meaningful HUD state; Timeline is a detailed inspection feature family. Replay controls are application tooling and are owned by the replay surface rather than by the fictional HUD presentation.
+Replay is a persistent application capability; Timeline is a detailed inspection feature family.
 
 ### Shell replay (`src/shell/replay/`)
 
@@ -105,8 +105,6 @@ Owns globally available:
 - sequence scrubber and previous/next stepping;
 - Return to Live;
 - entry points to Floor Rules, Timeline History, Timeline Evidence, and countdown evidence.
-
-The HUD may expose compact Live/Replay state, but sequence navigation and Return to Live remain peripheral application controls. Candidate HUD renderers must not turn those controls into fictional Crawler Menu semantics.
 
 ### Timeline feature (`src/features/timeline/`)
 

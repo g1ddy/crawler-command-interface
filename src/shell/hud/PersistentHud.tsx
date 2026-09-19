@@ -25,11 +25,19 @@ function Reading({
 }) {
   const evidence = deriveEvidencePresentation(observation, sequence);
   return (
-    <div className={styles.reading} role="group" aria-label={`${label} reading`} data-evidence={evidence.state}>
+    <div
+      className={styles.reading}
+      role="group"
+      aria-label={`${label} reading`}
+      data-evidence={evidence.state}
+    >
       <span>{label}</span>
       <strong>{observation?.value.toLocaleString() ?? "—"}</strong>
       {observation ? (
-        <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>
+        <button
+          onClick={() => onInspect(observation)}
+          aria-label={`Inspect ${label} evidence`}
+        >
           {evidence.label}
         </button>
       ) : (
@@ -39,11 +47,7 @@ function Reading({
   );
 }
 
-/**
- * Persistent HUD renderer for the current composition contract.
- * Replay remains visible as system state; sequence navigation and return-to-live
- * controls are intentionally owned by the peripheral replay surface.
- */
+/** Persistent HUD presentation. Contextual presentation derived from renderer-neutral HUD composition model. */
 export function PersistentHud({
   composition,
   state,
@@ -51,6 +55,7 @@ export function PersistentHud({
   countdown,
   floorTitle,
   isLive,
+  onReturnToLive,
   onInspectObservation,
   onNavigateToSequence,
 }: {
@@ -60,18 +65,24 @@ export function PersistentHud({
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
   isLive: boolean;
+  onReturnToLive: () => void;
   onInspectObservation: (reading: ProjectedObservationValue) => void;
   onNavigateToSequence: (sequence: number) => void;
 }) {
   const [showEvidence, setShowEvidence] = useState(false);
 
   const crawlerName = composition?.system.crawlerName ?? state.crawler.name;
-  const crawlerClass = composition?.system.crawlerClass ?? (state.crawler.class || "Class unknown");
+  const crawlerClass =
+    composition?.system.crawlerClass ?? (state.crawler.class || "Class unknown");
   const title = composition?.system.floorTitle ?? floorTitle;
   const currentSeq = composition?.system.sequence ?? state.sequence;
   const activeCountdown = composition?.urgency.activeCountdown ?? countdown;
-  const formattedClock = composition?.urgency.formattedLabel ?? activeCountdown?.formattedLabel ?? "Collapse time unavailable";
+  const formattedClock =
+    composition?.urgency.formattedLabel ??
+    (activeCountdown?.formattedLabel ?? "Collapse time unavailable");
   const liveMode = composition?.temporal.isLive ?? isLive;
+  const canReturn = composition?.temporal.canReturnToLive ?? !isLive;
+
   const attention = composition?.attention;
   const healthObs = composition?.vitals.health ?? observations.condition.currentHealth;
   const manaObs = composition?.vitals.mana ?? observations.condition.currentMana;
@@ -84,45 +95,84 @@ export function PersistentHud({
         <div className={styles.identity}>
           <div className={styles.identityHeader}>
             <span className={styles.kicker}>CRAWLER INTERFACE</span>
-            {attention?.hasActiveAlerts && <span className={styles.alertIndicator}>⚠ ALERT</span>}
+            {attention?.hasActiveAlerts && (
+              <span className={styles.alertIndicator}>⚠ ALERT</span>
+            )}
             {attention && attention.totalNotificationsCount > 0 && (
               <span className={styles.alertIndicator}>
-                {attention.totalNotificationsCount} NOTICE{attention.totalNotificationsCount === 1 ? "" : "S"}
+                {attention.totalNotificationsCount} NOTICE
+                {attention.totalNotificationsCount === 1 ? "" : "S"}
               </span>
             )}
           </div>
           <h1>{crawlerName}</h1>
           <span>{crawlerClass}</span>
         </div>
-        <div className={styles.clock} data-stale={activeCountdown?.isStale || undefined}>
+        <div
+          className={styles.clock}
+          data-stale={activeCountdown?.isStale || undefined}
+        >
           <span className={styles.kicker}>{title}</span>
           <strong>{formattedClock}</strong>
           {activeCountdown ? (
-            <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
-              {activeCountdown.isStale ? "Last known" : activeCountdown.status === "estimated" ? "Estimated" : "Observed"}
-              {" · "}{activeCountdown.lifecycleStatus} · Evidence
+            <button
+              onClick={() => setShowEvidence(true)}
+              aria-label="Inspect collapse clock evidence"
+            >
+              {activeCountdown.isStale
+                ? "Last known"
+                : activeCountdown.status === "estimated"
+                ? "Estimated"
+                : "Observed"}
+              {" · "}
+              {activeCountdown.lifecycleStatus} · Evidence
             </button>
           ) : (
             <small>No sourced countdown</small>
           )}
         </div>
-        <div className={styles.mode} data-testid="hud-audience-mode" data-mode={liveMode ? "live" : "replay"}>
+        <div
+          className={styles.mode}
+          data-testid="hud-audience-mode"
+          data-mode={liveMode ? "live" : "replay"}
+        >
           <b>{liveMode ? "LIVE" : "REPLAY"}</b>
+          <span>Sequence {currentSeq}</span>
           <div className={styles.broadcastContext} aria-label="Broadcast context">
             Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}
           </div>
+          {canReturn && <button onClick={onReturnToLive}>Return to live</button>}
         </div>
       </div>
 
       <div className={styles.readings} aria-label="Observed telemetry">
-        <Reading label="Health" observation={healthObs} sequence={currentSeq} onInspect={onInspectObservation} />
-        <Reading label="Mana" observation={manaObs} sequence={currentSeq} onInspect={onInspectObservation} />
-        <Reading label="Level" observation={levelObs} sequence={currentSeq} onInspect={onInspectObservation} />
+        <Reading
+          label="Health"
+          observation={healthObs}
+          sequence={currentSeq}
+          onInspect={onInspectObservation}
+        />
+        <Reading
+          label="Mana"
+          observation={manaObs}
+          sequence={currentSeq}
+          onInspect={onInspectObservation}
+        />
+        <Reading
+          label="Level"
+          observation={levelObs}
+          sequence={currentSeq}
+          onInspect={onInspectObservation}
+        />
       </div>
       <Hotlist hotlist={state.hotlist} skills={state.skills} />
       {showEvidence && activeCountdown && (
         <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}>
-          <CountdownEvidenceModal countdown={activeCountdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} />
+          <CountdownEvidenceModal
+            countdown={activeCountdown}
+            onClose={() => setShowEvidence(false)}
+            onNavigateToSequence={onNavigateToSequence}
+          />
         </ModalBoundary>
       )}
     </header>

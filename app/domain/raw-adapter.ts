@@ -61,17 +61,6 @@ export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerF
     referencesByCountdown.set(observation.countdownId, references);
   }
 
-  const countdowns = (rawDoc.countdowns || [])
-    .map((countdown) => ({
-      ...countdown,
-      references: (referencesByCountdown.get(countdown.id) || []).sort(
-        (left, right) =>
-          (eventIndexById.get(left.anchorEventId) ?? Number.MAX_SAFE_INTEGER) -
-          (eventIndexById.get(right.anchorEventId) ?? Number.MAX_SAFE_INTEGER),
-      ),
-    }))
-    .filter((countdown) => countdown.references.length > 0);
-
   return {
     $schema: 'https://g1ddy.github.io/crawler-command-interface/schema/crawler-floor.v2.schema.json',
     authoringVersion: 'crawler-floor/v2',
@@ -79,7 +68,14 @@ export function adaptRawFloorDocument(rawDoc: RawCrawlerFloorDocument): CrawlerF
     floor: rawDoc.floor,
     sources: rawDoc.sources,
     catalog: rawDoc.catalog,
-    ...(countdowns.length > 0 ? { countdowns } : {}),
+    countdowns: (rawDoc.countdowns || []).map((countdown) => ({
+      ...countdown,
+      references: (referencesByCountdown.get(countdown.id) || []).sort(
+        (left, right) =>
+          (eventIndexById.get(left.anchorEventId) ?? Number.MAX_SAFE_INTEGER) -
+          (eventIndexById.get(right.anchorEventId) ?? Number.MAX_SAFE_INTEGER),
+      ),
+    })),
     events: rawDoc.events.map((event, index) => ({ ...event, order: index + 1 })),
   };
 }

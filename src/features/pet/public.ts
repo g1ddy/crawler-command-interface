@@ -5,5 +5,4 @@ export type {
   DerivedPetItem,
   PetHostilityState,
   PetBondState,
-  PetPresentationStatus,
 } from "./pet-presentation.ts";

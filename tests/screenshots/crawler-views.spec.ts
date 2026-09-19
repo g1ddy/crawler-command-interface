@@ -55,7 +55,6 @@ test("export early replay before conditional canon capabilities", async ({ page 
 });
 
 test("export replay at the sourced Pet bond boundary", async ({ page }) => {
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const bond = compiledTimeline.events.find(event => event.type === "PetBonded");
   if (!bond) throw new Error("Missing canonical Pet bond");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill(String(bond.sequence));
@@ -66,7 +65,7 @@ test("export replay at the sourced Pet bond boundary", async ({ page }) => {
 
 test("export top-level Crawler tab", async ({ page }) => { await selectCrawlerSubTab(page, "STATS"); await expect(page.getByText("PLAYER ATTRIBUTES", { exact: true })).toBeVisible(); await capture(page, "crawler"); });
 test("export top-level Inventory tab", async ({ page }) => { await selectTopLevelTab(page, "INVENTORY"); await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/on/); await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible(); await capture(page, "inventory"); });
-test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => { await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all"); await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13"); await selectTopLevelTab(page, "INVENTORY"); await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click(); await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible(); await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible(); await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible(); await capture(page, "awards"); });
+test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => { await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click(); await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13"); await selectTopLevelTab(page, "INVENTORY"); await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click(); await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible(); await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible(); await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible(); await capture(page, "awards"); });
 test("export top-level Skills tab", async ({ page }) => { await selectTopLevelTab(page, "SKILLS"); await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible(); await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible(); await capture(page, "skills"); });
 test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => { await seedHotlistSkillsScenario(page); await selectTopLevelTab(page, "SKILLS"); await page.getByRole("button", { name: "Assign to hotlist slot 1", exact: true }).click(); await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible(); await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1"); });
 
@@ -101,7 +100,7 @@ test("Possessions replay boundary and mutation gating: disables actions when scr
 
 test("root navigation follows the real Party capability boundary during replay", async ({ page }) => {
   const navigation = page.getByRole("navigation", { name: "Main Navigation" });
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  await page.getByRole("button", { name: "◄ PREV FLOOR", exact: true }).click();
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("2");
   await expect(navigation.getByRole("button", { name: "PARTY", exact: true })).toHaveCount(0);

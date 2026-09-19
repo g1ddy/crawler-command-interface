@@ -26,7 +26,6 @@ function eventSequence(id: string) {
 }
 
 const floor1EndSequence = floorEndSequence(1);
-const floor2EndSequence = floorEndSequence(2);
 const floor2SystemPatchSequence = eventSequence("evt-f2-system-patch");
 
 test.beforeEach(async ({ page }) => {
@@ -58,10 +57,6 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
 
   await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
   await expect(floors).toHaveValue("2");
-  await expect(sequenceHeading(page)).toContainText(`SEQ #${floor2EndSequence}`);
-
-  await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
-  await expect(floors).toHaveValue("3");
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
 });
 

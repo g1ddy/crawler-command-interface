@@ -7,7 +7,7 @@ import { derivePetPresentation } from "../../src/features/pet/public.ts";
 test("derivePetPresentation handles empty or undefined pets array", () => {
   const empty = derivePetPresentation({ pets: undefined });
   assert.equal(empty.hasPets, false);
-  assert.equal(empty.status, "known-empty");
+  assert.equal(empty.status, "unavailable");
   assert.equal(empty.petCount, 0);
   assert.equal(empty.badgeLabel, "NO PETS");
   assert.deepEqual(empty.pets, []);

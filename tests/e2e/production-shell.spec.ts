@@ -47,6 +47,22 @@ test("early HUD readings remain unknown rather than displaying causal defaults",
   }
 });
 
+test("Persistent HUD presents contextual system presence across Live and Replay", async ({ page }) => {
+  const hud = page.locator('[data-hud-composition="persistent"]');
+  await expect(hud).toBeVisible();
+  await expect(hud.locator("h1")).toContainText("CARL");
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
+
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("117");
+
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+  await expect(page.getByRole("button", { name: "Return to live", exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "Return to live", exact: true }).click();
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
+});
+
 test("System Tools traps focus, blocks navigation shortcuts, and restores its trigger", async ({ page }) => {
   const trigger = page.getByRole("button", { name: "Open data tools" });
   await trigger.click();

@@ -2,7 +2,6 @@ import type { Pet } from "../../../app/domain/types.ts";
 
 export type PetHostilityState = "hostile" | "non-hostile" | "unknown";
 export type PetBondState = "bonded" | "unbonded" | "unknown";
-export type PetPresentationStatus = "not-established" | "established" | "known-empty" | "unknown" | "unavailable";
 
 export interface DerivedPetItem {
   petId: string;
@@ -33,17 +32,17 @@ export interface DerivedPetPresentation {
   hasPets: boolean;
   petCount: number;
   badgeLabel: string;
-  status: PetPresentationStatus;
+  status: "established" | "unavailable";
   pets: DerivedPetItem[];
 }
 
 /** Derives the narrow Pet surface from the selected temporal Pet state. */
 export function derivePetPresentation({
-  pets,
+  pets = [],
 }: {
   pets?: Pet[];
 }): DerivedPetPresentation {
-  const activePets = pets ?? [];
+  const activePets = pets || [];
   const petCount = activePets.length;
   const hasPets = petCount > 0;
   const badgeLabel = hasPets
@@ -53,29 +52,55 @@ export function derivePetPresentation({
   const derivedPets: DerivedPetItem[] = activePets.map((pet) => {
     const displayName = pet.name ?? pet.species ?? "UNKNOWN PET";
     const hasExplicitName = Boolean(pet.name);
+
     const rawHostility = pet.hostility as string | undefined;
     let hostilityState: PetHostilityState = "unknown";
     let hostilityLabel = "UNKNOWN";
-    if (rawHostility === "hostile") { hostilityState = "hostile"; hostilityLabel = "HOSTILE"; }
-    else if (rawHostility === "non-hostile") { hostilityState = "non-hostile"; hostilityLabel = "NON-HOSTILE"; }
-    else if (typeof rawHostility === "string" && rawHostility.trim()) hostilityLabel = rawHostility.toUpperCase();
+
+    if (rawHostility === "hostile") {
+      hostilityState = "hostile";
+      hostilityLabel = "HOSTILE";
+    } else if (rawHostility === "non-hostile") {
+      hostilityState = "non-hostile";
+      hostilityLabel = "NON-HOSTILE";
+    } else if (typeof rawHostility === "string" && rawHostility.trim().length > 0) {
+      hostilityLabel = rawHostility.toUpperCase();
+    }
 
     const rawBondState = pet.bondState as string | undefined;
     let bondState: PetBondState = "unknown";
     let bondStateLabel = "UNKNOWN";
-    if (rawBondState === "bonded") { bondState = "bonded"; bondStateLabel = "BONDED"; }
-    else if (rawBondState === "unbonded") { bondState = "unbonded"; bondStateLabel = "UNBONDED"; }
-    else if (typeof rawBondState === "string" && rawBondState.trim()) bondStateLabel = rawBondState.toUpperCase();
+
+    if (rawBondState === "bonded") {
+      bondState = "bonded";
+      bondStateLabel = "BONDED";
+    } else if (rawBondState === "unbonded") {
+      bondState = "unbonded";
+      bondStateLabel = "UNBONDED";
+    } else if (typeof rawBondState === "string" && rawBondState.trim().length > 0) {
+      bondStateLabel = rawBondState.toUpperCase();
+    }
 
     let bondHolderLabel = "UNKNOWN";
-    if (pet.bondHolderCrawlerId) bondHolderLabel = pet.bondHolderCrawlerId;
-    else if (bondState === "unbonded") bondHolderLabel = "NONE (UNBONDED)";
-    else if (bondState === "bonded") bondHolderLabel = "UNKNOWN (BONDED)";
+    if (pet.bondHolderCrawlerId) {
+      bondHolderLabel = pet.bondHolderCrawlerId;
+    } else if (bondState === "unbonded") {
+      bondHolderLabel = "NONE (UNBONDED)";
+    } else if (bondState === "bonded") {
+      bondHolderLabel = "UNKNOWN (BONDED)";
+    } else {
+      bondHolderLabel = "UNKNOWN";
+    }
 
     const origin = pet.origin ?? "unknown";
-    const originValueFormatted = typeof pet.origin === "string" && pet.origin.trim() ? pet.origin.toUpperCase() : "UNKNOWN";
+    const originValueFormatted = typeof pet.origin === "string" && pet.origin.trim().length > 0
+      ? pet.origin.toUpperCase()
+      : "UNKNOWN";
+
     const classification = pet.classification ?? "unknown";
-    const classificationValueFormatted = typeof pet.classification === "string" && pet.classification.trim() ? pet.classification.toUpperCase() : "UNKNOWN";
+    const classificationValueFormatted = typeof pet.classification === "string" && pet.classification.trim().length > 0
+      ? pet.classification.toUpperCase()
+      : "UNKNOWN";
 
     return {
       petId: pet.petId ?? "unknown-pet-id",
@@ -98,7 +123,9 @@ export function derivePetPresentation({
       level: pet.level,
       formattedLevel: pet.level !== undefined ? `Level ${pet.level}` : undefined,
       deployment: pet.deployment,
-      formattedDeployment: typeof pet.deployment === "string" && pet.deployment.trim() ? pet.deployment.toUpperCase() : undefined,
+      formattedDeployment: typeof pet.deployment === "string" && pet.deployment.trim().length > 0
+        ? pet.deployment.toUpperCase()
+        : undefined,
       conditionStatus: pet.condition?.status,
     };
   });
@@ -107,7 +134,7 @@ export function derivePetPresentation({
     hasPets,
     petCount,
     badgeLabel,
-    status: hasPets ? "established" : "known-empty",
+    status: hasPets ? "established" : "unavailable",
     pets: derivedPets,
   };
 }

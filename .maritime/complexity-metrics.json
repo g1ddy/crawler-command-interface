@@ -88,8 +88,8 @@
     "scanned": true
   },
   "app/domain/raw-adapter.ts": {
-    "complexity": 7,
-    "loc": 86,
+    "complexity": 6,
+    "loc": 82,
     "instability": 0.33,
     "fanIn": 2,
     "fanOut": 1,

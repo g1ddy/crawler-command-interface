@@ -488,27 +488,5 @@
     "title": "You Found Stairs",
     "description": "Found a stairwell down.",
     "reward": []
-  },
-  {
-    "id": "achievement-ultimate-extreme-power",
-    "title": "Ultimate Extreme Power!",
-    "recipient": "carl",
-    "description": "Unlocked when Carl inherits the town Magistrate title after destroying the Magistrate's office.",
-    "reward": []
-  },
-  {
-    "id": "achievement-bandit",
-    "title": "Bandit",
-    "recipient": "party",
-    "description": "Awarded for the unusual Soul Crystal rescue outcome on Floor 3.",
-    "reward": [
-      {
-        "kind": "box",
-        "boxType": "celestial",
-        "rarity": "celestial",
-        "amount": 83,
-        "description": "83 Celestial-quality boxes (vetoed by Borant)"
-      }
-    ]
   }
 ]
