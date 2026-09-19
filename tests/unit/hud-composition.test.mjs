@@ -1,9 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
-  deriveHudComposition,
-  URGENT_COLLAPSE_THRESHOLD_SECONDS,
-} from "../../src/shell/hud/public.ts";
+import { deriveHudComposition } from "../../src/shell/hud/public.ts";
 import { createInitialState, projectObservations } from "../../app/domain/projection.ts";
 import { derivePartyPresentation } from "../../src/features/party/public.ts";
 import { derivePetPresentation } from "../../src/features/pet/public.ts";
@@ -20,7 +17,6 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
     sequence: 0,
     isLive: true,
     floorHudTitle: "FLOOR 1",
-    events: [],
   });
 
   assert.equal(composition.system.crawlerName, state.crawler.name);
@@ -32,7 +28,6 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
   assert.equal(composition.temporal.canReturnToLive, false);
 
   assert.equal(composition.urgency.activeCountdown, null);
-  assert.equal(composition.urgency.hasUrgentCollapse, false);
 
   assert.equal(composition.attention.totalNotificationsCount, 0);
   assert.equal(composition.attention.hasActiveAlerts, false);
@@ -41,12 +36,12 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
   assert.equal(composition.broadcast.viewers, undefined);
 });
 
-test("deriveHudComposition evaluates 300s collapse urgency threshold policy", () => {
+test("deriveHudComposition exposes active countdown state directly without invented urgency policies", () => {
   const state = createInitialState();
   const doc = { observations: [], events: [] };
   const observations = projectObservations(doc, 10);
 
-  const nonUrgentCountdown = {
+  const activeCountdown = {
     countdownId: "collapse-01",
     label: "LEVEL COLLAPSE",
     formattedLabel: "LEVEL COLLAPSE IN 10:00",
@@ -58,33 +53,18 @@ test("deriveHudComposition evaluates 300s collapse urgency threshold policy", ()
     targetSequence: 200,
   };
 
-  const compositionNonUrgent = deriveHudComposition({
+  const composition = deriveHudComposition({
     projectedState: state,
     projectedObservations: observations,
-    activeCountdown: nonUrgentCountdown,
+    activeCountdown,
     sequence: 10,
     isLive: true,
     floorHudTitle: "FLOOR 1",
   });
 
-  assert.equal(compositionNonUrgent.urgency.hasUrgentCollapse, false);
-
-  const urgentCountdown = {
-    ...nonUrgentCountdown,
-    formattedLabel: "LEVEL COLLAPSE IN 04:59",
-    remainingSeconds: URGENT_COLLAPSE_THRESHOLD_SECONDS - 1,
-  };
-
-  const compositionUrgent = deriveHudComposition({
-    projectedState: state,
-    projectedObservations: observations,
-    activeCountdown: urgentCountdown,
-    sequence: 10,
-    isLive: true,
-    floorHudTitle: "FLOOR 1",
-  });
-
-  assert.equal(compositionUrgent.urgency.hasUrgentCollapse, true);
+  assert.deepEqual(composition.urgency.activeCountdown, activeCountdown);
+  assert.equal(composition.urgency.formattedLabel, "LEVEL COLLAPSE IN 10:00");
+  assert.equal(composition.urgency.lifecycleStatus, "active");
 });
 
 test("Party and Pet feature presentation contracts preserve semantic truth boundaries", () => {

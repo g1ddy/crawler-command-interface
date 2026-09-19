@@ -1,6 +1,5 @@
 export {
   deriveHudComposition,
-  URGENT_COLLAPSE_THRESHOLD_SECONDS,
   type HudCompositionModel,
   type HudSystemIdentity,
   type HudTemporalContext,

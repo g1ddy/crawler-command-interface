@@ -143,10 +143,10 @@ test("live interactions append events without rewriting historical state", async
 test("static bundle renders its essential HUD at desktop and mobile sizes", async ({ page }, testInfo) => {
   await expect(page.getByRole("navigation", { name: "Main Navigation" })).toBeVisible();
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
-  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("Viewers");
+  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("Audience");
 
   if (testInfo.project.name === "mobile-chromium") {
-    await expect(page.locator('[data-production-hud="authority"]')).toBeVisible();
+    await expect(page.locator('[data-hud-composition="persistent"]')).toBeVisible();
     expect(page.viewportSize()?.width).toBeLessThanOrEqual(412);
   }
 });

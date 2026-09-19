@@ -26,7 +26,7 @@ for (const query of ["", "?hud=unsupported"]) {
   test(`production HUD is the safe fallback for ${query || "a missing parameter"}`, async ({ page }) => {
     await page.goto(`${pagesPath}${query}`);
     await expect(page.locator("[data-hud-presentation]")).toHaveCount(0);
-    await expect(page.locator('[data-production-hud="authority"]')).toBeVisible();
+    await expect(page.locator('[data-hud-composition="persistent"]')).toBeVisible();
     await expect(page.locator(".system-hud")).toHaveCount(0);
   });
 }

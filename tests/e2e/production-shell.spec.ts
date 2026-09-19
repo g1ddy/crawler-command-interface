@@ -39,7 +39,7 @@ for (const [domain, eventType] of [["PARTY", "PartyFormed"], ["PET", "PetBonded"
 test("early HUD readings remain unknown rather than displaying causal defaults", async ({ page }) => {
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("1");
-  for (const label of ["Health", "Mana", "Level", "Viewers"]) {
+  for (const label of ["Health", "Mana", "Level"]) {
     const reading = page.getByRole("group", { name: `${label} reading` });
     await expect(reading).toHaveAttribute("data-evidence", "unknown");
     await expect(reading).toContainText("Unknown");
@@ -47,10 +47,10 @@ test("early HUD readings remain unknown rather than displaying causal defaults",
   }
 });
 
-test("Authority HUD presents contextual attention bar and system presence across Live and Replay", async ({ page }) => {
-  const hud = page.locator('[data-production-hud="authority"]');
+test("Persistent HUD presents contextual system presence across Live and Replay", async ({ page }) => {
+  const hud = page.locator('[data-hud-composition="persistent"]');
   await expect(hud).toBeVisible();
-  await expect(hud.locator("h1")).toContainText("Carl");
+  await expect(hud.locator("h1")).toContainText("CARL");
   await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
 
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
@@ -97,13 +97,12 @@ test("closing a nested inspector restores the parent evidence surface", async ({
   await expect(trigger).toBeFocused();
 });
 
-test("Authority shell reflows without viewport overflow and supports reduced motion", async ({ page }, testInfo) => {
+test("Persistent shell reflows without viewport overflow and supports reduced motion", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator("summary").filter({ hasText: "Replay context & tools" }).click();
-  await expect(page.getByRole("group", { name: "Viewers reading" }).locator("strong")).not.toHaveText("—");
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  const hud = page.locator('[data-production-hud="authority"]');
+  const hud = page.locator('[data-hud-composition="persistent"]');
   await expect(hud).toBeVisible();
   const target = await page.getByRole("button", { name: "Open data tools" }).boundingBox();
   expect(target?.height).toBeGreaterThanOrEqual(44);

@@ -5,6 +5,8 @@ import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
 import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
 import { deriveHudComposition } from "../hud/public.ts";
+import { projectNotifications } from "../../../app/domain/notifications.ts";
+import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import { availableRootViews } from "../navigation/capabilities";
 import { RootNavigation } from "../navigation/RootNavigation";
 import { ReplaySurface } from "../replay/ReplaySurface";
@@ -143,6 +145,22 @@ export function CrawlerWorkspace({
 
   const usesConceptHud = presentationChoice !== "production";
 
+  const notificationsSummary = useMemo(() => {
+    const raw = projectNotifications(events, currentSeq);
+    const presentation = deriveNotificationsPresentation({
+      notifications: raw,
+      sequence: currentSeq,
+    });
+    return {
+      totalNotificationsCount: presentation.totalCount,
+      hasActiveAlerts: presentation.notifications.some(
+        (item) => item.severity === "warning" || item.severity === "critical",
+      ),
+      latestNotificationTitle: presentation.notifications[0]?.title,
+      latestNotificationMessage: presentation.notifications[0]?.message,
+    };
+  }, [events, currentSeq]);
+
   const composition = useMemo(
     () =>
       deriveHudComposition({
@@ -152,16 +170,16 @@ export function CrawlerWorkspace({
         sequence: currentSeq,
         isLive,
         floorHudTitle,
-        events,
+        notificationsSummary,
       }),
     [
       projectedState,
       projectedObservations,
       activeCountdown,
-      events,
       currentSeq,
       isLive,
       floorHudTitle,
+      notificationsSummary,
     ],
   );
 

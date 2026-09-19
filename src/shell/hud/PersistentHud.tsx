@@ -47,7 +47,7 @@ function Reading({
   );
 }
 
-/** Production HUD. Contextual presentation derived from renderer-neutral HUD composition model. */
+/** Persistent HUD presentation. Contextual presentation derived from renderer-neutral HUD composition model. */
 export function PersistentHud({
   composition,
   state,
@@ -80,7 +80,6 @@ export function PersistentHud({
   const formattedClock =
     composition?.urgency.formattedLabel ??
     (activeCountdown?.formattedLabel ?? "Collapse time unavailable");
-  const isUrgent = composition?.urgency.hasUrgentCollapse ?? false;
   const liveMode = composition?.temporal.isLive ?? isLive;
   const canReturn = composition?.temporal.canReturnToLive ?? !isLive;
 
@@ -91,7 +90,7 @@ export function PersistentHud({
   const viewersObs = composition?.broadcast.viewers ?? observations.broadcast.viewers;
 
   return (
-    <header className={styles.hud} aria-label="Crawler HUD" data-production-hud="authority">
+    <header className={styles.hud} aria-label="Crawler HUD" data-hud-composition="persistent">
       <div className={styles.masthead}>
         <div className={styles.identity}>
           <div className={styles.identityHeader}>
@@ -112,7 +111,6 @@ export function PersistentHud({
         <div
           className={styles.clock}
           data-stale={activeCountdown?.isStale || undefined}
-          data-urgent={isUrgent ? "true" : undefined}
         >
           <span className={styles.kicker}>{title}</span>
           <strong>{formattedClock}</strong>
