@@ -1,13 +1,18 @@
-import type { ResearchClaimDocument } from './types/research.ts';
+import type { ResearchClaimDocument, ModelingDecisionDocument } from './types/research.ts';
 
 export interface ResearchClaimTraceMapping {
   claimId: string;
   domain: string;
   kind: string;
-  decision: string;
-  targetDomain?: string;
-  targetRepresentation?: string;
   summary: string;
+  modeling: {
+    disposition: string;
+    target?: {
+      domain: string;
+      concept: string;
+    };
+    rationale: string;
+  };
   originatingClaimIds: string[];
   evidence: Array<{
     sourceId: string;
@@ -27,17 +32,33 @@ export interface CompiledResearchOutput {
   claimMappings: ResearchClaimTraceMapping[];
 }
 
-export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResearchOutput {
+export function compileResearchTrace(
+  researchDoc: ResearchClaimDocument,
+  modelingDoc: ModelingDecisionDocument
+): CompiledResearchOutput {
   const claimMappings: ResearchClaimTraceMapping[] = [];
 
   let promotedClaimCount = 0;
   let reviewClaimCount = 0;
   let ledgerOnlyClaimCount = 0;
 
-  for (const claim of doc.claims) {
-    const decision = claim.modeling.decision;
+  const decisionMap = new Map<string, typeof modelingDoc.decisions[0]>();
+  for (const decision of modelingDoc.decisions) {
+    decisionMap.set(decision.claimId, decision);
+  }
+
+  for (const claim of researchDoc.claims) {
+    const modelingDecision = decisionMap.get(claim.id);
+    if (!modelingDecision) {
+      throw new Error(`Compiler error: Research claim "${claim.id}" has no corresponding modeling decision. Ensure semantic validation runs before compilation.`);
+    }
+
+    const decision = modelingDecision.disposition;
 
     if (decision === 'promote') {
+      if (!modelingDecision.target?.domain || !modelingDecision.target?.concept) {
+        throw new Error(`Compiler error: Promoted claim "${claim.id}" lacks target domain or concept.`);
+      }
       promotedClaimCount++;
     } else if (decision === 'review') {
       reviewClaimCount++;
@@ -49,10 +70,12 @@ export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResea
       claimId: claim.id,
       domain: claim.domain,
       kind: claim.kind,
-      decision: claim.modeling.decision,
-      targetDomain: claim.modeling.targetDomain,
-      targetRepresentation: claim.modeling.targetRepresentation,
       summary: claim.claim.summary,
+      modeling: {
+        disposition: modelingDecision.disposition,
+        target: modelingDecision.target,
+        rationale: modelingDecision.rationale
+      },
       originatingClaimIds: [claim.id],
       evidence: JSON.parse(JSON.stringify(claim.evidence)),
       unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
@@ -60,8 +83,8 @@ export function compileResearchClaims(doc: ResearchClaimDocument): CompiledResea
   }
 
   return {
-    storyId: doc.storyId,
-    floor: doc.floor,
+    storyId: researchDoc.storyId,
+    floor: researchDoc.floor,
     promotedClaimCount,
     reviewClaimCount,
     ledgerOnlyClaimCount,

@@ -393,9 +393,12 @@ Jules should use this document, #221, and the repository to produce:
 5. comparison against #223;
 6. explicit retained/changed/discarded concepts.
 
-### Phase 3 — revise #223
+### Phase 3 — revise #223 (Completed)
 
-Rewrite #223 against the repository-derived contract rather than patching the current abstraction until it happens to fit.
+PR #223 was rewritten against the repository-derived contract:
+- **Retained**: Immutable claim IDs, source registry, provenance references, explicit unknowns, explicit dependencies, structured schema validation (using JSON Schema), and semantic cross-record validation. Negative fixture requirements were kept.
+- **Modified**: YAML became the structured input format (`research.yaml` and `modeling-decisions.yaml`) instead of JSON, but JSON Schema validation via Ajv 2020-12 remains the structural gate. Trace mapping compilation combines both artifacts instead of extracting decisions embedded inside claims.
+- **Discarded**: Runtime event payloads/candidate projection generation was abandoned in the ingestion layer; the trace compiler now only compiles trace mapping reports, explicitly honoring boundaries. Claim kind `ledger-only` and `capability` were dropped since they belonged in modeling decisions rather than evidence shape.
 
 ### Phase 4 — #222
 
@@ -572,35 +575,25 @@ The existing raw authoring model remains authoritative.
 
 ## 16. Programmatic pipeline
 
-The intended implementation boundary is:
+The authoritative conceptual pipeline:
 
+    human research report
+            ↓
     research.yaml
-        |
-        | YAML.parse
-        v
-    unknown/plain JS value
-        |
-        | JSON Schema validation
-        | AJV 8 / draft 2020-12
-        v
-    structurally valid research document
-        |
-        | TypeScript semantic validation
-        | indexes + references + domain rules
-        v
-    semantically valid research document
-        |
-        | Jules/human review
-        v
+            ↓
+    structural/schema validation
+            ↓
+    semantic validation
+            ↓
     modeling-decisions.yaml
-        |
-        | deterministic projection compiler
-        v
-    candidate CCI artifacts
-        |
-        | existing CCI validation/compiler/tests
-        v
-    reviewed raw authoring
+            ↓
+    optional disposable candidate projection
+            ↓
+    human/Jules review
+            ↓
+    existing CCI raw authoring
+            ↓
+    existing CCI compiler/runtime
 
 The programmatic pipeline should be deterministic after the research artifact exists.
 
@@ -846,6 +839,8 @@ A valid combination is:
 
 because the evidence may be strong while the runtime representation remains unsettled.
 
+The `promote` disposition explicitly means "accepted for a candidate CCI representation". It does not mean the evidence itself is simply high confidence. A modeling safety rule requires `promote` decisions to possess `confirmed` or `corroborated` confidence, explicitly avoiding the combination of `promote` with `candidate` or `disputed` confidence, ensuring only sufficiently supported claims project forward.
+
 ## 22. Unknowns and precision safety
 
 Unknowns must be explicit where their absence could otherwise be mistaken for omission.
@@ -894,10 +889,9 @@ Conceptually:
       disposition
       target
       rationale
-      resultingArtifacts
       omittedInformation
 
-The final names are subject to Jules' repository-derived design.
+The final names are subject to Jules' repository-derived design. (Note: `resultingArtifacts` was deliberately excluded from the current decision schema to avoid premature coupling to mutable runtime artifact IDs before a true candidate compiler exists.)
 
 ## 24. Candidate compiler contract
 
