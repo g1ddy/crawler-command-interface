@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.01,
-    "fanIn": 69,
+    "fanIn": 68,
     "fanOut": 1,
     "scanned": true
   },
@@ -88,8 +88,8 @@
     "scanned": true
   },
   "app/domain/raw-adapter.ts": {
-    "complexity": 6,
-    "loc": 82,
+    "complexity": 7,
+    "loc": 86,
     "instability": 0.33,
     "fanIn": 2,
     "fanOut": 1,
@@ -226,8 +226,8 @@
   "app/domain/notifications.ts": {
     "complexity": 13,
     "loc": 34,
-    "instability": 0.25,
-    "fanIn": 3,
+    "instability": 0.33,
+    "fanIn": 2,
     "fanOut": 1,
     "scanned": true
   },
@@ -297,10 +297,10 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 339,
-    "instability": 0.95,
+    "loc": 193,
+    "instability": 0.94,
     "fanIn": 1,
-    "fanOut": 19,
+    "fanOut": 16,
     "scanned": true
   },
   "src/application/crawler-session.ts": {
@@ -327,44 +327,12 @@
     "fanOut": 1,
     "scanned": true
   },
-  "src/features/notifications/public.ts": {
-    "complexity": 1,
-    "loc": 8,
-    "instability": 0.4,
-    "fanIn": 3,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "src/features/notifications/notification-presentation.ts": {
-    "complexity": 4,
-    "loc": 30,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
-    "scanned": true
-  },
   "src/presentation/authority-arwes/ArwesPresentation.ts": {
-    "complexity": 2,
-    "loc": 42,
-    "instability": 0.75,
-    "fanIn": 1,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/shell/hud/public.ts": {
     "complexity": 1,
-    "loc": 12,
-    "instability": 0.25,
-    "fanIn": 3,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/shell/hud/hud-composition.ts": {
-    "complexity": 7,
-    "loc": 109,
-    "instability": 0.5,
+    "loc": 27,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts": {
@@ -623,6 +591,22 @@
     "fanOut": 3,
     "scanned": true
   },
+  "src/features/notifications/public.ts": {
+    "complexity": 1,
+    "loc": 8,
+    "instability": 0.5,
+    "fanIn": 2,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/features/notifications/notification-presentation.ts": {
+    "complexity": 4,
+    "loc": 30,
+    "instability": 0.5,
+    "fanIn": 1,
+    "fanOut": 1,
+    "scanned": true
+  },
   "src/features/party/PartyView.tsx": {
     "complexity": 5,
     "loc": 12,
@@ -776,11 +760,11 @@
     "scanned": true
   },
   "src/shell/hud/PersistentHud.tsx": {
-    "complexity": 46,
-    "loc": 181,
-    "instability": 0.89,
+    "complexity": 14,
+    "loc": 68,
+    "instability": 0.88,
     "fanIn": 1,
-    "fanOut": 8,
+    "fanOut": 7,
     "scanned": true
   },
   "src/shell/navigation/capabilities.ts": {

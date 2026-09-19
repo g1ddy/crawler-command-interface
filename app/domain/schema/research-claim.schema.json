@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/research-claim.v1.schema.json",
+  "title": "Crawler Research Claim Ledger v1",
+  "description": "Provenance-preserving research claim ledger contract for external canon research ingestion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "storyId",
+    "floor",
+    "sources",
+    "claims"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schemaVersion": {
+      "const": "crawler-research/v1"
+    },
+    "storyId": {
+      "$ref": "#/$defs/id"
+    },
+    "floor": {
+      "$ref": "#/$defs/positiveInteger"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,100}$"
+    },
+    "claimId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_.:-]+$"
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "trust",
+        "title",
+        "url"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/sourceId"
+        },
+        "kind": {
+          "enum": [
+            "official-text",
+            "official-audio",
+            "official-preview",
+            "wiki",
+            "fan-compendium",
+            "discussion",
+            "editorial"
+          ]
+        },
+        "trust": {
+          "enum": [
+            "primary",
+            "corroborating",
+            "candidate"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "citationStyle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "accessedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sourceId": {
+      "type": "string",
+      "pattern": "^src-[a-z0-9][a-z0-9-]*$"
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "book": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "chapter": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timestamp": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "confidence"
+      ],
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/sourceId"
+        },
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "confidence": {
+          "enum": [
+            "confirmed",
+            "corroborated",
+            "candidate",
+            "disputed"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "contradiction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claimId",
+        "relationship"
+      ],
+      "properties": {
+        "claimId": {
+          "$ref": "#/$defs/claimId"
+        },
+        "relationship": {
+          "enum": [
+            "contradicts",
+            "supersedes",
+            "unresolved"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "domain",
+        "kind",
+        "claim",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/claimId"
+        },
+        "domain": {
+          "enum": [
+            "pet",
+            "crawler",
+            "inventory",
+            "equipment",
+            "quest",
+            "party",
+            "broadcast",
+            "achievement",
+            "skills",
+            "magic",
+            "floor-system",
+            "other"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "event",
+            "observation",
+            "state"
+          ]
+        },
+        "claim": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "summary"
+          ],
+          "properties": {
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "detail": {
+              "type": "string",
+              "maxLength": 4000
+            }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "unknowns": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/claimId"
+          }
+        },
+        "contradictions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contradiction"
+          }
+        }
+      }
+    }
+  }
+}

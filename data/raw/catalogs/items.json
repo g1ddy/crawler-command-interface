@@ -152,5 +152,91 @@
     "category": "crafting",
     "persistent": false,
     "description": "Carl's stackable incendiary dungeon invention."
+  },
+  {
+    "id": "item-big-top-ticket",
+    "name": "Big Top Ticket",
+    "category": "quest-item",
+    "persistent": true,
+    "description": "A ticket acquired after defeating Terror the Clown during the circus ambush."
+  },
+  {
+    "id": "item-mongo-tracking-collar",
+    "name": "Mongo's Tracking Collar",
+    "category": "equipment",
+    "slot": "NECK",
+    "persistent": true,
+    "description": "A magical tracking collar for Mongo received by Donut from a Gold Pet Box."
+  },
+  {
+    "id": "item-fang-caps",
+    "name": "Fang Caps",
+    "category": "equipment",
+    "persistent": true,
+    "description": "Magical caps fitted onto Mongo's fangs to modify bite attacks."
+  },
+  {
+    "id": "item-pharmaceutical-starter-kit",
+    "name": "Pharmaceutical Starter Kit",
+    "category": "tool",
+    "persistent": true,
+    "description": "A starter kit obtained from Quint in trade for moonshine."
+  },
+  {
+    "id": "item-blitz-sticks",
+    "name": "Blitz Sticks",
+    "category": "consumable",
+    "persistent": false,
+    "description": "Combat stimulant consumables traded from Quint."
+  },
+  {
+    "id": "item-hoblobbers",
+    "name": "Hoblobber",
+    "category": "weapon",
+    "persistent": true,
+    "description": "A launcher purchased from Pustule on the Silk Road."
+  },
+  {
+    "id": "item-hobgoblin-dynamite",
+    "name": "Hobgoblin Dynamite",
+    "category": "consumable",
+    "persistent": false,
+    "description": "High-yield explosives purchased from Pustule."
+  },
+  {
+    "id": "item-xistera",
+    "name": "Xistera",
+    "category": "weapon",
+    "persistent": true,
+    "description": "A Cesta Punta scoop weapon unlocked from Fan Boxes."
+  },
+  {
+    "id": "item-kimaris-figure",
+    "name": "Kimaris Figure",
+    "category": "miscellaneous",
+    "persistent": true,
+    "description": "A decorative figure looted by Carl."
+  },
+  {
+    "id": "item-sheol-glass-reaper-case",
+    "name": "Sheol Glass Reaper Case",
+    "category": "tool",
+    "persistent": true,
+    "description": "A specialized containment case capable of encapsulating active Soul Crystals."
+  },
+  {
+    "id": "item-carls-doomsday-scenario",
+    "name": "Carl's Doomsday Scenario",
+    "category": "crafting",
+    "persistent": true,
+    "description": "Carl's hazardous invention created by encapsulating an exploding Soul Crystal inside a Sheol Glass Reaper Case."
+  },
+  {
+    "id": "item-enchanted-crown-sepsis-whore",
+    "name": "Enchanted Crown of the Sepsis Whore",
+    "category": "equipment",
+    "slot": "HEAD",
+    "persistent": false,
+    "description": "A legendary crown worn by Donut before its destruction by a precursor magical shock."
   }
 ]
