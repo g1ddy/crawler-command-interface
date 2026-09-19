@@ -173,6 +173,7 @@
         "src/application/crawler-session.ts",
         "src/features/timeline/replay-presentation.ts",
         "src/application/capabilities.ts",
+        "src/shell/hud/hud-composition.ts",
         "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/features/crawler/crawler-presentation.ts",
@@ -1645,8 +1646,9 @@
         }
       ],
       "dependents": [
-        "src/shell/ActiveFeatureView.tsx",
-        "src/features/notifications/notification-presentation.ts"
+        "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/features/notifications/notification-presentation.ts",
+        "src/shell/ActiveFeatureView.tsx"
       ],
       "orphan": false
     },
@@ -2262,6 +2264,23 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/notifications.ts",
+          "resolved": "app/domain/notifications.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "type-only",
             "import"
           ],
@@ -2307,6 +2326,23 @@
           "moduleSystem": "es6",
           "module": "../../application/crawler-session",
           "resolved": "src/application/crawler-session.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/notifications/public.ts",
+          "resolved": "src/features/notifications/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2393,6 +2429,23 @@
           "moduleSystem": "es6",
           "module": "../hud/PersistentHud",
           "resolved": "src/shell/hud/PersistentHud.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../hud/public.ts",
+          "resolved": "src/shell/hud/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2738,9 +2791,102 @@
       "orphan": false
     },
     {
+      "source": "src/features/notifications/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./notification-presentation.ts",
+          "resolved": "src/features/notifications/notification-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./notification-presentation.ts",
+          "resolved": "src/features/notifications/notification-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/shell/ActiveFeatureView.tsx",
+        "src/features/notifications/NotificationsView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/notifications/notification-presentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/notifications.ts",
+          "resolved": "app/domain/notifications.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/notifications/public.ts"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/presentation/authority-arwes/ArwesPresentation.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shell/hud/public.ts",
+          "resolved": "src/shell/hud/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -2778,6 +2924,63 @@
       ],
       "dependents": [
         "src/shell/adapters/CrawlerWorkspace.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/hud/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./hud-composition.ts",
+          "resolved": "src/shell/hud/hud-composition.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/presentation/authority-arwes/ArwesPresentation.ts",
+        "src/shell/hud/PersistentHud.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/hud/hud-composition.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../app/domain/types.ts",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/hud/public.ts"
       ],
       "orphan": false
     },
@@ -5798,80 +6001,6 @@
       ]
     },
     {
-      "source": "src/features/notifications/public.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./notification-presentation.ts",
-          "resolved": "src/features/notifications/notification-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./notification-presentation.ts",
-          "resolved": "src/features/notifications/notification-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/ActiveFeatureView.tsx",
-        "src/features/notifications/NotificationsView.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/notifications/notification-presentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../app/domain/notifications.ts",
-          "resolved": "app/domain/notifications.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/notifications/public.ts"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/features/party/PartyView.tsx",
       "valid": true,
       "dependencies": [
@@ -7080,6 +7209,24 @@
           "moduleSystem": "es6",
           "module": "./PersistentHud.module.css",
           "resolved": "src/shell/hud/PersistentHud.module.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./public",
+          "resolved": "src/shell/hud/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -9024,8 +9171,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 155,
-    "totalDependenciesCruised": 402,
+    "totalCruised": 157,
+    "totalDependenciesCruised": 409,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
