@@ -438,6 +438,879 @@ These should become architectural tests or review rules:
 11. Existing CCI authoring remains authoritative for executable representation.
 12. No Floor-specific special case belongs in the generic research compiler.
 
+
+## 15. Concrete artifact boundaries
+
+The pipeline should use distinct artifacts because each boundary answers a different question.
+
+### 15.1 Research report — human-oriented
+
+Recommended:
+
+    docs/research/floor-3/<domain>-research.md
+
+or an equivalent research report location.
+
+Purpose:
+
+- preserve the research narrative;
+- record source discovery and context;
+- explain contradictory evidence;
+- retain useful observations that do not become structured claims;
+- provide human-auditable context for the structured artifact.
+
+This is **not an input to the CCI compiler**.
+
+Markdown may contain prose, quotations, notes, and links. No runtime or validator should parse arbitrary research prose.
+
+### 15.2 Structured research claim artifact — machine-oriented
+
+Recommended:
+
+    research/<story-or-floor>/<domain>/claims.yaml
+
+The exact repository location is a Jules design decision, but the artifact should be YAML on disk and JSON-compatible in memory.
+
+Conceptual shape:
+
+    schemaVersion: crawler-research/v1
+
+    scope:
+      story: dcc
+      book: 2
+      floor: 3
+      domain: pet
+
+    sources:
+      - id: src-book-2
+        kind: official-text
+        trust: primary
+        title: ...
+        url: ...
+
+    claims:
+      - id: P3-PET-001
+
+        statement:
+          summary: Mongo reaches Level 3.
+          context: ...
+
+        evidence:
+          - sourceId: src-book-2
+            locator:
+              chapter: 5
+            relationship: supports
+
+        confidence: confirmed
+
+        unknowns:
+          - exact_timestamp
+
+        relatedClaims: []
+
+The structured artifact describes **what the research supports**. It should not contain authoritative CCI event names, raw runtime payloads, or final promotion decisions.
+
+### 15.3 Modeling decision artifact — architecture-oriented
+
+Recommended conceptual shape:
+
+    schemaVersion: crawler-modeling/v1
+
+    decisions:
+      - claimId: P3-PET-001
+
+        disposition: promote
+
+        target:
+          domain: pet
+          concept: progression
+
+        rationale: >
+          The claim is sufficiently supported and maps to an
+          existing Pet-domain representation without invented precision.
+
+        resultingArtifacts:
+          - evt-f3-mongo-level-3
+
+The decision artifact is intentionally separate from the research claim.
+
+This permits:
+
+    research claim remains stable
+             |
+             +--> decision A: ledger_only
+             |
+             +--> later decision B: promote
+             |
+             +--> resulting CCI artifact changes
+
+A research correction therefore does not require rewriting the identity of the executable artifact, and a CCI refactor does not rewrite the underlying research.
+
+### 15.4 Candidate projection — generated, disposable
+
+A compiler may produce:
+
+    candidate/
+      events.json
+      observations.json
+      catalog.json
+      countdowns.json
+
+Candidate output is disposable. It is a review artifact, not automatically authoritative raw data.
+
+The compiler must never overwrite `data/raw/floors/**` merely because a claim was marked `promote`.
+
+### 15.5 CCI raw authoring — authoritative application data
+
+Only after modeling review should data enter:
+
+    data/raw/floors/<floor>/
+
+using the existing CCI schemas and domain conventions.
+
+The existing raw authoring model remains authoritative.
+
+## 16. Programmatic pipeline
+
+The intended implementation boundary is:
+
+    research.yaml
+        |
+        | YAML.parse
+        v
+    unknown/plain JS value
+        |
+        | JSON Schema validation
+        | AJV 8 / draft 2020-12
+        v
+    structurally valid research document
+        |
+        | TypeScript semantic validation
+        | indexes + references + domain rules
+        v
+    semantically valid research document
+        |
+        | Jules/human review
+        v
+    modeling-decisions.yaml
+        |
+        | deterministic projection compiler
+        v
+    candidate CCI artifacts
+        |
+        | existing CCI validation/compiler/tests
+        v
+    reviewed raw authoring
+
+The programmatic pipeline should be deterministic after the research artifact exists.
+
+No stage after structured research ingestion should call an LLM as part of normal compilation.
+
+## 17. Library/tool responsibilities
+
+### YAML parsing
+
+Use the repository's existing YAML dependency rather than introducing another parser.
+
+Responsibility:
+
+    YAML text -> JavaScript value
+
+The parser should not perform domain validation.
+
+### JSON Schema
+
+Use JSON Schema 2020-12 for the research document contract.
+
+JSON Schema 2020-12 supports conditional subschemas and composition mechanisms appropriate for a discriminated research document. The specification explicitly defines conditional application through `if`/`then`/`else`, and Ajv supports the 2020-12 dialect. [JSON Schema 2020-12](https://json-schema.org/draft/2020-12/json-schema-core) [Ajv JSON Schema support](https://ajv.js.org/json-schema)
+
+### AJV
+
+Use the repository's existing Ajv dependency for structural validation.
+
+Use the 2020-12 Ajv entry point if the final schema selects draft 2020-12. Ajv documents that 2020-12 is not backwards-compatible with earlier drafts and therefore uses a dedicated Ajv2020 class. [Ajv JSON Schema documentation](https://ajv.js.org/json-schema)
+
+Do not add a second schema-validation library.
+
+### TypeScript semantic validator
+
+Implement CCI-specific semantic rules in TypeScript.
+
+Recommended internal indexes:
+
+    sourcesById: Map<string, ResearchSource>
+    claimsById: Map<string, ResearchClaim>
+
+Optionally:
+
+    decisionsByClaimId: Map<string, ModelingDecision>
+
+The validator should produce structured diagnostics rather than throwing on the first error.
+
+Conceptually:
+
+    interface ValidationDiagnostic {
+      code: string;
+      severity: "error" | "warning";
+      path: string;
+      message: string;
+      claimId?: string;
+    }
+
+At minimum, semantic validation should detect:
+
+- duplicate source IDs;
+- duplicate claim IDs;
+- missing source references;
+- missing claim references;
+- self-references;
+- invalid dependency relationships;
+- invalid claim-to-source relationships;
+- promotion/modeling decisions that reference nonexistent claims;
+- candidate projections that reference unknown claims;
+- explicit unknowns contradicted by a candidate concrete value;
+- invalid cross-record combinations that cannot be expressed safely in JSON Schema.
+
+Warnings should not silently become errors unless the repository deliberately promotes the rule.
+
+## 18. Validation stages must be independent
+
+Do not combine all validation into one giant validator.
+
+Recommended API boundary:
+
+    parseResearchDocument()
+        -> unknown
+
+    validateResearchSchema()
+        -> SchemaValidationResult
+
+    indexResearchDocument()
+        -> ResearchIndex
+
+    validateResearchSemantics()
+        -> SemanticValidationResult
+
+    compileCandidateProjection()
+        -> CandidateArtifacts
+
+This allows each stage to be tested independently.
+
+It also makes failures understandable:
+
+    STRUCTURE_INVALID
+    REFERENCE_INVALID
+    SEMANTIC_INVALID
+    MODELING_INVALID
+    PROJECTION_INVALID
+
+A malformed YAML document should fail before semantic validation begins.
+
+A structurally valid but referentially broken document should fail before candidate compilation.
+
+## 19. JSON Schema design rules
+
+The final schema should follow these rules.
+
+### 19.1 Validate the envelope tightly
+
+Require:
+
+- schema version;
+- research scope;
+- source registry;
+- claims.
+
+Reject unknown top-level properties unless a deliberate extension mechanism is established.
+
+### 19.2 Use reusable definitions
+
+Use `$defs` for:
+
+- source;
+- locator;
+- evidence;
+- claim identity;
+- confidence;
+- relationship;
+- unknown marker.
+
+This prevents duplicated definitions from drifting.
+
+### 19.3 Use discriminated structures only where semantics differ
+
+If two claim kinds genuinely have different required structures, use `oneOf` or conditional schemas.
+
+Do not create a dozen variants merely to make the schema look formal.
+
+### 19.4 Avoid unrestricted payload escape hatches
+
+Do not use:
+
+    additionalProperties: true
+
+as a generic way to avoid making design decisions.
+
+If an extension point is needed, make it explicit and isolated, for example:
+
+    extensions:
+      <namespace>: ...
+
+The runtime compiler must ignore unknown extension namespaces unless a specific compiler understands them.
+
+### 19.5 Keep IDs syntactically constrained but semantically stable
+
+A claim ID should be:
+
+- non-empty;
+- unique within its research document/scope;
+- stable after publication;
+- safe to reference from other artifacts.
+
+The schema may enforce a conservative syntax, but the semantic validator owns uniqueness.
+
+Do not encode GitHub issue numbers, source URLs, mutable event IDs, or generated timestamps into claim identity.
+
+## 20. Source and evidence model
+
+Use a source registry:
+
+    sources:
+      - id: src-book-2
+        ...
+
+and references from claims:
+
+    evidence:
+      - sourceId: src-book-2
+        locator:
+          chapter: 5
+        relationship: supports
+
+This has several advantages:
+
+- source metadata has one canonical location;
+- multiple claims can reference the same source;
+- URLs and source names do not drift;
+- source-level metadata remains separate from claim-level confidence.
+
+A source describes the provenance object.
+
+An evidence record describes how that source supports, corroborates, conflicts with, or otherwise relates to a specific claim.
+
+This follows the useful principle from the W3C provenance model—preserve lineage as a first-class relationship—without adopting the full PROV ontology. [W3C PROV Primer](https://www.w3.org/TR/prov-primer/)
+
+## 21. Claim confidence, source trust, and disposition
+
+These must remain separate.
+
+### Source trust
+
+Answers:
+
+    How should this source be classified?
+
+Examples may include:
+
+    primary
+    corroborating
+    tertiary
+
+### Claim confidence
+
+Answers:
+
+    How strongly does the available evidence support this claim?
+
+Use the repository's existing vocabulary once derived. Do not introduce numerical probabilities.
+
+### Modeling disposition
+
+Answers:
+
+    What should CCI do with this claim?
+
+Conceptually:
+
+    promote
+    review
+    ledger_only
+
+These are independent.
+
+A valid combination is:
+
+    source trust = primary
+    confidence = confirmed
+    disposition = review
+
+because the evidence may be strong while the runtime representation remains unsettled.
+
+## 22. Unknowns and precision safety
+
+Unknowns must be explicit where their absence could otherwise be mistaken for omission.
+
+Example:
+
+    unknowns:
+      - exact_timestamp
+      - exact_quantity
+      - numerical_item_statistics
+
+The semantic validator should enforce a one-way rule:
+
+    explicit unknown
+        |
+        +--> may remain unknown
+        |
+        +--> may be resolved by a later research artifact
+        |
+        X--> may not silently become a concrete value
+
+This is especially important for countdowns, timestamps, levels, quantities, stats, and item effects.
+
+A compiler may only emit a concrete value when the claim/modeling decision contains evidence sufficient for that precision.
+
+## 23. Modeling decision semantics
+
+The modeling decision is the architectural boundary.
+
+It should answer:
+
+1. Is the claim accepted for CCI modeling?
+2. If so, what existing CCI domain concept owns it?
+3. What executable representation should result?
+4. What information is intentionally not projected?
+5. Why is this representation faithful?
+
+It should not copy the entire research claim.
+
+It should reference it by ID.
+
+Conceptually:
+
+    decision
+      claimId
+      disposition
+      target
+      rationale
+      resultingArtifacts
+      omittedInformation
+
+The final names are subject to Jules' repository-derived design.
+
+## 24. Candidate compiler contract
+
+If #223 retains a compiler, it should be a pure transformation:
+
+    compile(
+      validatedResearch,
+      validatedModelingDecisions
+    ) -> CandidateArtifacts
+
+It must:
+
+- be deterministic;
+- have no network access;
+- have no LLM calls;
+- not read arbitrary Markdown;
+- not mutate raw data;
+- preserve claim IDs in candidate provenance;
+- fail closed when a required value is unknown;
+- reject decisions targeting nonexistent claims;
+- reject projections that cannot satisfy the existing CCI raw schema.
+
+The compiler should not decide whether a claim is true.
+
+It should not infer missing values.
+
+It should not invent timestamps.
+
+It should not select a CCI event type that was not specified by the modeling decision.
+
+## 25. Candidate artifact provenance
+
+Every generated candidate artifact should be traceable back to the research claim(s) that caused it.
+
+Conceptually:
+
+    candidate event
+      |
+      +-- researchClaimIds
+      |
+      +-- existing source evidence
+
+The exact placement of research IDs must be derived from the current CCI evidence schema.
+
+If the existing raw schema cannot safely carry research claim IDs, preserve the linkage in a sidecar candidate artifact rather than changing runtime contracts as part of #221.
+
+Example:
+
+    candidate/provenance.json
+
+    {
+      "evt-f3-mongo-level-3": {
+        "researchClaims": ["P3-PET-001"]
+      }
+    }
+
+This is preferable to weakening an existing raw schema solely for research metadata.
+
+## 26. Negative fixtures are mandatory
+
+The research compiler must prove that unsafe inputs fail.
+
+At minimum, fixtures should cover:
+
+### Invalid structure
+
+    missing claim ID
+
+Expected:
+
+    JSON Schema failure
+
+### Broken source reference
+
+    evidence.sourceId = src-does-not-exist
+
+Expected:
+
+    semantic validation failure
+
+### Broken dependency
+
+    dependsOn = P3-PET-999
+
+Expected:
+
+    semantic validation failure
+
+### Explicit unknown
+
+    unknowns = [exact_timestamp]
+
+Expected:
+
+    candidate timestamp must not be invented
+
+### Unresolved claim
+
+    disposition = ledger_only
+
+Expected:
+
+    no executable artifact generated
+
+### Review claim
+
+    disposition = review
+
+Expected:
+
+    candidate projection either absent or explicitly non-authoritative
+
+### Valid promotion
+
+    disposition = promote
+
+Expected:
+
+    deterministic candidate artifact with preserved provenance
+
+### Conflicting claims
+
+    claim A supports X
+    claim B contradicts X
+
+Expected:
+
+    conflict preserved; no automatic winner selected
+
+## 27. Determinism and reproducibility
+
+Given the same:
+
+    research artifact
+    +
+    modeling decision artifact
+    +
+    compiler version
+
+the candidate output should be byte-for-byte stable wherever practical.
+
+Do not include:
+
+- current timestamps;
+- random IDs;
+- network-fetched metadata;
+- unordered object iteration;
+- LLM-generated text;
+- environment-specific paths.
+
+If candidate files contain generated metadata, make it deterministic or explicitly exclude it from reproducibility comparisons.
+
+This makes the research compiler suitable for CI.
+
+## 28. CLI boundary
+
+The eventual implementation should expose small commands rather than one opaque command.
+
+Conceptually:
+
+    npm run research:validate -- claims.yaml
+    npm run research:semantic-validate -- claims.yaml
+    npm run research:compile -- claims.yaml modeling-decisions.yaml
+    npm run research:check -- claims.yaml modeling-decisions.yaml
+
+The exact npm scripts are a Jules implementation decision.
+
+A combined command may orchestrate the stages, but each stage should remain independently callable for debugging and tests.
+
+## 29. Failure handling
+
+The pipeline should fail closed.
+
+Rules:
+
+- invalid schema -> stop;
+- broken references -> stop;
+- invalid modeling decision -> stop;
+- explicit unknown required for projection -> stop;
+- unsupported target representation -> stop;
+- ambiguous/conflicting claims without an explicit modeling decision -> do not project;
+- compiler exception -> no partial raw-data mutation.
+
+Do not produce a partially updated `data/raw` directory.
+
+Candidate output should be written to a separate location and promoted only after validation/review.
+
+## 30. Ownership model
+
+The intended ownership is:
+
+| Artifact / operation | Owner |
+| --- | --- |
+| Research report | researcher / Gemini / human |
+| Structured claims | researcher / Gemini / human |
+| Schema | CCI architecture / Jules |
+| Structural validator | program |
+| Semantic validator | CCI code |
+| Modeling decisions | Jules / human |
+| Candidate compiler | program |
+| Candidate review | Jules / human |
+| Final raw authoring | Jules / human |
+| Raw compiler/runtime | existing CCI |
+| CI verification | program |
+
+LLM-generated modeling proposals may be useful, but they should be represented as proposals and must not silently become authoritative modeling decisions.
+
+## 31. Recommended repository layout
+
+Do not create this layout until Jules confirms it fits the existing repository conventions, but the conceptual separation is:
+
+    docs/research/
+      ...
+    
+    data/research/
+      floor-3/
+        pet/
+          claims.yaml
+          modeling-decisions.yaml
+
+    app/domain/research/
+      types.ts
+      schema.ts
+      semantic-validator.ts
+      compiler.ts
+
+    app/domain/schema/
+      research-claim.schema.json
+      modeling-decision.schema.json
+
+    tests/research/
+      fixtures/
+        valid/
+        invalid/
+      research-schema.test.mjs
+      research-semantic.test.mjs
+      research-compiler.test.mjs
+
+The exact paths should follow existing CCI architecture and naming conventions. This layout is an implementation target, not a requirement to create every directory.
+
+## 32. Recommended TypeScript interfaces
+
+These are conceptual contracts to guide implementation, not final public APIs.
+
+    interface ResearchDocument {
+      schemaVersion: string;
+      scope: ResearchScope;
+      sources: ResearchSource[];
+      claims: ResearchClaim[];
+    }
+
+    interface ResearchClaim {
+      id: string;
+      domain: string;
+      kind: string;
+      statement: ResearchStatement;
+      evidence: ResearchEvidence[];
+      confidence: string;
+      unknowns?: string[];
+      relatedClaims?: ResearchRelation[];
+    }
+
+    interface ResearchEvidence {
+      sourceId: string;
+      locator?: ResearchLocator;
+      relationship: "supports" | "corroborates" | "contradicts" | "context";
+    }
+
+    interface ModelingDecision {
+      claimId: string;
+      disposition: "promote" | "review" | "ledger_only";
+      target?: {
+        domain: string;
+        concept: string;
+      };
+      rationale: string;
+      resultingArtifacts?: string[];
+    }
+
+These names and enums remain provisional until Jules derives them from the existing CCI model.
+
+## 33. Implementation sequence for a sandbox coding agent
+
+A coding agent implementing #221/#222 should work in this order.
+
+### Step 1 — inspect
+
+Read:
+
+    data/raw/floors/floor-1/**
+    data/raw/floors/floor-2/**
+    data/raw/floors/floor-3/**
+    loaders
+    compilers
+    schemas
+    existing evidence types
+    existing tests
+    #223
+
+Do not edit code yet.
+
+### Step 2 — produce a repository mapping
+
+Create a design note/table showing:
+
+    existing CCI concept
+        -> research concept
+        -> evidence
+        -> modeling decision
+        -> executable representation
+
+Every proposed enum must have at least one real repository example.
+
+### Step 3 — derive schemas
+
+Create the smallest JSON Schema capable of expressing the real examples.
+
+Validate the schema itself.
+
+Do not start with the complete Floor 3 research corpus.
+
+### Step 4 — build representative fixtures
+
+Use real patterns from Floors 1–3.
+
+Include positive and negative cases.
+
+### Step 5 — implement semantic validation
+
+Build indexes first, then reference checks, then domain-specific invariants.
+
+Keep semantic rules outside JSON Schema when they depend on relationships between records.
+
+### Step 6 — model decisions
+
+Create a small modeling-decision fixture that references the research claims.
+
+Prove that the claim artifact itself contains no authoritative runtime projection.
+
+### Step 7 — implement candidate compilation
+
+Only after validation and decision fixtures work.
+
+The compiler should be pure and deterministic.
+
+### Step 8 — compare #223
+
+Explicitly document:
+
+    retained
+    changed
+    removed
+
+Do not preserve an abstraction merely because it already exists.
+
+### Step 9 — integrate with existing CCI
+
+Only now determine whether research IDs need to enter raw CCI evidence.
+
+If so, create a focused follow-up if the raw contract must change.
+
+### Step 10 — verify
+
+Run:
+
+    npm run verify
+
+and all research-specific tests.
+
+The implementation is complete only when existing CCI verification remains green.
+
+## 34. Definition of done for #221/#222 boundary
+
+The architecture is ready for the #181 pilot when:
+
+- a researcher can create a structured claim artifact without knowing CCI runtime event schemas;
+- AJV can reject malformed research artifacts;
+- TypeScript semantic validation can reject broken references;
+- unknown precision cannot silently become a value;
+- research claims have stable IDs;
+- provenance can be traced to existing source records;
+- modeling decisions are separate from claims;
+- ledger-only claims remain valid;
+- review claims do not silently compile;
+- promoted claims can produce deterministic candidate output;
+- candidate output never mutates authoritative raw data;
+- candidate output can be traced back to claim IDs;
+- #223's useful implementation ideas have been reconciled with the repository;
+- the existing CCI compiler remains unchanged unless a separately justified contract change is required.
+
+## 35. Updated architectural principle
+
+The research system should be thought of as a **compiler-adjacent evidence pipeline**, not an alternative CCI domain model.
+
+Its job is:
+
+    discover
+      -> record
+      -> validate
+      -> preserve provenance
+      -> expose modeling decisions
+      -> optionally project
+
+CCI's job remains:
+
+    author
+      -> compile
+      -> project
+      -> render
+      -> replay
+
+That separation lets research become richer without forcing the runtime to understand research concepts it does not need.
+
 ## Recommended decision
 
 Proceed with #221 as a repository-derived design exercise, using this research as external input.
