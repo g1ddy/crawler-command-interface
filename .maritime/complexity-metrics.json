@@ -329,7 +329,7 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 338,
+    "loc": 336,
     "instability": 0.95,
     "fanIn": 1,
     "fanOut": 19,
@@ -369,7 +369,7 @@
   },
   "src/features/notifications/notification-presentation.ts": {
     "complexity": 4,
-    "loc": 30,
+    "loc": 54,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -393,7 +393,7 @@
   },
   "src/shell/hud/hud-composition.ts": {
     "complexity": 7,
-    "loc": 109,
+    "loc": 119,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -809,7 +809,7 @@
   },
   "src/shell/hud/PersistentHud.tsx": {
     "complexity": 43,
-    "loc": 131,
+    "loc": 134,
     "instability": 0.89,
     "fanIn": 1,
     "fanOut": 8,
