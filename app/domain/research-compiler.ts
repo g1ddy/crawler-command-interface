@@ -4,10 +4,15 @@ export interface ResearchClaimTraceMapping {
   claimId: string;
   domain: string;
   kind: string;
-  decision: string;
-  targetDomain?: string;
-  targetRepresentation?: string;
   summary: string;
+  modeling: {
+    disposition: string;
+    target?: {
+      domain: string;
+      concept: string;
+    };
+    rationale: string;
+  };
   originatingClaimIds: string[];
   evidence: Array<{
     sourceId: string;
@@ -61,18 +66,16 @@ export function compileResearchTrace(
       ledgerOnlyClaimCount++;
     }
 
-    // Enforce unknown safety check:
-    // The compiler checks if explicit unknowns conflict with provided values in actual projection (if generating artifacts).
-    // Here we just record the trace properly and maintain bounds.
-
     claimMappings.push({
       claimId: claim.id,
       domain: claim.domain,
       kind: claim.kind,
-      decision: modelingDecision.disposition,
-      targetDomain: modelingDecision.target?.domain,
-      targetRepresentation: modelingDecision.target?.concept,
       summary: claim.claim.summary,
+      modeling: {
+        disposition: modelingDecision.disposition,
+        target: modelingDecision.target,
+        rationale: modelingDecision.rationale
+      },
       originatingClaimIds: [claim.id],
       evidence: JSON.parse(JSON.stringify(claim.evidence)),
       unknowns: claim.unknowns ? [...claim.unknowns] : undefined,

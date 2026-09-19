@@ -21,6 +21,8 @@ function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+import { validateTraceCompleteness } from '../../app/domain/research-validator.ts';
+
 test('Research Ingestion Contract: valid Floor 3 research claim fixture passes validation and compilation', () => {
   const content = fs.readFileSync(VALID_RESEARCH_FIXTURE, 'utf8');
   const parsedDoc = parseResearchClaimDocument(content);
@@ -41,6 +43,10 @@ test('Research Ingestion Contract: valid Floor 3 research claim fixture passes v
   const semanticValidation = validateSemanticModelingDecisions(doc, modelingDoc);
   assert.equal(semanticValidation.valid, true);
   assert.deepEqual(semanticValidation.errors, []);
+
+  const completenessValidation = validateTraceCompleteness(doc, modelingDoc);
+  assert.equal(completenessValidation.valid, true);
+  assert.deepEqual(completenessValidation.errors, []);
 
   const compiled = compileResearchTrace(doc, modelingDoc);
   assert.equal(compiled.promotedClaimCount, 2);
@@ -72,8 +78,34 @@ test('Research Ingestion Contract: review decision accommodates well-supported c
   const mongoMapping = compiled.claimMappings.find((m) => m.claimId === 'P3-PET-001');
 
   assert.ok(mongoMapping);
-  assert.equal(mongoMapping.decision, 'review');
-  assert.equal(mongoMapping.targetRepresentation, 'PetProgression');
+  assert.equal(mongoMapping.modeling.disposition, 'review');
+  assert.equal(mongoMapping.modeling.target.concept, 'PetProgression');
+});
+
+test('Research Ingestion Contract: valid research claim without modeling decision → research artifact validation succeeds', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const docWithoutModeling = deepClone(doc);
+
+  // Independent artifact schema validation passes for claims alone.
+  const validation = validateResearchClaimDocument(docWithoutModeling);
+  assert.equal(validation.valid, true);
+  assert.deepEqual(validation.errors, []);
+});
+
+test('Research Ingestion Contract: compile complete trace with missing decision → fails clearly', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  const badModelingDoc = deepClone(modelingDoc);
+
+  badModelingDoc.decisions.splice(0, 1); // Remove decision for P3-PET-001
+
+  const completenessValidation = validateTraceCompleteness(doc, badModelingDoc);
+  assert.equal(completenessValidation.valid, false);
+  assert.ok(completenessValidation.errors.some((err) => err.includes('MODELING_DECISION_MISSING')));
+
+  assert.throws(() => {
+    compileResearchTrace(doc, badModelingDoc);
+  }, /Compiler error: Research claim "P3-PET-001" has no corresponding modeling decision/);
 });
 
 test('Research Ingestion Contract: rejects duplicate claim IDs', () => {
@@ -171,19 +203,7 @@ test('Research Ingestion Contract: rejects modeling decisions referencing missin
   assert.ok(validation.errors.some((err) => err.includes('Modeling decision references missing claim ID "P3-UNKNOWN-999"')));
 });
 
-test('Research Ingestion Contract: rejects research claims with missing modeling decisions', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const badModelingDoc = deepClone(modelingDoc);
-
-  badModelingDoc.decisions.splice(0, 1); // Remove decision for P3-PET-001
-
-  const validation = validateSemanticModelingDecisions(doc, badModelingDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('Research claim "P3-PET-001" has no corresponding modeling decision.')));
-});
-
-test('Research Ingestion Contract: requires targetRepresentation for promoted claims in schema', () => {
+test('Research Ingestion Contract: promoted modeling decision requires target', () => {
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
   const badModelingDoc = deepClone(modelingDoc);
   delete badModelingDoc.decisions[1].target;
@@ -208,7 +228,7 @@ test('Research Ingestion Contract: ledger-only claims remain valid research cont
   const ledgerMapping = compiled.claimMappings.find((m) => m.claimId === 'P3-PET-003');
 
   assert.ok(ledgerMapping);
-  assert.equal(ledgerMapping.decision, 'ledger_only');
+  assert.equal(ledgerMapping.modeling.disposition, 'ledger_only');
 });
 
 test('Research Ingestion Contract: preserves explicit unknowns in trace output', () => {

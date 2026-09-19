@@ -186,14 +186,14 @@ export function validateSemanticModelingDecisions(
     const claimId = decision.claimId;
 
     if (decisionClaimIds.has(claimId)) {
-      errors.push(`Domain error: Duplicate modeling decision for claim ID "${claimId}".`);
+      errors.push(`MODELING_DECISION_DUPLICATE: Duplicate modeling decision for claim ID "${claimId}".`);
     }
     decisionClaimIds.add(claimId);
 
     const claim = claimMap.get(claimId);
 
     if (!claim) {
-      errors.push(`Domain error: Modeling decision references missing claim ID "${claimId}".`);
+      errors.push(`MODELING_DECISION_UNKNOWN_CLAIM: Modeling decision references missing claim ID "${claimId}".`);
       continue;
     }
 
@@ -202,7 +202,7 @@ export function validateSemanticModelingDecisions(
       for (const ev of claim.evidence) {
         if (ev.confidence === 'disputed' || ev.confidence === 'candidate') {
           errors.push(
-            `Domain error: Claim "${claim.id}" cannot be promoted with confidence "${ev.confidence}". Promoted claims require confirmed or corroborated confidence.`
+            `Domain error: Claim "${claim.id}" cannot be promoted with confidence "${ev.confidence}". Modeling safety rule requires confirmed or corroborated confidence for authoritative execution.`
           );
         }
       }
@@ -220,9 +220,23 @@ export function validateSemanticModelingDecisions(
     }
   }
 
-  for (const claimId of claimMap.keys()) {
-    if (!decisionClaimIds.has(claimId)) {
-      errors.push(`Domain error: Research claim "${claimId}" has no corresponding modeling decision.`);
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+export function validateTraceCompleteness(
+  researchDoc: ResearchClaimDocument,
+  modelingDoc: ModelingDecisionDocument
+): ValidationResult {
+  const errors: string[] = [];
+
+  const decisionClaimIds = new Set(modelingDoc.decisions.map(d => d.claimId));
+
+  for (const claim of researchDoc.claims) {
+    if (!decisionClaimIds.has(claim.id)) {
+      errors.push(`MODELING_DECISION_MISSING: Research claim "${claim.id}" has no corresponding modeling decision in the combined compilation.`);
     }
   }
 

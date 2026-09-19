@@ -36,7 +36,7 @@ export interface ResearchClaimEvidence {
   note?: string;
 }
 
-export type PromotionDecision = 'promote' | 'review' | 'ledger_only';
+export type ModelingDisposition = 'promote' | 'review' | 'ledger_only';
 
 export type ContradictionRelationship = 'contradicts' | 'supersedes' | 'unresolved';
 
@@ -80,13 +80,12 @@ export interface ResearchClaim {
 
 export interface ModelingDecision {
   claimId: string;
-  disposition: PromotionDecision;
+  disposition: ModelingDisposition;
   target?: {
     domain: string;
     concept: string;
   };
   rationale: string;
-  resultingArtifacts?: string[];
 }
 
 export interface ModelingDecisionDocument {

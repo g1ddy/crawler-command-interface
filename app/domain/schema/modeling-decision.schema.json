@@ -69,13 +69,6 @@
         "rationale": {
           "type": "string",
           "minLength": 1
-        },
-        "resultingArtifacts": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
         }
       },
       "if": {
