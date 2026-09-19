@@ -16,7 +16,6 @@ export interface HudTemporalContext {
   mode: "live" | "replay";
   sequence: number;
   isLive: boolean;
-  canReturnToLive: boolean;
 }
 
 export interface HudUrgencyContext {
@@ -42,6 +41,18 @@ export interface HudBroadcastSummary {
   viewers?: ProjectedObservationValue;
 }
 
+/**
+ * Renderer-neutral HUD composition model describing semantic presentation meaning.
+ *
+ * INVARIANTS:
+ * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast).
+ * - Remains strictly renderer-neutral: MUST NOT contain CSS classes, styling tokens, border treatments,
+ *   animation-library primitives, or renderer-specific component choices (e.g., Arwes/POC types).
+ * - Capabilities and action contracts (e.g. Return to Live, sequence navigation) retain their existing application
+ *   ownership and are intentionally NOT modeled as action handlers or tool commands inside this composition model.
+ * - Explicitly PROVISIONAL: The current arrangement of identity, countdown, mode, audience, and vitals
+ *   is an implementation slice and does not represent settled or final persistent HUD product requirements.
+ */
 export interface HudCompositionModel {
   system: HudSystemIdentity;
   temporal: HudTemporalContext;
@@ -62,7 +73,7 @@ export interface DeriveHudCompositionInput {
 }
 
 /**
- * Derives the renderer-neutral HUD composition model.
+ * Derives the renderer-neutral HUD composition model from replayed domain state slices and telemetry context.
  * Focuses strictly on HUD header/masthead context without domain event projection or hardcoded visual policies.
  */
 export function deriveHudComposition({
@@ -88,7 +99,6 @@ export function deriveHudComposition({
       mode: isLive ? "live" : "replay",
       sequence,
       isLive,
-      canReturnToLive: !isLive,
     },
     urgency: {
       activeCountdown,

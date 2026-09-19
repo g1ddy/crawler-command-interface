@@ -153,11 +153,9 @@ export function CrawlerWorkspace({
     });
     return {
       totalNotificationsCount: presentation.totalCount,
-      hasActiveAlerts: presentation.notifications.some(
-        (item) => item.severity === "warning" || item.severity === "critical",
-      ),
-      latestNotificationTitle: presentation.notifications[0]?.title,
-      latestNotificationMessage: presentation.notifications[0]?.message,
+      hasActiveAlerts: presentation.hasActiveAlerts,
+      latestNotificationTitle: presentation.latestNotificationTitle,
+      latestNotificationMessage: presentation.latestNotificationMessage,
     };
   }, [events, currentSeq]);
 

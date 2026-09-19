@@ -30,7 +30,7 @@ for (const [domain, eventType] of [["PARTY", "PartyFormed"], ["PET", "PetBonded"
     await expect(navigation(page).getByRole("button", { name: "CRAWLER", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(slider).toHaveValue(String(sequence - 1));
     await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
-    await page.getByRole("button", { name: "Return to live", exact: true }).click();
+    await page.getByRole("button", { name: /RETURN TO LIVE/i }).click();
     await expect(destination).toBeVisible();
     await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
   });
