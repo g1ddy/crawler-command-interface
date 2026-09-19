@@ -30,8 +30,7 @@ Keep React, Vite, existing host adapters and typed actions. Concepts are real fr
 code reusing typed, independent `CrawlerApp` presentation and persistence boundaries,
 projections, feature navigation, actions, and inspectors—not generated screenshots or a
 separate simulated application.
-The normal Pages build emits both `dist-pages/index.html` and
-`dist-pages/concepts.html`; the default application entry uses the Authority production shell.
+The normal Pages build emits both `dist-pages/index.html` and `dist-pages/concepts.html`; the default application entry uses the current persistent shell. Visual direction remains under evaluation.
 
 Direct preview URLs and concept-lab sessions are memory-only: no loading, saving, or
 clearing the normal device timeline. Reload restores the compiled timeline in those
@@ -61,7 +60,7 @@ not yet a complete domain-by-domain redesign.
 ## Visual grammar
 
 - Identity, collapse context, observed vitals, and live/replay mode occupy the header.
-- Replay controls stay visible in the working surface; application tools remain separate.
+- Replay/Live state may be persistent system context, but sequence scrubbing, stepping, and Return to Live are application controls owned by the replay surface; application tools remain separate.
 - Observed, estimated, unknown, stale, and unavailable have text labels. Dashed edges
   reinforce estimates/staleness; color never carries the distinction alone.
 - The production and experimental headers deliberately show **observations**, not projection defaults,
@@ -84,8 +83,8 @@ domain survive a comparison switch.
 
 The normal deployed application also provides non-persistent review URLs:
 `/crawler-command-interface/?hud=authority`, `?hud=tactical`, and `?hud=theater`.
-The default URL—and any invalid `hud` value—renders the current production HUD. These are
-comparison previews, not Crawler Menu destinations. Authority is the selected production direction. Both
+The default URL—and any invalid `hud` value—renders the current persistent shell. These are
+comparison previews, not Crawler Menu destinations. No visual direction is currently selected. Both
 entry points honor `PAGES_BASE_PATH=/` for custom-domain builds.
 
 Run `npm run build:pages`, then serve with
@@ -101,11 +100,11 @@ live Floor 2; Inventory/Equipment; Notifications; Pet bond boundary; and open ev
 Selection must weigh canon identity, readability, information hierarchy, system personality,
 replay clarity, source honesty, responsive behavior, accessibility, and implementation
 cost. Source honesty and functional replay are gates, not tradeable aesthetic scores.
-Selected production direction: Authority is selected as the production baseline visual direction (#160 / #170). Tokens and primitives are defined against Authority, borrowing theatrical emphasis only for genuinely delivered system moments.
+No candidate is currently declared the production direction. Authority, Tactical, Theater, Arwes, and future candidates remain eligible for evidence-based comparison.
 
 ## Production tokens and style ownership (#170)
 
-The selected production visual direction (Authority baseline) establishes a small, semantic token vocabulary in `src/styles/hud-tokens.css`:
+The current shell establishes a provisional, semantic token vocabulary in `src/styles/hud-tokens.css`; the token vocabulary is not a commitment to Authority as the final visual direction:
 
 - **Surfaces and borders:** `--hud-canvas-bg`, `--hud-panel-bg`, `--hud-panel-raised-bg`, `--hud-border-color`, `--hud-border-subtle`, `--hud-border-focus`, `--hud-focus-ring`.
 - **Text and hierarchy:** `--hud-text-primary`, `--hud-text-secondary`, `--hud-text-subdued`, `--hud-text-author`, `--hud-label-compact`.
@@ -122,13 +121,7 @@ To prevent new feature presentations from depending on global `application.css` 
 
 ## Remaining #160 delivery
 
-The default production composition now implements Authority (#173): horizontal
-identity/clock/observed-telemetry HUD, capability-driven canon navigation, a separate
-System Tools entry, and compact persistent replay. Scrubbing, stepping, sequence, and
-Live/Replay mode stay visible; floor scope, evidence, history, and diagnostics are
-progressively disclosed under **Replay context & tools**. Mobile uses a compact
-identity/mode row, a two-column reading grid, and horizontally scrollable canon navigation.
-No clock ticking, notification arrivals, or unsupported capabilities are synthesized.
+The current persistent composition provides horizontal identity/clock/observed-telemetry context, capability-driven canon navigation, a separate System Tools entry, and persistent Live/Replay state. Replay controls are owned by the replay surface rather than the fictional HUD hierarchy. This composition is a migration/architecture slice, not the final visual direction. Mobile remains intentionally responsive, and no clock ticking, notification arrivals, or unsupported capabilities are synthesized.
 
 The shell frame is layout-only. A session-facing composition adapter supplies slots and
 retains existing feature views; it does not duplicate projection or action machinery.

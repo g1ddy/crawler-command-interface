@@ -49,7 +49,7 @@ test("renders development preview metadata", async (t) => {
     assert.match(html, developmentPreviewMeta);
     assert.match(html, /FLOOR NAVIGATOR:/);
     assert.match(html, /aria-label="Selected timeline sequence"/);
-    assert.match(html, /data-production-hud="authority"/);
+    assert.match(html, /data-hud-composition="persistent"/);
     assert.match(html, /type="range"/);
     assert.doesNotMatch(html, /aria-label="Hotlist"/);
   } finally {

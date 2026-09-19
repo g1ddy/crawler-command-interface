@@ -3,7 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
-import { ArwesPresentation, type ArwesProbeModel } from "../../presentation/authority-arwes/ArwesPresentation.ts";
+import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
+import { deriveHudComposition } from "../hud/public.ts";
+import { projectNotifications } from "../../../app/domain/notifications.ts";
+import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import { availableRootViews } from "../navigation/capabilities";
 import { RootNavigation } from "../navigation/RootNavigation";
 import { ReplaySurface } from "../replay/ReplaySurface";
@@ -24,19 +27,43 @@ import type { RootView } from "../navigation/navigation-model";
 import type { EquipmentSlot } from "../../application/crawler-action-contracts";
 
 /** Composition adapter for existing features; the replaceable frame only receives slots. */
-export function CrawlerWorkspace({ session: { snapshot, commands }, hudPresentation, toastMessage, setToastMessage }: {
+export function CrawlerWorkspace({
+  session: { snapshot, commands },
+  hudPresentation,
+  toastMessage,
+  setToastMessage,
+}: {
   session: {
-    snapshot: Pick<CrawlerSession["snapshot"], "events" | "sources" | "currentSeq" | "selectedFloorOrdinal" |
-      "isLive" | "projectedState" | "projectedObservations" | "liveState" | "capabilities" |
-      "activeCountdown" | "replayPresentation" | "floorHudTitle">;
-    commands: Pick<CrawlerSession["commands"], "selectSequence" | "returnToLive" | "replayCommands" |
-      "actions" | "exportJson" | "importJson" | "resetTimeline">;
+    snapshot: Pick<
+      CrawlerSession["snapshot"],
+      | "events"
+      | "sources"
+      | "currentSeq"
+      | "selectedFloorOrdinal"
+      | "isLive"
+      | "projectedState"
+      | "projectedObservations"
+      | "liveState"
+      | "capabilities"
+      | "activeCountdown"
+      | "replayPresentation"
+      | "floorHudTitle"
+    >;
+    commands: Pick<
+      CrawlerSession["commands"],
+      | "selectSequence"
+      | "returnToLive"
+      | "replayCommands"
+      | "actions"
+      | "exportJson"
+      | "importJson"
+      | "resetTimeline"
+    >;
   };
   hudPresentation: HudPresentation;
   toastMessage: string | null;
   setToastMessage: (message: string | null) => void;
 }) {
-
   const {
     events,
     sources,
@@ -82,27 +109,78 @@ export function CrawlerWorkspace({ session: { snapshot, commands }, hudPresentat
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
-      if (event.defaultPrevented || event.ctrlKey || event.altKey || event.metaKey ||
-        target?.closest('input, textarea, select, [contenteditable="true"], [role="dialog"]')) return;
-      if (inspectStat || inspectObservation || provenanceItem || showJsonModal || showFloorRules || showTimelineHistory || showTimelineEvidence) return;
-      const destination =
-        availableRootViews(capabilities)[Number(event.key) - 1];
+      if (
+        event.defaultPrevented ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.metaKey ||
+        target?.closest('input, textarea, select, [contenteditable="true"], [role="dialog"]')
+      )
+        return;
+      if (
+        inspectStat ||
+        inspectObservation ||
+        provenanceItem ||
+        showJsonModal ||
+        showFloorRules ||
+        showTimelineHistory ||
+        showTimelineEvidence
+      )
+        return;
+      const destination = availableRootViews(capabilities)[Number(event.key) - 1];
       if (destination) setView(destination);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [inspectStat, inspectObservation, provenanceItem, showJsonModal, showFloorRules, showTimelineHistory, showTimelineEvidence, capabilities]);
+  }, [
+    inspectStat,
+    inspectObservation,
+    provenanceItem,
+    showJsonModal,
+    showFloorRules,
+    showTimelineHistory,
+    showTimelineEvidence,
+    capabilities,
+  ]);
 
   const usesConceptHud = presentationChoice !== "production";
 
-  const arwesProbeModel = useMemo<ArwesProbeModel>(
-    () => ({
-      crawlerName: projectedState.crawler.name,
-      floorTitle: floorHudTitle,
-      sequence: projectedState.sequence,
-      temporalMode: isLive ? "live" : "replay",
-    }),
-    [projectedState.crawler.name, floorHudTitle, projectedState.sequence, isLive],
+  const notificationsSummary = useMemo(() => {
+    const raw = projectNotifications(events, currentSeq);
+    const presentation = deriveNotificationsPresentation({
+      notifications: raw,
+      sequence: currentSeq,
+    });
+    return {
+      totalNotificationsCount: presentation.totalCount,
+      hasActiveAlerts: presentation.notifications.some(
+        (item) => item.severity === "warning" || item.severity === "critical",
+      ),
+      latestNotificationTitle: presentation.notifications[0]?.title,
+      latestNotificationMessage: presentation.notifications[0]?.message,
+    };
+  }, [events, currentSeq]);
+
+  const composition = useMemo(
+    () =>
+      deriveHudComposition({
+        projectedState,
+        projectedObservations,
+        activeCountdown,
+        sequence: currentSeq,
+        isLive,
+        floorHudTitle,
+        notificationsSummary,
+      }),
+    [
+      projectedState,
+      projectedObservations,
+      activeCountdown,
+      currentSeq,
+      isLive,
+      floorHudTitle,
+      notificationsSummary,
+    ],
   );
 
   const handleExportJson = useCallback(() => {
@@ -148,45 +226,112 @@ export function CrawlerWorkspace({ session: { snapshot, commands }, hudPresentat
     [commands.replayCommands],
   );
 
-  return <ShellFrame
-    presentation={presentationChoice} isLive={isLive}
-    hud={presentationChoice === "authority-arwes" ? (
-      <ArwesPresentation model={arwesProbeModel} />
-    ) : usesConceptHud ? (
-      <ConceptHud state={projectedState} observations={projectedObservations}
-        countdown={activeCountdown} floorTitle={floorHudTitle} isLive={isLive}
-        onReturnToLive={commands.returnToLive} onInspectObservation={setInspectObservation}
-        onNavigateToSequence={commands.selectSequence} />
-    ) : (
-      <PersistentHud state={projectedState} observations={projectedObservations}
-        countdown={activeCountdown} floorTitle={floorHudTitle} isLive={isLive}
-        onReturnToLive={commands.returnToLive} onInspectObservation={setInspectObservation}
-        onNavigateToSequence={commands.selectSequence} />
-    )}
-    navigation={<RootNavigation active={resolvedView} set={setView}
-      capabilities={capabilities} onOpenTools={openTools} />}
-    replay={<ReplaySurface model={replayPresentation}
-      commands={replayCommandsWithInspect} projectedObservations={projectedObservations} />}
-    feedback={toastMessage && <div className="toast-notification" role="status" aria-live="polite">{toastMessage}</div>}
-    overlays={<WorkspaceOverlays snapshot={snapshot} commands={commands}
-      inspectStat={inspectStat} closeStat={() => setInspectStat(null)}
-      inspectObservation={inspectObservation} closeObservation={() => setInspectObservation(null)}
-      onInspectObservation={setInspectObservation}
-      showFloorRules={showFloorRules} closeFloorRules={() => setShowFloorRules(false)}
-      showTimelineHistory={showTimelineHistory} closeHistory={() => setShowTimelineHistory(false)}
-      showTimelineEvidence={showTimelineEvidence} closeEvidence={() => setShowTimelineEvidence(false)}
-      tools={showJsonModal ? {
-        jsonText, importError, presentationChoice, onJsonTextChange: handleJsonTextChange,
-        onSelectPresentation: setPresentationChoice, onImport: handleImportJson,
-        onExport: handleExportJson, onReset: handleReset, onClose: () => setShowJsonModal(false),
-      } : null} />}
-  >
-    <ActiveFeatureView view={resolvedView} state={projectedState} liveState={liveState}
-      observations={projectedObservations} sources={sources} events={events} sequence={currentSeq}
-      isLive={isLive} provenanceItem={provenanceItem} setProvenanceItem={setProvenanceItem}
-      inventoryFilter={inventoryFilter} setInventoryFilter={setInventoryFilter}
-      equipmentSlot={equipmentSlot} setEquipmentSlot={setEquipmentSlot}
-      onNavigateToSequence={commands.selectSequence} actions={commands.actions}
-      onInspectObservation={setInspectObservation} onInspectStat={setInspectStat} />
-  </ShellFrame>;
+  return (
+    <ShellFrame
+      presentation={presentationChoice}
+      isLive={isLive}
+      hud={
+        presentationChoice === "authority-arwes" ? (
+          <ArwesPresentation model={composition} />
+        ) : usesConceptHud ? (
+          <ConceptHud
+            state={projectedState}
+            observations={projectedObservations}
+            countdown={activeCountdown}
+            floorTitle={floorHudTitle}
+            isLive={isLive}
+            onReturnToLive={commands.returnToLive}
+            onInspectObservation={setInspectObservation}
+            onNavigateToSequence={commands.selectSequence}
+          />
+        ) : (
+          <PersistentHud
+            composition={composition}
+            state={projectedState}
+            observations={projectedObservations}
+            countdown={activeCountdown}
+            floorTitle={floorHudTitle}
+            isLive={isLive}
+            onInspectObservation={setInspectObservation}
+            onNavigateToSequence={commands.selectSequence}
+          />
+        )
+      }
+      navigation={
+        <RootNavigation
+          active={resolvedView}
+          set={setView}
+          capabilities={capabilities}
+          onOpenTools={openTools}
+        />
+      }
+      replay={
+        <ReplaySurface
+          model={replayPresentation}
+          commands={replayCommandsWithInspect}
+          projectedObservations={projectedObservations}
+        />
+      }
+      feedback={
+        toastMessage && (
+          <div className="toast-notification" role="status" aria-live="polite">
+            {toastMessage}
+          </div>
+        )
+      }
+      overlays={
+        <WorkspaceOverlays
+          snapshot={snapshot}
+          commands={commands}
+          inspectStat={inspectStat}
+          closeStat={() => setInspectStat(null)}
+          inspectObservation={inspectObservation}
+          closeObservation={() => setInspectObservation(null)}
+          onInspectObservation={setInspectObservation}
+          showFloorRules={showFloorRules}
+          closeFloorRules={() => setShowFloorRules(false)}
+          showTimelineHistory={showTimelineHistory}
+          closeHistory={() => setShowTimelineHistory(false)}
+          showTimelineEvidence={showTimelineEvidence}
+          closeEvidence={() => setShowTimelineEvidence(false)}
+          tools={
+            showJsonModal
+              ? {
+                  jsonText,
+                  importError,
+                  presentationChoice,
+                  onJsonTextChange: handleJsonTextChange,
+                  onSelectPresentation: setPresentationChoice,
+                  onImport: handleImportJson,
+                  onExport: handleExportJson,
+                  onReset: handleReset,
+                  onClose: () => setShowJsonModal(false),
+                }
+              : null
+          }
+        />
+      }
+    >
+      <ActiveFeatureView
+        view={resolvedView}
+        state={projectedState}
+        liveState={liveState}
+        observations={projectedObservations}
+        sources={sources}
+        events={events}
+        sequence={currentSeq}
+        isLive={isLive}
+        provenanceItem={provenanceItem}
+        setProvenanceItem={setProvenanceItem}
+        inventoryFilter={inventoryFilter}
+        setInventoryFilter={setInventoryFilter}
+        equipmentSlot={equipmentSlot}
+        setEquipmentSlot={setEquipmentSlot}
+        onNavigateToSequence={commands.selectSequence}
+        actions={commands.actions}
+        onInspectObservation={setInspectObservation}
+        onInspectStat={setInspectStat}
+      />
+    </ShellFrame>
+  );
 }

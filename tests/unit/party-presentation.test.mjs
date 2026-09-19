@@ -7,7 +7,7 @@ import { derivePartyPresentation } from "../../src/features/party/public.ts";
 test("derivePartyPresentation represents absent party state", () => {
   const p = derivePartyPresentation({ party: undefined });
   assert.equal(p.hasParty, false);
-  assert.equal(p.status, "unavailable");
+  assert.equal(p.status, "not-established");
   assert.deepEqual(p.members, []);
 });
 

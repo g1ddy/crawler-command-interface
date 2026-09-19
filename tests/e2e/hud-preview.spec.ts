@@ -27,7 +27,7 @@ for (const query of ["", "?hud=unsupported"]) {
   test(`production HUD is the safe fallback for ${query || "a missing parameter"}`, async ({ page }) => {
     await page.goto(`${pagesPath}${query}`);
     await expect(page.locator("[data-hud-presentation]")).toHaveCount(0);
-    await expect(page.locator('[data-production-hud="authority"]')).toBeVisible();
+    await expect(page.locator('[data-hud-composition="persistent"]')).toBeVisible();
     await expect(page.locator(".system-hud")).toHaveCount(0);
   });
 }
@@ -146,7 +146,7 @@ test("authority-arwes presentation mounts, unmounts cleanly on navigation away, 
   await expect(page.getByTestId("arwes-compatibility-probe")).toBeVisible();
 });
 
-test("captures research screenshot artifact for authority-arwes presentation probe", async ({ page }) => {
+test("captures research screenshot artifact for authority-arwes presentation probe", async ({ page }, testInfo) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
   const probe = page.getByTestId("arwes-compatibility-probe");
@@ -158,7 +158,7 @@ test("captures research screenshot artifact for authority-arwes presentation pro
 
   // Capture screenshot of the probe surface for research evidence
   await probe.screenshot({
-    path: "docs/research/images/arwes-authority-poc.png",
+    path: testInfo.outputPath("arwes-authority-poc.png"),
   });
 });
 
