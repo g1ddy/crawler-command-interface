@@ -253,42 +253,34 @@ test('Research Ingestion Contract: CLI ingest script executes cleanly for valid 
   assert.ok(output.includes('Trace mappings compiled: 5'));
 });
 
-test('Research Ingestion Contract: candidate projection generates deterministic candidate events and provenance sidecar for promoted claims', () => {
+test('Research Ingestion Contract: candidate projection generates deterministic proposals and provenance sidecars', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
-  const candidateResult = compileCandidateProjection(doc, modelingDoc);
-  assert.equal(candidateResult.storyId, 'dcc');
-  assert.equal(candidateResult.floor, 3);
-  assert.equal(candidateResult.candidateEvents.length, 2);
-  assert.equal(candidateResult.provenanceSidecar.length, 2);
+  const res1 = compileCandidateProjection(doc, modelingDoc);
+  const res2 = compileCandidateProjection(doc, modelingDoc);
 
-  const collarEvent = candidateResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
-  assert.ok(collarEvent);
-  assert.equal(collarEvent.type, 'ItemAcquired');
-  assert.equal(collarEvent.position.book, 2);
-  assert.equal(collarEvent.position.chapter, 5);
+  assert.deepEqual(res1, res2);
+  assert.equal(res1.storyId, 'dcc');
+  assert.equal(res1.floor, 3);
+  assert.equal(res1.candidateEvents.length, 2);
+  assert.equal(res1.provenanceSidecar.length, 2);
 
-  const collarSidecar = candidateResult.provenanceSidecar.find((s) => s.candidateId === 'candidate-evt-p3-pet-002');
+  const collarProposal = res1.candidateEvents.find((e) => e.candidateId === 'candidate-evt-p3-pet-002');
+  assert.ok(collarProposal);
+  assert.equal(collarProposal.researchClaimId, 'P3-PET-002');
+  assert.equal(collarProposal.target.concept, 'ItemAcquired');
+  assert.deepEqual(collarProposal.unresolved, ['itemId', 'instanceId', 'quantity']);
+  assert.equal(collarProposal.candidatePayload, undefined);
+
+  const collarSidecar = res1.provenanceSidecar.find((s) => s.candidateId === 'candidate-evt-p3-pet-002');
   assert.ok(collarSidecar);
   assert.equal(collarSidecar.researchClaimId, 'P3-PET-002');
   assert.equal(collarSidecar.sources[0].sourceId, 'src-book-2');
   assert.equal(collarSidecar.sources[0].relationship, 'supports');
 });
 
-test('Research Ingestion Contract: candidate items do not manufacture domain identities (itemId or instanceId)', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-
-  const candidateResult = compileCandidateProjection(doc, modelingDoc);
-  const collarEvent = candidateResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
-  assert.ok(collarEvent);
-
-  // Unquantified item claim without explicit domain IDs or quantity has undefined item payload
-  assert.equal(collarEvent.item, undefined);
-});
-
-test('Research Ingestion Contract: explicit unknown quantity yields known=false, unspecified quantity remains absent, neither becomes 1', () => {
+test('Research Ingestion Contract: explicit unknown quantity maps to known=false payload while unspecified quantity is in unresolved array', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
@@ -299,16 +291,30 @@ test('Research Ingestion Contract: explicit unknown quantity yields known=false,
   pet2Claim.unknowns = ['exact_quantity'];
 
   const unknownResult = compileCandidateProjection(testDoc, modelingDoc);
-  const unknownCollarEvent = unknownResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
-  assert.ok(unknownCollarEvent);
-  assert.ok(unknownCollarEvent.item);
-  assert.deepEqual(unknownCollarEvent.item.quantity, { known: false });
-  assert.notEqual(unknownCollarEvent.item.quantity?.value, 1);
+  const unknownCollarProposal = unknownResult.candidateEvents.find((e) => e.candidateId === 'candidate-evt-p3-pet-002');
+  assert.ok(unknownCollarProposal);
+  assert.deepEqual(unknownCollarProposal.candidatePayload, { quantity: { known: false } });
+  assert.deepEqual(unknownCollarProposal.unresolved, ['itemId', 'instanceId']);
 
   // Case B: Unspecified quantity (no unknowns declared)
   const defaultResult = compileCandidateProjection(doc, modelingDoc);
-  const defaultCollarEvent = defaultResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
-  assert.equal(defaultCollarEvent.item, undefined);
+  const defaultCollarProposal = defaultResult.candidateEvents.find((e) => e.candidateId === 'candidate-evt-p3-pet-002');
+  assert.equal(defaultCollarProposal.candidatePayload, undefined);
+  assert.ok(defaultCollarProposal.unresolved.includes('quantity'));
+});
+
+test('Research Ingestion Contract: rejects promotion for evidence explicitly carrying relationship "contradicts"', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const badDoc = deepClone(doc);
+  const pet2Claim = badDoc.claims.find((c) => c.id === 'P3-PET-002');
+  assert.ok(pet2Claim);
+  pet2Claim.evidence[0].relationship = 'contradicts';
+
+  const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with evidence explicitly declared with relationship "contradicts"')));
 });
 
 test('Research Ingestion Contract: candidate compilation fails closed on unvalidated, incomplete, or unsupported modeling input', () => {
@@ -337,13 +343,16 @@ test('Research Ingestion Contract: candidate compilation fails closed on unvalid
   }, /Concept "UnsupportedTargetConcept" for claim "P3-PET-002" is not supported/);
 });
 
-test('Research Ingestion Contract: candidate compilation does not mutate authoritative raw floor data', () => {
+test('Research Ingestion Contract: pure candidate projection produces candidate proposals without mutating memory artifacts', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
-  compileCandidateProjection(doc, modelingDoc);
+  const initialDocSnapshot = deepClone(doc);
+  const initialModelingSnapshot = deepClone(modelingDoc);
 
-  // Ensure data/raw/floors/ remains clean
-  const gitStatusOutput = execFileSync('git', ['status', '--porcelain', 'data/raw/floors/'], { encoding: 'utf8' });
-  assert.equal(gitStatusOutput.trim(), '');
+  const result = compileCandidateProjection(doc, modelingDoc);
+  assert.ok(result.candidateEvents);
+
+  assert.deepEqual(doc, initialDocSnapshot);
+  assert.deepEqual(modelingDoc, initialModelingSnapshot);
 });

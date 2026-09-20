@@ -551,7 +551,7 @@ A research correction therefore does not require rewriting the identity of the e
 
 ### 15.4 Candidate projection — generated, disposable
 
-A compiler may produce:
+A compiler may produce candidate proposals:
 
     candidate/
       events.json
@@ -559,7 +559,9 @@ A compiler may produce:
 
 Candidate output is disposable. It is a review artifact, not automatically authoritative raw data.
 
-Candidate target concepts (e.g. `ItemAcquired`, `ItemCrafted`) are modeling decisions interpreted by the candidate compiler. They are non-authoritative candidate interpretations and do not manufacture domain identities (`itemId`, `instanceId`) or quantities unless established by research evidence.
+Candidate target concepts (e.g. `ItemAcquired`, `ItemCrafted`, `NarrativeEvent`) are modeling decisions interpreted by the candidate compiler. They produce `CandidateEventProposal` records highlighting unresolved requirements (`unresolved: ["itemId", "instanceId", "quantity"]` or `unresolved: ["kind"]`) rather than fabricating fake domain identities, quantities, or event kinds.
+
+Evidence items marked with `relationship: "contradicts"` block promotion in semantic validation, ensuring contradictory evidence cannot silently produce candidate projections.
 
 The compiler must never overwrite `data/raw/floors/**` merely because a claim was marked `promote`.
 

@@ -38,9 +38,13 @@ export interface CompiledResearchOutput {
   claimMappings: ResearchClaimTraceMapping[];
 }
 
-export interface CandidateEventArtifact {
-  id: string;
-  type: string;
+export interface CandidateEventProposal {
+  candidateId: string;
+  researchClaimId: string;
+  target: {
+    domain: string;
+    concept: string;
+  };
   position: {
     floor: number;
     book?: number;
@@ -53,14 +57,8 @@ export interface CandidateEventArtifact {
     confidence: string;
     relationship?: string;
   }>;
-  item?: {
-    instanceId?: string;
-    itemId?: string;
-    quantity?: {
-      known: boolean;
-      value?: number;
-    };
-  };
+  unresolved: string[];
+  candidatePayload?: Record<string, unknown>;
 }
 
 export interface CandidateProvenanceSidecar {
@@ -77,7 +75,7 @@ export interface CandidateProvenanceSidecar {
 export interface CompiledCandidateProjectionResult {
   storyId: string;
   floor: number;
-  candidateEvents: CandidateEventArtifact[];
+  candidateEvents: CandidateEventProposal[];
   provenanceSidecar: CandidateProvenanceSidecar[];
   traceOutput: CompiledResearchOutput;
 }
@@ -168,7 +166,7 @@ export function compileCandidateProjection(
   modelingDoc: ModelingDecisionDocument
 ): CompiledCandidateProjectionResult {
   const traceOutput = compileResearchTrace(researchDoc, modelingDoc);
-  const candidateEvents: CandidateEventArtifact[] = [];
+  const candidateEvents: CandidateEventProposal[] = [];
   const provenanceSidecar: CandidateProvenanceSidecar[] = [];
 
   const decisionMap = new Map<string, typeof modelingDoc.decisions[0]>();
@@ -178,11 +176,7 @@ export function compileCandidateProjection(
 
   for (const claim of researchDoc.claims) {
     const modelingDecision = decisionMap.get(claim.id);
-    if (!modelingDecision) {
-      continue;
-    }
-
-    if (modelingDecision.disposition !== 'promote') {
+    if (!modelingDecision || modelingDecision.disposition !== 'promote') {
       continue;
     }
 
@@ -200,39 +194,41 @@ export function compileCandidateProjection(
       chapter: primaryLocator?.chapter,
     };
 
-    let candidateEvent: CandidateEventArtifact;
+    const unresolved: string[] = [];
+    const candidatePayload: Record<string, unknown> = {};
 
     // Candidate target concepts are modeling decisions interpreted by the candidate compiler.
-    // They are not evidence claims and are not authoritative CCI event types.
+    // They produce candidate proposals highlighting unresolved requirements rather than fabricating fake CCI values.
     if (target.concept === 'ItemAcquired' || target.concept === 'ItemCrafted') {
-      // Do NOT manufacture instanceId, itemId, or quantity: 1 when research evidence does not establish them.
+      unresolved.push('itemId', 'instanceId');
       const unknowns = claim.unknowns || [];
-      const isQuantityUnknown = unknowns.includes('exact_quantity') || unknowns.includes('quantity');
-      const itemPayload = isQuantityUnknown ? { quantity: { known: false } } : undefined;
-
-      candidateEvent = {
-        id: candidateId,
-        type: target.concept,
-        position,
-        summary: claim.claim.summary,
-        evidence: JSON.parse(JSON.stringify(claim.evidence)),
-        item: itemPayload,
-      };
+      if (unknowns.includes('exact_quantity') || unknowns.includes('quantity')) {
+        candidatePayload.quantity = { known: false };
+      } else {
+        unresolved.push('quantity');
+      }
     } else if (target.concept === 'NarrativeEvent') {
-      candidateEvent = {
-        id: candidateId,
-        type: 'NarrativeEvent',
-        position,
-        summary: claim.claim.summary,
-        evidence: JSON.parse(JSON.stringify(claim.evidence)),
-      };
+      unresolved.push('kind');
     } else {
       throw new Error(
-        `Candidate projection error: Concept "${target.concept}" for claim "${claim.id}" is not supported for automatic candidate projection.`
+        `Candidate projection error: Concept "${target.concept}" for claim "${claim.id}" is not supported for candidate projection.`
       );
     }
 
-    candidateEvents.push(candidateEvent);
+    candidateEvents.push({
+      candidateId,
+      researchClaimId: claim.id,
+      target: {
+        domain: target.domain,
+        concept: target.concept,
+      },
+      position,
+      summary: claim.claim.summary,
+      evidence: JSON.parse(JSON.stringify(claim.evidence)),
+      unresolved,
+      candidatePayload: Object.keys(candidatePayload).length > 0 ? candidatePayload : undefined,
+    });
+
     provenanceSidecar.push({
       candidateId,
       researchClaimId: claim.id,
