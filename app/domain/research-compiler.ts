@@ -1,4 +1,10 @@
 import type { ResearchClaimDocument, ModelingDecisionDocument } from './types/research.ts';
+import {
+  validateResearchClaimDocument,
+  validateModelingDecisionDocument,
+  validateSemanticModelingDecisions,
+  validateTraceCompleteness,
+} from './research-validator.ts';
 
 export interface ResearchClaimTraceMapping {
   claimId: string;
@@ -91,10 +97,31 @@ export function compileResearchTrace(
     decisionMap.set(decision.claimId, decision);
   }
 
+  // Fail-closed gate: Run full document validation, semantic validation, and trace completeness validation
+  const researchVal = validateResearchClaimDocument(researchDoc);
+  if (!researchVal.valid) {
+    throw new Error(`Compiler error: Research document schema/semantic validation failed:\n  - ${researchVal.errors.join('\n  - ')}`);
+  }
+
+  const modelingVal = validateModelingDecisionDocument(modelingDoc);
+  if (!modelingVal.valid) {
+    throw new Error(`Compiler error: Modeling decision document schema validation failed:\n  - ${modelingVal.errors.join('\n  - ')}`);
+  }
+
+  const semanticVal = validateSemanticModelingDecisions(researchDoc, modelingDoc);
+  if (!semanticVal.valid) {
+    throw new Error(`Compiler error: Semantic modeling decision validation failed:\n  - ${semanticVal.errors.join('\n  - ')}`);
+  }
+
+  const completenessVal = validateTraceCompleteness(researchDoc, modelingDoc);
+  if (!completenessVal.valid) {
+    throw new Error(`Compiler error: Trace completeness validation failed:\n  - ${completenessVal.errors.join('\n  - ')}`);
+  }
+
   for (const claim of researchDoc.claims) {
     const modelingDecision = decisionMap.get(claim.id);
     if (!modelingDecision) {
-      throw new Error(`Compiler error: Research claim "${claim.id}" has no corresponding modeling decision. Ensure semantic validation runs before compilation.`);
+      throw new Error(`Compiler error: Research claim "${claim.id}" has no corresponding modeling decision.`);
     }
 
     const decision = modelingDecision.disposition;
@@ -164,34 +191,6 @@ export function compileCandidateProjection(
       throw new Error(`Candidate projection error: Promoted claim "${claim.id}" lacks target concept.`);
     }
 
-    // Explicit unknown safety check:
-    // If claim contains explicit unknowns required for concrete projection of target concept, fail closed.
-    const unknowns = claim.unknowns || [];
-    if (
-      target.concept === 'CountdownDeclared' ||
-      target.concept === 'CountdownReset' ||
-      target.concept === 'CountdownPhaseChanged'
-    ) {
-      if (
-        unknowns.includes('exact_timestamp') ||
-        unknowns.includes('exact_seconds') ||
-        unknowns.includes('duration')
-      ) {
-        throw new Error(
-          `Candidate projection error: Claim "${claim.id}" cannot project concrete target "${target.concept}" because required precision is explicitly unknown (${unknowns.join(', ')}).`
-        );
-      }
-    }
-
-    if (
-      (target.concept === 'ItemAcquired' || target.concept === 'ItemCrafted') &&
-      unknowns.includes('exact_quantity')
-    ) {
-      throw new Error(
-        `Candidate projection error: Claim "${claim.id}" cannot project concrete target "${target.concept}" because item quantity is explicitly unknown.`
-      );
-    }
-
     const candidateId = `candidate-evt-${claim.id.toLowerCase()}`;
     const primaryLocator = claim.evidence[0]?.locator;
 
@@ -204,6 +203,12 @@ export function compileCandidateProjection(
     let candidateEvent: CandidateEventArtifact;
 
     if (target.concept === 'ItemAcquired' || target.concept === 'ItemCrafted') {
+      // Do NOT manufacture a quantity of 1 if research evidence does not establish quantity
+      const unknowns = claim.unknowns || [];
+      const quantityObject = unknowns.includes('exact_quantity') || unknowns.includes('quantity')
+        ? { known: false }
+        : undefined;
+
       candidateEvent = {
         id: candidateId,
         type: target.concept,
@@ -211,12 +216,9 @@ export function compileCandidateProjection(
         summary: claim.claim.summary,
         evidence: JSON.parse(JSON.stringify(claim.evidence)),
         item: {
-          instanceId: `inst-candidate-${claim.id.toLowerCase()}`,
-          itemId: `item-candidate-${claim.id.toLowerCase()}`,
-          quantity: {
-            known: true,
-            value: 1,
-          },
+          instanceId: `candidate-inst-${claim.id.toLowerCase()}`,
+          itemId: `candidate-item-${claim.id.toLowerCase()}`,
+          quantity: quantityObject,
         },
       };
     } else if (target.concept === 'NarrativeEvent') {

@@ -105,7 +105,7 @@ test('Research Ingestion Contract: compile complete trace with missing decision 
 
   assert.throws(() => {
     compileResearchTrace(doc, badModelingDoc);
-  }, /Compiler error: Research claim "P3-PET-001" has no corresponding modeling decision/);
+  }, /Compiler error: Trace completeness validation failed/);
 });
 
 test('Research Ingestion Contract: rejects duplicate claim IDs', () => {
@@ -276,20 +276,63 @@ test('Research Ingestion Contract: candidate projection generates deterministic 
   assert.equal(collarSidecar.sources[0].relationship, 'supports');
 });
 
-test('Research Ingestion Contract: candidate projection fails closed when required fields are explicitly unknown', () => {
+test('Research Ingestion Contract: unknown quantity remains unknown and does not manufacture quantity 1', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
-  const badDoc = deepClone(doc);
-  const badModeling = deepClone(modelingDoc);
+  const testDoc = deepClone(doc);
+  const pet2Claim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
+  assert.ok(pet2Claim);
+  pet2Claim.unknowns = ['exact_quantity'];
 
-  // Promote P3-SYS-001 (which has unknowns: ['exact_timestamp']) to CountdownDeclared
-  const sysDecision = badModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
-  assert.ok(sysDecision);
-  sysDecision.disposition = 'promote';
-  sysDecision.target = { domain: 'floor-system', concept: 'CountdownDeclared' };
+  const candidateResult = compileCandidateProjection(testDoc, modelingDoc);
+  const collarEvent = candidateResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
+  assert.ok(collarEvent);
+  assert.ok(collarEvent.item);
+
+  // Must NOT contain quantity value 1
+  assert.notEqual(collarEvent.item.quantity?.value, 1);
+  assert.deepEqual(collarEvent.item.quantity, { known: false });
+
+  // Unquantified claim without explicit unknowns omits quantity object
+  const defaultResult = compileCandidateProjection(doc, modelingDoc);
+  const defaultCollarEvent = defaultResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
+  assert.equal(defaultCollarEvent.item.quantity, undefined);
+});
+
+test('Research Ingestion Contract: candidate compilation fails closed on unvalidated or incomplete modeling input', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const incompleteModelingDoc = deepClone(modelingDoc);
+  incompleteModelingDoc.decisions.pop(); // Remove last decision
 
   assert.throws(() => {
-    compileCandidateProjection(badDoc, badModeling);
-  }, /cannot project concrete target "CountdownDeclared" because required precision is explicitly unknown/);
+    compileCandidateProjection(doc, incompleteModelingDoc);
+  }, /Compiler error: Trace completeness validation failed/);
+
+  const invalidResearchDoc = deepClone(doc);
+  delete invalidResearchDoc.storyId; // Invalid schema
+
+  assert.throws(() => {
+    compileCandidateProjection(invalidResearchDoc, modelingDoc);
+  }, /Compiler error: Research document schema\/semantic validation failed/);
+});
+
+test('Research Ingestion Contract: synthetic candidate IDs are candidate-prefixed and do not mutate raw floor files', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const candidateResult = compileCandidateProjection(doc, modelingDoc);
+  for (const event of candidateResult.candidateEvents) {
+    assert.ok(event.id.startsWith('candidate-evt-'));
+    if (event.item) {
+      assert.ok(event.item.instanceId.startsWith('candidate-inst-'));
+      assert.ok(event.item.itemId.startsWith('candidate-item-'));
+    }
+  }
+
+  // Ensure data/raw/floors/ remains clean
+  const gitStatusOutput = execFileSync('git', ['status', '--porcelain', 'data/raw/floors/'], { encoding: 'utf8' });
+  assert.equal(gitStatusOutput.trim(), '');
 });
