@@ -14,7 +14,7 @@ import {
   validateTraceCompleteness,
   validateModelingDecisionDocument
 } from '../../app/domain/research-validator.ts';
-import { compileResearchTrace } from '../../app/domain/research-compiler.ts';
+import { compileResearchTrace, compileCandidateProjection } from '../../app/domain/research-compiler.ts';
 
 const VALID_RESEARCH_FIXTURE = 'data/raw/research/floor-3/research.yaml';
 const VALID_MODELING_FIXTURE = 'data/raw/research/floor-3/modeling-decisions.yaml';
@@ -251,4 +251,45 @@ test('Research Ingestion Contract: CLI ingest script executes cleanly for valid 
   ], { encoding: 'utf8' });
   assert.ok(output.includes('[Research Ingestion Success]'));
   assert.ok(output.includes('Trace mappings compiled: 5'));
+});
+
+test('Research Ingestion Contract: candidate projection generates deterministic candidate events and provenance sidecar for promoted claims', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const candidateResult = compileCandidateProjection(doc, modelingDoc);
+  assert.equal(candidateResult.storyId, 'dcc');
+  assert.equal(candidateResult.floor, 3);
+  assert.equal(candidateResult.candidateEvents.length, 2);
+  assert.equal(candidateResult.provenanceSidecar.length, 2);
+
+  const collarEvent = candidateResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
+  assert.ok(collarEvent);
+  assert.equal(collarEvent.type, 'ItemAcquired');
+  assert.equal(collarEvent.position.book, 2);
+  assert.equal(collarEvent.position.chapter, 5);
+
+  const collarSidecar = candidateResult.provenanceSidecar.find((s) => s.candidateId === 'candidate-evt-p3-pet-002');
+  assert.ok(collarSidecar);
+  assert.equal(collarSidecar.researchClaimId, 'P3-PET-002');
+  assert.equal(collarSidecar.sources[0].sourceId, 'src-book-2');
+  assert.equal(collarSidecar.sources[0].relationship, 'supports');
+});
+
+test('Research Ingestion Contract: candidate projection fails closed when required fields are explicitly unknown', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const badDoc = deepClone(doc);
+  const badModeling = deepClone(modelingDoc);
+
+  // Promote P3-SYS-001 (which has unknowns: ['exact_timestamp']) to CountdownDeclared
+  const sysDecision = badModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
+  assert.ok(sysDecision);
+  sysDecision.disposition = 'promote';
+  sysDecision.target = { domain: 'floor-system', concept: 'CountdownDeclared' };
+
+  assert.throws(() => {
+    compileCandidateProjection(badDoc, badModeling);
+  }, /cannot project concrete target "CountdownDeclared" because required precision is explicitly unknown/);
 });

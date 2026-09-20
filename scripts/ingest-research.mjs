@@ -4,7 +4,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadResearchClaimDocument, loadModelingDecisionDocument } from '../app/domain/research-loader.ts';
 import { compileResearchTrace } from '../app/domain/research-compiler.ts';
-import { validateSemanticModelingDecisions } from '../app/domain/research-validator.ts';
+import {
+  validateResearchClaimDocument,
+  validateModelingDecisionDocument,
+  validateSemanticModelingDecisions,
+  validateTraceCompleteness
+} from '../app/domain/research-validator.ts';
 
 const args = process.argv.slice(2);
 const researchPath = args[0] || 'data/raw/research/floor-3/research.yaml';
@@ -35,10 +40,31 @@ try {
   const researchDoc = loadResearchClaimDocument(resolvedResearchPath);
   const modelingDoc = loadModelingDecisionDocument(resolvedModelingPath);
 
+  const researchValidation = validateResearchClaimDocument(researchDoc);
+  if (!researchValidation.valid) {
+    throw new Error(
+      `Research claim document validation failed:\n  - ${researchValidation.errors.join('\n  - ')}`
+    );
+  }
+
+  const modelingValidation = validateModelingDecisionDocument(modelingDoc);
+  if (!modelingValidation.valid) {
+    throw new Error(
+      `Modeling decision document validation failed:\n  - ${modelingValidation.errors.join('\n  - ')}`
+    );
+  }
+
   const semanticValidation = validateSemanticModelingDecisions(researchDoc, modelingDoc);
   if (!semanticValidation.valid) {
     throw new Error(
       `Semantic modeling decision validation failed:\n  - ${semanticValidation.errors.join('\n  - ')}`
+    );
+  }
+
+  const completenessValidation = validateTraceCompleteness(researchDoc, modelingDoc);
+  if (!completenessValidation.valid) {
+    throw new Error(
+      `Trace completeness validation failed:\n  - ${completenessValidation.errors.join('\n  - ')}`
     );
   }
 

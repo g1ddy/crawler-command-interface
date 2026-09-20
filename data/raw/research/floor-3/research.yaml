@@ -26,6 +26,7 @@ claims:
           book: 2
           chapter: 5
         confidence: confirmed
+        relationship: supports
   - id: P3-PET-002
     domain: pet
     kind: state
@@ -38,6 +39,7 @@ claims:
           book: 2
           chapter: 5
         confidence: confirmed
+        relationship: supports
     dependencies:
       - P3-PET-001
   - id: P3-INV-001
@@ -52,6 +54,7 @@ claims:
           book: 2
           chapter: 25
         confidence: confirmed
+        relationship: supports
   - id: P3-PET-003
     domain: pet
     kind: observation
@@ -64,6 +67,7 @@ claims:
           book: 2
           chapter: 5
         confidence: confirmed
+        relationship: context
   - id: P3-SYS-001
     domain: floor-system
     kind: observation
@@ -75,5 +79,6 @@ claims:
         locator:
           section: Floor Rules
         confidence: corroborated
+        relationship: corroborates
     unknowns:
       - exact_timestamp
