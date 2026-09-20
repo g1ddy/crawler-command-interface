@@ -200,9 +200,9 @@ export function validateSemanticModelingDecisions(
     if (decision.disposition === 'promote') {
       // Check confidence and evidence relationships
       for (const ev of claim.evidence) {
-        if (ev.confidence === 'disputed' || ev.confidence === 'candidate') {
+        if (ev.confidence === 'disputed') {
           errors.push(
-            `Domain error: Claim "${claim.id}" cannot be promoted with confidence "${ev.confidence}". Modeling safety rule requires confirmed or corroborated confidence for authoritative execution.`
+            `Domain error: Claim "${claim.id}" cannot be promoted with confidence "${ev.confidence}". Disputed evidence requires resolution before promotion.`
           );
         }
         if (ev.relationship === 'contradicts') {

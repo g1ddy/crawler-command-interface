@@ -161,6 +161,19 @@ test('Research Ingestion Contract: rejects unsafe promotion with disputed confid
   assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with confidence "disputed"')));
 });
 
+test('Research Ingestion Contract: permits promotion with candidate confidence when modeling decision authorizes it', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  const candidateDoc = deepClone(doc);
+
+  // Set confidence to candidate on promoted claim P3-PET-002
+  candidateDoc.claims[1].evidence[0].confidence = 'candidate';
+
+  const validation = validateSemanticModelingDecisions(candidateDoc, modelingDoc);
+  assert.equal(validation.valid, true);
+  assert.deepEqual(validation.errors, []);
+});
+
 test('Research Ingestion Contract: rejects unsafe promotion with unresolved contradiction', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
