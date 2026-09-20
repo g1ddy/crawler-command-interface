@@ -29,10 +29,13 @@ export interface ResearchClaimLocator {
 
 export type ClaimConfidence = 'confirmed' | 'corroborated' | 'candidate' | 'disputed';
 
+export type EvidenceRelationship = 'supports' | 'corroborates' | 'contradicts' | 'context';
+
 export interface ResearchClaimEvidence {
   sourceId: string;
   locator?: ResearchClaimLocator;
   confidence: ClaimConfidence;
+  relationship?: EvidenceRelationship;
   note?: string;
 }
 

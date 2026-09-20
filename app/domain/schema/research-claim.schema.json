@@ -158,6 +158,14 @@
             "disputed"
           ]
         },
+        "relationship": {
+          "enum": [
+            "supports",
+            "corroborates",
+            "contradicts",
+            "context"
+          ]
+        },
         "note": {
           "type": "string",
           "maxLength": 1000

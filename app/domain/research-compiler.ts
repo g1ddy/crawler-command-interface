@@ -1,4 +1,10 @@
 import type { ResearchClaimDocument, ModelingDecisionDocument } from './types/research.ts';
+import {
+  validateResearchClaimDocument,
+  validateModelingDecisionDocument,
+  validateSemanticModelingDecisions,
+  validateTraceCompleteness,
+} from './research-validator.ts';
 
 export interface ResearchClaimTraceMapping {
   claimId: string;
@@ -32,6 +38,51 @@ export interface CompiledResearchOutput {
   claimMappings: ResearchClaimTraceMapping[];
 }
 
+/**
+ * Generic, disposable candidate-review representation. This is not a CCI runtime
+ * event/state payload and must not be treated as authoritative application data.
+ */
+export interface CandidateProposal {
+  candidateId: string;
+  researchClaimId: string;
+  target: {
+    domain: string;
+    concept: string;
+  };
+  position: {
+    floor: number;
+    book?: number;
+    chapter?: number;
+  };
+  summary: string;
+  evidence: Array<{
+    sourceId: string;
+    locator?: Record<string, unknown>;
+    confidence: string;
+    relationship?: string;
+  }>;
+  unknowns?: string[];
+}
+
+export interface CandidateProvenanceSidecar {
+  candidateId: string;
+  researchClaimId: string;
+  sources: Array<{
+    sourceId: string;
+    locator?: Record<string, unknown>;
+    confidence: string;
+    relationship?: string;
+  }>;
+}
+
+export interface CompiledCandidateProjectionResult {
+  storyId: string;
+  floor: number;
+  candidateProposals: CandidateProposal[];
+  provenanceSidecar: CandidateProvenanceSidecar[];
+  traceOutput: CompiledResearchOutput;
+}
+
 export function compileResearchTrace(
   researchDoc: ResearchClaimDocument,
   modelingDoc: ModelingDecisionDocument
@@ -47,10 +98,31 @@ export function compileResearchTrace(
     decisionMap.set(decision.claimId, decision);
   }
 
+  // Fail-closed gate: Run full document validation, semantic validation, and trace completeness validation
+  const researchVal = validateResearchClaimDocument(researchDoc);
+  if (!researchVal.valid) {
+    throw new Error(`Compiler error: Research document schema/semantic validation failed:\n  - ${researchVal.errors.join('\n  - ')}`);
+  }
+
+  const modelingVal = validateModelingDecisionDocument(modelingDoc);
+  if (!modelingVal.valid) {
+    throw new Error(`Compiler error: Modeling decision document schema validation failed:\n  - ${modelingVal.errors.join('\n  - ')}`);
+  }
+
+  const semanticVal = validateSemanticModelingDecisions(researchDoc, modelingDoc);
+  if (!semanticVal.valid) {
+    throw new Error(`Compiler error: Semantic modeling decision validation failed:\n  - ${semanticVal.errors.join('\n  - ')}`);
+  }
+
+  const completenessVal = validateTraceCompleteness(researchDoc, modelingDoc);
+  if (!completenessVal.valid) {
+    throw new Error(`Compiler error: Trace completeness validation failed:\n  - ${completenessVal.errors.join('\n  - ')}`);
+  }
+
   for (const claim of researchDoc.claims) {
     const modelingDecision = decisionMap.get(claim.id);
     if (!modelingDecision) {
-      throw new Error(`Compiler error: Research claim "${claim.id}" has no corresponding modeling decision. Ensure semantic validation runs before compilation.`);
+      throw new Error(`Compiler error: Research claim "${claim.id}" has no corresponding modeling decision.`);
     }
 
     const decision = modelingDecision.disposition;
@@ -89,5 +161,73 @@ export function compileResearchTrace(
     reviewClaimCount,
     ledgerOnlyClaimCount,
     claimMappings,
+  };
+}
+
+export function compileCandidateProjection(
+  researchDoc: ResearchClaimDocument,
+  modelingDoc: ModelingDecisionDocument
+): CompiledCandidateProjectionResult {
+  const traceOutput = compileResearchTrace(researchDoc, modelingDoc);
+  const candidateProposals: CandidateProposal[] = [];
+  const provenanceSidecar: CandidateProvenanceSidecar[] = [];
+
+  const decisionMap = new Map<string, typeof modelingDoc.decisions[0]>();
+  for (const decision of modelingDoc.decisions) {
+    decisionMap.set(decision.claimId, decision);
+  }
+
+  for (const claim of researchDoc.claims) {
+    const modelingDecision = decisionMap.get(claim.id);
+    if (!modelingDecision || modelingDecision.disposition !== 'promote') {
+      continue;
+    }
+
+    const target = modelingDecision.target;
+    if (!target) {
+      throw new Error(`Candidate projection error: Promoted claim "${claim.id}" lacks target concept.`);
+    }
+
+    // Collision-safe candidate identity using Case-Preserving Escaping (preserving case-distinction without claim ID collision)
+    const encodedClaimId = encodeURIComponent(claim.id);
+    const candidateId = `candidate-${encodedClaimId}`;
+
+    // Chronology is grounded strictly in research scope floor.
+    // Evidence locators are preserved in evidence; position does not implicitly grab evidence[0].locator.
+    const position = {
+      floor: researchDoc.floor,
+    };
+
+    candidateProposals.push({
+      candidateId,
+      researchClaimId: claim.id,
+      target: {
+        domain: target.domain,
+        concept: target.concept,
+      },
+      position,
+      summary: claim.claim.summary,
+      evidence: JSON.parse(JSON.stringify(claim.evidence)),
+      unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
+    });
+
+    provenanceSidecar.push({
+      candidateId,
+      researchClaimId: claim.id,
+      sources: claim.evidence.map((ev) => ({
+        sourceId: ev.sourceId,
+        locator: ev.locator ? JSON.parse(JSON.stringify(ev.locator)) : undefined,
+        confidence: ev.confidence,
+        relationship: ev.relationship,
+      })),
+    });
+  }
+
+  return {
+    storyId: researchDoc.storyId,
+    floor: researchDoc.floor,
+    candidateProposals,
+    provenanceSidecar,
+    traceOutput,
   };
 }

@@ -65,7 +65,7 @@
   },
   "app/domain/types/research.ts": {
     "complexity": 1,
-    "loc": 105,
+    "loc": 108,
     "instability": 0,
     "fanIn": 4,
     "fanOut": 0,
@@ -264,11 +264,19 @@
     "scanned": true
   },
   "app/domain/research-compiler.ts": {
-    "complexity": 12,
-    "loc": 94,
+    "complexity": 16,
+    "loc": 234,
     "instability": 1,
     "fanIn": 0,
-    "fanOut": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "app/domain/research-validator.ts": {
+    "complexity": 27,
+    "loc": 253,
+    "instability": 0.78,
+    "fanIn": 2,
+    "fanOut": 7,
     "scanned": true
   },
   "app/domain/research-loader.ts": {
@@ -277,14 +285,6 @@
     "instability": 1,
     "fanIn": 0,
     "fanOut": 5,
-    "scanned": true
-  },
-  "app/domain/research-validator.ts": {
-    "complexity": 27,
-    "loc": 248,
-    "instability": 0.88,
-    "fanIn": 1,
-    "fanOut": 7,
     "scanned": true
   },
   "app/domain/stats.ts": {

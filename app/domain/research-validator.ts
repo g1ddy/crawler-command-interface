@@ -198,11 +198,16 @@ export function validateSemanticModelingDecisions(
     }
 
     if (decision.disposition === 'promote') {
-      // Check confidence
+      // Check confidence and evidence relationships
       for (const ev of claim.evidence) {
-        if (ev.confidence === 'disputed' || ev.confidence === 'candidate') {
+        if (ev.confidence === 'disputed') {
           errors.push(
-            `Domain error: Claim "${claim.id}" cannot be promoted with confidence "${ev.confidence}". Modeling safety rule requires confirmed or corroborated confidence for authoritative execution.`
+            `Domain error: Claim "${claim.id}" cannot enter candidate projection with confidence "${ev.confidence}". Disputed evidence requires resolution before candidate projection.`
+          );
+        }
+        if (ev.relationship === 'contradicts') {
+          errors.push(
+            `Domain error: Claim "${claim.id}" cannot enter candidate projection with evidence explicitly declared with relationship "contradicts".`
           );
         }
       }
@@ -212,7 +217,7 @@ export function validateSemanticModelingDecisions(
         for (const c of claim.contradictions) {
           if (c.relationship === 'unresolved' || c.relationship === 'contradicts') {
             errors.push(
-              `Domain error: Claim "${claim.id}" cannot be promoted with unresolved contradiction against claim "${c.claimId}".`
+              `Domain error: Claim "${claim.id}" cannot enter candidate projection with unresolved contradiction against claim "${c.claimId}".`
             );
           }
         }

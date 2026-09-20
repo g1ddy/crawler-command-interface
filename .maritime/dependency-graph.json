@@ -488,8 +488,8 @@
       "dependents": [
         "app/domain/types/index.ts",
         "app/domain/research-compiler.ts",
-        "app/domain/research-loader.ts",
-        "app/domain/research-validator.ts"
+        "app/domain/research-validator.ts",
+        "app/domain/research-loader.ts"
       ],
       "orphan": false
     },
@@ -1916,32 +1916,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./types/research.ts",
-          "resolved": "app/domain/types/research.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [],
-      "orphan": false
-    },
-    {
-      "source": "app/domain/research-loader.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
             "import"
           ],
           "dynamic": false,
@@ -1970,80 +1944,10 @@
           "resolved": "app/domain/types/research.ts",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": true,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "core",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "protocol": "node:",
-          "moduleSystem": "es6",
-          "module": "fs",
-          "resolved": "fs",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "js-yaml",
-          "resolved": "node_modules/js-yaml/dist/js-yaml.mjs",
-          "valid": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": true,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "core",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "protocol": "node:",
-          "moduleSystem": "es6",
-          "module": "path",
-          "resolved": "path",
-          "valid": true,
-          "matchesDoNotFollow": false
         }
       ],
       "dependents": [],
       "orphan": false
-    },
-    {
-      "source": "node_modules/js-yaml/dist/js-yaml.mjs",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "app/domain/research-loader.ts"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm-dev",
-        "import"
-      ]
     },
     {
       "source": "app/domain/research-validator.ts",
@@ -2173,6 +2077,7 @@
         }
       ],
       "dependents": [
+        "app/domain/research-compiler.ts",
         "app/domain/research-loader.ts"
       ],
       "orphan": false
@@ -2208,6 +2113,119 @@
       "matchesDoNotFollow": false,
       "dependencyTypes": [
         "local",
+        "import"
+      ]
+    },
+    {
+      "source": "app/domain/research-loader.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./research-validator.ts",
+          "resolved": "app/domain/research-validator.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types/research.ts",
+          "resolved": "app/domain/types/research.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": true,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "core",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "protocol": "node:",
+          "moduleSystem": "es6",
+          "module": "fs",
+          "resolved": "fs",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm-dev",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "js-yaml",
+          "resolved": "node_modules/js-yaml/dist/js-yaml.mjs",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": true,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "core",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "protocol": "node:",
+          "moduleSystem": "es6",
+          "module": "path",
+          "resolved": "path",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/js-yaml/dist/js-yaml.mjs",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/research-loader.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm-dev",
         "import"
       ]
     },
@@ -9683,7 +9701,7 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 167,
-    "totalDependenciesCruised": 431,
+    "totalDependenciesCruised": 432,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

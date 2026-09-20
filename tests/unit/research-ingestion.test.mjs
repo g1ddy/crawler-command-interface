@@ -14,7 +14,7 @@ import {
   validateTraceCompleteness,
   validateModelingDecisionDocument
 } from '../../app/domain/research-validator.ts';
-import { compileResearchTrace } from '../../app/domain/research-compiler.ts';
+import { compileResearchTrace, compileCandidateProjection } from '../../app/domain/research-compiler.ts';
 
 const VALID_RESEARCH_FIXTURE = 'data/raw/research/floor-3/research.yaml';
 const VALID_MODELING_FIXTURE = 'data/raw/research/floor-3/modeling-decisions.yaml';
@@ -105,7 +105,7 @@ test('Research Ingestion Contract: compile complete trace with missing decision 
 
   assert.throws(() => {
     compileResearchTrace(doc, badModelingDoc);
-  }, /Compiler error: Research claim "P3-PET-001" has no corresponding modeling decision/);
+  }, /Compiler error: Trace completeness validation failed/);
 });
 
 test('Research Ingestion Contract: rejects duplicate claim IDs', () => {
@@ -158,7 +158,20 @@ test('Research Ingestion Contract: rejects unsafe promotion with disputed confid
 
   const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
   assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with confidence "disputed"')));
+  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with confidence "disputed"')));
+});
+
+test('Research Ingestion Contract: permits promotion with candidate confidence when modeling decision authorizes it', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  const candidateDoc = deepClone(doc);
+
+  // Set confidence to candidate on promoted claim P3-PET-002
+  candidateDoc.claims[1].evidence[0].confidence = 'candidate';
+
+  const validation = validateSemanticModelingDecisions(candidateDoc, modelingDoc);
+  assert.equal(validation.valid, true);
+  assert.deepEqual(validation.errors, []);
 });
 
 test('Research Ingestion Contract: rejects unsafe promotion with unresolved contradiction', () => {
@@ -174,7 +187,7 @@ test('Research Ingestion Contract: rejects unsafe promotion with unresolved cont
 
   const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
   assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with unresolved contradiction')));
+  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with unresolved contradiction')));
 });
 
 test('Research Ingestion Contract: rejects duplicate modeling decisions', () => {
@@ -251,4 +264,224 @@ test('Research Ingestion Contract: CLI ingest script executes cleanly for valid 
   ], { encoding: 'utf8' });
   assert.ok(output.includes('[Research Ingestion Success]'));
   assert.ok(output.includes('Trace mappings compiled: 5'));
+});
+
+test('Research Ingestion Contract: candidate projection generates generic proposals and sidecars without hardcoded domain mappings', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const res1 = compileCandidateProjection(doc, modelingDoc);
+  const res2 = compileCandidateProjection(doc, modelingDoc);
+
+  assert.deepEqual(res1, res2);
+  assert.equal(res1.storyId, 'dcc');
+  assert.equal(res1.floor, 3);
+  assert.equal(res1.candidateProposals.length, 2);
+  assert.equal(res1.provenanceSidecar.length, 2);
+
+  const collarProposal = res1.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002');
+  assert.ok(collarProposal);
+  assert.equal(collarProposal.candidateId, 'candidate-P3-PET-002');
+  assert.equal(collarProposal.target.domain, 'inventory');
+  assert.equal(collarProposal.target.concept, 'ItemAcquired');
+  assert.equal(collarProposal.position.floor, 3);
+  assert.equal(collarProposal.position.book, undefined); // Chronology is grounded in scope floor, not evidence[0]
+});
+
+test('Research Ingestion Contract: case-distinct claim IDs generate non-colliding candidate IDs', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const testDoc = deepClone(doc);
+  const testModeling = deepClone(modelingDoc);
+
+  // Duplicate claim except with lowercase ID
+  const upperClaim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
+  assert.ok(upperClaim);
+  const lowerClaim = deepClone(upperClaim);
+  lowerClaim.id = 'p3-pet-002';
+  testDoc.claims.push(lowerClaim);
+
+  const lowerDecision = deepClone(testModeling.decisions.find((d) => d.claimId === 'P3-PET-002'));
+  lowerDecision.claimId = 'p3-pet-002';
+  testModeling.decisions.push(lowerDecision);
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const candidateIds = result.candidateProposals.map((c) => c.candidateId);
+
+  assert.ok(candidateIds.includes('candidate-P3-PET-002'));
+  assert.ok(candidateIds.includes('candidate-p3-pet-002'));
+  assert.equal(new Set(candidateIds).size, candidateIds.length);
+});
+
+test('Research Ingestion Contract: evidence ordering alone does not dictate candidate event position', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const testDoc = deepClone(doc);
+  const pet2Claim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
+  assert.ok(pet2Claim);
+
+  // Add multiple evidence items with different locators
+  pet2Claim.evidence = [
+    { sourceId: 'src-book-2', locator: { book: 2, chapter: 10 }, confidence: 'confirmed' },
+    { sourceId: 'src-book-2', locator: { book: 2, chapter: 5 }, confidence: 'corroborated' }
+  ];
+
+  const resultOriginal = compileCandidateProjection(testDoc, modelingDoc);
+
+  // Reverse evidence array order
+  pet2Claim.evidence.reverse();
+  const resultReversed = compileCandidateProjection(testDoc, modelingDoc);
+
+  const posOriginal = resultOriginal.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002').position;
+  const posReversed = resultReversed.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002').position;
+
+  // Position is derived strictly from scope floor, completely invariant to evidence ordering
+  assert.deepEqual(posOriginal, { floor: 3 });
+  assert.deepEqual(posReversed, { floor: 3 });
+});
+
+test('Research Ingestion Contract: generic unknown array is preserved untouched without domain field parsing', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const testDoc = deepClone(doc);
+  const sysClaim = testDoc.claims.find((c) => c.id === 'P3-SYS-001');
+  assert.ok(sysClaim);
+  sysClaim.unknowns = ['custom_unknown_key_1', 'custom_unknown_key_2'];
+
+  const testModeling = deepClone(modelingDoc);
+  const sysDecision = testModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
+  assert.ok(sysDecision);
+  sysDecision.disposition = 'promote';
+  sysDecision.target = { domain: 'floor-system', concept: 'CustomTargetConcept' };
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const sysProposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-SYS-001');
+
+  assert.ok(sysProposal);
+  assert.deepEqual(sysProposal.unknowns, ['custom_unknown_key_1', 'custom_unknown_key_2']);
+});
+
+test('Research Ingestion Contract: explicit unknown on conceptual claim preserves statement and unknowns without inventing concrete values', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  // P3-SYS-001 (eight-day collapse timer) has unknowns: ['exact_timestamp']
+  const testDoc = deepClone(doc);
+  const testModeling = deepClone(modelingDoc);
+
+  const sysDecision = testModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
+  assert.ok(sysDecision);
+  sysDecision.disposition = 'promote';
+  sysDecision.target = { domain: 'floor-system', concept: 'CountdownDeclared' };
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const sysProposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-SYS-001');
+
+  assert.ok(sysProposal);
+  assert.equal(sysProposal.summary, "Floor 3 has an eight-day collapse timer.");
+  assert.deepEqual(sysProposal.unknowns, ['exact_timestamp']);
+  // Assert no concrete timestamp or executable countdown seconds were fabricated on proposal
+  assert.equal('timestamp' in sysProposal, false);
+  assert.equal('remainingSeconds' in sysProposal, false);
+});
+
+test('Research Ingestion Contract: non-event claim promoted to candidate proposal does not require event payload', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const testDoc = deepClone(doc);
+  const testModeling = deepClone(modelingDoc);
+
+  // Promote state claim P3-PET-002 with non-event concept 'CatalogItemReference'
+  const pet2Decision = testModeling.decisions.find((d) => d.claimId === 'P3-PET-002');
+  assert.ok(pet2Decision);
+  pet2Decision.disposition = 'promote';
+  pet2Decision.target = { domain: 'inventory', concept: 'CatalogItemReference' };
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const pet2Proposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002');
+
+  assert.ok(pet2Proposal);
+  assert.equal(pet2Proposal.target.domain, 'inventory');
+  assert.equal(pet2Proposal.target.concept, 'CatalogItemReference');
+  assert.equal('type' in pet2Proposal, false);
+  assert.equal('item' in pet2Proposal, false);
+});
+
+test('Research Ingestion Contract: rejects promotion for evidence explicitly carrying relationship "contradicts"', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const badDoc = deepClone(doc);
+  const pet2Claim = badDoc.claims.find((c) => c.id === 'P3-PET-002');
+  assert.ok(pet2Claim);
+  pet2Claim.evidence[0].relationship = 'contradicts';
+
+  const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with evidence explicitly declared with relationship "contradicts"')));
+});
+
+test('Research Ingestion Contract: candidate compilation fails closed on unvalidated or incomplete modeling input', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  // Incomplete modeling decisions
+  const incompleteModelingDoc = deepClone(modelingDoc);
+  incompleteModelingDoc.decisions.pop();
+  assert.throws(() => {
+    compileCandidateProjection(doc, incompleteModelingDoc);
+  }, /Compiler error: Trace completeness validation failed/);
+
+  // Invalid research document
+  const invalidResearchDoc = deepClone(doc);
+  delete invalidResearchDoc.storyId;
+  assert.throws(() => {
+    compileCandidateProjection(invalidResearchDoc, modelingDoc);
+  }, /Compiler error: Research document schema\/semantic validation failed/);
+
+  // Missing target concept on promoted decision
+  const missingTargetDoc = deepClone(modelingDoc);
+  delete missingTargetDoc.decisions[1].target;
+  assert.throws(() => {
+    compileCandidateProjection(doc, missingTargetDoc);
+  }, /Modeling decision document schema validation failed/);
+});
+
+test('Research Ingestion Contract: pure candidate projection produces candidate proposals without mutating memory artifacts', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const initialDocSnapshot = deepClone(doc);
+  const initialModelingSnapshot = deepClone(modelingDoc);
+
+  const result = compileCandidateProjection(doc, modelingDoc);
+  assert.ok(result.candidateProposals);
+
+  assert.deepEqual(doc, initialDocSnapshot);
+  assert.deepEqual(modelingDoc, initialModelingSnapshot);
+});
+
+
+test('Research Ingestion Contract: promote authorizes disposable candidate review, not authoritative runtime state', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const result = compileCandidateProjection(doc, modelingDoc);
+  const promoted = result.candidateProposals.find((candidate) => candidate.researchClaimId === 'P3-PET-002');
+
+  assert.ok(promoted);
+  assert.equal(promoted.target.concept, 'ItemAcquired');
+
+  assert.equal('event' in promoted, false);
+  assert.equal('payload' in promoted, false);
+  assert.equal('authoritative' in promoted, false);
+  assert.equal('runtimeState' in promoted, false);
+  assert.equal('rawFloorPath' in promoted, false);
+
+  assert.ok(Array.isArray(result.candidateProposals));
+  assert.ok(Array.isArray(result.provenanceSidecar));
 });
