@@ -555,11 +555,11 @@ A compiler may produce:
 
     candidate/
       events.json
-      observations.json
-      catalog.json
-      countdowns.json
+      provenance.json
 
 Candidate output is disposable. It is a review artifact, not automatically authoritative raw data.
+
+Candidate target concepts (e.g. `ItemAcquired`, `ItemCrafted`) are modeling decisions interpreted by the candidate compiler. They are non-authoritative candidate interpretations and do not manufacture domain identities (`itemId`, `instanceId`) or quantities unless established by research evidence.
 
 The compiler must never overwrite `data/raw/floors/**` merely because a claim was marked `promote`.
 

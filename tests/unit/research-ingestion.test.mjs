@@ -276,61 +276,72 @@ test('Research Ingestion Contract: candidate projection generates deterministic 
   assert.equal(collarSidecar.sources[0].relationship, 'supports');
 });
 
-test('Research Ingestion Contract: unknown quantity remains unknown and does not manufacture quantity 1', () => {
+test('Research Ingestion Contract: candidate items do not manufacture domain identities (itemId or instanceId)', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
+  const candidateResult = compileCandidateProjection(doc, modelingDoc);
+  const collarEvent = candidateResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
+  assert.ok(collarEvent);
+
+  // Unquantified item claim without explicit domain IDs or quantity has undefined item payload
+  assert.equal(collarEvent.item, undefined);
+});
+
+test('Research Ingestion Contract: explicit unknown quantity yields known=false, unspecified quantity remains absent, neither becomes 1', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  // Case A: Explicit unknown quantity
   const testDoc = deepClone(doc);
   const pet2Claim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
   assert.ok(pet2Claim);
   pet2Claim.unknowns = ['exact_quantity'];
 
-  const candidateResult = compileCandidateProjection(testDoc, modelingDoc);
-  const collarEvent = candidateResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
-  assert.ok(collarEvent);
-  assert.ok(collarEvent.item);
+  const unknownResult = compileCandidateProjection(testDoc, modelingDoc);
+  const unknownCollarEvent = unknownResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
+  assert.ok(unknownCollarEvent);
+  assert.ok(unknownCollarEvent.item);
+  assert.deepEqual(unknownCollarEvent.item.quantity, { known: false });
+  assert.notEqual(unknownCollarEvent.item.quantity?.value, 1);
 
-  // Must NOT contain quantity value 1
-  assert.notEqual(collarEvent.item.quantity?.value, 1);
-  assert.deepEqual(collarEvent.item.quantity, { known: false });
-
-  // Unquantified claim without explicit unknowns omits quantity object
+  // Case B: Unspecified quantity (no unknowns declared)
   const defaultResult = compileCandidateProjection(doc, modelingDoc);
   const defaultCollarEvent = defaultResult.candidateEvents.find((e) => e.id === 'candidate-evt-p3-pet-002');
-  assert.equal(defaultCollarEvent.item.quantity, undefined);
+  assert.equal(defaultCollarEvent.item, undefined);
 });
 
-test('Research Ingestion Contract: candidate compilation fails closed on unvalidated or incomplete modeling input', () => {
+test('Research Ingestion Contract: candidate compilation fails closed on unvalidated, incomplete, or unsupported modeling input', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
+  // Incomplete modeling decisions
   const incompleteModelingDoc = deepClone(modelingDoc);
-  incompleteModelingDoc.decisions.pop(); // Remove last decision
-
+  incompleteModelingDoc.decisions.pop();
   assert.throws(() => {
     compileCandidateProjection(doc, incompleteModelingDoc);
   }, /Compiler error: Trace completeness validation failed/);
 
+  // Invalid research document
   const invalidResearchDoc = deepClone(doc);
-  delete invalidResearchDoc.storyId; // Invalid schema
-
+  delete invalidResearchDoc.storyId;
   assert.throws(() => {
     compileCandidateProjection(invalidResearchDoc, modelingDoc);
   }, /Compiler error: Research document schema\/semantic validation failed/);
+
+  // Unsupported candidate target concept
+  const badTargetDoc = deepClone(modelingDoc);
+  badTargetDoc.decisions[1].target = { domain: 'inventory', concept: 'UnsupportedTargetConcept' };
+  assert.throws(() => {
+    compileCandidateProjection(doc, badTargetDoc);
+  }, /Concept "UnsupportedTargetConcept" for claim "P3-PET-002" is not supported/);
 });
 
-test('Research Ingestion Contract: synthetic candidate IDs are candidate-prefixed and do not mutate raw floor files', () => {
+test('Research Ingestion Contract: candidate compilation does not mutate authoritative raw floor data', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
-  const candidateResult = compileCandidateProjection(doc, modelingDoc);
-  for (const event of candidateResult.candidateEvents) {
-    assert.ok(event.id.startsWith('candidate-evt-'));
-    if (event.item) {
-      assert.ok(event.item.instanceId.startsWith('candidate-inst-'));
-      assert.ok(event.item.itemId.startsWith('candidate-item-'));
-    }
-  }
+  compileCandidateProjection(doc, modelingDoc);
 
   // Ensure data/raw/floors/ remains clean
   const gitStatusOutput = execFileSync('git', ['status', '--porcelain', 'data/raw/floors/'], { encoding: 'utf8' });

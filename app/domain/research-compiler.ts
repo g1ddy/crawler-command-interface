@@ -202,12 +202,13 @@ export function compileCandidateProjection(
 
     let candidateEvent: CandidateEventArtifact;
 
+    // Candidate target concepts are modeling decisions interpreted by the candidate compiler.
+    // They are not evidence claims and are not authoritative CCI event types.
     if (target.concept === 'ItemAcquired' || target.concept === 'ItemCrafted') {
-      // Do NOT manufacture a quantity of 1 if research evidence does not establish quantity
+      // Do NOT manufacture instanceId, itemId, or quantity: 1 when research evidence does not establish them.
       const unknowns = claim.unknowns || [];
-      const quantityObject = unknowns.includes('exact_quantity') || unknowns.includes('quantity')
-        ? { known: false }
-        : undefined;
+      const isQuantityUnknown = unknowns.includes('exact_quantity') || unknowns.includes('quantity');
+      const itemPayload = isQuantityUnknown ? { quantity: { known: false } } : undefined;
 
       candidateEvent = {
         id: candidateId,
@@ -215,11 +216,7 @@ export function compileCandidateProjection(
         position,
         summary: claim.claim.summary,
         evidence: JSON.parse(JSON.stringify(claim.evidence)),
-        item: {
-          instanceId: `candidate-inst-${claim.id.toLowerCase()}`,
-          itemId: `candidate-item-${claim.id.toLowerCase()}`,
-          quantity: quantityObject,
-        },
+        item: itemPayload,
       };
     } else if (target.concept === 'NarrativeEvent') {
       candidateEvent = {
