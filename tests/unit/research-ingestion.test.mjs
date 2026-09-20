@@ -266,7 +266,7 @@ test('Research Ingestion Contract: CLI ingest script executes cleanly for valid 
   assert.ok(output.includes('Trace mappings compiled: 5'));
 });
 
-test('Research Ingestion Contract: candidate projection generates deterministic proposals and provenance sidecars', () => {
+test('Research Ingestion Contract: candidate projection generates generic proposals and sidecars without hardcoded domain mappings', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
@@ -279,41 +279,89 @@ test('Research Ingestion Contract: candidate projection generates deterministic 
   assert.equal(res1.candidateEvents.length, 2);
   assert.equal(res1.provenanceSidecar.length, 2);
 
-  const collarProposal = res1.candidateEvents.find((e) => e.candidateId === 'candidate-evt-p3-pet-002');
+  const collarProposal = res1.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-002');
   assert.ok(collarProposal);
-  assert.equal(collarProposal.researchClaimId, 'P3-PET-002');
+  assert.equal(collarProposal.candidateId, 'candidate-evt-P3-PET-002');
+  assert.equal(collarProposal.target.domain, 'inventory');
   assert.equal(collarProposal.target.concept, 'ItemAcquired');
-  assert.deepEqual(collarProposal.unresolved, ['itemId', 'instanceId', 'quantity']);
-  assert.equal(collarProposal.candidatePayload, undefined);
-
-  const collarSidecar = res1.provenanceSidecar.find((s) => s.candidateId === 'candidate-evt-p3-pet-002');
-  assert.ok(collarSidecar);
-  assert.equal(collarSidecar.researchClaimId, 'P3-PET-002');
-  assert.equal(collarSidecar.sources[0].sourceId, 'src-book-2');
-  assert.equal(collarSidecar.sources[0].relationship, 'supports');
+  assert.equal(collarProposal.position.floor, 3);
+  assert.equal(collarProposal.position.book, undefined); // Chronology is grounded in scope floor, not evidence[0]
 });
 
-test('Research Ingestion Contract: explicit unknown quantity maps to known=false payload while unspecified quantity is in unresolved array', () => {
+test('Research Ingestion Contract: case-distinct claim IDs generate non-colliding candidate IDs', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
-  // Case A: Explicit unknown quantity
+  const testDoc = deepClone(doc);
+  const testModeling = deepClone(modelingDoc);
+
+  // Duplicate claim except with lowercase ID
+  const upperClaim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
+  assert.ok(upperClaim);
+  const lowerClaim = deepClone(upperClaim);
+  lowerClaim.id = 'p3-pet-002';
+  testDoc.claims.push(lowerClaim);
+
+  const lowerDecision = deepClone(testModeling.decisions.find((d) => d.claimId === 'P3-PET-002'));
+  lowerDecision.claimId = 'p3-pet-002';
+  testModeling.decisions.push(lowerDecision);
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const candidateIds = result.candidateEvents.map((c) => c.candidateId);
+
+  assert.ok(candidateIds.includes('candidate-evt-P3-PET-002'));
+  assert.ok(candidateIds.includes('candidate-evt-p3-pet-002'));
+  assert.equal(new Set(candidateIds).size, candidateIds.length);
+});
+
+test('Research Ingestion Contract: evidence ordering alone does not dictate candidate event position', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
   const testDoc = deepClone(doc);
   const pet2Claim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
   assert.ok(pet2Claim);
-  pet2Claim.unknowns = ['exact_quantity'];
 
-  const unknownResult = compileCandidateProjection(testDoc, modelingDoc);
-  const unknownCollarProposal = unknownResult.candidateEvents.find((e) => e.candidateId === 'candidate-evt-p3-pet-002');
-  assert.ok(unknownCollarProposal);
-  assert.deepEqual(unknownCollarProposal.candidatePayload, { quantity: { known: false } });
-  assert.deepEqual(unknownCollarProposal.unresolved, ['itemId', 'instanceId']);
+  // Add multiple evidence items with different locators
+  pet2Claim.evidence = [
+    { sourceId: 'src-book-2', locator: { book: 2, chapter: 10 }, confidence: 'confirmed' },
+    { sourceId: 'src-book-2', locator: { book: 2, chapter: 5 }, confidence: 'corroborated' }
+  ];
 
-  // Case B: Unspecified quantity (no unknowns declared)
-  const defaultResult = compileCandidateProjection(doc, modelingDoc);
-  const defaultCollarProposal = defaultResult.candidateEvents.find((e) => e.candidateId === 'candidate-evt-p3-pet-002');
-  assert.equal(defaultCollarProposal.candidatePayload, undefined);
-  assert.ok(defaultCollarProposal.unresolved.includes('quantity'));
+  const resultOriginal = compileCandidateProjection(testDoc, modelingDoc);
+
+  // Reverse evidence array order
+  pet2Claim.evidence.reverse();
+  const resultReversed = compileCandidateProjection(testDoc, modelingDoc);
+
+  const posOriginal = resultOriginal.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-002').position;
+  const posReversed = resultReversed.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-002').position;
+
+  // Position is derived strictly from scope floor, completely invariant to evidence ordering
+  assert.deepEqual(posOriginal, { floor: 3 });
+  assert.deepEqual(posReversed, { floor: 3 });
+});
+
+test('Research Ingestion Contract: generic unknown array is preserved untouched without domain field parsing', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const testDoc = deepClone(doc);
+  const sysClaim = testDoc.claims.find((c) => c.id === 'P3-SYS-001');
+  assert.ok(sysClaim);
+  sysClaim.unknowns = ['custom_unknown_key_1', 'custom_unknown_key_2'];
+
+  const testModeling = deepClone(modelingDoc);
+  const sysDecision = testModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
+  assert.ok(sysDecision);
+  sysDecision.disposition = 'promote';
+  sysDecision.target = { domain: 'floor-system', concept: 'CustomTargetConcept' };
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const sysProposal = result.candidateEvents.find((e) => e.researchClaimId === 'P3-SYS-001');
+
+  assert.ok(sysProposal);
+  assert.deepEqual(sysProposal.unknowns, ['custom_unknown_key_1', 'custom_unknown_key_2']);
 });
 
 test('Research Ingestion Contract: rejects promotion for evidence explicitly carrying relationship "contradicts"', () => {
@@ -330,7 +378,7 @@ test('Research Ingestion Contract: rejects promotion for evidence explicitly car
   assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with evidence explicitly declared with relationship "contradicts"')));
 });
 
-test('Research Ingestion Contract: candidate compilation fails closed on unvalidated, incomplete, or unsupported modeling input', () => {
+test('Research Ingestion Contract: candidate compilation fails closed on unvalidated or incomplete modeling input', () => {
   const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
 
@@ -348,12 +396,12 @@ test('Research Ingestion Contract: candidate compilation fails closed on unvalid
     compileCandidateProjection(invalidResearchDoc, modelingDoc);
   }, /Compiler error: Research document schema\/semantic validation failed/);
 
-  // Unsupported candidate target concept
-  const badTargetDoc = deepClone(modelingDoc);
-  badTargetDoc.decisions[1].target = { domain: 'inventory', concept: 'UnsupportedTargetConcept' };
+  // Missing target concept on promoted decision
+  const missingTargetDoc = deepClone(modelingDoc);
+  delete missingTargetDoc.decisions[1].target;
   assert.throws(() => {
-    compileCandidateProjection(doc, badTargetDoc);
-  }, /Concept "UnsupportedTargetConcept" for claim "P3-PET-002" is not supported/);
+    compileCandidateProjection(doc, missingTargetDoc);
+  }, /Modeling decision document schema validation failed/);
 });
 
 test('Research Ingestion Contract: pure candidate projection produces candidate proposals without mutating memory artifacts', () => {

@@ -57,8 +57,7 @@ export interface CandidateEventProposal {
     confidence: string;
     relationship?: string;
   }>;
-  unresolved: string[];
-  candidatePayload?: Record<string, unknown>;
+  unknowns?: string[];
 }
 
 export interface CandidateProvenanceSidecar {
@@ -185,35 +184,15 @@ export function compileCandidateProjection(
       throw new Error(`Candidate projection error: Promoted claim "${claim.id}" lacks target concept.`);
     }
 
-    const candidateId = `candidate-evt-${claim.id.toLowerCase()}`;
-    const primaryLocator = claim.evidence[0]?.locator;
+    // Collision-safe candidate identity using Case-Preserving Escaping (preserving case-distinction without claim ID collision)
+    const encodedClaimId = encodeURIComponent(claim.id);
+    const candidateId = `candidate-evt-${encodedClaimId}`;
 
+    // Chronology is grounded strictly in research scope floor.
+    // Evidence locators are preserved in evidence; position does not implicitly grab evidence[0].locator.
     const position = {
       floor: researchDoc.floor,
-      book: primaryLocator?.book,
-      chapter: primaryLocator?.chapter,
     };
-
-    const unresolved: string[] = [];
-    const candidatePayload: Record<string, unknown> = {};
-
-    // Candidate target concepts are modeling decisions interpreted by the candidate compiler.
-    // They produce candidate proposals highlighting unresolved requirements rather than fabricating fake CCI values.
-    if (target.concept === 'ItemAcquired' || target.concept === 'ItemCrafted') {
-      unresolved.push('itemId', 'instanceId');
-      const unknowns = claim.unknowns || [];
-      if (unknowns.includes('exact_quantity') || unknowns.includes('quantity')) {
-        candidatePayload.quantity = { known: false };
-      } else {
-        unresolved.push('quantity');
-      }
-    } else if (target.concept === 'NarrativeEvent') {
-      unresolved.push('kind');
-    } else {
-      throw new Error(
-        `Candidate projection error: Concept "${target.concept}" for claim "${claim.id}" is not supported for candidate projection.`
-      );
-    }
 
     candidateEvents.push({
       candidateId,
@@ -225,8 +204,7 @@ export function compileCandidateProjection(
       position,
       summary: claim.claim.summary,
       evidence: JSON.parse(JSON.stringify(claim.evidence)),
-      unresolved,
-      candidatePayload: Object.keys(candidatePayload).length > 0 ? candidatePayload : undefined,
+      unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
     });
 
     provenanceSidecar.push({

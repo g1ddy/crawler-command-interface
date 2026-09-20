@@ -559,7 +559,7 @@ A compiler may produce candidate proposals:
 
 Candidate output is disposable. It is a review artifact, not automatically authoritative raw data.
 
-Candidate target concepts (e.g. `ItemAcquired`, `ItemCrafted`, `NarrativeEvent`) are modeling decisions interpreted by the candidate compiler. They produce `CandidateEventProposal` records highlighting unresolved requirements (`unresolved: ["itemId", "instanceId", "quantity"]` or `unresolved: ["kind"]`) rather than fabricating fake domain identities, quantities, or event kinds.
+Candidate target concepts are modeling decisions preserved by the generic candidate compiler. Domain-specific projection adapters/pilots interpret target concepts into CCI event representations. The generic research compiler is not a second CCI domain model and does not hard-code domain field semantics or fabricate executable domain values.
 
 Evidence items marked with `relationship: "contradicts"` block promotion in semantic validation, ensuring contradictory evidence cannot silently produce candidate projections.
 
