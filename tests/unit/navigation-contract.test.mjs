@@ -27,7 +27,7 @@ const mockCapabilitiesMinimal = {
   notifications: false,
 };
 
-test("Navigation Contract: surface inventory completeness and taxonomy categorization", () => {
+test("Navigation Research Inventory: surface inventory completeness and taxonomy categorization", () => {
   assert.ok(Array.isArray(NAVIGATION_SURFACE_INVENTORY));
   assert.strictEqual(NAVIGATION_SURFACE_INVENTORY.length, 14);
 
@@ -56,26 +56,23 @@ test("Navigation Contract: surface inventory completeness and taxonomy categoriz
   assert.strictEqual(removedItems[0].surfaceId, "duplicate_concept_hud_return_to_live");
 });
 
-test("Navigation Contract: derives runtime SystemChromeContract without research inventory or overlay aggregation", () => {
+test("Navigation Contract: derives runtime SystemChromeContract containing strictly consumed primary navigation data", () => {
   const contract = deriveNavigationContract({
     capabilities: mockCapabilitiesAllActive,
     activeView: "inventory",
-    isLive: true,
-    selectedSequence: 42,
   });
 
   assert.strictEqual("inventory" in contract, false);
   assert.strictEqual("overlays" in contract, false);
+  assert.strictEqual("temporalControls" in contract, false);
   assert.ok(contract.primaryNavigation);
-  assert.ok(contract.temporalControls);
+  assert.strictEqual(Object.keys(contract).length, 1);
 });
 
 test("Navigation Contract: derives primary navigation given full capability snapshot", () => {
   const contract = deriveNavigationContract({
     capabilities: mockCapabilitiesAllActive,
     activeView: "inventory",
-    isLive: true,
-    selectedSequence: 42,
   });
 
   assert.strictEqual(contract.primaryNavigation.activeView, "inventory");
@@ -93,8 +90,6 @@ test("Navigation Contract: filters unavailable root views and falls back safely"
   const contract = deriveNavigationContract({
     capabilities: mockCapabilitiesMinimal,
     activeView: "quests", // unavailable in minimal capabilities
-    isLive: false,
-    selectedSequence: 10,
   });
 
   // Since 'quests' is unavailable, it must fall back safely to 'crawler'
@@ -105,30 +100,4 @@ test("Navigation Contract: filters unavailable root views and falls back safely"
   assert.ok(questsItem);
   assert.strictEqual(questsItem.isAvailable, false);
   assert.strictEqual(questsItem.isActive, false);
-});
-
-test("Navigation Contract: models temporal state without embedding application capability controls", () => {
-  const liveContract = deriveNavigationContract({
-    capabilities: mockCapabilitiesAllActive,
-    activeView: "crawler",
-    isLive: true,
-    selectedSequence: 100,
-  });
-
-  assert.strictEqual(liveContract.temporalControls.mode, "live");
-  assert.strictEqual(liveContract.temporalControls.isLive, true);
-  assert.strictEqual(liveContract.temporalControls.selectedSequence, 100);
-  assert.strictEqual("canReturnToLive" in liveContract.temporalControls, false);
-
-  const replayContract = deriveNavigationContract({
-    capabilities: mockCapabilitiesAllActive,
-    activeView: "crawler",
-    isLive: false,
-    selectedSequence: 25,
-  });
-
-  assert.strictEqual(replayContract.temporalControls.mode, "replay");
-  assert.strictEqual(replayContract.temporalControls.isLive, false);
-  assert.strictEqual(replayContract.temporalControls.selectedSequence, 25);
-  assert.strictEqual("canReturnToLive" in replayContract.temporalControls, false);
 });

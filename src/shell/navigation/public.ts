@@ -7,12 +7,13 @@ export {
 export { availableRootViews, resolveRootView } from "./capabilities.ts";
 export {
   NAVIGATION_SURFACE_INVENTORY,
+  type NavigationSurfaceCategory,
+  type NavigationSurfaceInventoryItem,
+} from "./navigation-research.ts";
+export {
   deriveNavigationContract,
   type DeriveNavigationContractInput,
   type NavigationItemContract,
-  type NavigationSurfaceCategory,
-  type NavigationSurfaceInventoryItem,
   type PrimaryNavigationContract,
   type SystemChromeContract,
-  type TemporalControlsContract,
 } from "./navigation-contract.ts";

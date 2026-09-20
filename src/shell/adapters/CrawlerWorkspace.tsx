@@ -189,10 +189,8 @@ export function CrawlerWorkspace({
       deriveNavigationContract({
         capabilities,
         activeView: view,
-        isLive,
-        selectedSequence: currentSeq,
       }),
-    [capabilities, view, isLive, currentSeq],
+    [capabilities, view],
   );
 
   const handleExportJson = useCallback(() => {
