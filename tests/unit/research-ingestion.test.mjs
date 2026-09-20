@@ -158,7 +158,7 @@ test('Research Ingestion Contract: rejects unsafe promotion with disputed confid
 
   const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
   assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with confidence "disputed"')));
+  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with confidence "disputed"')));
 });
 
 test('Research Ingestion Contract: permits promotion with candidate confidence when modeling decision authorizes it', () => {
@@ -187,7 +187,7 @@ test('Research Ingestion Contract: rejects unsafe promotion with unresolved cont
 
   const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
   assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with unresolved contradiction')));
+  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with unresolved contradiction')));
 });
 
 test('Research Ingestion Contract: rejects duplicate modeling decisions', () => {
@@ -422,7 +422,7 @@ test('Research Ingestion Contract: rejects promotion for evidence explicitly car
 
   const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
   assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot be promoted with evidence explicitly declared with relationship "contradicts"')));
+  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with evidence explicitly declared with relationship "contradicts"')));
 });
 
 test('Research Ingestion Contract: candidate compilation fails closed on unvalidated or incomplete modeling input', () => {
