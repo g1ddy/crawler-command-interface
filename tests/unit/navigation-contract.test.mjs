@@ -47,6 +47,21 @@ test("Navigation Contract: surface inventory completeness and taxonomy categoriz
   assert.strictEqual(duplicateReturnToLive.disposition, "remove");
 });
 
+test("Navigation Contract: derives runtime SystemChromeContract without research inventory", () => {
+  const contract = deriveNavigationContract({
+    capabilities: mockCapabilitiesAllActive,
+    activeView: "inventory",
+    isLive: true,
+    selectedSequence: 42,
+    activeOverlay: null,
+  });
+
+  assert.strictEqual("inventory" in contract, false);
+  assert.ok(contract.primaryNavigation);
+  assert.ok(contract.temporalControls);
+  assert.ok(contract.overlays);
+});
+
 test("Navigation Contract: derives primary navigation given full capability snapshot", () => {
   const contract = deriveNavigationContract({
     capabilities: mockCapabilitiesAllActive,

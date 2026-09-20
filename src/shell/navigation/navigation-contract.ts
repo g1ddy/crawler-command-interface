@@ -24,6 +24,7 @@ export interface NavigationSurfaceInventoryItem {
 
 /**
  * Surface inventory mapping for the 4-level navigation and system chrome hierarchy.
+ * Note: Retained as a research/architecture constant; not emitted in the runtime SystemChromeContract.
  */
 export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryItem[] = [
   {
@@ -197,7 +198,6 @@ export interface OverlayStateContract {
  * Renderer-neutral System Chrome and Navigation Contract snapshot.
  */
 export interface SystemChromeContract {
-  inventory: readonly NavigationSurfaceInventoryItem[];
   primaryNavigation: PrimaryNavigationContract;
   temporalControls: TemporalControlsContract;
   overlays: OverlayStateContract;
@@ -236,7 +236,6 @@ export function deriveNavigationContract({
   });
 
   return {
-    inventory: NAVIGATION_SURFACE_INVENTORY,
     primaryNavigation: {
       items,
       activeView: resolvedActive,

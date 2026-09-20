@@ -1,6 +1,6 @@
 import type { CanonCapabilities } from "../../application/capabilities";
 import { ROOT_NAVIGATION, type RootView } from "./navigation-model";
-import type { PrimaryNavigationContract, SystemChromeContract } from "./navigation-contract";
+import type { PrimaryNavigationContract } from "./navigation-contract";
 import styles from "./RootNavigation.module.css";
 
 export interface RootNavigationProps {
@@ -8,7 +8,7 @@ export interface RootNavigationProps {
   set: (view: RootView) => void;
   capabilities: CanonCapabilities;
   onOpenTools: () => void;
-  contract?: SystemChromeContract | PrimaryNavigationContract;
+  contract?: PrimaryNavigationContract;
 }
 
 export function RootNavigation({
@@ -18,21 +18,15 @@ export function RootNavigation({
   onOpenTools,
   contract,
 }: RootNavigationProps) {
-  const primaryContract = contract
-    ? "primaryNavigation" in contract
-      ? contract.primaryNavigation
-      : contract
-    : null;
-
-  const items = primaryContract
-    ? primaryContract.items.filter((item) => item.isAvailable)
+  const items = contract
+    ? contract.items.filter((item) => item.isAvailable)
     : ROOT_NAVIGATION.filter((item) => capabilities[item.id]).map((item) => ({
         id: item.id,
         label: item.label,
         isAvailable: true,
       }));
 
-  const activeView = primaryContract ? primaryContract.activeView : active;
+  const activeView = contract ? contract.activeView : active;
 
   return (
     <div className={styles.bar} data-shell-navigation>

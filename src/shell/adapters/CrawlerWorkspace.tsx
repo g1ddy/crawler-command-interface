@@ -303,7 +303,7 @@ export function CrawlerWorkspace({
           set={setView}
           capabilities={capabilities}
           onOpenTools={openTools}
-          contract={navigationContract}
+          contract={navigationContract.primaryNavigation}
         />
       }
       replay={
