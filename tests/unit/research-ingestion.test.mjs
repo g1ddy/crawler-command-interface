@@ -464,3 +464,24 @@ test('Research Ingestion Contract: pure candidate projection produces candidate 
   assert.deepEqual(doc, initialDocSnapshot);
   assert.deepEqual(modelingDoc, initialModelingSnapshot);
 });
+
+
+test('Research Ingestion Contract: promote authorizes disposable candidate review, not authoritative runtime state', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const result = compileCandidateProjection(doc, modelingDoc);
+  const promoted = result.candidateProposals.find((candidate) => candidate.researchClaimId === 'P3-PET-002');
+
+  assert.ok(promoted);
+  assert.equal(promoted.target.concept, 'ItemAcquired');
+
+  assert.equal('event' in promoted, false);
+  assert.equal('payload' in promoted, false);
+  assert.equal('authoritative' in promoted, false);
+  assert.equal('runtimeState' in promoted, false);
+  assert.equal('rawFloorPath' in promoted, false);
+
+  assert.ok(Array.isArray(result.candidateProposals));
+  assert.ok(Array.isArray(result.provenanceSidecar));
+});

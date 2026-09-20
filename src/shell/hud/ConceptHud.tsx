@@ -24,13 +24,12 @@ function Reading({ label, observation, sequence, onInspect }: {
   </div>;
 }
 
-export function ConceptHud({ state, observations, countdown, floorTitle, isLive, onReturnToLive, onInspectObservation, onNavigateToSequence }: {
+export function ConceptHud({ state, observations, countdown, floorTitle, isLive, onInspectObservation, onNavigateToSequence }: {
   state: CrawlerState;
   observations: ProjectedObservationsState;
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
   isLive: boolean;
-  onReturnToLive: () => void;
   onInspectObservation: (reading: ProjectedObservationValue) => void;
   onNavigateToSequence: (sequence: number) => void;
 }) {
@@ -53,7 +52,6 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
     </div>
     <div className="hud-replay-state" data-testid="hud-audience-mode">
       <b>{isLive ? "LIVE" : "REPLAY"}</b><span>Sequence {state.sequence}</span>
-      {!isLive && <button onClick={onReturnToLive}>Return to live</button>}
     </div>
     <Hotlist hotlist={state.hotlist} skills={state.skills} />
     {showEvidence && countdown && <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}><CountdownEvidenceModal countdown={countdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} /></ModalBoundary>}

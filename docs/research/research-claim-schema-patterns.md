@@ -559,11 +559,11 @@ A compiler may produce candidate proposals:
 
 Candidate output is disposable. It is a review artifact, not automatically authoritative raw data.
 
-Candidate target concepts are modeling decisions preserved by the generic candidate compiler. Domain-specific projection adapters/pilots interpret target concepts into CCI representations. The generic research compiler is not a second CCI domain model and does not hard-code domain field semantics or fabricate executable domain values.
+Candidate target concepts are modeling decisions preserved by the generic candidate compiler. Domain-specific projection adapters/pilots interpret target concepts into CCI representations. The generic research compiler is not a second CCI domain model and does not hard-code domain field semantics or fabricate executable domain values. Unknown-value enforcement therefore belongs at the domain-specific adapter boundary, where a target concept can be interpreted against an actual CCI schema; the generic compiler only preserves the research `unknowns` and cannot prove domain-specific executable safety by itself.
 
-Modeling disposition `promote` authorizes a claim to enter disposable candidate-review projection. It does not make a claim authoritative CCI runtime state. Authoritative execution is established only after review and authoring in `data/raw/floors/**`.
+Modeling disposition `promote` authorizes a claim to enter disposable candidate-review projection. It does not mean authoritative promotion into CCI runtime state. The candidate compiler returns an in-memory review representation; a future export step may persist disposable candidate artifacts, but neither is authoritative. Authoritative execution is established only after human/Jules review and authoring in `data/raw/floors/**` through the existing CCI authoring pipeline.
 
-Evidence items marked with `relationship: "contradicts"` block promotion in semantic validation, ensuring contradictory evidence cannot silently produce candidate projections.
+Evidence items marked with `relationship: "contradicts"` block candidate projection in semantic validation, ensuring contradictory evidence cannot silently produce candidate proposals. This is distinct from claim-to-claim contradiction metadata: `evidence.relationship` describes how a source bears on the claim (`supports`, `corroborates`, `contradicts`, `context`), while `claim.contradictions[].relationship` describes a relationship between two research claims (`contradicts`, `supersedes`, or `unresolved`). These are intentionally separate axes.
 
 The compiler must never overwrite `data/raw/floors/**` merely because a claim was marked `promote`.
 

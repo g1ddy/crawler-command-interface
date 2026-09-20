@@ -38,6 +38,10 @@ export interface CompiledResearchOutput {
   claimMappings: ResearchClaimTraceMapping[];
 }
 
+/**
+ * Generic, disposable candidate-review representation. This is not a CCI runtime
+ * event/state payload and must not be treated as authoritative application data.
+ */
 export interface CandidateProposal {
   candidateId: string;
   researchClaimId: string;
