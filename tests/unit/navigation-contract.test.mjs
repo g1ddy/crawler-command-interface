@@ -40,26 +40,34 @@ test("Navigation Contract: surface inventory completeness and taxonomy categoriz
   assert.ok(categories.has("feature_local"));
   assert.ok(categories.has("overlay_on_demand"));
 
-  const duplicateReturnToLive = NAVIGATION_SURFACE_INVENTORY.find(
-    (item) => item.surfaceId === "duplicate_concept_hud_return_to_live",
+  const establishedItems = NAVIGATION_SURFACE_INVENTORY.filter(
+    (item) => item.disposition === "established",
   );
-  assert.ok(duplicateReturnToLive);
-  assert.strictEqual(duplicateReturnToLive.disposition, "remove");
+  const provisionalItems = NAVIGATION_SURFACE_INVENTORY.filter(
+    (item) => item.disposition === "provisional",
+  );
+  const removedItems = NAVIGATION_SURFACE_INVENTORY.filter(
+    (item) => item.disposition === "remove",
+  );
+
+  assert.ok(establishedItems.length > 0);
+  assert.ok(provisionalItems.length > 0);
+  assert.strictEqual(removedItems.length, 1);
+  assert.strictEqual(removedItems[0].surfaceId, "duplicate_concept_hud_return_to_live");
 });
 
-test("Navigation Contract: derives runtime SystemChromeContract without research inventory", () => {
+test("Navigation Contract: derives runtime SystemChromeContract without research inventory or overlay aggregation", () => {
   const contract = deriveNavigationContract({
     capabilities: mockCapabilitiesAllActive,
     activeView: "inventory",
     isLive: true,
     selectedSequence: 42,
-    activeOverlay: null,
   });
 
   assert.strictEqual("inventory" in contract, false);
+  assert.strictEqual("overlays" in contract, false);
   assert.ok(contract.primaryNavigation);
   assert.ok(contract.temporalControls);
-  assert.ok(contract.overlays);
 });
 
 test("Navigation Contract: derives primary navigation given full capability snapshot", () => {
@@ -68,7 +76,6 @@ test("Navigation Contract: derives primary navigation given full capability snap
     activeView: "inventory",
     isLive: true,
     selectedSequence: 42,
-    activeOverlay: null,
   });
 
   assert.strictEqual(contract.primaryNavigation.activeView, "inventory");
@@ -79,6 +86,7 @@ test("Navigation Contract: derives primary navigation given full capability snap
   assert.ok(activeItem);
   assert.strictEqual(activeItem.isActive, true);
   assert.strictEqual(activeItem.isAvailable, true);
+  assert.strictEqual("shortcutKey" in activeItem, false);
 });
 
 test("Navigation Contract: filters unavailable root views and falls back safely", () => {
@@ -87,7 +95,6 @@ test("Navigation Contract: filters unavailable root views and falls back safely"
     activeView: "quests", // unavailable in minimal capabilities
     isLive: false,
     selectedSequence: 10,
-    activeOverlay: "stat_inspector",
   });
 
   // Since 'quests' is unavailable, it must fall back safely to 'crawler'
@@ -98,9 +105,6 @@ test("Navigation Contract: filters unavailable root views and falls back safely"
   assert.ok(questsItem);
   assert.strictEqual(questsItem.isAvailable, false);
   assert.strictEqual(questsItem.isActive, false);
-
-  assert.strictEqual(contract.overlays.activeOverlay, "stat_inspector");
-  assert.strictEqual(contract.overlays.hasActiveModal, true);
 });
 
 test("Navigation Contract: models temporal state without embedding application capability controls", () => {

@@ -18,13 +18,14 @@ export interface NavigationSurfaceInventoryItem {
   purpose: string;
   scope: "system" | "context" | "feature" | "peripheral" | "on_demand";
   category: NavigationSurfaceCategory;
-  disposition: "keep" | "merge" | "remove";
+  disposition: "established" | "provisional" | "remove";
   reason: string;
 }
 
 /**
  * Surface inventory mapping for the 4-level navigation and system chrome hierarchy.
  * Note: Retained as a research/architecture constant; not emitted in the runtime SystemChromeContract.
+ * Provisional HUD layout choices from #197 remain distinguished from established navigation/capability decisions.
  */
 export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryItem[] = [
   {
@@ -34,8 +35,8 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Persistent indication of active crawler context and system identity",
     scope: "system",
     category: "system_identity",
-    disposition: "keep",
-    reason: "Essential persistent system context; not a button or contextual header",
+    disposition: "provisional",
+    reason: "Essential persistent system context; masthead composition arrangement is provisional",
   },
   {
     surfaceId: "primary_navigation_tabs",
@@ -44,8 +45,8 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Application-level root domain switcher, capability-filtered",
     scope: "system",
     category: "primary_navigation",
-    disposition: "keep",
-    reason: "Primary navigation contract for root views (Crawler, Inventory, etc.)",
+    disposition: "established",
+    reason: "Established primary navigation contract for root views (Crawler, Inventory, etc.)",
   },
   {
     surfaceId: "system_tools_trigger",
@@ -54,7 +55,7 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Access peripheral application tools (import/export/reset, presentation mode)",
     scope: "peripheral",
     category: "temporal_controls",
-    disposition: "keep",
+    disposition: "established",
     reason: "Peripheral application utility with single clear modal owner",
   },
   {
@@ -64,7 +65,7 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Time travel, sequence stepping, scrubbing, and Return to Live",
     scope: "peripheral",
     category: "temporal_controls",
-    disposition: "keep",
+    disposition: "established",
     reason: "Peripheral application controls; kept distinct from semantic HUD state",
   },
   {
@@ -74,7 +75,7 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Select floor scope for replay inspection",
     scope: "peripheral",
     category: "contextual_navigation",
-    disposition: "keep",
+    disposition: "established",
     reason: "Peripheral replay floor context selector",
   },
   {
@@ -84,7 +85,7 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Launch Floor Rules, History, Telemetry, and Clock Evidence overlays",
     scope: "on_demand",
     category: "overlay_on_demand",
-    disposition: "keep",
+    disposition: "established",
     reason: "Peripheral triggers for on-demand inspection modals",
   },
   {
@@ -94,8 +95,8 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Displays floor collapse countdown and lifecycle status",
     scope: "context",
     category: "contextual_status",
-    disposition: "keep",
-    reason: "Critical system urgency status in HUD composition model",
+    disposition: "provisional",
+    reason: "Critical urgency status; persistent placement in masthead is provisional",
   },
   {
     surfaceId: "broadcast_audience_context",
@@ -104,8 +105,8 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Displays source-backed viewer telemetry",
     scope: "context",
     category: "contextual_status",
-    disposition: "keep",
-    reason: "Source-backed audience status in HUD composition model",
+    disposition: "provisional",
+    reason: "Source-backed audience status; placement in masthead is provisional",
   },
   {
     surfaceId: "telemetry_vitals_readings",
@@ -114,8 +115,8 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Core crawler vitals telemetry",
     scope: "context",
     category: "contextual_status",
-    disposition: "keep",
-    reason: "Essential vitals telemetry status in HUD composition model",
+    disposition: "provisional",
+    reason: "Essential vitals telemetry status; layout in readings bar is provisional",
   },
   {
     surfaceId: "attention_summary_badge",
@@ -124,8 +125,8 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Expresses active alert and notification counts",
     scope: "system",
     category: "contextual_status",
-    disposition: "keep",
-    reason: "System attention summary status",
+    disposition: "provisional",
+    reason: "System attention summary status; masthead indicator layout is provisional",
   },
   {
     surfaceId: "hotlist_action_bar",
@@ -134,8 +135,8 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Quick visibility and assignment bar for active hotlist skills",
     scope: "feature",
     category: "feature_local",
-    disposition: "keep",
-    reason: "Contextual skill bar present in HUD area without duplicating root navigation",
+    disposition: "provisional",
+    reason: "Contextual skill bar present in HUD area; placement relative to navigation is provisional",
   },
   {
     surfaceId: "duplicate_concept_hud_return_to_live",
@@ -154,7 +155,7 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "Local domain filtering, inspectors, and sub-view controls",
     scope: "feature",
     category: "feature_local",
-    disposition: "keep",
+    disposition: "established",
     reason: "Domain-specific local controls that must remain within feature views",
   },
   {
@@ -164,7 +165,7 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
     purpose: "On-demand detail, provenance, floor rules, history, system tools",
     scope: "on_demand",
     category: "overlay_on_demand",
-    disposition: "keep",
+    disposition: "established",
     reason: "Deterministic overlay stack using ModalBoundary focus trap and Escape handling",
   },
 ] as const;
@@ -172,7 +173,6 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
 export interface NavigationItemContract {
   id: RootView;
   label: string;
-  shortcutKey: string;
   isAvailable: boolean;
   isActive: boolean;
 }
@@ -189,18 +189,13 @@ export interface TemporalControlsContract {
   selectedSequence: number;
 }
 
-export interface OverlayStateContract {
-  activeOverlay: string | null;
-  hasActiveModal: boolean;
-}
-
 /**
  * Renderer-neutral System Chrome and Navigation Contract snapshot.
+ * Focuses on primary navigation state and temporal replay state.
  */
 export interface SystemChromeContract {
   primaryNavigation: PrimaryNavigationContract;
   temporalControls: TemporalControlsContract;
-  overlays: OverlayStateContract;
 }
 
 export interface DeriveNavigationContractInput {
@@ -208,7 +203,6 @@ export interface DeriveNavigationContractInput {
   activeView: RootView;
   isLive: boolean;
   selectedSequence: number;
-  activeOverlay?: string | null;
 }
 
 /**
@@ -219,17 +213,15 @@ export function deriveNavigationContract({
   activeView,
   isLive,
   selectedSequence,
-  activeOverlay = null,
 }: DeriveNavigationContractInput): SystemChromeContract {
   const available = availableRootViews(capabilities);
   const resolvedActive = resolveRootView(activeView, capabilities);
 
-  const items: NavigationItemContract[] = ROOT_NAVIGATION.map((item, idx) => {
+  const items: NavigationItemContract[] = ROOT_NAVIGATION.map((item) => {
     const isAvailable = Boolean(capabilities[item.id]);
     return {
       id: item.id,
       label: item.label,
-      shortcutKey: String(idx + 1),
       isAvailable,
       isActive: resolvedActive === item.id,
     };
@@ -245,10 +237,6 @@ export function deriveNavigationContract({
       mode: isLive ? "live" : "replay",
       isLive,
       selectedSequence,
-    },
-    overlays: {
-      activeOverlay,
-      hasActiveModal: activeOverlay !== null,
     },
   };
 }

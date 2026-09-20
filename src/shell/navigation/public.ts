@@ -12,7 +12,6 @@ export {
   type NavigationItemContract,
   type NavigationSurfaceCategory,
   type NavigationSurfaceInventoryItem,
-  type OverlayStateContract,
   type PrimaryNavigationContract,
   type SystemChromeContract,
   type TemporalControlsContract,

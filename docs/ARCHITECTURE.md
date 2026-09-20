@@ -96,12 +96,12 @@ When replay crosses back before a capability boundary, the destination disappear
 
 The renderer-neutral navigation contract (`deriveNavigationContract` in `src/shell/navigation/navigation-contract.ts`) organizes navigation and system chrome across four explicit information architecture levels:
 
-1. **Always Present (System Identity & Critical Awareness)**: Persistent system identity (Crawler Name/Class), level collapse clock/urgency, and attention summary.
-2. **Contextual (Primary & Domain Navigation)**: Capability-filtered root navigation items (Crawler, Inventory, Skills, etc.) and feature-local controls.
-3. **Peripheral (Temporal Controls & System Tools)**: Replay transport, sequence scrubber, floor navigator, Return to Live application capability, and System Tools modal trigger.
+1. **Always Present (System Identity & Critical Awareness)**: Persistent system identity (Crawler Name/Class), level collapse clock/urgency, and attention summary (owned semantically by `HudCompositionModel`).
+2. **Contextual (Primary & Domain Navigation)**: Capability-filtered root navigation items (`PrimaryNavigationContract`) and feature-local controls.
+3. **Peripheral (Temporal Controls & System Tools)**: Replay transport, sequence scrubber, floor navigator (`TemporalControlsContract`), Return to Live application capability, and System Tools modal trigger.
 4. **On Demand (Inspectors & Overlays)**: Modal overlays (`StatInspectorModal`, `TelemetryInspectorModal`, `ItemProvenanceDrawer`, `CountdownEvidenceModal`, `FloorRules`, `TimelineHistory`, `TimelineEvidence`, `TimelineToolsModal`) managed with focus trapping and deterministic `Escape` handling via `ModalBoundary`.
 
-The contract enforces single ownership and capability separation: Return to Live is an application capability, not semantic HUD or navigation contract state, and is kept in peripheral replay tooling (`ReplayControls`).
+Research/audit surface classifications are maintained in `NAVIGATION_SURFACE_INVENTORY`, distinguishing established capability decisions from provisional HUD presentation arrangements. The runtime `SystemChromeContract` remains semantically narrow, providing `primaryNavigation` and `temporalControls` without duplicating HUD composition state or aggregating fragile overlay flags. Return to Live remains an application capability control (`ReplayControls`), kept strictly out of semantic HUD/navigation state.
 
 ## Replay, Timeline, and Floor ownership
 

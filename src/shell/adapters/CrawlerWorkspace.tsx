@@ -184,34 +184,6 @@ export function CrawlerWorkspace({
     ],
   );
 
-  const activeOverlay = useMemo(
-    () =>
-      inspectStat
-        ? "stat_inspector"
-        : inspectObservation
-        ? "telemetry_inspector"
-        : provenanceItem
-        ? "item_provenance"
-        : showJsonModal
-        ? "system_tools"
-        : showFloorRules
-        ? "floor_rules"
-        : showTimelineHistory
-        ? "timeline_history"
-        : showTimelineEvidence
-        ? "timeline_evidence"
-        : null,
-    [
-      inspectStat,
-      inspectObservation,
-      provenanceItem,
-      showJsonModal,
-      showFloorRules,
-      showTimelineHistory,
-      showTimelineEvidence,
-    ],
-  );
-
   const navigationContract = useMemo(
     () =>
       deriveNavigationContract({
@@ -219,9 +191,8 @@ export function CrawlerWorkspace({
         activeView: view,
         isLive,
         selectedSequence: currentSeq,
-        activeOverlay,
       }),
-    [capabilities, view, isLive, currentSeq, activeOverlay],
+    [capabilities, view, isLive, currentSeq],
   );
 
   const handleExportJson = useCallback(() => {
