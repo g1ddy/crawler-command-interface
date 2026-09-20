@@ -38,7 +38,7 @@ export interface CompiledResearchOutput {
   claimMappings: ResearchClaimTraceMapping[];
 }
 
-export interface CandidateEventProposal {
+export interface CandidateProposal {
   candidateId: string;
   researchClaimId: string;
   target: {
@@ -74,7 +74,7 @@ export interface CandidateProvenanceSidecar {
 export interface CompiledCandidateProjectionResult {
   storyId: string;
   floor: number;
-  candidateEvents: CandidateEventProposal[];
+  candidateProposals: CandidateProposal[];
   provenanceSidecar: CandidateProvenanceSidecar[];
   traceOutput: CompiledResearchOutput;
 }
@@ -165,7 +165,7 @@ export function compileCandidateProjection(
   modelingDoc: ModelingDecisionDocument
 ): CompiledCandidateProjectionResult {
   const traceOutput = compileResearchTrace(researchDoc, modelingDoc);
-  const candidateEvents: CandidateEventProposal[] = [];
+  const candidateProposals: CandidateProposal[] = [];
   const provenanceSidecar: CandidateProvenanceSidecar[] = [];
 
   const decisionMap = new Map<string, typeof modelingDoc.decisions[0]>();
@@ -186,7 +186,7 @@ export function compileCandidateProjection(
 
     // Collision-safe candidate identity using Case-Preserving Escaping (preserving case-distinction without claim ID collision)
     const encodedClaimId = encodeURIComponent(claim.id);
-    const candidateId = `candidate-evt-${encodedClaimId}`;
+    const candidateId = `candidate-${encodedClaimId}`;
 
     // Chronology is grounded strictly in research scope floor.
     // Evidence locators are preserved in evidence; position does not implicitly grab evidence[0].locator.
@@ -194,7 +194,7 @@ export function compileCandidateProjection(
       floor: researchDoc.floor,
     };
 
-    candidateEvents.push({
+    candidateProposals.push({
       candidateId,
       researchClaimId: claim.id,
       target: {
@@ -222,7 +222,7 @@ export function compileCandidateProjection(
   return {
     storyId: researchDoc.storyId,
     floor: researchDoc.floor,
-    candidateEvents,
+    candidateProposals,
     provenanceSidecar,
     traceOutput,
   };

@@ -276,12 +276,12 @@ test('Research Ingestion Contract: candidate projection generates generic propos
   assert.deepEqual(res1, res2);
   assert.equal(res1.storyId, 'dcc');
   assert.equal(res1.floor, 3);
-  assert.equal(res1.candidateEvents.length, 2);
+  assert.equal(res1.candidateProposals.length, 2);
   assert.equal(res1.provenanceSidecar.length, 2);
 
-  const collarProposal = res1.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-002');
+  const collarProposal = res1.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002');
   assert.ok(collarProposal);
-  assert.equal(collarProposal.candidateId, 'candidate-evt-P3-PET-002');
+  assert.equal(collarProposal.candidateId, 'candidate-P3-PET-002');
   assert.equal(collarProposal.target.domain, 'inventory');
   assert.equal(collarProposal.target.concept, 'ItemAcquired');
   assert.equal(collarProposal.position.floor, 3);
@@ -307,10 +307,10 @@ test('Research Ingestion Contract: case-distinct claim IDs generate non-collidin
   testModeling.decisions.push(lowerDecision);
 
   const result = compileCandidateProjection(testDoc, testModeling);
-  const candidateIds = result.candidateEvents.map((c) => c.candidateId);
+  const candidateIds = result.candidateProposals.map((c) => c.candidateId);
 
-  assert.ok(candidateIds.includes('candidate-evt-P3-PET-002'));
-  assert.ok(candidateIds.includes('candidate-evt-p3-pet-002'));
+  assert.ok(candidateIds.includes('candidate-P3-PET-002'));
+  assert.ok(candidateIds.includes('candidate-p3-pet-002'));
   assert.equal(new Set(candidateIds).size, candidateIds.length);
 });
 
@@ -334,8 +334,8 @@ test('Research Ingestion Contract: evidence ordering alone does not dictate cand
   pet2Claim.evidence.reverse();
   const resultReversed = compileCandidateProjection(testDoc, modelingDoc);
 
-  const posOriginal = resultOriginal.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-002').position;
-  const posReversed = resultReversed.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-002').position;
+  const posOriginal = resultOriginal.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002').position;
+  const posReversed = resultReversed.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002').position;
 
   // Position is derived strictly from scope floor, completely invariant to evidence ordering
   assert.deepEqual(posOriginal, { floor: 3 });
@@ -358,10 +358,57 @@ test('Research Ingestion Contract: generic unknown array is preserved untouched 
   sysDecision.target = { domain: 'floor-system', concept: 'CustomTargetConcept' };
 
   const result = compileCandidateProjection(testDoc, testModeling);
-  const sysProposal = result.candidateEvents.find((e) => e.researchClaimId === 'P3-SYS-001');
+  const sysProposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-SYS-001');
 
   assert.ok(sysProposal);
   assert.deepEqual(sysProposal.unknowns, ['custom_unknown_key_1', 'custom_unknown_key_2']);
+});
+
+test('Research Ingestion Contract: explicit unknown on conceptual claim preserves statement and unknowns without inventing concrete values', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  // P3-SYS-001 (eight-day collapse timer) has unknowns: ['exact_timestamp']
+  const testDoc = deepClone(doc);
+  const testModeling = deepClone(modelingDoc);
+
+  const sysDecision = testModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
+  assert.ok(sysDecision);
+  sysDecision.disposition = 'promote';
+  sysDecision.target = { domain: 'floor-system', concept: 'CountdownDeclared' };
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const sysProposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-SYS-001');
+
+  assert.ok(sysProposal);
+  assert.equal(sysProposal.summary, "Floor 3 has an eight-day collapse timer.");
+  assert.deepEqual(sysProposal.unknowns, ['exact_timestamp']);
+  // Assert no concrete timestamp or executable countdown seconds were fabricated on proposal
+  assert.equal('timestamp' in sysProposal, false);
+  assert.equal('remainingSeconds' in sysProposal, false);
+});
+
+test('Research Ingestion Contract: non-event claim promoted to candidate proposal does not require event payload', () => {
+  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+
+  const testDoc = deepClone(doc);
+  const testModeling = deepClone(modelingDoc);
+
+  // Promote state claim P3-PET-002 with non-event concept 'CatalogItemReference'
+  const pet2Decision = testModeling.decisions.find((d) => d.claimId === 'P3-PET-002');
+  assert.ok(pet2Decision);
+  pet2Decision.disposition = 'promote';
+  pet2Decision.target = { domain: 'inventory', concept: 'CatalogItemReference' };
+
+  const result = compileCandidateProjection(testDoc, testModeling);
+  const pet2Proposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002');
+
+  assert.ok(pet2Proposal);
+  assert.equal(pet2Proposal.target.domain, 'inventory');
+  assert.equal(pet2Proposal.target.concept, 'CatalogItemReference');
+  assert.equal('type' in pet2Proposal, false);
+  assert.equal('item' in pet2Proposal, false);
 });
 
 test('Research Ingestion Contract: rejects promotion for evidence explicitly carrying relationship "contradicts"', () => {
@@ -412,7 +459,7 @@ test('Research Ingestion Contract: pure candidate projection produces candidate 
   const initialModelingSnapshot = deepClone(modelingDoc);
 
   const result = compileCandidateProjection(doc, modelingDoc);
-  assert.ok(result.candidateEvents);
+  assert.ok(result.candidateProposals);
 
   assert.deepEqual(doc, initialDocSnapshot);
   assert.deepEqual(modelingDoc, initialModelingSnapshot);
