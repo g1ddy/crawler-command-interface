@@ -7,7 +7,11 @@ import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPrese
 import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
-import { availableRootViews } from "../navigation/capabilities";
+import {
+  availableRootViews,
+  deriveNavigationContract,
+  resolveRootView,
+} from "../navigation/public";
 import { RootNavigation } from "../navigation/RootNavigation";
 import { ReplaySurface } from "../replay/ReplaySurface";
 import { WorkspaceOverlays } from "../overlays/WorkspaceOverlays";
@@ -22,8 +26,7 @@ import type {
   ProjectedObservationValue,
 } from "../../../app/domain/types";
 import type { HudPresentation } from "../hud/hud-presentation";
-import { resolveRootView } from "../navigation/capabilities";
-import type { RootView } from "../navigation/navigation-model";
+import type { RootView } from "../navigation/public";
 import type { EquipmentSlot } from "../../application/crawler-action-contracts";
 
 /** Composition adapter for existing features; the replaceable frame only receives slots. */
@@ -181,6 +184,15 @@ export function CrawlerWorkspace({
     ],
   );
 
+  const navigationContract = useMemo(
+    () =>
+      deriveNavigationContract({
+        capabilities,
+        activeView: view,
+      }),
+    [capabilities, view],
+  );
+
   const handleExportJson = useCallback(() => {
     commands.exportJson();
   }, [commands]);
@@ -238,7 +250,6 @@ export function CrawlerWorkspace({
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
-            onReturnToLive={commands.returnToLive}
             onInspectObservation={setInspectObservation}
             onNavigateToSequence={commands.selectSequence}
           />
@@ -261,6 +272,7 @@ export function CrawlerWorkspace({
           set={setView}
           capabilities={capabilities}
           onOpenTools={openTools}
+          contract={navigationContract.primaryNavigation}
         />
       }
       replay={

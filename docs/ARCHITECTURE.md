@@ -92,6 +92,17 @@ Conditional destinations become available only when projected state supports the
 
 When replay crosses back before a capability boundary, the destination disappears and an unavailable active destination resolves safely to Crawler.
 
+### Navigation and System Chrome Contract (`src/shell/navigation/public.ts`)
+
+The renderer-neutral navigation contract (`deriveNavigationContract` in `src/shell/navigation/navigation-contract.ts`) organizes navigation and system chrome across four explicit information architecture levels:
+
+1. **Always Present (System Identity & Critical Awareness)**: Persistent system identity (Crawler Name/Class), level collapse clock/urgency, and attention summary (owned semantically by `HudCompositionModel`).
+2. **Contextual (Primary & Domain Navigation)**: Capability-filtered root navigation items (`PrimaryNavigationContract`) and feature-local controls.
+3. **Peripheral (Temporal Controls & System Tools)**: Replay transport, sequence scrubber, floor navigator (`TemporalControlsContract`), Return to Live application capability, and System Tools modal trigger.
+4. **On Demand (Inspectors & Overlays)**: Modal overlays (`StatInspectorModal`, `TelemetryInspectorModal`, `ItemProvenanceDrawer`, `CountdownEvidenceModal`, `FloorRules`, `TimelineHistory`, `TimelineEvidence`, `TimelineToolsModal`) managed with focus trapping and deterministic `Escape` handling via `ModalBoundary`.
+
+Research/audit surface classifications are maintained in `NAVIGATION_SURFACE_INVENTORY` (`src/shell/navigation/navigation-research.ts`), distinguishing established capability decisions from provisional HUD presentation arrangements. The runtime `SystemChromeContract` (`src/shell/navigation/navigation-contract.ts`) remains semantically narrow, providing `primaryNavigation` directly consumed by `RootNavigation` without duplicating HUD composition state or aggregating fragile overlay flags. Return to Live remains an application capability control (`ReplayControls`), kept strictly out of semantic HUD/navigation state.
+
 ## Replay, Timeline, and Floor ownership
 
 Replay is a persistent application capability and meaningful HUD state; Timeline is a detailed inspection feature family. Replay controls are application tooling and are owned by the replay surface rather than by the fictional HUD presentation.

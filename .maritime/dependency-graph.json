@@ -2801,8 +2801,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../navigation/capabilities",
-          "resolved": "src/shell/navigation/capabilities.ts",
+          "module": "../navigation/public",
+          "resolved": "src/shell/navigation/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -2819,8 +2819,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../navigation/navigation-model",
-          "resolved": "src/shell/navigation/navigation-model.ts",
+          "module": "../navigation/public",
+          "resolved": "src/shell/navigation/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3125,6 +3125,7 @@
       "dependents": [
         "src/application/crawler-session.ts",
         "src/shell/navigation/capabilities.ts",
+        "src/shell/navigation/navigation-contract.ts",
         "src/shell/navigation/RootNavigation.tsx",
         "src/application/crawler-session-controller.ts"
       ],
@@ -7139,9 +7140,10 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "src/shell/adapters/CrawlerWorkspace.tsx",
         "src/shell/ActiveFeatureView.tsx",
+        "src/shell/navigation/public.ts",
         "src/shell/navigation/capabilities.ts",
+        "src/shell/navigation/navigation-contract.ts",
         "src/shell/navigation/RootNavigation.tsx"
       ],
       "orphan": false
@@ -7611,6 +7613,84 @@
       ]
     },
     {
+      "source": "src/shell/navigation/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./capabilities.ts",
+          "resolved": "src/shell/navigation/capabilities.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./navigation-contract.ts",
+          "resolved": "src/shell/navigation/navigation-contract.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./navigation-model.ts",
+          "resolved": "src/shell/navigation/navigation-model.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./navigation-research.ts",
+          "resolved": "src/shell/navigation/navigation-research.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/shell/navigation/capabilities.ts",
       "valid": true,
       "dependencies": [
@@ -7651,7 +7731,80 @@
         }
       ],
       "dependents": [
-        "src/shell/adapters/CrawlerWorkspace.tsx"
+        "src/shell/navigation/public.ts",
+        "src/shell/navigation/navigation-contract.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/navigation/navigation-contract.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../application/capabilities",
+          "resolved": "src/application/capabilities.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./capabilities.ts",
+          "resolved": "src/shell/navigation/capabilities.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./navigation-model.ts",
+          "resolved": "src/shell/navigation/navigation-model.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/navigation/public.ts",
+        "src/shell/navigation/RootNavigation.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/navigation/navigation-research.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/shell/navigation/public.ts"
       ],
       "orphan": false
     },
@@ -7674,6 +7827,24 @@
           "moduleSystem": "es6",
           "module": "../../application/capabilities",
           "resolved": "src/application/capabilities.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./navigation-contract",
+          "resolved": "src/shell/navigation/navigation-contract.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -9511,8 +9682,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 164,
-    "totalDependenciesCruised": 423,
+    "totalCruised": 167,
+    "totalDependenciesCruised": 431,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
