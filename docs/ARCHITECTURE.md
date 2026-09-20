@@ -101,7 +101,7 @@ The renderer-neutral navigation contract (`deriveNavigationContract` in `src/she
 3. **Peripheral (Temporal Controls & System Tools)**: Replay transport, sequence scrubber, floor navigator, Return to Live application capability, and System Tools modal trigger.
 4. **On Demand (Inspectors & Overlays)**: Modal overlays (`StatInspectorModal`, `TelemetryInspectorModal`, `ItemProvenanceDrawer`, `CountdownEvidenceModal`, `FloorRules`, `TimelineHistory`, `TimelineEvidence`, `TimelineToolsModal`) managed with focus trapping and deterministic `Escape` handling via `ModalBoundary`.
 
-The contract enforces single ownership and capability separation: Return to Live is an application capability (`temporalControls.canReturnToLive`), not semantic HUD state, and is never embedded inside candidate HUD renderers.
+The contract enforces single ownership and capability separation: Return to Live is an application capability, not semantic HUD or navigation contract state, and is kept in peripheral replay tooling (`ReplayControls`).
 
 ## Replay, Timeline, and Floor ownership
 

@@ -88,7 +88,7 @@ test("Navigation Contract: filters unavailable root views and falls back safely"
   assert.strictEqual(contract.overlays.hasActiveModal, true);
 });
 
-test("Navigation Contract: separates Return to Live capability from semantic HUD state", () => {
+test("Navigation Contract: models temporal state without embedding application capability controls", () => {
   const liveContract = deriveNavigationContract({
     capabilities: mockCapabilitiesAllActive,
     activeView: "crawler",
@@ -98,7 +98,8 @@ test("Navigation Contract: separates Return to Live capability from semantic HUD
 
   assert.strictEqual(liveContract.temporalControls.mode, "live");
   assert.strictEqual(liveContract.temporalControls.isLive, true);
-  assert.strictEqual(liveContract.temporalControls.canReturnToLive, false);
+  assert.strictEqual(liveContract.temporalControls.selectedSequence, 100);
+  assert.strictEqual("canReturnToLive" in liveContract.temporalControls, false);
 
   const replayContract = deriveNavigationContract({
     capabilities: mockCapabilitiesAllActive,
@@ -109,5 +110,6 @@ test("Navigation Contract: separates Return to Live capability from semantic HUD
 
   assert.strictEqual(replayContract.temporalControls.mode, "replay");
   assert.strictEqual(replayContract.temporalControls.isLive, false);
-  assert.strictEqual(replayContract.temporalControls.canReturnToLive, true);
+  assert.strictEqual(replayContract.temporalControls.selectedSequence, 25);
+  assert.strictEqual("canReturnToLive" in replayContract.temporalControls, false);
 });

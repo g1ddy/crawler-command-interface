@@ -185,7 +185,6 @@ export interface PrimaryNavigationContract {
 export interface TemporalControlsContract {
   mode: "live" | "replay";
   isLive: boolean;
-  canReturnToLive: boolean;
   selectedSequence: number;
 }
 
@@ -246,7 +245,6 @@ export function deriveNavigationContract({
     temporalControls: {
       mode: isLive ? "live" : "replay",
       isLive,
-      canReturnToLive: !isLive,
       selectedSequence,
     },
     overlays: {
