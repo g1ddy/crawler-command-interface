@@ -12,7 +12,6 @@ import {
   derivePetPresentation,
   mapPetStatusToSemantics,
 } from "../../src/features/pet/public.ts";
-import { mapCapabilityToSemantics } from "../../src/presentation/semantic/public.ts";
 
 test("HUD Semantics: current observed telemetry mapping", () => {
   const currentObs = {
@@ -72,13 +71,13 @@ test("HUD Semantics: estimated telemetry mapping", () => {
   });
 });
 
-test("HUD Semantics: causal-only telemetry mapping", () => {
+test("HUD Semantics: causal-only telemetry mapping produces causal authority without implied temporal status", () => {
   const evidence = deriveEvidencePresentation(null, 15, 100);
   const semantic = mapEvidenceToSemantics(evidence);
 
+  assert.equal(semantic.temporal, undefined);
   assert.deepEqual(semantic, {
     status: "present",
-    temporal: "current",
     authority: "causal",
     affordance: "none",
     provenance: { inspectable: false },
@@ -176,20 +175,6 @@ test("HUD Semantics: Pet semantic states (known-empty vs established vs unavaila
 
   const unavailableSemantic = mapPetStatusToSemantics("unavailable");
   assert.deepEqual(unavailableSemantic, {
-    status: "unavailable",
-    affordance: "none",
-  });
-});
-
-test("HUD Semantics: Capability affordance mapping", () => {
-  const availableAction = mapCapabilityToSemantics(true);
-  assert.deepEqual(availableAction, {
-    status: "present",
-    affordance: "action",
-  });
-
-  const unavailableAction = mapCapabilityToSemantics(false);
-  assert.deepEqual(unavailableAction, {
     status: "unavailable",
     affordance: "none",
   });

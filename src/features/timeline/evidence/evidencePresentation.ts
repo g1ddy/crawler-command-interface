@@ -190,7 +190,6 @@ export function mapEvidenceToSemantics(
     case "causal-only":
       return {
         status: "present",
-        temporal: "current",
         authority: "causal",
         affordance,
         provenance,
