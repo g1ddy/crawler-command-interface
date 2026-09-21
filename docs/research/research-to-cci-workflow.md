@@ -148,6 +148,23 @@ Stage 2 should preserve enough identifying information to distinguish the source
 
 Do not create generic records such as `src-canon-general`, `src-book`, or `src-wiki` merely to satisfy the schema. If the report does not identify the source precisely, preserve the provenance gap rather than inventing a plausible source. Likewise, do not require a URL where the source does not have one.
 
+### Prompt examples are part of the extraction contract
+
+The Stage 2 prompt is itself an input to the extraction model, so examples are not neutral formatting samples. They teach the model what a successful extraction looks like. An example that uses a generic source identity, an invented URL, or an unnecessary placeholder can reinforce exactly the behavior the contract is intended to prevent.
+
+For that reason, examples should demonstrate **source fidelity**, not merely schema shape:
+
+- use an identifiable, mnemonic source ID when the source identity is known;
+- preserve the exact URL supplied by the research report for web sources;
+- omit `url` when the source has no supplied URL, such as a book;
+- never use placeholder URLs such as `example.com` or `example.invalid`;
+- never invent bibliographic details to make an example look complete;
+- prefer realistic, traceable source metadata over generic examples when illustrating provenance.
+
+This is a prompt-design lesson, not a downstream validation rule. Deterministic validation can reject malformed or structurally invalid source records, but it cannot reliably correct an LLM that has been taught the wrong provenance behavior by its own examples.
+
+The same principle applies to claim examples: they should demonstrate the desired reasoning boundary without smuggling in unsupported generalizations, false contradictions, or software abstractions.
+
 ## What a good Stage 2 extraction does
 
 A good extraction follows this reasoning sequence:
@@ -349,6 +366,10 @@ The reusable Stage 2 extraction prompt is maintained separately:
 ## Why the prompt is intentionally limited
 
 Observed Stage 2 failures show that adding every failure case to the prompt eventually recreates the validator in prose.
+
+One refinement is especially important: **prompt examples are behavioral guidance**. During the extraction pilot, a conceptual source example that used a placeholder URL (`example.com`/`example.invalid`) undermined the adjacent provenance rule by demonstrating fabricated completeness. The example was more likely to be copied than the prose rule was to override it. We therefore treat examples as part of the contract's teaching surface: every example must itself obey the provenance and evidence rules we want Gemini to follow.
+
+The extraction prompt should also avoid exposing internal design reasoning. The workflow records why the prompt has these boundaries; the Gemini-facing prompt should contain the operational extraction rules and examples needed to produce the artifact, not the retrospective reasoning used to design those rules.
 
 The prompt should therefore teach **reasoning principles**, while deterministic tooling enforces **mechanical constraints**.
 
