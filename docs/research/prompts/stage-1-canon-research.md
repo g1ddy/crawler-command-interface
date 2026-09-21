@@ -89,8 +89,12 @@ This prompt is intentionally independent of CCI implementation details. The rese
 > - Book
 > - Chapter or other precise locator when available
 > - A short quotation or close textual reference where copyright limits permit
-> - Source
+> - The specific source used
 > - Whether the evidence directly states the claim or merely supports an interpretation
+>
+> **Source identifiability matters.** A source must represent an actual identifiable source, not merely a generic canon corpus or category. For books, identify the specific book and preserve available bibliographic information. For web sources, identify the specific page and preserve its URL. For interviews, articles, wikis, or other secondary material, identify the specific work/page/interview rather than citing only a broad site or canon category. Preserve chapter, page, section, timestamp, or other locators whenever available.
+>
+> If the research material does not identify the source precisely, say that provenance is incomplete. Do not invent a source name, URL, bibliographic detail, or locator merely to make the evidence look complete.
 >
 > Do not treat a secondary summary as equivalent to primary text.
 >
