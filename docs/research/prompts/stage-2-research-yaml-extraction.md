@@ -66,9 +66,10 @@ A contradiction requires mutually incompatible propositions. Different descripti
 13. Treat the Stage 1 **Sources** section as a source-registry transcription task, not a summary. Create one source record for each identifiable source used by the report, and copy its supplied title, kind, trust classification, URL, and other schema-supported metadata into the corresponding source record.
 14. If the research report supplies a URL for a source, **preserve that exact URL in the source record**. Do not omit it, replace it with a domain homepage, normalize it to a shorter URL, or invent a different URL. A web source with a supplied URL should remain directly traceable to that page.
 15. If a source has no URL because it is a book or because the report does not provide one, do not invent one. Preserve the available bibliographic/source identity instead.
+16. Never use placeholder URLs such as `example.com`, `example.invalid`, guessed URLs, domain homepages, or fabricated bibliographic details. If the report supplies a URL, copy that exact URL; if it does not, omit the field.
 16. Prefer stable, short, mnemonic source IDs when the source identity is clear (for example, `src-book-2` or `src-donut-wiki`) rather than opaque incremental IDs such as `src-27`. Mnemonic IDs help the model keep repeated source references straight. Do not overload IDs with locator or claim semantics; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
-14. A Floor 3 research scope may contain earlier or later chronology. Preserve the evidence's actual locator.
-15. Do not decide whether a claim should be promoted into CCI.
+17. A Floor 3 research scope may contain earlier or later chronology. Preserve the evidence's actual locator.
+18. Do not decide whether a claim should be promoted into CCI.
 19. Do not choose CCI event types, observations, payloads, capabilities, runtime fields, or implementation identities.
 20. Do not add modeling dispositions.
 21. Use only enum values defined by the supplied schema.
@@ -92,8 +93,7 @@ sources:
     kind: official-text
     trust: primary
     title: Dungeon Crawler Carl — Book 2
-    url: https://example.com/dungeon-crawler-carl-book-2
-
+    
 claims:
   - id: P3-PET-001
     domain: pet
@@ -135,6 +135,8 @@ For multiple web sources, create separate records with distinct mnemonic IDs suc
 
 If the report does not identify a URL, preserve the source identity that is available rather than inventing one.
 
+Never use placeholder URLs or fabricated bibliographic details in the extracted source registry. Examples in this prompt are expected to follow the same rule as real extraction output.
+
 
 ## Example 1 — atomic fact with unknown precision
 
@@ -170,7 +172,7 @@ If the report documents a particular pet receiving or using a particular item:
   claim:
     summary: Mongo receives the documented pet equipment.
   evidence:
-    - sourceId: src-27
+    - sourceId: src-mongo-wiki
       relationship: supports
       confidence: confirmed
 ```
@@ -188,10 +190,10 @@ If one source establishes proposition A and another establishes an incompatible 
   claim:
     summary: Source A establishes proposition A.
   evidence:
-    - sourceId: src-27
+    - sourceId: src-source-a
       relationship: supports
       confidence: confirmed
-    - sourceId: src-28
+    - sourceId: src-source-b
       relationship: contradicts
       confidence: disputed
   contradictions:
@@ -212,7 +214,7 @@ A Floor 3 research report may legitimately contain earlier evidence:
   claim:
     summary: Donut transitions from Pet to Crawler.
   evidence:
-    - sourceId: src-29
+    - sourceId: src-book-1
       locator:
         book: 1
         floor: 1
@@ -239,15 +241,6 @@ claims: []
 
 The code block is a presentation requirement only; the YAML inside it must still conform to the supplied repository schema.
 
-Before returning the YAML, reason through:
-
-- Which propositions are actually established?
-- Which are interpretations?
-- Which are specific examples rather than general rules?
-- Which details remain unknown?
-- Which sources directly support, corroborate, contradict, or contextualize each claim?
-- Are any apparent contradictions merely different descriptions rather than incompatible claims?
-
-Then emit only the YAML artifact.
+Before returning the YAML, perform the required extraction and source-registry audit, then emit only the YAML artifact.
 
 Do not perform schema validation yourself beyond producing the requested shape. Deterministic downstream tooling will parse YAML, convert it to JSON, apply JSON Schema/AJV validation, and perform semantic validation.
