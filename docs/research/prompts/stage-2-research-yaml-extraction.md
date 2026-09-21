@@ -160,7 +160,7 @@ If the report establishes that Mongo reaches Level 3 but does not establish an e
     - exact_timestamp
 ```
 
-The locator above is illustrative only. In actual extraction, copy a locator only when the supplied online source identifies it. Never invent a chapter, section, timestamp, or other precise location.
+The locator above is illustrative only. In actual extraction, copy a locator only when the supplied online source identifies it. Never invent a section, timestamp, or other precise location.
 
 ## Example 2 — specific observation, not a universal mechanic
 
