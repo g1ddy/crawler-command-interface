@@ -302,19 +302,91 @@ The following prompt is the standard starting point for the Floor 3 Pet pilot.
 
 Convert the Stage 1 research report into a structured research-claim artifact.
 
-The extraction LLM receives only:
+The extraction LLM receives:
 
 1. the complete research report;
-2. the current JSON Schema;
-3. this extraction prompt.
+2. the current repository JSON Schema;
+3. the extraction prompt below.
 
 It does **not** need CCI source code or repository access.
 
-Its job is extraction, not CCI modeling.
+Its job is **structured evidence extraction**, not CCI modeling, semantic validation, or authoritative authoring.
+
+The Stage 2 contract should stay deliberately small. The prompt guides reasoning about evidence; deterministic tooling enforces syntax, structure, enums, references, and cross-record consistency.
+
+## What a good Stage 2 extraction does
+
+A good extraction follows this reasoning sequence:
+
+1. Identify meaningful claims established by the research report.
+2. Make each claim as atomic as practical.
+3. Preserve the terminology used by the source/report.
+4. Separate what the evidence directly establishes from interpretation.
+5. Preserve uncertainty and missing precision.
+6. Preserve genuine contradictions rather than resolving them.
+7. Record provenance and available locators.
+8. Distinguish direct support, corroboration, contradiction, and context.
+9. Assign confidence based on the strength of the evidence for the proposition.
+10. Keep research scope separate from the chronology of individual evidence.
+11. Avoid making CCI modeling or promotion decisions.
+12. Output only the research YAML contract.
+
+### The narrowest-supported-proposition rule
+
+Prefer the **narrowest proposition actually established by the evidence**.
+
+If the report documents one pet receiving a particular item, extract that fact. Do not turn it into a general System rule unless the report explicitly establishes the rule.
+
+For example, evidence that Mongo receives pet-specific equipment does not by itself establish that the System dynamically changes all loot tables whenever any active pet exists.
+
+Similarly, evidence that one character exhibits a behavior does not establish a universal pet mechanic.
+
+### Evidence is not implementation
+
+Research claims may describe canon concepts such as pets, crawlers, equipment, achievements, System behavior, or interface behavior. They must not be translated into CCI concepts such as:
+
+- runtime state;
+- reducer actions;
+- application events;
+- UI components;
+- capabilities;
+- database records;
+- API payloads;
+- executable event IDs;
+- promotion/disposition decisions.
+
+Those decisions belong to later CCI-aware modeling.
+
+### Contradiction means incompatibility
+
+Only record a contradiction when the evidence establishes **mutually incompatible propositions**.
+
+Different perspectives, terminology, behaviors, or layers of the System are not contradictions merely because they appear conceptually tense.
+
+For example, an AI addressing a character in a pet-oriented manner does not contradict a separate claim that the System has mechanically registered that character as a Crawler.
+
+### Scope is not chronology
+
+The document-level `floor` identifies the research scope. Individual evidence retains its own chronology.
+
+A Floor 3 research report may contain useful Book 1 or Book 2 evidence. Preserve the actual book/chapter/section locator when supplied rather than rejecting the claim because it predates the research scope.
+
+### Research completeness is not promotion
+
+Stage 2 should extract useful claims even when they are not currently known to map cleanly to CCI.
+
+The extractor must not decide:
+
+- whether a claim should be promoted;
+- whether a claim is runtime-relevant;
+- which CCI event or observation represents it;
+- whether a new domain contract is required.
+
+Those decisions belong to Stage 3.
 
 ## Conceptual schema
 
-The repository's JSON Schema is authoritative. This shows the shape the extractor must produce:
+The repository's **current JSON Schema is authoritative**. The example below illustrates the intended contract; it is not a replacement for the repository schema.
 
 ```yaml
 schemaVersion: crawler-research/v1
@@ -322,7 +394,7 @@ storyId: dcc
 floor: 3
 
 sources:
-  - id: src-book-2
+  - id: src-27
     kind: official-text
     trust: primary
     title: Dungeon Crawler Carl — Book 2
@@ -332,66 +404,93 @@ claims:
   - id: P3-PET-001
     domain: pet
     kind: event
-
     claim:
       summary: Mongo reaches Level 3.
-      context: Mongo's progression on Floor 3.
-
+      detail: Mongo's progression is explicitly described in the researched material.
     evidence:
-      - sourceId: src-book-2
+      - sourceId: src-27
         locator:
           book: 2
           chapter: 5
         relationship: supports
         confidence: confirmed
-
     unknowns:
       - exact_timestamp
 ```
 
-### Required concepts
+### Source records
 
-The research artifact contains:
+A source ID is an identifier, not provenance by itself.
 
-- stable claim IDs;
-- domain and claim kind;
-- factual statement;
-- source registry;
+For each source, preserve the information supplied by the research report, such as:
+
+- source ID;
+- source kind;
+- trust classification;
+- title;
+- URL when applicable;
+- bibliographic information when applicable;
+- other schema-supported metadata.
+
+Do not require a URL for sources that do not have one, such as books.
+
+Do not encode meaning into IDs. `src-27` is sufficient; an ID does not need to encode book, chapter, floor, or domain.
+
+### Claim records
+
+Claims should contain:
+
+- stable ID;
+- domain;
+- claim kind;
+- factual proposition;
 - evidence references;
-- evidence relationship;
-- confidence;
-- explicit unknowns;
-- optional dependencies;
-- optional contradictions.
+- explicit unknowns when relevant;
+- dependencies only when genuinely established;
+- contradictions only when genuinely established.
 
-It does **not** contain:
+Use an object for the `claim` field when required by the supplied schema:
 
-- CCI event payloads;
-- runtime state;
-- UI fields;
-- authoritative event IDs;
-- modeling dispositions;
-- automatic promotion instructions.
+```yaml
+claim:
+  summary: Mongo reaches Level 3.
+  detail: Optional additional context.
+```
 
-### Controlled values
+Do not collapse an object-shaped claim into a scalar:
 
-Evidence relationships:
+```yaml
+# Incorrect when the schema expects an object
+claim: Mongo reaches Level 3.
+```
 
-- `supports` — source directly supports the claim.
-- `corroborates` — source independently reinforces it.
-- `contradicts` — source conflicts with it.
-- `context` — source provides context but does not establish it.
+### Evidence relationships
 
-Confidence:
+Use only values allowed by the supplied schema. The current conceptual vocabulary is:
+
+- `supports` — evidence directly supports the proposition.
+- `corroborates` — evidence independently reinforces it.
+- `contradicts` — evidence establishes an incompatible proposition.
+- `context` — evidence provides relevant context but does not establish the proposition.
+
+Do not invent relationship kinds.
+
+### Confidence
+
+Use only confidence values defined by the supplied schema. The current conceptual vocabulary is:
 
 - `confirmed`
 - `probable`
 - `candidate`
 - `disputed`
 
-Confidence describes evidence strength, **not** whether CCI should implement the claim.
+Confidence describes the strength of evidence for the **claim**, not whether CCI should implement it.
 
-Unknowns must be explicit when relevant:
+A secondary source can support a claim with high confidence when the research report clearly establishes the proposition, but that does not make the source primary or make the claim automatically authoritative CCI data.
+
+### Unknowns
+
+Preserve meaningful unknowns explicitly:
 
 ```yaml
 unknowns:
@@ -400,57 +499,300 @@ unknowns:
   - exact_duration
 ```
 
-Never replace an unknown with an invented value.
+Do not invent precision merely because the downstream application might prefer a concrete value.
 
-## Extraction prompt
+Omission of an unknown does not mean the value is known; extract an explicit unknown when the research report identifies missing precision or when the requested fact remains unresolved.
 
-> You are a structured-data extraction agent.
+## Optimized extraction prompt
+
+Use the following as the standard Stage 2 prompt. The supplied repository JSON Schema remains the structural authority.
+
+> # ROLE
 >
-> Convert the supplied research report into YAML conforming to the supplied `crawler-research/v1` JSON Schema.
+> You are an evidence-aware structured extraction agent.
 >
-> **Extract evidence; do not perform CCI modeling.**
+> You convert a human-readable canon research report into a concise, source-backed research claim ledger.
 >
-> ### Rules
+> You are an **extractor**, not a CCI designer, semantic validator, or runtime author.
 >
-> 1. Use only information contained in the research report. Do not browse, use outside knowledge, or fill gaps from inference.
-> 2. Create claims for meaningful factual propositions supported by the report.
-> 3. Preserve the distinction between direct evidence, corroboration, inference, and unknowns.
-> 4. Do not turn an inference or implication into a fact.
-> 5. Absence of evidence is not evidence of absence.
-> 6. Preserve explicit unknowns rather than inventing timestamps, quantities, levels, statistics, durations, or effects.
-> 7. Every evidence item must have one relationship: `supports`, `corroborates`, `contradicts`, or `context`.
-> 8. Use only confidence values defined by the schema: `confirmed`, `probable`, `candidate`, `disputed`.
-> 9. Generate stable, deterministic claim IDs. For the Floor 3 Pet pilot use `P3-PET-001`, `P3-PET-002`, etc. Do not use random IDs.
-> 10. Every `sourceId` must reference a source in `sources`.
-> 11. Every dependency and contradiction reference must identify an existing claim.
-> 12. Use only domain/kind enum values defined by the supplied schema. Do not invent new enum values.
-> 13. Do not add CCI event names, runtime payloads, reducer state, UI fields, capabilities, promotion decisions, or implementation-specific IDs.
-> 14. Do not add a modeling disposition. Modeling happens after deterministic validation.
+> # TASK
 >
-> ### Output
+> Read the supplied research report and extract the meaningful factual propositions it establishes into the supplied `crawler-research/v1` YAML contract.
+>
+> For each useful claim:
+>
+> 1. state the proposition clearly;
+> 2. keep it as atomic as practical;
+> 3. preserve canon terminology;
+> 4. connect it to the available evidence;
+> 5. distinguish direct support, corroboration, contradiction, and context;
+> 6. preserve uncertainty and missing precision;
+> 7. preserve genuine contradictions;
+> 8. preserve available provenance and locators;
+> 9. assign confidence based on evidence strength;
+> 10. preserve the distinction between research scope and evidence chronology.
+>
+> Produce a research evidence ledger, **not CCI runtime data**.
+>
+> # WHAT A GOOD CLAIM IS
+>
+> A good claim is the narrowest useful proposition supported by the research report.
+>
+> If the report establishes that Mongo reaches Level 3, extract that fact.
+>
+> Do not silently turn a specific observation into a general rule. Evidence that Mongo receives a particular item does not by itself establish a universal pet mechanic or System rule.
+>
+> Separate evidence from interpretation. If the report says that a source describes an event, extract what the source establishes. Do not promote the researcher's inference into an established fact.
+>
+> Preserve canon terminology. Do not translate story concepts into software terminology such as backend, frontend, reducer, API, database, runtime state, or capability unless the research report itself is explicitly discussing such terminology as part of the research process rather than canon.
+>
+> A contradiction requires mutually incompatible propositions. Different descriptions of the same character, different System layers, or different behaviors are not contradictions merely because they seem conceptually tense.
+>
+> # EXTRACTION RULES
+>
+> 1. Use only information contained in the supplied research report. Do not browse or fill gaps from outside knowledge.
+> 2. Prefer the narrowest proposition supported by the evidence.
+> 3. Keep claims atomic enough that later CCI modeling can evaluate them independently.
+> 4. Preserve the source's terminology instead of inventing abstractions.
+> 5. Distinguish direct evidence from interpretation and corroboration.
+> 6. Preserve explicit uncertainty, unresolved questions, and missing precision.
+> 7. Never invent timestamps, quantities, levels, statistics, durations, mechanics, or causal relationships.
+> 8. Do not generalize from one example to a universal rule unless the report explicitly establishes that rule.
+> 9. Do not treat absence of evidence as evidence of absence.
+> 10. Preserve genuine contradictions; do not resolve them yourself.
+> 11. Record a contradiction only when the propositions are actually incompatible.
+> 12. Preserve available source metadata and locators without inventing bibliographic details.
+> 13. A source ID is only an identifier; do not encode provenance or semantics into it.
+> 14. A Floor 3 research scope may contain earlier or later chronology. Preserve the evidence's actual locator.
+> 15. Do not decide whether a claim should be promoted into CCI.
+> 16. Do not choose CCI event types, observations, payloads, capabilities, runtime fields, or implementation identities.
+> 17. Do not add modeling dispositions.
+> 18. Use only enum values defined by the supplied schema.
+> 19. Generate stable claim IDs. For the Floor 3 Pet pilot, use `P3-PET-001`, `P3-PET-002`, etc.
+> 20. Preserve the research report's source/evidence distinctions even when multiple sources support the same proposition.
+>
+> # YAML CONTRACT
+>
+> Follow the supplied JSON Schema exactly.
+>
+> The expected conceptual shape is:
+>
+> ```yaml
+> schemaVersion: crawler-research/v1
+> storyId: dcc
+> floor: 3
+>
+> sources:
+>   - id: src-27
+>     kind: official-text
+>     trust: primary
+>     title: Dungeon Crawler Carl — Book 2
+>     url: https://example.invalid/source
+>
+> claims:
+>   - id: P3-PET-001
+>     domain: pet
+>     kind: event
+>     claim:
+>       summary: Mongo reaches Level 3.
+>       detail: Optional context.
+>     evidence:
+>       - sourceId: src-27
+>         locator:
+>           book: 2
+>           chapter: 5
+>         relationship: supports
+>         confidence: confirmed
+>     unknowns:
+>       - exact_timestamp
+> ```
+>
+> The repository schema is authoritative if it differs from this conceptual example.
+>
+> # HIGH-VALUE EXAMPLES
+>
+> ## Example 1 — atomic fact with unknown precision
+>
+> If the report establishes that Mongo reaches Level 3 but does not establish an exact timestamp:
+>
+> ```yaml
+> - id: P3-PET-001
+>   domain: pet
+>   kind: event
+>   claim:
+>     summary: Mongo reaches Level 3.
+>   evidence:
+>     - sourceId: src-27
+>       locator:
+>         book: 2
+>         chapter: 5
+>       relationship: supports
+>       confidence: confirmed
+>   unknowns:
+>     - exact_timestamp
+> ```
+>
+> Do not invent the timestamp.
+>
+> ## Example 2 — specific observation, not a universal mechanic
+>
+> If the report documents a particular pet receiving or using a particular item:
+>
+> ```yaml
+> - id: P3-PET-002
+>   domain: pet
+>   kind: event
+>   claim:
+>     summary: Mongo receives the documented pet equipment.
+>   evidence:
+>     - sourceId: src-27
+>       relationship: supports
+>       confidence: confirmed
+> ```
+>
+> Do not additionally claim that the System always provides that equipment to every active pet unless the report explicitly establishes that rule.
+>
+> ## Example 3 — contradiction
+>
+> If one source establishes proposition A and another establishes an incompatible proposition B, preserve both:
+>
+> ```yaml
+> - id: P3-PET-003
+>   domain: pet
+>   kind: state
+>   claim:
+>     summary: Source A establishes proposition A.
+>   evidence:
+>     - sourceId: src-27
+>       relationship: supports
+>       confidence: confirmed
+>     - sourceId: src-28
+>       relationship: contradicts
+>       confidence: disputed
+>   contradictions:
+>     - claimId: P3-PET-004
+>       relationship: unresolved
+> ```
+>
+> Do not manufacture a contradiction merely because two claims describe different aspects of the same subject.
+>
+> ## Example 4 — research scope versus chronology
+>
+> A Floor 3 research report may legitimately contain earlier evidence:
+>
+> ```yaml
+> - id: P3-PET-005
+>   domain: pet
+>   kind: event
+>   claim:
+>     summary: Donut transitions from Pet to Crawler.
+>   evidence:
+>     - sourceId: src-29
+>       locator:
+>         book: 1
+>         floor: 1
+>       relationship: supports
+>       confidence: confirmed
+> ```
+>
+> Do not change the chronology to Floor 3 merely because the research document is scoped to Floor 3.
+>
+> # OUTPUT
 >
 > Return **only YAML**. Do not use Markdown fences or add commentary.
 >
-> The YAML must conform to the supplied JSON Schema.
+> Before returning the YAML, reason through:
 >
-> ### Verification before output
+> - Which propositions are actually established?
+> - Which are interpretations?
+> - Which are specific examples rather than general rules?
+> - Which details remain unknown?
+> - Which sources directly support, corroborate, contradict, or contextualize each claim?
+> - Are any apparent contradictions merely different descriptions rather than incompatible claims?
 >
-> Check:
+> Then emit only the YAML artifact.
 >
-> - YAML is syntactically valid.
-> - Required fields are present.
-> - Claim IDs are unique.
-> - Every source reference exists.
-> - Every dependency reference exists.
-> - Every contradiction reference exists.
-> - Every evidence relationship is valid.
-> - Every confidence value is valid.
-> - Explicit unknowns are preserved.
-> - No unsupported facts were invented.
-> - No CCI runtime/modeling information was added.
-> - The result conforms to the supplied JSON Schema.
->
-> If the report does not establish a value, leave it unknown rather than guessing.
+> Do not perform schema validation yourself beyond producing the requested shape. Deterministic downstream tooling will parse YAML, convert it to JSON, apply JSON Schema/AJV validation, and perform semantic validation.
+
+## Why the prompt is intentionally limited
+
+Observed Stage 2 failures show that adding every failure case to the prompt eventually recreates the validator in prose.
+
+The prompt should therefore teach **reasoning principles**, while deterministic tooling enforces **mechanical constraints**.
+
+### LLM reasoning belongs in the prompt
+
+The extractor should reason about:
+
+- what constitutes a useful claim;
+- atomicity;
+- evidence versus interpretation;
+- canon terminology;
+- uncertainty;
+- genuine contradictions;
+- source provenance;
+- evidence relationships;
+- confidence;
+- chronology versus research scope;
+- the boundary between evidence extraction and CCI modeling.
+
+### Deterministic enforcement belongs downstream
+
+The parser/schema/semantic validator should enforce:
+
+- YAML syntax;
+- property names;
+- object/scalar shape;
+- required fields;
+- enum values;
+- ID uniqueness;
+- foreign-key integrity;
+- source references;
+- claim references;
+- schema compliance;
+- cross-record consistency.
+
+This division is deliberate. The Stage 2 prompt should not become a prose implementation of AJV or the CCI semantic validator.
+
+## Known failure patterns to use as regression cases
+
+The following failures are particularly valuable as Stage 2 regression fixtures:
+
+| Failure | Expected behavior |
+| --- | --- |
+| `claim: "..."` when an object is required | Produce the schema-defined claim object |
+| Invented relationship/system enum | Use only supplied schema enums |
+| Specific example generalized into universal mechanic | Keep the claim specific |
+| Missing exact timestamp/quantity | Preserve as unknown |
+| Source ID treated as provenance | Use the source registry and evidence locator |
+| Book source forced to have URL | Preserve URL only when applicable |
+| Floor 3 scope treated as evidence restriction | Preserve actual chronology |
+| Strong source claim automatically treated as CCI promotion | Keep promotion out of Stage 2 |
+| Different system behaviors labeled contradictory | Require actual proposition incompatibility |
+| Secondary evidence treated as primary | Preserve source trust independently from claim confidence |
+| One broad synthesis replaces multiple atomic facts | Prefer independently reviewable claims |
+| Canon term replaced with software abstraction | Preserve canon terminology |
+
+The supplied research output should be judged against these principles rather than against a requirement that the LLM reproduce the validator's logic.
+
+## Stage 2 acceptance criteria
+
+A useful Stage 2 implementation should demonstrate that it can:
+
+1. extract atomic, source-backed claims;
+2. preserve source terminology;
+3. preserve provenance and available locators;
+4. preserve meaningful unknowns;
+5. distinguish evidence from interpretation;
+6. avoid generalizing examples into system-wide mechanics;
+7. preserve genuine contradictions without resolving them;
+8. avoid false contradictions;
+9. keep research scope separate from chronology;
+10. keep evidence confidence independent from CCI modeling disposition;
+11. emit only the supplied contract's structural vocabulary;
+12. leave structural and semantic enforcement to deterministic validation.
+
+The output should be considered a **research artifact**, not authoritative CCI data, even when every structural and semantic validation check passes.
 
 # Stage 2.5 — Deterministic YAML → JSON Validation
 
