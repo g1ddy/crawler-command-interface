@@ -394,7 +394,7 @@ storyId: dcc
 floor: 3
 
 sources:
-  - id: src-27
+  - id: src-book-2
     kind: official-text
     trust: primary
     title: Dungeon Crawler Carl — Book 2
@@ -434,7 +434,9 @@ For each source, preserve the information supplied by the research report, such 
 
 Do not require a URL for sources that do not have one, such as books.
 
-Do not encode meaning into IDs. `src-27` is sufficient; an ID does not need to encode book, chapter, floor, or domain.
+Prefer **stable, short, mnemonic source IDs** when the source identity is clear. For example, use `src-book-2`, `src-donut-wiki`, or `src-interview-1` rather than opaque incremental IDs such as `src-27`. Mnemonic IDs give the extraction model a useful retrieval cue when the same source is referenced repeatedly.
+
+Do not overload IDs with locator or claim semantics. Avoid IDs such as `src-book-2-chapter-14-mongo-leveling-secondary-fandom`; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
 
 ### Claim records
 
@@ -562,7 +564,7 @@ Use the following as the standard Stage 2 prompt. The supplied repository JSON S
 > 10. Preserve genuine contradictions; do not resolve them yourself.
 > 11. Record a contradiction only when the propositions are actually incompatible.
 > 12. Preserve available source metadata and locators without inventing bibliographic details.
-> 13. A source ID is only an identifier; do not encode provenance or semantics into it.
+> 13. Prefer stable, short, mnemonic source IDs when the source identity is clear (for example, `src-book-2` or `src-donut-wiki`) rather than opaque incremental IDs such as `src-27`. Mnemonic IDs help the model keep repeated source references straight. Do not overload IDs with locator or claim semantics; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
 > 14. A Floor 3 research scope may contain earlier or later chronology. Preserve the evidence's actual locator.
 > 15. Do not decide whether a claim should be promoted into CCI.
 > 16. Do not choose CCI event types, observations, payloads, capabilities, runtime fields, or implementation identities.
@@ -583,7 +585,7 @@ Use the following as the standard Stage 2 prompt. The supplied repository JSON S
 > floor: 3
 >
 > sources:
->   - id: src-27
+>   - id: src-book-2
 >     kind: official-text
 >     trust: primary
 >     title: Dungeon Crawler Carl — Book 2
@@ -597,7 +599,7 @@ Use the following as the standard Stage 2 prompt. The supplied repository JSON S
 >       summary: Mongo reaches Level 3.
 >       detail: Optional context.
 >     evidence:
->       - sourceId: src-27
+>       - sourceId: src-book-2
 >         locator:
 >           book: 2
 >           chapter: 5
@@ -1058,7 +1060,7 @@ candidate-... / review proposal
 event-f3-mongo-level-3
 ```
 
-The research claim ID is the stable evidence identity.
+The research claim ID is the stable evidence identity. Source IDs are stable foreign keys; prefer short mnemonic values such as `src-book-2` when the source identity is clear, while keeping locators and other provenance in structured fields.
 
 The eventual CCI event ID belongs to the executable representation.
 
