@@ -63,14 +63,18 @@ A contradiction requires mutually incompatible propositions. Different descripti
 10. Preserve genuine contradictions; do not resolve them yourself.
 11. Record a contradiction only when the propositions are actually incompatible.
 12. Preserve available source metadata and locators without inventing bibliographic details.
-13. Prefer stable, short, mnemonic source IDs when the source identity is clear (for example, `src-book-2` or `src-donut-wiki`) rather than opaque incremental IDs such as `src-27`. Mnemonic IDs help the model keep repeated source references straight. Do not overload IDs with locator or claim semantics; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
+13. Treat the Stage 1 **Sources** section as a source-registry transcription task, not a summary. Create one source record for each identifiable source used by the report, and copy its supplied title, kind, trust classification, URL, and other schema-supported metadata into the corresponding source record.
+14. If the research report supplies a URL for a source, **preserve that exact URL in the source record**. Do not omit it, replace it with a domain homepage, normalize it to a shorter URL, or invent a different URL. A web source with a supplied URL should remain directly traceable to that page.
+15. If a source has no URL because it is a book or because the report does not provide one, do not invent one. Preserve the available bibliographic/source identity instead.
+16. Prefer stable, short, mnemonic source IDs when the source identity is clear (for example, `src-book-2` or `src-donut-wiki`) rather than opaque incremental IDs such as `src-27`. Mnemonic IDs help the model keep repeated source references straight. Do not overload IDs with locator or claim semantics; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
 14. A Floor 3 research scope may contain earlier or later chronology. Preserve the evidence's actual locator.
 15. Do not decide whether a claim should be promoted into CCI.
-16. Do not choose CCI event types, observations, payloads, capabilities, runtime fields, or implementation identities.
-17. Do not add modeling dispositions.
-18. Use only enum values defined by the supplied schema.
-19. Generate stable claim IDs. For the Floor 3 Pet pilot, use `P3-PET-001`, `P3-PET-002`, etc.
-20. Preserve the research report's source/evidence distinctions even when multiple sources support the same proposition.
+19. Do not choose CCI event types, observations, payloads, capabilities, runtime fields, or implementation identities.
+20. Do not add modeling dispositions.
+21. Use only enum values defined by the supplied schema.
+22. Generate stable claim IDs. For the Floor 3 Pet pilot, use `P3-PET-001`, `P3-PET-002`, etc.
+23. Preserve the research report's source/evidence distinctions even when multiple sources support the same proposition.
+24. Before returning the YAML, audit the `sources` array against the report's source list: every identifiable source used by evidence should have a corresponding source record, and every URL supplied by the report should be present unchanged.
 
 # YAML CONTRACT
 
@@ -88,6 +92,7 @@ sources:
     kind: official-text
     trust: primary
     title: Dungeon Crawler Carl — Book 2
+    url: https://example.com/dungeon-crawler-carl-book-2
 
 claims:
   - id: P3-PET-001
@@ -110,6 +115,26 @@ claims:
 The repository schema is authoritative if it differs from this conceptual example.
 
 # HIGH-VALUE EXAMPLES
+
+## Example 0 — preserve source URLs and source identity
+
+If the Stage 1 report identifies a specific web page, preserve the source as an identifiable record rather than reducing it to a generic category:
+
+```yaml
+sources:
+  - id: src-donut-wiki
+    kind: community-wiki
+    trust: secondary
+    title: Princess Donut - Dungeon Crawler Carl Wiki - Fandom
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Donut
+```
+
+The URL is part of the source provenance. If the report supplied it, copy it exactly. Do not emit only `title`, do not substitute `https://dungeon-crawler-carl.fandom.com/`, and do not omit the URL merely because the title identifies the page.
+
+For multiple web sources, create separate records with distinct mnemonic IDs such as `src-donut-wiki`, `src-mongo-wiki`, and `src-donut-transformation`. Do not collapse several pages from the same site into one generic source record.
+
+If the report does not identify a URL, preserve the source identity that is available rather than inventing one.
+
 
 ## Example 1 — atomic fact with unknown precision
 
