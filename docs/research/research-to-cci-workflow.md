@@ -415,7 +415,7 @@ A useful Stage 2 implementation should demonstrate that it can:
 
 1. extract atomic, source-backed claims;
 2. preserve source terminology;
-3. preserve provenance and available locators;
+3. preserve identifiable source provenance and available locators;
 4. preserve meaningful unknowns;
 5. distinguish evidence from interpretation;
 6. avoid generalizing examples into system-wide mechanics;
