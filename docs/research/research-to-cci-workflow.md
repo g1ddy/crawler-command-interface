@@ -300,32 +300,21 @@ The following prompt is the standard starting point for the Floor 3 Pet pilot.
 
 ## Goal
 
-Convert the Stage 1 report into the structured research-claim artifact.
+Convert the Stage 1 research report into a structured research-claim artifact.
 
-The extraction LLM:
+The extraction LLM receives only:
 
-- receives the research report;
-- receives the JSON Schema;
-- does not need repository access;
-- does not need CCI source code;
-- does not decide CCI modeling;
-- does not create runtime events.
-
-The output is a **research evidence ledger**, not executable CCI data.
-
-## Inputs
-
-Provide the extraction model:
-
-1. the complete Stage 1 research report;
+1. the complete research report;
 2. the current JSON Schema;
-3. the extraction prompt below.
+3. this extraction prompt.
 
-Do not provide the model with an outdated schema embedded in a prompt if the repository schema has changed. The repository schema is the contract.
+It does **not** need CCI source code or repository access.
 
-## Research YAML conceptual schema
+Its job is extraction, not CCI modeling.
 
-The current CCI implementation uses the `crawler-research/v1` contract. The following is a conceptual representation; the repository's JSON Schema is authoritative.
+## Conceptual schema
+
+The repository's JSON Schema is authoritative. This shows the shape the extractor must produce:
 
 ```yaml
 schemaVersion: crawler-research/v1
@@ -338,9 +327,6 @@ sources:
     trust: primary
     title: Dungeon Crawler Carl — Book 2
     url: https://example.invalid/source
-    citationStyle: optional
-    accessedAt: optional
-    revision: optional
 
 claims:
   - id: P3-PET-001
@@ -358,329 +344,113 @@ claims:
           chapter: 5
         relationship: supports
         confidence: confirmed
-        note: optional
 
     unknowns:
       - exact_timestamp
-
-    dependencies:
-      - P3-PET-000
-
-    contradictions:
-      - claimId: P3-PET-099
-        relationship: unresolved
-        note: optional
 ```
 
-### Schema principles
+### Required concepts
 
-The research schema intentionally contains:
+The research artifact contains:
 
-- stable claim identity;
-- research domain;
-- research kind;
+- stable claim IDs;
+- domain and claim kind;
 - factual statement;
 - source registry;
 - evidence references;
 - evidence relationship;
 - confidence;
-- unknowns;
-- optional research dependencies;
+- explicit unknowns;
+- optional dependencies;
 - optional contradictions.
 
-It intentionally does **not** contain:
+It does **not** contain:
 
 - CCI event payloads;
-- reducer state;
-- runtime fields;
+- runtime state;
 - UI fields;
 - authoritative event IDs;
 - modeling dispositions;
 - automatic promotion instructions.
 
-### Evidence relationship
+### Controlled values
 
-Every evidence item should identify its relationship to the claim:
+Evidence relationships:
 
-| Relationship | Meaning |
-| --- | --- |
-| `supports` | Source directly supports the claim |
-| `corroborates` | Source independently reinforces the claim |
-| `contradicts` | Source conflicts with the claim |
-| `context` | Source provides context but does not establish the claim |
+- `supports` — source directly supports the claim.
+- `corroborates` — source independently reinforces it.
+- `contradicts` — source conflicts with it.
+- `context` — source provides context but does not establish it.
 
-The relationship is important because a source appearing in the evidence list does not necessarily support the claim.
-
-### Confidence
-
-Confidence describes the strength of the evidence, not what CCI should do with the claim.
-
-Current vocabulary:
+Confidence:
 
 - `confirmed`
 - `probable`
 - `candidate`
 - `disputed`
 
-Do not use numerical probabilities.
+Confidence describes evidence strength, **not** whether CCI should implement the claim.
 
-### Unknowns
-
-Unknowns are explicit safety constraints.
-
-Examples:
+Unknowns must be explicit when relevant:
 
 ```yaml
 unknowns:
   - exact_timestamp
   - exact_quantity
   - exact_duration
-  - numerical_item_statistics
 ```
 
-An explicit unknown must never silently become a concrete value later.
+Never replace an unknown with an invented value.
 
----
+## Extraction prompt
 
-## Stage 2 extraction prompt
-
-### Prompt
-
-> # Dungeon Crawler Carl Research → Structured Claims
->
-> ## Role
->
 > You are a structured-data extraction agent.
 >
-> You are given:
->
-> 1. a human-readable research report;
-> 2. a JSON Schema defining the required research-claim format.
->
-> Your job is to extract the report's supported claims into the schema.
->
-> You are NOT the application designer.
->
-> You are NOT deciding how CCI should represent the information.
->
-> You are NOT allowed to invent facts that are not supported by the research report.
->
-> ## Primary rule
->
-> Extract evidence; do not invent application state.
->
-> The output is a research evidence ledger.
->
-> It is NOT CCI runtime data.
->
-> It is NOT a replacement for CCI's raw-floor data.
->
-> It is NOT a modeling decision document.
->
-> ## What counts as a claim?
->
-> Create a claim when the research report establishes a meaningful factual proposition relevant to the requested domain.
->
-> Examples:
->
-> - Mongo reaches Level 3.
-> - Mongo receives a magical tracking collar.
-> - Mongo is injured during a particular encounter.
-> - Mongo uses a magical pet carrier.
-> - Donut and Mongo have an explicitly documented bond.
->
-> Do NOT create claims merely because something might be useful to an application.
->
-> ## Preserve uncertainty
->
-> If the report says a value is unknown, preserve that unknown.
->
-> If the report establishes that Mongo grows but gives no exact size, record the growth and preserve exact size as unknown.
->
-> Do NOT invent a value.
->
-> ## Do not turn implications into facts
->
-> If the report says Mongo is placed in a carrier during transport, do not create a universal rule that all pets require carriers unless the research explicitly establishes it.
->
-> ## Evidence relationships
->
-> Every evidence entry MUST have exactly one relationship:
->
-> - supports
-> - corroborates
-> - contradicts
-> - context
->
-> Use `supports` when the source directly supports the claim.
->
-> Use `corroborates` when it independently reinforces the claim without being the primary direct statement.
->
-> Use `contradicts` when the source conflicts with the claim.
->
-> Use `context` when the source provides surrounding information without establishing the claim.
->
-> ## Confidence
->
-> Confidence describes what the evidence warrants.
->
-> It does NOT mean whether the claim should be included in the application.
->
-> Use:
->
-> - confirmed — directly established by strong evidence;
-> - probable — strong but not completely direct;
-> - candidate — plausible and worth retaining for review;
-> - disputed — conflicting or materially uncertain.
->
-> Never change confidence merely because a fact would be useful to the application.
->
-> ## Unknowns
->
-> Record details that the research explicitly leaves unresolved.
->
-> Typical examples:
->
-> - exact_timestamp
-> - exact_quantity
-> - exact_level
-> - exact_duration
-> - exact_location
-> - exact_effect
-> - acquisition_chapter
->
-> Only include an unknown when it is relevant and genuinely unresolved.
->
-> ## Contradictions
->
-> If the research identifies conflicting evidence:
->
-> - preserve both claims when appropriate;
-> - use the contradiction structure;
-> - do not silently choose one version;
-> - do not resolve a contradiction merely because one version seems more convenient.
->
-> ## Claim IDs
->
-> Generate stable, deterministic IDs.
->
-> For the Floor 3 Pet pilot use:
->
-> P3-PET-001
-> P3-PET-002
-> P3-PET-003
->
-> and so on.
->
-> Do not use random UUIDs.
->
-> Do not renumber an existing claim merely because another claim is added.
->
-> ## Domain and kind
->
-> Use the supplied schema vocabulary.
->
-> For this extraction task, use:
->
-> `domain: pet`
->
-> unless the claim genuinely belongs to another domain represented by the schema.
->
-> Choose `kind` based on the shape of the evidence:
->
-> - event — something happened;
-> - state — an established condition/status;
-> - observation — a documented observation without asserting a state transition;
-> - relationship — relationship between entities;
-> - system — broader system behavior/rule.
->
-> Do not create a new enum value.
->
-> ## Research report is authoritative for extraction
->
-> Do not browse the web to fill gaps.
->
-> Do not add information from your own knowledge.
->
-> Do not silently correct the research report.
->
-> If the report is incomplete, represent the available evidence and preserve the gap.
->
-> ## Do not perform CCI modeling
->
-> Do NOT add:
->
-> - CCI event names;
-> - runtime payloads;
-> - raw-floor JSON;
-> - reducer state;
-> - projection state;
-> - UI fields;
-> - application capabilities;
-> - promotion decisions;
-> - candidate runtime objects;
-> - implementation-specific IDs.
->
-> Those decisions happen later.
->
-> ## Output requirements
->
-> Return ONLY YAML.
->
-> The YAML MUST conform to the supplied JSON Schema.
->
-> Required top-level fields:
->
-> `schemaVersion`
-> `storyId`
-> `floor`
-> `sources`
-> `claims`
->
-> Every claim must contain:
->
-> `id`
-> `domain`
-> `kind`
-> `claim`
-> `evidence`
->
-> Every evidence entry must contain:
->
-> `sourceId`
-> `relationship`
-> `confidence`
->
-> Every sourceId must refer to a source in the `sources` array.
->
-> Every dependency must refer to an existing claim ID.
->
-> Every contradiction must refer to an existing claim ID.
->
-> Do not output Markdown fences.
->
-> Do not output commentary before or after the YAML.
->
-> ## Self-check before producing output
->
-> Before returning YAML:
->
-> 1. Check every source reference.
-> 2. Check every claim ID is unique.
-> 3. Check every dependency reference.
-> 4. Check every contradiction reference.
-> 5. Check every evidence relationship.
-> 6. Check every confidence value.
-> 7. Check that no unsupported facts were invented.
-> 8. Check that explicit unknowns were preserved.
-> 9. Check that no promotion decisions were added.
-> 10. Check that no CCI runtime representation was invented.
-> 11. Check that the output is valid YAML.
-> 12. Check that it conforms to the supplied JSON Schema.
->
-> If the research report does not establish something, leave it unknown rather than guessing.
-
----
+> Convert the supplied research report into YAML conforming to the supplied `crawler-research/v1` JSON Schema.
+>
+> **Extract evidence; do not perform CCI modeling.**
+>
+> ### Rules
+>
+> 1. Use only information contained in the research report. Do not browse, use outside knowledge, or fill gaps from inference.
+> 2. Create claims for meaningful factual propositions supported by the report.
+> 3. Preserve the distinction between direct evidence, corroboration, inference, and unknowns.
+> 4. Do not turn an inference or implication into a fact.
+> 5. Absence of evidence is not evidence of absence.
+> 6. Preserve explicit unknowns rather than inventing timestamps, quantities, levels, statistics, durations, or effects.
+> 7. Every evidence item must have one relationship: `supports`, `corroborates`, `contradicts`, or `context`.
+> 8. Use only confidence values defined by the schema: `confirmed`, `probable`, `candidate`, `disputed`.
+> 9. Generate stable, deterministic claim IDs. For the Floor 3 Pet pilot use `P3-PET-001`, `P3-PET-002`, etc. Do not use random IDs.
+> 10. Every `sourceId` must reference a source in `sources`.
+> 11. Every dependency and contradiction reference must identify an existing claim.
+> 12. Use only domain/kind enum values defined by the supplied schema. Do not invent new enum values.
+> 13. Do not add CCI event names, runtime payloads, reducer state, UI fields, capabilities, promotion decisions, or implementation-specific IDs.
+> 14. Do not add a modeling disposition. Modeling happens after deterministic validation.
+>
+> ### Output
+>
+> Return **only YAML**. Do not use Markdown fences or add commentary.
+>
+> The YAML must conform to the supplied JSON Schema.
+>
+> ### Verification before output
+>
+> Check:
+>
+> - YAML is syntactically valid.
+> - Required fields are present.
+> - Claim IDs are unique.
+> - Every source reference exists.
+> - Every dependency reference exists.
+> - Every contradiction reference exists.
+> - Every evidence relationship is valid.
+> - Every confidence value is valid.
+> - Explicit unknowns are preserved.
+> - No unsupported facts were invented.
+> - No CCI runtime/modeling information was added.
+> - The result conforms to the supplied JSON Schema.
+>
+> If the report does not establish a value, leave it unknown rather than guessing.
 
 # Stage 2.5 — Deterministic YAML → JSON Validation
 
