@@ -122,7 +122,7 @@ If the report establishes that Mongo reaches Level 3 but does not establish an e
   claim:
     summary: Mongo reaches Level 3.
   evidence:
-    - sourceId: src-27
+    - sourceId: src-book-2
       locator:
         book: 2
         chapter: 5
