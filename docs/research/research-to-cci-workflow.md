@@ -136,6 +136,18 @@ Its job is **structured evidence extraction**, not CCI modeling, semantic valida
 
 The Stage 2 contract should stay deliberately small. The prompt guides reasoning about evidence; deterministic tooling enforces syntax, structure, enums, references, and cross-record consistency.
 
+### Source identifiability
+
+A source record represents an **actual identifiable source**, not merely a source category or generic canon corpus. A source ID is only a stable foreign key; it is not provenance by itself.
+
+Stage 2 should preserve enough identifying information to distinguish the source when the research report provides it:
+
+- books: specific book identity and available bibliographic information;
+- web sources: specific page/work title and URL;
+- interviews, articles, wikis, and other sources: specific work/page/interview identity and available locators.
+
+Do not create generic records such as `src-canon-general`, `src-book`, or `src-wiki` merely to satisfy the schema. If the report does not identify the source precisely, preserve the provenance gap rather than inventing a plausible source. Likewise, do not require a URL where the source does not have one.
+
 ## What a good Stage 2 extraction does
 
 A good extraction follows this reasoning sequence:
