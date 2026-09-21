@@ -199,7 +199,20 @@ Do not change the chronology to Floor 3 merely because the research document is 
 
 # OUTPUT
 
-Return **only YAML**. Do not use Markdown fences or add commentary.
+Return the extracted findings **in a YAML code block**. The response must contain the YAML artifact and no explanatory prose outside the code block.
+
+Use exactly this output shape:
+
+```yaml
+schemaVersion: crawler-research/v1
+storyId: dcc
+floor: 3
+
+sources: []
+claims: []
+```
+
+The code block is a presentation requirement only; the YAML inside it must still conform to the supplied repository schema.
 
 Before returning the YAML, reason through:
 
