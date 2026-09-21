@@ -1,14 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { deriveEvidencePresentation } from "../../src/features/timeline/public.ts";
-import { derivePartyPresentation } from "../../src/features/party/public.ts";
-import { derivePetPresentation } from "../../src/features/pet/public.ts";
 import {
-  mapCapabilityToSemantics,
+  deriveEvidencePresentation,
   mapEvidenceToSemantics,
+} from "../../src/features/timeline/public.ts";
+import {
+  derivePartyPresentation,
   mapPartyStatusToSemantics,
+} from "../../src/features/party/public.ts";
+import {
+  derivePetPresentation,
   mapPetStatusToSemantics,
-} from "../../src/presentation/semantic/public.ts";
+} from "../../src/features/pet/public.ts";
+import { mapCapabilityToSemantics } from "../../src/presentation/semantic/public.ts";
 
 test("HUD Semantics: current observed telemetry mapping", () => {
   const currentObs = {

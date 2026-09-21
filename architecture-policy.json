@@ -71,6 +71,11 @@
       "name": "semantic-must-not-depend-on-react",
       "from": "^src/presentation/semantic/",
       "external": "^(react|react-dom)(/|$)"
+    },
+    {
+      "name": "semantic-must-not-depend-on-features",
+      "from": "^src/presentation/semantic/",
+      "to": "^src/features/"
     }
   ]
 }

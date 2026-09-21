@@ -1,4 +1,4 @@
-export { derivePartyPresentation } from "./party-presentation.ts";
+export { derivePartyPresentation, mapPartyStatusToSemantics } from "./party-presentation.ts";
 export type {
   DerivedPartyPresentation,
   DerivedPartyMember,

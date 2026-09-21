@@ -5,6 +5,7 @@ import type {
   ProjectedObservationValue,
   TimelineEvidence,
 } from "../../../../app/domain/types";
+import type { PresentationSemantics } from "../../../presentation/semantic/public.ts";
 
 export type EvidenceState = "current" | "last-known" | "estimated" | "causal-only" | "unknown";
 export type DisplayAuthority = "causal" | "observation";
@@ -149,4 +150,56 @@ export function evidenceSummary(evidence: TimelineEvidence): string {
 export function firstCountdownEvidenceSummary(referencePoints: CountdownReference[]): string {
   const evidence = referencePoints.flatMap((reference) => reference.evidence ?? [])[0];
   return evidence ? evidenceSummary(evidence) : "not sourced at this sequence";
+}
+
+/**
+ * Maps an EvidencePresentation snapshot into renderer-neutral HUD presentation semantics.
+ */
+export function mapEvidenceToSemantics(
+  evidence: EvidencePresentation
+): PresentationSemantics {
+  const inspectable = evidence.inspectable;
+  const provenance = { inspectable };
+  const affordance = inspectable ? "inspect" : "none";
+
+  switch (evidence.state) {
+    case "current":
+      return {
+        status: "present",
+        temporal: "current",
+        authority: "observed",
+        affordance,
+        provenance,
+      };
+    case "last-known":
+      return {
+        status: "present",
+        temporal: "last-known",
+        authority: "observed",
+        affordance,
+        provenance,
+      };
+    case "estimated":
+      return {
+        status: "present",
+        temporal: "current",
+        authority: "estimated",
+        affordance,
+        provenance,
+      };
+    case "causal-only":
+      return {
+        status: "present",
+        temporal: "current",
+        authority: "causal",
+        affordance,
+        provenance,
+      };
+    case "unknown":
+      return {
+        status: "unknown",
+        affordance: "none",
+        provenance: { inspectable: false },
+      };
+  }
 }

@@ -1,4 +1,8 @@
 import type { Pet } from "../../../app/domain/types.ts";
+import type {
+  PresentationChange,
+  PresentationSemantics,
+} from "../../presentation/semantic/public.ts";
 
 export type PetHostilityState = "hostile" | "non-hostile" | "unknown";
 export type PetBondState = "bonded" | "unbonded" | "unknown";
@@ -110,4 +114,30 @@ export function derivePetPresentation({
     status: hasPets ? "established" : "known-empty",
     pets: derivedPets,
   };
+}
+
+/**
+ * Maps Pet status and optional change intent into presentation semantics.
+ */
+export function mapPetStatusToSemantics(
+  petStatus: PetPresentationStatus,
+  change?: PresentationChange
+): PresentationSemantics {
+  switch (petStatus) {
+    case "known-empty":
+      return { status: "known-empty", affordance: "none" };
+    case "established":
+      return {
+        status: "present",
+        ...(change ? { change } : {}),
+        affordance: "none",
+      };
+    case "not-established":
+      return { status: "not-established", affordance: "none" };
+    case "unavailable":
+      return { status: "unavailable", affordance: "none" };
+    case "unknown":
+    default:
+      return { status: "unknown", affordance: "none" };
+  }
 }
