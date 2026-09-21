@@ -88,7 +88,6 @@ sources:
     kind: official-text
     trust: primary
     title: Dungeon Crawler Carl — Book 2
-    url: https://example.invalid/source
 
 claims:
   - id: P3-PET-001
