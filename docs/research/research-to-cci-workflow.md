@@ -397,7 +397,9 @@ The following failures are particularly valuable as Stage 2 regression fixtures:
 | Specific example generalized into universal mechanic | Keep the claim specific |
 | Missing exact timestamp/quantity | Preserve as unknown |
 | Source ID treated as provenance | Use the source registry and evidence locator |
+| Generic source category presented as a source | Require an identifiable source when the report provides one; otherwise preserve the provenance gap |
 | Book source forced to have URL | Preserve URL only when applicable |
+| Missing source details filled with invented provenance | Preserve the deficiency; never fabricate source identity, URL, or bibliographic details |
 | Floor 3 scope treated as evidence restriction | Preserve actual chronology |
 | Strong source claim automatically treated as CCI promotion | Keep promotion out of Stage 2 |
 | Different system behaviors labeled contradictory | Require actual proposition incompatibility |
