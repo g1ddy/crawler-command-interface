@@ -31,7 +31,8 @@ For each useful claim:
 7. preserve genuine contradictions;
 8. preserve available provenance and locators;
 9. assign confidence based on evidence strength;
-10. preserve the distinction between research scope and evidence chronology.
+10. preserve the distinction between research scope and evidence chronology;
+11. treat online source URLs as the authoritative provenance boundary for this stage.
 
 Produce a research evidence ledger, **not CCI runtime data**.
 
@@ -62,20 +63,20 @@ A contradiction requires mutually incompatible propositions. Different descripti
 9. Do not treat absence of evidence as evidence of absence.
 10. Preserve genuine contradictions; do not resolve them yourself.
 11. Record a contradiction only when the propositions are actually incompatible.
-12. Preserve available source metadata and locators without inventing bibliographic details.
-13. Treat the Stage 1 **Sources** section as a source-registry transcription task, not a summary. Create one source record for each identifiable source used by the report, and copy its supplied title, kind, trust classification, URL, and other schema-supported metadata into the corresponding source record.
-14. If the research report supplies a URL for a source, **preserve that exact URL in the source record**. Do not omit it, replace it with a domain homepage, normalize it to a shorter URL, or invent a different URL. A web source with a supplied URL should remain directly traceable to that page.
-15. If a source has no URL because it is a book or because the report does not provide one, do not invent one. Preserve the available bibliographic/source identity instead.
+12. Preserve available source metadata and locators without inventing details.
+13. Treat the Stage 1 **Sources** section as a source-registry transcription task, not a summary. Create one source record for each identifiable online source used by the extracted claims, and copy its supplied title, kind, trust classification, URL, and other schema-supported metadata into the corresponding source record.
+14. **URLs are copied, never inferred.** If the research report supplies a URL for a source, preserve that exact URL in the source record. Do not omit it, replace it with a domain homepage, normalize it to a shorter URL, or invent a different URL. A web source with a supplied URL should remain directly traceable to that page.
+15. Do not invent inaccessible primary-source provenance. If the report discusses the underlying story text but the actual evidence available to Stage 1 is an online secondary source, cite that online source and preserve its URL. Do not create a generic primary-text source record merely because the underlying work is the subject of the research.
 16. Never use placeholder URLs such as `example.com`, `example.invalid`, guessed URLs, domain homepages, or fabricated bibliographic details. If the report supplies a URL, copy that exact URL; if it does not, omit the field.
-16. Prefer stable, short, mnemonic source IDs when the source identity is clear (for example, `src-book-2` or `src-donut-wiki`) rather than opaque incremental IDs such as `src-27`. Mnemonic IDs help the model keep repeated source references straight. Do not overload IDs with locator or claim semantics; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
-17. A Floor 3 research scope may contain earlier or later chronology. Preserve the evidence's actual locator.
-18. Do not decide whether a claim should be promoted into CCI.
-19. Do not choose CCI event types, observations, payloads, capabilities, runtime fields, or implementation identities.
-20. Do not add modeling dispositions.
-21. Use only enum values defined by the supplied schema.
-22. Generate stable claim IDs. For the Floor 3 Pet pilot, use `P3-PET-001`, `P3-PET-002`, etc.
-23. Preserve the research report's source/evidence distinctions even when multiple sources support the same proposition.
-24. Before returning the YAML, audit the `sources` array against the report's source list: every identifiable source used by evidence should have a corresponding source record, and every URL supplied by the report should be present unchanged.
+17. Prefer stable, short, mnemonic source IDs when the source identity is clear (for example, `src-donut-wiki`, `src-mongo-wiki`, or `src-sparknotes`) rather than opaque incremental IDs such as `src-27`. Mnemonic IDs help the model keep repeated source references straight. Do not derive an ID from information that is not explicitly supplied by the report. Do not overload IDs with locator or claim semantics; source title, URL, locator, trust, and domain belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
+18. Extract claims relevant to the research scope. Earlier or later chronology may be included only when the report uses that evidence to establish continuity, provenance, or context for an in-scope claim. Preserve the actual locator supplied by the online source; do not invent a locator.
+19. Do not decide whether a claim should be promoted into CCI.
+20. Do not choose CCI event types, observations, payloads, capabilities, runtime fields, or implementation identities.
+21. Do not add modeling dispositions.
+22. Use only enum values defined by the supplied schema.
+23. Generate stable claim IDs. For the Floor 3 Pet pilot, use `P3-PET-001`, `P3-PET-002`, etc.
+24. Preserve the research report's source/evidence distinctions even when multiple sources support the same proposition.
+25. Before returning the YAML, audit the `sources` array against the report's extracted evidence: every identifiable online source used by evidence should have a corresponding source record, and every URL supplied by the report should be present unchanged.
 
 # YAML CONTRACT
 
@@ -89,10 +90,11 @@ storyId: dcc
 floor: 3
 
 sources:
-  - id: src-book-2
-    kind: official-text
-    trust: primary
-    title: Dungeon Crawler Carl — Book 2
+  - id: src-mongo-wiki
+    kind: community-wiki
+    trust: secondary
+    title: Mongo - Dungeon Crawler Carl Wiki
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Mongo
     
 claims:
   - id: P3-PET-001
@@ -118,7 +120,7 @@ The repository schema is authoritative if it differs from this conceptual exampl
 
 ## Example 0 — preserve source URLs and source identity
 
-If the Stage 1 report identifies a specific web page, preserve the source as an identifiable record rather than reducing it to a generic category:
+If the Stage 1 report identifies a specific online page, preserve that exact source rather than reducing it to a generic category:
 
 ```yaml
 sources:
@@ -129,13 +131,13 @@ sources:
     url: https://dungeon-crawler-carl.fandom.com/wiki/Donut
 ```
 
-The URL is part of the source provenance. If the report supplied it, copy it exactly. Do not emit only `title`, do not substitute `https://dungeon-crawler-carl.fandom.com/`, and do not omit the URL merely because the title identifies the page.
+The URL is part of the source provenance. If the report supplied it, copy it exactly. Do not emit only `title`, do not substitute a site homepage, and do not omit the URL merely because the title identifies the page.
 
 For multiple web sources, create separate records with distinct mnemonic IDs such as `src-donut-wiki`, `src-mongo-wiki`, and `src-donut-transformation`. Do not collapse several pages from the same site into one generic source record.
 
-If the report does not identify a URL, preserve the source identity that is available rather than inventing one.
+If the report does not identify a URL, do not invent one. A source without a supplied URL is a provenance gap to preserve, not an invitation to guess.
 
-Never use placeholder URLs or fabricated bibliographic details in the extracted source registry. Examples in this prompt are expected to follow the same rule as real extraction output.
+Never use placeholder URLs or fabricated source details in the extracted source registry. Examples in this prompt are expected to follow the same rule as real extraction output.
 
 
 ## Example 1 — atomic fact with unknown precision
@@ -149,17 +151,16 @@ If the report establishes that Mongo reaches Level 3 but does not establish an e
   claim:
     summary: Mongo reaches Level 3.
   evidence:
-    - sourceId: src-book-2
+    - sourceId: src-mongo-wiki
       locator:
-        book: 2
-        chapter: 5
+        section: Pet Progression
       relationship: supports
       confidence: confirmed
   unknowns:
     - exact_timestamp
 ```
 
-Do not invent the timestamp.
+The locator above is illustrative only. In actual extraction, copy a locator only when the supplied online source identifies it. Never invent a chapter, section, timestamp, or other precise location.
 
 ## Example 2 — specific observation, not a universal mechanic
 
@@ -205,24 +206,23 @@ Do not manufacture a contradiction merely because two claims describe different 
 
 ## Example 4 — research scope versus chronology
 
-A Floor 3 research report may legitimately contain earlier evidence:
+A Floor 3 research report may include earlier evidence when that evidence is explicitly used to establish continuity or context for an in-scope claim. Preserve the chronology and locator supplied by the online source; do not invent either.
 
 ```yaml
 - id: P3-PET-005
   domain: pet
-  kind: event
+  kind: state
   claim:
-    summary: Donut transitions from Pet to Crawler.
+    summary: Mongo is already established as Donut's bonded pet at the start of the researched period.
   evidence:
-    - sourceId: src-book-1
+    - sourceId: src-mongo-wiki
       locator:
-        book: 1
-        floor: 1
+        section: Pet Relationship
       relationship: supports
       confidence: confirmed
 ```
 
-Do not change the chronology to Floor 3 merely because the research document is scoped to Floor 3.
+The example does not establish what the locator should be. In actual extraction, use only the locator explicitly supplied by the research report.
 
 # OUTPUT
 
