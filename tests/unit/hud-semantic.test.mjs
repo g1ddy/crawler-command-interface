@@ -72,9 +72,15 @@ test("HUD Semantics: estimated telemetry mapping", () => {
 });
 
 test("HUD Semantics: causal-only telemetry mapping produces causal authority without implied temporal status", () => {
+  // deriveEvidencePresentation emits "causal-only" strictly when causalValue !== null/undefined,
+  // guaranteeing that the value is established (status: "present").
   const evidence = deriveEvidencePresentation(null, 15, 100);
+  assert.equal(evidence.state, "causal-only");
+
   const semantic = mapEvidenceToSemantics(evidence);
 
+  assert.equal(semantic.status, "present");
+  assert.equal(semantic.authority, "causal");
   assert.equal(semantic.temporal, undefined);
   assert.deepEqual(semantic, {
     status: "present",
@@ -173,6 +179,8 @@ test("HUD Semantics: Pet semantic states (known-empty vs established vs unavaila
     affordance: "none",
   });
 
+  // Verify that "unavailable" is a supported vocabulary state tested directly
+  // without pretending a current production feature derivation emits it.
   const unavailableSemantic = mapPetStatusToSemantics("unavailable");
   assert.deepEqual(unavailableSemantic, {
     status: "unavailable",

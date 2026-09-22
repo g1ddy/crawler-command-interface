@@ -154,6 +154,10 @@ export function firstCountdownEvidenceSummary(referencePoints: CountdownReferenc
 
 /**
  * Maps an EvidencePresentation snapshot into renderer-neutral HUD presentation semantics.
+ * Note on "causal-only": deriveEvidencePresentation emits "causal-only" strictly when
+ * causalValue !== undefined && causalValue !== null. Therefore, "causal-only" carries the
+ * invariant that a causal value is established (status: "present"), with causal authority
+ * and without asserting an implied temporal position (temporal remains undefined).
  */
 export function mapEvidenceToSemantics(
   evidence: EvidencePresentation
