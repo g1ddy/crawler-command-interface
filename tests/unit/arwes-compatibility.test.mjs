@@ -122,9 +122,75 @@ test("AuthorityBackground renders SVG background primitives", () => {
   assert.match(dotsHtml, /data-variant="dots"/);
 });
 
-test("ArwesPresentation integrates probe without breaking", () => {
-  const mockModel = {
-    crawlerName: "AUTHORITY-UNIT",
+test("ArwesPresentation integrates HudCompositionModel into real composition foundation", () => {
+  const fullModel = {
+    system: {
+      crawlerName: "PRINCESS CARL",
+      crawlerClass: "Coast Guard Crawler",
+      floorTitle: "FLOOR 1: DUNGEON ENTRANCE",
+      sequence: 25,
+    },
+    temporal: {
+      mode: "live",
+      sequence: 25,
+      isLive: true,
+    },
+    urgency: {
+      activeCountdown: {
+        remainingSeconds: 240,
+        formattedTime: "04:00",
+        formattedLabel: "Level Collapse In 04:00",
+        lifecycleStatus: "active",
+        referencePoints: [],
+      },
+      formattedLabel: "Level Collapse In 04:00",
+      lifecycleStatus: "active",
+    },
+    attention: {
+      totalNotificationsCount: 2,
+      hasActiveAlerts: true,
+      latestNotificationTitle: "ITEM CRAFTED",
+      latestNotificationMessage: "Created Light Bomb",
+    },
+    vitals: {
+      health: { value: 84, sequence: 25 },
+      mana: { value: 50, sequence: 25 },
+      level: { value: 3, sequence: 20 },
+    },
+    broadcast: {
+      viewers: { value: 120, sequence: 25 },
+    },
+  };
+
+  const html = renderToString(
+    React.createElement(
+      StrictMode,
+      null,
+      React.createElement(ArwesPresentation, {
+        model: fullModel,
+      })
+    )
+  );
+
+  assert.match(html, /data-presentation="authority-arwes"/);
+  assert.match(html, /data-testid="arwes-authority-composition"/);
+  assert.match(html, /PRINCESS CARL/);
+  assert.match(html, /Coast Guard Crawler/);
+  assert.match(html, /FLOOR 1: DUNGEON ENTRANCE/);
+  assert.match(html, /SEQ 25/);
+  assert.match(html, /LIVE/);
+  assert.match(html, /04:00/);
+  assert.match(html, /ITEM CRAFTED/);
+  assert.match(html, /Created Light Bomb/);
+  assert.match(html, /84/);
+  assert.match(html, /50/);
+  assert.match(html, /120/);
+  assert.match(html, /LAST KNOWN · SEQ 20/);
+});
+
+test("ArwesPresentation converts ArwesProbeModel fallback seamlessly", () => {
+  const probeModel = {
+    crawlerName: "PROBE-FALLBACK-UNIT",
     floorTitle: "FLOOR 3",
     sequence: 12,
     temporalMode: "replay",
@@ -135,12 +201,15 @@ test("ArwesPresentation integrates probe without breaking", () => {
       StrictMode,
       null,
       React.createElement(ArwesPresentation, {
-        model: mockModel,
+        model: probeModel,
       })
     )
   );
 
   assert.match(html, /data-presentation="authority-arwes"/);
-  assert.match(html, /AUTHORITY-UNIT/);
+  assert.match(html, /PROBE-FALLBACK-UNIT/);
+  assert.match(html, /FLOOR 3/);
+  assert.match(html, /SEQ 12/);
   assert.match(html, /REPLAY/);
+  assert.match(html, /— ABSENT/);
 });

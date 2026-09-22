@@ -242,7 +242,10 @@ export function CrawlerWorkspace({
       isLive={isLive}
       hud={
         presentationChoice === "authority-arwes" ? (
-          <ArwesPresentation model={composition} />
+          <ArwesPresentation
+            model={composition}
+            onInspectObservation={setInspectObservation}
+          />
         ) : usesConceptHud ? (
           <ConceptHud
             state={projectedState}

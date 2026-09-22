@@ -93,71 +93,63 @@ test("live presentation switching in System Tools preserves session state and up
 });
 
 
-test("authority-arwes presentation is URL-selected and renders compatibility probe", async ({ page }) => {
+test("authority-arwes presentation is URL-selected and renders Arwes renderer composition foundation", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
   const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
   await expect(previewScope).toHaveAttribute("data-hud-presentation", "authority-arwes");
 
-  // Verify the Arwes compatibility probe mounts and renders
-  const probe = page.getByTestId("arwes-compatibility-probe");
-  await expect(probe).toBeVisible();
-  await expect(page.getByTestId("probe-header-frame")).toBeVisible();
-  await expect(page.getByTestId("probe-controls-frame")).toBeVisible();
-  await expect(page.getByTestId("probe-surface-frame")).toBeVisible();
-  await expect(page.getByTestId("probe-mounted-content")).toBeVisible();
+  // Verify the Arwes renderer composition foundation mounts and renders
+  const composition = page.getByTestId("arwes-authority-composition");
+  await expect(composition).toBeVisible();
+  await expect(page.getByTestId("arwes-spine-header")).toBeVisible();
+  await expect(page.getByTestId("arwes-vitals-frame")).toBeVisible();
+  await expect(page.getByTestId("arwes-attention-frame")).toBeVisible();
 
-  // Test interactive mount/unmount behavior
-  await page.getByTestId("probe-toggle-mount").click();
-  await expect(page.getByTestId("probe-unmounted-placeholder")).toBeVisible();
-  await page.getByTestId("probe-toggle-mount").click();
-  await expect(page.getByTestId("probe-mounted-content")).toBeVisible();
+  // Verify vitals telemetry and evidence inspection trigger
+  const healthRow = page.getByTestId("telemetry-health");
+  await expect(healthRow).toBeVisible();
+  const healthBadge = page.getByTestId("telemetry-health-badge");
+  await expect(healthBadge).toBeVisible();
 
-  // Test interactive render increment
-  await page.getByTestId("probe-increment-render").click();
-  await expect(page.getByTestId("probe-render-count")).toHaveText("1");
-
-  // Test motion mode selection
-  await page.getByTestId("motion-mode-deterministic").click();
-  await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
+  // Test interactive evidence inspection via application capability callback
+  await healthBadge.click();
+  await expect(page.getByRole("heading", { name: "OBSERVATION PROVENANCE LOG" })).toBeVisible();
+  await page.getByRole("button", { name: "CLOSE" }).click();
 });
 
 test("authority-arwes presentation mounts, unmounts cleanly on navigation away, and remounts without stale state", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
   // Initial mount check
-  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(1);
+  await expect(page.getByTestId("arwes-authority-composition")).toHaveCount(1);
 
   // Navigate away to Tactical HUD
   await page.getByRole("button", { name: "Open data tools" }).click();
   await page.getByRole("button", { name: "Tactical (HUD Preview)", exact: true }).click();
   await page.getByRole("button", { name: "CANCEL" }).click();
 
-  // Verify Arwes probe unmounted cleanly
-  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(0);
+  // Verify Arwes composition unmounted cleanly
+  await expect(page.getByTestId("arwes-authority-composition")).toHaveCount(0);
 
   // Return to authority-arwes presentation
   await page.getByRole("button", { name: "Open data tools" }).click();
   await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
   await page.getByRole("button", { name: "CANCEL" }).click();
 
-  // Verify Arwes probe remounts cleanly with exactly 1 instance
-  await expect(page.getByTestId("arwes-compatibility-probe")).toHaveCount(1);
-  await expect(page.getByTestId("arwes-compatibility-probe")).toBeVisible();
+  // Verify Arwes composition remounts cleanly with exactly 1 instance
+  await expect(page.getByTestId("arwes-authority-composition")).toHaveCount(1);
+  await expect(page.getByTestId("arwes-authority-composition")).toBeVisible();
 });
 
-test("captures research screenshot artifact for authority-arwes presentation probe", async ({ page }, testInfo) => {
+test("captures research screenshot artifact for authority-arwes presentation foundation", async ({ page }, testInfo) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
-  const probe = page.getByTestId("arwes-compatibility-probe");
-  await expect(probe).toBeVisible();
+  const composition = page.getByTestId("arwes-authority-composition");
+  await expect(composition).toBeVisible();
 
-  // Set deterministic motion mode for a stable screenshot
-  await page.getByTestId("motion-mode-deterministic").click();
-  await expect(page.getByTestId("probe-motion-mode-label")).toHaveText("deterministic");
-
-  // Capture screenshot of the probe surface for research evidence
-  await probe.screenshot({
+  // Capture screenshot of the Arwes Authority composition surface for research evidence
+  await composition.screenshot({
     path: testInfo.outputPath("arwes-authority-poc.png"),
   });
 });

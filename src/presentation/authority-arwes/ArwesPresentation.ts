@@ -1,7 +1,12 @@
 "use client";
 import { createElement } from "react";
-import { ArwesCompatibilityProbe } from "./compatibility/ArwesCompatibilityProbe.ts";
+import { ArwesAuthorityComposition } from "./ArwesAuthorityComposition.ts";
 import type { HudCompositionModel } from "../../shell/hud/public.ts";
+import type {
+  ProjectedEquipmentObservation,
+  ProjectedItemObservation,
+  ProjectedObservationValue,
+} from "../../../app/domain/types.ts";
 
 export interface ArwesProbeModel {
   crawlerName: string;
@@ -10,20 +15,43 @@ export interface ArwesProbeModel {
   temporalMode: "live" | "replay";
 }
 
+export interface ArwesPresentationProps {
+  model: HudCompositionModel | ArwesProbeModel;
+  onInspectObservation?: (
+    observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation
+  ) => void;
+}
+
 export function ArwesPresentation({
   model,
-}: {
-  model: HudCompositionModel | ArwesProbeModel;
-}) {
-  const probeModel: ArwesProbeModel =
+  onInspectObservation,
+}: ArwesPresentationProps) {
+  const composition: HudCompositionModel =
     "system" in model
-      ? {
-          crawlerName: model.system.crawlerName,
-          floorTitle: model.system.floorTitle,
-          sequence: model.system.sequence,
-          temporalMode: model.temporal.mode,
-        }
-      : model;
+      ? model
+      : {
+          system: {
+            crawlerName: model.crawlerName,
+            crawlerClass: "Class unknown",
+            floorTitle: model.floorTitle,
+            sequence: model.sequence,
+          },
+          temporal: {
+            mode: model.temporalMode,
+            sequence: model.sequence,
+            isLive: model.temporalMode === "live",
+          },
+          urgency: {
+            activeCountdown: null,
+            formattedLabel: "Collapse time unavailable",
+          },
+          attention: {
+            totalNotificationsCount: 0,
+            hasActiveAlerts: false,
+          },
+          vitals: {},
+          broadcast: {},
+        };
 
   return createElement(
     "div",
@@ -31,11 +59,9 @@ export function ArwesPresentation({
       className: "arwes-presentation-container",
       "data-presentation": "authority-arwes",
     },
-    createElement(ArwesCompatibilityProbe, {
-      crawlerName: probeModel.crawlerName,
-      floorTitle: probeModel.floorTitle,
-      sequence: probeModel.sequence,
-      isLive: probeModel.temporalMode === "live",
+    createElement(ArwesAuthorityComposition, {
+      composition,
+      onInspectObservation,
     })
   );
 }
