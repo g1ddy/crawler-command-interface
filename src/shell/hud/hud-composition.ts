@@ -4,10 +4,6 @@ import type {
   ProjectedObservationsState,
   ProjectedObservationValue,
 } from "../../../app/domain/types.ts";
-import {
-  deriveEvidencePresentation,
-  mapEvidenceToSemantics,
-} from "../../features/timeline/public.ts";
 
 export interface HudSystemIdentity {
   crawlerName: string;
@@ -35,18 +31,6 @@ export interface HudAttentionSummary {
   latestNotificationMessage?: string;
 }
 
-export interface HudTelemetryItem {
-  key: "health" | "mana" | "level" | "viewers";
-  label: string;
-  valueDisplay: string;
-  badgeLabel: string;
-  status: "present" | "known-empty" | "not-established" | "unknown" | "unavailable";
-  authority?: "observed" | "estimated" | "causal";
-  temporal?: "current" | "last-known";
-  isInspectable: boolean;
-  rawObservation?: ProjectedObservationValue | null;
-}
-
 export interface HudVitalsSummary {
   health?: ProjectedObservationValue;
   mana?: ProjectedObservationValue;
@@ -61,7 +45,7 @@ export interface HudBroadcastSummary {
  * Renderer-neutral HUD composition model describing semantic presentation meaning.
  *
  * INVARIANTS:
- * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast, telemetryItems).
+ * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast).
  * - Remains strictly renderer-neutral: MUST NOT contain CSS classes, styling tokens, border treatments,
  *   animation-library primitives, or renderer-specific component choices (e.g., Arwes/POC types).
  * - Capabilities and action contracts (e.g. Return to Live, sequence navigation) retain their existing application
@@ -76,7 +60,6 @@ export interface HudCompositionModel {
   attention: HudAttentionSummary;
   vitals: HudVitalsSummary;
   broadcast: HudBroadcastSummary;
-  telemetryItems: HudTelemetryItem[];
 }
 
 export interface DeriveHudCompositionInput {
@@ -87,32 +70,6 @@ export interface DeriveHudCompositionInput {
   isLive: boolean;
   floorHudTitle: string;
   notificationsSummary?: HudAttentionSummary;
-}
-
-function createTelemetryItem(
-  key: "health" | "mana" | "level" | "viewers",
-  label: string,
-  observation: ProjectedObservationValue | undefined | null,
-  sequence: number
-): HudTelemetryItem {
-  const evidence = deriveEvidencePresentation(observation, sequence);
-  const semantics = mapEvidenceToSemantics(evidence);
-  const valueDisplay =
-    observation?.value !== undefined && observation?.value !== null
-      ? `${observation.value}`
-      : "— ABSENT";
-
-  return {
-    key,
-    label,
-    valueDisplay,
-    badgeLabel: evidence.badgeLabel,
-    status: semantics.status,
-    authority: semantics.authority,
-    temporal: semantics.temporal,
-    isInspectable: Boolean(semantics.provenance?.inspectable) && Boolean(observation),
-    rawObservation: observation ?? null,
-  };
 }
 
 /**
@@ -131,31 +88,6 @@ export function deriveHudComposition({
     hasActiveAlerts: false,
   },
 }: DeriveHudCompositionInput): HudCompositionModel {
-  const healthItem = createTelemetryItem(
-    "health",
-    "HEALTH",
-    projectedObservations.condition.currentHealth,
-    sequence
-  );
-  const manaItem = createTelemetryItem(
-    "mana",
-    "MANA",
-    projectedObservations.condition.currentMana,
-    sequence
-  );
-  const levelItem = createTelemetryItem(
-    "level",
-    "LEVEL",
-    projectedObservations.xpProgress.level,
-    sequence
-  );
-  const viewersItem = createTelemetryItem(
-    "viewers",
-    "AUDIENCE VIEWERS",
-    projectedObservations.broadcast.viewers,
-    sequence
-  );
-
   return {
     system: {
       crawlerName: projectedState.crawler.name,
@@ -182,6 +114,5 @@ export function deriveHudComposition({
     broadcast: {
       viewers: projectedObservations.broadcast.viewers,
     },
-    telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
   };
 }

@@ -4,32 +4,31 @@ import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
-import type {
-  HudCompositionModel,
-  HudTelemetryItem,
-} from "../../shell/hud/public.ts";
-import type {
-  ProjectedEquipmentObservation,
-  ProjectedItemObservation,
-  ProjectedObservationValue,
-} from "../../../app/domain/types.ts";
+import type { HudCompositionModel } from "../../shell/hud/public.ts";
+
+export interface TelemetryPresentationItem {
+  key: "health" | "mana" | "level" | "viewers";
+  label: string;
+  valueDisplay: string;
+  badgeLabel: string;
+  status: "present" | "known-empty" | "not-established" | "unknown" | "unavailable";
+  authority?: "observed" | "estimated" | "causal";
+  temporal?: "current" | "last-known";
+  isInspectable: boolean;
+  onInspect?: () => void;
+}
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
-  onInspectObservation?: (
-    observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation
-  ) => void;
+  telemetryItems: TelemetryPresentationItem[];
 }
 
 interface TelemetryRowProps {
-  item: HudTelemetryItem;
-  onInspectObservation?: (
-    observation: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation
-  ) => void;
+  item: TelemetryPresentationItem;
 }
 
-function TelemetryRow({ item, onInspectObservation }: TelemetryRowProps) {
-  const { key, label, valueDisplay, badgeLabel, status, authority, temporal, isInspectable, rawObservation } = item;
+function TelemetryRow({ item }: TelemetryRowProps) {
+  const { key, label, valueDisplay, badgeLabel, status, authority, temporal, isInspectable, onInspect } = item;
 
   return createElement(
     "div",
@@ -86,11 +85,7 @@ function TelemetryRow({ item, onInspectObservation }: TelemetryRowProps) {
           type: "button",
           "data-testid": `telemetry-${key}-badge`,
           disabled: !isInspectable,
-          onClick: () => {
-            if (isInspectable && rawObservation && onInspectObservation) {
-              onInspectObservation(rawObservation);
-            }
-          },
+          onClick: onInspect,
           style: {
             display: "inline-flex",
             alignItems: "center",
@@ -119,9 +114,9 @@ function TelemetryRow({ item, onInspectObservation }: TelemetryRowProps) {
 
 export function ArwesAuthorityComposition({
   composition,
-  onInspectObservation,
+  telemetryItems,
 }: ArwesAuthorityCompositionProps) {
-  const { system, temporal, urgency, attention, telemetryItems } = composition;
+  const { system, temporal, urgency, attention } = composition;
 
   const isUrgent =
     urgency.activeCountdown &&
@@ -331,7 +326,6 @@ export function ArwesAuthorityComposition({
             createElement(TelemetryRow, {
               key: item.key,
               item,
-              onInspectObservation,
             })
           )
         )
