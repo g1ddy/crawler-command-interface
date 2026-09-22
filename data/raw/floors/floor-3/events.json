@@ -20,6 +20,33 @@
     ]
   },
   {
+    "id": "evt-f3-magical-pet-carrier-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 14
+    },
+    "item": {
+      "instanceId": "inst-f3-magical-pet-carrier",
+      "itemId": "item-magical-pet-carrier",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "The party acquires a Magical Pet Carrier on Floor 3.",
+    "evidence": [
+      {
+        "sourceId": "src-book-2",
+        "locator": {
+          "chapter": 14
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-race-class-selected",
     "type": "NarrativeEvent",
     "kind": "choice-made",
