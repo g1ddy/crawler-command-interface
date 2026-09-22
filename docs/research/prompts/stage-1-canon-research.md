@@ -83,25 +83,23 @@ The researcher may not have direct access to the published books. When primary t
 >
 > ## Evidence requirements
 >
-> Use the most authoritative **accessible** evidence available.
+> Use the best **accessible web evidence** available. This research stage is expected to operate primarily through web-accessible secondary sources; do not assume that the published books are directly accessible.
 >
-> Prefer, when accessible:
+> When primary text is accessible, it may be used. Otherwise, use the most specific and reasonably credible secondary source you can find. A single good-enough source may be the best available evidence for a claim; **do not require multiple sources or pad the report with redundant citations**.
 >
-> 1. The published text of *Dungeon Crawler Carl*
-> 2. Official author material
-> 3. High-quality secondary sources that directly quote or accurately reference the text
-> 4. Other secondary summaries only when necessary
->
-> **Do not claim to have inspected the books directly if you cannot access them.** If primary text is unavailable, explicitly identify the evidence as secondary and create a targeted primary-verification item for important claims.
+> **Never imply that you personally inspected the books when you did not.** If a web source reports a book, chapter, scene, quotation, or other primary-text detail, preserve that information as something **reported by the web source**. Do not present it as direct verification of the underlying book.
 >
 > For every substantive claim, provide:
 >
-> - Book
-> - Chapter or other precise locator when available
-> - A short quotation or close textual reference where copyright limits permit
-> - The specific source used
-> - Whether the evidence directly states the claim or supports an interpretation
-> - The evidence/source quality and whether the underlying primary text was directly accessible
+> - the specific web source supporting the claim;
+> - page/work title and website or publication name;
+> - URL when available;
+> - the most precise locator available from the source;
+> - a short quotation or close reference from the web source where copyright limits permit;
+> - whether the source directly states the proposition or whether the research is interpreting it;
+> - source quality/trust and any important accessibility limitation.
+>
+> If the web source itself identifies a book/chapter/scene, preserve that as a **reported primary-text locator**, not as evidence that you read the book directly.
 >
 > ### Source identity and reproducibility
 >
@@ -115,23 +113,19 @@ The researcher may not have direct access to the published books. When primary t
 > - the source type (for example wiki, chapter summary, interview, article, discussion);
 > - any useful indication of source authority or trust.
 >
-> For books and other non-web sources, provide the most specific bibliographic identity and locator available.
->
-> Do not cite only a domain, website, or generic category such as "the DCC Wiki" when a specific page can be identified.
+> Most evidence will come from web sources. Identify the **specific page used**, not merely a domain or generic category such as "the DCC Wiki." For non-web material mentioned by a web source, record the underlying work only as a referenced work unless you actually had direct access to it.
 >
 > Do not invent a URL, page title, bibliographic detail, locator, or other provenance merely to make the report look complete. If provenance is incomplete, say so.
 >
 > The source list should contain enough information for a human or downstream tool to locate the exact web page or work that was used.
 >
-> ### Independent corroboration
+> ### Source quantity and corroboration
 >
-> Do not treat multiple secondary sources as independent corroboration merely because they are different web pages.
+> **Do not use source count as a proxy for evidence quality.** If one reasonably credible, relevant web source is the best accessible evidence, use it and state the limitation.
 >
-> When possible, determine whether sources appear to provide genuinely independent evidence. If several sources repeat the same underlying summary or wording, report them as related/derivative rather than counting them as independent confirmation.
+> When multiple sources are available, consider whether they add materially different evidence or simply repeat the same underlying summary. Do not call repeated web pages "independent corroboration" merely because they are separate URLs.
 >
-> Prefer a smaller set of identifiable, relevant, independently useful sources over a larger number of redundant sources.
->
-> Do not treat a secondary summary as equivalent to primary text.
+> Do not spend disproportionate effort searching for corroboration when a relevant source already provides useful evidence. Instead, focus effort on finding a more specific source, identifying disagreement, or exposing an important evidence gap.
 >
 > ## Evidence strength and accessibility
 >
@@ -139,7 +133,7 @@ The researcher may not have direct access to the published books. When primary t
 >
 > **DIRECT** — the accessible source directly states the proposition. If the source is secondary, "DIRECT" means direct statement by that secondary source, not direct inspection of the novel.
 >
-> **CORROBORATED** — the proposition is supported by multiple genuinely useful sources, with their independence and source quality described.
+> **CORROBORATED** — multiple materially independent sources provide useful support. This is optional; a claim does not need corroboration to be useful.
 >
 > **INFERRED** — the proposition is a reasonable interpretation but is not directly stated by the accessible evidence.
 >
@@ -210,7 +204,7 @@ The researcher may not have direct access to the published books. When primary t
 > - **Conflicting secondary evidence** — accessible sources disagree.
 > - **Primary verification required** — secondary evidence exists, but the claim should be checked against the published text before being treated as canon-confirmed.
 >
-> For important unresolved or secondary-only claims, create a **Primary Verification Queue** containing:
+> For important unresolved or secondary-only claims, create a **Primary Verification Queue** when primary-text verification would materially improve confidence. This is a follow-up task, not something you should pretend to complete without access to the book. Include:
 >
 > - claim/question to verify;
 > - why verification matters;
@@ -219,7 +213,7 @@ The researcher may not have direct access to the published books. When primary t
 > - conflicting or qualifying evidence, if any;
 > - what remains unknown.
 >
-> The verification queue should prioritize claims that could materially affect later modeling, especially progression, condition, equipment behavior, deployment restrictions, control/relationship mechanics, and apparent system-wide rules.
+> Keep the verification queue targeted rather than exhaustive. Prioritize claims that could materially affect later understanding, especially progression, condition, equipment behavior, deployment restrictions, control/relationship mechanics, and apparent system-wide rules.
 >
 > ## Known areas to verify
 >
