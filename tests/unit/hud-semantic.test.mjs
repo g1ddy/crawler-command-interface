@@ -3,14 +3,12 @@ import {
   mapCapabilityAvailabilityToSemantics,
 } from "../../src/presentation/semantic/public.ts";
 
-test("HUD Semantics: evaluated capability maps to actionable affordance", () => {
+test("HUD Semantics: evaluated capability maps only to affordance", () => {
   assert.deepEqual(mapCapabilityAvailabilityToSemantics(true), {
-    status: "present",
     affordance: "action",
   });
 
   assert.deepEqual(mapCapabilityAvailabilityToSemantics(false), {
-    status: "unavailable",
     affordance: "none",
   });
 });
