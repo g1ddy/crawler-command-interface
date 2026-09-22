@@ -79,6 +79,21 @@ A research artifact never becomes authoritative merely because it passes JSON Sc
 
 ---
 
+## Core design intent: authoring scaffold, not finished data
+
+The compiler is an authoring assistant, not an authoritative-data generator. Its purpose is to eliminate repetitive mechanical work between the research ledger and CCI raw-data authoring while refusing to invent CCI domain semantics.
+
+The output is therefore an incomplete, raw-shaped authoring scaffold. It must be syntactically valid JSON, but it does not need to pass the CCI raw-data schema.
+
+Intentional validation failures are expected whenever the research evidence does not establish a required CCI mapping. Those failures are the curation checklist for Jules/human review.
+
+The compiler's success criterion is not "generated output is validator-clean." It is "mechanical authoring work has been eliminated and every remaining domain decision is explicit and actionable."
+
+Raw-shaped does not mean raw-valid.
+Intentional schema incompleteness (such as unpopulated event `type` discriminators) must be distinguished from malformed JSON or compiler defects.
+
+---
+
 # Stage 1 — Canon Research
 
 ## Goal
