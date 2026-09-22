@@ -7,8 +7,8 @@ import type { PresentationSemantics } from "./types.ts";
  */
 export function mapCapabilityAvailabilityToSemantics(
   available: boolean,
-): PresentationSemantics {
-  return available
-    ? { status: "present", affordance: "action" }
-    : { status: "unavailable", affordance: "none" };
+): Pick<PresentationSemantics, "affordance"> {
+  return {
+    affordance: available ? "action" : "none",
+  };
 }
