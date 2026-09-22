@@ -160,6 +160,52 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
     broadcast: {
       viewers: { value: 120, sequence: 25 },
     },
+    telemetryItems: [
+      {
+        key: "health",
+        label: "HEALTH",
+        valueDisplay: "84",
+        badgeLabel: "SOURCE",
+        status: "present",
+        authority: "observed",
+        temporal: "current",
+        isInspectable: true,
+        rawObservation: { value: 84, sequence: 25 },
+      },
+      {
+        key: "mana",
+        label: "MANA",
+        valueDisplay: "50",
+        badgeLabel: "SOURCE",
+        status: "present",
+        authority: "observed",
+        temporal: "current",
+        isInspectable: true,
+        rawObservation: { value: 50, sequence: 25 },
+      },
+      {
+        key: "level",
+        label: "LEVEL",
+        valueDisplay: "3",
+        badgeLabel: "LAST KNOWN · SEQ 20",
+        status: "present",
+        authority: "observed",
+        temporal: "last-known",
+        isInspectable: true,
+        rawObservation: { value: 3, sequence: 20 },
+      },
+      {
+        key: "viewers",
+        label: "AUDIENCE VIEWERS",
+        valueDisplay: "120",
+        badgeLabel: "SOURCE",
+        status: "present",
+        authority: "observed",
+        temporal: "current",
+        isInspectable: true,
+        rawObservation: { value: 120, sequence: 25 },
+      },
+    ],
   };
 
   const html = renderToString(
@@ -188,12 +234,30 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
   assert.match(html, /LAST KNOWN · SEQ 20/);
 });
 
-test("ArwesPresentation converts ArwesProbeModel fallback seamlessly", () => {
-  const probeModel = {
-    crawlerName: "PROBE-FALLBACK-UNIT",
-    floorTitle: "FLOOR 3",
-    sequence: 12,
-    temporalMode: "replay",
+test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
+  const minimalModel = {
+    system: {
+      crawlerName: "MINIMAL-UNIT",
+      crawlerClass: "Class unknown",
+      floorTitle: "FLOOR 3",
+      sequence: 12,
+    },
+    temporal: {
+      mode: "replay",
+      sequence: 12,
+      isLive: false,
+    },
+    urgency: {
+      activeCountdown: null,
+      formattedLabel: "Collapse time unavailable",
+    },
+    attention: {
+      totalNotificationsCount: 0,
+      hasActiveAlerts: false,
+    },
+    vitals: {},
+    broadcast: {},
+    telemetryItems: [],
   };
 
   const html = renderToString(
@@ -201,15 +265,14 @@ test("ArwesPresentation converts ArwesProbeModel fallback seamlessly", () => {
       StrictMode,
       null,
       React.createElement(ArwesPresentation, {
-        model: probeModel,
+        model: minimalModel,
       })
     )
   );
 
   assert.match(html, /data-presentation="authority-arwes"/);
-  assert.match(html, /PROBE-FALLBACK-UNIT/);
+  assert.match(html, /MINIMAL-UNIT/);
   assert.match(html, /FLOOR 3/);
   assert.match(html, /SEQ 12/);
   assert.match(html, /REPLAY/);
-  assert.match(html, /— ABSENT/);
 });

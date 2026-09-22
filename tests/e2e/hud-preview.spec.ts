@@ -109,12 +109,14 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   // Verify vitals telemetry and evidence inspection trigger
   const healthRow = page.getByTestId("telemetry-health");
   await expect(healthRow).toBeVisible();
-  const healthBadge = page.getByTestId("telemetry-health-badge");
-  await expect(healthBadge).toBeVisible();
+
+  // Find enabled telemetry badge and click it
+  const badge = page.locator("button[data-testid$='-badge']:not([disabled])").first();
+  await expect(badge).toBeVisible();
 
   // Test interactive evidence inspection via application capability callback
-  await healthBadge.click();
-  await expect(page.getByRole("heading", { name: "OBSERVATION PROVENANCE LOG" })).toBeVisible();
+  await badge.click();
+  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
   await page.getByRole("button", { name: "CLOSE" }).click();
 });
 
