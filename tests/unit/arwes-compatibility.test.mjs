@@ -160,53 +160,38 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
     broadcast: {
       viewers: { value: 120, sequence: 25 },
     },
-    telemetryItems: [
-      {
-        key: "health",
-        label: "HEALTH",
-        valueDisplay: "84",
-        badgeLabel: "SOURCE",
-        status: "present",
-        authority: "observed",
-        temporal: "current",
-        isInspectable: true,
-        rawObservation: { value: 84, sequence: 25 },
-      },
-      {
-        key: "mana",
-        label: "MANA",
-        valueDisplay: "50",
-        badgeLabel: "SOURCE",
-        status: "present",
-        authority: "observed",
-        temporal: "current",
-        isInspectable: true,
-        rawObservation: { value: 50, sequence: 25 },
-      },
-      {
-        key: "level",
-        label: "LEVEL",
-        valueDisplay: "3",
-        badgeLabel: "LAST KNOWN · SEQ 20",
-        status: "present",
-        authority: "observed",
-        temporal: "last-known",
-        isInspectable: true,
-        rawObservation: { value: 3, sequence: 20 },
-      },
-      {
-        key: "viewers",
-        label: "AUDIENCE VIEWERS",
-        valueDisplay: "120",
-        badgeLabel: "SOURCE",
-        status: "present",
-        authority: "observed",
-        temporal: "current",
-        isInspectable: true,
-        rawObservation: { value: 120, sequence: 25 },
-      },
-    ],
   };
+
+  const telemetryItems = [
+    {
+      key: "health",
+      label: "HEALTH",
+      valueDisplay: "84",
+      badgeLabel: "SOURCE",
+      semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
+    },
+    {
+      key: "mana",
+      label: "MANA",
+      valueDisplay: "50",
+      badgeLabel: "SOURCE",
+      semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
+    },
+    {
+      key: "level",
+      label: "LEVEL",
+      valueDisplay: "3",
+      badgeLabel: "LAST KNOWN · SEQ 20",
+      semantics: { status: "present", temporal: "last-known", authority: "observed", affordance: "inspect" },
+    },
+    {
+      key: "viewers",
+      label: "AUDIENCE VIEWERS",
+      valueDisplay: "120",
+      badgeLabel: "SOURCE",
+      semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
+    },
+  ];
 
   const html = renderToString(
     React.createElement(
@@ -214,6 +199,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       null,
       React.createElement(ArwesPresentation, {
         model: fullModel,
+        telemetryItems,
       })
     )
   );
@@ -257,7 +243,6 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
     },
     vitals: {},
     broadcast: {},
-    telemetryItems: [],
   };
 
   const html = renderToString(

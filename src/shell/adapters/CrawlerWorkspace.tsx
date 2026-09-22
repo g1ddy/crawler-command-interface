@@ -7,6 +7,8 @@ import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPrese
 import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
+import { deriveEvidencePresentation, mapEvidenceToSemantics } from "../../features/timeline/public.ts";
+import type { ArwesTelemetryRowData } from "../../presentation/authority-arwes/ArwesAuthorityComposition.ts";
 import {
   availableRootViews,
   deriveNavigationContract,
@@ -184,6 +186,32 @@ export function CrawlerWorkspace({
     ],
   );
 
+  const arwesTelemetryItems = useMemo(() => {
+    const rawItems = [
+      { key: "health" as const, label: "HEALTH", obs: composition.vitals.health },
+      { key: "mana" as const, label: "MANA", obs: composition.vitals.mana },
+      { key: "level" as const, label: "LEVEL", obs: composition.vitals.level },
+      { key: "viewers" as const, label: "AUDIENCE VIEWERS", obs: composition.broadcast.viewers },
+    ];
+
+    return rawItems.map(({ key, label, obs }): ArwesTelemetryRowData => {
+      const evidence = deriveEvidencePresentation(obs, currentSeq);
+      const semantics = mapEvidenceToSemantics(evidence);
+      const valueDisplay =
+        obs?.value !== undefined && obs?.value !== null ? `${obs.value}` : "— ABSENT";
+      const isInspectable = semantics.affordance === "inspect" && Boolean(obs);
+
+      return {
+        key,
+        label,
+        valueDisplay,
+        badgeLabel: evidence.badgeLabel,
+        semantics,
+        onInspect: isInspectable && obs ? () => setInspectObservation(obs) : undefined,
+      };
+    });
+  }, [composition.vitals, composition.broadcast, currentSeq]);
+
   const navigationContract = useMemo(
     () =>
       deriveNavigationContract({
@@ -244,7 +272,7 @@ export function CrawlerWorkspace({
         presentationChoice === "authority-arwes" ? (
           <ArwesPresentation
             model={composition}
-            onInspectObservation={setInspectObservation}
+            telemetryItems={arwesTelemetryItems}
           />
         ) : usesConceptHud ? (
           <ConceptHud

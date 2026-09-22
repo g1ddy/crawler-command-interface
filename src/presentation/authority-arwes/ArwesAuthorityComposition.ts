@@ -4,40 +4,39 @@ import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
+import type { PresentationSemantics } from "../semantic/public.ts";
 import type { HudCompositionModel } from "../../shell/hud/public.ts";
 
-export interface TelemetryPresentationItem {
+export interface ArwesTelemetryRowData {
   key: "health" | "mana" | "level" | "viewers";
   label: string;
   valueDisplay: string;
   badgeLabel: string;
-  status: "present" | "known-empty" | "not-established" | "unknown" | "unavailable";
-  authority?: "observed" | "estimated" | "causal";
-  temporal?: "current" | "last-known";
-  isInspectable: boolean;
+  semantics: PresentationSemantics;
   onInspect?: () => void;
 }
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
-  telemetryItems: TelemetryPresentationItem[];
+  telemetryItems?: ArwesTelemetryRowData[];
 }
 
 interface TelemetryRowProps {
-  item: TelemetryPresentationItem;
+  item: ArwesTelemetryRowData;
 }
 
 function TelemetryRow({ item }: TelemetryRowProps) {
-  const { key, label, valueDisplay, badgeLabel, status, authority, temporal, isInspectable, onInspect } = item;
+  const { key, label, valueDisplay, badgeLabel, semantics, onInspect } = item;
+  const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
 
   return createElement(
     "div",
     {
       className: "arwes-telemetry-row",
       "data-testid": `telemetry-${key}`,
-      "data-status": status,
-      "data-authority": authority || "none",
-      "data-temporal": temporal || "current",
+      "data-status": semantics.status,
+      "data-authority": semantics.authority || "none",
+      "data-temporal": semantics.temporal || "current",
       style: {
         display: "flex",
         justifyContent: "space-between",
@@ -69,7 +68,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
           style: {
             fontSize: "1.05rem",
             fontWeight: 700,
-            color: status === "unknown" ? "#64748b" : "#f8fafc",
+            color: semantics.status === "unknown" ? "#64748b" : "#f8fafc",
             fontFamily: "monospace",
           },
         },
@@ -114,14 +113,9 @@ function TelemetryRow({ item }: TelemetryRowProps) {
 
 export function ArwesAuthorityComposition({
   composition,
-  telemetryItems,
+  telemetryItems = [],
 }: ArwesAuthorityCompositionProps) {
   const { system, temporal, urgency, attention } = composition;
-
-  const isUrgent =
-    urgency.activeCountdown &&
-    urgency.activeCountdown.remainingSeconds <= 300 &&
-    urgency.activeCountdown.lifecycleStatus === "active";
 
   return createElement(
     AuthoritySurface,
@@ -146,7 +140,7 @@ export function ArwesAuthorityComposition({
     createElement(
       AuthorityFrame,
       {
-        significance: isUrgent ? "critical" : "important",
+        significance: attention.hasActiveAlerts ? "critical" : "important",
         variant: "header",
         "data-testid": "arwes-spine-header",
       },
@@ -211,8 +205,8 @@ export function ArwesAuthorityComposition({
             style: {
               textAlign: "center",
               padding: "0.35rem 0.75rem",
-              background: isUrgent ? "rgba(225, 29, 72, 0.2)" : "rgba(15, 23, 42, 0.7)",
-              border: isUrgent ? "1px solid #f43f5e" : "1px solid rgba(56, 189, 248, 0.3)",
+              background: "rgba(15, 23, 42, 0.7)",
+              border: "1px solid rgba(56, 189, 248, 0.3)",
               borderRadius: "4px",
             },
           },
@@ -221,7 +215,7 @@ export function ArwesAuthorityComposition({
             {
               style: {
                 fontSize: "0.68rem",
-                color: isUrgent ? "#fca5a5" : "#7dd3fc",
+                color: "#7dd3fc",
                 fontWeight: 700,
                 letterSpacing: "0.05em",
               },
@@ -237,7 +231,7 @@ export function ArwesAuthorityComposition({
                     fontSize: "1.2rem",
                     fontWeight: 800,
                     fontFamily: "monospace",
-                    color: isUrgent ? "#ffe4e6" : "#38bdf8",
+                    color: "#38bdf8",
                     marginTop: "0.1rem",
                   },
                 },
