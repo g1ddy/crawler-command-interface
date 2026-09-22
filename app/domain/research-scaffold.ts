@@ -18,7 +18,12 @@ export interface ScaffoldReviewClaim {
     concept: string;
   };
   rationale: string;
-  confidence: string;
+  evidence: Array<{
+    sourceId: string;
+    locator?: Record<string, unknown>;
+    confidence: string;
+    relationship?: string;
+  }>;
   candidateId?: string;
   unknowns?: string[];
 }
@@ -68,7 +73,8 @@ export interface CompiledResearchScaffold {
 
 /**
  * Transforms validated research claims and modeling decisions into a disposable,
- * reviewable raw-shaped research scaffold without inventing CCI semantics or mutating inputs.
+ * reviewable raw-shaped research scaffold without inventing CCI semantics, collapsing
+ * evidence confidence, or mutating inputs.
  */
 export function compileResearchScaffold(
   researchDoc: ResearchClaimDocument,
@@ -91,7 +97,6 @@ export function compileResearchScaffold(
     }
 
     const candidateProposal = projection.candidateProposals.find((p) => p.researchClaimId === claim.id);
-    const confidence = claim.evidence[0]?.confidence ?? 'unknown';
 
     reviewClaims.push({
       claimId: claim.id,
@@ -101,19 +106,19 @@ export function compileResearchScaffold(
       disposition: decision.disposition,
       target: decision.target,
       rationale: decision.rationale,
-      confidence,
+      evidence: JSON.parse(JSON.stringify(claim.evidence)),
       candidateId: candidateProposal?.candidateId,
       unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
     });
   }
 
-  // Deterministically categorize candidate proposals into events vs observations based on claim kind / target concept
+  // Categorize candidate proposals strictly based on explicit claim kind ('event' vs 'observation'/'state')
   const candidateEvents: CandidateProposal[] = [];
   const candidateObservations: CandidateProposal[] = [];
 
   for (const proposal of projection.candidateProposals) {
     const origClaim = researchDoc.claims.find((c) => c.id === proposal.researchClaimId);
-    if (origClaim?.kind === 'event' || proposal.target.concept.endsWith('Event') || proposal.target.concept.endsWith('Changed') || proposal.target.concept.endsWith('Equipped') || proposal.target.concept.endsWith('Acquired')) {
+    if (origClaim?.kind === 'event') {
       candidateEvents.push(proposal);
     } else {
       candidateObservations.push(proposal);

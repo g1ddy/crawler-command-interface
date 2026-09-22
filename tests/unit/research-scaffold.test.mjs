@@ -43,15 +43,88 @@ test('Research Scaffold: all generated artifacts carry explicit non-authoritativ
   assert.equal(scaffold.provenance.statusBanner, SCAFFOLD_STATUS_BANNER);
 });
 
+test('Research Scaffold: candidate projection contains exactly the claims eligible according to modeling decisions', () => {
+  const researchDoc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(PET_MODELING_FIXTURE);
+
+  const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
+
+  const expectedPromotedClaimIds = modelingDoc.decisions
+    .filter((d) => d.disposition === 'promote')
+    .map((d) => d.claimId);
+
+  const actualCandidateClaimIds = [
+    ...scaffold.events.candidateEvents.map((e) => e.researchClaimId),
+    ...scaffold.observations.candidateObservations.map((o) => o.researchClaimId),
+  ];
+
+  assert.deepEqual(actualCandidateClaimIds.sort(), expectedPromotedClaimIds.sort());
+
+  const expectedLedgerOnlyClaimIds = modelingDoc.decisions
+    .filter((d) => d.disposition === 'ledger_only')
+    .map((d) => d.claimId);
+
+  for (const ledgerId of expectedLedgerOnlyClaimIds) {
+    assert.equal(
+      actualCandidateClaimIds.includes(ledgerId),
+      false,
+      `Ledger-only claim "${ledgerId}" should NOT enter candidate proposals.`
+    );
+  }
+});
+
+test('Research Scaffold: observation claims with Changed-suffixed target concepts remain observations', () => {
+  const researchDoc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(PET_MODELING_FIXTURE);
+
+  const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
+
+  // P3-PET-010 is an observation claim (kind: observation) targeting PetDeploymentChanged
+  const p10Claim = researchDoc.claims.find((c) => c.id === 'P3-PET-010');
+  assert.ok(p10Claim);
+  assert.equal(p10Claim.kind, 'observation');
+
+  const p10Decision = modelingDoc.decisions.find((d) => d.claimId === 'P3-PET-010');
+  assert.ok(p10Decision);
+  assert.equal(p10Decision.disposition, 'promote');
+  assert.equal(p10Decision.target?.concept, 'PetDeploymentChanged');
+
+  const eventCandidate = scaffold.events.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-010');
+  assert.equal(eventCandidate, undefined, 'Observation claim P3-PET-010 must NOT be categorized as a candidate event');
+
+  const obsCandidate = scaffold.observations.candidateObservations.find((o) => o.researchClaimId === 'P3-PET-010');
+  assert.ok(obsCandidate, 'Observation claim P3-PET-010 must be categorized under candidateObservations');
+  assert.equal(obsCandidate.candidateId, 'candidate-P3-PET-010');
+  assert.equal(obsCandidate.target.concept, 'PetDeploymentChanged');
+});
+
+test('Research Scaffold: review claim retains complete evidence array without single-scalar confidence collapse', () => {
+  const researchDoc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(PET_MODELING_FIXTURE);
+
+  const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
+
+  for (const reviewClaim of scaffold.review.claims) {
+    const origClaim = researchDoc.claims.find((c) => c.id === reviewClaim.claimId);
+    assert.ok(origClaim);
+    assert.deepEqual(reviewClaim.evidence, origClaim.evidence);
+    // Ensure no misleading scalar confidence field exists on reviewClaim
+    assert.equal('confidence' in reviewClaim, false);
+  }
+});
+
 test('Research Scaffold: generates stable candidate IDs and traceable provenance back to research claim IDs', () => {
   const researchDoc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(PET_MODELING_FIXTURE);
 
   const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
 
-  assert.ok(scaffold.events.candidateEvents.length > 0);
+  const allCandidates = [
+    ...scaffold.events.candidateEvents,
+    ...scaffold.observations.candidateObservations,
+  ];
 
-  for (const candidate of scaffold.events.candidateEvents) {
+  for (const candidate of allCandidates) {
     assert.equal(candidate.candidateId, `candidate-${candidate.researchClaimId}`);
 
     const prov = scaffold.provenance.candidates.find((p) => p.candidateId === candidate.candidateId);
@@ -79,27 +152,6 @@ test('Research Scaffold: preserves explicit unknowns, sources, and evidence rela
   assert.ok(p2Event);
   assert.deepEqual(p2Event.unknowns, p2Claim.unknowns);
   assert.deepEqual(p2Event.evidence, p2Claim.evidence);
-});
-
-test('Research Scaffold: disposition filtering is explicit and fail-closed', () => {
-  const researchDoc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(PET_MODELING_FIXTURE);
-
-  const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
-
-  // Assert promoted claims are present in candidates while ledger_only claims are NOT candidates
-  const ledgerClaimIds = ['P3-PET-001', 'P3-PET-003', 'P3-PET-007', 'P3-PET-009', 'P3-PET-011', 'P3-PET-012', 'P3-PET-013', 'P3-PET-014', 'P3-PET-015'];
-  const promotedClaimIds = ['P3-PET-002', 'P3-PET-004', 'P3-PET-005', 'P3-PET-006', 'P3-PET-008', 'P3-PET-010'];
-
-  for (const id of ledgerClaimIds) {
-    const candidate = scaffold.events.candidateEvents.find((e) => e.researchClaimId === id);
-    assert.equal(candidate, undefined, `Claim ${id} with ledger_only disposition should NOT become candidate`);
-  }
-
-  for (const id of promotedClaimIds) {
-    const candidate = scaffold.events.candidateEvents.find((e) => e.researchClaimId === id);
-    assert.ok(candidate, `Promoted claim ${id} should exist in candidate proposals`);
-  }
 });
 
 test('Research Scaffold: unsupported or disputed claims cannot silently become candidates', () => {
@@ -155,7 +207,8 @@ test('Research Scaffold: CLI script generates valid disposable artifacts in targ
   assert.equal(provContent.statusBanner, SCAFFOLD_STATUS_BANNER);
 
   assert.equal(reviewContent.claims.length, 15);
-  assert.equal(eventsContent.candidateEvents.length, 6);
+  assert.equal(eventsContent.candidateEvents.length, 5);
+  assert.equal(obsContent.candidateObservations.length, 1);
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
