@@ -39,44 +39,80 @@ test('Research Ingestion: valid Floor 3 research claim fixture parses and valida
   assert.deepEqual(validation.errors, []);
 });
 
-test('Research Draft Compiler: produces deterministic output for identical inputs', () => {
+test('Research Draft Compiler: produces direct CCI raw floor shape matching existing RawCrawlerFloorDocument structure', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const draft = compileRawDraft(doc);
+
+  assert.equal(draft.authoringVersion, 'crawler-floor-raw/v1');
+  assert.equal(draft.storyId, 'dcc');
+  assert.equal(draft.floor.ordinal, 3);
+  assert.ok(Array.isArray(draft.sources));
+  assert.ok(Array.isArray(draft.catalog.items));
+  assert.ok(Array.isArray(draft.events));
+  assert.equal(draft.events.length, 15);
+});
+
+test('Research Draft Compiler: produces deterministic byte-equivalent outputs for identical inputs', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
 
   const draft1 = compileRawDraft(doc);
   const draft2 = compileRawDraft(doc);
 
   assert.deepEqual(draft1, draft2);
-  assert.equal(draft1.storyId, 'dcc');
-  assert.equal(draft1.floor, 3);
 });
 
-test('Research Draft Compiler: strictly preserves YAML claim ordering in generated draft events', () => {
+test('Research Draft Compiler: strictly preserves research YAML claim ordering in generated raw draft events', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const draft = compileRawDraft(doc);
 
-  const expectedClaimIds = doc.claims
-    .filter((c) => !(c.domain === 'inventory' && c.kind === 'state'))
-    .map((c) => c.id);
-
-  const actualDraftClaimIds = draft.events.map((e) => e.researchClaimId);
+  const expectedClaimIds = doc.claims.map((c) => c.id);
+  const actualDraftClaimIds = draft.events.map((e) => {
+    // Extract claim ID from draft ID 'evt-draft-<encodedClaimId>'
+    const rawId = String(e.id);
+    const prefix = 'evt-draft-';
+    return rawId.startsWith(prefix) ? decodeURIComponent(rawId.slice(prefix.length)) : rawId;
+  });
 
   assert.deepEqual(actualDraftClaimIds, expectedClaimIds);
 });
 
-test('Research Draft Compiler: preserves researchClaimId, evidence, locators, and explicit unknowns directly on draft items', () => {
+test('Research Draft Compiler: preserves evidence, locators, and explicit unknowns directly without data loss', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const draft = compileRawDraft(doc);
 
   const p2Claim = doc.claims.find((c) => c.id === 'P3-PET-002');
   assert.ok(p2Claim);
 
-  const p2DraftEvent = draft.events.find((e) => e.researchClaimId === 'P3-PET-002');
+  const p2DraftEvent = draft.events.find((e) => String(e.id) === 'evt-draft-P3-PET-002');
   assert.ok(p2DraftEvent);
 
-  assert.equal(p2DraftEvent.researchClaimId, 'P3-PET-002');
   assert.equal(p2DraftEvent.summary, p2Claim.claim.summary);
   assert.deepEqual(p2DraftEvent.evidence, p2Claim.evidence);
   assert.deepEqual(p2DraftEvent.unknowns, p2Claim.unknowns);
+});
+
+test('Research Draft Compiler: leaves position unpopulated when evidence locators contain conflicting book/chapter values', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const testDoc = deepClone(doc);
+
+  const targetClaim = testDoc.claims.find((c) => c.id === 'P3-PET-003');
+  assert.ok(targetClaim);
+
+  // Add conflicting chapter locators across evidence items
+  targetClaim.evidence = [
+    { sourceId: 'src-fandom-mongo', locator: { book: 2, chapter: 5 }, confidence: 'corroborated' },
+    { sourceId: 'src-cookbook-mongo', locator: { book: 2, chapter: 26 }, confidence: 'corroborated' },
+  ];
+
+  const draft = compileRawDraft(testDoc);
+  const draftEvent = draft.events.find((e) => String(e.id) === 'evt-draft-P3-PET-003');
+  assert.ok(draftEvent);
+
+  // Position floor is set from document scope floor, but chapter is unpopulated due to locator conflict
+  const pos = draftEvent.position;
+  assert.equal(pos.floor, 3);
+  assert.equal(pos.book, 2);
+  assert.equal(pos.chapter, undefined, 'Conflicting chapter locators must leave chapter unpopulated');
 });
 
 test('Research Draft Compiler: does not invent fake CCI event types or payloads', () => {
@@ -89,38 +125,20 @@ test('Research Draft Compiler: does not invent fake CCI event types or payloads'
   }
 });
 
-test('Research Draft Compiler: uncurated draft items remain invalid under existing raw floor schema validation', () => {
+test('Research Draft Compiler: uncurated raw draft fails existing CCI raw floor schema validation', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const draft = compileRawDraft(doc);
 
-  // Construct a mock raw floor document using uncurated draft events
-  const mockRawDoc = {
-    authoringVersion: 'crawler-floor-raw/v1',
-    storyId: draft.storyId,
-    floor: {
-      id: 'floor-3',
-      ordinal: 3,
-      title: 'The Over City',
-      book: 2,
-      continuity: 'canonical',
-      coverage: {
-        kind: 'curated-critical',
-        statement: 'Test draft',
-        completeness: 'partial',
-      },
-    },
-    sources: [],
-    catalog: {
-      items: [],
-      achievements: [],
-    },
-    events: draft.events,
-  };
+  // Pass draft directly into existing CCI raw floor validator
+  const validation = validateRawCrawlerFloor(draft);
 
-  const validation = validateRawCrawlerFloor(mockRawDoc);
-  // Uncurated draft lacks required CCI properties (such as 'type'), so existing raw validation fails as intended
+  // Uncurated draft lacks required CCI properties (such as event 'type'), so existing raw validation fails as intended
   assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes("must have required property 'type'") || err.includes('must match pattern')));
+  assert.ok(
+    validation.errors.some(
+      (err) => err.includes("must have required property 'type'") || err.includes('must match pattern')
+    )
+  );
 });
 
 test('Research Draft Compiler: research input and authoritative raw floor files are never mutated', () => {

@@ -56,7 +56,7 @@ try {
 
   console.log(`\n[Research Draft Compiler Success] Generated disposable raw draft under ${resolvedOutputDir}`);
   console.log(`  - events.json (${draft.events.length} draft events preserving YAML claim order)`);
-  console.log(`  - catalog.json (${draft.catalog.items.length} draft catalog items)`);
+  console.log(`  - catalog.json (${draft.catalog.items.length} catalog items)`);
   console.log(`  - README.md (non-authoritative draft status & curation instructions)\n`);
 
 } catch (err) {

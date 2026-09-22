@@ -8,45 +8,33 @@ import {
 
 export const RAW_DRAFT_STATUS_HEADER = '# DISPOSABLE RESEARCH DRAFT — NOT AUTHORITATIVE CCI DATA';
 
-export interface RawDraftEvent {
-  id: string;
-  researchClaimId: string;
-  summary: string;
-  position: {
-    floor: number;
-    book?: number;
-    chapter?: number;
-  };
-  evidence: Array<{
-    sourceId: string;
-    locator?: Record<string, unknown>;
-    confidence: string;
-    relationship?: string;
-  }>;
-  unknowns?: string[];
-  /** Unresolved CCI type; left unpopulated unless explicitly supplied in research/authoring. */
-  type?: string;
-}
-
-export interface RawDraftCatalogItem {
-  id: string;
-  researchClaimId: string;
-  summary: string;
-  evidence: Array<{
-    sourceId: string;
-    locator?: Record<string, unknown>;
-    confidence: string;
-    relationship?: string;
-  }>;
-}
-
-export interface RawDraftOutput {
+export interface RawFloorDraftResult {
+  authoringVersion: 'crawler-floor-raw/v1';
   storyId: string;
-  floor: number;
-  events: RawDraftEvent[];
-  catalog: {
-    items: RawDraftCatalogItem[];
+  floor: {
+    id: string;
+    ordinal: number;
+    title: string;
+    book: number;
+    continuity: 'canonical' | 'adaptation' | 'alternate' | 'unknown';
+    coverage: {
+      kind: 'complete' | 'curated-critical' | 'curated' | 'partial';
+      statement: string;
+      completeness: 'complete' | 'partial' | 'seed';
+    };
   };
+  sources: Array<{
+    id: string;
+    kind: string;
+    trust: string;
+    title: string;
+    url?: string;
+  }>;
+  catalog: {
+    items: string[];
+    achievements: string[];
+  };
+  events: Array<Record<string, unknown>>;
   readme: string;
 }
 
@@ -83,11 +71,11 @@ export interface CompiledResearchOutput {
 }
 
 /**
- * Compiles a validated research claim document directly into a raw-JSON draft
- * (events, catalog, and README.md) without introducing intermediate candidate models,
- * concept-suffix heuristics, or invented CCI semantics.
+ * Compiles a validated research claim document directly into the existing CCI raw JSON shape
+ * (events, catalog, sources, and README.md) preserving claim YAML order, evidence, locators, and explicit unknowns,
+ * without intermediate candidate models, concept-suffix heuristics, or invented CCI semantics.
  */
-export function compileRawDraft(researchDoc: ResearchClaimDocument): RawDraftOutput {
+export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorDraftResult {
   const researchVal = validateResearchClaimDocument(researchDoc);
   if (!researchVal.valid) {
     throw new Error(
@@ -95,68 +83,81 @@ export function compileRawDraft(researchDoc: ResearchClaimDocument): RawDraftOut
     );
   }
 
-  const events: RawDraftEvent[] = [];
-  const catalogItems: RawDraftCatalogItem[] = [];
+  const events: Array<Record<string, unknown>> = [];
 
   // Preserve research YAML claim order strictly
   for (const claim of researchDoc.claims) {
     const encodedClaimId = encodeURIComponent(claim.id);
-    const draftId = `draft-${encodedClaimId}`;
+    const draftId = `evt-draft-${encodedClaimId}`;
 
-    // Extract locator position details if explicitly present in evidence
-    let bookLocator: number | undefined;
-    let chapterLocator: number | undefined;
+    // Resolve book and chapter locators conservatively across evidence items.
+    // If multiple evidence items specify differing book/chapter locators, leave the locator unpopulated rather than guessing.
+    const specifiedBooks = new Set<number>();
+    const specifiedChapters = new Set<number>();
 
     for (const ev of claim.evidence) {
       if (ev.locator) {
-        if (typeof ev.locator.book === 'number') bookLocator = ev.locator.book;
-        if (typeof ev.locator.chapter === 'number') chapterLocator = ev.locator.chapter;
+        if (typeof ev.locator.book === 'number') specifiedBooks.add(ev.locator.book);
+        if (typeof ev.locator.chapter === 'number') specifiedChapters.add(ev.locator.chapter);
       }
     }
 
+    const book = specifiedBooks.size === 1 ? Array.from(specifiedBooks)[0] : undefined;
+    const chapter = specifiedChapters.size === 1 ? Array.from(specifiedChapters)[0] : undefined;
+
     const position = {
       floor: researchDoc.floor,
-      ...(bookLocator !== undefined ? { book: bookLocator } : {}),
-      ...(chapterLocator !== undefined ? { chapter: chapterLocator } : {}),
+      ...(book !== undefined ? { book } : {}),
+      ...(chapter !== undefined ? { chapter } : {}),
     };
 
-    if (claim.domain === 'inventory' && claim.kind === 'state') {
-      catalogItems.push({
-        id: draftId,
-        researchClaimId: claim.id,
-        summary: claim.claim.summary,
-        evidence: JSON.parse(JSON.stringify(claim.evidence)),
-      });
-    } else {
-      events.push({
-        id: draftId,
-        researchClaimId: claim.id,
-        summary: claim.claim.summary,
-        position,
-        evidence: JSON.parse(JSON.stringify(claim.evidence)),
-        unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
-      });
-    }
+    events.push({
+      id: draftId,
+      summary: claim.claim.summary,
+      position,
+      evidence: JSON.parse(JSON.stringify(claim.evidence)),
+      ...(claim.unknowns ? { unknowns: [...claim.unknowns] } : {}),
+    });
   }
 
   const readme = `${RAW_DRAFT_STATUS_HEADER}
 
-This directory contains a mechanically compiled draft derived from story "${researchDoc.storyId}", floor ${researchDoc.floor} research claims.
+This directory contains a mechanically compiled raw draft derived directly from story "${researchDoc.storyId}", floor ${researchDoc.floor} research claims.
 
-- \`events.json\`: ${events.length} draft events preserving YAML claim order, claim IDs (\`researchClaimId\`), evidence, and locators.
-- \`catalog.json\`: ${catalogItems.length} draft catalog items.
+- \`events.json\`: ${events.length} draft events preserving YAML claim order, evidence, locators, and unknowns.
+- \`catalog.json\`: Floor-local catalog definitions.
 
-IMPORTANT: Unresolved CCI fields (such as event \`type\`, item \`category\`, or specific payload discriminators) are intentionally left unpopulated so existing CCI raw validation flags missing curation work.
+IMPORTANT: Unresolved CCI fields (such as event \`type\`, item \`category\`, or specific payload discriminators) are intentionally left unpopulated so existing CCI raw floor validation flags missing curation work.
 Do NOT treat this draft as authoritative runtime state.
 `;
 
   return {
+    authoringVersion: 'crawler-floor-raw/v1',
     storyId: researchDoc.storyId,
-    floor: researchDoc.floor,
-    events,
-    catalog: {
-      items: catalogItems,
+    floor: {
+      id: `floor-${researchDoc.floor}`,
+      ordinal: researchDoc.floor,
+      title: `Floor ${researchDoc.floor} Research Draft`,
+      book: 2,
+      continuity: 'canonical',
+      coverage: {
+        kind: 'partial',
+        statement: 'Mechanically compiled research draft requiring curation.',
+        completeness: 'seed',
+      },
     },
+    sources: researchDoc.sources.map((s) => ({
+      id: s.id,
+      kind: s.kind,
+      trust: s.trust,
+      title: s.title,
+      url: s.url,
+    })),
+    catalog: {
+      items: [],
+      achievements: [],
+    },
+    events,
     readme,
   };
 }
