@@ -2,18 +2,22 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadResearchClaimDocument } from '../app/domain/research-loader.ts';
+import { loadResearchClaimDocument, loadModelingDecisionDocument } from '../app/domain/research-loader.ts';
 import { compileRawFloor } from '../app/domain/research-compiler.ts';
 
 const args = process.argv.slice(2);
 
 let researchPath = 'data/raw/research/floor-3/pet-research.yaml';
+let modelingPath;
 let outputDirArg = 'data/raw/floors/floor-3';
 
-// Parse optional CLI flags e.g. --research <path> --out <dir> or positional arguments
+// Parse CLI flags e.g. --research <path> --modeling <path> --out <dir> or positional arguments
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--research' && args[i + 1]) {
     researchPath = args[i + 1];
+    i++;
+  } else if (args[i] === '--modeling' && args[i + 1]) {
+    modelingPath = args[i + 1];
     i++;
   } else if (args[i] === '--out' && args[i + 1]) {
     outputDirArg = args[i + 1];
@@ -42,7 +46,17 @@ if (!fs.existsSync(resolvedResearchPath)) {
 
 try {
   const researchDoc = loadResearchClaimDocument(resolvedResearchPath);
-  const rawFloor = compileRawFloor(researchDoc);
+  let modelingDoc;
+  if (modelingPath) {
+    const resolvedModelingPath = path.isAbsolute(modelingPath)
+      ? modelingPath
+      : path.resolve(process.cwd(), modelingPath);
+    if (fs.existsSync(resolvedModelingPath)) {
+      modelingDoc = loadModelingDecisionDocument(resolvedModelingPath);
+    }
+  }
+
+  const rawFloor = compileRawFloor(researchDoc, modelingDoc);
 
   fs.mkdirSync(resolvedOutputDir, { recursive: true });
 

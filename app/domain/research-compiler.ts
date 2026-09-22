@@ -58,7 +58,10 @@ export interface CompiledResearchOutput {
  * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
  * without intermediate candidate/scaffold models or manufactured floor metadata.
  */
-export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorCompilation {
+export function compileRawDraft(
+  researchDoc: ResearchClaimDocument,
+  modelingDoc?: ModelingDecisionDocument
+): RawFloorCompilation {
   const researchVal = validateResearchClaimDocument(researchDoc);
   if (!researchVal.valid) {
     throw new Error(
@@ -66,12 +69,32 @@ export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorCom
     );
   }
 
+  if (modelingDoc) {
+    const modelingVal = validateModelingDecisionDocument(modelingDoc);
+    if (!modelingVal.valid) {
+      throw new Error(
+        `Compiler error: Modeling decision document validation failed:\n  - ${modelingVal.errors.join('\n  - ')}`
+      );
+    }
+  }
+
+  const decisionMap = new Map<string, string>();
+  if (modelingDoc) {
+    for (const d of modelingDoc.decisions) {
+      decisionMap.set(d.claimId, d.disposition);
+    }
+  }
+
   const events: Array<Record<string, unknown>> = [];
 
   // Preserve research YAML claim order strictly
   for (const claim of researchDoc.claims) {
-    const encodedClaimId = encodeURIComponent(claim.id);
-    const eventId = `evt-draft-${encodedClaimId}`;
+    // If modeling decisions are supplied, claims with no raw destination ('ledger_only') remain research-only
+    if (modelingDoc && decisionMap.get(claim.id) === 'ledger_only') {
+      continue;
+    }
+
+    const eventId = `evt-f${researchDoc.floor}-${claim.id.toLowerCase()}`;
 
     // Resolve book and chapter locators conservatively across evidence items.
     // If multiple evidence items specify differing book/chapter locators, leave position locators unpopulated.

@@ -68,7 +68,7 @@ The workflow is deliberately conservative:
 | --- | --- | --- |
 | Research report | Human-auditable evidence gathering | Research source |
 | `research.yaml` | Structured claims and provenance | Evidence-oriented authoring format |
-| Raw JSON draft (`.tmp/...`) | Mechanically compiled draft items | Non-authoritative draft |
+| Raw JSON draft | Mechanically compiled draft items | Non-authoritative draft |
 | `data/raw/floors/**` | Executable CCI authoring | **Authoritative** |
 | Generated runtime state | Application execution/replay | Existing CCI pipeline |
 

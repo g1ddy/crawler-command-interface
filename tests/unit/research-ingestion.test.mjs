@@ -64,10 +64,10 @@ test('Research Draft Compiler: strictly preserves research YAML claim ordering i
 
   const expectedClaimIds = doc.claims.map((c) => c.id);
   const actualDraftClaimIds = draft.events.map((e) => {
-    // Extract claim ID from draft ID 'evt-draft-<encodedClaimId>'
+    // Extract claim ID from raw event ID 'evt-f3-p3-pet-001'
     const rawId = String(e.id);
-    const prefix = 'evt-draft-';
-    return rawId.startsWith(prefix) ? decodeURIComponent(rawId.slice(prefix.length)) : rawId;
+    const prefix = `evt-f${doc.floor}-`;
+    return rawId.startsWith(prefix) ? rawId.slice(prefix.length).toUpperCase() : rawId;
   });
 
   assert.deepEqual(actualDraftClaimIds, expectedClaimIds);
@@ -80,7 +80,7 @@ test('Research Draft Compiler: preserves evidence, locators, and explicit unknow
   const p2Claim = doc.claims.find((c) => c.id === 'P3-PET-002');
   assert.ok(p2Claim);
 
-  const p2DraftEvent = draft.events.find((e) => String(e.id) === 'evt-draft-P3-PET-002');
+  const p2DraftEvent = draft.events.find((e) => String(e.id) === 'evt-f3-p3-pet-002');
   assert.ok(p2DraftEvent);
 
   assert.equal(p2DraftEvent.summary, p2Claim.claim.summary);
@@ -102,7 +102,7 @@ test('Research Draft Compiler: leaves position unpopulated when evidence locator
   ];
 
   const draft = compileRawDraft(testDoc);
-  const draftEvent = draft.events.find((e) => String(e.id) === 'evt-draft-P3-PET-003');
+  const draftEvent = draft.events.find((e) => String(e.id) === 'evt-f3-p3-pet-003');
   assert.ok(draftEvent);
 
   // Position floor is set from document scope floor, but chapter is unpopulated due to locator conflict
@@ -148,12 +148,10 @@ test('Research Draft Compiler: uncurated raw draft fails existing CCI raw floor 
   };
 
   const validation = validateRawCrawlerFloor(mockRawDoc);
-  // Uncurated draft lacks required CCI properties (such as event 'type'), so existing raw validation fails as intended
+  // Uncurated draft lacks required CCI properties (specifically event 'type'), so existing raw validation fails as intended
   assert.equal(validation.valid, false);
   assert.ok(
-    validation.errors.some(
-      (err) => err.includes("must have required property 'type'") || err.includes('must match pattern')
-    )
+    validation.errors.some((err) => err.includes("must have required property 'type'"))
   );
 });
 
@@ -226,4 +224,25 @@ test('Research Ingestion Contract: trace compilation executes cleanly when model
   assert.equal(compiled.storyId, 'dcc');
   assert.equal(compiled.floor, 3);
   assert.equal(compiled.claimMappings.length, 5);
+});
+
+test('Research Draft Compiler: filters out ledger_only claims when modeling decisions are supplied', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+
+  const fullDraft = compileRawDraft(doc);
+  assert.equal(fullDraft.events.length, 15);
+
+  const filteredDraft = compileRawDraft(doc, modelingDoc);
+  // Pet modeling decisions promote/review 6 claims and mark 9 claims ledger_only
+  assert.equal(filteredDraft.events.length, 6);
+
+  const ledgerOnlyClaimIds = ['evt-f3-p3-pet-001', 'evt-f3-p3-pet-003', 'evt-f3-p3-pet-007'];
+  for (const eventId of ledgerOnlyClaimIds) {
+    assert.equal(
+      filteredDraft.events.some((e) => String(e.id) === eventId),
+      false,
+      `Ledger-only claim event "${eventId}" must be excluded from raw floor compilation`
+    );
+  }
 });
