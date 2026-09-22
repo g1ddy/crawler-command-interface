@@ -1,4 +1,8 @@
 import type { Party } from "../../../app/domain/types.ts";
+import type {
+  PresentationChange,
+  PresentationSemantics,
+} from "../../presentation/semantic/public.ts";
 
 export type PartyMemberRole = "leader" | "member" | "unknown";
 export type PartyPresentationStatus = "not-established" | "established" | "known-empty" | "unknown" | "unavailable";
@@ -58,4 +62,30 @@ export function derivePartyPresentation({ party }: { party?: Party }): DerivedPa
       : "NO MEMBERS",
     members,
   };
+}
+
+/**
+ * Maps Party status and optional change intent into presentation semantics.
+ */
+export function mapPartyStatusToSemantics(
+  partyStatus: PartyPresentationStatus,
+  change?: PresentationChange
+): PresentationSemantics {
+  switch (partyStatus) {
+    case "not-established":
+      return { status: "not-established", affordance: "none" };
+    case "established":
+      return {
+        status: "present",
+        ...(change ? { change } : {}),
+        affordance: "none",
+      };
+    case "known-empty":
+      return { status: "known-empty", affordance: "none" };
+    case "unavailable":
+      return { status: "unavailable", affordance: "none" };
+    case "unknown":
+    default:
+      return { status: "unknown", affordance: "none" };
+  }
 }

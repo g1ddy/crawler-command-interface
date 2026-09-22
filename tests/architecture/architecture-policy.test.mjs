@@ -39,6 +39,9 @@ const forbidden = [
   ["application-must-not-depend-on-react", "src/application/actions.ts", "react", null],
   ["shared-browser-must-not-depend-on-host", "src/CrawlerApp.tsx", "../app/chatgpt-auth", "app/chatgpt-auth.ts"],
   ["features-must-use-public-contracts", "src/features/inventory/View.ts", "../timeline/private", "src/features/timeline/private.ts"],
+  ["semantic-must-not-depend-on-arwes", "src/presentation/semantic/public.ts", "../authority-arwes/AuthorityFrame", "src/presentation/authority-arwes/AuthorityFrame.tsx"],
+  ["semantic-must-not-depend-on-react", "src/presentation/semantic/public.ts", "react", null],
+  ["semantic-must-not-depend-on-features", "src/presentation/semantic/public.ts", "../../features/timeline/public", "src/features/timeline/public.ts"],
 ];
 
 for (const [rule, from, specifier, target] of forbidden) {

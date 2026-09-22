@@ -1,4 +1,4 @@
-export { derivePetPresentation } from "./pet-presentation.ts";
+export { derivePetPresentation, mapPetStatusToSemantics } from "./pet-presentation.ts";
 
 export type {
   DerivedPetPresentation,
