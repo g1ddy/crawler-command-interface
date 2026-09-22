@@ -4,36 +4,76 @@ import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
-import type { PresentationSemantics } from "../semantic/public.ts";
-import type { HudCompositionModel } from "../../shell/hud/public.ts";
-
-export interface ArwesTelemetryRowData {
-  key: "health" | "mana" | "level" | "viewers";
-  label: string;
-  valueDisplay: string;
-  badgeLabel: string;
-  semantics: PresentationSemantics;
-  onInspect?: () => void;
-}
+import type {
+  HudCompositionModel,
+  HudTelemetryPresentation,
+} from "../../shell/hud/public.ts";
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
-  telemetryItems?: ArwesTelemetryRowData[];
+  telemetryItems?: HudTelemetryPresentation[];
 }
 
 interface TelemetryRowProps {
-  item: ArwesTelemetryRowData;
+  item: HudTelemetryPresentation;
 }
 
 function TelemetryRow({ item }: TelemetryRowProps) {
-  const { key, label, valueDisplay, badgeLabel, semantics, onInspect } = item;
+  const { label, valueDisplay, badgeLabel, semantics, onInspect } = item;
   const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
+
+  const badgeElement = isInspectable
+    ? createElement(
+        "button",
+        {
+          type: "button",
+          "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}-badge`,
+          onClick: onInspect,
+          style: {
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.25rem",
+            fontSize: "0.65rem",
+            fontWeight: 700,
+            color: "#ffffff",
+            backgroundColor: "#0284c7",
+            border: "none",
+            borderRadius: "3px",
+            padding: "0.2rem 0.45rem",
+            cursor: "pointer",
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+          },
+        },
+        badgeLabel,
+        createElement("span", { style: { fontSize: "0.6rem" } }, "🔍")
+      )
+    : createElement(
+        "span",
+        {
+          "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}-badge`,
+          style: {
+            display: "inline-flex",
+            alignItems: "center",
+            fontSize: "0.65rem",
+            fontWeight: 600,
+            color: "#94a3b8",
+            backgroundColor: "rgba(15, 23, 42, 0.6)",
+            border: "1px solid rgba(148, 163, 184, 0.2)",
+            borderRadius: "3px",
+            padding: "0.2rem 0.45rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+          },
+        },
+        badgeLabel
+      );
 
   return createElement(
     "div",
     {
       className: "arwes-telemetry-row",
-      "data-testid": `telemetry-${key}`,
+      "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}`,
       "data-status": semantics.status,
       "data-authority": semantics.authority || "none",
       "data-temporal": semantics.temporal || "current",
@@ -64,7 +104,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
       createElement(
         "span",
         {
-          "data-testid": `telemetry-${key}-value`,
+          "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}-value`,
           style: {
             fontSize: "1.05rem",
             fontWeight: 700,
@@ -75,39 +115,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
         valueDisplay
       )
     ),
-    createElement(
-      "div",
-      { style: { display: "flex", alignItems: "center" } },
-      createElement(
-        "button",
-        {
-          type: "button",
-          "data-testid": `telemetry-${key}-badge`,
-          disabled: !isInspectable,
-          onClick: onInspect,
-          style: {
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.25rem",
-            fontSize: "0.65rem",
-            fontWeight: 700,
-            color: "#ffffff",
-            backgroundColor: "#0284c7",
-            border: "none",
-            borderRadius: "3px",
-            padding: "0.2rem 0.45rem",
-            cursor: isInspectable ? "pointer" : "default",
-            opacity: isInspectable ? 1 : 0.65,
-            textTransform: "uppercase",
-            letterSpacing: "0.04em",
-          },
-        },
-        badgeLabel,
-        isInspectable
-          ? createElement("span", { style: { fontSize: "0.6rem" } }, "🔍")
-          : null
-      )
-    )
+    createElement("div", { style: { display: "flex", alignItems: "center" } }, badgeElement)
   );
 }
 
@@ -171,7 +179,7 @@ export function ArwesAuthorityComposition({
                 textTransform: "uppercase",
               },
             },
-            "AUTHORITY CONTROL ARCHITECTURE"
+            "CRAWLER HUD"
           ),
           createElement(
             "h2",
@@ -240,7 +248,7 @@ export function ArwesAuthorityComposition({
             : createElement(
                 "div",
                 { style: { fontSize: "0.75rem", color: "#64748b", marginTop: "0.2rem" } },
-                "COLLAPSE TIMING UNMONITORED"
+                "COLLAPSE TIMING UNAVAILABLE"
               )
         ),
 
@@ -295,7 +303,7 @@ export function ArwesAuthorityComposition({
       createElement(
         AuthorityFrame,
         {
-          significance: "active",
+          significance: "informational",
           variant: "lines",
           "data-testid": "arwes-vitals-frame",
         },
@@ -311,14 +319,14 @@ export function ArwesAuthorityComposition({
               textTransform: "uppercase",
             },
           },
-          "CRAWLER TELEMETRY & VITALS"
+          "TELEMETRY & VITALS"
         ),
         createElement(
           "div",
           { style: { display: "flex", flexDirection: "column" } },
           telemetryItems.map((item) =>
             createElement(TelemetryRow, {
-              key: item.key,
+              key: item.label,
               item,
             })
           )
@@ -345,7 +353,7 @@ export function ArwesAuthorityComposition({
               textTransform: "uppercase",
             },
           },
-          "SYSTEM ATTENTION & LOGS"
+          "SYSTEM ATTENTION"
         ),
         createElement(
           "div",
@@ -371,7 +379,7 @@ export function ArwesAuthorityComposition({
                 marginBottom: "0.25rem",
               },
             },
-            attention.hasActiveAlerts ? "⚠️ ATTENTION REQUIRED" : "✓ SYSTEM NOMINAL"
+            attention.hasActiveAlerts ? "⚠️ ATTENTION REQUIRED" : "✓ NOMINAL"
           ),
           attention.latestNotificationTitle
             ? createElement(
@@ -389,7 +397,7 @@ export function ArwesAuthorityComposition({
             : createElement(
                 "div",
                 { style: { fontSize: "0.75rem", color: "#64748b" } },
-                "No active alerts in current temporal sequence."
+                "No active notifications in current sequence."
               )
         )
       )

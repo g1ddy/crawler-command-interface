@@ -4,6 +4,7 @@ import type {
   ProjectedObservationsState,
   ProjectedObservationValue,
 } from "../../../app/domain/types.ts";
+import type { PresentationSemantics } from "../../presentation/semantic/public.ts";
 
 export interface HudSystemIdentity {
   crawlerName: string;
@@ -29,6 +30,14 @@ export interface HudAttentionSummary {
   hasActiveAlerts: boolean;
   latestNotificationTitle?: string;
   latestNotificationMessage?: string;
+}
+
+export interface HudTelemetryPresentation {
+  label: string;
+  valueDisplay: string;
+  badgeLabel: string;
+  semantics: PresentationSemantics;
+  onInspect?: () => void;
 }
 
 export interface HudVitalsSummary {

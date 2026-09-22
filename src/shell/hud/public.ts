@@ -7,5 +7,6 @@ export {
   type HudAttentionSummary,
   type HudVitalsSummary,
   type HudBroadcastSummary,
+  type HudTelemetryPresentation,
   type DeriveHudCompositionInput,
 } from "./hud-composition.ts";

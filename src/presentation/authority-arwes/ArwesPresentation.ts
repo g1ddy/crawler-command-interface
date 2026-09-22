@@ -1,14 +1,14 @@
 "use client";
 import { createElement } from "react";
-import {
-  ArwesAuthorityComposition,
-  type ArwesTelemetryRowData,
-} from "./ArwesAuthorityComposition.ts";
-import type { HudCompositionModel } from "../../shell/hud/public.ts";
+import { ArwesAuthorityComposition } from "./ArwesAuthorityComposition.ts";
+import type {
+  HudCompositionModel,
+  HudTelemetryPresentation,
+} from "../../shell/hud/public.ts";
 
 export interface ArwesPresentationProps {
   model: HudCompositionModel;
-  telemetryItems: ArwesTelemetryRowData[];
+  telemetryItems?: HudTelemetryPresentation[];
 }
 
 export function ArwesPresentation({

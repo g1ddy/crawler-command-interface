@@ -4,11 +4,10 @@ import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
 import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
-import { deriveHudComposition } from "../hud/public.ts";
+import { deriveHudComposition, type HudTelemetryPresentation } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import { deriveEvidencePresentation, mapEvidenceToSemantics } from "../../features/timeline/public.ts";
-import type { ArwesTelemetryRowData } from "../../presentation/authority-arwes/ArwesAuthorityComposition.ts";
 import {
   availableRootViews,
   deriveNavigationContract,
@@ -186,23 +185,25 @@ export function CrawlerWorkspace({
     ],
   );
 
-  const arwesTelemetryItems = useMemo(() => {
+  const telemetryItems = useMemo((): HudTelemetryPresentation[] => {
     const rawItems = [
-      { key: "health" as const, label: "HEALTH", obs: composition.vitals.health },
-      { key: "mana" as const, label: "MANA", obs: composition.vitals.mana },
-      { key: "level" as const, label: "LEVEL", obs: composition.vitals.level },
-      { key: "viewers" as const, label: "AUDIENCE VIEWERS", obs: composition.broadcast.viewers },
+      { label: "HEALTH", obs: composition.vitals.health },
+      { label: "MANA", obs: composition.vitals.mana },
+      { label: "LEVEL", obs: composition.vitals.level },
+      { label: "AUDIENCE VIEWERS", obs: composition.broadcast.viewers },
     ];
 
-    return rawItems.map(({ key, label, obs }): ArwesTelemetryRowData => {
+    return rawItems.map(({ label, obs }) => {
       const evidence = deriveEvidencePresentation(obs, currentSeq);
       const semantics = mapEvidenceToSemantics(evidence);
       const valueDisplay =
         obs?.value !== undefined && obs?.value !== null ? `${obs.value}` : "— ABSENT";
-      const isInspectable = semantics.affordance === "inspect" && Boolean(obs);
+      const isInspectable =
+        semantics.affordance === "inspect" &&
+        Boolean(obs) &&
+        Boolean(setInspectObservation);
 
       return {
-        key,
         label,
         valueDisplay,
         badgeLabel: evidence.badgeLabel,
@@ -210,7 +211,7 @@ export function CrawlerWorkspace({
         onInspect: isInspectable && obs ? () => setInspectObservation(obs) : undefined,
       };
     });
-  }, [composition.vitals, composition.broadcast, currentSeq]);
+  }, [composition.vitals, composition.broadcast, currentSeq, setInspectObservation]);
 
   const navigationContract = useMemo(
     () =>
@@ -272,7 +273,7 @@ export function CrawlerWorkspace({
         presentationChoice === "authority-arwes" ? (
           <ArwesPresentation
             model={composition}
-            telemetryItems={arwesTelemetryItems}
+            telemetryItems={telemetryItems}
           />
         ) : usesConceptHud ? (
           <ConceptHud
