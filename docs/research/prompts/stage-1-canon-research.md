@@ -4,7 +4,9 @@
 
 Use this prompt to produce the evidence-rich human-readable research report that feeds Stage 2 of the CCI research-ingestion workflow.
 
-This prompt is intentionally independent of CCI implementation details. The researcher should maximize evidence quality, provenance, chronology, uncertainty, and traceability.
+This stage is **evidence research and synthesis**, not CCI modeling. The researcher should maximize evidence quality, provenance, chronology, uncertainty, traceability, and useful follow-up verification.
+
+The researcher may not have direct access to the published books. When primary text is unavailable, use the best accessible secondary evidence and make that limitation explicit rather than presenting secondary reporting as direct canon verification.
 
 ## Prompt
 
@@ -18,13 +20,17 @@ This prompt is intentionally independent of CCI implementation details. The rese
 >
 > You are a researcher, not an application designer.
 >
+> The CCI context defines the research subject and evidence needs. **Do not interpret canon evidence according to what CCI may eventually need to model.**
+>
 > Do NOT invent application fields, runtime state, event names, JSON structures, or implementation details.
 >
 > The downstream system will separately decide how supported evidence should be modeled.
 >
 > ## Research scope
 >
-> Focus on **Book 2 / Floor 3**, while using earlier material only when necessary to establish continuity.
+> Focus on **Book 2 / Floor 3**, while using earlier or later material when it is relevant to continuity, terminology, chronology, or clarification.
+>
+> **Research scope is not search scope.** A Floor 3 research report may use accessible evidence from other books or later material when that evidence helps establish or qualify a Floor 3 fact. Clearly identify the chronology of that evidence rather than presenting later evidence as if it occurred on Floor 3.
 >
 > The primary subject is Mongo and his relationship with Donut.
 >
@@ -65,7 +71,7 @@ This prompt is intentionally independent of CCI implementation details. The rese
 >    - Any magical, environmental, or system effect that changes Mongo's behavior
 >    - Distinguish explicit effects from interpretation
 >
-> 6. **Pet examples used to establish the broader system**
+> 6. **Pet examples used to investigate the broader system**
 >    - Miriam's pet/goat
 >    - Lucia Mar's dog
 >    - Other relevant pet examples
@@ -77,12 +83,16 @@ This prompt is intentionally independent of CCI implementation details. The rese
 >
 > ## Evidence requirements
 >
-> Prefer sources in this order:
+> Use the most authoritative **accessible** evidence available.
+>
+> Prefer, when accessible:
 >
 > 1. The published text of *Dungeon Crawler Carl*
 > 2. Official author material
 > 3. High-quality secondary sources that directly quote or accurately reference the text
 > 4. Other secondary summaries only when necessary
+>
+> **Do not claim to have inspected the books directly if you cannot access them.** If primary text is unavailable, explicitly identify the evidence as secondary and create a targeted primary-verification item for important claims.
 >
 > For every substantive claim, provide:
 >
@@ -90,35 +100,85 @@ This prompt is intentionally independent of CCI implementation details. The rese
 > - Chapter or other precise locator when available
 > - A short quotation or close textual reference where copyright limits permit
 > - The specific source used
-> - Whether the evidence directly states the claim or merely supports an interpretation
+> - Whether the evidence directly states the claim or supports an interpretation
+> - The evidence/source quality and whether the underlying primary text was directly accessible
 >
-> **Source identifiability matters.** A source must represent an actual identifiable source, not merely a generic canon corpus or category. For books, identify the specific book and preserve available bibliographic information. For web sources, identify the specific page and preserve its URL. For interviews, articles, wikis, or other secondary material, identify the specific work/page/interview rather than citing only a broad site or canon category. Preserve chapter, page, section, timestamp, or other locators whenever available.
+> ### Source identity and reproducibility
 >
-> If the research material does not identify the source precisely, say that provenance is incomplete. Do not invent a source name, URL, bibliographic detail, or locator merely to make the evidence look complete.
+> Every web source must be independently identifiable. For each web source, record:
+>
+> - a stable source ID;
+> - the **page/work title**;
+> - the **website or publication name**;
+> - the **canonical URL**, when available;
+> - the relevant page, section, chapter, timestamp, or other locator when available;
+> - the source type (for example wiki, chapter summary, interview, article, discussion);
+> - any useful indication of source authority or trust.
+>
+> For books and other non-web sources, provide the most specific bibliographic identity and locator available.
+>
+> Do not cite only a domain, website, or generic category such as "the DCC Wiki" when a specific page can be identified.
+>
+> Do not invent a URL, page title, bibliographic detail, locator, or other provenance merely to make the report look complete. If provenance is incomplete, say so.
+>
+> The source list should contain enough information for a human or downstream tool to locate the exact web page or work that was used.
+>
+> ### Independent corroboration
+>
+> Do not treat multiple secondary sources as independent corroboration merely because they are different web pages.
+>
+> When possible, determine whether sources appear to provide genuinely independent evidence. If several sources repeat the same underlying summary or wording, report them as related/derivative rather than counting them as independent confirmation.
+>
+> Prefer a smaller set of identifiable, relevant, independently useful sources over a larger number of redundant sources.
 >
 > Do not treat a secondary summary as equivalent to primary text.
 >
-> ## Critical distinction: fact vs inference
+> ## Evidence strength and accessibility
 >
 > Explicitly distinguish:
 >
-> **DIRECT** — the text directly establishes the fact.
+> **DIRECT** — the accessible source directly states the proposition. If the source is secondary, "DIRECT" means direct statement by that secondary source, not direct inspection of the novel.
 >
-> **CORROBORATED** — the fact is supported by multiple sources, but the primary text may not be directly available.
+> **CORROBORATED** — the proposition is supported by multiple genuinely useful sources, with their independence and source quality described.
 >
-> **INFERRED** — the fact is a reasonable interpretation but is not directly stated.
+> **INFERRED** — the proposition is a reasonable interpretation but is not directly stated by the accessible evidence.
 >
 > **UNKNOWN** — the research does not establish the requested detail.
 >
+> Also identify when an important claim is **SECONDARY-ONLY / PRIMARY-VERIFICATION-REQUIRED**.
+>
 > Never convert an inference into a fact.
 >
-> If the text establishes that Mongo grows but gives no exact size, report the growth and mark exact size as unknown. If an event clearly occurred but no exact timestamp is given, do not invent one.
+> If the evidence establishes that Mongo grows but gives no exact size, report the growth and mark exact size as unknown. If an event clearly occurred but no exact timestamp is given, do not invent one.
+>
+> Confidence must reflect the evidence actually available, not the apparent certainty of a repeated wiki statement.
+>
+> ## Claim vs source wording
+>
+> For important claims, distinguish:
+>
+> 1. **What the source says** — the narrow proposition actually reported by the accessible source.
+> 2. **What the research concludes** — any interpretation or synthesis derived from that evidence.
+>
+> Do not silently broaden the source's wording.
+>
+> For example, if a chapter summary says Mongo is level 13 in Chapter 21, report that evidence as supporting Mongo being level 13 **by that point**. Do not infer the exact leveling event, date, mechanism, or causal explanation unless the evidence establishes it.
+>
+> ## System-wide rules vs observed behavior
+>
+> When identifying possible system-wide mechanics, distinguish explicitly stated rules from behavior observed in a particular example.
+>
+> **Do not generalize one character's experience into a system rule unless the evidence explicitly establishes that broader rule.**
+>
+> Organizing evidence under a system concept does not itself establish that the concept is a universal rule.
+>
+> For example, evidence that Mongo uses a magical carrier establishes Mongo's use of a carrier. It does not by itself establish that all pets require carriers, that all pets have a carrier state, or that the System has a universal pet-storage mechanic.
 >
 > ## Important negative rule
 >
 > Absence of evidence is NOT evidence of absence.
 >
-> Do not claim that Mongo did not have something unless the text explicitly establishes its absence. Instead state that no evidence was found establishing it.
+> Do not claim that Mongo did not have something unless the accessible evidence explicitly establishes its absence. Instead state that no evidence was found establishing it.
 >
 > ## Chronology
 >
@@ -135,6 +195,31 @@ This prompt is intentionally independent of CCI implementation details. The rese
 > - unresolved details.
 >
 > Do not invent timestamps.
+>
+> When later or earlier material is used to clarify a Floor 3 event, preserve the actual chronology of both the event and the supporting source.
+>
+> ## Evidence gaps and verification
+>
+> Do not hide limitations caused by inaccessible sources.
+>
+> Distinguish useful evidence gaps such as:
+>
+> - **Not found** — the research searched for the information but did not locate supporting evidence.
+> - **Unavailable** — a relevant source appears to exist but was not accessible.
+> - **Insufficient precision** — the evidence supports the concept but not the requested detail.
+> - **Conflicting secondary evidence** — accessible sources disagree.
+> - **Primary verification required** — secondary evidence exists, but the claim should be checked against the published text before being treated as canon-confirmed.
+>
+> For important unresolved or secondary-only claims, create a **Primary Verification Queue** containing:
+>
+> - claim/question to verify;
+> - why verification matters;
+> - best book/chapter/page/section locator available;
+> - accessible secondary evidence supporting it;
+> - conflicting or qualifying evidence, if any;
+> - what remains unknown.
+>
+> The verification queue should prioritize claims that could materially affect later modeling, especially progression, condition, equipment behavior, deployment restrictions, control/relationship mechanics, and apparent system-wide rules.
 >
 > ## Known areas to verify
 >
@@ -161,11 +246,18 @@ This prompt is intentionally independent of CCI implementation details. The rese
 >
 > - Mongo-specific fact;
 > - Donut/Mongo relationship;
-> - general pet-system rule;
+> - explicitly established general pet-system rule;
 > - example involving another pet;
-> - interpretation.
+> - interpretation;
+> - unresolved question.
 >
-> If Mongo uses a carrier, do not conclude that all pets require carriers unless the text establishes that broader rule.
+> When a possible general rule is supported by only one character or one example, keep it at the narrowest supported level.
+>
+> ## Counter-evidence
+>
+> For important claims, actively look for evidence that qualifies, limits, or contradicts the claim rather than only collecting supporting evidence.
+>
+> A contradiction requires genuinely incompatible propositions. Different perspectives, terminology, behaviors, or System layers are not automatically contradictions.
 >
 > ## Output structure
 >
@@ -173,7 +265,7 @@ This prompt is intentionally independent of CCI implementation details. The rese
 >
 > 1. Executive Summary
 > 2. Sources
-> 3. Pet System Evidence
+> 3. Observed Pet-System Evidence
 > 4. Mongo Chronology
 > 5. Progression
 > 6. Condition / Injury / Recovery
@@ -185,12 +277,13 @@ This prompt is intentionally independent of CCI implementation details. The rese
 > 12. Explicitly Supported Facts
 > 13. Corroborated but Secondary Facts
 > 14. Inferences
-> 15. Unknowns / Unresolved Questions
+> 15. Evidence Gaps / Unknowns
 > 16. Potential Contradictions
-> 17. Recommended Follow-up Research
+> 17. Primary Verification Queue
+> 18. Recommended Follow-up Research
 >
 > The report will be consumed by a separate LLM that converts evidence into a strict machine-readable research claim format.
 >
 > **Do not produce YAML or JSON.**
 >
-> The purpose of this stage is to maximize evidence quality, provenance, uncertainty, and traceability.
+> The purpose of this stage is to maximize evidence quality, provenance, uncertainty, and traceability while making the limits of accessible evidence explicit.
