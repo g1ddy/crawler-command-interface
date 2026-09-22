@@ -39,7 +39,19 @@ Coverage Statement: Curated critical Floor 3 chronology and state needed to supp
 
 ## Pet / Mongo Research (Pilot Domain #181)
 
-Note: Disposition `promote` authorizes inclusion in the disposable candidate scaffold for domain review. Authoritative raw authoring into `data/raw/floors/floor-3/` remains a separate subsequent step once domain representations are established (e.g., `evt-f3-magical-pet-carrier-acquired` for P3-PET-008).
+Note: Disposition `promote` authorizes inclusion in the disposable candidate scaffold for domain review. Authoritative raw authoring into `data/raw/floors/floor-3/` remains a separate subsequent step once domain representations are established.
+
+### Candidate-to-Authoritative Ingestion Pipeline Example (P3-PET-008)
+
+1. **Research Claim**: `P3-PET-008` ("The party acquires a Magical Pet Carrier on Floor 3.") extracted from primary text (Book 2 Ch. 14).
+2. **Modeling Decision**: `disposition: promote`, `target: { domain: "inventory", concept: "ItemAcquired" }`.
+3. **Disposable Candidate Scaffold**: `candidate-P3-PET-008` proposal generated in `.tmp/research-scaffold/floor-3/candidates.json`.
+4. **Domain Review**: Verified against existing CCI `ItemAcquired` schema (`item-magical-pet-carrier`).
+5. **Authoritative Raw Authoring**: `evt-f3-magical-pet-carrier-acquired` authored into `data/raw/floors/floor-3/events.json` at Book 2 Ch. 14 position.
+
+### Composite Claim Rationale (P3-PET-010)
+
+`P3-PET-010` describes Magical Pet Carrier activation, button teleportation, containment, and rest state transitions. These are documented as an integrated item behavior in Book 2 Ch. 14. The modeling decision preserves `P3-PET-010` as a composite research observation (`candidate-P3-PET-010`) targeting `PetDeploymentChanged` for domain review without inventing separate sub-mechanics or speculative payload fields.
 
 | Claim ID | Claim Summary | Locator | Domain | Disposition | Promotion Status |
 | --- | --- | --- | --- | --- | --- |

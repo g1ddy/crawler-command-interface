@@ -47,7 +47,10 @@ decisions:
     target:
       domain: pet
       concept: PetDeploymentChanged
-    rationale: Pet deployment/containment state transitions (active <-> contained/stored) enabled by the carrier item.
+    rationale: >-
+      Magical Pet Carrier activation, button teleportation, containment, and rest state
+      are documented as an integrated item capability in Book 2 Ch. 14; candidate proposal
+      preserves composite research observation without inventing separate sub-mechanics.
   - claimId: P3-PET-011
     disposition: ledger_only
     rationale: Observable behavior; psychological distress is not promoted as an established fact.

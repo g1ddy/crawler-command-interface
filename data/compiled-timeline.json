@@ -11,8 +11,8 @@
         "floor": 3
       }
     },
-    "createdAt": "2026-09-22T06:35:17.467Z",
-    "updatedAt": "2026-09-22T06:35:17.467Z"
+    "createdAt": "2026-09-22T14:29:44.084Z",
+    "updatedAt": "2026-09-22T14:29:44.085Z"
   },
   "floors": [
     {
@@ -3852,41 +3852,8 @@
       "kind": "floor-entered"
     },
     {
-      "id": "evt-f3-magical-pet-carrier-acquired",
-      "sequence": 125,
-      "type": "ItemAcquired",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 14
-      },
-      "summary": "The party acquires a Magical Pet Carrier on Floor 3.",
-      "evidence": [
-        {
-          "sourceId": "src-book-2",
-          "locator": {
-            "chapter": 14
-          },
-          "confidence": "confirmed"
-        }
-      ],
-      "item": {
-        "instanceId": "inst-f3-magical-pet-carrier",
-        "itemId": "item-magical-pet-carrier",
-        "name": "Magical Pet Carrier",
-        "category": "tool",
-        "rarity": "unknown",
-        "description": "A magical carrier capable of teleporting pets into containment and rest states.",
-        "quantity": {
-          "known": true,
-          "value": 1
-        },
-        "sourceDescription": "Third Floor"
-      }
-    },
-    {
       "id": "evt-f3-race-class-selected",
-      "sequence": 126,
+      "sequence": 125,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -3907,7 +3874,7 @@
     },
     {
       "id": "evt-f3-over-city-entered",
-      "sequence": 127,
+      "sequence": 126,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -3928,7 +3895,7 @@
     },
     {
       "id": "evt-f3-starter-village-departed",
-      "sequence": 128,
+      "sequence": 127,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -3949,7 +3916,7 @@
     },
     {
       "id": "evt-f3-show-must-go-on-triggered",
-      "sequence": 129,
+      "sequence": 128,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -3973,7 +3940,7 @@
     },
     {
       "id": "evt-f3-big-top-ticket-acquired",
-      "sequence": 130,
+      "sequence": 129,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4006,7 +3973,7 @@
     },
     {
       "id": "evt-f3-belly-rubbed-pug-reached",
-      "sequence": 131,
+      "sequence": 130,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4027,7 +3994,7 @@
     },
     {
       "id": "evt-f3-show-must-go-on-completed",
-      "sequence": 132,
+      "sequence": 131,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4051,7 +4018,7 @@
     },
     {
       "id": "evt-f3-medium-skyfowl-settlement-reached",
-      "sequence": 133,
+      "sequence": 132,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4069,6 +4036,39 @@
         }
       ],
       "kind": "location-discovered"
+    },
+    {
+      "id": "evt-f3-magical-pet-carrier-acquired",
+      "sequence": 133,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 14
+      },
+      "summary": "The party acquires a Magical Pet Carrier on Floor 3.",
+      "evidence": [
+        {
+          "sourceId": "src-book-2",
+          "locator": {
+            "chapter": 14
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f3-magical-pet-carrier",
+        "itemId": "item-magical-pet-carrier",
+        "name": "Magical Pet Carrier",
+        "category": "tool",
+        "rarity": "unknown",
+        "description": "A magical carrier capable of teleporting pets into containment and rest states.",
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "Third Floor"
+      }
     },
     {
       "id": "evt-f3-desperado-club-reached",

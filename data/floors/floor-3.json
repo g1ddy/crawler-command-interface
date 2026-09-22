@@ -146,34 +146,6 @@
       "order": 1
     },
     {
-      "id": "evt-f3-magical-pet-carrier-acquired",
-      "type": "ItemAcquired",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 14
-      },
-      "item": {
-        "instanceId": "inst-f3-magical-pet-carrier",
-        "itemId": "item-magical-pet-carrier",
-        "quantity": {
-          "known": true,
-          "value": 1
-        }
-      },
-      "summary": "The party acquires a Magical Pet Carrier on Floor 3.",
-      "evidence": [
-        {
-          "sourceId": "src-book-2",
-          "locator": {
-            "chapter": 14
-          },
-          "confidence": "confirmed"
-        }
-      ],
-      "order": 2
-    },
-    {
       "id": "evt-f3-race-class-selected",
       "type": "NarrativeEvent",
       "kind": "choice-made",
@@ -192,7 +164,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 3
+      "order": 2
     },
     {
       "id": "evt-f3-over-city-entered",
@@ -213,7 +185,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 4
+      "order": 3
     },
     {
       "id": "evt-f3-starter-village-departed",
@@ -234,7 +206,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 5
+      "order": 4
     },
     {
       "id": "evt-f3-show-must-go-on-triggered",
@@ -258,7 +230,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 6
+      "order": 5
     },
     {
       "id": "evt-f3-big-top-ticket-acquired",
@@ -286,7 +258,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 7
+      "order": 6
     },
     {
       "id": "evt-f3-belly-rubbed-pug-reached",
@@ -307,7 +279,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 8
+      "order": 7
     },
     {
       "id": "evt-f3-show-must-go-on-completed",
@@ -331,7 +303,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 9
+      "order": 8
     },
     {
       "id": "evt-f3-medium-skyfowl-settlement-reached",
@@ -350,6 +322,34 @@
             "chapter": 14
           },
           "confidence": "corroborated"
+        }
+      ],
+      "order": 9
+    },
+    {
+      "id": "evt-f3-magical-pet-carrier-acquired",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 14
+      },
+      "item": {
+        "instanceId": "inst-f3-magical-pet-carrier",
+        "itemId": "item-magical-pet-carrier",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "The party acquires a Magical Pet Carrier on Floor 3.",
+      "evidence": [
+        {
+          "sourceId": "src-book-2",
+          "locator": {
+            "chapter": 14
+          },
+          "confidence": "confirmed"
         }
       ],
       "order": 10
