@@ -473,7 +473,7 @@
   },
   "src/features/timeline/public.ts": {
     "complexity": 1,
-    "loc": 36,
+    "loc": 37,
     "instability": 0.41,
     "fanIn": 10,
     "fanOut": 7,
@@ -481,10 +481,34 @@
   },
   "src/features/timeline/evidence/evidencePresentation.ts": {
     "complexity": 15,
-    "loc": 153,
-    "instability": 0.13,
+    "loc": 209,
+    "instability": 0.22,
     "fanIn": 7,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/presentation/semantic/public.ts": {
+    "complexity": 1,
+    "loc": 3,
+    "instability": 0.4,
+    "fanIn": 3,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/presentation/semantic/capability.ts": {
+    "complexity": 2,
+    "loc": 15,
+    "instability": 0.5,
+    "fanIn": 1,
     "fanOut": 1,
+    "scanned": true
+  },
+  "src/presentation/semantic/types.ts": {
+    "complexity": 1,
+    "loc": 44,
+    "instability": 0,
+    "fanIn": 2,
+    "fanOut": 0,
     "scanned": true
   },
   "src/features/timeline/evidence/TelemetryBadge.tsx": {
@@ -673,10 +697,10 @@
   },
   "src/features/party/party-presentation.ts": {
     "complexity": 7,
-    "loc": 62,
-    "instability": 0.5,
+    "loc": 92,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/features/pet/PetView.tsx": {
@@ -697,10 +721,10 @@
   },
   "src/features/pet/pet-presentation.ts": {
     "complexity": 28,
-    "loc": 114,
-    "instability": 0.5,
+    "loc": 144,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {

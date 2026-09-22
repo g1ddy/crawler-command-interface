@@ -4565,6 +4565,24 @@
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../presentation/semantic/public.ts",
+          "resolved": "src/presentation/semantic/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -4575,6 +4593,90 @@
         "src/shell/hud/PersistentHud.tsx",
         "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
         "src/shell/replay/ReplayControls.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/presentation/semantic/public.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./capability.ts",
+          "resolved": "src/presentation/semantic/capability.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types.ts",
+          "resolved": "src/presentation/semantic/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/timeline/evidence/evidencePresentation.ts",
+        "src/features/party/party-presentation.ts",
+        "src/features/pet/pet-presentation.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/presentation/semantic/capability.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types.ts",
+          "resolved": "src/presentation/semantic/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/presentation/semantic/public.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/presentation/semantic/types.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/presentation/semantic/public.ts",
+        "src/presentation/semantic/capability.ts"
       ],
       "orphan": false
     },
@@ -6522,6 +6624,24 @@
           "resolved": "app/domain/types.ts",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../presentation/semantic/public.ts",
+          "resolved": "src/presentation/semantic/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -6690,6 +6810,24 @@
           "moduleSystem": "es6",
           "module": "../../../app/domain/types.ts",
           "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../presentation/semantic/public.ts",
+          "resolved": "src/presentation/semantic/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         }
@@ -9700,8 +9838,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 167,
-    "totalDependenciesCruised": 432,
+    "totalCruised": 170,
+    "totalDependenciesCruised": 438,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
