@@ -397,7 +397,7 @@ Jules should use this document, #221, and the repository to produce:
 
 PR #223 is now an obsolete historical experiment superseded by merged PR #225 and the follow-up candidate pipeline implementation in issue #222.
 - **Retained**: Immutable claim IDs, source registry, provenance references, explicit unknowns, explicit dependencies, structured schema validation (using JSON Schema), and semantic cross-record validation. Negative fixture requirements were kept.
-- **Modified**: YAML became the structured input format (`research.yaml` and `modeling-decisions.yaml`) instead of JSON, but JSON Schema validation via Ajv 2020-12 remains the structural gate. Trace mapping compilation combines both artifacts instead of extracting decisions embedded inside claims. Evidence items now carry explicit relationships (`supports`, `corroborates`, `contradicts`, `context`), and candidate projections are strictly separated into disposable candidate outputs with sidecar provenance tracing (`candidate/provenance.json`).
+- **Modified**: YAML became the structured input format (`research.yaml` and `modeling-decisions.yaml`) instead of JSON, but JSON Schema validation via Ajv 2020-12 remains the structural gate. Trace mapping compilation combines both artifacts instead of extracting decisions embedded inside claims. Evidence items now carry explicit relationships (`supports`, `corroborates`, `contradicts`, `context`), and research compilation produces disposable raw JSON drafts for domain curation.
 - **Obsolete/Discarded**: PR #223's API and file structure are fully obsolete and replaced by `crawler-research/v1` and `crawler-modeling/v1`. Runtime event payloads embedded inside research claims were abandoned in favor of separate architectural modeling decisions and conservative, disposable candidate projections.
 
 ### Phase 4 — #222
@@ -688,7 +688,7 @@ Recommended API boundary:
     validateResearchSemantics()
         -> SemanticValidationResult
 
-    compileCandidateProjection()
+    compileRawDraft()
         -> CandidateArtifacts
 
 This allows each stage to be tested independently.

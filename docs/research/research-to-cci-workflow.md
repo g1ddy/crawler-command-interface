@@ -47,7 +47,7 @@ The workflow is deliberately conservative:
                   | research compiler (compileRawDraft)
                   v
           deterministic raw JSON draft
-         (.tmp/research-scaffold/<floor>/)
+         (data/raw/floors/<floor>/ or draft dir)
                   |
                   | existing CCI raw JSON validation
                   v
@@ -665,24 +665,21 @@ It does **not** mean:
 
 ---
 
-# Stage 4 — Candidate Projection
+# Stage 4 — Raw Draft Compilation
 
-The candidate compiler is deterministic and disposable.
+The research draft compiler (`compileRawDraft`) is deterministic and outputs ordinary CCI raw floor JSON structures.
 
 ```
-validated research
-        +
-validated modeling decisions
+validated research (research.yaml)
         |
         v
-compileCandidateProjection()
+compileRawDraft()
         |
-        +--> candidate proposal
-        |
-        +--> provenance sidecar
+        v
+raw-shaped draft (target raw floor directory)
 ```
 
-The generic compiler must:
+The direct raw compiler must:
 
 - be deterministic;
 - have no network access;
@@ -691,9 +688,8 @@ The generic compiler must:
 - not mutate `data/raw/floors/**`;
 - preserve research claim IDs;
 - preserve explicit unknowns;
-- fail closed when required information is unavailable;
-- reject references to unknown claims;
-- reject unsupported target representations.
+- preserve evidence and locators;
+- leave unpopulated CCI fields unpopulated.
 
 It must not:
 
@@ -704,47 +700,20 @@ It must not:
 - silently choose an event type;
 - become a second CCI domain model.
 
-## Candidate identity
-
-Research and executable identities remain independent.
-
-Example:
-
-```
-P3-PET-001
-"The evidence establishes Mongo reaches Level 3."
-        |
-        v
-candidate-... / review proposal
-        |
-        v
-event-f3-mongo-level-3
-```
-
-The research claim ID is the stable evidence identity. Source IDs are stable foreign keys; prefer short mnemonic values such as `src-book-2` when the source identity is clear, while keeping locators and other provenance in structured fields.
-
-The eventual CCI event ID belongs to the executable representation.
-
 ---
 
-# Stage 5 — Human / Jules Review
+# Stage 5 — Human / Jules Curation & Raw Validation
 
-Candidate output is reviewed before authoritative authoring.
+The generated raw JSON draft is reviewed and curated in the working tree.
 
-Review should ask:
+Curation workflow:
 
-1. Does the evidence actually support the claim?
-2. Is the provenance adequate?
-3. Are unknowns preserved?
-4. Does the modeling decision match the evidence?
-5. Does the target map to an existing CCI domain concept?
-6. Is any precision being invented?
-7. Does the resulting representation fit existing Floor 1/2 conventions?
-8. Does the representation preserve replay semantics?
-9. Is a new domain contract genuinely necessary?
-10. Should the claim remain research-only?
+1. Run existing CCI raw floor validation (`validateRawCrawlerFloor`) against the draft.
+2. Unpopulated fields (e.g. missing required event `type`) produce actionable validation errors.
+3. Jules/human resolves validation errors by supplying the explicit CCI domain mappings.
+4. Once valid, the curated events are placed into `data/raw/floors/<floor>/events.json`.
 
-Claims that cannot safely map to the current CCI model should remain in the research ledger or become an explicit follow-up rather than forcing the runtime to accommodate them.
+Claims that cannot safely map to the current CCI model remain in `data/raw/research/floor-3/pet-research.yaml` as research context without forcing runtime extensions.
 
 ---
 
@@ -809,11 +778,10 @@ validateResearchSemantics(document, index)
 validateModelingDecisions(document, researchIndex)
   -> ModelingValidationResult
 
-compileCandidateProjection(
-  validatedResearch,
-  validatedModeling
+compileRawDraft(
+  validatedResearch
 )
-  -> CandidateProjection
+  -> RawCompilationResult
 ```
 
 The exact public API names remain subject to the repository implementation.

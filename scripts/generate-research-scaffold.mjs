@@ -3,12 +3,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadResearchClaimDocument } from '../app/domain/research-loader.ts';
-import { compileRawDraft } from '../app/domain/research-compiler.ts';
+import { compileRawFloor } from '../app/domain/research-compiler.ts';
 
 const args = process.argv.slice(2);
 
 let researchPath = 'data/raw/research/floor-3/pet-research.yaml';
-let outputDirArg = '.tmp/research-scaffold/floor-3';
+let outputDirArg = 'data/raw/floors/floor-3';
 
 // Parse optional CLI flags e.g. --research <path> --out <dir> or positional arguments
 for (let i = 0; i < args.length; i++) {
@@ -32,35 +32,47 @@ const resolvedOutputDir = path.isAbsolute(outputDirArg)
   ? outputDirArg
   : path.resolve(process.cwd(), outputDirArg);
 
-console.log(`[Research Draft Compiler] Reading research claims: ${resolvedResearchPath}`);
-console.log(`[Research Draft Compiler] Output directory: ${resolvedOutputDir}`);
+console.log(`[Research Raw Compiler] Reading research claims: ${resolvedResearchPath}`);
+console.log(`[Research Raw Compiler] Target raw directory: ${resolvedOutputDir}`);
 
 if (!fs.existsSync(resolvedResearchPath)) {
-  console.error(`[Research Draft Compiler Error] Research file not found: ${resolvedResearchPath}`);
+  console.error(`[Research Raw Compiler Error] Research file not found: ${resolvedResearchPath}`);
   process.exit(1);
 }
 
 try {
   const researchDoc = loadResearchClaimDocument(resolvedResearchPath);
-  const draft = compileRawDraft(researchDoc);
+  const rawFloor = compileRawFloor(researchDoc);
 
   fs.mkdirSync(resolvedOutputDir, { recursive: true });
 
   const eventsPath = path.join(resolvedOutputDir, 'events.json');
   const catalogPath = path.join(resolvedOutputDir, 'catalog.json');
-  const readmePath = path.join(resolvedOutputDir, 'README.md');
+  const sourcesPath = path.join(resolvedOutputDir, 'sources.json');
 
-  fs.writeFileSync(eventsPath, JSON.stringify(draft.events, null, 2), 'utf8');
-  fs.writeFileSync(catalogPath, JSON.stringify(draft.catalog, null, 2), 'utf8');
-  fs.writeFileSync(readmePath, draft.readme, 'utf8');
+  let catalogToWrite = rawFloor.catalog;
+  if (fs.existsSync(catalogPath)) {
+    try {
+      const existingCatalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+      const items = Array.from(new Set([...(existingCatalog.items || []), ...(rawFloor.catalog.items || [])]));
+      const achievements = Array.from(new Set([...(existingCatalog.achievements || []), ...(rawFloor.catalog.achievements || [])]));
+      catalogToWrite = { items, achievements };
+    } catch {
+      // If unparseable, fall back to compiled catalog
+    }
+  }
 
-  console.log(`\n[Research Draft Compiler Success] Generated disposable raw draft under ${resolvedOutputDir}`);
-  console.log(`  - events.json (${draft.events.length} draft events preserving YAML claim order)`);
-  console.log(`  - catalog.json (${draft.catalog.items.length} catalog items)`);
-  console.log(`  - README.md (non-authoritative draft status & curation instructions)\n`);
+  fs.writeFileSync(eventsPath, JSON.stringify(rawFloor.events, null, 2), 'utf8');
+  fs.writeFileSync(catalogPath, JSON.stringify(catalogToWrite, null, 2), 'utf8');
+  fs.writeFileSync(sourcesPath, JSON.stringify(rawFloor.sources, null, 2), 'utf8');
+
+  console.log(`\n[Research Raw Compiler Success] Updated raw floor JSON files under ${resolvedOutputDir}`);
+  console.log(`  - events.json (${rawFloor.events.length} raw floor events in YAML claim order)`);
+  console.log(`  - catalog.json (${catalogToWrite.items.length} catalog items)`);
+  console.log(`  - sources.json (${rawFloor.sources.length} sources)\n`);
 
 } catch (err) {
-  console.error(`\n[Research Draft Compiler Failed]`);
+  console.error(`\n[Research Raw Compiler Failed]`);
   console.error((err && err.message) || String(err));
   process.exit(1);
 }

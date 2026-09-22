@@ -6,23 +6,7 @@ import {
   validateTraceCompleteness,
 } from './research-validator.ts';
 
-export const RAW_DRAFT_STATUS_HEADER = '# DISPOSABLE RESEARCH DRAFT — NOT AUTHORITATIVE CCI DATA';
-
-export interface RawFloorDraftResult {
-  authoringVersion: 'crawler-floor-raw/v1';
-  storyId: string;
-  floor: {
-    id: string;
-    ordinal: number;
-    title: string;
-    book: number;
-    continuity: 'canonical' | 'adaptation' | 'alternate' | 'unknown';
-    coverage: {
-      kind: 'complete' | 'curated-critical' | 'curated' | 'partial';
-      statement: string;
-      completeness: 'complete' | 'partial' | 'seed';
-    };
-  };
+export interface RawFloorCompilation {
   sources: Array<{
     id: string;
     kind: string;
@@ -35,7 +19,6 @@ export interface RawFloorDraftResult {
     achievements: string[];
   };
   events: Array<Record<string, unknown>>;
-  readme: string;
 }
 
 export interface ResearchClaimTraceMapping {
@@ -71,11 +54,11 @@ export interface CompiledResearchOutput {
 }
 
 /**
- * Compiles a validated research claim document directly into the existing CCI raw JSON shape
- * (events, catalog, sources, and README.md) preserving claim YAML order, evidence, locators, and explicit unknowns,
- * without intermediate candidate models, concept-suffix heuristics, or invented CCI semantics.
+ * Compiles a validated research claim document directly into existing CCI raw JSON shapes
+ * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
+ * without intermediate candidate/scaffold models or manufactured floor metadata.
  */
-export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorDraftResult {
+export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorCompilation {
   const researchVal = validateResearchClaimDocument(researchDoc);
   if (!researchVal.valid) {
     throw new Error(
@@ -88,10 +71,10 @@ export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorDra
   // Preserve research YAML claim order strictly
   for (const claim of researchDoc.claims) {
     const encodedClaimId = encodeURIComponent(claim.id);
-    const draftId = `evt-draft-${encodedClaimId}`;
+    const eventId = `evt-draft-${encodedClaimId}`;
 
     // Resolve book and chapter locators conservatively across evidence items.
-    // If multiple evidence items specify differing book/chapter locators, leave the locator unpopulated rather than guessing.
+    // If multiple evidence items specify differing book/chapter locators, leave position locators unpopulated.
     const specifiedBooks = new Set<number>();
     const specifiedChapters = new Set<number>();
 
@@ -112,7 +95,7 @@ export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorDra
     };
 
     events.push({
-      id: draftId,
+      id: eventId,
       summary: claim.claim.summary,
       position,
       evidence: JSON.parse(JSON.stringify(claim.evidence)),
@@ -120,32 +103,7 @@ export function compileRawDraft(researchDoc: ResearchClaimDocument): RawFloorDra
     });
   }
 
-  const readme = `${RAW_DRAFT_STATUS_HEADER}
-
-This directory contains a mechanically compiled raw draft derived directly from story "${researchDoc.storyId}", floor ${researchDoc.floor} research claims.
-
-- \`events.json\`: ${events.length} draft events preserving YAML claim order, evidence, locators, and unknowns.
-- \`catalog.json\`: Floor-local catalog definitions.
-
-IMPORTANT: Unresolved CCI fields (such as event \`type\`, item \`category\`, or specific payload discriminators) are intentionally left unpopulated so existing CCI raw floor validation flags missing curation work.
-Do NOT treat this draft as authoritative runtime state.
-`;
-
   return {
-    authoringVersion: 'crawler-floor-raw/v1',
-    storyId: researchDoc.storyId,
-    floor: {
-      id: `floor-${researchDoc.floor}`,
-      ordinal: researchDoc.floor,
-      title: `Floor ${researchDoc.floor} Research Draft`,
-      book: 2,
-      continuity: 'canonical',
-      coverage: {
-        kind: 'partial',
-        statement: 'Mechanically compiled research draft requiring curation.',
-        completeness: 'seed',
-      },
-    },
     sources: researchDoc.sources.map((s) => ({
       id: s.id,
       kind: s.kind,
@@ -158,9 +116,10 @@ Do NOT treat this draft as authoritative runtime state.
       achievements: [],
     },
     events,
-    readme,
   };
 }
+
+export const compileRawFloor = compileRawDraft;
 
 export function compileResearchTrace(
   researchDoc: ResearchClaimDocument,

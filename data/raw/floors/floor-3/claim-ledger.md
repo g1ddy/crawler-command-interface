@@ -39,32 +39,32 @@ Coverage Statement: Curated critical Floor 3 chronology and state needed to supp
 
 ## Pet / Mongo Research (Pilot Domain #181)
 
-Note: Disposition `promote` authorizes inclusion in the disposable candidate scaffold for domain review. Authoritative raw authoring into `data/raw/floors/floor-3/` remains a separate subsequent step once domain representations are established.
+Note: Research YAML is an evidence-oriented authoring format. The research compiler compiles research claims into raw JSON draft files for domain curation. Authoritative raw authoring into `data/raw/floors/floor-3/` remains a separate, reviewed step once domain representations are established.
 
-### Candidate-to-Authoritative Ingestion Pipeline Example (P3-PET-008)
+### Direct Research-to-Authoritative Ingestion Pipeline Example (P3-PET-008)
 
 1. **Research Claim**: `P3-PET-008` ("The party acquires a Magical Pet Carrier on Floor 3.") extracted from primary text (Book 2 Ch. 14).
 2. **Modeling Decision**: `disposition: promote`, `target: { domain: "inventory", concept: "ItemAcquired" }`.
-3. **Disposable Candidate Scaffold**: `candidate-P3-PET-008` proposal generated in `.tmp/research-scaffold/floor-3/candidates.json`.
-4. **Domain Review**: Verified against existing CCI `ItemAcquired` schema (`item-magical-pet-carrier`).
+3. **Raw Compilation**: Mechanically compiled raw floor JSON draft generated directly into target raw directory (`events.json`).
+4. **Domain Review & Curation**: Verified against existing CCI `ItemAcquired` schema (`item-magical-pet-carrier`).
 5. **Authoritative Raw Authoring**: `evt-f3-magical-pet-carrier-acquired` authored into `data/raw/floors/floor-3/events.json` at Book 2 Ch. 14 position.
 
 ### Composite Claim Rationale (P3-PET-010)
 
-`P3-PET-010` describes Magical Pet Carrier activation, button teleportation, containment, and rest state transitions. These are documented as an integrated item behavior in Book 2 Ch. 14. The modeling decision preserves `P3-PET-010` as a composite research observation (`candidate-P3-PET-010`) targeting `PetDeploymentChanged` for domain review without inventing separate sub-mechanics or speculative payload fields.
+`P3-PET-010` describes Magical Pet Carrier activation, button teleportation, containment, and rest state transitions. These are documented as an integrated item behavior in Book 2 Ch. 14. The modeling decision preserves `P3-PET-010` as a composite research observation targeting `PetDeploymentChanged` for domain review without inventing separate sub-mechanics or speculative payload fields.
 
 | Claim ID | Claim Summary | Locator | Domain | Disposition | Promotion Status |
 | --- | --- | --- | --- | --- | --- |
 | P3-PET-001 | Mongo is a dungeon-generated pet-class Mongoliensis hatched on Floor 2 | Book 2, Ch. 1 / Floor 2 | Pet State | `ledger_only` | Identity (`pet-mongo`) and Donut bond persist from Floor 2; no re-acquisition on Floor 3 |
-| P3-PET-002 | Mongo reaches Levels 6 (Ch. 13), 10 (Ch. 20), and 13 (Ch. 26) on Floor 3 | Book 2, Ch. 13, 20, 26 | Pet Progression | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-002`) for domain review |
+| P3-PET-002 | Mongo reaches Levels 6 (Ch. 13), 10 (Ch. 20), and 13 (Ch. 26) on Floor 3 | Book 2, Ch. 13, 20, 26 | Pet Progression | `promote` | Promoted in modeling decisions for domain review |
 | P3-PET-003 | Mongo physical growth (7 inches to 13 feet) | Book 2, Ch. 5, 26 | Pet Observation | `ledger_only` | Observed physical progression; not generalized into a universal leveling formula |
-| P3-PET-004 | Mongo critically wounded by spikes defending Donut from Level-8 Street Urchins | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-004`) for domain review |
-| P3-PET-005 | Standard heal scroll fails; healing potion + cinnamon stick + thistle rot restores Mongo | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-005`) for domain review |
-| P3-PET-006 | Carl installs Enchanted Fang Caps of the Expectorating Tizheruk on Mongo | Book 2, Ch. 13 | Pet Equipment | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-006`) for domain review |
+| P3-PET-004 | Mongo critically wounded by spikes defending Donut from Level-8 Street Urchins | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted in modeling decisions for domain review |
+| P3-PET-005 | Standard heal scroll fails; healing potion + cinnamon stick + thistle rot restores Mongo | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted in modeling decisions for domain review |
+| P3-PET-006 | Carl installs Enchanted Fang Caps of the Expectorating Tizheruk on Mongo | Book 2, Ch. 13 | Pet Equipment | `promote` | Promoted in modeling decisions for domain review |
 | P3-PET-007 | Enchanted Fang Caps produce electrical spark effect on bite attacks | Book 2, Ch. 13–14 | Pet Observation | `ledger_only` | Descriptive effect observation associated with equipped fang caps |
-| P3-PET-008 | Party acquires Magical Pet Carrier on Floor 3 | Book 2, Ch. 14 | Inventory / Item | `promote` | Promoted to Candidate Scaffold and authored into raw inventory (`evt-f3-magical-pet-carrier-acquired`) |
+| P3-PET-008 | Party acquires Magical Pet Carrier on Floor 3 | Book 2, Ch. 14 | Inventory / Item | `promote` | Promoted in modeling decisions and authored into raw inventory (`evt-f3-magical-pet-carrier-acquired`) |
 | P3-PET-009 | Living biological entities contained in Magical Pet Carrier before storage/teleport | Book 2, Ch. 14 | Pet / Inventory | `ledger_only` | Scoped carrier containment observation; not promoted as universal rule |
-| P3-PET-010 | Magical Pet Carrier uses button-activated teleportation and rest state | Book 2, Ch. 14 | Pet Deployment | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-010`) for domain review |
+| P3-PET-010 | Magical Pet Carrier uses button-activated teleportation and rest state | Book 2, Ch. 14 | Pet Deployment | `promote` | Promoted in modeling decisions for domain review |
 | P3-PET-011 | Mongo squawks and whines while resisting forced carrier teleportation | Book 2, Ch. 14 | Pet Behavior | `ledger_only` | Observable behavior; psychological distress not promoted as fact |
 | P3-PET-012 | Scroll of Meat Hooks causes Mongo to abandon training and charge toward influence | Book 2, Ch. 14 | Pet Incident | `ledger_only` | Documented concrete incident; no universal aggro/saving throw/duration mechanics inferred |
 | P3-PET-013 | Intelligence threshold below 2 for pet status/inventory access | Secondary sources | Pet / System | `ledger_only` | Candidate-level evidence; unverified as universal System rule |

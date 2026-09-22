@@ -39,13 +39,10 @@ test('Research Ingestion: valid Floor 3 research claim fixture parses and valida
   assert.deepEqual(validation.errors, []);
 });
 
-test('Research Draft Compiler: produces direct CCI raw floor shape matching existing RawCrawlerFloorDocument structure', () => {
+test('Research Draft Compiler: produces direct CCI raw floor shapes matching existing raw floor files', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const draft = compileRawDraft(doc);
 
-  assert.equal(draft.authoringVersion, 'crawler-floor-raw/v1');
-  assert.equal(draft.storyId, 'dcc');
-  assert.equal(draft.floor.ordinal, 3);
   assert.ok(Array.isArray(draft.sources));
   assert.ok(Array.isArray(draft.catalog.items));
   assert.ok(Array.isArray(draft.events));
@@ -129,9 +126,28 @@ test('Research Draft Compiler: uncurated raw draft fails existing CCI raw floor 
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const draft = compileRawDraft(doc);
 
-  // Pass draft directly into existing CCI raw floor validator
-  const validation = validateRawCrawlerFloor(draft);
+  // Construct a mock raw floor document using uncurated draft events
+  const mockRawDoc = {
+    authoringVersion: 'crawler-floor-raw/v1',
+    storyId: doc.storyId,
+    floor: {
+      id: 'floor-3',
+      ordinal: 3,
+      title: 'The Over City',
+      book: 2,
+      continuity: 'canonical',
+      coverage: {
+        kind: 'curated-critical',
+        statement: 'Test draft',
+        completeness: 'partial',
+      },
+    },
+    sources: draft.sources,
+    catalog: draft.catalog,
+    events: draft.events,
+  };
 
+  const validation = validateRawCrawlerFloor(mockRawDoc);
   // Uncurated draft lacks required CCI properties (such as event 'type'), so existing raw validation fails as intended
   assert.equal(validation.valid, false);
   assert.ok(
@@ -157,6 +173,7 @@ test('Research Draft Compiler: research input and authoritative raw floor files 
 });
 
 test('Research Draft Compiler: CLI script generates raw draft artifacts in target directory', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const tmpDir = path.resolve(process.cwd(), '.tmp/test-research-scaffold');
   fs.rmSync(tmpDir, { recursive: true, force: true });
 
@@ -168,15 +185,15 @@ test('Research Draft Compiler: CLI script generates raw draft artifacts in targe
     tmpDir
   ], { encoding: 'utf8' });
 
-  assert.ok(output.includes('[Research Draft Compiler Success]'));
+  assert.ok(output.includes('[Research Raw Compiler Success]'));
 
   const eventsContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'events.json'), 'utf8'));
   const catalogContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'catalog.json'), 'utf8'));
-  const readmeContent = fs.readFileSync(path.join(tmpDir, 'README.md'), 'utf8');
+  const sourcesContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'sources.json'), 'utf8'));
 
   assert.equal(eventsContent.length, 15);
   assert.ok(Array.isArray(catalogContent.items));
-  assert.ok(readmeContent.includes('DISPOSABLE RESEARCH DRAFT — NOT AUTHORITATIVE CCI DATA'));
+  assert.equal(sourcesContent.length, doc.sources.length);
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
