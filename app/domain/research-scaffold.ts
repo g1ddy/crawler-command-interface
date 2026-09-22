@@ -41,18 +41,11 @@ export interface ScaffoldReviewArtifact {
   claims: ScaffoldReviewClaim[];
 }
 
-export interface ScaffoldCandidateEventsArtifact {
+export interface ScaffoldCandidatesArtifact {
   statusBanner: typeof SCAFFOLD_STATUS_BANNER;
   storyId: string;
   floor: number;
-  candidateEvents: CandidateProposal[];
-}
-
-export interface ScaffoldCandidateObservationsArtifact {
-  statusBanner: typeof SCAFFOLD_STATUS_BANNER;
-  storyId: string;
-  floor: number;
-  candidateObservations: CandidateProposal[];
+  candidates: CandidateProposal[];
 }
 
 export interface ScaffoldProvenanceArtifact {
@@ -66,15 +59,14 @@ export interface CompiledResearchScaffold {
   storyId: string;
   floor: number;
   review: ScaffoldReviewArtifact;
-  events: ScaffoldCandidateEventsArtifact;
-  observations: ScaffoldCandidateObservationsArtifact;
+  candidates: ScaffoldCandidatesArtifact;
   provenance: ScaffoldProvenanceArtifact;
 }
 
 /**
  * Transforms validated research claims and modeling decisions into a disposable,
- * reviewable raw-shaped research scaffold without inventing CCI semantics, collapsing
- * evidence confidence, or mutating inputs.
+ * reviewable research scaffold without inventing CCI semantics, collapsing
+ * evidence confidence, or reclassifying candidate claims based on concept-name heuristics.
  */
 export function compileResearchScaffold(
   researchDoc: ResearchClaimDocument,
@@ -112,19 +104,6 @@ export function compileResearchScaffold(
     });
   }
 
-  // Categorize candidate proposals strictly based on explicit claim kind ('event' vs 'observation'/'state')
-  const candidateEvents: CandidateProposal[] = [];
-  const candidateObservations: CandidateProposal[] = [];
-
-  for (const proposal of projection.candidateProposals) {
-    const origClaim = researchDoc.claims.find((c) => c.id === proposal.researchClaimId);
-    if (origClaim?.kind === 'event') {
-      candidateEvents.push(proposal);
-    } else {
-      candidateObservations.push(proposal);
-    }
-  }
-
   return {
     storyId: researchDoc.storyId,
     floor: researchDoc.floor,
@@ -140,17 +119,11 @@ export function compileResearchScaffold(
       },
       claims: reviewClaims,
     },
-    events: {
+    candidates: {
       statusBanner: SCAFFOLD_STATUS_BANNER,
       storyId: researchDoc.storyId,
       floor: researchDoc.floor,
-      candidateEvents,
-    },
-    observations: {
-      statusBanner: SCAFFOLD_STATUS_BANNER,
-      storyId: researchDoc.storyId,
-      floor: researchDoc.floor,
-      candidateObservations,
+      candidates: projection.candidateProposals,
     },
     provenance: {
       statusBanner: SCAFFOLD_STATUS_BANNER,

@@ -45,19 +45,16 @@ try {
   fs.mkdirSync(resolvedOutputDir, { recursive: true });
 
   const reviewPath = path.join(resolvedOutputDir, 'review.json');
-  const eventsPath = path.join(resolvedOutputDir, 'events.json');
-  const observationsPath = path.join(resolvedOutputDir, 'observations.json');
+  const candidatesPath = path.join(resolvedOutputDir, 'candidates.json');
   const provenancePath = path.join(resolvedOutputDir, 'provenance.json');
 
   fs.writeFileSync(reviewPath, JSON.stringify(scaffold.review, null, 2), 'utf8');
-  fs.writeFileSync(eventsPath, JSON.stringify(scaffold.events, null, 2), 'utf8');
-  fs.writeFileSync(observationsPath, JSON.stringify(scaffold.observations, null, 2), 'utf8');
+  fs.writeFileSync(candidatesPath, JSON.stringify(scaffold.candidates, null, 2), 'utf8');
   fs.writeFileSync(provenancePath, JSON.stringify(scaffold.provenance, null, 2), 'utf8');
 
   console.log(`\n[Research Scaffold Success] Generated disposable scaffold artifacts under ${resolvedOutputDir}`);
   console.log(`  - review.json (${scaffold.review.summary.totalClaims} total claims)`);
-  console.log(`  - events.json (${scaffold.events.candidateEvents.length} event candidates)`);
-  console.log(`  - observations.json (${scaffold.observations.candidateObservations.length} observation candidates)`);
+  console.log(`  - candidates.json (${scaffold.candidates.candidates.length} candidate proposals)`);
   console.log(`  - provenance.json (${scaffold.provenance.candidates.length} candidate provenance records)\n`);
 
 } catch (err) {

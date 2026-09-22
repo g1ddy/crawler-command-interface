@@ -39,18 +39,20 @@ Coverage Statement: Curated critical Floor 3 chronology and state needed to supp
 
 ## Pet / Mongo Research (Pilot Domain #181)
 
+Note: Disposition `promote` authorizes inclusion in the disposable candidate scaffold for domain review. Authoritative raw authoring into `data/raw/floors/floor-3/` remains a separate subsequent step once domain representations are established (e.g., `evt-f3-magical-pet-carrier-acquired` for P3-PET-008).
+
 | Claim ID | Claim Summary | Locator | Domain | Disposition | Promotion Status |
 | --- | --- | --- | --- | --- | --- |
 | P3-PET-001 | Mongo is a dungeon-generated pet-class Mongoliensis hatched on Floor 2 | Book 2, Ch. 1 / Floor 2 | Pet State | `ledger_only` | Identity (`pet-mongo`) and Donut bond persist from Floor 2; no re-acquisition on Floor 3 |
-| P3-PET-002 | Mongo reaches Levels 6 (Ch. 13), 10 (Ch. 20), and 13 (Ch. 26) on Floor 3 | Book 2, Ch. 13, 20, 26 | Pet Progression | `promote` | Promoted as primary-verified Pet level progression anchors |
+| P3-PET-002 | Mongo reaches Levels 6 (Ch. 13), 10 (Ch. 20), and 13 (Ch. 26) on Floor 3 | Book 2, Ch. 13, 20, 26 | Pet Progression | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-002`) for domain review |
 | P3-PET-003 | Mongo physical growth (7 inches to 13 feet) | Book 2, Ch. 5, 26 | Pet Observation | `ledger_only` | Observed physical progression; not generalized into a universal leveling formula |
-| P3-PET-004 | Mongo critically wounded by spikes defending Donut from Level-8 Street Urchins | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted as primary-verified Pet injury condition event |
-| P3-PET-005 | Standard heal scroll fails; healing potion + cinnamon stick + thistle rot restores Mongo | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted as primary-verified Pet recovery condition event |
-| P3-PET-006 | Carl installs Enchanted Fang Caps of the Expectorating Tizheruk on Mongo | Book 2, Ch. 13 | Pet Equipment | `promote` | Promoted as primary-verified Pet equipment installation |
+| P3-PET-004 | Mongo critically wounded by spikes defending Donut from Level-8 Street Urchins | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-004`) for domain review |
+| P3-PET-005 | Standard heal scroll fails; healing potion + cinnamon stick + thistle rot restores Mongo | Book 2, Ch. 12 | Pet Condition | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-005`) for domain review |
+| P3-PET-006 | Carl installs Enchanted Fang Caps of the Expectorating Tizheruk on Mongo | Book 2, Ch. 13 | Pet Equipment | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-006`) for domain review |
 | P3-PET-007 | Enchanted Fang Caps produce electrical spark effect on bite attacks | Book 2, Ch. 13–14 | Pet Observation | `ledger_only` | Descriptive effect observation associated with equipped fang caps |
-| P3-PET-008 | Party acquires Magical Pet Carrier on Floor 3 | Book 2, Ch. 14 | Inventory / Item | `promote` | Promoted (`evt-f3-magical-pet-carrier-acquired`) |
+| P3-PET-008 | Party acquires Magical Pet Carrier on Floor 3 | Book 2, Ch. 14 | Inventory / Item | `promote` | Promoted to Candidate Scaffold and authored into raw inventory (`evt-f3-magical-pet-carrier-acquired`) |
 | P3-PET-009 | Living biological entities contained in Magical Pet Carrier before storage/teleport | Book 2, Ch. 14 | Pet / Inventory | `ledger_only` | Scoped carrier containment observation; not promoted as universal rule |
-| P3-PET-010 | Magical Pet Carrier uses button-activated teleportation and rest state | Book 2, Ch. 14 | Pet Deployment | `promote` | Promoted as primary-verified Pet deployment state transitions |
+| P3-PET-010 | Magical Pet Carrier uses button-activated teleportation and rest state | Book 2, Ch. 14 | Pet Deployment | `promote` | Promoted to Candidate Scaffold (`candidate-P3-PET-010`) for domain review |
 | P3-PET-011 | Mongo squawks and whines while resisting forced carrier teleportation | Book 2, Ch. 14 | Pet Behavior | `ledger_only` | Observable behavior; psychological distress not promoted as fact |
 | P3-PET-012 | Scroll of Meat Hooks causes Mongo to abandon training and charge toward influence | Book 2, Ch. 14 | Pet Incident | `ledger_only` | Documented concrete incident; no universal aggro/saving throw/duration mechanics inferred |
 | P3-PET-013 | Intelligence threshold below 2 for pet status/inventory access | Secondary sources | Pet / System | `ledger_only` | Candidate-level evidence; unverified as universal System rule |

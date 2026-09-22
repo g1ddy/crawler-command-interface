@@ -38,8 +38,7 @@ test('Research Scaffold: all generated artifacts carry explicit non-authoritativ
   const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
 
   assert.equal(scaffold.review.statusBanner, SCAFFOLD_STATUS_BANNER);
-  assert.equal(scaffold.events.statusBanner, SCAFFOLD_STATUS_BANNER);
-  assert.equal(scaffold.observations.statusBanner, SCAFFOLD_STATUS_BANNER);
+  assert.equal(scaffold.candidates.statusBanner, SCAFFOLD_STATUS_BANNER);
   assert.equal(scaffold.provenance.statusBanner, SCAFFOLD_STATUS_BANNER);
 });
 
@@ -53,10 +52,7 @@ test('Research Scaffold: candidate projection contains exactly the claims eligib
     .filter((d) => d.disposition === 'promote')
     .map((d) => d.claimId);
 
-  const actualCandidateClaimIds = [
-    ...scaffold.events.candidateEvents.map((e) => e.researchClaimId),
-    ...scaffold.observations.candidateObservations.map((o) => o.researchClaimId),
-  ];
+  const actualCandidateClaimIds = scaffold.candidates.candidates.map((c) => c.researchClaimId);
 
   assert.deepEqual(actualCandidateClaimIds.sort(), expectedPromotedClaimIds.sort());
 
@@ -73,29 +69,27 @@ test('Research Scaffold: candidate projection contains exactly the claims eligib
   }
 });
 
-test('Research Scaffold: observation claims with Changed-suffixed target concepts remain observations', () => {
+test('Research Scaffold: promote signifies candidate eligibility without automatic runtime authoring or reclassification', () => {
   const researchDoc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(PET_MODELING_FIXTURE);
 
   const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
 
-  // P3-PET-010 is an observation claim (kind: observation) targeting PetDeploymentChanged
+  // Observation claim P3-PET-010 targets concept PetDeploymentChanged
   const p10Claim = researchDoc.claims.find((c) => c.id === 'P3-PET-010');
   assert.ok(p10Claim);
   assert.equal(p10Claim.kind, 'observation');
 
-  const p10Decision = modelingDoc.decisions.find((d) => d.claimId === 'P3-PET-010');
-  assert.ok(p10Decision);
-  assert.equal(p10Decision.disposition, 'promote');
-  assert.equal(p10Decision.target?.concept, 'PetDeploymentChanged');
+  const p10Candidate = scaffold.candidates.candidates.find((c) => c.researchClaimId === 'P3-PET-010');
+  assert.ok(p10Candidate);
+  assert.equal(p10Candidate.candidateId, 'candidate-P3-PET-010');
+  assert.equal(p10Candidate.target.concept, 'PetDeploymentChanged');
 
-  const eventCandidate = scaffold.events.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-010');
-  assert.equal(eventCandidate, undefined, 'Observation claim P3-PET-010 must NOT be categorized as a candidate event');
-
-  const obsCandidate = scaffold.observations.candidateObservations.find((o) => o.researchClaimId === 'P3-PET-010');
-  assert.ok(obsCandidate, 'Observation claim P3-PET-010 must be categorized under candidateObservations');
-  assert.equal(obsCandidate.candidateId, 'candidate-P3-PET-010');
-  assert.equal(obsCandidate.target.concept, 'PetDeploymentChanged');
+  // Candidate proposal remains a disposable review artifact, NOT an authoritative runtime event
+  assert.equal('event' in p10Candidate, false);
+  assert.equal('payload' in p10Candidate, false);
+  assert.equal('authoritative' in p10Candidate, false);
+  assert.equal('runtimeState' in p10Candidate, false);
 });
 
 test('Research Scaffold: review claim retains complete evidence array without single-scalar confidence collapse', () => {
@@ -108,7 +102,6 @@ test('Research Scaffold: review claim retains complete evidence array without si
     const origClaim = researchDoc.claims.find((c) => c.id === reviewClaim.claimId);
     assert.ok(origClaim);
     assert.deepEqual(reviewClaim.evidence, origClaim.evidence);
-    // Ensure no misleading scalar confidence field exists on reviewClaim
     assert.equal('confidence' in reviewClaim, false);
   }
 });
@@ -119,12 +112,7 @@ test('Research Scaffold: generates stable candidate IDs and traceable provenance
 
   const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
 
-  const allCandidates = [
-    ...scaffold.events.candidateEvents,
-    ...scaffold.observations.candidateObservations,
-  ];
-
-  for (const candidate of allCandidates) {
+  for (const candidate of scaffold.candidates.candidates) {
     assert.equal(candidate.candidateId, `candidate-${candidate.researchClaimId}`);
 
     const prov = scaffold.provenance.candidates.find((p) => p.candidateId === candidate.candidateId);
@@ -148,10 +136,10 @@ test('Research Scaffold: preserves explicit unknowns, sources, and evidence rela
   assert.ok(p2Review);
   assert.deepEqual(p2Review.unknowns, p2Claim.unknowns);
 
-  const p2Event = scaffold.events.candidateEvents.find((e) => e.researchClaimId === 'P3-PET-002');
-  assert.ok(p2Event);
-  assert.deepEqual(p2Event.unknowns, p2Claim.unknowns);
-  assert.deepEqual(p2Event.evidence, p2Claim.evidence);
+  const p2Candidate = scaffold.candidates.candidates.find((c) => c.researchClaimId === 'P3-PET-002');
+  assert.ok(p2Candidate);
+  assert.deepEqual(p2Candidate.unknowns, p2Claim.unknowns);
+  assert.deepEqual(p2Candidate.evidence, p2Claim.evidence);
 });
 
 test('Research Scaffold: unsupported or disputed claims cannot silently become candidates', () => {
@@ -168,17 +156,23 @@ test('Research Scaffold: unsupported or disputed claims cannot silently become c
   }, /cannot enter candidate projection with confidence "disputed"/);
 });
 
-test('Research Scaffold: research and modeling inputs are never mutated', () => {
+test('Research Scaffold: research inputs and raw floor files are never mutated', () => {
   const researchDoc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument(PET_MODELING_FIXTURE);
 
   const origResearchSnapshot = deepClone(researchDoc);
   const origModelingSnapshot = deepClone(modelingDoc);
 
+  const rawEventsPath = path.resolve(process.cwd(), 'data/raw/floors/floor-3/events.json');
+  const rawEventsBefore = fs.readFileSync(rawEventsPath, 'utf8');
+
   compileResearchScaffold(researchDoc, modelingDoc);
 
   assert.deepEqual(researchDoc, origResearchSnapshot);
   assert.deepEqual(modelingDoc, origModelingSnapshot);
+
+  const rawEventsAfter = fs.readFileSync(rawEventsPath, 'utf8');
+  assert.equal(rawEventsBefore, rawEventsAfter);
 });
 
 test('Research Scaffold: CLI script generates valid disposable artifacts in target directory', () => {
@@ -197,18 +191,15 @@ test('Research Scaffold: CLI script generates valid disposable artifacts in targ
   assert.ok(output.includes('[Research Scaffold Success]'));
 
   const reviewContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'review.json'), 'utf8'));
-  const eventsContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'events.json'), 'utf8'));
-  const obsContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'observations.json'), 'utf8'));
+  const candidatesContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'candidates.json'), 'utf8'));
   const provContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'provenance.json'), 'utf8'));
 
   assert.equal(reviewContent.statusBanner, SCAFFOLD_STATUS_BANNER);
-  assert.equal(eventsContent.statusBanner, SCAFFOLD_STATUS_BANNER);
-  assert.equal(obsContent.statusBanner, SCAFFOLD_STATUS_BANNER);
+  assert.equal(candidatesContent.statusBanner, SCAFFOLD_STATUS_BANNER);
   assert.equal(provContent.statusBanner, SCAFFOLD_STATUS_BANNER);
 
   assert.equal(reviewContent.claims.length, 15);
-  assert.equal(eventsContent.candidateEvents.length, 5);
-  assert.equal(obsContent.candidateObservations.length, 1);
+  assert.equal(candidatesContent.candidates.length, 6);
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
