@@ -6,6 +6,50 @@ import {
   validateTraceCompleteness,
 } from './research-validator.ts';
 
+export const RAW_DRAFT_STATUS_HEADER = '# DISPOSABLE RESEARCH DRAFT — NOT AUTHORITATIVE CCI DATA';
+
+export interface RawDraftEvent {
+  id: string;
+  researchClaimId: string;
+  summary: string;
+  position: {
+    floor: number;
+    book?: number;
+    chapter?: number;
+  };
+  evidence: Array<{
+    sourceId: string;
+    locator?: Record<string, unknown>;
+    confidence: string;
+    relationship?: string;
+  }>;
+  unknowns?: string[];
+  /** Unresolved CCI type; left unpopulated unless explicitly supplied in research/authoring. */
+  type?: string;
+}
+
+export interface RawDraftCatalogItem {
+  id: string;
+  researchClaimId: string;
+  summary: string;
+  evidence: Array<{
+    sourceId: string;
+    locator?: Record<string, unknown>;
+    confidence: string;
+    relationship?: string;
+  }>;
+}
+
+export interface RawDraftOutput {
+  storyId: string;
+  floor: number;
+  events: RawDraftEvent[];
+  catalog: {
+    items: RawDraftCatalogItem[];
+  };
+  readme: string;
+}
+
 export interface ResearchClaimTraceMapping {
   claimId: string;
   domain: string;
@@ -39,48 +83,82 @@ export interface CompiledResearchOutput {
 }
 
 /**
- * Generic, disposable candidate-review representation. This is not a CCI runtime
- * event/state payload and must not be treated as authoritative application data.
+ * Compiles a validated research claim document directly into a raw-JSON draft
+ * (events, catalog, and README.md) without introducing intermediate candidate models,
+ * concept-suffix heuristics, or invented CCI semantics.
  */
-export interface CandidateProposal {
-  candidateId: string;
-  researchClaimId: string;
-  target: {
-    domain: string;
-    concept: string;
-  };
-  position: {
-    floor: number;
-    book?: number;
-    chapter?: number;
-  };
-  summary: string;
-  evidence: Array<{
-    sourceId: string;
-    locator?: Record<string, unknown>;
-    confidence: string;
-    relationship?: string;
-  }>;
-  unknowns?: string[];
-}
+export function compileRawDraft(researchDoc: ResearchClaimDocument): RawDraftOutput {
+  const researchVal = validateResearchClaimDocument(researchDoc);
+  if (!researchVal.valid) {
+    throw new Error(
+      `Compiler error: Research document schema/semantic validation failed:\n  - ${researchVal.errors.join('\n  - ')}`
+    );
+  }
 
-export interface CandidateProvenanceSidecar {
-  candidateId: string;
-  researchClaimId: string;
-  sources: Array<{
-    sourceId: string;
-    locator?: Record<string, unknown>;
-    confidence: string;
-    relationship?: string;
-  }>;
-}
+  const events: RawDraftEvent[] = [];
+  const catalogItems: RawDraftCatalogItem[] = [];
 
-export interface CompiledCandidateProjectionResult {
-  storyId: string;
-  floor: number;
-  candidateProposals: CandidateProposal[];
-  provenanceSidecar: CandidateProvenanceSidecar[];
-  traceOutput: CompiledResearchOutput;
+  // Preserve research YAML claim order strictly
+  for (const claim of researchDoc.claims) {
+    const encodedClaimId = encodeURIComponent(claim.id);
+    const draftId = `draft-${encodedClaimId}`;
+
+    // Extract locator position details if explicitly present in evidence
+    let bookLocator: number | undefined;
+    let chapterLocator: number | undefined;
+
+    for (const ev of claim.evidence) {
+      if (ev.locator) {
+        if (typeof ev.locator.book === 'number') bookLocator = ev.locator.book;
+        if (typeof ev.locator.chapter === 'number') chapterLocator = ev.locator.chapter;
+      }
+    }
+
+    const position = {
+      floor: researchDoc.floor,
+      ...(bookLocator !== undefined ? { book: bookLocator } : {}),
+      ...(chapterLocator !== undefined ? { chapter: chapterLocator } : {}),
+    };
+
+    if (claim.domain === 'inventory' && claim.kind === 'state') {
+      catalogItems.push({
+        id: draftId,
+        researchClaimId: claim.id,
+        summary: claim.claim.summary,
+        evidence: JSON.parse(JSON.stringify(claim.evidence)),
+      });
+    } else {
+      events.push({
+        id: draftId,
+        researchClaimId: claim.id,
+        summary: claim.claim.summary,
+        position,
+        evidence: JSON.parse(JSON.stringify(claim.evidence)),
+        unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
+      });
+    }
+  }
+
+  const readme = `${RAW_DRAFT_STATUS_HEADER}
+
+This directory contains a mechanically compiled draft derived from story "${researchDoc.storyId}", floor ${researchDoc.floor} research claims.
+
+- \`events.json\`: ${events.length} draft events preserving YAML claim order, claim IDs (\`researchClaimId\`), evidence, and locators.
+- \`catalog.json\`: ${catalogItems.length} draft catalog items.
+
+IMPORTANT: Unresolved CCI fields (such as event \`type\`, item \`category\`, or specific payload discriminators) are intentionally left unpopulated so existing CCI raw validation flags missing curation work.
+Do NOT treat this draft as authoritative runtime state.
+`;
+
+  return {
+    storyId: researchDoc.storyId,
+    floor: researchDoc.floor,
+    events,
+    catalog: {
+      items: catalogItems,
+    },
+    readme,
+  };
 }
 
 export function compileResearchTrace(
@@ -98,7 +176,6 @@ export function compileResearchTrace(
     decisionMap.set(decision.claimId, decision);
   }
 
-  // Fail-closed gate: Run full document validation, semantic validation, and trace completeness validation
   const researchVal = validateResearchClaimDocument(researchDoc);
   if (!researchVal.valid) {
     throw new Error(`Compiler error: Research document schema/semantic validation failed:\n  - ${researchVal.errors.join('\n  - ')}`);
@@ -161,73 +238,5 @@ export function compileResearchTrace(
     reviewClaimCount,
     ledgerOnlyClaimCount,
     claimMappings,
-  };
-}
-
-export function compileCandidateProjection(
-  researchDoc: ResearchClaimDocument,
-  modelingDoc: ModelingDecisionDocument
-): CompiledCandidateProjectionResult {
-  const traceOutput = compileResearchTrace(researchDoc, modelingDoc);
-  const candidateProposals: CandidateProposal[] = [];
-  const provenanceSidecar: CandidateProvenanceSidecar[] = [];
-
-  const decisionMap = new Map<string, typeof modelingDoc.decisions[0]>();
-  for (const decision of modelingDoc.decisions) {
-    decisionMap.set(decision.claimId, decision);
-  }
-
-  for (const claim of researchDoc.claims) {
-    const modelingDecision = decisionMap.get(claim.id);
-    if (!modelingDecision || modelingDecision.disposition !== 'promote') {
-      continue;
-    }
-
-    const target = modelingDecision.target;
-    if (!target) {
-      throw new Error(`Candidate projection error: Promoted claim "${claim.id}" lacks target concept.`);
-    }
-
-    // Collision-safe candidate identity using Case-Preserving Escaping (preserving case-distinction without claim ID collision)
-    const encodedClaimId = encodeURIComponent(claim.id);
-    const candidateId = `candidate-${encodedClaimId}`;
-
-    // Chronology is grounded strictly in research scope floor.
-    // Evidence locators are preserved in evidence; position does not implicitly grab evidence[0].locator.
-    const position = {
-      floor: researchDoc.floor,
-    };
-
-    candidateProposals.push({
-      candidateId,
-      researchClaimId: claim.id,
-      target: {
-        domain: target.domain,
-        concept: target.concept,
-      },
-      position,
-      summary: claim.claim.summary,
-      evidence: JSON.parse(JSON.stringify(claim.evidence)),
-      unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
-    });
-
-    provenanceSidecar.push({
-      candidateId,
-      researchClaimId: claim.id,
-      sources: claim.evidence.map((ev) => ({
-        sourceId: ev.sourceId,
-        locator: ev.locator ? JSON.parse(JSON.stringify(ev.locator)) : undefined,
-        confidence: ev.confidence,
-        relationship: ev.relationship,
-      })),
-    });
-  }
-
-  return {
-    storyId: researchDoc.storyId,
-    floor: researchDoc.floor,
-    candidateProposals,
-    provenanceSidecar,
-    traceOutput,
   };
 }

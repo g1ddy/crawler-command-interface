@@ -2,63 +2,65 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadResearchClaimDocument, loadModelingDecisionDocument } from '../app/domain/research-loader.ts';
-import { compileResearchScaffold } from '../app/domain/research-scaffold.ts';
+import { loadResearchClaimDocument } from '../app/domain/research-loader.ts';
+import { compileRawDraft } from '../app/domain/research-compiler.ts';
 
 const args = process.argv.slice(2);
-const researchPath = args[0] || 'data/raw/research/floor-3/pet-research.yaml';
-const modelingPath = args[1] || 'data/raw/research/floor-3/pet-modeling-decisions.yaml';
-const outputDirArg = args[2] || '.tmp/research-scaffold/floor-3';
+
+let researchPath = 'data/raw/research/floor-3/pet-research.yaml';
+let outputDirArg = '.tmp/research-scaffold/floor-3';
+
+// Parse optional CLI flags e.g. --research <path> --out <dir> or positional arguments
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '--research' && args[i + 1]) {
+    researchPath = args[i + 1];
+    i++;
+  } else if (args[i] === '--out' && args[i + 1]) {
+    outputDirArg = args[i + 1];
+    i++;
+  } else if (!args[i].startsWith('--')) {
+    if (i === 0) researchPath = args[i];
+    else if (i === 1 && !args[1].startsWith('--')) outputDirArg = args[i];
+  }
+}
 
 const resolvedResearchPath = path.isAbsolute(researchPath)
   ? researchPath
   : path.resolve(process.cwd(), researchPath);
 
-const resolvedModelingPath = path.isAbsolute(modelingPath)
-  ? modelingPath
-  : path.resolve(process.cwd(), modelingPath);
-
 const resolvedOutputDir = path.isAbsolute(outputDirArg)
   ? outputDirArg
   : path.resolve(process.cwd(), outputDirArg);
 
-console.log(`[Research Scaffold] Reading research claims: ${resolvedResearchPath}`);
-console.log(`[Research Scaffold] Reading modeling decisions: ${resolvedModelingPath}`);
-console.log(`[Research Scaffold] Output directory: ${resolvedOutputDir}`);
+console.log(`[Research Draft Compiler] Reading research claims: ${resolvedResearchPath}`);
+console.log(`[Research Draft Compiler] Output directory: ${resolvedOutputDir}`);
 
 if (!fs.existsSync(resolvedResearchPath)) {
-  console.error(`[Research Scaffold Error] Research file not found: ${resolvedResearchPath}`);
-  process.exit(1);
-}
-
-if (!fs.existsSync(resolvedModelingPath)) {
-  console.error(`[Research Scaffold Error] Modeling file not found: ${resolvedModelingPath}`);
+  console.error(`[Research Draft Compiler Error] Research file not found: ${resolvedResearchPath}`);
   process.exit(1);
 }
 
 try {
   const researchDoc = loadResearchClaimDocument(resolvedResearchPath);
-  const modelingDoc = loadModelingDecisionDocument(resolvedModelingPath);
-
-  const scaffold = compileResearchScaffold(researchDoc, modelingDoc);
+  const draft = compileRawDraft(researchDoc);
 
   fs.mkdirSync(resolvedOutputDir, { recursive: true });
 
-  const reviewPath = path.join(resolvedOutputDir, 'review.json');
-  const candidatesPath = path.join(resolvedOutputDir, 'candidates.json');
-  const provenancePath = path.join(resolvedOutputDir, 'provenance.json');
+  const eventsPath = path.join(resolvedOutputDir, 'events.json');
+  const catalogPath = path.join(resolvedOutputDir, 'catalog.json');
+  const readmePath = path.join(resolvedOutputDir, 'README.md');
 
-  fs.writeFileSync(reviewPath, JSON.stringify(scaffold.review, null, 2), 'utf8');
-  fs.writeFileSync(candidatesPath, JSON.stringify(scaffold.candidates, null, 2), 'utf8');
-  fs.writeFileSync(provenancePath, JSON.stringify(scaffold.provenance, null, 2), 'utf8');
+  fs.writeFileSync(eventsPath, JSON.stringify(draft.events, null, 2), 'utf8');
+  fs.writeFileSync(catalogPath, JSON.stringify(draft.catalog, null, 2), 'utf8');
+  fs.writeFileSync(readmePath, draft.readme, 'utf8');
 
-  console.log(`\n[Research Scaffold Success] Generated disposable scaffold artifacts under ${resolvedOutputDir}`);
-  console.log(`  - review.json (${scaffold.review.summary.totalClaims} total claims)`);
-  console.log(`  - candidates.json (${scaffold.candidates.candidates.length} candidate proposals)`);
-  console.log(`  - provenance.json (${scaffold.provenance.candidates.length} candidate provenance records)\n`);
+  console.log(`\n[Research Draft Compiler Success] Generated disposable raw draft under ${resolvedOutputDir}`);
+  console.log(`  - events.json (${draft.events.length} draft events preserving YAML claim order)`);
+  console.log(`  - catalog.json (${draft.catalog.items.length} draft catalog items)`);
+  console.log(`  - README.md (non-authoritative draft status & curation instructions)\n`);
 
 } catch (err) {
-  console.error(`\n[Research Scaffold Generation Failed]`);
+  console.error(`\n[Research Draft Compiler Failed]`);
   console.error((err && err.message) || String(err));
   process.exit(1);
 }

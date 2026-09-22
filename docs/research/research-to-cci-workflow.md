@@ -40,28 +40,20 @@ The workflow is deliberately conservative:
                   v
              research.yaml
                   |
-                  | YAML parse
+                  | YAML parse + schema validation
                   v
-             JSON object
+          validated research.yaml
                   |
-                  | JSON Schema / AJV
+                  | research compiler (compileRawDraft)
                   v
-          structural validation
+          deterministic raw JSON draft
+         (.tmp/research-scaffold/<floor>/)
                   |
-                  | semantic validation
+                  | existing CCI raw JSON validation
                   v
-          validated research claims
+          validation errors (missing CCI mappings)
                   |
-                  v
-                 STAGE 3
-       modeling-decisions.yaml
-                  |
-                  v
-       disposable candidate review
-                  |
-                  v
-           human / Jules review
-                  |
+                  | human / Jules curation
                   v
        data/raw/floors/<floor>/*
                   |
@@ -75,12 +67,13 @@ The workflow is deliberately conservative:
 | Representation | Purpose | Authority |
 | --- | --- | --- |
 | Research report | Human-auditable evidence gathering | Research source |
-| `research.yaml` | Structured claims and provenance | Research artifact |
-| Validated research object | Machine-checked research | Research artifact |
-| `modeling-decisions.yaml` | Explicit CCI modeling decisions | Review decision |
-| Candidate proposal | Disposable review output | Non-authoritative |
+| `research.yaml` | Structured claims and provenance | Evidence-oriented authoring format |
+| Raw JSON draft (`.tmp/...`) | Mechanically compiled draft items | Non-authoritative draft |
 | `data/raw/floors/**` | Executable CCI authoring | **Authoritative** |
 | Generated runtime state | Application execution/replay | Existing CCI pipeline |
+
+Research YAML is an evidence-oriented authoring format. It is not another runtime model.
+The compiler automates mechanical translation but intentionally leaves unresolved CCI mappings incomplete so existing validation exposes the remaining curation work.
 
 A research artifact never becomes authoritative merely because it passes JSON Schema validation.
 
