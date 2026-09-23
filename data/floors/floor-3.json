@@ -89,6 +89,13 @@
         "category": "crafting",
         "persistent": true,
         "description": "Carl's hazardous invention created by encapsulating an exploding Soul Crystal inside a Sheol Glass Reaper Case."
+      },
+      {
+        "id": "item-magical-pet-carrier",
+        "name": "Magical Pet Carrier",
+        "category": "tool",
+        "persistent": true,
+        "description": "A magical carrier capable of teleporting pets into containment and rest states."
       }
     ],
     "achievements": [
@@ -320,6 +327,34 @@
       "order": 9
     },
     {
+      "id": "evt-f3-magical-pet-carrier-acquired",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 14
+      },
+      "item": {
+        "instanceId": "inst-f3-magical-pet-carrier",
+        "itemId": "item-magical-pet-carrier",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "The party acquires a Magical Pet Carrier on Floor 3.",
+      "evidence": [
+        {
+          "sourceId": "src-book-2",
+          "locator": {
+            "chapter": 14
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 10
+    },
+    {
       "id": "evt-f3-desperado-club-reached",
       "type": "NarrativeEvent",
       "kind": "location-discovered",
@@ -338,7 +373,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 10
+      "order": 11
     },
     {
       "id": "evt-f3-sex-workers-quest-triggered",
@@ -362,7 +397,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 11
+      "order": 12
     },
     {
       "id": "evt-f3-katia-joined",
@@ -383,7 +418,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 12
+      "order": 13
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
@@ -404,7 +439,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 13
+      "order": 14
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
@@ -430,7 +465,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 14
+      "order": 15
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
@@ -454,7 +489,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 15
+      "order": 16
     },
     {
       "id": "evt-f3-doomsday-scenario-created",
@@ -482,7 +517,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 16
+      "order": 17
     },
     {
       "id": "evt-f3-floor-4-transition",
@@ -503,7 +538,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17
+      "order": 18
     },
     {
       "id": "evt-f3-odette-epilogue",
@@ -524,7 +559,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 19
     },
     {
       "id": "evt-f3-achievement-bandit",
@@ -550,7 +585,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 19
+      "order": 20
     }
   ]
 }

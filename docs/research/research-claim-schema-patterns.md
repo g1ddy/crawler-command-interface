@@ -397,8 +397,8 @@ Jules should use this document, #221, and the repository to produce:
 
 PR #223 is now an obsolete historical experiment superseded by merged PR #225 and the follow-up candidate pipeline implementation in issue #222.
 - **Retained**: Immutable claim IDs, source registry, provenance references, explicit unknowns, explicit dependencies, structured schema validation (using JSON Schema), and semantic cross-record validation. Negative fixture requirements were kept.
-- **Modified**: YAML became the structured input format (`research.yaml` and `modeling-decisions.yaml`) instead of JSON, but JSON Schema validation via Ajv 2020-12 remains the structural gate. Trace mapping compilation combines both artifacts instead of extracting decisions embedded inside claims. Evidence items now carry explicit relationships (`supports`, `corroborates`, `contradicts`, `context`), and candidate projections are strictly separated into disposable candidate outputs with sidecar provenance tracing (`candidate/provenance.json`).
-- **Obsolete/Discarded**: PR #223's API and file structure are fully obsolete and replaced by `crawler-research/v1` and `crawler-modeling/v1`. Runtime event payloads embedded inside research claims were abandoned in favor of separate architectural modeling decisions and conservative, disposable candidate projections.
+- **Modified**: YAML became the structured input format (`research.yaml` and `modeling-decisions.yaml`) instead of JSON, but JSON Schema validation via Ajv 2020-12 remains the structural gate. Trace mapping compilation combines both artifacts instead of extracting decisions embedded inside claims. Evidence items now carry explicit relationships (`supports`, `corroborates`, `contradicts`, `context`), and research compilation produces direct raw floor records for domain curation.
+- **Obsolete/Discarded**: PR #223's API and file structure are fully obsolete and replaced by `crawler-research/v1` and `crawler-modeling/v1`. Runtime event payloads embedded inside research claims were abandoned in favor of separate architectural modeling decisions and conservative, direct raw floor updates.
 
 ### Phase 4 — #222
 
@@ -549,21 +549,20 @@ This permits:
 
 A research correction therefore does not require rewriting the identity of the executable artifact, and a CCI refactor does not rewrite the underlying research.
 
-### 15.4 Candidate projection — generated, disposable
+### 15.4 Direct Raw Floor Compilation
 
-A compiler may produce candidate proposals:
+The research compiler transforms research claims and modeling decisions directly into standard CCI raw floor shapes:
 
-    candidate/
+    data/raw/floors/<floor>/
       events.json
-      provenance.json
+      catalog.json
+      sources.json
 
-Candidate output is disposable. It is a review artifact, not automatically authoritative raw data.
+Direct raw compilation output is curated in the Git working tree. It is an authoring aid, not automatically valid or authoritative raw data.
 
-Candidate target concepts are modeling decisions preserved by the generic candidate compiler. Domain-specific projection adapters/pilots interpret target concepts into CCI representations. The generic research compiler is not a second CCI domain model and does not hard-code domain field semantics or fabricate executable domain values. Unknown-value enforcement therefore belongs at the domain-specific adapter boundary, where a target concept can be interpreted against an actual CCI schema; the generic compiler only preserves the research `unknowns` and cannot prove domain-specific executable safety by itself.
+Modeling disposition `promote` or `review` authorizes a claim to enter raw floor compilation. It does not mean automatic valid promotion into CCI runtime state. Unresolved semantic fields (such as event `type`) are intentionally left unpopulated so existing raw floor validation (`validateRawCrawlerFloor`) identifies missing curation tasks. Authoritative execution is established only after human/Jules curation and reconciliation in `data/raw/floors/**` through the existing CCI compiler pipeline.
 
-Modeling disposition `promote` authorizes a claim to enter disposable candidate-review projection. It does not mean authoritative promotion into CCI runtime state. The candidate compiler returns an in-memory review representation; a future export step may persist disposable candidate artifacts, but neither is authoritative. Authoritative execution is established only after human/Jules review and authoring in `data/raw/floors/**` through the existing CCI authoring pipeline.
-
-Evidence items marked with `relationship: "contradicts"` block candidate projection in semantic validation, ensuring contradictory evidence cannot silently produce candidate proposals. This is distinct from claim-to-claim contradiction metadata: `evidence.relationship` describes how a source bears on the claim (`supports`, `corroborates`, `contradicts`, `context`), while `claim.contradictions[].relationship` describes a relationship between two research claims (`contradicts`, `supersedes`, or `unresolved`). These are intentionally separate axes.
+Evidence items marked with `relationship: "contradicts"` block raw floor compilation in semantic validation, ensuring contradictory evidence cannot silently produce raw floor records. This is distinct from claim-to-claim contradiction metadata: `evidence.relationship` describes how a source bears on the claim (`supports`, `corroborates`, `contradicts`, `context`), while `claim.contradictions[].relationship` describes a relationship between two research claims (`contradicts`, `supersedes`, or `unresolved`). These are intentionally separate axes.
 
 The compiler must never overwrite `data/raw/floors/**` merely because a claim was marked `promote`.
 
@@ -591,7 +590,7 @@ The authoritative conceptual pipeline:
             ↓
     modeling-decisions.yaml
             ↓
-    optional disposable candidate projection
+    direct raw floor compilation
             ↓
     human/Jules review
             ↓
@@ -688,7 +687,7 @@ Recommended API boundary:
     validateResearchSemantics()
         -> SemanticValidationResult
 
-    compileCandidateProjection()
+    compileRawFloor()
         -> CandidateArtifacts
 
 This allows each stage to be tested independently.

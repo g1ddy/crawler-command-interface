@@ -11,9 +11,9 @@ This document defines the practical handoff between:
 3. deterministic parsing and validation;
 4. CCI-aware semantic validation;
 5. explicit modeling decisions;
-6. disposable candidate projection;
-7. human/Jules review;
-8. authoritative CCI raw authoring.
+6. direct raw floor compilation;
+7. human/Jules working-tree curation & reconciliation;
+8. authoritative CCI raw authoring & timeline compilation.
 
 It is intended to be referenced by domain research issues such as #181 rather than repeating the entire workflow in every issue.
 
@@ -40,28 +40,20 @@ The workflow is deliberately conservative:
                   v
              research.yaml
                   |
-                  | YAML parse
+                  | YAML parse + schema validation
                   v
-             JSON object
+          validated research.yaml
                   |
-                  | JSON Schema / AJV
+                  | research compiler (compileRawFloor)
                   v
-          structural validation
+          direct raw JSON compilation
+         (data/raw/floors/<floor>/*)
                   |
-                  | semantic validation
+                  | existing CCI raw JSON validation
                   v
-          validated research claims
+          validation errors (missing CCI mappings)
                   |
-                  v
-                 STAGE 3
-       modeling-decisions.yaml
-                  |
-                  v
-       disposable candidate review
-                  |
-                  v
-           human / Jules review
-                  |
+                  | human / Jules working-tree curation
                   v
        data/raw/floors/<floor>/*
                   |
@@ -75,14 +67,30 @@ The workflow is deliberately conservative:
 | Representation | Purpose | Authority |
 | --- | --- | --- |
 | Research report | Human-auditable evidence gathering | Research source |
-| `research.yaml` | Structured claims and provenance | Research artifact |
-| Validated research object | Machine-checked research | Research artifact |
-| `modeling-decisions.yaml` | Explicit CCI modeling decisions | Review decision |
-| Candidate proposal | Disposable review output | Non-authoritative |
+| `research.yaml` | Structured claims and provenance | Evidence-oriented authoring format |
+| Uncurated raw JSON | Mechanically compiled raw floor updates | Non-authoritative working-tree state |
 | `data/raw/floors/**` | Executable CCI authoring | **Authoritative** |
 | Generated runtime state | Application execution/replay | Existing CCI pipeline |
 
+Research YAML is an evidence-oriented authoring format. It is not another runtime model.
+The compiler automates mechanical translation but intentionally leaves unresolved CCI mappings incomplete so existing validation exposes the remaining curation work.
+
 A research artifact never becomes authoritative merely because it passes JSON Schema validation.
+
+---
+
+## Core design intent: authoring scaffold, not finished data
+
+The compiler is an authoring assistant, not an authoritative-data generator. Its purpose is to eliminate repetitive mechanical work between the research ledger and CCI raw-data authoring while refusing to invent CCI domain semantics.
+
+The output is therefore an incomplete, raw-shaped authoring scaffold. It must be syntactically valid JSON, but it does not need to pass the CCI raw-data schema.
+
+Intentional validation failures are expected whenever the research evidence does not establish a required CCI mapping. Those failures are the curation checklist for Jules/human review.
+
+The compiler's success criterion is not "generated output is validator-clean." It is "mechanical authoring work has been eliminated and every remaining domain decision is explicit and actionable."
+
+Raw-shaped does not mean raw-valid.
+Intentional schema incompleteness (such as unpopulated event `type` discriminators) must be distinguished from malformed JSON or compiler defects.
 
 ---
 
@@ -657,399 +665,196 @@ It does **not** mean:
 
 ---
 
-# Stage 4 — Candidate Projection
+# Stage 4 — Raw Floor Compilation & Working Tree Curation
 
-The candidate compiler is deterministic and disposable.
-
-```
-validated research
-        +
-validated modeling decisions
-        |
-        v
-compileCandidateProjection()
-        |
-        +--> candidate proposal
-        |
-        +--> provenance sidecar
-```
-
-The generic compiler must:
-
-- be deterministic;
-- have no network access;
-- make no LLM calls;
-- not parse arbitrary Markdown;
-- not mutate `data/raw/floors/**`;
-- preserve research claim IDs;
-- preserve explicit unknowns;
-- fail closed when required information is unavailable;
-- reject references to unknown claims;
-- reject unsupported target representations.
-
-It must not:
-
-- decide whether a claim is true;
-- invent values;
-- invent timestamps;
-- infer missing mechanics;
-- silently choose an event type;
-- become a second CCI domain model.
-
-## Candidate identity
-
-Research and executable identities remain independent.
-
-Example:
+The research compiler (`compileRawFloor`) is a deterministic transformation directly into the existing CCI raw representation. It outputs standard CCI raw floor JSON structures directly into the target raw floor working tree (`data/raw/floors/<floor>/`).
 
 ```
-P3-PET-001
-"The evidence establishes Mongo reaches Level 3."
+validated research (research.yaml) + modeling decisions
         |
         v
-candidate-... / review proposal
+compileRawFloor()
         |
         v
-event-f3-mongo-level-3
+working tree diff (data/raw/floors/<floor>/*)
+        |
+        v
+validateRawCrawlerFloor() -> curation errors
+        |
+        v
+Jules/human curation & reconciliation
+        |
+        v
+authoritative raw data & compiled timeline
 ```
 
-The research claim ID is the stable evidence identity. Source IDs are stable foreign keys; prefer short mnemonic values such as `src-book-2` when the source identity is clear, while keeping locators and other provenance in structured fields.
+## Why Existing Raw JSON is the Compiler Target
+Existing raw JSON files under `data/raw/floors/<floor>/` (`events.json`, `catalog.json`, `sources.json`) are the single source of truth for raw floor authoring. Compiling research directly into raw JSON format eliminates artificial staging layers (such as separate candidate models, proposal sidecars, or staging directories).
 
-The eventual CCI event ID belongs to the executable representation.
+## Git Working Tree + Diff as Staging & Review Mechanism
+The Git working tree and `git diff` serve as the curation surface. Compiling research updates raw JSON files in place or generates draft records directly in the raw directory. Reviewers use standard Git diffs to inspect, reconcile, and curate changes before committing.
+
+## Reconciling Research Claims with Existing Raw Records
+When curating research-derived events:
+- **Check for existing occurrences**: Determine if an equivalent event already exists in `data/raw/floors/<floor>/events.json`. Reconcile existing records rather than creating duplicates.
+- **Event ID Preservation**: Preserve stable, existing event IDs when reconciling an existing occurrence.
+- **New Event ID Crafting**: For genuinely new events, use stable domain-oriented IDs matching `evt-f<floor>-<stable-domain-occurrence>` (e.g. `evt-f3-magical-pet-carrier-acquired`, `evt-f3-fang-caps-equipped`). Research claim IDs remain traceable as provenance within the event's `evidence` array, but are never used as permanent runtime IDs.
+- **Catalog Consultation**: Check floor-local (`data/raw/floors/<floor>/catalog.json`) and shared catalogs (`data/raw/catalogs/items.json`) to reuse existing entity identities before declaring new catalog items.
+
+## Selecting Event Types & Payload Contracts
+Never map research `claim.kind` directly to a CCI event type or infer event types from prose heuristic strings. Select event types only after inspecting:
+1. `app/domain/schema/crawler-floor-raw.schema.json`
+2. `app/domain/types/events.ts`
+3. Domain compiler transformers (`app/domain/compiler.ts`)
+4. Reducer/projection handlers (`app/domain/projection/`)
+5. Existing test suites across Floors 1–3
+
+If an existing event contract fits (e.g. `ItemAcquired`), supply the required payload fields. If no existing contract fits, leave the semantic discriminator `type` intentionally unpopulated or keep the claim as research context in `pet-research.yaml` / `pet-modeling-decisions.yaml` without inventing speculative runtime semantics.
+
+## Distinguishing Events, Observations, and Catalog Definitions
+- **Catalog Definitions** answer: *What entities does CCI know about?*
+- **Timeline Events** answer: *What discrete state-modifying occurrences happened in sequence?*
+- **Telemetry Observations** answer: *What point-in-time state readings were observed without necessarily asserting a causal event?*
+
+## Establishing Chronology & Compiled Cross-Checks
+Research YAML order represents authoring order, not automatic runtime sequence order. Chronology is established from floor scope, book/chapter locators, and causal dependencies. After curation:
+1. Run `npm run generate:fixture` to compile raw floor files into `data/floors/floor-3.json` and `data/compiled-timeline.json`.
+2. Inspect `data/floors/floor-3.json` to verify floor segment compilation.
+3. Inspect `data/compiled-timeline.json` to cross-check global chronological sequence, neighboring event ordering, and projected runtime states.
+
+## Preserving Provenance & Explicit Unknowns
+Every raw event preserves traceable provenance (`raw event -> research claim ID -> source ID -> locator`). Explicit unknowns (such as unknown timestamp, quantity, or duration) must remain explicit in `unknowns` arrays and quantity objects (`{ known: false }`). Never replace explicit unknowns with speculative concrete numbers merely to pass validation.
+
+## Compiler Defects vs. Intentional Curation Gaps
+- **Compiler Defects**: Malformed JSON, corruption of existing raw structures, dropping mechanically knowable authored data, inventing unestablished semantics, or generating invalid ID formats (`evt-draft-*`).
+- **Intentional Curation Gaps**: Leaving required semantic fields (such as `type`) unpopulated when research evidence does not mechanically specify a CCI domain mapping. These gaps trigger actionable validation errors in `validateRawCrawlerFloor` to guide human/Jules curation.
 
 ---
 
-# Stage 5 — Human / Jules Review
+# Direct Research-to-CCI Curation Workflow
 
-Candidate output is reviewed before authoritative authoring.
-
-Review should ask:
-
-1. Does the evidence actually support the claim?
-2. Is the provenance adequate?
-3. Are unknowns preserved?
-4. Does the modeling decision match the evidence?
-5. Does the target map to an existing CCI domain concept?
-6. Is any precision being invented?
-7. Does the resulting representation fit existing Floor 1/2 conventions?
-8. Does the representation preserve replay semantics?
-9. Is a new domain contract genuinely necessary?
-10. Should the claim remain research-only?
-
-Claims that cannot safely map to the current CCI model should remain in the research ledger or become an explicit follow-up rather than forcing the runtime to accommodate them.
-
----
-
-# Stage 6 — Authoritative CCI Raw Data
-
-Only after review should supported information enter:
+The research ingestion pilot writes directly to the existing CCI raw representation. Git provides the working-tree staging and review surface; no candidate/proposal/draft runtime model is required.
 
 ```
-data/raw/floors/<floor>/
+Research report
+  ↓
+research.yaml
+  ↓
+research schema + semantic validation
+  ↓
+deterministic compiler
+  ↓
+existing data/raw/floors/<floor>/**
+  ↓
+Git diff
+  ↓
+claim ↔ existing raw ↔ catalogs ↔ event contracts
+  ↓
+Jules/manual curation
+  ↓
+normal CCI raw validation
+  ↓
+existing CCI compiler
+  ↓
+data/floors/<floor>.json + data/compiled-timeline.json
 ```
 
-For Floor 3 Pet work this means using the existing conventions for:
+## Compiler responsibility
 
-- `floor.json`;
-- `sources.json`;
-- `events.json`;
-- `observations.json`;
-- `catalog.json`;
-- `countdowns.json`;
-- `claim-ledger.md`.
+The compiler is a deterministic editor of the existing raw representation:
 
-The existing CCI raw schemas and compiler remain authoritative.
+`existing raw + mechanically established research changes → updated raw`
 
-Research ingestion must not become a second runtime model.
+It preserves unrelated authored data, research ordering, provenance, and explicit unknowns. It does not choose event types, invent payload semantics, infer chronology, or create item identities merely to satisfy schema validation.
 
----
+Generated records may therefore be temporarily incomplete while they are being curated on the working branch. The merged raw representation must pass the normal CCI validator.
 
-# Validation matrix
+## Curation order
 
-| Stage | Mechanism | Failure examples |
-| --- | --- | --- |
-| Research | Human/research LLM | weak source, missing locator, unsupported inference |
-| YAML parsing | YAML library | malformed YAML |
-| Structural | AJV / JSON Schema | missing field, invalid enum, wrong type |
-| Semantic | CCI validator | broken source reference, duplicate claim ID |
-| Modeling | Human/Jules + modeling schema | invalid disposition, unknown claim, unsupported target |
-| Candidate | Deterministic compiler | unknown executable value, unsupported projection |
-| Authoring | Existing CCI schemas/compiler/tests | invalid raw data, broken replay behavior |
-| Final | `npm run verify` | repository-wide regression |
+For every research claim:
 
----
+1. Read the claim and its evidence/unknowns.
+2. Find equivalent existing raw records before creating anything.
+3. Check the Floor catalog and shared catalogs for established entity identity.
+4. Inspect existing event types, payload contracts, compiler behavior, and tests.
+5. Decide whether the claim is a timeline event, observation, catalog/reference fact, or research-only fact.
+6. Reuse an established CCI semantic representation when one exists.
+7. Preserve an existing event ID when the occurrence already exists.
+8. For a genuinely new event, use a stable domain-oriented ID such as `evt-f3-magical-pet-carrier-acquired`.
+9. Preserve the research claim ID in provenance; it is not automatically the runtime event identity.
+10. If no existing CCI representation is justified, leave the mapping unresolved rather than inventing one.
+11. Compile and inspect the resulting floor and timeline projections.
+12. Run normal validation and `npm run verify`.
+13. Review the final Git diff as the audit trail.
 
-# Recommended implementation APIs
+A source locator is evidence, not record identity. Two distinct claims supported by the same chapter must not be merged solely because their source and locator match.
 
-The implementation should retain independent boundaries rather than one opaque command.
+## Catalogs, events, and observations
 
-Conceptually:
+Catalogs establish what CCI knows an entity is. Events establish occurrences in the timeline. Observations record supported measurements/state observations without implying a state transition.
 
-```ts
-parseResearchDocument(input)
-  -> unknown
+Catalog membership does not prove acquisition. An acquisition event should reference an established catalog identity rather than duplicate its definition.
 
-validateResearchSchema(document)
-  -> SchemaValidationResult
+## Event type selection
 
-indexResearchDocument(document)
-  -> ResearchIndex
+Never map research `kind`, research `domain`, or a modeling target directly to an event type.
 
-validateResearchSemantics(document, index)
-  -> SemanticValidationResult
+Select an event type only after inspecting the existing event union, raw schema, payload shape, compiler/projection, and examples/tests. Prefer an exact existing semantic match. If none exists, use an existing compatible event/observation contract only when its semantics are genuinely correct. Otherwise leave the claim unresolved.
 
-validateModelingDecisions(document, researchIndex)
-  -> ModelingValidationResult
+For the Floor 3 Pet pilot, do not invent `PetLevelChanged`, `PetConditionChanged`, `PetEquipmentEquipped`, or `PetDeploymentChanged`. Verify generic established types such as `LevelChanged`, `ConditionChanged`, and `ItemEquipped` against their actual contracts before using them. `ItemAcquired` is appropriate for the Magical Pet Carrier only because that contract already exists and the catalog identity is established.
 
-compileCandidateProjection(
-  validatedResearch,
-  validatedModeling
-)
-  -> CandidateProjection
-```
+## Event IDs
 
-The exact public API names remain subject to the repository implementation.
+Existing authored IDs are stable and must be preserved.
 
-The important property is that each stage can be tested independently.
+New research-derived IDs should be deterministic, readable, and based on the stable domain occurrence rather than incidental prose, chapter number, or claim wording. Do not use sequence numbers. Do not derive a semantic event ID from a modeling target.
 
----
+The compiler may use a deterministic claim-derived ID as a temporary curation key when no authored domain identity exists; it must not be mistaken for the final semantic naming decision.
 
-# Failure behavior
+## Provenance and unknowns
 
-The pipeline fails closed.
+Keep the chain:
 
-| Condition | Behavior |
-| --- | --- |
-| Invalid YAML | Stop |
-| Invalid JSON Schema | Stop |
-| Broken source reference | Stop |
-| Broken claim reference | Stop |
-| Invalid modeling decision | Stop |
-| Explicit unknown required for projection | Stop |
-| Unsupported target | Stop |
-| Contradictory evidence | Preserve/block projection |
-| Review disposition | No authoritative projection |
-| Ledger-only disposition | No executable projection |
-| Compiler exception | No raw-data mutation |
+`raw record → research claim ID → source ID → locator`
 
-Never partially update authoritative raw data during candidate compilation.
+Preserve explicit unknowns. Never manufacture timestamps, quantities, mechanics, ownership, or chronology.
 
----
+## Compiled-output review
 
-# Testing strategy
+After raw curation, inspect `data/floors/<floor>.json` and `data/compiled-timeline.json`. These are verification surfaces, not manually edited authoring sources.
 
-The test suite should cover both positive and negative cases.
+Check:
 
-Minimum research fixtures:
+- event type and payload projection;
+- catalog/item resolution;
+- chronology and neighboring events;
+- absence of unrelated changes;
+- runtime behavior implied by the selected existing contract.
 
-1. primary-supported promoted claim;
-2. corroborating evidence;
-3. context-only evidence;
-4. ledger-only claim;
-5. explicit unknown;
-6. contradictory evidence;
-7. missing source reference;
-8. missing claim reference;
-9. duplicate claim ID;
-10. independent confidence/disposition;
-11. deterministic candidate identity;
-12. preserved research claim provenance;
-13. no invented timestamp;
-14. no invented quantity;
-15. candidate compiler does not mutate inputs;
-16. candidate output is not treated as authoritative runtime state.
+If compiled output is wrong, investigate the raw representation, catalog identity, event contract, compiler, projection, or chronology. Do not add another data layer to conceal the mismatch.
 
-For the Pet pilot, add domain-specific tests for the actual CCI representation selected by the modeling decision.
+## Compiler defects versus curation gaps
 
----
+Compiler defects include malformed JSON, data loss, unrelated mutations, nondeterministic output, duplicate generation on repeated runs, and invented CCI semantics.
 
-# What each LLM does and does not know
+Curation gaps include an unsupported event type, unresolved item identity, unknown chronology, or a research observation for which no existing executable representation is justified.
 
-## Deep Research LLM
+Do not weaken the raw validator to hide a curation gap.
 
-### Knows
+## Required tests
 
-- story/canon scope;
-- research questions;
-- source priorities;
-- evidence requirements.
+The ingestion tests should prove:
 
-### Does not need
+- existing authored records survive compilation;
+- equivalent research does not create duplicates;
+- shared locators do not imply identity;
+- deterministic compiler keys are stable;
+- research claim IDs remain traceable;
+- existing catalog identities are reused by curated records;
+- unsupported event semantics remain unresolved;
+- repeated compilation is idempotent;
+- compiled floor/timeline output is checked after valid curation.
 
-- CCI source code;
-- CCI runtime schemas;
-- CCI event types;
-- repository architecture.
+## Living-workflow principle
 
-### Produces
-
-`research.md`
-
----
-
-## Extraction LLM
-
-### Knows
-
-- Stage 1 research report;
-- JSON Schema;
-- extraction rules;
-- controlled vocabularies.
-
-### Does not need
-
-- CCI source code;
-- CCI runtime implementation;
-- GitHub issues;
-- domain event definitions.
-
-### Produces
-
-`research.yaml`
-
----
-
-## CCI-aware coding agent / Jules
-
-### Knows
-
-- repository;
-- research schema;
-- research YAML;
-- modeling schema;
-- existing CCI domain contracts;
-- raw-floor schemas;
-- loaders/compiler;
-- tests.
-
-### Produces
-
-- modeling decisions;
-- candidate review;
-- authoritative raw authoring after review.
-
----
-
-# Pet pilot example
-
-A single fact should travel through the system like this:
-
-```
-BOOK TEXT
-
-"Mongo reaches Level 3."
-        |
-        v
-STAGE 1
-
-Research report:
-Mongo reaches Level 3.
-Book 2, chapter N.
-Primary evidence.
-Exact event timestamp unknown.
-        |
-        v
-STAGE 2
-
-P3-PET-001
-domain: pet
-kind: event
-claim:
-  summary: Mongo reaches Level 3.
-evidence:
-  - sourceId: src-book-2
-    locator:
-      chapter: N
-    relationship: supports
-    confidence: confirmed
-unknowns:
-  - exact_timestamp
-        |
-        v
-VALIDATION
-
-YAML parses
-        +
-JSON Schema valid
-        +
-semantic references valid
-        |
-        v
-STAGE 3
-
-claimId: P3-PET-001
-disposition: promote
-target:
-  domain: pet
-  concept: progression
-        |
-        v
-CANDIDATE
-
-Disposable Pet progression proposal.
-Claim ID and unknown timestamp preserved.
-        |
-        v
-REVIEW
-
-Jules confirms existing Pet representation is sufficient.
-No timestamp invented.
-        |
-        v
-AUTHORITATIVE CCI
-
-Existing Floor 3 events/observations representation.
-Existing source provenance.
-Existing CCI compiler.
-        |
-        v
-RUNTIME
-
-Mongo progression can participate in replay.
-```
-
-This example demonstrates why the research claim and the eventual CCI event should not be the same object.
-
----
-
-# Rules for future domain pilots
-
-For #181–#186:
-
-1. Start from the research questions for that domain.
-2. Produce the research report before modeling.
-3. Give the extraction LLM the current schema, not repository code.
-4. Validate deterministically.
-5. Keep research claims independent from modeling decisions.
-6. Review modeling against actual CCI code.
-7. Generate only disposable candidates.
-8. Author only reviewed facts into `data/raw/floors/**`.
-9. Preserve unknowns.
-10. Do not infer absence from omission.
-11. Do not introduce domain mechanics merely because the research artifact can describe them.
-12. Do not modify the generic research contract for a single domain gap without a separate architectural justification.
-13. Run `npm run verify`.
-
----
-
-# Architectural invariant
-
-The complete workflow can be summarized as:
-
-```
-Research discovers.
-Extraction structures.
-Schema validates shape.
-Semantic validation checks consistency.
-Modeling decides meaning.
-Candidate compilation proposes.
-Human/Jules reviews.
-CCI raw authoring establishes authority.
-Existing CCI compilation produces runtime state.
-```
-
-Or more compactly:
-
-> **Evidence → structured claims → validation → modeling decision → candidate → review → authoritative CCI authoring.**
-
-The research system is therefore a **compiler-adjacent evidence pipeline**, not an alternative CCI domain model.
+This document is the process authority for future research pilots. It deliberately uses the existing repository representations rather than introducing a parallel candidate model. The goal is to reduce mechanical authoring while making every remaining CCI/domain decision explicit, reviewable, and visible in Git.

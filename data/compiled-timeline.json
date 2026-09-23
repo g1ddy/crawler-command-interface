@@ -11,8 +11,8 @@
         "floor": 3
       }
     },
-    "createdAt": "2026-09-20T20:46:48.219Z",
-    "updatedAt": "2026-09-20T20:46:48.219Z"
+    "createdAt": "2026-09-23T12:25:58.966Z",
+    "updatedAt": "2026-09-23T12:25:58.966Z"
   },
   "floors": [
     {
@@ -40,7 +40,7 @@
       "book": 2,
       "bookTitle": "Carl's Doomsday Scenario",
       "startSequence": 124,
-      "endSequence": 142
+      "endSequence": 143
     }
   ],
   "sources": [
@@ -4038,8 +4038,41 @@
       "kind": "location-discovered"
     },
     {
-      "id": "evt-f3-desperado-club-reached",
+      "id": "evt-f3-magical-pet-carrier-acquired",
       "sequence": 133,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 14
+      },
+      "summary": "The party acquires a Magical Pet Carrier on Floor 3.",
+      "evidence": [
+        {
+          "sourceId": "src-book-2",
+          "locator": {
+            "chapter": 14
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f3-magical-pet-carrier",
+        "itemId": "item-magical-pet-carrier",
+        "name": "Magical Pet Carrier",
+        "category": "tool",
+        "rarity": "unknown",
+        "description": "A magical carrier capable of teleporting pets into containment and rest states.",
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "Third Floor"
+      }
+    },
+    {
+      "id": "evt-f3-desperado-club-reached",
+      "sequence": 134,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4060,7 +4093,7 @@
     },
     {
       "id": "evt-f3-sex-workers-quest-triggered",
-      "sequence": 134,
+      "sequence": 135,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4084,7 +4117,7 @@
     },
     {
       "id": "evt-f3-katia-joined",
-      "sequence": 135,
+      "sequence": 136,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4105,7 +4138,7 @@
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
-      "sequence": 136,
+      "sequence": 137,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4126,7 +4159,7 @@
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
-      "sequence": 137,
+      "sequence": 138,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
@@ -4158,7 +4191,7 @@
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
-      "sequence": 138,
+      "sequence": 139,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4182,7 +4215,7 @@
     },
     {
       "id": "evt-f3-doomsday-scenario-created",
-      "sequence": 139,
+      "sequence": 140,
       "type": "ItemCrafted",
       "position": {
         "floor": 3,
@@ -4215,7 +4248,7 @@
     },
     {
       "id": "evt-f3-floor-4-transition",
-      "sequence": 140,
+      "sequence": 141,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4236,7 +4269,7 @@
     },
     {
       "id": "evt-f3-odette-epilogue",
-      "sequence": 141,
+      "sequence": 142,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4257,7 +4290,7 @@
     },
     {
       "id": "evt-f3-achievement-bandit",
-      "sequence": 142,
+      "sequence": 143,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
