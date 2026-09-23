@@ -160,9 +160,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
     broadcast: {
       viewers: { value: 120, sequence: 25 },
     },
-  };
-
-  const telemetryItems = [
+    telemetryItems: [
     {
       key: "health",
       label: "HEALTH",
@@ -191,7 +189,8 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       badgeLabel: "SOURCE",
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
     },
-  ];
+    ],
+  };
 
   const html = renderToString(
     React.createElement(
@@ -199,7 +198,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       null,
       React.createElement(ArwesPresentation, {
         model: fullModel,
-        telemetryItems,
         onInspectTelemetry: () => {},
       })
     )
@@ -229,9 +227,7 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
     vitals: {},
     broadcast: {},
-  };
-
-  const telemetryItems = [
+    telemetryItems: [
     {
       key: "health",
       label: "HEALTH",
@@ -260,12 +256,12 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
       badgeLabel: "— ABSENT",
       semantics: { status: "unknown", affordance: "none" },
     },
-  ];
+    ],
+  };
 
   const html = renderToString(
     React.createElement(ArwesPresentation, {
       model,
-      telemetryItems,
       onInspectTelemetry: () => {},
     })
   );
@@ -273,7 +269,9 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
   assert.match(html, /data-testid="telemetry-health"[^>]*data-status="present"[^>]*data-authority="observed"[^>]*data-temporal="current"/);
   assert.match(html, /data-testid="telemetry-mana"[^>]*data-status="present"[^>]*data-authority="observed"[^>]*data-temporal="last-known"/);
   assert.match(html, /data-testid="telemetry-level"[^>]*data-status="present"[^>]*data-authority="estimated"/);
-  assert.match(html, /data-testid="telemetry-viewers"[^>]*data-status="unknown"[^>]*data-authority="none"/);
+  assert.match(html, /data-testid="telemetry-viewers"[^>]*data-status="unknown"/);
+  assert.doesNotMatch(html, /data-testid="telemetry-viewers"[^>]*data-authority=/);
+  assert.doesNotMatch(html, /data-testid="telemetry-viewers"[^>]*data-temporal=/);
 
   assert.match(html, /<button[^>]*data-testid="telemetry-health-badge"/);
   assert.match(html, /<span[^>]*data-testid="telemetry-viewers-badge"/);
@@ -302,6 +300,7 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
     },
     vitals: {},
     broadcast: {},
+    telemetryItems: [],
   };
 
   const html = renderToString(
