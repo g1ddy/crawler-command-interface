@@ -61,25 +61,39 @@ export interface CompiledResearchOutput {
  * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
  * without intermediate candidate/scaffold models or manufactured floor metadata.
  */
-function generateStableDomainEventId(
-  floor: number,
-  claimId: string,
-  targetConcept?: string
-): string {
-  if (targetConcept) {
-    const slug = targetConcept
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, '');
-    return `evt-f${floor}-${slug}-${claimId.toLowerCase()}`;
-  }
+function generateResearchEventId(floor: number, claimId: string): string {
+  // Raw event IDs have a lowercase schema contract. Keep the original claim ID
+  // in the research ledger; normalize only the deterministic raw-file key.
   return `evt-f${floor}-${claimId.toLowerCase()}`;
 }
 
+function evidenceKey(evidence: unknown): string {
+  return JSON.stringify(evidence ?? []);
+}
+
+function hasSameResearchEvidence(
+  event: Record<string, unknown>,
+  claim: ResearchClaimDocument['claims'][number]
+): boolean {
+  return (
+    event.summary === claim.claim.summary &&
+    evidenceKey(event.evidence) === evidenceKey(claim.evidence)
+  );
+}
+
 /**
- * Compiles a validated research claim document directly into existing CCI raw JSON shapes
- * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
- * reconciling existing records in place without intermediate candidate/scaffold models.
+ * Compiles research into the existing CCI raw representation.
+ *
+ * This function deliberately performs only mechanical work:
+ * - preserve existing authored data;
+ * - preserve research ordering for newly emitted records;
+ * - carry evidence/unknowns forward;
+ * - use deterministic temporary research IDs;
+ * - never choose CCI event types or payload semantics.
+ *
+ * Existing records are reconciled only by deterministic compiler identity or
+ * an exact summary + complete evidence match. A shared locator alone is never
+ * treated as record identity.
  */
 export function compileRawFloor(
   researchDoc: ResearchClaimDocument,
@@ -104,12 +118,11 @@ export function compileRawFloor(
 
   const decisionMap = new Map<string, string>();
   if (modelingDoc) {
-    for (const d of modelingDoc.decisions) {
-      decisionMap.set(d.claimId, d.disposition);
+    for (const decision of modelingDoc.decisions) {
+      decisionMap.set(decision.claimId, decision.disposition);
     }
   }
 
-  // Copy existing events or initialize empty array
   const events: Array<Record<string, unknown>> = existingRaw?.events
     ? JSON.parse(JSON.stringify(existingRaw.events))
     : [];
@@ -118,103 +131,93 @@ export function compileRawFloor(
     ? JSON.parse(JSON.stringify(existingRaw.sources))
     : [];
 
-  const existingCatalogItems: Array<Record<string, unknown> | string> = existingRaw?.catalog?.items
-    ? JSON.parse(JSON.stringify(existingRaw.catalog.items))
-    : [];
+  const existingCatalogItems: Array<Record<string, unknown> | string> =
+    existingRaw?.catalog?.items
+      ? JSON.parse(JSON.stringify(existingRaw.catalog.items))
+      : [];
 
-  const existingCatalogAchievements: Array<Record<string, unknown> | string> = existingRaw?.catalog?.achievements
-    ? JSON.parse(JSON.stringify(existingRaw.catalog.achievements))
-    : [];
+  const existingCatalogAchievements: Array<Record<string, unknown> | string> =
+    existingRaw?.catalog?.achievements
+      ? JSON.parse(JSON.stringify(existingRaw.catalog.achievements))
+      : [];
 
-  const usedEventIds = new Set<string>(events.map((e) => String(e.id)));
+  const usedEventIds = new Set<string>(
+    events.map((event) => String(event.id))
+  );
 
-  // Preserve research YAML claim order strictly for newly created events
   for (const claim of researchDoc.claims) {
-    // If modeling decisions are supplied, claims without an established raw destination ('ledger_only' or 'review') remain research-only
     if (modelingDoc && decisionMap.get(claim.id) !== 'promote') {
       continue;
     }
 
-    const targetConcept = modelingDoc
-      ? modelingDoc.decisions.find((d) => d.claimId === claim.id)?.target?.concept
-      : undefined;
+    const eventId = generateResearchEventId(researchDoc.floor, claim.id);
 
-    const candidateEventId = generateStableDomainEventId(researchDoc.floor, claim.id, targetConcept);
-
-    // Reconcile existing events strictly by ID or exact evidence locator match (no summary text matching)
-    const existingIndex = events.findIndex((evt) => {
-      const idMatch = String(evt.id) === candidateEventId || String(evt.id) === `evt-f${researchDoc.floor}-${claim.id.toLowerCase()}`;
-      const evidenceLocatorMatch =
-        Array.isArray(evt.evidence) &&
-        evt.evidence.some(
-          (ev: Record<string, unknown>) =>
-            ev.locator &&
-            typeof ev.locator === 'object' &&
-            Object.keys(ev.locator as object).length > 0 &&
-            claim.evidence.some(
-              (rev) =>
-                rev.sourceId === ev.sourceId &&
-                rev.locator &&
-                JSON.stringify(rev.locator) === JSON.stringify(ev.locator)
-            )
-        );
-      return idMatch || evidenceLocatorMatch;
-    });
+    const existingIndex = events.findIndex(
+      (event) =>
+        String(event.id) === eventId || hasSameResearchEvidence(event, claim)
+    );
 
     if (existingIndex >= 0) {
-      // Reconcile and enrich existing record in place: preserve ID, type, position, and authored payload
-      const existingEvt = events[existingIndex];
-      const mergedEvidence = Array.from(
-        new Map(
-          [...(existingEvt.evidence as Array<Record<string, unknown>> || []), ...claim.evidence].map((ev) => [
-            `${ev.sourceId}:${JSON.stringify(ev.locator)}`,
-            ev,
-          ])
-        ).values()
-      );
-      existingEvt.evidence = mergedEvidence;
-      if (claim.unknowns) {
-        const existingUnknowns = new Set<string>((existingEvt.unknowns as string[]) || []);
-        for (const unk of claim.unknowns) existingUnknowns.add(unk);
-        existingEvt.unknowns = Array.from(existingUnknowns);
+      const existingEvent = events[existingIndex];
+
+      // Existing CCI semantics are authoritative. Only merge research evidence
+      // and explicit unknowns; never overwrite type, payload, position, or ID.
+      const existingEvidence = Array.isArray(existingEvent.evidence)
+        ? existingEvent.evidence
+        : [];
+      const mergedEvidence = new Map<string, Record<string, unknown>>();
+      for (const evidence of [...existingEvidence, ...claim.evidence]) {
+        mergedEvidence.set(evidenceKey(evidence), evidence);
+      }
+      existingEvent.evidence = Array.from(mergedEvidence.values());
+
+      if (claim.unknowns?.length) {
+        const existingUnknowns = Array.isArray(existingEvent.unknowns)
+          ? existingEvent.unknowns.map(String)
+          : [];
+        existingEvent.unknowns = Array.from(
+          new Set([...existingUnknowns, ...claim.unknowns])
+        );
       }
       continue;
     }
 
-    // New event creation: generate stable domain-oriented ID
-    let eventId = candidateEventId;
-    if (usedEventIds.has(eventId)) {
-      eventId = `${eventId}-alt`;
+    let newEventId = eventId;
+    if (usedEventIds.has(newEventId)) {
+      // This should only be reachable for an ID collision with an unrelated
+      // authored record. Do not silently invent an alternate semantic ID.
+      throw new Error(
+        `Compiler error: deterministic research event ID "${newEventId}" is already used by an unrelated event.`
+      );
     }
-    usedEventIds.add(eventId);
-
-    // Runtime position floor is set from document scope floor. Evidence locators remain on evidence items.
-    const position = {
-      floor: researchDoc.floor,
-    };
+    usedEventIds.add(newEventId);
 
     events.push({
-      id: eventId,
+      id: newEventId,
       summary: claim.claim.summary,
-      position,
+      position: { floor: researchDoc.floor },
       evidence: JSON.parse(JSON.stringify(claim.evidence)),
-      ...(claim.unknowns ? { unknowns: [...claim.unknowns] } : {}),
+      ...(claim.unknowns?.length
+        ? { unknowns: [...claim.unknowns] }
+        : {}),
     });
   }
 
-  // Merge sources without duplication
   const sourceMap = new Map<string, Record<string, unknown>>();
-  for (const s of existingSources) {
-    sourceMap.set(String(s.id), s);
+  for (const source of existingSources) {
+    sourceMap.set(String(source.id), source);
   }
-  for (const s of researchDoc.sources) {
-    if (!sourceMap.has(s.id)) {
-      sourceMap.set(s.id, {
-        id: s.id,
-        kind: s.kind,
-        trust: s.trust,
-        title: s.title,
-        ...(s.url ? { url: s.url } : {}),
+  for (const source of researchDoc.sources) {
+    if (!sourceMap.has(source.id)) {
+      sourceMap.set(source.id, {
+        id: source.id,
+        kind: source.kind,
+        trust: source.trust,
+        title: source.title,
+        url: source.url,
+        ...(source.citationStyle ? { citationStyle: source.citationStyle } : {}),
+        ...(source.accessedAt ? { accessedAt: source.accessedAt } : {}),
+        ...(source.revision ? { revision: source.revision } : {}),
       });
     }
   }
@@ -228,7 +231,6 @@ export function compileRawFloor(
     events,
   };
 }
-
 
 export function compileResearchTrace(
   researchDoc: ResearchClaimDocument,
