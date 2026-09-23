@@ -99,6 +99,11 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
   await expect(previewScope).toHaveAttribute("data-hud-presentation", "authority-arwes");
 
+  // Verify exclusive renderer selection: exactly 1 Arwes HUD renderer and zero alternate HUD renderers
+  await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
+  await expect(page.locator(".system-hud")).toHaveCount(0);
+  await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
+
   // Verify the Arwes renderer composition foundation mounts and renders
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();
@@ -144,8 +149,20 @@ test("authority-arwes presentation mounts, unmounts cleanly on navigation away, 
   await expect(page.getByTestId("arwes-authority-composition")).toBeVisible();
 });
 
+test("authority-arwes presentation supports reduced and deterministic motion modes", async ({ page }) => {
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=reduced`);
+  const compositionReduced = page.getByTestId("arwes-authority-composition");
+  await expect(compositionReduced).toBeVisible();
+  await expect(compositionReduced).toHaveAttribute("data-motion-mode", "reduced");
+
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+  const compositionDeterministic = page.getByTestId("arwes-authority-composition");
+  await expect(compositionDeterministic).toBeVisible();
+  await expect(compositionDeterministic).toHaveAttribute("data-motion-mode", "deterministic");
+});
+
 test("captures research screenshot artifact for authority-arwes presentation foundation", async ({ page }, testInfo) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes`);
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
 
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();

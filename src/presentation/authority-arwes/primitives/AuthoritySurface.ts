@@ -7,6 +7,7 @@ export interface AuthoritySurfaceProps {
   className?: string;
   style?: CSSProperties;
   "data-testid"?: string;
+  [key: `data-${string}`]: unknown;
 }
 
 export function AuthoritySurface({
@@ -14,6 +15,7 @@ export function AuthoritySurface({
   className,
   style,
   "data-testid": testId,
+  ...rest
 }: AuthoritySurfaceProps) {
   return createElement(
     "div",
@@ -26,6 +28,7 @@ export function AuthoritySurface({
         ...style,
       },
       "data-testid": testId,
+      ...rest,
     },
     children
   );

@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { createElement } from "react";
 import { Animator } from "@arwes/react-animator";
 import { Animated } from "@arwes/react-animated";
+import type { PresentationMotionIntent } from "../../semantic/public.ts";
 
 export type AuthorityTransitionState =
   | "entering"
@@ -17,6 +18,7 @@ export type AuthorityMotionMode =
 
 export interface AuthorityTransitionProps {
   state?: AuthorityTransitionState;
+  motionIntent?: PresentationMotionIntent;
   motionMode?: AuthorityMotionMode;
   children?: ReactNode;
   className?: string;
@@ -26,6 +28,7 @@ export interface AuthorityTransitionProps {
 
 export function AuthorityTransition({
   state = "entered",
+  motionIntent,
   motionMode = "enabled",
   children,
   className,
@@ -48,6 +51,7 @@ export function AuthorityTransition({
         "data-testid": testId,
         "data-transition-state": state,
         "data-motion-mode": "deterministic",
+        ...(motionIntent ? { "data-motion-intent": motionIntent } : {}),
       },
       children
     );
@@ -55,11 +59,21 @@ export function AuthorityTransition({
 
   const isReduced = motionMode === "reduced";
 
+  const animatedEffects: false | ("fade" | "flicker")[] = isReduced
+    ? false
+    : ["fade"];
+
+  const animDuration = isReduced
+    ? { enter: 0, exit: 0 }
+    : motionIntent === "attention"
+    ? { enter: 0.15, exit: 0.15 }
+    : { enter: 0.2, exit: 0.2 };
+
   return createElement(
     Animator,
     {
       active: isActive,
-      duration: isReduced ? { enter: 0, exit: 0 } : { enter: 0.2, exit: 0.2 },
+      duration: animDuration,
     },
     createElement(
       "div",
@@ -67,13 +81,14 @@ export function AuthorityTransition({
         "data-testid": testId,
         "data-transition-state": state,
         "data-motion-mode": isReduced ? "reduced" : "enabled",
+        ...(motionIntent ? { "data-motion-intent": motionIntent } : {}),
       },
       createElement(
         Animated,
         {
           className,
           style,
-          animated: isReduced ? false : ["fade"],
+          animated: animatedEffects,
         },
         children
       )

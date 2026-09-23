@@ -34,7 +34,7 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
   onNavigateToSequence: (sequence: number) => void;
 }) {
   const [showEvidence, setShowEvidence] = useState(false);
-  return <header className="system-hud" aria-label="Crawler HUD">
+  return <header className="system-hud" aria-label="Crawler HUD" data-hud-renderer="concept">
     <div className="hud-identity">
       <span className="hud-kicker">Crawler interface</span>
       <h1>{state.crawler.name}</h1>

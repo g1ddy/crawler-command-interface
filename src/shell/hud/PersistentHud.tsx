@@ -82,7 +82,7 @@ export function PersistentHud({
   const viewersObs = composition?.broadcast.viewers ?? observations.broadcast.viewers;
 
   return (
-    <header className={styles.hud} aria-label="Crawler HUD" data-hud-composition="persistent">
+    <header className={styles.hud} aria-label="Crawler HUD" data-hud-composition="persistent" data-hud-renderer="persistent">
       <div className={styles.masthead}>
         <div className={styles.identity}>
           <div className={styles.identityHeader}>

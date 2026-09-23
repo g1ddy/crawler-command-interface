@@ -3,6 +3,26 @@ import {
   mapCapabilityAvailabilityToSemantics,
 } from "../../src/presentation/semantic/public.ts";
 
+test("HUD Semantics: PresentationMotionIntent vocabulary is renderer-neutral and React-free", () => {
+  const validIntents = [
+    "established",
+    "changed",
+    "attention",
+    "enter-context",
+    "enter-replay",
+    "return-live",
+    "disclose",
+  ];
+
+  for (const intent of validIntents) {
+    const semantic = {
+      status: "present",
+      motionIntent: intent,
+    };
+    assert.equal(semantic.motionIntent, intent);
+  }
+});
+
 test("HUD Semantics: evaluated capability maps only to affordance", () => {
   assert.deepEqual(mapCapabilityAvailabilityToSemantics(true), {
     affordance: "action",

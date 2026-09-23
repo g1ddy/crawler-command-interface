@@ -4,26 +4,41 @@ import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
+import { AuthorityTransition } from "./primitives/AuthorityTransition.ts";
+import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
 import type {
   HudCompositionModel,
   HudTelemetryKey,
   HudTelemetryPresentation,
 } from "../../shell/hud/public.ts";
+import type { PresentationMotionIntent } from "../semantic/public.ts";
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
   onInspectTelemetry?: (key: HudTelemetryKey) => void;
+  motionMode?: AuthorityMotionMode;
 }
 
 interface TelemetryRowProps {
   item: HudTelemetryPresentation;
   onInspect?: () => void;
+  motionMode?: AuthorityMotionMode;
 }
 
-function TelemetryRow({ item, onInspect }: TelemetryRowProps) {
+function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
   const { key, label, valueDisplay, badgeLabel, semantics } = item;
   const rowKey = key;
   const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
+
+  const rowMotionIntent: PresentationMotionIntent | undefined =
+    semantics.motionIntent ??
+    (semantics.change === "newly-established"
+      ? "established"
+      : semantics.change === "changed"
+      ? "changed"
+      : semantics.status === "present"
+      ? "established"
+      : undefined);
 
   const badgeElement = isInspectable
     ? createElement(
@@ -73,66 +88,84 @@ function TelemetryRow({ item, onInspect }: TelemetryRowProps) {
       );
 
   return createElement(
-    "div",
+    AuthorityTransition,
     {
-      className: "arwes-telemetry-row",
-      "data-testid": `telemetry-${rowKey}`,
-      "data-status": semantics.status,
-      ...(semantics.authority ? { "data-authority": semantics.authority } : {}),
-      ...(semantics.temporal ? { "data-temporal": semantics.temporal } : {}),
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "0.35rem 0.5rem",
-        borderBottom: "1px solid rgba(56, 189, 248, 0.12)",
-      },
+      motionIntent: rowMotionIntent,
+      motionMode,
     },
     createElement(
       "div",
-      { style: { display: "flex", flexDirection: "column" } },
-      createElement(
-        "span",
-        {
-          style: {
-            fontSize: "0.68rem",
-            color: "#94a3b8",
-            letterSpacing: "0.05em",
-            fontWeight: 600,
-            textTransform: "uppercase",
-          },
+      {
+        className: "arwes-telemetry-row",
+        "data-testid": `telemetry-${rowKey}`,
+        "data-status": semantics.status,
+        ...(semantics.authority ? { "data-authority": semantics.authority } : {}),
+        ...(semantics.temporal ? { "data-temporal": semantics.temporal } : {}),
+        ...(rowMotionIntent ? { "data-motion-intent": rowMotionIntent } : {}),
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0.35rem 0.5rem",
+          borderBottom: "1px solid rgba(56, 189, 248, 0.12)",
         },
-        label
+      },
+      createElement(
+        "div",
+        { style: { display: "flex", flexDirection: "column" } },
+        createElement(
+          "span",
+          {
+            style: {
+              fontSize: "0.68rem",
+              color: "#94a3b8",
+              letterSpacing: "0.05em",
+              fontWeight: 600,
+              textTransform: "uppercase",
+            },
+          },
+          label
+        ),
+        createElement(
+          "span",
+          {
+            "data-testid": `telemetry-${rowKey}-value`,
+            style: {
+              fontSize: "1.05rem",
+              fontWeight: 700,
+              color: semantics.status === "unknown" ? "#64748b" : "#f8fafc",
+              fontFamily: "monospace",
+            },
+          },
+          valueDisplay
+        )
       ),
-      createElement(
-        "span",
-        {
-          "data-testid": `telemetry-${rowKey}-value`,
-          style: {
-            fontSize: "1.05rem",
-            fontWeight: 700,
-            color: semantics.status === "unknown" ? "#64748b" : "#f8fafc",
-            fontFamily: "monospace",
-          },
-        },
-        valueDisplay
-      )
-    ),
-    createElement("div", { style: { display: "flex", alignItems: "center" } }, badgeElement)
+      createElement("div", { style: { display: "flex", alignItems: "center" } }, badgeElement)
+    )
   );
 }
 
 export function ArwesAuthorityComposition({
   composition,
   onInspectTelemetry,
+  motionMode = "enabled",
 }: ArwesAuthorityCompositionProps) {
   const { system, temporal, urgency, attention, telemetryItems } = composition;
+
+  const temporalIntent: PresentationMotionIntent = temporal.isLive
+    ? "return-live"
+    : "enter-replay";
+
+  const attentionIntent: PresentationMotionIntent | undefined = attention.hasActiveAlerts
+    ? "attention"
+    : undefined;
 
   return createElement(
     AuthoritySurface,
     {
       className: "arwes-authority-composition",
       "data-testid": "arwes-authority-composition",
+      "data-motion-mode": motionMode,
       style: {
         position: "relative",
         padding: "0.85rem",
@@ -257,35 +290,50 @@ export function ArwesAuthorityComposition({
 
         /* Temporal Context & Floor Location */
         createElement(
-          "div",
+          AuthorityTransition,
           {
-            "data-testid": "hud-audience-mode",
-            "data-mode": temporal.mode,
-            style: { textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.25rem" },
+            motionIntent: temporalIntent,
+            motionMode,
+            "data-testid": "arwes-temporal-transition",
           },
-          createElement(
-            "span",
-            {
-              "data-testid": "arwes-mode-badge",
-              style: {
-                fontSize: "0.75rem",
-                fontWeight: 800,
-                background: temporal.isLive ? "#15803d" : "#b45309",
-                color: "#ffffff",
-                padding: "0.2rem 0.55rem",
-                borderRadius: "3px",
-                letterSpacing: "0.06em",
-              },
-            },
-            temporal.mode.toUpperCase()
-          ),
           createElement(
             "div",
             {
-              "data-testid": "arwes-location-info",
-              style: { fontSize: "0.78rem", color: "#cbd5e1", fontWeight: "600" },
+              "data-testid": "hud-audience-mode",
+              "data-mode": temporal.mode,
+              "data-motion-intent": temporalIntent,
+              style: {
+                textAlign: "right",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+                gap: "0.25rem",
+              },
             },
-            `${system.floorTitle} · SEQ ${system.sequence}`
+            createElement(
+              "span",
+              {
+                "data-testid": "arwes-mode-badge",
+                style: {
+                  fontSize: "0.75rem",
+                  fontWeight: 800,
+                  background: temporal.isLive ? "#15803d" : "#b45309",
+                  color: "#ffffff",
+                  padding: "0.2rem 0.55rem",
+                  borderRadius: "3px",
+                  letterSpacing: "0.06em",
+                },
+              },
+              temporal.mode.toUpperCase()
+            ),
+            createElement(
+              "div",
+              {
+                "data-testid": "arwes-location-info",
+                style: { fontSize: "0.78rem", color: "#cbd5e1", fontWeight: "600" },
+              },
+              `${system.floorTitle} · SEQ ${system.sequence}`
+            )
           )
         )
       )
@@ -332,6 +380,7 @@ export function ArwesAuthorityComposition({
             return createElement(TelemetryRow, {
               key: rowKey || idx,
               item,
+              motionMode,
               onInspect: onInspectTelemetry
                 ? () => onInspectTelemetry(rowKey)
                 : undefined,
@@ -342,70 +391,79 @@ export function ArwesAuthorityComposition({
 
       /* System Attention Surface */
       createElement(
-        AuthorityFrame,
+        AuthorityTransition,
         {
-          significance: attention.hasActiveAlerts ? "critical" : "informational",
-          variant: "corners",
-          "data-testid": "arwes-attention-frame",
+          motionIntent: attentionIntent,
+          motionMode,
+          "data-testid": "arwes-attention-transition",
         },
         createElement(
-          "h3",
+          AuthorityFrame,
           {
-            style: {
-              margin: "0 0 0.5rem 0",
-              fontSize: "0.8rem",
-              color: attention.hasActiveAlerts ? "#fca5a5" : "#7dd3fc",
-              letterSpacing: "0.06em",
-              fontWeight: 700,
-              textTransform: "uppercase",
-            },
+            significance: attention.hasActiveAlerts ? "critical" : "informational",
+            variant: "corners",
+            "data-testid": "arwes-attention-frame",
           },
-          "SYSTEM ATTENTION"
-        ),
-        createElement(
-          "div",
-          {
-            "data-testid": "arwes-attention-alert",
-            "data-has-alerts": String(attention.hasActiveAlerts),
-            style: {
-              padding: "0.6rem",
-              background: attention.hasActiveAlerts
-                ? "rgba(225, 29, 72, 0.15)"
-                : "transparent",
-              borderRadius: "4px",
+          createElement(
+            "h3",
+            {
+              style: {
+                margin: "0 0 0.5rem 0",
+                fontSize: "0.8rem",
+                color: attention.hasActiveAlerts ? "#fca5a5" : "#7dd3fc",
+                letterSpacing: "0.06em",
+                fontWeight: 700,
+                textTransform: "uppercase",
+              },
             },
-          },
+            "SYSTEM ATTENTION"
+          ),
           createElement(
             "div",
             {
+              "data-testid": "arwes-attention-alert",
+              "data-has-alerts": String(attention.hasActiveAlerts),
+              ...(attentionIntent ? { "data-motion-intent": attentionIntent } : {}),
               style: {
-                fontSize: "0.72rem",
-                fontWeight: 800,
-                color: attention.hasActiveAlerts ? "#f43f5e" : "#22c55e",
-                letterSpacing: "0.05em",
-                marginBottom: "0.25rem",
+                padding: "0.6rem",
+                background: attention.hasActiveAlerts
+                  ? "rgba(225, 29, 72, 0.15)"
+                  : "transparent",
+                borderRadius: "4px",
               },
             },
-            attention.hasActiveAlerts ? "⚠️ ATTENTION REQUIRED" : "✓ NOMINAL"
-          ),
-          attention.latestNotificationTitle
-            ? createElement(
-                "div",
-                { style: { fontSize: "0.85rem", fontWeight: 700, color: "#f8fafc" } },
-                attention.latestNotificationTitle
-              )
-            : null,
-          attention.latestNotificationMessage
-            ? createElement(
-                "div",
-                { style: { fontSize: "0.78rem", color: "#cbd5e1", marginTop: "0.15rem" } },
-                attention.latestNotificationMessage
-              )
-            : createElement(
-                "div",
-                { style: { fontSize: "0.75rem", color: "#64748b" } },
-                "No active notifications in current sequence."
-              )
+            createElement(
+              "div",
+              {
+                style: {
+                  fontSize: "0.72rem",
+                  fontWeight: 800,
+                  color: attention.hasActiveAlerts ? "#f43f5e" : "#22c55e",
+                  letterSpacing: "0.05em",
+                  marginBottom: "0.25rem",
+                },
+              },
+              attention.hasActiveAlerts ? "⚠️ ATTENTION REQUIRED" : "✓ NOMINAL"
+            ),
+            attention.latestNotificationTitle
+              ? createElement(
+                  "div",
+                  { style: { fontSize: "0.85rem", fontWeight: 700, color: "#f8fafc" } },
+                  attention.latestNotificationTitle
+                )
+              : null,
+            attention.latestNotificationMessage
+              ? createElement(
+                  "div",
+                  { style: { fontSize: "0.78rem", color: "#cbd5e1", marginTop: "0.15rem" } },
+                  attention.latestNotificationMessage
+                )
+              : createElement(
+                  "div",
+                  { style: { fontSize: "0.75rem", color: "#64748b" } },
+                  "No active notifications in current sequence."
+                )
+          )
         )
       )
     )

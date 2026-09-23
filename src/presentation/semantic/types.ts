@@ -31,12 +31,32 @@ export type PresentationAffordance =
   | "inspect"
   | "action";
 
+/**
+ * Renderer-neutral motion intent describing the semantic cause/reason for a visual transition:
+ * - "established": A concept has transitioned from unestablished/unavailable to established state.
+ * - "changed": A meaningful state change occurred (e.g. system alert or urgency phase transition).
+ * - "attention": System attention required or active alert triggered.
+ * - "enter-context": Contextual region or detail focus reveal.
+ * - "enter-replay": Temporal context transitioned from Live into Replay mode.
+ * - "return-live": Temporal context transitioned from Replay back into Live mode.
+ * - "disclose": Inspection or detail disclosure affordance activated.
+ */
+export type PresentationMotionIntent =
+  | "established"
+  | "changed"
+  | "attention"
+  | "enter-context"
+  | "enter-replay"
+  | "return-live"
+  | "disclose";
+
 export interface PresentationSemantics {
   status: PresentationStatus;
   temporal?: PresentationTemporal;
   authority?: PresentationAuthority;
   change?: PresentationChange;
   affordance?: PresentationAffordance;
+  motionIntent?: PresentationMotionIntent;
   provenance?: {
     inspectable: boolean;
   };
