@@ -5,8 +5,7 @@ import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import {
   loadResearchClaimDocument,
-  loadModelingDecisionDocument,
-  parseResearchClaimDocument,
+    parseResearchClaimDocument,
 } from '../../app/domain/research-loader.ts';
 import { validateResearchClaimDocument } from '../../app/domain/research-validator.ts';
 import {
@@ -17,7 +16,6 @@ import { validateRawCrawlerFloor } from '../../app/domain/validation.ts';
 
 const PET_RESEARCH_FIXTURE = 'data/raw/research/floor-3/pet-research.yaml';
 const GENERAL_RESEARCH_FIXTURE = 'data/raw/research/floor-3/research.yaml';
-const GENERAL_MODELING_FIXTURE = 'data/raw/research/floor-3/modeling-decisions.yaml';
 
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -58,7 +56,7 @@ test('Research Compiler: produces deterministic byte-equivalent outputs for iden
   assert.deepEqual(compiled1, compiled2);
 });
 
-test('Research Compiler: strictly preserves research YAML claim ordering in generated raw events', () => {
+test('Research Compiler: strictly preserves research YAML claim ordering in generated raw curation records', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const compiled = compileRawFloor(doc);
 
@@ -125,10 +123,10 @@ test('Research Compiler: uncurated raw records fail existing CCI raw floor schem
 
 test('Research Compiler: CLI script generates raw artifacts in target directory', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const tmpDir = path.resolve(process.cwd(), '.tmp/test-research-scaffold');
+  const tmpDir = path.resolve(process.cwd(), '.tmp/test-research-compile');
   fs.rmSync(tmpDir, { recursive: true, force: true });
 
-  const scriptPath = path.resolve(process.cwd(), 'scripts/generate-research-scaffold.mjs');
+  const scriptPath = path.resolve(process.cwd(), 'scripts/compile-research-raw.mjs');
   const output = execFileSync('node', [
     '--experimental-strip-types',
     scriptPath,
@@ -186,7 +184,7 @@ test('Research Compiler: filters out ledger_only and review claims when modeling
   const fullCompiled = compileRawFloor(doc);
   assert.equal(fullCompiled.events.length, 15);
 
-  const filteredCompiled = compileRawFloor(doc, modelingDoc);
+  const filteredCompiled = compileRawFloor(doc);
   // Pet modeling decisions promote 5 claims (P3-PET-002, 004, 005, 006, 008)
   assert.equal(filteredCompiled.events.length, 5);
 
@@ -231,7 +229,7 @@ test('Research Compiler: reconciles existing raw floor records without creating 
     ]
   };
 
-  const compiled = compileRawFloor(doc, modelingDoc, existingRaw);
+  const compiled = compileRawFloor(doc, existingRaw);
 
   const matchingEvents = compiled.events.filter(
     (e) => String(e.id) === 'evt-f3-magical-pet-carrier-acquired'
