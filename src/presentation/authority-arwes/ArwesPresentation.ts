@@ -4,7 +4,6 @@ import { ArwesAuthorityComposition } from "./ArwesAuthorityComposition.ts";
 import type {
   HudCompositionModel,
   HudTelemetryKey,
-  HudTelemetryPresentation,
 } from "../../shell/hud/public.ts";
 
 /**
@@ -15,16 +14,13 @@ import type {
  */
 export interface ArwesPresentationProps {
   model: HudCompositionModel;
-  telemetryItems?: HudTelemetryPresentation[];
   onInspectTelemetry?: (key: HudTelemetryKey) => void;
 }
 
 export function ArwesPresentation({
   model,
-  telemetryItems,
   onInspectTelemetry,
 }: ArwesPresentationProps) {
-  const items = telemetryItems || model.telemetryItems || [];
   return createElement(
     "div",
     {
@@ -33,7 +29,6 @@ export function ArwesPresentation({
     },
     createElement(ArwesAuthorityComposition, {
       composition: model,
-      telemetryItems: items,
       onInspectTelemetry,
     })
   );
