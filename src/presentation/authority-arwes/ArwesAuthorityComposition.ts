@@ -4,16 +4,11 @@ import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
-import type { PresentationSemantics } from "../semantic/public.ts";
-import type { HudCompositionModel, HudTelemetryKey } from "../../shell/hud/public.ts";
-
-export interface ArwesTelemetryRowData {
-  key?: HudTelemetryKey | string;
-  label: string;
-  valueDisplay: string;
-  badgeLabel: string;
-  semantics: PresentationSemantics;
-}
+import type {
+  HudCompositionModel,
+  HudTelemetryKey,
+  HudTelemetryPresentation,
+} from "../../shell/hud/public.ts";
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
@@ -21,13 +16,13 @@ export interface ArwesAuthorityCompositionProps {
 }
 
 interface TelemetryRowProps {
-  item: ArwesTelemetryRowData;
+  item: HudTelemetryPresentation;
   onInspect?: () => void;
 }
 
 function TelemetryRow({ item, onInspect }: TelemetryRowProps) {
   const { key, label, valueDisplay, badgeLabel, semantics } = item;
-  const rowKey = key || label.toLowerCase().replace(/\s+/g, "-");
+  const rowKey = key;
   const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
 
   const badgeElement = isInspectable
