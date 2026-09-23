@@ -169,7 +169,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       valueDisplay: "84",
       badgeLabel: "SOURCE",
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-      onInspect: () => {},
     },
     {
       key: "mana",
@@ -177,7 +176,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       valueDisplay: "50",
       badgeLabel: "SOURCE",
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-      onInspect: () => {},
     },
     {
       key: "level",
@@ -185,7 +183,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       valueDisplay: "3",
       badgeLabel: "LAST KNOWN · SEQ 20",
       semantics: { status: "present", temporal: "last-known", authority: "observed", affordance: "inspect" },
-      onInspect: () => {},
     },
     {
       key: "viewers",
@@ -193,7 +190,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       valueDisplay: "120",
       badgeLabel: "SOURCE",
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-      onInspect: () => {},
     },
   ];
 
@@ -204,6 +200,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       React.createElement(ArwesPresentation, {
         model: fullModel,
         telemetryItems,
+        onInspectTelemetry: () => {},
       })
     )
   );
@@ -236,27 +233,28 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
 
   const telemetryItems = [
     {
+      key: "health",
       label: "HEALTH",
       valueDisplay: "100",
       badgeLabel: "SOURCE",
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-      onInspect: () => {},
     },
     {
+      key: "mana",
       label: "MANA",
       valueDisplay: "50",
       badgeLabel: "LAST KNOWN · SEQ 5",
       semantics: { status: "present", temporal: "last-known", authority: "observed", affordance: "inspect" },
-      onInspect: () => {},
     },
     {
+      key: "level",
       label: "LEVEL",
       valueDisplay: "4",
       badgeLabel: "ESTIMATED",
       semantics: { status: "present", temporal: "current", authority: "estimated", affordance: "inspect" },
-      onInspect: () => {},
     },
     {
+      key: "viewers",
       label: "AUDIENCE VIEWERS",
       valueDisplay: "— ABSENT",
       badgeLabel: "— ABSENT",
@@ -265,16 +263,20 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
   ];
 
   const html = renderToString(
-    React.createElement(ArwesPresentation, { model, telemetryItems })
+    React.createElement(ArwesPresentation, {
+      model,
+      telemetryItems,
+      onInspectTelemetry: () => {},
+    })
   );
 
   assert.match(html, /data-testid="telemetry-health"[^>]*data-status="present"[^>]*data-authority="observed"[^>]*data-temporal="current"/);
   assert.match(html, /data-testid="telemetry-mana"[^>]*data-status="present"[^>]*data-authority="observed"[^>]*data-temporal="last-known"/);
   assert.match(html, /data-testid="telemetry-level"[^>]*data-status="present"[^>]*data-authority="estimated"/);
-  assert.match(html, /data-testid="telemetry-audience-viewers"[^>]*data-status="unknown"[^>]*data-authority="none"/);
+  assert.match(html, /data-testid="telemetry-viewers"[^>]*data-status="unknown"[^>]*data-authority="none"/);
 
   assert.match(html, /<button[^>]*data-testid="telemetry-health-badge"/);
-  assert.match(html, /<span[^>]*data-testid="telemetry-audience-viewers-badge"/);
+  assert.match(html, /<span[^>]*data-testid="telemetry-viewers-badge"/);
 });
 
 test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {

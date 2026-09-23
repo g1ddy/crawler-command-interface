@@ -9,11 +9,13 @@ import type {
 export interface ArwesPresentationProps {
   model: HudCompositionModel;
   telemetryItems?: HudTelemetryPresentation[];
+  onInspectTelemetry?: (key: string) => void;
 }
 
 export function ArwesPresentation({
   model,
-  telemetryItems = [],
+  telemetryItems,
+  onInspectTelemetry,
 }: ArwesPresentationProps) {
   return createElement(
     "div",
@@ -24,6 +26,7 @@ export function ArwesPresentation({
     createElement(ArwesAuthorityComposition, {
       composition: model,
       telemetryItems,
+      onInspectTelemetry,
     })
   );
 }

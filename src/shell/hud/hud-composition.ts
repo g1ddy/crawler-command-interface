@@ -32,16 +32,17 @@ export interface HudAttentionSummary {
   latestNotificationMessage?: string;
 }
 
+export type HudTelemetryKey = "health" | "mana" | "level" | "viewers";
+
 /**
  * Renderer-neutral telemetry item model describing semantic meaning and display strings.
  */
 export interface HudTelemetryPresentation {
-  key: "health" | "mana" | "level" | "viewers";
+  key: HudTelemetryKey;
   label: string;
   valueDisplay: string;
   badgeLabel: string;
   semantics: PresentationSemantics;
-  onInspect?: () => void;
 }
 
 export interface HudVitalsSummary {

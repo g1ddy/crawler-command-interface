@@ -13,20 +13,21 @@ export interface ArwesTelemetryRowData {
   valueDisplay: string;
   badgeLabel: string;
   semantics: PresentationSemantics;
-  onInspect?: () => void;
 }
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
   telemetryItems?: ArwesTelemetryRowData[];
+  onInspectTelemetry?: (key: string) => void;
 }
 
 interface TelemetryRowProps {
   item: ArwesTelemetryRowData;
+  onInspect?: () => void;
 }
 
-function TelemetryRow({ item }: TelemetryRowProps) {
-  const { key, label, valueDisplay, badgeLabel, semantics, onInspect } = item;
+function TelemetryRow({ item, onInspect }: TelemetryRowProps) {
+  const { key, label, valueDisplay, badgeLabel, semantics } = item;
   const rowKey = key || label.toLowerCase().replace(/\s+/g, "-");
   const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
 
@@ -130,6 +131,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
 export function ArwesAuthorityComposition({
   composition,
   telemetryItems = [],
+  onInspectTelemetry,
 }: ArwesAuthorityCompositionProps) {
   const { system, temporal, urgency, attention } = composition;
 
@@ -332,12 +334,16 @@ export function ArwesAuthorityComposition({
         createElement(
           "div",
           { style: { display: "flex", flexDirection: "column" } },
-          telemetryItems.map((item, idx) =>
-            createElement(TelemetryRow, {
-              key: item.key || item.label || idx,
+          telemetryItems.map((item, idx) => {
+            const rowKey = item.key || item.label.toLowerCase().replace(/\s+/g, "-");
+            return createElement(TelemetryRow, {
+              key: rowKey || idx,
               item,
-            })
-          )
+              onInspect: onInspectTelemetry
+                ? () => onInspectTelemetry(rowKey)
+                : undefined,
+            });
+          })
         )
       ),
 

@@ -32,7 +32,7 @@ import type {
 import type { HudPresentation } from "../hud/hud-presentation";
 import type { RootView } from "../navigation/public";
 import type { EquipmentSlot } from "../../application/crawler-action-contracts";
-import type { HudTelemetryPresentation } from "../hud/hud-composition.ts";
+import type { HudTelemetryKey, HudTelemetryPresentation } from "../hud/hud-composition.ts";
 
 /** Composition adapter for existing features; the replaceable frame only receives slots. */
 export function CrawlerWorkspace({
@@ -196,7 +196,7 @@ export function CrawlerWorkspace({
     const viewersObs = projectedObservations.broadcast.viewers;
 
     const buildItem = (
-      key: "health" | "mana" | "level" | "viewers",
+      key: HudTelemetryKey,
       label: string,
       observation: ProjectedObservationValue | undefined
     ): HudTelemetryPresentation => {
@@ -213,7 +213,6 @@ export function CrawlerWorkspace({
         valueDisplay,
         badgeLabel: evidence.badgeLabel,
         semantics,
-        onInspect: observation ? () => setInspectObservation(observation) : undefined,
       };
     };
 
@@ -224,6 +223,22 @@ export function CrawlerWorkspace({
       buildItem("viewers", "AUDIENCE VIEWERS", viewersObs),
     ];
   }, [projectedObservations, currentSeq]);
+
+  const handleInspectTelemetry = useCallback(
+    (key: string) => {
+      const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
+        health: projectedObservations.condition.currentHealth,
+        mana: projectedObservations.condition.currentMana,
+        level: projectedObservations.xpProgress.level,
+        viewers: projectedObservations.broadcast.viewers,
+      };
+      const obs = observationsMap[key];
+      if (obs) {
+        setInspectObservation(obs);
+      }
+    },
+    [projectedObservations]
+  );
 
   const navigationContract = useMemo(
     () =>
@@ -286,6 +301,7 @@ export function CrawlerWorkspace({
           <ArwesPresentation
             model={composition}
             telemetryItems={telemetryItems}
+            onInspectTelemetry={handleInspectTelemetry}
           />
         ) : usesConceptHud ? (
           <ConceptHud
