@@ -17,7 +17,6 @@ export interface ArwesTelemetryRowData {
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
-  telemetryItems?: ArwesTelemetryRowData[];
   onInspectTelemetry?: (key: HudTelemetryKey) => void;
 }
 
@@ -84,8 +83,8 @@ function TelemetryRow({ item, onInspect }: TelemetryRowProps) {
       className: "arwes-telemetry-row",
       "data-testid": `telemetry-${rowKey}`,
       "data-status": semantics.status,
-      "data-authority": semantics.authority || "none",
-      "data-temporal": semantics.temporal || "current",
+      ...(semantics.authority ? { "data-authority": semantics.authority } : {}),
+      ...(semantics.temporal ? { "data-temporal": semantics.temporal } : {}),
       style: {
         display: "flex",
         justifyContent: "space-between",
@@ -130,10 +129,9 @@ function TelemetryRow({ item, onInspect }: TelemetryRowProps) {
 
 export function ArwesAuthorityComposition({
   composition,
-  telemetryItems = [],
   onInspectTelemetry,
 }: ArwesAuthorityCompositionProps) {
-  const { system, temporal, urgency, attention } = composition;
+  const { system, temporal, urgency, attention, telemetryItems } = composition;
 
   return createElement(
     AuthoritySurface,
@@ -335,7 +333,7 @@ export function ArwesAuthorityComposition({
           "div",
           { style: { display: "flex", flexDirection: "column" } },
           telemetryItems.map((item, idx) => {
-            const rowKey = (item.key || item.label.toLowerCase().replace(/\s+/g, "-")) as HudTelemetryKey;
+            const rowKey = item.key as HudTelemetryKey;
             return createElement(TelemetryRow, {
               key: rowKey || idx,
               item,
