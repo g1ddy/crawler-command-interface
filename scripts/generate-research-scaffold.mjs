@@ -52,37 +52,35 @@ try {
       ? modelingPath
       : path.resolve(process.cwd(), modelingPath);
     if (fs.existsSync(resolvedModelingPath)) {
+      console.log(`[Research Raw Compiler] Loading modeling decisions: ${resolvedModelingPath}`);
       modelingDoc = loadModelingDecisionDocument(resolvedModelingPath);
     }
   }
-
-  const rawFloor = compileRawFloor(researchDoc, modelingDoc);
-
-  fs.mkdirSync(resolvedOutputDir, { recursive: true });
 
   const eventsPath = path.join(resolvedOutputDir, 'events.json');
   const catalogPath = path.join(resolvedOutputDir, 'catalog.json');
   const sourcesPath = path.join(resolvedOutputDir, 'sources.json');
 
-  let catalogToWrite = rawFloor.catalog;
-  if (fs.existsSync(catalogPath)) {
-    try {
-      const existingCatalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-      const items = Array.from(new Set([...(existingCatalog.items || []), ...(rawFloor.catalog.items || [])]));
-      const achievements = Array.from(new Set([...(existingCatalog.achievements || []), ...(rawFloor.catalog.achievements || [])]));
-      catalogToWrite = { items, achievements };
-    } catch {
-      // If unparseable, fall back to compiled catalog
-    }
+  let existingRaw;
+  if (fs.existsSync(eventsPath) || fs.existsSync(catalogPath) || fs.existsSync(sourcesPath)) {
+    existingRaw = {
+      events: fs.existsSync(eventsPath) ? JSON.parse(fs.readFileSync(eventsPath, 'utf8')) : undefined,
+      catalog: fs.existsSync(catalogPath) ? JSON.parse(fs.readFileSync(catalogPath, 'utf8')) : undefined,
+      sources: fs.existsSync(sourcesPath) ? JSON.parse(fs.readFileSync(sourcesPath, 'utf8')) : undefined,
+    };
   }
 
+  const rawFloor = compileRawFloor(researchDoc, modelingDoc, existingRaw);
+
+  fs.mkdirSync(resolvedOutputDir, { recursive: true });
+
   fs.writeFileSync(eventsPath, JSON.stringify(rawFloor.events, null, 2), 'utf8');
-  fs.writeFileSync(catalogPath, JSON.stringify(catalogToWrite, null, 2), 'utf8');
+  fs.writeFileSync(catalogPath, JSON.stringify(rawFloor.catalog, null, 2), 'utf8');
   fs.writeFileSync(sourcesPath, JSON.stringify(rawFloor.sources, null, 2), 'utf8');
 
   console.log(`\n[Research Raw Compiler Success] Updated raw floor JSON files under ${resolvedOutputDir}`);
   console.log(`  - events.json (${rawFloor.events.length} raw floor events in YAML claim order)`);
-  console.log(`  - catalog.json (${catalogToWrite.items.length} catalog items)`);
+  console.log(`  - catalog.json (${rawFloor.catalog.items.length} catalog items)`);
   console.log(`  - sources.json (${rawFloor.sources.length} sources)\n`);
 
 } catch (err) {

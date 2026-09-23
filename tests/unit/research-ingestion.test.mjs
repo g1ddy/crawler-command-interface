@@ -62,15 +62,11 @@ test('Research Draft Compiler: strictly preserves research YAML claim ordering i
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const draft = compileRawDraft(doc);
 
-  const expectedClaimIds = doc.claims.map((c) => c.id);
-  const actualDraftClaimIds = draft.events.map((e) => {
-    // Extract claim ID from raw event ID 'evt-f3-p3-pet-001'
-    const rawId = String(e.id);
-    const prefix = `evt-f${doc.floor}-`;
-    return rawId.startsWith(prefix) ? rawId.slice(prefix.length).toUpperCase() : rawId;
-  });
-
-  assert.deepEqual(actualDraftClaimIds, expectedClaimIds);
+  assert.equal(draft.events.length, doc.claims.length);
+  // Verify ordering is preserved
+  for (let i = 0; i < doc.claims.length; i++) {
+    assert.equal(draft.events[i].summary, doc.claims[i].claim.summary);
+  }
 });
 
 test('Research Draft Compiler: preserves evidence, locators, and explicit unknowns directly without data loss', () => {
@@ -80,7 +76,7 @@ test('Research Draft Compiler: preserves evidence, locators, and explicit unknow
   const p2Claim = doc.claims.find((c) => c.id === 'P3-PET-002');
   assert.ok(p2Claim);
 
-  const p2DraftEvent = draft.events.find((e) => String(e.id) === 'evt-f3-p3-pet-002');
+  const p2DraftEvent = draft.events.find((e) => String(e.summary) === p2Claim.claim.summary);
   assert.ok(p2DraftEvent);
 
   assert.equal(p2DraftEvent.summary, p2Claim.claim.summary);
@@ -102,7 +98,7 @@ test('Research Draft Compiler: leaves position unpopulated when evidence locator
   ];
 
   const draft = compileRawDraft(testDoc);
-  const draftEvent = draft.events.find((e) => String(e.id) === 'evt-f3-p3-pet-003');
+  const draftEvent = draft.events.find((e) => String(e.summary) === targetClaim.claim.summary);
   assert.ok(draftEvent);
 
   // Position floor is set from document scope floor, but chapter is unpopulated due to locator conflict
@@ -226,7 +222,7 @@ test('Research Ingestion Contract: trace compilation executes cleanly when model
   assert.equal(compiled.claimMappings.length, 5);
 });
 
-test('Research Draft Compiler: filters out ledger_only claims when modeling decisions are supplied', () => {
+test('Research Draft Compiler: filters out ledger_only and review claims when modeling decisions are supplied', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
 
@@ -234,15 +230,73 @@ test('Research Draft Compiler: filters out ledger_only claims when modeling deci
   assert.equal(fullDraft.events.length, 15);
 
   const filteredDraft = compileRawDraft(doc, modelingDoc);
-  // Pet modeling decisions promote/review 6 claims and mark 9 claims ledger_only
-  assert.equal(filteredDraft.events.length, 6);
+  // Pet modeling decisions promote 5 claims (P3-PET-002, 004, 005, 006, 008)
+  assert.equal(filteredDraft.events.length, 5);
 
-  const ledgerOnlyClaimIds = ['evt-f3-p3-pet-001', 'evt-f3-p3-pet-003', 'evt-f3-p3-pet-007'];
-  for (const eventId of ledgerOnlyClaimIds) {
+  const ledgerOnlyClaimSummaries = [
+    'Mongo is a dungeon-generated pet-class Mongoliensis hatched on Floor 2.',
+    'Mongo grows physically from roughly seven inches tall when hatched on Floor 2 to over thirteen feet tall by the conclusion of Floor 3.',
+    'The Enchanted Fang Caps produce an electrical spark visual effect when Mongo bites an enemy.'
+  ];
+  for (const summary of ledgerOnlyClaimSummaries) {
     assert.equal(
-      filteredDraft.events.some((e) => String(e.id) === eventId),
+      filteredDraft.events.some((e) => String(e.summary) === summary),
       false,
-      `Ledger-only claim event "${eventId}" must be excluded from raw floor compilation`
+      `Ledger-only claim "${summary}" must be excluded from raw floor compilation`
+    );
+  }
+});
+
+test('Research Draft Compiler: reconciles existing raw floor records without creating duplicates', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-magical-pet-carrier-acquired',
+        type: 'ItemAcquired',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'The party acquires a Magical Pet Carrier on Floor 3.',
+        evidence: [
+          {
+            sourceId: 'src-book-2',
+            locator: { book: 2, chapter: 14 },
+            confidence: 'confirmed'
+          }
+        ],
+        item: {
+          instanceId: 'inst-magical-pet-carrier-1',
+          itemId: 'item-magical-pet-carrier',
+          quantity: { known: true, value: 1 }
+        }
+      }
+    ]
+  };
+
+  const compiled = compileRawDraft(doc, modelingDoc, existingRaw);
+
+  // Existing event evt-f3-magical-pet-carrier-acquired was matched and reconciled in place; no duplicate created
+  const matchingEvents = compiled.events.filter(
+    (e) => String(e.id) === 'evt-f3-magical-pet-carrier-acquired' || String(e.summary) === 'The party acquires a Magical Pet Carrier on Floor 3.'
+  );
+
+  assert.equal(matchingEvents.length, 1, 'Reconciliation must not create duplicate events');
+  assert.equal(matchingEvents[0].id, 'evt-f3-magical-pet-carrier-acquired');
+  assert.equal(matchingEvents[0].type, 'ItemAcquired', 'Authored event type must be preserved');
+});
+
+test('Research Draft Compiler: generates collision-safe deterministic domain event IDs', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const draft1 = compileRawDraft(doc);
+  const draft2 = compileRawDraft(doc);
+
+  assert.deepEqual(draft1.events.map((e) => e.id), draft2.events.map((e) => e.id));
+
+  for (const e of draft1.events) {
+    assert.ok(
+      String(e.id).match(/^evt-f3-[a-z0-9-]+$/),
+      `Event ID "${e.id}" must match raw floor domain event ID convention`
     );
   }
 });
