@@ -62,9 +62,13 @@ export interface CompiledResearchOutput {
  * without intermediate candidate/scaffold models or manufactured floor metadata.
  */
 function generateResearchEventId(floor: number, claimId: string): string {
-  // Raw event IDs have a lowercase schema contract. Keep the original claim ID
-  // in the research ledger; normalize only the deterministic raw-file key.
-  return `evt-f${floor}-${claimId.toLowerCase()}`;
+  // Preserve claim-ID distinctions in the temporary curation key. The key is
+  // deliberately not a semantic/domain identity; Jules replaces it when the
+  // occurrence is curated into an authored event.
+  const encoded = encodeURIComponent(claimId)
+    .replace(/%/g, '-pct-')
+    .replace(/[^a-zA-Z0-9-]/g, '-');
+  return `evt-f${floor}-${encoded}`;
 }
 
 function evidenceKey(evidence: unknown): string {
@@ -97,7 +101,6 @@ function hasSameResearchEvidence(
  */
 export function compileRawFloor(
   researchDoc: ResearchClaimDocument,
-  modelingDoc?: ModelingDecisionDocument,
   existingRaw?: ExistingRawFloorData
 ): RawFloorCompilation {
   const researchVal = validateResearchClaimDocument(researchDoc);
@@ -107,21 +110,7 @@ export function compileRawFloor(
     );
   }
 
-  if (modelingDoc) {
-    const modelingVal = validateModelingDecisionDocument(modelingDoc);
-    if (!modelingVal.valid) {
-      throw new Error(
-        `Compiler error: Modeling decision document validation failed:\n  - ${modelingVal.errors.join('\n  - ')}`
-      );
-    }
-  }
 
-  const decisionMap = new Map<string, string>();
-  if (modelingDoc) {
-    for (const decision of modelingDoc.decisions) {
-      decisionMap.set(decision.claimId, decision.disposition);
-    }
-  }
 
   const events: Array<Record<string, unknown>> = existingRaw?.events
     ? JSON.parse(JSON.stringify(existingRaw.events))
@@ -146,16 +135,18 @@ export function compileRawFloor(
   );
 
   for (const claim of researchDoc.claims) {
-    if (modelingDoc && decisionMap.get(claim.id) !== 'promote') {
-      continue;
-    }
-
     const eventId = generateResearchEventId(researchDoc.floor, claim.id);
 
-    const existingIndex = events.findIndex(
-      (event) =>
-        String(event.id) === eventId || hasSameResearchEvidence(event, claim)
-    );
+    const matchingIdIndex = events.findIndex((event) => String(event.id) === eventId);
+    if (matchingIdIndex >= 0 && !hasSameResearchEvidence(events[matchingIdIndex], claim)) {
+      throw new Error(
+        `Compiler error: deterministic research event ID "${eventId}" collides with an unrelated authored event.`
+      );
+    }
+
+    const existingIndex = matchingIdIndex >= 0
+      ? matchingIdIndex
+      : events.findIndex((event) => hasSameResearchEvidence(event, claim));
 
     if (existingIndex >= 0) {
       const existingEvent = events[existingIndex];
@@ -182,7 +173,7 @@ export function compileRawFloor(
       continue;
     }
 
-    let newEventId = eventId;
+    const newEventId = eventId;
     if (usedEventIds.has(newEventId)) {
       // This should only be reachable for an ID collision with an unrelated
       // authored record. Do not silently invent an alternate semantic ID.
