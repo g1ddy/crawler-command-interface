@@ -11,9 +11,9 @@ This document defines the practical handoff between:
 3. deterministic parsing and validation;
 4. CCI-aware semantic validation;
 5. explicit modeling decisions;
-6. disposable candidate projection;
-7. human/Jules review;
-8. authoritative CCI raw authoring.
+6. direct raw floor compilation;
+7. human/Jules working-tree curation & reconciliation;
+8. authoritative CCI raw authoring & timeline compilation.
 
 It is intended to be referenced by domain research issues such as #181 rather than repeating the entire workflow in every issue.
 
@@ -44,16 +44,16 @@ The workflow is deliberately conservative:
                   v
           validated research.yaml
                   |
-                  | research compiler (compileRawDraft)
+                  | research compiler (compileRawFloor)
                   v
-          deterministic raw JSON draft
-         (data/raw/floors/<floor>/ or draft dir)
+          direct raw JSON compilation
+         (data/raw/floors/<floor>/*)
                   |
                   | existing CCI raw JSON validation
                   v
           validation errors (missing CCI mappings)
                   |
-                  | human / Jules curation
+                  | human / Jules working-tree curation
                   v
        data/raw/floors/<floor>/*
                   |
@@ -68,7 +68,7 @@ The workflow is deliberately conservative:
 | --- | --- | --- |
 | Research report | Human-auditable evidence gathering | Research source |
 | `research.yaml` | Structured claims and provenance | Evidence-oriented authoring format |
-| Raw JSON draft | Mechanically compiled draft items | Non-authoritative draft |
+| Uncurated raw JSON | Mechanically compiled raw floor updates | Non-authoritative working-tree state |
 | `data/raw/floors/**` | Executable CCI authoring | **Authoritative** |
 | Generated runtime state | Application execution/replay | Existing CCI pipeline |
 
@@ -667,13 +667,13 @@ It does **not** mean:
 
 # Stage 4 — Raw Floor Compilation & Working Tree Curation
 
-The research compiler (`compileRawDraft` / `compileRawFloor`) is a deterministic transformation directly into the existing CCI raw representation. It outputs standard CCI raw floor JSON structures directly into the target raw floor working tree (`data/raw/floors/<floor>/`).
+The research compiler (`compileRawFloor`) is a deterministic transformation directly into the existing CCI raw representation. It outputs standard CCI raw floor JSON structures directly into the target raw floor working tree (`data/raw/floors/<floor>/`).
 
 ```
 validated research (research.yaml) + modeling decisions
         |
         v
-compileRawDraft()
+compileRawFloor()
         |
         v
 working tree diff (data/raw/floors/<floor>/*)
@@ -792,10 +792,10 @@ validateResearchSemantics(document, index)
 validateModelingDecisions(document, researchIndex)
   -> ModelingValidationResult
 
-compileRawDraft(
+compileRawFloor(
   validatedResearch
 )
-  -> RawCompilationResult
+  -> RawFloorCompilation
 ```
 
 The exact public API names remain subject to the repository implementation.

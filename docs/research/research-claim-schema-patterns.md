@@ -687,7 +687,7 @@ Recommended API boundary:
     validateResearchSemantics()
         -> SemanticValidationResult
 
-    compileRawDraft()
+    compileRawFloor()
         -> CandidateArtifacts
 
 This allows each stage to be tested independently.

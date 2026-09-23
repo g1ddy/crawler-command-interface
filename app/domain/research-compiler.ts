@@ -61,23 +61,27 @@ export interface CompiledResearchOutput {
  * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
  * without intermediate candidate/scaffold models or manufactured floor metadata.
  */
-function slugifyDomainOccurrence(summary: string): string {
-  const cleaned = summary
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\b(party|acquires|on|a|the|floor|3|book|2|chapter)\b/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-  return cleaned || 'event';
+function generateStableDomainEventId(
+  floor: number,
+  claimId: string,
+  targetConcept?: string
+): string {
+  if (targetConcept) {
+    const slug = targetConcept
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '');
+    return `evt-f${floor}-${slug}-${claimId.toLowerCase()}`;
+  }
+  return `evt-f${floor}-${claimId.toLowerCase()}`;
 }
 
-function generateStableDomainEventId(floor: number, claim: { id: string; claim: { summary: string } }): string {
-  const slug = slugifyDomainOccurrence(claim.claim.summary);
-  return `evt-f${floor}-${slug}`;
-}
-
-export function compileRawDraft(
+/**
+ * Compiles a validated research claim document directly into existing CCI raw JSON shapes
+ * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
+ * reconciling existing records in place without intermediate candidate/scaffold models.
+ */
+export function compileRawFloor(
   researchDoc: ResearchClaimDocument,
   modelingDoc?: ModelingDecisionDocument,
   existingRaw?: ExistingRawFloorData
@@ -131,14 +135,30 @@ export function compileRawDraft(
       continue;
     }
 
-    // Check if an existing event in existingRaw matches this occurrence (via ID, summary, or research claim provenance)
-    const candidateEventId = generateStableDomainEventId(researchDoc.floor, claim);
+    const targetConcept = modelingDoc
+      ? modelingDoc.decisions.find((d) => d.claimId === claim.id)?.target?.concept
+      : undefined;
+
+    const candidateEventId = generateStableDomainEventId(researchDoc.floor, claim.id, targetConcept);
+
+    // Reconcile existing events strictly by ID or exact evidence locator match (no summary text matching)
     const existingIndex = events.findIndex((evt) => {
       const idMatch = String(evt.id) === candidateEventId || String(evt.id) === `evt-f${researchDoc.floor}-${claim.id.toLowerCase()}`;
-      const summaryMatch = String(evt.summary).toLowerCase() === claim.claim.summary.toLowerCase();
-      const claimIdMatch = evt.researchClaimId === claim.id ||
-        (Array.isArray(evt.evidence) && evt.evidence.some((ev: Record<string, unknown>) => ev.researchClaimId === claim.id));
-      return idMatch || summaryMatch || claimIdMatch;
+      const evidenceLocatorMatch =
+        Array.isArray(evt.evidence) &&
+        evt.evidence.some(
+          (ev: Record<string, unknown>) =>
+            ev.locator &&
+            typeof ev.locator === 'object' &&
+            Object.keys(ev.locator as object).length > 0 &&
+            claim.evidence.some(
+              (rev) =>
+                rev.sourceId === ev.sourceId &&
+                rev.locator &&
+                JSON.stringify(rev.locator) === JSON.stringify(ev.locator)
+            )
+        );
+      return idMatch || evidenceLocatorMatch;
     });
 
     if (existingIndex >= 0) {
@@ -162,31 +182,15 @@ export function compileRawDraft(
     }
 
     // New event creation: generate stable domain-oriented ID
-    let eventId = generateStableDomainEventId(researchDoc.floor, claim);
+    let eventId = candidateEventId;
     if (usedEventIds.has(eventId)) {
-      // Collision safety modifier incorporating claim ID suffix
-      eventId = `${eventId}-${claim.id.toLowerCase()}`;
+      eventId = `${eventId}-alt`;
     }
     usedEventIds.add(eventId);
 
-    // Resolve book and chapter locators conservatively across evidence items.
-    const specifiedBooks = new Set<number>();
-    const specifiedChapters = new Set<number>();
-
-    for (const ev of claim.evidence) {
-      if (ev.locator) {
-        if (typeof ev.locator.book === 'number') specifiedBooks.add(ev.locator.book);
-        if (typeof ev.locator.chapter === 'number') specifiedChapters.add(ev.locator.chapter);
-      }
-    }
-
-    const book = specifiedBooks.size === 1 ? Array.from(specifiedBooks)[0] : undefined;
-    const chapter = specifiedChapters.size === 1 ? Array.from(specifiedChapters)[0] : undefined;
-
+    // Runtime position floor is set from document scope floor. Evidence locators remain on evidence items.
     const position = {
       floor: researchDoc.floor,
-      ...(book !== undefined ? { book } : {}),
-      ...(chapter !== undefined ? { chapter } : {}),
     };
 
     events.push({
@@ -225,7 +229,6 @@ export function compileRawDraft(
   };
 }
 
-export const compileRawFloor = compileRawDraft;
 
 export function compileResearchTrace(
   researchDoc: ResearchClaimDocument,
