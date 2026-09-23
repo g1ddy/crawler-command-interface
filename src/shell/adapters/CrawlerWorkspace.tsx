@@ -184,6 +184,22 @@ export function CrawlerWorkspace({
     ],
   );
 
+  const handleInspectTelemetry = useCallback(
+    (key: string) => {
+      const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
+        health: projectedObservations.condition.currentHealth,
+        mana: projectedObservations.condition.currentMana,
+        level: projectedObservations.xpProgress.level,
+        viewers: projectedObservations.broadcast.viewers,
+      };
+      const obs = observationsMap[key];
+      if (obs) {
+        setInspectObservation(obs);
+      }
+    },
+    [projectedObservations]
+  );
+
   const navigationContract = useMemo(
     () =>
       deriveNavigationContract({
@@ -242,7 +258,10 @@ export function CrawlerWorkspace({
       isLive={isLive}
       hud={
         presentationChoice === "authority-arwes" ? (
-          <ArwesPresentation model={composition} />
+          <ArwesPresentation
+            model={composition}
+            onInspectTelemetry={handleInspectTelemetry}
+          />
         ) : usesConceptHud ? (
           <ConceptHud
             state={projectedState}

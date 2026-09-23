@@ -1,41 +1,35 @@
 "use client";
 import { createElement } from "react";
-import { ArwesCompatibilityProbe } from "./compatibility/ArwesCompatibilityProbe.ts";
-import type { HudCompositionModel } from "../../shell/hud/public.ts";
+import { ArwesAuthorityComposition } from "./ArwesAuthorityComposition.ts";
+import type {
+  HudCompositionModel,
+  HudTelemetryKey,
+} from "../../shell/hud/public.ts";
 
-export interface ArwesProbeModel {
-  crawlerName: string;
-  floorTitle: string;
-  sequence: number;
-  temporalMode: "live" | "replay";
+/**
+ * BOUNDARY RULE:
+ * Renderer-neutral presentation describes semantic meaning and inspectability;
+ * executable application actions are wired outside the composition model.
+ * The renderer chooses the physical affordance, while the application owns the action.
+ */
+export interface ArwesPresentationProps {
+  model: HudCompositionModel;
+  onInspectTelemetry?: (key: HudTelemetryKey) => void;
 }
 
 export function ArwesPresentation({
   model,
-}: {
-  model: HudCompositionModel | ArwesProbeModel;
-}) {
-  const probeModel: ArwesProbeModel =
-    "system" in model
-      ? {
-          crawlerName: model.system.crawlerName,
-          floorTitle: model.system.floorTitle,
-          sequence: model.system.sequence,
-          temporalMode: model.temporal.mode,
-        }
-      : model;
-
+  onInspectTelemetry,
+}: ArwesPresentationProps) {
   return createElement(
     "div",
     {
       className: "arwes-presentation-container",
       "data-presentation": "authority-arwes",
     },
-    createElement(ArwesCompatibilityProbe, {
-      crawlerName: probeModel.crawlerName,
-      floorTitle: probeModel.floorTitle,
-      sequence: probeModel.sequence,
-      isLive: probeModel.temporalMode === "live",
+    createElement(ArwesAuthorityComposition, {
+      composition: model,
+      onInspectTelemetry,
     })
   );
 }

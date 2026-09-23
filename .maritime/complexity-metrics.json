@@ -329,7 +329,7 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 348,
+    "loc": 367,
     "instability": 0.95,
     "fanIn": 1,
     "fanOut": 19,
@@ -376,8 +376,8 @@
     "scanned": true
   },
   "src/presentation/authority-arwes/ArwesPresentation.ts": {
-    "complexity": 2,
-    "loc": 42,
+    "complexity": 1,
+    "loc": 36,
     "instability": 0.75,
     "fanIn": 1,
     "fanOut": 3,
@@ -385,97 +385,25 @@
   },
   "src/shell/hud/public.ts": {
     "complexity": 1,
-    "loc": 12,
-    "instability": 0.25,
-    "fanIn": 3,
+    "loc": 14,
+    "instability": 0.2,
+    "fanIn": 4,
     "fanOut": 1,
     "scanned": true
   },
   "src/shell/hud/hud-composition.ts": {
-    "complexity": 7,
-    "loc": 119,
-    "instability": 0.5,
-    "fanIn": 1,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts": {
-    "complexity": 10,
-    "loc": 241,
-    "instability": 0.86,
-    "fanIn": 1,
-    "fanOut": 6,
-    "scanned": true
-  },
-  "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
-    "complexity": 5,
-    "loc": 43,
-    "instability": 0.75,
-    "fanIn": 1,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/presentation/authority-arwes/primitives/AuthorityFrame.ts": {
     "complexity": 6,
-    "loc": 70,
+    "loc": 191,
     "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/presentation/authority-arwes/primitives/AuthoritySurface.ts": {
-    "complexity": 1,
-    "loc": 33,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "src/presentation/authority-arwes/primitives/AuthorityText.ts": {
-    "complexity": 9,
-    "loc": 56,
-    "instability": 0.8,
-    "fanIn": 1,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/presentation/authority-arwes/primitives/AuthorityTransition.ts": {
-    "complexity": 9,
-    "loc": 83,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/shell/ActiveFeatureView.tsx": {
-    "complexity": 9,
-    "loc": 89,
-    "instability": 0.95,
-    "fanIn": 1,
-    "fanOut": 18,
-    "scanned": true
-  },
-  "src/features/crawler/CrawlerView.tsx": {
-    "complexity": 4,
-    "loc": 44,
-    "instability": 0.88,
-    "fanIn": 1,
-    "fanOut": 7,
-    "scanned": true
-  },
-  "src/features/crawler/crawler-presentation.ts": {
-    "complexity": 16,
-    "loc": 169,
-    "instability": 0.43,
-    "fanIn": 4,
     "fanOut": 3,
     "scanned": true
   },
   "src/features/timeline/public.ts": {
     "complexity": 1,
     "loc": 37,
-    "instability": 0.41,
-    "fanIn": 10,
+    "instability": 0.39,
+    "fanIn": 11,
     "fanOut": 7,
     "scanned": true
   },
@@ -490,8 +418,8 @@
   "src/presentation/semantic/public.ts": {
     "complexity": 1,
     "loc": 3,
-    "instability": 0.4,
-    "fanIn": 3,
+    "instability": 0.33,
+    "fanIn": 4,
     "fanOut": 2,
     "scanned": true
   },
@@ -522,6 +450,78 @@
   "src/features/timeline/SequenceBadge.tsx": {
     "complexity": 2,
     "loc": 10,
+    "instability": 0.43,
+    "fanIn": 4,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
+    "complexity": 11,
+    "loc": 414,
+    "instability": 0.86,
+    "fanIn": 1,
+    "fanOut": 6,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
+    "complexity": 5,
+    "loc": 43,
+    "instability": 0.6,
+    "fanIn": 2,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityFrame.ts": {
+    "complexity": 6,
+    "loc": 70,
+    "instability": 0.6,
+    "fanIn": 2,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthoritySurface.ts": {
+    "complexity": 1,
+    "loc": 33,
+    "instability": 0.5,
+    "fanIn": 2,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityText.ts": {
+    "complexity": 9,
+    "loc": 56,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityTransition.ts": {
+    "complexity": 9,
+    "loc": 83,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/shell/ActiveFeatureView.tsx": {
+    "complexity": 9,
+    "loc": 89,
+    "instability": 0.95,
+    "fanIn": 1,
+    "fanOut": 18,
+    "scanned": true
+  },
+  "src/features/crawler/CrawlerView.tsx": {
+    "complexity": 4,
+    "loc": 44,
+    "instability": 0.88,
+    "fanIn": 1,
+    "fanOut": 7,
+    "scanned": true
+  },
+  "src/features/crawler/crawler-presentation.ts": {
+    "complexity": 16,
+    "loc": 169,
     "instability": 0.43,
     "fanIn": 4,
     "fanOut": 3,
@@ -1026,6 +1026,14 @@
   "src/main.pages.tsx": {
     "complexity": 1,
     "loc": 19,
+    "instability": 1,
+    "fanIn": 0,
+    "fanOut": 6,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts": {
+    "complexity": 10,
+    "loc": 241,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 6,
