@@ -665,55 +665,69 @@ It does **not** mean:
 
 ---
 
-# Stage 4 — Raw Draft Compilation
+# Stage 4 — Raw Floor Compilation & Working Tree Curation
 
-The research draft compiler (`compileRawDraft`) is deterministic and outputs ordinary CCI raw floor JSON structures.
+The research compiler (`compileRawDraft` / `compileRawFloor`) is a deterministic transformation directly into the existing CCI raw representation. It outputs standard CCI raw floor JSON structures directly into the target raw floor working tree (`data/raw/floors/<floor>/`).
 
 ```
-validated research (research.yaml)
+validated research (research.yaml) + modeling decisions
         |
         v
 compileRawDraft()
         |
         v
-raw-shaped draft (target raw floor directory)
+working tree diff (data/raw/floors/<floor>/*)
+        |
+        v
+validateRawCrawlerFloor() -> curation errors
+        |
+        v
+Jules/human curation & reconciliation
+        |
+        v
+authoritative raw data & compiled timeline
 ```
 
-The direct raw compiler must:
+## Why Existing Raw JSON is the Compiler Target
+Existing raw JSON files under `data/raw/floors/<floor>/` (`events.json`, `catalog.json`, `sources.json`) are the single source of truth for raw floor authoring. Compiling research directly into raw JSON format eliminates artificial staging layers (such as separate candidate models, proposal sidecars, or staging directories).
 
-- be deterministic;
-- have no network access;
-- make no LLM calls;
-- not parse arbitrary Markdown;
-- not mutate `data/raw/floors/**`;
-- preserve research claim IDs;
-- preserve explicit unknowns;
-- preserve evidence and locators;
-- leave unpopulated CCI fields unpopulated.
+## Git Working Tree + Diff as Staging & Review Mechanism
+The Git working tree and `git diff` serve as the curation surface. Compiling research updates raw JSON files in place or generates draft records directly in the raw directory. Reviewers use standard Git diffs to inspect, reconcile, and curate changes before committing.
 
-It must not:
+## Reconciling Research Claims with Existing Raw Records
+When curating research-derived events:
+- **Check for existing occurrences**: Determine if an equivalent event already exists in `data/raw/floors/<floor>/events.json`. Reconcile existing records rather than creating duplicates.
+- **Event ID Preservation**: Preserve stable, existing event IDs when reconciling an existing occurrence.
+- **New Event ID Crafting**: For genuinely new events, use stable domain-oriented IDs matching `evt-f<floor>-<stable-domain-occurrence>` (e.g. `evt-f3-magical-pet-carrier-acquired`, `evt-f3-fang-caps-equipped`). Research claim IDs remain traceable as provenance within the event's `evidence` array, but are never used as permanent runtime IDs.
+- **Catalog Consultation**: Check floor-local (`data/raw/floors/<floor>/catalog.json`) and shared catalogs (`data/raw/catalogs/items.json`) to reuse existing entity identities before declaring new catalog items.
 
-- decide whether a claim is true;
-- invent values;
-- invent timestamps;
-- infer missing mechanics;
-- silently choose an event type;
-- become a second CCI domain model.
+## Selecting Event Types & Payload Contracts
+Never map research `claim.kind` directly to a CCI event type or infer event types from prose heuristic strings. Select event types only after inspecting:
+1. `app/domain/schema/crawler-floor-raw.schema.json`
+2. `app/domain/types/events.ts`
+3. Domain compiler transformers (`app/domain/compiler.ts`)
+4. Reducer/projection handlers (`app/domain/projection/`)
+5. Existing test suites across Floors 1–3
 
----
+If an existing event contract fits (e.g. `ItemAcquired`), supply the required payload fields. If no existing contract fits, leave the semantic discriminator `type` intentionally unpopulated or keep the claim as research context in `pet-research.yaml` / `pet-modeling-decisions.yaml` without inventing speculative runtime semantics.
 
-# Stage 5 — Human / Jules Curation & Raw Validation
+## Distinguishing Events, Observations, and Catalog Definitions
+- **Catalog Definitions** answer: *What entities does CCI know about?*
+- **Timeline Events** answer: *What discrete state-modifying occurrences happened in sequence?*
+- **Telemetry Observations** answer: *What point-in-time state readings were observed without necessarily asserting a causal event?*
 
-The generated raw JSON draft is reviewed and curated in the working tree.
+## Establishing Chronology & Compiled Cross-Checks
+Research YAML order represents authoring order, not automatic runtime sequence order. Chronology is established from floor scope, book/chapter locators, and causal dependencies. After curation:
+1. Run `npm run generate:fixture` to compile raw floor files into `data/floors/floor-3.json` and `data/compiled-timeline.json`.
+2. Inspect `data/floors/floor-3.json` to verify floor segment compilation.
+3. Inspect `data/compiled-timeline.json` to cross-check global chronological sequence, neighboring event ordering, and projected runtime states.
 
-Curation workflow:
+## Preserving Provenance & Explicit Unknowns
+Every raw event preserves traceable provenance (`raw event -> research claim ID -> source ID -> locator`). Explicit unknowns (such as unknown timestamp, quantity, or duration) must remain explicit in `unknowns` arrays and quantity objects (`{ known: false }`). Never replace explicit unknowns with speculative concrete numbers merely to pass validation.
 
-1. Run existing CCI raw floor validation (`validateRawCrawlerFloor`) against the draft.
-2. Unpopulated fields (e.g. missing required event `type`) produce actionable validation errors.
-3. Jules/human resolves validation errors by supplying the explicit CCI domain mappings.
-4. Once valid, the curated events are placed into `data/raw/floors/<floor>/events.json`.
-
-Claims that cannot safely map to the current CCI model remain in `data/raw/research/floor-3/pet-research.yaml` as research context without forcing runtime extensions.
+## Compiler Defects vs. Intentional Curation Gaps
+- **Compiler Defects**: Malformed JSON, corruption of existing raw structures, dropping mechanically knowable authored data, inventing unestablished semantics, or generating invalid ID formats (`evt-draft-*`).
+- **Intentional Curation Gaps**: Leaving required semantic fields (such as `type`) unpopulated when research evidence does not mechanically specify a CCI domain mapping. These gaps trigger actionable validation errors in `validateRawCrawlerFloor` to guide human/Jules curation.
 
 ---
 
