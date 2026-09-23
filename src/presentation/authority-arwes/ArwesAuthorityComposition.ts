@@ -5,10 +5,10 @@ import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
 import type { PresentationSemantics } from "../semantic/public.ts";
-import type { HudCompositionModel } from "../../shell/hud/public.ts";
+import type { HudCompositionModel, HudTelemetryKey } from "../../shell/hud/public.ts";
 
 export interface ArwesTelemetryRowData {
-  key?: string;
+  key?: HudTelemetryKey | string;
   label: string;
   valueDisplay: string;
   badgeLabel: string;
@@ -18,7 +18,7 @@ export interface ArwesTelemetryRowData {
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
   telemetryItems?: ArwesTelemetryRowData[];
-  onInspectTelemetry?: (key: string) => void;
+  onInspectTelemetry?: (key: HudTelemetryKey) => void;
 }
 
 interface TelemetryRowProps {
@@ -335,7 +335,7 @@ export function ArwesAuthorityComposition({
           "div",
           { style: { display: "flex", flexDirection: "column" } },
           telemetryItems.map((item, idx) => {
-            const rowKey = item.key || item.label.toLowerCase().replace(/\s+/g, "-");
+            const rowKey = (item.key || item.label.toLowerCase().replace(/\s+/g, "-")) as HudTelemetryKey;
             return createElement(TelemetryRow, {
               key: rowKey || idx,
               item,

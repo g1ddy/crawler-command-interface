@@ -4,6 +4,10 @@ import type {
   ProjectedObservationsState,
   ProjectedObservationValue,
 } from "../../../app/domain/types.ts";
+import {
+  deriveEvidencePresentation,
+  mapEvidenceToSemantics,
+} from "../../features/timeline/public.ts";
 import type { PresentationSemantics } from "../../presentation/semantic/public.ts";
 
 export interface HudSystemIdentity {
@@ -35,7 +39,10 @@ export interface HudAttentionSummary {
 export type HudTelemetryKey = "health" | "mana" | "level" | "viewers";
 
 /**
- * Renderer-neutral telemetry item model describing semantic meaning and display strings.
+ * BOUNDARY RULE:
+ * Renderer-neutral presentation describes semantic meaning and inspectability;
+ * executable application actions are wired outside the composition model.
+ * The renderer chooses the physical affordance, while the application owns the action.
  */
 export interface HudTelemetryPresentation {
   key: HudTelemetryKey;
@@ -59,7 +66,7 @@ export interface HudBroadcastSummary {
  * Renderer-neutral HUD composition model describing semantic presentation meaning.
  *
  * INVARIANTS:
- * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast).
+ * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast, telemetryItems).
  * - Remains strictly renderer-neutral: MUST NOT contain CSS classes, styling tokens, border treatments,
  *   animation-library primitives, executable action callbacks, or renderer-specific component choices (e.g., Arwes/POC types).
  * - Capabilities and action contracts (e.g. Return to Live, sequence navigation, evidence inspection) retain their existing application
@@ -74,6 +81,7 @@ export interface HudCompositionModel {
   attention: HudAttentionSummary;
   vitals: HudVitalsSummary;
   broadcast: HudBroadcastSummary;
+  telemetryItems: HudTelemetryPresentation[];
 }
 
 export interface DeriveHudCompositionInput {
@@ -84,6 +92,28 @@ export interface DeriveHudCompositionInput {
   isLive: boolean;
   floorHudTitle: string;
   notificationsSummary?: HudAttentionSummary;
+}
+
+function createTelemetryItem(
+  key: HudTelemetryKey,
+  label: string,
+  observation: ProjectedObservationValue | undefined,
+  sequence: number
+): HudTelemetryPresentation {
+  const evidence = deriveEvidencePresentation(observation, sequence);
+  const semantics = mapEvidenceToSemantics(evidence);
+  const valueDisplay =
+    observation?.value !== undefined && observation?.value !== null
+      ? `${observation.value}`
+      : "— ABSENT";
+
+  return {
+    key,
+    label,
+    valueDisplay,
+    badgeLabel: evidence.badgeLabel,
+    semantics,
+  };
 }
 
 /**
@@ -102,6 +132,31 @@ export function deriveHudComposition({
     hasActiveAlerts: false,
   },
 }: DeriveHudCompositionInput): HudCompositionModel {
+  const healthItem = createTelemetryItem(
+    "health",
+    "HEALTH",
+    projectedObservations.condition.currentHealth,
+    sequence
+  );
+  const manaItem = createTelemetryItem(
+    "mana",
+    "MANA",
+    projectedObservations.condition.currentMana,
+    sequence
+  );
+  const levelItem = createTelemetryItem(
+    "level",
+    "LEVEL",
+    projectedObservations.xpProgress.level,
+    sequence
+  );
+  const viewersItem = createTelemetryItem(
+    "viewers",
+    "AUDIENCE VIEWERS",
+    projectedObservations.broadcast.viewers,
+    sequence
+  );
+
   return {
     system: {
       crawlerName: projectedState.crawler.name,
@@ -130,5 +185,6 @@ export function deriveHudComposition({
     broadcast: {
       viewers: projectedObservations.broadcast.viewers,
     },
+    telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
   };
 }

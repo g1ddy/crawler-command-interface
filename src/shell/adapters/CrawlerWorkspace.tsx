@@ -8,10 +8,6 @@ import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import {
-  deriveEvidencePresentation,
-  mapEvidenceToSemantics,
-} from "../../features/timeline/public.ts";
-import {
   availableRootViews,
   deriveNavigationContract,
   resolveRootView,
@@ -32,7 +28,6 @@ import type {
 import type { HudPresentation } from "../hud/hud-presentation";
 import type { RootView } from "../navigation/public";
 import type { EquipmentSlot } from "../../application/crawler-action-contracts";
-import type { HudTelemetryKey, HudTelemetryPresentation } from "../hud/hud-composition.ts";
 
 /** Composition adapter for existing features; the replaceable frame only receives slots. */
 export function CrawlerWorkspace({
@@ -189,41 +184,6 @@ export function CrawlerWorkspace({
     ],
   );
 
-  const telemetryItems = useMemo<HudTelemetryPresentation[]>(() => {
-    const healthObs = projectedObservations.condition.currentHealth;
-    const manaObs = projectedObservations.condition.currentMana;
-    const levelObs = projectedObservations.xpProgress.level;
-    const viewersObs = projectedObservations.broadcast.viewers;
-
-    const buildItem = (
-      key: HudTelemetryKey,
-      label: string,
-      observation: ProjectedObservationValue | undefined
-    ): HudTelemetryPresentation => {
-      const evidence = deriveEvidencePresentation(observation, currentSeq);
-      const semantics = mapEvidenceToSemantics(evidence);
-      const valueDisplay =
-        observation?.value !== undefined && observation?.value !== null
-          ? `${observation.value}`
-          : "— ABSENT";
-
-      return {
-        key,
-        label,
-        valueDisplay,
-        badgeLabel: evidence.badgeLabel,
-        semantics,
-      };
-    };
-
-    return [
-      buildItem("health", "HEALTH", healthObs),
-      buildItem("mana", "MANA", manaObs),
-      buildItem("level", "LEVEL", levelObs),
-      buildItem("viewers", "AUDIENCE VIEWERS", viewersObs),
-    ];
-  }, [projectedObservations, currentSeq]);
-
   const handleInspectTelemetry = useCallback(
     (key: string) => {
       const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
@@ -300,7 +260,6 @@ export function CrawlerWorkspace({
         presentationChoice === "authority-arwes" ? (
           <ArwesPresentation
             model={composition}
-            telemetryItems={telemetryItems}
             onInspectTelemetry={handleInspectTelemetry}
           />
         ) : usesConceptHud ? (
