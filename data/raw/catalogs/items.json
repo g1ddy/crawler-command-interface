@@ -238,5 +238,12 @@
     "slot": "HEAD",
     "persistent": false,
     "description": "A legendary crown worn by Donut before its destruction by a precursor magical shock."
+  },
+  {
+    "id": "item-magical-pet-carrier",
+    "name": "Magical Pet Carrier",
+    "category": "tool",
+    "persistent": true,
+    "description": "A magical carrier capable of teleporting pets into containment and rest states."
   }
 ]

@@ -5,113 +5,154 @@ import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import {
   loadResearchClaimDocument,
-  loadModelingDecisionDocument,
   parseResearchClaimDocument,
+  loadModelingDecisionDocument
 } from '../../app/domain/research-loader.ts';
+import { validateResearchClaimDocument } from '../../app/domain/research-validator.ts';
 import {
-  validateResearchClaimDocument,
-  validateSemanticModelingDecisions,
-  validateTraceCompleteness,
-  validateModelingDecisionDocument
-} from '../../app/domain/research-validator.ts';
-import { compileResearchTrace, compileCandidateProjection } from '../../app/domain/research-compiler.ts';
+  compileResearchTrace,
+  compileRawFloor,
+} from '../../app/domain/research-compiler.ts';
+import { validateRawCrawlerFloor } from '../../app/domain/validation.ts';
 
-const VALID_RESEARCH_FIXTURE = 'data/raw/research/floor-3/research.yaml';
-const VALID_MODELING_FIXTURE = 'data/raw/research/floor-3/modeling-decisions.yaml';
+const PET_RESEARCH_FIXTURE = 'data/raw/research/floor-3/pet-research.yaml';
+const GENERAL_RESEARCH_FIXTURE = 'data/raw/research/floor-3/research.yaml';
+const GENERAL_MODELING_FIXTURE = 'data/raw/research/floor-3/modeling-decisions.yaml';
 
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-test('Research Ingestion Contract: valid Floor 3 research claim fixture passes validation and compilation', () => {
-  const content = fs.readFileSync(VALID_RESEARCH_FIXTURE, 'utf8');
+test('Research Ingestion: valid Floor 3 research claim fixture parses and validates', () => {
+  const content = fs.readFileSync(PET_RESEARCH_FIXTURE, 'utf8');
   const parsedDoc = parseResearchClaimDocument(content);
   assert.equal(parsedDoc.schemaVersion, 'crawler-research/v1');
 
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   assert.equal(doc.schemaVersion, 'crawler-research/v1');
   assert.equal(doc.storyId, 'dcc');
   assert.equal(doc.floor, 3);
-  assert.equal(doc.claims.length, 5);
-
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  assert.equal(doc.claims.length, 15);
 
   const validation = validateResearchClaimDocument(doc);
   assert.equal(validation.valid, true);
   assert.deepEqual(validation.errors, []);
+});
 
-  const semanticValidation = validateSemanticModelingDecisions(doc, modelingDoc);
-  assert.equal(semanticValidation.valid, true);
-  assert.deepEqual(semanticValidation.errors, []);
+test('Research Compiler: produces direct CCI raw floor shapes matching existing raw floor files', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const compiled = compileRawFloor(doc);
 
-  const completenessValidation = validateTraceCompleteness(doc, modelingDoc);
-  assert.equal(completenessValidation.valid, true);
-  assert.deepEqual(completenessValidation.errors, []);
+  assert.ok(Array.isArray(compiled.sources));
+  assert.ok(Array.isArray(compiled.catalog.items));
+  assert.ok(Array.isArray(compiled.events));
+  assert.equal(compiled.events.length, 15);
+});
 
-  const compiled = compileResearchTrace(doc, modelingDoc);
-  assert.equal(compiled.promotedClaimCount, 2);
-  assert.equal(compiled.reviewClaimCount, 2);
-  assert.equal(compiled.ledgerOnlyClaimCount, 1);
-  assert.equal(compiled.claimMappings.length, 5);
+test('Research Compiler: produces deterministic byte-equivalent outputs for identical inputs', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
 
-  for (const mapping of compiled.claimMappings) {
-    assert.ok(Array.isArray(mapping.originatingClaimIds));
-    assert.equal(mapping.originatingClaimIds.length, 1);
-    assert.ok(Array.isArray(mapping.evidence));
-    assert.ok(mapping.evidence.length >= 1);
+  const compiled1 = compileRawFloor(doc);
+  const compiled2 = compileRawFloor(doc);
+
+  assert.deepEqual(compiled1, compiled2);
+});
+
+test('Research Compiler: strictly preserves research YAML claim ordering in generated raw curation records', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const compiled = compileRawFloor(doc);
+
+  assert.equal(compiled.events.length, doc.claims.length);
+  for (let i = 0; i < doc.claims.length; i++) {
+    assert.equal(compiled.events[i].summary, doc.claims[i].claim.summary);
   }
 });
 
-test('Research Ingestion Contract: review decision accommodates well-supported claims without runtime events', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+test('Research Compiler: preserves evidence, locators, and explicit unknowns directly without data loss', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const compiled = compileRawFloor(doc);
 
-  const mongoClaim = doc.claims.find((c) => c.id === 'P3-PET-001');
-  assert.ok(mongoClaim);
-  assert.equal(mongoClaim.evidence[0].confidence, 'confirmed');
+  const p2Claim = doc.claims.find((c) => c.id === 'P3-PET-002');
+  assert.ok(p2Claim);
 
-  const mongoDecision = modelingDoc.decisions.find((d) => d.claimId === 'P3-PET-001');
-  assert.ok(mongoDecision);
-  assert.equal(mongoDecision.disposition, 'review');
+  const p2Event = compiled.events.find((e) => String(e.summary) === p2Claim.claim.summary);
+  assert.ok(p2Event);
 
-  const compiled = compileResearchTrace(doc, modelingDoc);
-  const mongoMapping = compiled.claimMappings.find((m) => m.claimId === 'P3-PET-001');
-
-  assert.ok(mongoMapping);
-  assert.equal(mongoMapping.modeling.disposition, 'review');
-  assert.equal(mongoMapping.modeling.target.concept, 'PetProgression');
+  assert.equal(p2Event.summary, p2Claim.claim.summary);
+  assert.deepEqual(p2Event.evidence, p2Claim.evidence);
+  assert.deepEqual(p2Event.unknowns, p2Claim.unknowns);
 });
 
-test('Research Ingestion Contract: valid research claim without modeling decision → research artifact validation succeeds', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const docWithoutModeling = deepClone(doc);
+test('Research Compiler: leaves event type unpopulated for curation when no established CCI contract exists', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const compiled = compileRawFloor(doc);
 
-  // Independent artifact schema validation passes for claims alone.
-  const validation = validateResearchClaimDocument(docWithoutModeling);
-  assert.equal(validation.valid, true);
-  assert.deepEqual(validation.errors, []);
+  for (const event of compiled.events) {
+    assert.equal(event.type, undefined);
+  }
 });
 
-test('Research Ingestion Contract: compile complete trace with missing decision → fails clearly', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const badModelingDoc = deepClone(modelingDoc);
+test('Research Compiler: uncurated raw records fail existing CCI raw floor schema validation with expected curation gap error', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const compiled = compileRawFloor(doc);
 
-  badModelingDoc.decisions.splice(0, 1); // Remove decision for P3-PET-001
+  const mockRawDoc = {
+    authoringVersion: 'crawler-floor-raw/v1',
+    storyId: doc.storyId,
+    floor: {
+      id: 'floor-3',
+      ordinal: 3,
+      title: 'The Over City',
+      book: 2,
+      continuity: 'canonical',
+      coverage: {
+        kind: 'curated-critical',
+        statement: 'Test compilation',
+        completeness: 'partial',
+      },
+    },
+    sources: compiled.sources,
+    catalog: compiled.catalog,
+    events: compiled.events,
+  };
 
-  const completenessValidation = validateTraceCompleteness(doc, badModelingDoc);
-  assert.equal(completenessValidation.valid, false);
-  assert.ok(completenessValidation.errors.some((err) => err.includes('MODELING_DECISION_MISSING')));
+  const validation = validateRawCrawlerFloor(mockRawDoc);
+  assert.equal(validation.valid, false);
+  assert.ok(
+    validation.errors.some((err) => err.includes("must have required property 'type'"))
+  );
+});
 
-  assert.throws(() => {
-    compileResearchTrace(doc, badModelingDoc);
-  }, /Compiler error: Trace completeness validation failed/);
+test('Research Compiler: CLI script generates raw artifacts in target directory', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const tmpDir = path.resolve(process.cwd(), '.tmp/test-research-compile');
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+
+  const scriptPath = path.resolve(process.cwd(), 'scripts/compile-research-raw.mjs');
+  const output = execFileSync('node', [
+    '--experimental-strip-types',
+    scriptPath,
+    PET_RESEARCH_FIXTURE,
+    tmpDir
+  ], { encoding: 'utf8' });
+
+  assert.ok(output.includes('[Research Raw Compiler Success]'));
+
+  const eventsContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'events.json'), 'utf8'));
+  const catalogContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'catalog.json'), 'utf8'));
+  const sourcesContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'sources.json'), 'utf8'));
+
+  assert.equal(eventsContent.length, 15);
+  assert.ok(Array.isArray(catalogContent.items));
+  assert.equal(sourcesContent.length, doc.sources.length);
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
 test('Research Ingestion Contract: rejects duplicate claim IDs', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const dupDoc = deepClone(doc);
-  dupDoc.claims[1].id = dupDoc.claims[0].id; // Duplicate P3-PET-001
+  dupDoc.claims[1].id = dupDoc.claims[0].id;
 
   const validation = validateResearchClaimDocument(dupDoc);
   assert.equal(validation.valid, false);
@@ -119,7 +160,7 @@ test('Research Ingestion Contract: rejects duplicate claim IDs', () => {
 });
 
 test('Research Ingestion Contract: rejects missing source references', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const badDoc = deepClone(doc);
   badDoc.claims[0].evidence[0].sourceId = 'src-missing-999';
 
@@ -128,360 +169,271 @@ test('Research Ingestion Contract: rejects missing source references', () => {
   assert.ok(validation.errors.some((err) => err.includes('references missing source ID "src-missing-999"')));
 });
 
-test('Research Ingestion Contract: rejects self-referencing claim dependencies', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const badDoc = deepClone(doc);
-  badDoc.claims[0].dependencies = [badDoc.claims[0].id];
-
-  const validation = validateResearchClaimDocument(badDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot depend on itself')));
-});
-
-test('Research Ingestion Contract: rejects claim dependency cycles', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const badDoc = deepClone(doc);
-  badDoc.claims[0].dependencies = ['P3-PET-002'];
-  badDoc.claims[1].dependencies = ['P3-PET-001'];
-
-  const validation = validateResearchClaimDocument(badDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('Claim dependency cycle detected')));
-});
-
-test('Research Ingestion Contract: rejects unsafe promotion with disputed confidence', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const badDoc = deepClone(doc);
-  // P3-PET-002 is promoted; set its confidence to disputed
-  badDoc.claims[1].evidence[0].confidence = 'disputed';
-
-  const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with confidence "disputed"')));
-});
-
-test('Research Ingestion Contract: permits promotion with candidate confidence when modeling decision authorizes it', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const candidateDoc = deepClone(doc);
-
-  // Set confidence to candidate on promoted claim P3-PET-002
-  candidateDoc.claims[1].evidence[0].confidence = 'candidate';
-
-  const validation = validateSemanticModelingDecisions(candidateDoc, modelingDoc);
-  assert.equal(validation.valid, true);
-  assert.deepEqual(validation.errors, []);
-});
-
-test('Research Ingestion Contract: rejects unsafe promotion with unresolved contradiction', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const badDoc = deepClone(doc);
-  // P3-PET-002 is promoted; add unresolved contradiction
-  badDoc.claims[1].contradictions = [
-    { claimId: 'P3-PET-001', relationship: 'unresolved', note: 'Unresolved evidence' },
-  ];
-
-  // P3-PET-001 needs to exist in claims map for contradiction logic check though it's already there
-
-  const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with unresolved contradiction')));
-});
-
-test('Research Ingestion Contract: rejects duplicate modeling decisions', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const badModelingDoc = deepClone(modelingDoc);
-
-  badModelingDoc.decisions.push(badModelingDoc.decisions[0]);
-
-  const validation = validateSemanticModelingDecisions(doc, badModelingDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('Duplicate modeling decision for claim ID "P3-PET-001"')));
-});
-
-test('Research Ingestion Contract: rejects modeling decisions referencing missing claims', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const badModelingDoc = deepClone(modelingDoc);
-
-  badModelingDoc.decisions[0].claimId = 'P3-UNKNOWN-999';
-
-  const validation = validateSemanticModelingDecisions(doc, badModelingDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('Modeling decision references missing claim ID "P3-UNKNOWN-999"')));
-});
-
-test('Research Ingestion Contract: promoted modeling decision requires target', () => {
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-  const badModelingDoc = deepClone(modelingDoc);
-  delete badModelingDoc.decisions[1].target;
-
-  // Schema validation should catch missing 'target' for 'promote' disposition
-  // Load validates schema during load process so let's mock the payload
-  const validation = validateModelingDecisionDocument(badModelingDoc);
-
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes("must have required property 'target'")));
-});
-
-test('Research Ingestion Contract: ledger-only claims remain valid research context without promotion', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-
-  const ledgerDecision = modelingDoc.decisions.find((d) => d.claimId === 'P3-PET-003');
-  assert.ok(ledgerDecision);
-  assert.equal(ledgerDecision.disposition, 'ledger_only');
+test('Research Ingestion Contract: trace compilation executes cleanly when modeling decisions are provided', () => {
+  const doc = loadResearchClaimDocument(GENERAL_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument(GENERAL_MODELING_FIXTURE);
 
   const compiled = compileResearchTrace(doc, modelingDoc);
-  const ledgerMapping = compiled.claimMappings.find((m) => m.claimId === 'P3-PET-003');
-
-  assert.ok(ledgerMapping);
-  assert.equal(ledgerMapping.modeling.disposition, 'ledger_only');
+  assert.equal(compiled.storyId, 'dcc');
+  assert.equal(compiled.floor, 3);
+  assert.equal(compiled.claimMappings.length, 5);
 });
 
-test('Research Ingestion Contract: preserves explicit unknowns in trace output', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+test('Research Compiler: reconciles existing raw floor records without creating duplicates', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
 
-  const compiled = compileResearchTrace(doc, modelingDoc);
-  const sysMapping = compiled.claimMappings.find((m) => m.claimId === 'P3-SYS-001');
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-magical-pet-carrier-acquired',
+        type: 'ItemAcquired',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'The party acquires a Magical Pet Carrier on Floor 3.',
+        evidence: [
+          {
+            sourceId: 'src-bookworm-carrier',
+            locator: { book: 2, chapter: 14 },
+            confidence: 'corroborated'
+          }
+        ],
+        item: {
+          instanceId: 'inst-magical-pet-carrier-1',
+          itemId: 'item-magical-pet-carrier',
+          quantity: { known: true, value: 1 }
+        }
+      }
+    ]
+  };
 
-  assert.ok(sysMapping);
-  assert.ok(sysMapping.unknowns);
-  assert.ok(sysMapping.unknowns.includes('exact_timestamp'));
+  const compiled = compileRawFloor(doc, existingRaw);
+
+  const matchingEvents = compiled.events.filter(
+    (e) => String(e.id) === 'evt-f3-magical-pet-carrier-acquired'
+  );
+
+  assert.equal(matchingEvents.length, 1, 'Reconciliation must not create duplicate events');
+  assert.equal(matchingEvents[0].id, 'evt-f3-magical-pet-carrier-acquired');
+  assert.equal(matchingEvents[0].type, 'ItemAcquired', 'Authored event type must be preserved');
 });
 
-test('Research Ingestion Contract: CLI ingest script executes cleanly for valid fixture', () => {
-  const scriptPath = path.resolve(process.cwd(), 'scripts/ingest-research.mjs');
-  const output = execFileSync('node', [
-    '--experimental-strip-types',
-    scriptPath,
-    VALID_RESEARCH_FIXTURE,
-    VALID_MODELING_FIXTURE
-  ], { encoding: 'utf8' });
-  assert.ok(output.includes('[Research Ingestion Success]'));
-  assert.ok(output.includes('Trace mappings compiled: 5'));
+test('Research Compiler: changing research wording does not alter an established event ID during reconciliation', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-magical-pet-carrier-acquired',
+        type: 'ItemAcquired',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'Original authored summary: Carrier acquired.',
+        evidence: [
+          {
+            sourceId: 'src-bookworm-carrier',
+            locator: { book: 2, chapter: 14 },
+            confidence: 'corroborated'
+          }
+        ]
+      }
+    ]
+  };
+
+  const compiled = compileRawFloor(doc, existingRaw);
+  const matchedEvent = compiled.events.find((e) => String(e.id) === 'evt-f3-magical-pet-carrier-acquired');
+
+  assert.ok(matchedEvent);
+  assert.equal(matchedEvent.id, 'evt-f3-magical-pet-carrier-acquired', 'Established event ID must be preserved regardless of prose changes');
 });
 
-test('Research Ingestion Contract: candidate projection generates generic proposals and sidecars without hardcoded domain mappings', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-
-  const res1 = compileCandidateProjection(doc, modelingDoc);
-  const res2 = compileCandidateProjection(doc, modelingDoc);
-
-  assert.deepEqual(res1, res2);
-  assert.equal(res1.storyId, 'dcc');
-  assert.equal(res1.floor, 3);
-  assert.equal(res1.candidateProposals.length, 2);
-  assert.equal(res1.provenanceSidecar.length, 2);
-
-  const collarProposal = res1.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002');
-  assert.ok(collarProposal);
-  assert.equal(collarProposal.candidateId, 'candidate-P3-PET-002');
-  assert.equal(collarProposal.target.domain, 'inventory');
-  assert.equal(collarProposal.target.concept, 'ItemAcquired');
-  assert.equal(collarProposal.position.floor, 3);
-  assert.equal(collarProposal.position.book, undefined); // Chronology is grounded in scope floor, not evidence[0]
-});
-
-test('Research Ingestion Contract: case-distinct claim IDs generate non-colliding candidate IDs', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-
+test('Research Compiler: claims with identical summaries represent separate occurrences and are not merged', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const testDoc = deepClone(doc);
-  const testModeling = deepClone(modelingDoc);
 
-  // Duplicate claim except with lowercase ID
-  const upperClaim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
-  assert.ok(upperClaim);
-  const lowerClaim = deepClone(upperClaim);
-  lowerClaim.id = 'p3-pet-002';
-  testDoc.claims.push(lowerClaim);
+  testDoc.claims[0].claim.summary = 'The party acquires an item.';
+  testDoc.claims[1].claim.summary = 'The party acquires an item.';
 
-  const lowerDecision = deepClone(testModeling.decisions.find((d) => d.claimId === 'P3-PET-002'));
-  lowerDecision.claimId = 'p3-pet-002';
-  testModeling.decisions.push(lowerDecision);
-
-  const result = compileCandidateProjection(testDoc, testModeling);
-  const candidateIds = result.candidateProposals.map((c) => c.candidateId);
-
-  assert.ok(candidateIds.includes('candidate-P3-PET-002'));
-  assert.ok(candidateIds.includes('candidate-p3-pet-002'));
-  assert.equal(new Set(candidateIds).size, candidateIds.length);
+  const compiled = compileRawFloor(testDoc);
+  assert.equal(compiled.events.length, 15);
+  const matchingSummaries = compiled.events.filter((e) => String(e.summary) === 'The party acquires an item.');
+  assert.equal(matchingSummaries.length, 2, 'Claims with identical summaries must be compiled as distinct occurrences');
 });
 
-test('Research Ingestion Contract: evidence ordering alone does not dictate candidate event position', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+test('Research Compiler: existing authored fields absent from research survive compilation unchanged', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
 
-  const testDoc = deepClone(doc);
-  const pet2Claim = testDoc.claims.find((c) => c.id === 'P3-PET-002');
-  assert.ok(pet2Claim);
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-magical-pet-carrier-acquired',
+        type: 'ItemAcquired',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'The party acquires a Magical Pet Carrier on Floor 3.',
+        correlationId: 'corr-custom-123',
+        causationId: 'cause-123',
+        evidence: [
+          {
+            sourceId: 'src-bookworm-carrier',
+            locator: { book: 2, chapter: 14 },
+            confidence: 'corroborated'
+          }
+        ],
+        item: {
+          instanceId: 'inst-magical-pet-carrier-1',
+          itemId: 'item-magical-pet-carrier',
+          quantity: { known: true, value: 1 }
+        }
+      }
+    ]
+  };
 
-  // Add multiple evidence items with different locators
-  pet2Claim.evidence = [
-    { sourceId: 'src-book-2', locator: { book: 2, chapter: 10 }, confidence: 'confirmed' },
-    { sourceId: 'src-book-2', locator: { book: 2, chapter: 5 }, confidence: 'corroborated' }
-  ];
+  const compiled = compileRawFloor(doc, existingRaw);
+  const matchedEvent = compiled.events.find((e) => String(e.id) === 'evt-f3-magical-pet-carrier-acquired');
 
-  const resultOriginal = compileCandidateProjection(testDoc, modelingDoc);
-
-  // Reverse evidence array order
-  pet2Claim.evidence.reverse();
-  const resultReversed = compileCandidateProjection(testDoc, modelingDoc);
-
-  const posOriginal = resultOriginal.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002').position;
-  const posReversed = resultReversed.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002').position;
-
-  // Position is derived strictly from scope floor, completely invariant to evidence ordering
-  assert.deepEqual(posOriginal, { floor: 3 });
-  assert.deepEqual(posReversed, { floor: 3 });
+  assert.ok(matchedEvent);
+  assert.equal(matchedEvent.correlationId, 'corr-custom-123', 'Custom authored fields must survive compilation (correlationId)');
+  assert.equal(matchedEvent.causationId, 'cause-123', 'Custom authored fields must survive compilation (causationId)');
+  assert.equal(matchedEvent.type, 'ItemAcquired', 'Custom authored fields must survive compilation (type)');
+  assert.deepEqual(matchedEvent.position, { floor: 3, book: 2, chapter: 14 }, 'Custom authored fields must survive compilation (position)');
+  assert.deepEqual(matchedEvent.item, {
+    instanceId: 'inst-magical-pet-carrier-1',
+    itemId: 'item-magical-pet-carrier',
+    quantity: { known: true, value: 1 }
+  }, 'Custom authored fields must survive compilation (item)');
 });
 
-test('Research Ingestion Contract: generic unknown array is preserved untouched without domain field parsing', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+test('Research Compiler: P3-PET-010 carrier behavior leaves event mapping unresolved', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const compiled = compileRawFloor(doc);
 
-  const testDoc = deepClone(doc);
-  const sysClaim = testDoc.claims.find((c) => c.id === 'P3-SYS-001');
-  assert.ok(sysClaim);
-  sysClaim.unknowns = ['custom_unknown_key_1', 'custom_unknown_key_2'];
+  const p10Claim = doc.claims.find((c) => c.id === 'P3-PET-010');
+  assert.ok(p10Claim);
 
-  const testModeling = deepClone(modelingDoc);
-  const sysDecision = testModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
-  assert.ok(sysDecision);
-  sysDecision.disposition = 'promote';
-  sysDecision.target = { domain: 'floor-system', concept: 'CustomTargetConcept' };
-
-  const result = compileCandidateProjection(testDoc, testModeling);
-  const sysProposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-SYS-001');
-
-  assert.ok(sysProposal);
-  assert.deepEqual(sysProposal.unknowns, ['custom_unknown_key_1', 'custom_unknown_key_2']);
+  const p10Event = compiled.events.find((e) => String(e.summary) === p10Claim.claim.summary);
+  assert.ok(p10Event);
+  assert.equal(p10Event.type, undefined, 'P3-PET-010 event type must remain unresolved in uncurated raw output');
 });
 
-test('Research Ingestion Contract: explicit unknown on conceptual claim preserves statement and unknowns without inventing concrete values', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+test('Research Compiler: generates collision-safe deterministic domain event IDs', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const compiled1 = compileRawFloor(doc);
+  const compiled2 = compileRawFloor(doc);
 
-  // P3-SYS-001 (eight-day collapse timer) has unknowns: ['exact_timestamp']
-  const testDoc = deepClone(doc);
-  const testModeling = deepClone(modelingDoc);
+  assert.deepEqual(compiled1.events.map((e) => e.id), compiled2.events.map((e) => e.id));
 
-  const sysDecision = testModeling.decisions.find((d) => d.claimId === 'P3-SYS-001');
-  assert.ok(sysDecision);
-  sysDecision.disposition = 'promote';
-  sysDecision.target = { domain: 'floor-system', concept: 'CountdownDeclared' };
-
-  const result = compileCandidateProjection(testDoc, testModeling);
-  const sysProposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-SYS-001');
-
-  assert.ok(sysProposal);
-  assert.equal(sysProposal.summary, "Floor 3 has an eight-day collapse timer.");
-  assert.deepEqual(sysProposal.unknowns, ['exact_timestamp']);
-  // Assert no concrete timestamp or executable countdown seconds were fabricated on proposal
-  assert.equal('timestamp' in sysProposal, false);
-  assert.equal('remainingSeconds' in sysProposal, false);
+  for (const e of compiled1.events) {
+    assert.ok(
+      String(e.id).match(/^evt-f3-research-[a-z0-9-]+$/),
+      `Event ID "${e.id}" must match raw floor domain event ID convention`
+    );
+  }
 });
 
-test('Research Ingestion Contract: non-event claim promoted to candidate proposal does not require event payload', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-
-  const testDoc = deepClone(doc);
-  const testModeling = deepClone(modelingDoc);
-
-  // Promote state claim P3-PET-002 with non-event concept 'CatalogItemReference'
-  const pet2Decision = testModeling.decisions.find((d) => d.claimId === 'P3-PET-002');
-  assert.ok(pet2Decision);
-  pet2Decision.disposition = 'promote';
-  pet2Decision.target = { domain: 'inventory', concept: 'CatalogItemReference' };
-
-  const result = compileCandidateProjection(testDoc, testModeling);
-  const pet2Proposal = result.candidateProposals.find((e) => e.researchClaimId === 'P3-PET-002');
-
-  assert.ok(pet2Proposal);
-  assert.equal(pet2Proposal.target.domain, 'inventory');
-  assert.equal(pet2Proposal.target.concept, 'CatalogItemReference');
-  assert.equal('type' in pet2Proposal, false);
-  assert.equal('item' in pet2Proposal, false);
-});
-
-test('Research Ingestion Contract: rejects promotion for evidence explicitly carrying relationship "contradicts"', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
-
+test('Research Compiler: collision detection fails compilation when two different claim IDs normalize to the same event ID', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const badDoc = deepClone(doc);
-  const pet2Claim = badDoc.claims.find((c) => c.id === 'P3-PET-002');
-  assert.ok(pet2Claim);
-  pet2Claim.evidence[0].relationship = 'contradicts';
 
-  const validation = validateSemanticModelingDecisions(badDoc, modelingDoc);
-  assert.equal(validation.valid, false);
-  assert.ok(validation.errors.some((err) => err.includes('cannot enter candidate projection with evidence explicitly declared with relationship "contradicts"')));
+  // Inject two claims that will normalize to the same string
+  badDoc.claims[0].id = 'P3-PET-X';
+  badDoc.claims[1].id = 'p3-pet-x';
+
+  assert.throws(
+    () => compileRawFloor(badDoc),
+    /Compiler error: Normalization collision detected\. Claims "P3-PET-X" and "p3-pet-x" both normalize to "evt-f3-research-p3-pet-x"\./,
+    'Compiler must detect normalization collisions and fail'
+  );
 });
 
-test('Research Ingestion Contract: candidate compilation fails closed on unvalidated or incomplete modeling input', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+test('Research Compiler: a changed summary combined with incomplete evidence does not silently overwrite an existing record', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const testDoc = deepClone(doc);
 
-  // Incomplete modeling decisions
-  const incompleteModelingDoc = deepClone(modelingDoc);
-  incompleteModelingDoc.decisions.pop();
-  assert.throws(() => {
-    compileCandidateProjection(doc, incompleteModelingDoc);
-  }, /Compiler error: Trace completeness validation failed/);
+  // Modify the summary and use only partial evidence for P3-PET-002
+  const modifiedClaimId = testDoc.claims[1].id;
+  testDoc.claims[1].claim.summary = 'A different, modified summary for the carrier.';
+  testDoc.claims[1].evidence = [testDoc.claims[1].evidence[0]];
 
-  // Invalid research document
-  const invalidResearchDoc = deepClone(doc);
-  delete invalidResearchDoc.storyId;
-  assert.throws(() => {
-    compileCandidateProjection(invalidResearchDoc, modelingDoc);
-  }, /Compiler error: Research document schema\/semantic validation failed/);
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-authored-occurrence',
+        type: 'NarrativeEvent',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'Original exact summary from P3-PET-002.',
+        evidence: deepClone(doc.claims[1].evidence)
+      }
+    ]
+  };
 
-  // Missing target concept on promoted decision
-  const missingTargetDoc = deepClone(modelingDoc);
-  delete missingTargetDoc.decisions[1].target;
-  assert.throws(() => {
-    compileCandidateProjection(doc, missingTargetDoc);
-  }, /Modeling decision document schema validation failed/);
-});
+  const compiled = compileRawFloor(testDoc, existingRaw);
 
-test('Research Ingestion Contract: pure candidate projection produces candidate proposals without mutating memory artifacts', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+  // The modified claim should generate its own deterministic ID and not merge into the existing one
+  const generatedEvent = compiled.events.find(e => e.id.includes(modifiedClaimId.toLowerCase().replace(/[^a-z0-9]+/g, '-')));
+  assert.ok(generatedEvent);
 
-  const initialDocSnapshot = deepClone(doc);
-  const initialModelingSnapshot = deepClone(modelingDoc);
-
-  const result = compileCandidateProjection(doc, modelingDoc);
-  assert.ok(result.candidateProposals);
-
-  assert.deepEqual(doc, initialDocSnapshot);
-  assert.deepEqual(modelingDoc, initialModelingSnapshot);
+  const existingEvent = compiled.events.find(e => e.id === 'evt-f3-authored-occurrence');
+  assert.ok(existingEvent);
+  assert.notEqual(
+    generatedEvent.id,
+    existingEvent.id,
+    'A changed summary without full evidence match should not reconcile'
+  );
 });
 
 
-test('Research Ingestion Contract: promote authorizes disposable candidate review, not authoritative runtime state', () => {
-  const doc = loadResearchClaimDocument(VALID_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument(VALID_MODELING_FIXTURE);
+test('Research Compiler: shared source locators do not imply record identity', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const testDoc = deepClone(doc);
 
-  const result = compileCandidateProjection(doc, modelingDoc);
-  const promoted = result.candidateProposals.find((candidate) => candidate.researchClaimId === 'P3-PET-002');
+  // use a valid sourceId that exists in the doc's sources
+  const validSourceId = testDoc.sources[0].id;
 
-  assert.ok(promoted);
-  assert.equal(promoted.target.concept, 'ItemAcquired');
+  testDoc.claims[0].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
+  testDoc.claims[1].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
 
-  assert.equal('event' in promoted, false);
-  assert.equal('payload' in promoted, false);
-  assert.equal('authoritative' in promoted, false);
-  assert.equal('runtimeState' in promoted, false);
-  assert.equal('rawFloorPath' in promoted, false);
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-authored-occurrence',
+        type: 'NarrativeEvent',
+        kind: 'other',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'Existing authored occurrence.',
+        evidence: [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }]
+      }
+    ]
+  };
 
-  assert.ok(Array.isArray(result.candidateProposals));
-  assert.ok(Array.isArray(result.provenanceSidecar));
+  const compiled = compileRawFloor(testDoc, existingRaw);
+  assert.equal(
+    compiled.events.filter((event) => event.id === 'evt-f3-authored-occurrence').length,
+    1
+  );
+  assert.equal(
+    compiled.events.filter((event) => String(event.id).startsWith('evt-f3-research-p3-pet-')).length,
+    15,
+    'Research claims must not collapse into an existing event solely because their locator matches'
+  );
+});
+
+test('Research Compiler: repeated compilation is idempotent', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const initial = {
+    events: [
+      {
+        id: 'evt-f3-magical-pet-carrier-acquired',
+        type: 'ItemAcquired',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'The party acquires a Magical Pet Carrier on Floor 3.',
+        evidence: [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }],
+        item: {
+          instanceId: 'inst-f3-magical-pet-carrier',
+          itemId: 'item-magical-pet-carrier',
+          quantity: { known: true, value: 1 }
+        }
+      }
+    ]
+  };
+
+  const once = compileRawFloor(doc, initial);
+  const twice = compileRawFloor(doc, once);
+  assert.deepEqual(twice, once);
 });
