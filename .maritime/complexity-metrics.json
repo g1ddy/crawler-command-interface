@@ -264,8 +264,8 @@
     "scanned": true
   },
   "app/domain/research-compiler.ts": {
-    "complexity": 16,
-    "loc": 234,
+    "complexity": 33,
+    "loc": 318,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 2,

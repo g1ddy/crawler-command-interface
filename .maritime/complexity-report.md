@@ -1,8 +1,8 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-20
+**Last Updated:** 2026-09-23
 
-### 🏥 Repository Health Score: **52.0 / 100**
+### 🏥 Repository Health Score: **51.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 126
@@ -22,8 +22,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/application/crawler-actions.ts` | **134.8** | 128 | 49 | 4 | 0.8 |
 | `src/shell/hud/PersistentHud.tsx` | **133.2** | 134 | 43 | 8 | 0.89 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
+| `app/domain/research-compiler.ts` | **121.8** | 318 | 33 | 2 | 1 |
 | `src/shell/adapters/CrawlerWorkspace.tsx` | **121.8** | 348 | 15 | 19 | 0.95 |
-| `src/application/crawler-session-controller.ts` | **111** | 307 | 20 | 11 | 0.92 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
@@ -37,4 +37,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/inventory/equipment/EquipmentView.tsx` | **38** | 360 |
 | `app/domain/compiler.ts` | **35** | 368 |
 | `src/features/inventory/equipment/equipment-presentation.ts` | **35** | 158 |
-| `app/domain/observations.ts` | **29** | 325 |
+| `app/domain/research-compiler.ts` | **33** | 318 |
