@@ -65,10 +65,11 @@ function generateResearchEventId(floor: number, claimId: string): string {
   // Preserve claim-ID distinctions in the temporary curation key. The key is
   // deliberately not a semantic/domain identity; Jules replaces it when the
   // occurrence is curated into an authored event.
-  const encoded = encodeURIComponent(claimId)
-    .replace(/%/g, '-pct-')
-    .replace(/[^a-zA-Z0-9-]/g, '-');
-  return `evt-f${floor}-${encoded}`;
+  const normalized = claimId
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `evt-f${floor}-research-${normalized}`;
 }
 
 function evidenceKey(evidence: unknown): string {
@@ -134,8 +135,20 @@ export function compileRawFloor(
     events.map((event) => String(event.id))
   );
 
+  const generatedIdToClaimId = new Map<string, string>();
+
   for (const claim of researchDoc.claims) {
     const eventId = generateResearchEventId(researchDoc.floor, claim.id);
+
+    if (generatedIdToClaimId.has(eventId)) {
+      const existingClaimId = generatedIdToClaimId.get(eventId);
+      if (existingClaimId !== claim.id) {
+        throw new Error(
+          `Compiler error: Normalization collision detected. Claims "${existingClaimId}" and "${claim.id}" both normalize to "${eventId}".`
+        );
+      }
+    }
+    generatedIdToClaimId.set(eventId, claim.id);
 
     const matchingIdIndex = events.findIndex((event) => String(event.id) === eventId);
     if (matchingIdIndex >= 0 && !hasSameResearchEvidence(events[matchingIdIndex], claim)) {
