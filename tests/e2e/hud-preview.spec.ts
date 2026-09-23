@@ -110,12 +110,12 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   const healthRow = page.getByTestId("telemetry-health");
   await expect(healthRow).toBeVisible();
 
-  // Find enabled telemetry badge and click it
-  const badge = page.locator("button[data-testid$='-badge']:not([disabled])").first();
-  await expect(badge).toBeVisible();
+  // Target specific telemetry inspection badge (mana)
+  const manaBadge = page.getByTestId("telemetry-mana-badge");
+  await expect(manaBadge).toBeVisible();
 
   // Test interactive evidence inspection via application capability callback
-  await badge.click();
+  await manaBadge.click();
   await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
   await page.getByRole("button", { name: "CLOSE" }).click();
 });

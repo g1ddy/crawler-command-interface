@@ -4,22 +4,30 @@ import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
-import type {
-  HudCompositionModel,
-  HudTelemetryPresentation,
-} from "../../shell/hud/public.ts";
+import type { PresentationSemantics } from "../semantic/public.ts";
+import type { HudCompositionModel } from "../../shell/hud/public.ts";
+
+export interface ArwesTelemetryRowData {
+  key?: string;
+  label: string;
+  valueDisplay: string;
+  badgeLabel: string;
+  semantics: PresentationSemantics;
+  onInspect?: () => void;
+}
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
-  telemetryItems?: HudTelemetryPresentation[];
+  telemetryItems?: ArwesTelemetryRowData[];
 }
 
 interface TelemetryRowProps {
-  item: HudTelemetryPresentation;
+  item: ArwesTelemetryRowData;
 }
 
 function TelemetryRow({ item }: TelemetryRowProps) {
-  const { label, valueDisplay, badgeLabel, semantics, onInspect } = item;
+  const { key, label, valueDisplay, badgeLabel, semantics, onInspect } = item;
+  const rowKey = key || label.toLowerCase().replace(/\s+/g, "-");
   const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
 
   const badgeElement = isInspectable
@@ -27,7 +35,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
         "button",
         {
           type: "button",
-          "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}-badge`,
+          "data-testid": `telemetry-${rowKey}-badge`,
           onClick: onInspect,
           style: {
             display: "inline-flex",
@@ -51,7 +59,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
     : createElement(
         "span",
         {
-          "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}-badge`,
+          "data-testid": `telemetry-${rowKey}-badge`,
           style: {
             display: "inline-flex",
             alignItems: "center",
@@ -73,7 +81,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
     "div",
     {
       className: "arwes-telemetry-row",
-      "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}`,
+      "data-testid": `telemetry-${rowKey}`,
       "data-status": semantics.status,
       "data-authority": semantics.authority || "none",
       "data-temporal": semantics.temporal || "current",
@@ -104,7 +112,7 @@ function TelemetryRow({ item }: TelemetryRowProps) {
       createElement(
         "span",
         {
-          "data-testid": `telemetry-${label.toLowerCase().replace(/\s+/g, "-")}-value`,
+          "data-testid": `telemetry-${rowKey}-value`,
           style: {
             fontSize: "1.05rem",
             fontWeight: 700,
@@ -324,9 +332,9 @@ export function ArwesAuthorityComposition({
         createElement(
           "div",
           { style: { display: "flex", flexDirection: "column" } },
-          telemetryItems.map((item) =>
+          telemetryItems.map((item, idx) =>
             createElement(TelemetryRow, {
-              key: item.label,
+              key: item.key || item.label || idx,
               item,
             })
           )

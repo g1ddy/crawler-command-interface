@@ -4,10 +4,13 @@ import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
 import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
-import { deriveHudComposition, type HudTelemetryPresentation } from "../hud/public.ts";
+import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
-import { deriveEvidencePresentation, mapEvidenceToSemantics } from "../../features/timeline/public.ts";
+import {
+  deriveEvidencePresentation,
+  mapEvidenceToSemantics,
+} from "../../features/timeline/public.ts";
 import {
   availableRootViews,
   deriveNavigationContract,
@@ -29,6 +32,7 @@ import type {
 import type { HudPresentation } from "../hud/hud-presentation";
 import type { RootView } from "../navigation/public";
 import type { EquipmentSlot } from "../../application/crawler-action-contracts";
+import type { HudTelemetryPresentation } from "../hud/hud-composition.ts";
 
 /** Composition adapter for existing features; the replaceable frame only receives slots. */
 export function CrawlerWorkspace({
@@ -185,33 +189,41 @@ export function CrawlerWorkspace({
     ],
   );
 
-  const telemetryItems = useMemo((): HudTelemetryPresentation[] => {
-    const rawItems = [
-      { label: "HEALTH", obs: composition.vitals.health },
-      { label: "MANA", obs: composition.vitals.mana },
-      { label: "LEVEL", obs: composition.vitals.level },
-      { label: "AUDIENCE VIEWERS", obs: composition.broadcast.viewers },
-    ];
+  const telemetryItems = useMemo<HudTelemetryPresentation[]>(() => {
+    const healthObs = projectedObservations.condition.currentHealth;
+    const manaObs = projectedObservations.condition.currentMana;
+    const levelObs = projectedObservations.xpProgress.level;
+    const viewersObs = projectedObservations.broadcast.viewers;
 
-    return rawItems.map(({ label, obs }) => {
-      const evidence = deriveEvidencePresentation(obs, currentSeq);
+    const buildItem = (
+      key: "health" | "mana" | "level" | "viewers",
+      label: string,
+      observation: ProjectedObservationValue | undefined
+    ): HudTelemetryPresentation => {
+      const evidence = deriveEvidencePresentation(observation, currentSeq);
       const semantics = mapEvidenceToSemantics(evidence);
       const valueDisplay =
-        obs?.value !== undefined && obs?.value !== null ? `${obs.value}` : "— ABSENT";
-      const isInspectable =
-        semantics.affordance === "inspect" &&
-        Boolean(obs) &&
-        Boolean(setInspectObservation);
+        observation?.value !== undefined && observation?.value !== null
+          ? `${observation.value}`
+          : "— ABSENT";
 
       return {
+        key,
         label,
         valueDisplay,
         badgeLabel: evidence.badgeLabel,
         semantics,
-        onInspect: isInspectable && obs ? () => setInspectObservation(obs) : undefined,
+        onInspect: observation ? () => setInspectObservation(observation) : undefined,
       };
-    });
-  }, [composition.vitals, composition.broadcast, currentSeq, setInspectObservation]);
+    };
+
+    return [
+      buildItem("health", "HEALTH", healthObs),
+      buildItem("mana", "MANA", manaObs),
+      buildItem("level", "LEVEL", levelObs),
+      buildItem("viewers", "AUDIENCE VIEWERS", viewersObs),
+    ];
+  }, [projectedObservations, currentSeq]);
 
   const navigationContract = useMemo(
     () =>

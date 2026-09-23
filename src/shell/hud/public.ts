@@ -3,7 +3,7 @@ export {
   type HudCompositionModel,
   type HudSystemIdentity,
   type HudTemporalContext,
-  type HudUrgencyContext,
+  type HudUrgencySummary,
   type HudAttentionSummary,
   type HudVitalsSummary,
   type HudBroadcastSummary,

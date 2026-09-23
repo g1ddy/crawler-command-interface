@@ -13,7 +13,7 @@ export interface ArwesPresentationProps {
 
 export function ArwesPresentation({
   model,
-  telemetryItems,
+  telemetryItems = [],
 }: ArwesPresentationProps) {
   return createElement(
     "div",

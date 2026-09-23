@@ -1,6 +1,6 @@
 import type {
+  ActiveCountdownState,
   CrawlerState,
-  ProjectedCountdownState,
   ProjectedObservationsState,
   ProjectedObservationValue,
 } from "../../../app/domain/types.ts";
@@ -19,8 +19,8 @@ export interface HudTemporalContext {
   isLive: boolean;
 }
 
-export interface HudUrgencyContext {
-  activeCountdown: ProjectedCountdownState | null;
+export interface HudUrgencySummary {
+  activeCountdown: ActiveCountdownState | null;
   formattedLabel: string;
   lifecycleStatus?: "scheduled" | "active" | "completed";
 }
@@ -32,7 +32,11 @@ export interface HudAttentionSummary {
   latestNotificationMessage?: string;
 }
 
+/**
+ * Renderer-neutral telemetry item model describing semantic meaning and display strings.
+ */
 export interface HudTelemetryPresentation {
+  key: "health" | "mana" | "level" | "viewers";
   label: string;
   valueDisplay: string;
   badgeLabel: string;
@@ -56,8 +60,8 @@ export interface HudBroadcastSummary {
  * INVARIANTS:
  * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast).
  * - Remains strictly renderer-neutral: MUST NOT contain CSS classes, styling tokens, border treatments,
- *   animation-library primitives, or renderer-specific component choices (e.g., Arwes/POC types).
- * - Capabilities and action contracts (e.g. Return to Live, sequence navigation) retain their existing application
+ *   animation-library primitives, executable action callbacks, or renderer-specific component choices (e.g., Arwes/POC types).
+ * - Capabilities and action contracts (e.g. Return to Live, sequence navigation, evidence inspection) retain their existing application
  *   ownership and are intentionally NOT modeled as action handlers or tool commands inside this composition model.
  * - Explicitly PROVISIONAL: The current arrangement of identity, countdown, mode, audience, and vitals
  *   is an implementation slice and does not represent settled or final persistent HUD product requirements.
@@ -65,7 +69,7 @@ export interface HudBroadcastSummary {
 export interface HudCompositionModel {
   system: HudSystemIdentity;
   temporal: HudTemporalContext;
-  urgency: HudUrgencyContext;
+  urgency: HudUrgencySummary;
   attention: HudAttentionSummary;
   vitals: HudVitalsSummary;
   broadcast: HudBroadcastSummary;
@@ -74,7 +78,7 @@ export interface HudCompositionModel {
 export interface DeriveHudCompositionInput {
   projectedState: CrawlerState;
   projectedObservations: ProjectedObservationsState;
-  activeCountdown: ProjectedCountdownState | null;
+  activeCountdown: ActiveCountdownState | null;
   sequence: number;
   isLive: boolean;
   floorHudTitle: string;
@@ -111,7 +115,9 @@ export function deriveHudComposition({
     },
     urgency: {
       activeCountdown,
-      formattedLabel: activeCountdown?.formattedLabel ?? "Collapse time unavailable",
+      formattedLabel: activeCountdown
+        ? activeCountdown.formattedLabel
+        : "Collapse time unavailable",
       lifecycleStatus: activeCountdown?.lifecycleStatus,
     },
     attention: notificationsSummary,
