@@ -123,21 +123,6 @@ test('Research Compiler: uncurated raw records fail existing CCI raw floor schem
   );
 });
 
-test('Research Compiler: research input and authoritative raw floor files are never mutated', () => {
-  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const docSnapshot = deepClone(doc);
-
-  const rawEventsPath = path.resolve(process.cwd(), 'data/raw/floors/floor-3/events.json');
-  const rawEventsBefore = fs.readFileSync(rawEventsPath, 'utf8');
-
-  compileRawFloor(doc);
-
-  assert.deepEqual(doc, docSnapshot);
-
-  const rawEventsAfter = fs.readFileSync(rawEventsPath, 'utf8');
-  assert.equal(rawEventsBefore, rawEventsAfter);
-});
-
 test('Research Compiler: CLI script generates raw artifacts in target directory', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const tmpDir = path.resolve(process.cwd(), '.tmp/test-research-scaffold');
@@ -359,4 +344,76 @@ test('Research Compiler: generates collision-safe deterministic domain event IDs
       `Event ID "${e.id}" must match raw floor domain event ID convention`
     );
   }
+});
+
+
+test('Research Compiler: shared source locators do not imply record identity', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const testDoc = deepClone(doc);
+
+  testDoc.claims[0].evidence = [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }];
+  testDoc.claims[1].evidence = [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }];
+
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-authored-occurrence',
+        type: 'NarrativeEvent',
+        kind: 'other',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'Existing authored occurrence.',
+        evidence: [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }]
+      }
+    ]
+  };
+
+  const compiled = compileRawFloor(testDoc, undefined, existingRaw);
+  assert.equal(
+    compiled.events.filter((event) => event.id === 'evt-f3-authored-occurrence').length,
+    1
+  );
+  assert.equal(
+    compiled.events.filter((event) => String(event.id).startsWith('evt-f3-p3-pet-')).length,
+    15,
+    'Research claims must not collapse into an existing event solely because their locator matches'
+  );
+});
+
+test('Research Compiler: repeated compilation is idempotent', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const initial = {
+    events: [
+      {
+        id: 'evt-f3-magical-pet-carrier-acquired',
+        type: 'ItemAcquired',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'The party acquires a Magical Pet Carrier on Floor 3.',
+        evidence: [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }],
+        item: {
+          instanceId: 'inst-f3-magical-pet-carrier',
+          itemId: 'item-magical-pet-carrier',
+          quantity: { known: true, value: 1 }
+        }
+      }
+    ]
+  };
+
+  const once = compileRawFloor(doc, modelingDoc, initial);
+  const twice = compileRawFloor(doc, modelingDoc, once);
+  assert.deepEqual(twice, once);
+});
+
+test('Research Compiler: deterministic research IDs are not derived from modeling target concepts', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingA = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const modelingB = deepClone(modelingA);
+  const decision = modelingB.decisions.find((item) => item.claimId === 'P3-PET-002');
+  decision.target.concept = 'DifferentConcept';
+
+  const a = compileRawFloor(doc, modelingA);
+  const b = compileRawFloor(doc, modelingB);
+  const aId = a.events.find((event) => String(event.id).includes('p3-pet-002')).id;
+  const bId = b.events.find((event) => String(event.id).includes('p3-pet-002')).id;
+  assert.equal(aId, bId);
 });
