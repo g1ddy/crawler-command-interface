@@ -5,7 +5,8 @@ import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import {
   loadResearchClaimDocument,
-    parseResearchClaimDocument,
+  parseResearchClaimDocument,
+  loadModelingDecisionDocument
 } from '../../app/domain/research-loader.ts';
 import { validateResearchClaimDocument } from '../../app/domain/research-validator.ts';
 import {
@@ -16,6 +17,7 @@ import { validateRawCrawlerFloor } from '../../app/domain/validation.ts';
 
 const PET_RESEARCH_FIXTURE = 'data/raw/research/floor-3/pet-research.yaml';
 const GENERAL_RESEARCH_FIXTURE = 'data/raw/research/floor-3/research.yaml';
+const GENERAL_MODELING_FIXTURE = 'data/raw/research/floor-3/modeling-decisions.yaml';
 
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -177,34 +179,8 @@ test('Research Ingestion Contract: trace compilation executes cleanly when model
   assert.equal(compiled.claimMappings.length, 5);
 });
 
-test('Research Compiler: filters out ledger_only and review claims when modeling decisions are supplied', () => {
-  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
-
-  const fullCompiled = compileRawFloor(doc);
-  assert.equal(fullCompiled.events.length, 15);
-
-  const filteredCompiled = compileRawFloor(doc);
-  // Pet modeling decisions promote 5 claims (P3-PET-002, 004, 005, 006, 008)
-  assert.equal(filteredCompiled.events.length, 5);
-
-  const ledgerOnlyClaimSummaries = [
-    'Mongo is a dungeon-generated, pet-class Mongoliensis.',
-    'Mongo undergoes substantial physical growth during his progression.',
-    'The Enchanted Fang Caps produce an electrical spark effect associated with Mongo\'s bite attacks.'
-  ];
-  for (const summary of ledgerOnlyClaimSummaries) {
-    assert.equal(
-      filteredCompiled.events.some((e) => String(e.summary) === summary),
-      false,
-      `Ledger-only claim "${summary}" must be excluded from raw floor compilation`
-    );
-  }
-});
-
 test('Research Compiler: reconciles existing raw floor records without creating duplicates', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
 
   const existingRaw = {
     events: [
@@ -242,7 +218,6 @@ test('Research Compiler: reconciles existing raw floor records without creating 
 
 test('Research Compiler: changing research wording does not alter an established event ID during reconciliation', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
 
   const existingRaw = {
     events: [
@@ -262,7 +237,7 @@ test('Research Compiler: changing research wording does not alter an established
     ]
   };
 
-  const compiled = compileRawFloor(doc, modelingDoc, existingRaw);
+  const compiled = compileRawFloor(doc, existingRaw);
   const matchedEvent = compiled.events.find((e) => String(e.id) === 'evt-f3-magical-pet-carrier-acquired');
 
   assert.ok(matchedEvent);
@@ -284,7 +259,6 @@ test('Research Compiler: claims with identical summaries represent separate occu
 
 test('Research Compiler: existing authored fields absent from research survive compilation unchanged', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
 
   const existingRaw = {
     events: [
@@ -294,6 +268,7 @@ test('Research Compiler: existing authored fields absent from research survive c
         position: { floor: 3, book: 2, chapter: 14 },
         summary: 'The party acquires a Magical Pet Carrier on Floor 3.',
         correlationId: 'corr-custom-123',
+        causationId: 'cause-123',
         evidence: [
           {
             sourceId: 'src-bookworm-carrier',
@@ -310,11 +285,19 @@ test('Research Compiler: existing authored fields absent from research survive c
     ]
   };
 
-  const compiled = compileRawFloor(doc, modelingDoc, existingRaw);
+  const compiled = compileRawFloor(doc, existingRaw);
   const matchedEvent = compiled.events.find((e) => String(e.id) === 'evt-f3-magical-pet-carrier-acquired');
 
   assert.ok(matchedEvent);
-  assert.equal(matchedEvent.correlationId, 'corr-custom-123', 'Custom authored fields must survive compilation');
+  assert.equal(matchedEvent.correlationId, 'corr-custom-123', 'Custom authored fields must survive compilation (correlationId)');
+  assert.equal(matchedEvent.causationId, 'cause-123', 'Custom authored fields must survive compilation (causationId)');
+  assert.equal(matchedEvent.type, 'ItemAcquired', 'Custom authored fields must survive compilation (type)');
+  assert.deepEqual(matchedEvent.position, { floor: 3, book: 2, chapter: 14 }, 'Custom authored fields must survive compilation (position)');
+  assert.deepEqual(matchedEvent.item, {
+    instanceId: 'inst-magical-pet-carrier-1',
+    itemId: 'item-magical-pet-carrier',
+    quantity: { known: true, value: 1 }
+  }, 'Custom authored fields must survive compilation (item)');
 });
 
 test('Research Compiler: P3-PET-010 carrier behavior leaves event mapping unresolved', () => {
@@ -338,10 +321,61 @@ test('Research Compiler: generates collision-safe deterministic domain event IDs
 
   for (const e of compiled1.events) {
     assert.ok(
-      String(e.id).match(/^evt-f3-[a-z0-9-]+$/),
+      String(e.id).match(/^evt-f3-research-[a-z0-9-]+$/),
       `Event ID "${e.id}" must match raw floor domain event ID convention`
     );
   }
+});
+
+test('Research Compiler: collision detection fails compilation when two different claim IDs normalize to the same event ID', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const badDoc = deepClone(doc);
+
+  // Inject two claims that will normalize to the same string
+  badDoc.claims[0].id = 'P3-PET-X';
+  badDoc.claims[1].id = 'p3-pet-x';
+
+  assert.throws(
+    () => compileRawFloor(badDoc),
+    /Compiler error: Normalization collision detected\. Claims "P3-PET-X" and "p3-pet-x" both normalize to "evt-f3-research-p3-pet-x"\./,
+    'Compiler must detect normalization collisions and fail'
+  );
+});
+
+test('Research Compiler: a changed summary combined with incomplete evidence does not silently overwrite an existing record', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const testDoc = deepClone(doc);
+
+  // Modify the summary and use only partial evidence for P3-PET-002
+  const modifiedClaimId = testDoc.claims[1].id;
+  testDoc.claims[1].claim.summary = 'A different, modified summary for the carrier.';
+  testDoc.claims[1].evidence = [testDoc.claims[1].evidence[0]];
+
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-authored-occurrence',
+        type: 'NarrativeEvent',
+        position: { floor: 3, book: 2, chapter: 14 },
+        summary: 'Original exact summary from P3-PET-002.',
+        evidence: deepClone(doc.claims[1].evidence)
+      }
+    ]
+  };
+
+  const compiled = compileRawFloor(testDoc, existingRaw);
+
+  // The modified claim should generate its own deterministic ID and not merge into the existing one
+  const generatedEvent = compiled.events.find(e => e.id.includes(modifiedClaimId.toLowerCase().replace(/[^a-z0-9]+/g, '-')));
+  assert.ok(generatedEvent);
+
+  const existingEvent = compiled.events.find(e => e.id === 'evt-f3-authored-occurrence');
+  assert.ok(existingEvent);
+  assert.notEqual(
+    generatedEvent.id,
+    existingEvent.id,
+    'A changed summary without full evidence match should not reconcile'
+  );
 });
 
 
@@ -349,8 +383,11 @@ test('Research Compiler: shared source locators do not imply record identity', (
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const testDoc = deepClone(doc);
 
-  testDoc.claims[0].evidence = [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }];
-  testDoc.claims[1].evidence = [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }];
+  // use a valid sourceId that exists in the doc's sources
+  const validSourceId = testDoc.sources[0].id;
+
+  testDoc.claims[0].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
+  testDoc.claims[1].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
 
   const existingRaw = {
     events: [
@@ -360,18 +397,18 @@ test('Research Compiler: shared source locators do not imply record identity', (
         kind: 'other',
         position: { floor: 3, book: 2, chapter: 14 },
         summary: 'Existing authored occurrence.',
-        evidence: [{ sourceId: 'src-book-2', locator: { chapter: 14 }, confidence: 'confirmed' }]
+        evidence: [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }]
       }
     ]
   };
 
-  const compiled = compileRawFloor(testDoc, undefined, existingRaw);
+  const compiled = compileRawFloor(testDoc, existingRaw);
   assert.equal(
     compiled.events.filter((event) => event.id === 'evt-f3-authored-occurrence').length,
     1
   );
   assert.equal(
-    compiled.events.filter((event) => String(event.id).startsWith('evt-f3-p3-pet-')).length,
+    compiled.events.filter((event) => String(event.id).startsWith('evt-f3-research-p3-pet-')).length,
     15,
     'Research claims must not collapse into an existing event solely because their locator matches'
   );
@@ -379,7 +416,6 @@ test('Research Compiler: shared source locators do not imply record identity', (
 
 test('Research Compiler: repeated compilation is idempotent', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const modelingDoc = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
   const initial = {
     events: [
       {
@@ -397,21 +433,7 @@ test('Research Compiler: repeated compilation is idempotent', () => {
     ]
   };
 
-  const once = compileRawFloor(doc, modelingDoc, initial);
-  const twice = compileRawFloor(doc, modelingDoc, once);
+  const once = compileRawFloor(doc, initial);
+  const twice = compileRawFloor(doc, once);
   assert.deepEqual(twice, once);
-});
-
-test('Research Compiler: deterministic research IDs are not derived from modeling target concepts', () => {
-  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const modelingA = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
-  const modelingB = deepClone(modelingA);
-  const decision = modelingB.decisions.find((item) => item.claimId === 'P3-PET-002');
-  decision.target.concept = 'DifferentConcept';
-
-  const a = compileRawFloor(doc, modelingA);
-  const b = compileRawFloor(doc, modelingB);
-  const aId = a.events.find((event) => String(event.id).includes('p3-pet-002')).id;
-  const bId = b.events.find((event) => String(event.id).includes('p3-pet-002')).id;
-  assert.equal(aId, bId);
 });
