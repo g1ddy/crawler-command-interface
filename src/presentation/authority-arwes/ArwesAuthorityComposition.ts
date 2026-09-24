@@ -1,5 +1,5 @@
 "use client";
-import { createElement } from "react";
+import { createElement, useEffect, useRef } from "react";
 import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
@@ -17,6 +17,8 @@ export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
   onInspectTelemetry?: (key: HudTelemetryKey) => void;
   motionMode?: AuthorityMotionMode;
+  temporalIntent?: PresentationMotionIntent;
+  attentionIntent?: PresentationMotionIntent;
 }
 
 interface TelemetryRowProps {
@@ -30,15 +32,7 @@ function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
   const rowKey = key;
   const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
 
-  const rowMotionIntent: PresentationMotionIntent | undefined =
-    semantics.motionIntent ??
-    (semantics.change === "newly-established"
-      ? "established"
-      : semantics.change === "changed"
-      ? "changed"
-      : semantics.status === "present"
-      ? "established"
-      : undefined);
+  const rowMotionIntent: PresentationMotionIntent | undefined = semantics.motionIntent;
 
   const badgeElement = isInspectable
     ? createElement(
@@ -149,16 +143,41 @@ export function ArwesAuthorityComposition({
   composition,
   onInspectTelemetry,
   motionMode = "enabled",
+  temporalIntent: explicitTemporalIntent,
+  attentionIntent: explicitAttentionIntent,
 }: ArwesAuthorityCompositionProps) {
   const { system, temporal, urgency, attention, telemetryItems } = composition;
 
-  const temporalIntent: PresentationMotionIntent = temporal.isLive
-    ? "return-live"
-    : "enter-replay";
+  /* eslint-disable react-hooks/refs */
+  const prevIsLiveRef = useRef<boolean | null>(null);
+  const prevAlertTitleRef = useRef<string | null>(null);
+  const prevHasAlertsRef = useRef<boolean | null>(null);
 
-  const attentionIntent: PresentationMotionIntent | undefined = attention.hasActiveAlerts
-    ? "attention"
-    : undefined;
+  const currentTitle = attention.latestNotificationTitle ?? null;
+  const currentHasAlerts = attention.hasActiveAlerts;
+
+  const temporalIntent: PresentationMotionIntent | undefined =
+    explicitTemporalIntent ??
+    (prevIsLiveRef.current !== null && prevIsLiveRef.current !== temporal.isLive
+      ? temporal.isLive
+        ? "return-live"
+        : "enter-replay"
+      : undefined);
+
+  const attentionIntent: PresentationMotionIntent | undefined =
+    explicitAttentionIntent ??
+    (prevHasAlertsRef.current !== null &&
+    ((!prevHasAlertsRef.current && currentHasAlerts) ||
+      (currentHasAlerts && prevAlertTitleRef.current !== currentTitle))
+      ? "attention"
+      : undefined);
+
+  useEffect(() => {
+    prevIsLiveRef.current = temporal.isLive;
+    prevHasAlertsRef.current = currentHasAlerts;
+    prevAlertTitleRef.current = currentTitle;
+  }, [temporal.isLive, currentHasAlerts, currentTitle]);
+  /* eslint-enable react-hooks/refs */
 
   return createElement(
     AuthoritySurface,

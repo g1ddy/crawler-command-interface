@@ -37,7 +37,7 @@ export function AuthorityTransition({
 }: AuthorityTransitionProps) {
   const isActive = state === "entering" || state === "entered";
 
-  if (motionMode === "deterministic") {
+  if (!motionIntent || motionMode === "deterministic") {
     return createElement(
       "div",
       {
@@ -50,7 +50,7 @@ export function AuthorityTransition({
         },
         "data-testid": testId,
         "data-transition-state": state,
-        "data-motion-mode": "deterministic",
+        "data-motion-mode": motionMode,
         ...(motionIntent ? { "data-motion-intent": motionIntent } : {}),
       },
       children

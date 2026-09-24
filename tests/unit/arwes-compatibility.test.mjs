@@ -277,12 +277,12 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
   assert.match(html, /<span[^>]*data-testid="telemetry-viewers-badge"/);
 });
 
-test("ArwesPresentation preserves PresentationMotionIntent across enabled, reduced, and deterministic motion modes", () => {
+test("ArwesPresentation keeps stable present telemetry motionIntent undefined", () => {
   const model = {
     system: { crawlerName: "TEST-CRAWLER", crawlerClass: "Test Class", floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
-    attention: { totalNotificationsCount: 1, hasActiveAlerts: true, latestNotificationTitle: "ALERT" },
+    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
     vitals: {},
     broadcast: {},
     telemetryItems: [
@@ -291,25 +291,38 @@ test("ArwesPresentation preserves PresentationMotionIntent across enabled, reduc
         label: "HEALTH",
         valueDisplay: "100",
         badgeLabel: "SOURCE",
+        semantics: { status: "present", authority: "observed", affordance: "inspect" },
+      },
+      {
+        key: "mana",
+        label: "MANA",
+        valueDisplay: "50",
+        badgeLabel: "SOURCE",
         semantics: { status: "present", motionIntent: "established", authority: "observed", affordance: "inspect" },
+      },
+      {
+        key: "level",
+        label: "LEVEL",
+        valueDisplay: "5",
+        badgeLabel: "SOURCE",
+        semantics: { status: "present", motionIntent: "changed", authority: "observed", affordance: "inspect" },
       },
     ],
   };
 
-  for (const motionMode of ["enabled", "reduced", "deterministic"]) {
-    const html = renderToString(
-      React.createElement(ArwesPresentation, {
-        model,
-        motionMode,
-        onInspectTelemetry: () => {},
-      })
-    );
+  const html = renderToString(
+    React.createElement(ArwesPresentation, {
+      model,
+      onInspectTelemetry: () => {},
+    })
+  );
 
-    assert.match(html, new RegExp(`data-motion-mode="${motionMode}"`));
-    assert.match(html, /data-motion-intent="return-live"/);
-    assert.match(html, /data-motion-intent="attention"/);
-    assert.match(html, /data-motion-intent="established"/);
-  }
+  // Stable present value has no motion intent
+  assert.doesNotMatch(html, /data-testid="telemetry-health"[^>]*data-motion-intent/);
+
+  // Explicit transition-driven intents survive directly
+  assert.match(html, /data-testid="telemetry-mana"[^>]*data-motion-intent="established"/);
+  assert.match(html, /data-testid="telemetry-level"[^>]*data-motion-intent="changed"/);
 });
 
 test("ArwesPresentation reduced motion produces semantically equivalent markup without physical animation dependency", () => {
@@ -338,12 +351,55 @@ test("ArwesPresentation reduced motion produces semantically equivalent markup w
     React.createElement(ArwesPresentation, { model, motionMode: "reduced" })
   );
 
-  assert.match(enabledHtml, /data-motion-intent="enter-replay"/);
-  assert.match(reducedHtml, /data-motion-intent="enter-replay"/);
+  assert.match(enabledHtml, /data-mode="replay"/);
+  assert.match(reducedHtml, /data-mode="replay"/);
   assert.match(reducedHtml, /data-status="present"/);
   assert.match(reducedHtml, /data-authority="observed"/);
   assert.match(reducedHtml, /data-temporal="current"/);
   assert.match(reducedHtml, /80/);
+});
+
+test("ArwesPresentation ensures initial renders have no spurious transition motion intents", () => {
+  const baseModel = {
+    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    temporal: { mode: "live", sequence: 10, isLive: true },
+    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
+    attention: { totalNotificationsCount: 0, hasActiveAlerts: false, latestNotificationTitle: undefined },
+    vitals: {},
+    broadcast: {},
+    telemetryItems: [],
+  };
+
+  const html = renderToString(React.createElement(ArwesPresentation, { model: baseModel }));
+
+  // Initial render: no spurious enter-replay, return-live, or attention motion intents
+  assert.doesNotMatch(html, /data-motion-intent="return-live"/);
+  assert.doesNotMatch(html, /data-motion-intent="enter-replay"/);
+  assert.doesNotMatch(html, /data-motion-intent="attention"/);
+});
+
+test("ArwesPresentation respects explicit transition motion intent props", () => {
+  const baseModel = {
+    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    temporal: { mode: "replay", sequence: 10, isLive: false },
+    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
+    attention: { totalNotificationsCount: 1, hasActiveAlerts: true, latestNotificationTitle: "NEW ALERT" },
+    vitals: {},
+    broadcast: {},
+    telemetryItems: [],
+  };
+
+  const html = renderToString(
+    React.createElement(ArwesPresentation, {
+      model: baseModel,
+      motionMode: "deterministic",
+      temporalIntent: "enter-replay",
+      attentionIntent: "attention",
+    })
+  );
+
+  assert.match(html, /data-motion-intent="enter-replay"/);
+  assert.match(html, /data-motion-intent="attention"/);
 });
 
 test("Ticking countdowns and ordinary telemetry numeric value updates do not emit changed motion intents", () => {

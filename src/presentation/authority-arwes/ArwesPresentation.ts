@@ -6,6 +6,7 @@ import type {
   HudTelemetryKey,
 } from "../../shell/hud/public.ts";
 import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
+import type { PresentationMotionIntent } from "../semantic/public.ts";
 
 /**
  * BOUNDARY RULE:
@@ -17,6 +18,8 @@ export interface ArwesPresentationProps {
   model: HudCompositionModel;
   onInspectTelemetry?: (key: HudTelemetryKey) => void;
   motionMode?: AuthorityMotionMode;
+  temporalIntent?: PresentationMotionIntent;
+  attentionIntent?: PresentationMotionIntent;
 }
 
 function resolveMotionMode(explicitMode?: AuthorityMotionMode): AuthorityMotionMode {
@@ -38,6 +41,8 @@ export function ArwesPresentation({
   model,
   onInspectTelemetry,
   motionMode,
+  temporalIntent,
+  attentionIntent,
 }: ArwesPresentationProps) {
   const activeMotionMode = resolveMotionMode(motionMode);
 
@@ -53,6 +58,8 @@ export function ArwesPresentation({
       composition: model,
       onInspectTelemetry,
       motionMode: activeMotionMode,
+      temporalIntent,
+      attentionIntent,
     })
   );
 }
