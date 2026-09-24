@@ -329,10 +329,10 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 367,
+    "loc": 386,
     "instability": 0.95,
     "fanIn": 1,
-    "fanOut": 19,
+    "fanOut": 20,
     "scanned": true
   },
   "src/application/crawler-session.ts": {
@@ -376,11 +376,11 @@
     "scanned": true
   },
   "src/presentation/authority-arwes/ArwesPresentation.ts": {
-    "complexity": 1,
-    "loc": 36,
-    "instability": 0.75,
+    "complexity": 7,
+    "loc": 58,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 4,
     "scanned": true
   },
   "src/shell/hud/public.ts": {
@@ -393,7 +393,7 @@
   },
   "src/shell/hud/hud-composition.ts": {
     "complexity": 6,
-    "loc": 191,
+    "loc": 204,
     "instability": 0.75,
     "fanIn": 1,
     "fanOut": 3,
@@ -418,8 +418,8 @@
   "src/presentation/semantic/public.ts": {
     "complexity": 1,
     "loc": 3,
-    "instability": 0.33,
-    "fanIn": 4,
+    "instability": 0.22,
+    "fanIn": 7,
     "fanOut": 2,
     "scanned": true
   },
@@ -433,7 +433,7 @@
   },
   "src/presentation/semantic/types.ts": {
     "complexity": 1,
-    "loc": 44,
+    "loc": 64,
     "instability": 0,
     "fanIn": 2,
     "fanOut": 0,
@@ -456,11 +456,11 @@
     "scanned": true
   },
   "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
-    "complexity": 11,
-    "loc": 414,
-    "instability": 0.86,
+    "complexity": 13,
+    "loc": 459,
+    "instability": 0.9,
     "fanIn": 1,
-    "fanOut": 6,
+    "fanOut": 9,
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
@@ -481,7 +481,7 @@
   },
   "src/presentation/authority-arwes/primitives/AuthoritySurface.ts": {
     "complexity": 1,
-    "loc": 33,
+    "loc": 36,
     "instability": 0.5,
     "fanIn": 2,
     "fanOut": 2,
@@ -496,11 +496,11 @@
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthorityTransition.ts": {
-    "complexity": 9,
-    "loc": 83,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
+    "complexity": 13,
+    "loc": 99,
+    "instability": 0.56,
+    "fanIn": 4,
+    "fanOut": 5,
     "scanned": true
   },
   "src/shell/ActiveFeatureView.tsx": {

@@ -1,8 +1,8 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-23
+**Last Updated:** 2026-09-24
 
-### 🏥 Repository Health Score: **49.0 / 100**
+### 🏥 Repository Health Score: **48.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 130
@@ -21,8 +21,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/inventory/equipment/EquipmentView.tsx` | **143.5** | 360 | 38 | 7 | 0.88 |
 | `src/application/crawler-actions.ts` | **134.8** | 128 | 49 | 4 | 0.8 |
 | `src/shell/hud/PersistentHud.tsx` | **133.2** | 134 | 43 | 8 | 0.89 |
+| `src/shell/adapters/CrawlerWorkspace.tsx` | **127.6** | 386 | 15 | 20 | 0.95 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
-| `src/shell/adapters/CrawlerWorkspace.tsx` | **123.7** | 367 | 15 | 19 | 0.95 |
 | `app/domain/research-compiler.ts` | **121.8** | 318 | 33 | 2 | 1 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
