@@ -284,7 +284,7 @@ claims:
     kind: event
     claim:
       summary: Carl uses a Fireball or Custard lottery ticket during the fight with Heather the Bear.
-    detail: The researched material identifies the ticket as producing the custard result.
+      detail: The researched material identifies the ticket as producing the custard result.
     evidence:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed

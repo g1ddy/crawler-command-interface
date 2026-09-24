@@ -510,5 +510,19 @@
         "description": "83 Celestial-quality boxes (vetoed by Borant)"
       }
     ]
+  },
+  {
+    "id": "achievement-one-quadrillion-views",
+    "title": "One Quadrillion Views",
+    "recipient": "party",
+    "description": "Reached one quadrillion total broadcast views on Floor 3.",
+    "reward": [
+      {
+        "kind": "box",
+        "boxType": "fan-box",
+        "rarity": "rare",
+        "description": "Fan Boxes with a 30-hour temporal lock"
+      }
+    ]
   }
 ]
