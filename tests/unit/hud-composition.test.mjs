@@ -54,11 +54,11 @@ test("deriveHudComposition exposes active countdown state without inventing urge
   assert.equal(composition.urgency.lifecycleStatus, "active");
 });
 
-test("deriveHudComposition derives motionIntent for temporal and attention state transitions across calls", () => {
+test("deriveHudComposition exposes explicit command-driven temporal and attention motionIntents", () => {
   const state = createInitialState();
   const observations = projectObservations({ observations: [], events: [] }, 0);
 
-  // Call 1: Live initial -> motionIntents undefined
+  // Initial call without motion intents -> undefined
   const c1 = deriveHudComposition({
     projectedState: state,
     projectedObservations: observations,
@@ -70,7 +70,7 @@ test("deriveHudComposition derives motionIntent for temporal and attention state
   assert.equal(c1.temporal.motionIntent, undefined);
   assert.equal(c1.attention.motionIntent, undefined);
 
-  // Call 2: Live -> Replay transition -> enter-replay intent
+  // Live -> Replay transition intent passed explicitly
   const c2 = deriveHudComposition({
     projectedState: state,
     projectedObservations: observations,
@@ -78,11 +78,11 @@ test("deriveHudComposition derives motionIntent for temporal and attention state
     sequence: 0,
     isLive: false,
     floorHudTitle: "FLOOR 1",
-    previousComposition: c1,
+    temporalMotionIntent: "enter-replay",
   });
   assert.equal(c2.temporal.motionIntent, "enter-replay");
 
-  // Call 3: Stay in Replay -> motionIntent undefined
+  // Subsequent replay render without transition intent -> undefined
   const c3 = deriveHudComposition({
     projectedState: state,
     projectedObservations: observations,
@@ -90,11 +90,10 @@ test("deriveHudComposition derives motionIntent for temporal and attention state
     sequence: 1,
     isLive: false,
     floorHudTitle: "FLOOR 1",
-    previousComposition: c2,
   });
   assert.equal(c3.temporal.motionIntent, undefined);
 
-  // Call 4: Replay -> Live transition -> return-live intent
+  // Explicit attention motion intent passed
   const c4 = deriveHudComposition({
     projectedState: state,
     projectedObservations: observations,
@@ -102,40 +101,9 @@ test("deriveHudComposition derives motionIntent for temporal and attention state
     sequence: 1,
     isLive: true,
     floorHudTitle: "FLOOR 1",
-    previousComposition: c3,
+    attentionMotionIntent: "attention",
   });
-  assert.equal(c4.temporal.motionIntent, "return-live");
-
-  // Call 5: Alert arrives -> attention intent
-  const alertSummary = {
-    totalNotificationsCount: 1,
-    hasActiveAlerts: true,
-    latestNotificationTitle: "ITEM CRAFTED",
-  };
-  const c5 = deriveHudComposition({
-    projectedState: state,
-    projectedObservations: observations,
-    activeCountdown: null,
-    sequence: 1,
-    isLive: true,
-    floorHudTitle: "FLOOR 1",
-    notificationsSummary: alertSummary,
-    previousComposition: c4,
-  });
-  assert.equal(c5.attention.motionIntent, "attention");
-
-  // Call 6: Alert unchanged -> motionIntent undefined
-  const c6 = deriveHudComposition({
-    projectedState: state,
-    projectedObservations: observations,
-    activeCountdown: null,
-    sequence: 2,
-    isLive: true,
-    floorHudTitle: "FLOOR 1",
-    notificationsSummary: alertSummary,
-    previousComposition: c5,
-  });
-  assert.equal(c6.attention.motionIntent, undefined);
+  assert.equal(c4.attention.motionIntent, "attention");
 });
 
 test("feature presentation preserves not-established party state and known-empty pet state", () => {

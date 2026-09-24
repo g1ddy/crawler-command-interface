@@ -17,8 +17,6 @@ export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
   onInspectTelemetry?: (key: HudTelemetryKey) => void;
   motionMode?: AuthorityMotionMode;
-  temporalIntent?: PresentationMotionIntent;
-  attentionIntent?: PresentationMotionIntent;
 }
 
 interface TelemetryRowProps {
@@ -143,13 +141,11 @@ export function ArwesAuthorityComposition({
   composition,
   onInspectTelemetry,
   motionMode = "enabled",
-  temporalIntent: explicitTemporalIntent,
-  attentionIntent: explicitAttentionIntent,
 }: ArwesAuthorityCompositionProps) {
   const { system, temporal, urgency, attention, telemetryItems } = composition;
 
-  const temporalIntent = explicitTemporalIntent ?? temporal.motionIntent;
-  const attentionIntent = explicitAttentionIntent ?? attention.motionIntent;
+  const temporalIntent = temporal.motionIntent;
+  const attentionIntent = attention.motionIntent;
 
   return createElement(
     AuthoritySurface,

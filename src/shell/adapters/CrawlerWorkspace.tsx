@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
@@ -162,32 +162,56 @@ export function CrawlerWorkspace({
     };
   }, [events, currentSeq]);
 
-  const previousCompositionRef = useRef<import("../hud/public.ts").HudCompositionModel | undefined>(undefined);
+  const [pendingTemporalIntent, setPendingTemporalIntent] = useState<
+    import("../../presentation/semantic/public.ts").PresentationMotionIntent | undefined
+  >(undefined);
 
-  const composition = useMemo(() => {
-    const next = deriveHudComposition({
+  const handleSelectSequence = useCallback(
+    (targetSeq: number) => {
+      if (isLive && targetSeq !== currentSeq) {
+        setPendingTemporalIntent("enter-replay");
+      } else if (!isLive && targetSeq === liveState.sequence) {
+        setPendingTemporalIntent("return-live");
+      }
+      commands.selectSequence(targetSeq);
+    },
+    [isLive, currentSeq, liveState.sequence, commands],
+  );
+
+  const handleReturnToLive = useCallback(() => {
+    if (!isLive) {
+      setPendingTemporalIntent("return-live");
+    }
+    commands.returnToLive();
+  }, [isLive, commands]);
+
+  const composition = useMemo(
+    () =>
+      deriveHudComposition({
+        projectedState,
+        projectedObservations,
+        activeCountdown,
+        sequence: currentSeq,
+        isLive,
+        floorHudTitle,
+        notificationsSummary,
+        temporalMotionIntent: pendingTemporalIntent,
+      }),
+    [
       projectedState,
       projectedObservations,
       activeCountdown,
-      sequence: currentSeq,
+      currentSeq,
       isLive,
       floorHudTitle,
       notificationsSummary,
-      // eslint-disable-next-line react-hooks/refs
-      previousComposition: previousCompositionRef.current,
-    });
-    // eslint-disable-next-line react-hooks/refs
-    previousCompositionRef.current = next;
-    return next;
-  }, [
-    projectedState,
-    projectedObservations,
-    activeCountdown,
-    currentSeq,
-    isLive,
-    floorHudTitle,
-    notificationsSummary,
-  ]);
+      pendingTemporalIntent,
+    ],
+  );
+
+  if (pendingTemporalIntent) {
+    setPendingTemporalIntent(undefined);
+  }
 
   const handleInspectTelemetry = useCallback(
     (key: string) => {
@@ -249,12 +273,14 @@ export function CrawlerWorkspace({
   const replayCommandsWithInspect = useMemo(
     () => ({
       ...commands.replayCommands,
+      selectSequence: handleSelectSequence,
+      returnToLive: handleReturnToLive,
       openFloorRules: () => setShowFloorRules(true),
       openTimelineHistory: () => setShowTimelineHistory(true),
       openTimelineEvidence: () => setShowTimelineEvidence(true),
       inspectObservation: setInspectObservation,
     }),
-    [commands.replayCommands],
+    [commands.replayCommands, handleSelectSequence, handleReturnToLive],
   );
 
   return (
@@ -275,7 +301,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectObservation={setInspectObservation}
-            onNavigateToSequence={commands.selectSequence}
+            onNavigateToSequence={handleSelectSequence}
           />
         ) : (
           <PersistentHud
@@ -286,7 +312,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectObservation={setInspectObservation}
-            onNavigateToSequence={commands.selectSequence}
+            onNavigateToSequence={handleSelectSequence}
           />
         )
       }

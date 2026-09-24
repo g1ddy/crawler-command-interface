@@ -378,12 +378,12 @@ test("ArwesPresentation ensures initial renders have no spurious transition moti
   assert.doesNotMatch(html, /data-motion-intent="attention"/);
 });
 
-test("ArwesPresentation respects explicit transition motion intent props", () => {
-  const baseModel = {
+test("ArwesPresentation directly consumes motionIntents from HudCompositionModel", () => {
+  const modelWithIntent = {
     system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "replay", sequence: 10, isLive: false },
+    temporal: { mode: "replay", sequence: 10, isLive: false, motionIntent: "enter-replay" },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
-    attention: { totalNotificationsCount: 1, hasActiveAlerts: true, latestNotificationTitle: "NEW ALERT" },
+    attention: { totalNotificationsCount: 1, hasActiveAlerts: true, latestNotificationTitle: "NEW ALERT", motionIntent: "attention" },
     vitals: {},
     broadcast: {},
     telemetryItems: [],
@@ -391,10 +391,8 @@ test("ArwesPresentation respects explicit transition motion intent props", () =>
 
   const html = renderToString(
     React.createElement(ArwesPresentation, {
-      model: baseModel,
+      model: modelWithIntent,
       motionMode: "deterministic",
-      temporalIntent: "enter-replay",
-      attentionIntent: "attention",
     })
   );
 

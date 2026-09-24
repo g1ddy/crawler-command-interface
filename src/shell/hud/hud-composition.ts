@@ -97,7 +97,8 @@ export interface DeriveHudCompositionInput {
   isLive: boolean;
   floorHudTitle: string;
   notificationsSummary?: HudAttentionSummary;
-  previousComposition?: HudCompositionModel;
+  temporalMotionIntent?: PresentationMotionIntent;
+  attentionMotionIntent?: PresentationMotionIntent;
 }
 
 function createTelemetryItem(
@@ -137,7 +138,8 @@ export function deriveHudComposition({
     totalNotificationsCount: 0,
     hasActiveAlerts: false,
   },
-  previousComposition,
+  temporalMotionIntent,
+  attentionMotionIntent,
 }: DeriveHudCompositionInput): HudCompositionModel {
   const healthItem = createTelemetryItem(
     "health",
@@ -163,28 +165,6 @@ export function deriveHudComposition({
     projectedObservations.broadcast.viewers,
     sequence
   );
-
-  let temporalMotionIntent: PresentationMotionIntent | undefined;
-  if (
-    previousComposition &&
-    previousComposition.temporal.isLive !== isLive
-  ) {
-    temporalMotionIntent = isLive ? "return-live" : "enter-replay";
-  }
-
-  let attentionMotionIntent: PresentationMotionIntent | undefined;
-  if (previousComposition) {
-    const prevAttention = previousComposition.attention;
-    const currentTitle = notificationsSummary.latestNotificationTitle ?? null;
-    const prevTitle = prevAttention.latestNotificationTitle ?? null;
-
-    if (
-      (!prevAttention.hasActiveAlerts && notificationsSummary.hasActiveAlerts) ||
-      (notificationsSummary.hasActiveAlerts && prevTitle !== currentTitle)
-    ) {
-      attentionMotionIntent = "attention";
-    }
-  }
 
   return {
     system: {
