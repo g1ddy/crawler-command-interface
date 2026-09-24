@@ -8,7 +8,10 @@ import {
   deriveEvidencePresentation,
   mapEvidenceToSemantics,
 } from "../../features/timeline/public.ts";
-import type { PresentationSemantics } from "../../presentation/semantic/public.ts";
+import type {
+  PresentationMotionIntent,
+  PresentationSemantics,
+} from "../../presentation/semantic/public.ts";
 
 export interface HudSystemIdentity {
   crawlerName: string;
@@ -21,6 +24,7 @@ export interface HudTemporalContext {
   mode: "live" | "replay";
   sequence: number;
   isLive: boolean;
+  motionIntent?: PresentationMotionIntent;
 }
 
 export interface HudUrgencySummary {
@@ -34,6 +38,7 @@ export interface HudAttentionSummary {
   hasActiveAlerts: boolean;
   latestNotificationTitle?: string;
   latestNotificationMessage?: string;
+  motionIntent?: PresentationMotionIntent;
 }
 
 export type HudTelemetryKey = "health" | "mana" | "level" | "viewers";
@@ -92,6 +97,7 @@ export interface DeriveHudCompositionInput {
   isLive: boolean;
   floorHudTitle: string;
   notificationsSummary?: HudAttentionSummary;
+  previousComposition?: HudCompositionModel;
 }
 
 function createTelemetryItem(
@@ -131,6 +137,7 @@ export function deriveHudComposition({
     totalNotificationsCount: 0,
     hasActiveAlerts: false,
   },
+  previousComposition,
 }: DeriveHudCompositionInput): HudCompositionModel {
   const healthItem = createTelemetryItem(
     "health",
@@ -157,6 +164,28 @@ export function deriveHudComposition({
     sequence
   );
 
+  let temporalMotionIntent: PresentationMotionIntent | undefined;
+  if (
+    previousComposition &&
+    previousComposition.temporal.isLive !== isLive
+  ) {
+    temporalMotionIntent = isLive ? "return-live" : "enter-replay";
+  }
+
+  let attentionMotionIntent: PresentationMotionIntent | undefined;
+  if (previousComposition) {
+    const prevAttention = previousComposition.attention;
+    const currentTitle = notificationsSummary.latestNotificationTitle ?? null;
+    const prevTitle = prevAttention.latestNotificationTitle ?? null;
+
+    if (
+      (!prevAttention.hasActiveAlerts && notificationsSummary.hasActiveAlerts) ||
+      (notificationsSummary.hasActiveAlerts && prevTitle !== currentTitle)
+    ) {
+      attentionMotionIntent = "attention";
+    }
+  }
+
   return {
     system: {
       crawlerName: projectedState.crawler.name,
@@ -168,6 +197,7 @@ export function deriveHudComposition({
       mode: isLive ? "live" : "replay",
       sequence,
       isLive,
+      motionIntent: temporalMotionIntent,
     },
     urgency: {
       activeCountdown,
@@ -176,7 +206,10 @@ export function deriveHudComposition({
         : "Collapse time unavailable",
       lifecycleStatus: activeCountdown?.lifecycleStatus,
     },
-    attention: notificationsSummary,
+    attention: {
+      ...notificationsSummary,
+      motionIntent: attentionMotionIntent,
+    },
     vitals: {
       health: projectedObservations.condition.currentHealth,
       mana: projectedObservations.condition.currentMana,

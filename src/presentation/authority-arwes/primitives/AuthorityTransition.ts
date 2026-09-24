@@ -72,6 +72,7 @@ export function AuthorityTransition({
   return createElement(
     Animator,
     {
+      key: motionIntent,
       active: isActive,
       duration: animDuration,
     },

@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
@@ -162,27 +162,32 @@ export function CrawlerWorkspace({
     };
   }, [events, currentSeq]);
 
-  const composition = useMemo(
-    () =>
-      deriveHudComposition({
-        projectedState,
-        projectedObservations,
-        activeCountdown,
-        sequence: currentSeq,
-        isLive,
-        floorHudTitle,
-        notificationsSummary,
-      }),
-    [
+  const previousCompositionRef = useRef<import("../hud/public.ts").HudCompositionModel | undefined>(undefined);
+
+  const composition = useMemo(() => {
+    const next = deriveHudComposition({
       projectedState,
       projectedObservations,
       activeCountdown,
-      currentSeq,
+      sequence: currentSeq,
       isLive,
       floorHudTitle,
       notificationsSummary,
-    ],
-  );
+      // eslint-disable-next-line react-hooks/refs
+      previousComposition: previousCompositionRef.current,
+    });
+    // eslint-disable-next-line react-hooks/refs
+    previousCompositionRef.current = next;
+    return next;
+  }, [
+    projectedState,
+    projectedObservations,
+    activeCountdown,
+    currentSeq,
+    isLive,
+    floorHudTitle,
+    notificationsSummary,
+  ]);
 
   const handleInspectTelemetry = useCallback(
     (key: string) => {

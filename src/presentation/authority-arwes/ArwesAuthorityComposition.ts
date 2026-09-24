@@ -1,5 +1,5 @@
 "use client";
-import { createElement, useEffect, useRef } from "react";
+import { createElement } from "react";
 import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
@@ -148,36 +148,8 @@ export function ArwesAuthorityComposition({
 }: ArwesAuthorityCompositionProps) {
   const { system, temporal, urgency, attention, telemetryItems } = composition;
 
-  /* eslint-disable react-hooks/refs */
-  const prevIsLiveRef = useRef<boolean | null>(null);
-  const prevAlertTitleRef = useRef<string | null>(null);
-  const prevHasAlertsRef = useRef<boolean | null>(null);
-
-  const currentTitle = attention.latestNotificationTitle ?? null;
-  const currentHasAlerts = attention.hasActiveAlerts;
-
-  const temporalIntent: PresentationMotionIntent | undefined =
-    explicitTemporalIntent ??
-    (prevIsLiveRef.current !== null && prevIsLiveRef.current !== temporal.isLive
-      ? temporal.isLive
-        ? "return-live"
-        : "enter-replay"
-      : undefined);
-
-  const attentionIntent: PresentationMotionIntent | undefined =
-    explicitAttentionIntent ??
-    (prevHasAlertsRef.current !== null &&
-    ((!prevHasAlertsRef.current && currentHasAlerts) ||
-      (currentHasAlerts && prevAlertTitleRef.current !== currentTitle))
-      ? "attention"
-      : undefined);
-
-  useEffect(() => {
-    prevIsLiveRef.current = temporal.isLive;
-    prevHasAlertsRef.current = currentHasAlerts;
-    prevAlertTitleRef.current = currentTitle;
-  }, [temporal.isLive, currentHasAlerts, currentTitle]);
-  /* eslint-enable react-hooks/refs */
+  const temporalIntent = explicitTemporalIntent ?? temporal.motionIntent;
+  const attentionIntent = explicitAttentionIntent ?? attention.motionIntent;
 
   return createElement(
     AuthoritySurface,
