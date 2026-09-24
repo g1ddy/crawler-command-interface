@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
@@ -162,36 +162,20 @@ export function CrawlerWorkspace({
     };
   }, [events, currentSeq]);
 
-  const [pendingTemporalIntent, setPendingTemporalIntent] = useState<
-    import("../../presentation/semantic/public.ts").PresentationMotionIntent | undefined
-  >(undefined);
+  const prevIsLiveRef = useRef(isLive);
 
-  const handleSelectSequence = useCallback(
-    (targetSeq: number) => {
-      if (isLive && targetSeq !== currentSeq) {
-        setPendingTemporalIntent("enter-replay");
-      } else if (!isLive && targetSeq === liveState.sequence) {
-        setPendingTemporalIntent("return-live");
-      }
-      commands.selectSequence(targetSeq);
-    },
-    [isLive, currentSeq, liveState.sequence, commands],
-  );
-
-  const handleReturnToLive = useCallback(() => {
-    if (!isLive) {
-      setPendingTemporalIntent("return-live");
-    }
-    commands.returnToLive();
-  }, [isLive, commands]);
+  // eslint-disable-next-line react-hooks/refs
+  const prevIsLive = prevIsLiveRef.current;
+  let temporalMotionIntent: import("../../presentation/semantic/public.ts").PresentationMotionIntent | undefined = undefined;
+  if (prevIsLive === true && isLive === false) {
+    temporalMotionIntent = "enter-replay";
+  } else if (prevIsLive === false && isLive === true) {
+    temporalMotionIntent = "return-live";
+  }
 
   useEffect(() => {
-    if (pendingTemporalIntent) {
-      // Clear transient motion intent after it has rendered
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPendingTemporalIntent(undefined);
-    }
-  }, [pendingTemporalIntent]);
+    prevIsLiveRef.current = isLive;
+  }, [isLive]);
 
   const composition = useMemo(
     () =>
@@ -203,7 +187,7 @@ export function CrawlerWorkspace({
         isLive,
         floorHudTitle,
         notificationsSummary,
-        temporalMotionIntent: pendingTemporalIntent,
+        temporalMotionIntent,
       }),
     [
       projectedState,
@@ -213,7 +197,7 @@ export function CrawlerWorkspace({
       isLive,
       floorHudTitle,
       notificationsSummary,
-      pendingTemporalIntent,
+      temporalMotionIntent,
     ],
   );
 
@@ -277,14 +261,14 @@ export function CrawlerWorkspace({
   const replayCommandsWithInspect = useMemo(
     () => ({
       ...commands.replayCommands,
-      selectSequence: handleSelectSequence,
-      returnToLive: handleReturnToLive,
+      selectSequence: commands.selectSequence,
+      returnToLive: commands.returnToLive,
       openFloorRules: () => setShowFloorRules(true),
       openTimelineHistory: () => setShowTimelineHistory(true),
       openTimelineEvidence: () => setShowTimelineEvidence(true),
       inspectObservation: setInspectObservation,
     }),
-    [commands.replayCommands, handleSelectSequence, handleReturnToLive],
+    [commands.replayCommands, commands.selectSequence, commands.returnToLive],
   );
 
   return (
@@ -305,7 +289,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectObservation={setInspectObservation}
-            onNavigateToSequence={handleSelectSequence}
+            onNavigateToSequence={commands.selectSequence}
           />
         ) : (
           <PersistentHud
@@ -316,7 +300,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectObservation={setInspectObservation}
-            onNavigateToSequence={handleSelectSequence}
+            onNavigateToSequence={commands.selectSequence}
           />
         )
       }
