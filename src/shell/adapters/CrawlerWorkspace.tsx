@@ -185,6 +185,14 @@ export function CrawlerWorkspace({
     commands.returnToLive();
   }, [isLive, commands]);
 
+  useEffect(() => {
+    if (pendingTemporalIntent) {
+      // Clear transient motion intent after it has rendered
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPendingTemporalIntent(undefined);
+    }
+  }, [pendingTemporalIntent]);
+
   const composition = useMemo(
     () =>
       deriveHudComposition({
@@ -208,10 +216,6 @@ export function CrawlerWorkspace({
       pendingTemporalIntent,
     ],
   );
-
-  if (pendingTemporalIntent) {
-    setPendingTemporalIntent(undefined);
-  }
 
   const handleInspectTelemetry = useCallback(
     (key: string) => {

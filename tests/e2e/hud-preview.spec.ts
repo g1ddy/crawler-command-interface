@@ -164,10 +164,10 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "enter-replay");
 
-  // Scrub again within replay mode to sequence 135 -> temporal mode stays replay, motionIntent becomes undefined
+  // Scrub again within replay mode to sequence 135 -> temporal mode stays replay, transient motionIntent is cleared
   await slider.fill("135");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-  await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent", "enter-replay");
+  await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
 
   // Return to Live
   await page.getByRole("button", { name: "RETURN TO LIVE" }).click();
