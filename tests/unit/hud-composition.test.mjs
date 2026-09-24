@@ -54,6 +54,58 @@ test("deriveHudComposition exposes active countdown state without inventing urge
   assert.equal(composition.urgency.lifecycleStatus, "active");
 });
 
+test("deriveHudComposition exposes explicit command-driven temporal and attention motionIntents", () => {
+  const state = createInitialState();
+  const observations = projectObservations({ observations: [], events: [] }, 0);
+
+  // Initial call without motion intents -> undefined
+  const c1 = deriveHudComposition({
+    projectedState: state,
+    projectedObservations: observations,
+    activeCountdown: null,
+    sequence: 0,
+    isLive: true,
+    floorHudTitle: "FLOOR 1",
+  });
+  assert.equal(c1.temporal.motionIntent, undefined);
+  assert.equal(c1.attention.motionIntent, undefined);
+
+  // Live -> Replay transition intent passed explicitly
+  const c2 = deriveHudComposition({
+    projectedState: state,
+    projectedObservations: observations,
+    activeCountdown: null,
+    sequence: 0,
+    isLive: false,
+    floorHudTitle: "FLOOR 1",
+    temporalMotionIntent: "enter-replay",
+  });
+  assert.equal(c2.temporal.motionIntent, "enter-replay");
+
+  // Subsequent replay render without transition intent -> undefined
+  const c3 = deriveHudComposition({
+    projectedState: state,
+    projectedObservations: observations,
+    activeCountdown: null,
+    sequence: 1,
+    isLive: false,
+    floorHudTitle: "FLOOR 1",
+  });
+  assert.equal(c3.temporal.motionIntent, undefined);
+
+  // Explicit attention motion intent passed
+  const c4 = deriveHudComposition({
+    projectedState: state,
+    projectedObservations: observations,
+    activeCountdown: null,
+    sequence: 1,
+    isLive: true,
+    floorHudTitle: "FLOOR 1",
+    attentionMotionIntent: "attention",
+  });
+  assert.equal(c4.attention.motionIntent, "attention");
+});
+
 test("feature presentation preserves not-established party state and known-empty pet state", () => {
   const partyPresentation = derivePartyPresentation({ party: undefined });
   assert.equal(partyPresentation.status, "not-established");

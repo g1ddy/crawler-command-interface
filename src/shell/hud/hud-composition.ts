@@ -8,7 +8,10 @@ import {
   deriveEvidencePresentation,
   mapEvidenceToSemantics,
 } from "../../features/timeline/public.ts";
-import type { PresentationSemantics } from "../../presentation/semantic/public.ts";
+import type {
+  PresentationMotionIntent,
+  PresentationSemantics,
+} from "../../presentation/semantic/public.ts";
 
 export interface HudSystemIdentity {
   crawlerName: string;
@@ -21,6 +24,7 @@ export interface HudTemporalContext {
   mode: "live" | "replay";
   sequence: number;
   isLive: boolean;
+  motionIntent?: PresentationMotionIntent;
 }
 
 export interface HudUrgencySummary {
@@ -34,6 +38,7 @@ export interface HudAttentionSummary {
   hasActiveAlerts: boolean;
   latestNotificationTitle?: string;
   latestNotificationMessage?: string;
+  motionIntent?: PresentationMotionIntent;
 }
 
 export type HudTelemetryKey = "health" | "mana" | "level" | "viewers";
@@ -92,6 +97,8 @@ export interface DeriveHudCompositionInput {
   isLive: boolean;
   floorHudTitle: string;
   notificationsSummary?: HudAttentionSummary;
+  temporalMotionIntent?: PresentationMotionIntent;
+  attentionMotionIntent?: PresentationMotionIntent;
 }
 
 function createTelemetryItem(
@@ -131,6 +138,8 @@ export function deriveHudComposition({
     totalNotificationsCount: 0,
     hasActiveAlerts: false,
   },
+  temporalMotionIntent,
+  attentionMotionIntent,
 }: DeriveHudCompositionInput): HudCompositionModel {
   const healthItem = createTelemetryItem(
     "health",
@@ -168,6 +177,7 @@ export function deriveHudComposition({
       mode: isLive ? "live" : "replay",
       sequence,
       isLive,
+      motionIntent: temporalMotionIntent,
     },
     urgency: {
       activeCountdown,
@@ -176,7 +186,10 @@ export function deriveHudComposition({
         : "Collapse time unavailable",
       lifecycleStatus: activeCountdown?.lifecycleStatus,
     },
-    attention: notificationsSummary,
+    attention: {
+      ...notificationsSummary,
+      motionIntent: attentionMotionIntent,
+    },
     vitals: {
       health: projectedObservations.condition.currentHealth,
       mana: projectedObservations.condition.currentMana,

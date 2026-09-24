@@ -3,6 +3,47 @@ import {
   mapCapabilityAvailabilityToSemantics,
 } from "../../src/presentation/semantic/public.ts";
 
+test("HUD Semantics: PresentationMotionIntent vocabulary is renderer-neutral and explicit", () => {
+  const intents = [
+    "established",
+    "changed",
+    "attention",
+    "enter-context",
+    "enter-replay",
+    "return-live",
+    "disclose",
+  ];
+
+  // The semantic transition intent is a simple string passed explicitly.
+  // It is the semantic reason for motion, not a command to the renderer.
+  for (const intent of intents) {
+    const semantic = { status: "present", motionIntent: intent };
+    assert.equal(
+      semantic.motionIntent,
+      intent,
+      `Semantic payload preserves motionIntent: ${intent}`
+    );
+  }
+});
+
+test("HUD Semantics: stable presentation produces no motion intent", () => {
+  const stableSemantics = [
+    { label: "initial Live", semantic: { status: "present" } },
+    { label: "initial Replay", semantic: { status: "present" } },
+    { label: "replay scrub while already in Replay", semantic: { status: "present" } },
+    { label: "ordinary telemetry changes", semantic: { status: "present" } },
+    { label: "countdown ticks", semantic: { status: "present" } }
+  ];
+
+  for (const { label, semantic } of stableSemantics) {
+    assert.equal(
+      semantic.motionIntent,
+      undefined,
+      `Stable presentation produces no motion intent for: ${label}`
+    );
+  }
+});
+
 test("HUD Semantics: evaluated capability maps only to affordance", () => {
   assert.deepEqual(mapCapabilityAvailabilityToSemantics(true), {
     affordance: "action",
@@ -200,4 +241,18 @@ test("HUD Semantics: Pet semantic states (known-empty vs established vs unavaila
     status: "unavailable",
     affordance: "none",
   });
+});
+
+test("HUD Semantics: stable presentation produces no motion intent", () => {
+  const intents = [
+    undefined,
+    null
+  ];
+  for (const intent of intents) {
+    const semantic = {
+      status: "present",
+      motionIntent: intent,
+    };
+    assert.equal(semantic.motionIntent, intent);
+  }
 });

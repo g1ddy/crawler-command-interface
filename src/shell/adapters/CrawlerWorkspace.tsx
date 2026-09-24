@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
@@ -162,6 +162,21 @@ export function CrawlerWorkspace({
     };
   }, [events, currentSeq]);
 
+  const prevIsLiveRef = useRef(isLive);
+
+  // eslint-disable-next-line react-hooks/refs
+  const prevIsLive = prevIsLiveRef.current;
+  let temporalMotionIntent: import("../../presentation/semantic/public.ts").PresentationMotionIntent | undefined = undefined;
+  if (prevIsLive === true && isLive === false) {
+    temporalMotionIntent = "enter-replay";
+  } else if (prevIsLive === false && isLive === true) {
+    temporalMotionIntent = "return-live";
+  }
+
+  useEffect(() => {
+    prevIsLiveRef.current = isLive;
+  }, [isLive]);
+
   const composition = useMemo(
     () =>
       deriveHudComposition({
@@ -172,6 +187,7 @@ export function CrawlerWorkspace({
         isLive,
         floorHudTitle,
         notificationsSummary,
+        temporalMotionIntent,
       }),
     [
       projectedState,
@@ -181,6 +197,7 @@ export function CrawlerWorkspace({
       isLive,
       floorHudTitle,
       notificationsSummary,
+      temporalMotionIntent,
     ],
   );
 
@@ -244,12 +261,14 @@ export function CrawlerWorkspace({
   const replayCommandsWithInspect = useMemo(
     () => ({
       ...commands.replayCommands,
+      selectSequence: commands.selectSequence,
+      returnToLive: commands.returnToLive,
       openFloorRules: () => setShowFloorRules(true),
       openTimelineHistory: () => setShowTimelineHistory(true),
       openTimelineEvidence: () => setShowTimelineEvidence(true),
       inspectObservation: setInspectObservation,
     }),
-    [commands.replayCommands],
+    [commands.replayCommands, commands.selectSequence, commands.returnToLive],
   );
 
   return (

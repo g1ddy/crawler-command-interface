@@ -99,6 +99,11 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
   await expect(previewScope).toHaveAttribute("data-hud-presentation", "authority-arwes");
 
+  // Verify exclusive renderer selection: exactly 1 Arwes HUD renderer and zero alternate HUD renderers
+  await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
+  await expect(page.locator(".system-hud")).toHaveCount(0);
+  await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
+
   // Verify the Arwes renderer composition foundation mounts and renders
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();
@@ -144,8 +149,50 @@ test("authority-arwes presentation mounts, unmounts cleanly on navigation away, 
   await expect(page.getByTestId("arwes-authority-composition")).toBeVisible();
 });
 
+test("authority-arwes handles live -> enter-replay -> return-live sequence with exclusive mounting", async ({ page }) => {
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+
+  // Initial Live state: exactly 1 Arwes renderer, zero alternate HUDs
+  await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
+  await expect(page.locator(".system-hud")).toHaveCount(0);
+  await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+
+  // Enter replay by scrubbing timeline to sequence 130
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("130");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "enter-replay");
+
+  // Scrub again within replay mode to sequence 135 -> temporal mode stays replay, transient motionIntent is cleared
+  await slider.fill("135");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
+
+  // Return to Live
+  await page.getByRole("button", { name: "RETURN TO LIVE" }).click();
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "return-live");
+
+  // Renderer exclusivity maintained throughout
+  await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
+  await expect(page.locator(".system-hud")).toHaveCount(0);
+});
+
+test("authority-arwes presentation supports reduced and deterministic motion modes", async ({ page }) => {
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=reduced`);
+  const compositionReduced = page.getByTestId("arwes-authority-composition");
+  await expect(compositionReduced).toBeVisible();
+  await expect(compositionReduced).toHaveAttribute("data-motion-mode", "reduced");
+
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+  const compositionDeterministic = page.getByTestId("arwes-authority-composition");
+  await expect(compositionDeterministic).toBeVisible();
+  await expect(compositionDeterministic).toHaveAttribute("data-motion-mode", "deterministic");
+});
+
 test("captures research screenshot artifact for authority-arwes presentation foundation", async ({ page }, testInfo) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes`);
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
 
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();
