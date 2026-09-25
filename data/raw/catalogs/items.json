@@ -250,85 +250,72 @@
     "id": "item-enchanted-anklet-fallen-oak",
     "name": "Enchanted Anklet of the Fallen Oak",
     "category": "equipment",
-    "slot": "FEET",
-    "persistent": true,
-    "description": "An enchanted anklet looted by Donut from Grace Bautista's corpse."
+    "persistent": true
   },
   {
     "id": "item-earth-hobby-potion",
     "name": "Earth Hobby Potion",
     "category": "consumable",
-    "persistent": false,
-    "description": "An Earth hobby potion that grants a random Earth skill upon consumption."
+    "persistent": false
   },
   {
     "id": "item-louis-lamour-paperbacks",
     "name": "Louis L'Amour Paperbacks",
     "category": "miscellaneous",
-    "persistent": true,
-    "description": "A collection of Louis L'Amour Western paperbacks awarded by the AI."
+    "persistent": true
   },
   {
     "id": "item-home-depot-cactus",
     "name": "Home Depot Cactus",
     "category": "miscellaneous",
-    "persistent": true,
-    "description": "A potted cactus awarded as an Earth hobby reward."
+    "persistent": true
   },
   {
     "id": "item-cat-tree",
     "name": "Large Cat Tree",
     "category": "miscellaneous",
-    "persistent": true,
-    "description": "A large carpeted cat tree awarded to Donut."
+    "persistent": true
   },
   {
     "id": "item-scented-candle",
     "name": "Scented Candle",
     "category": "miscellaneous",
-    "persistent": false,
-    "description": "A scented candle awarded to Donut."
+    "persistent": false
   },
   {
     "id": "item-picture-of-beatrice",
     "name": "Framed Picture of Beatrice",
     "category": "miscellaneous",
-    "persistent": true,
-    "description": "A framed photograph of Beatrice and Brad received from a Fan Box."
+    "persistent": true
   },
   {
     "id": "item-acute-ears-potion",
     "name": "Skill Potion: Acute Ears",
     "category": "consumable",
-    "persistent": false,
-    "description": "A skill potion that grants or improves the Acute Ears skill."
+    "persistent": false
   },
   {
     "id": "item-scroll-of-upgrade",
     "name": "Scroll of Upgrade",
     "category": "consumable",
-    "persistent": false,
-    "description": "A magical scroll used to upgrade an equipped item."
+    "persistent": false
   },
   {
     "id": "item-casino-chip-100k",
     "name": "100,000-Gold Casino Chip",
     "category": "miscellaneous",
-    "persistent": true,
-    "description": "A high-value casino chip received from a Lucky Bastard box."
+    "persistent": true
   },
   {
     "id": "item-parasite-ice-cream",
     "name": "Parasite-Laced Ice Cream Cone",
     "category": "consumable",
-    "persistent": false,
-    "description": "An ice cream cone containing parasitic worms from Apollon the Mighty."
+    "persistent": false
   },
   {
     "id": "item-lottery-ticket-fireball-custard",
     "name": "Lottery Scratchcard Ticket",
     "category": "consumable",
-    "persistent": false,
-    "description": "A lottery ticket capable of producing high-tier magic effects or unexpected outcomes like custard."
+    "persistent": false
   }
 ]

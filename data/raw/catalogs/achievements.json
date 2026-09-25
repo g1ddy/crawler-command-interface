@@ -520,7 +520,6 @@
       {
         "kind": "box",
         "boxType": "fan-box",
-        "rarity": "rare",
         "description": "Fan Boxes with a 30-hour temporal lock"
       }
     ]

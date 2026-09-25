@@ -22,48 +22,6 @@
     "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
   },
   {
-    "id": "src-wiki-carl-doomsday",
-    "kind": "wiki",
-    "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario (Book)",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Book)"
-  },
-  {
-    "id": "src-wiki-doomsday-item",
-    "kind": "wiki",
-    "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario (Item)",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Item)"
-  },
-  {
-    "id": "src-sparknotesai-book-2",
-    "kind": "fan-compendium",
-    "trust": "corroborating",
-    "title": "Book 2 Chapter Summaries & Research",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2"
-  },
-  {
-    "id": "src-bookey-doomsday",
-    "kind": "editorial",
-    "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario Summary",
-    "url": "https://www.bookey.app/book/carl's-doomsday-scenario"
-  },
-  {
-    "id": "src-bookwormai-doomsday",
-    "kind": "editorial",
-    "trust": "corroborating",
-    "title": "Book 2 Chapter/Book Summary",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Summary"
-  },
-  {
-    "id": "src-sparknotes-ch-sum",
-    "kind": "editorial",
-    "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
-    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
-  },
-  {
     "id": "src-bookwormai-book2",
     "kind": "fan-compendium",
     "trust": "corroborating",
@@ -97,12 +55,5 @@
     "trust": "corroborating",
     "title": "Carl's Doomsday Scenario Chapter 25 Summary",
     "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/f2a6829f-0df7-4f99-b05e-5bb250affdef"
-  },
-  {
-    "id": "src-reddit-end-book2",
-    "kind": "discussion",
-    "trust": "candidate",
-    "title": "End of Book 2 Question",
-    "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/"
   }
 ]

@@ -39,48 +39,6 @@
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
     },
     {
-      "id": "src-wiki-carl-doomsday",
-      "kind": "wiki",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario (Book)",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Book)"
-    },
-    {
-      "id": "src-wiki-doomsday-item",
-      "kind": "wiki",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario (Item)",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Item)"
-    },
-    {
-      "id": "src-sparknotesai-book-2",
-      "kind": "fan-compendium",
-      "trust": "corroborating",
-      "title": "Book 2 Chapter Summaries & Research",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2"
-    },
-    {
-      "id": "src-bookey-doomsday",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario Summary",
-      "url": "https://www.bookey.app/book/carl's-doomsday-scenario"
-    },
-    {
-      "id": "src-bookwormai-doomsday",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Book 2 Chapter/Book Summary",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Summary"
-    },
-    {
-      "id": "src-sparknotes-ch-sum",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
-      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
-    },
-    {
       "id": "src-bookwormai-book2",
       "kind": "fan-compendium",
       "trust": "corroborating",
@@ -114,13 +72,6 @@
       "trust": "corroborating",
       "title": "Carl's Doomsday Scenario Chapter 25 Summary",
       "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/f2a6829f-0df7-4f99-b05e-5bb250affdef"
-    },
-    {
-      "id": "src-reddit-end-book2",
-      "kind": "discussion",
-      "trust": "candidate",
-      "title": "End of Book 2 Question",
-      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/"
     }
   ],
   "catalog": {
@@ -150,51 +101,43 @@
         "id": "item-enchanted-anklet-fallen-oak",
         "name": "Enchanted Anklet of the Fallen Oak",
         "category": "equipment",
-        "slot": "FEET",
-        "persistent": true,
-        "description": "An enchanted anklet looted by Donut from Grace Bautista's corpse."
+        "persistent": true
       },
       {
         "id": "item-earth-hobby-potion",
         "name": "Earth Hobby Potion",
         "category": "consumable",
-        "persistent": false,
-        "description": "An Earth hobby potion that grants a random Earth skill upon consumption."
+        "persistent": false
       },
       {
         "id": "item-louis-lamour-paperbacks",
         "name": "Louis L'Amour Paperbacks",
         "category": "miscellaneous",
-        "persistent": true,
-        "description": "A collection of Louis L'Amour Western paperbacks awarded by the AI."
+        "persistent": true
       },
       {
         "id": "item-home-depot-cactus",
         "name": "Home Depot Cactus",
         "category": "miscellaneous",
-        "persistent": true,
-        "description": "A potted cactus awarded as an Earth hobby reward."
+        "persistent": true
       },
       {
         "id": "item-cat-tree",
         "name": "Large Cat Tree",
         "category": "miscellaneous",
-        "persistent": true,
-        "description": "A large carpeted cat tree awarded to Donut."
+        "persistent": true
       },
       {
         "id": "item-scented-candle",
         "name": "Scented Candle",
         "category": "miscellaneous",
-        "persistent": false,
-        "description": "A scented candle awarded to Donut."
+        "persistent": false
       },
       {
         "id": "item-picture-of-beatrice",
         "name": "Framed Picture of Beatrice",
         "category": "miscellaneous",
-        "persistent": true,
-        "description": "A framed photograph of Beatrice and Brad received from a Fan Box."
+        "persistent": true
       },
       {
         "id": "item-xistera",
@@ -207,8 +150,7 @@
         "id": "item-acute-ears-potion",
         "name": "Skill Potion: Acute Ears",
         "category": "consumable",
-        "persistent": false,
-        "description": "A skill potion that grants or improves the Acute Ears skill."
+        "persistent": false
       },
       {
         "id": "item-fang-caps",
@@ -221,37 +163,25 @@
         "id": "item-scroll-of-upgrade",
         "name": "Scroll of Upgrade",
         "category": "consumable",
-        "persistent": false,
-        "description": "A magical scroll used to upgrade an equipped item."
+        "persistent": false
       },
       {
         "id": "item-casino-chip-100k",
         "name": "100,000-Gold Casino Chip",
         "category": "miscellaneous",
-        "persistent": true,
-        "description": "A high-value casino chip received from a Lucky Bastard box."
+        "persistent": true
       },
       {
         "id": "item-parasite-ice-cream",
         "name": "Parasite-Laced Ice Cream Cone",
         "category": "consumable",
-        "persistent": false,
-        "description": "An ice cream cone containing parasitic worms from Apollon the Mighty."
+        "persistent": false
       },
       {
         "id": "item-lottery-ticket-fireball-custard",
         "name": "Lottery Scratchcard Ticket",
         "category": "consumable",
-        "persistent": false,
-        "description": "A lottery ticket capable of producing high-tier magic effects or unexpected outcomes like custard."
-      },
-      {
-        "id": "item-enchanted-crown-sepsis-whore",
-        "name": "Enchanted Crown of the Sepsis Whore",
-        "category": "equipment",
-        "slot": "HEAD",
-        "persistent": false,
-        "description": "A legendary crown worn by Donut before its destruction by a precursor magical shock."
+        "persistent": false
       }
     ],
     "achievements": [
@@ -286,7 +216,6 @@
           {
             "kind": "box",
             "boxType": "fan-box",
-            "rarity": "rare",
             "description": "Fan Boxes with a 30-hour temporal lock"
           }
         ]
@@ -316,31 +245,6 @@
       "order": 1
     },
     {
-      "id": "evt-f3-sepsis-crown-acquired",
-      "type": "ItemAcquired",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 1
-      },
-      "item": {
-        "instanceId": "inst-f3-sepsis-crown",
-        "itemId": "item-enchanted-crown-sepsis-whore",
-        "quantity": {
-          "known": true,
-          "value": 1
-        }
-      },
-      "summary": "Princess Donut possesses the Enchanted Crown of the Sepsis Whore on Floor 3.",
-      "evidence": [
-        {
-          "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
-        }
-      ],
-      "order": 2
-    },
-    {
       "id": "evt-f3-race-class-selected",
       "type": "NarrativeEvent",
       "kind": "choice-made",
@@ -363,7 +267,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 3
+      "order": 2
     },
     {
       "id": "evt-f3-manager-benefit-activated",
@@ -381,7 +285,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 4
+      "order": 3
     },
     {
       "id": "evt-f3-over-city-entered",
@@ -402,7 +306,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 5
+      "order": 4
     },
     {
       "id": "evt-f3-starter-village-departed",
@@ -423,7 +327,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 6
+      "order": 5
     },
     {
       "id": "evt-f3-show-must-go-on-triggered",
@@ -447,7 +351,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 7
+      "order": 6
     },
     {
       "id": "evt-f3-big-top-ticket-acquired",
@@ -465,7 +369,7 @@
           "value": 1
         }
       },
-      "summary": "Carl acquires a Big Top Ticket after Terror the Clown is defeated, looting additional tickets from clown sentries.",
+      "summary": "Carl acquires a Big Top Ticket after Terror the Clown is defeated.",
       "evidence": [
         {
           "sourceId": "src-book-2",
@@ -473,7 +377,27 @@
             "chapter": 4
           },
           "confidence": "confirmed"
-        },
+        }
+      ],
+      "order": 7
+    },
+    {
+      "id": "evt-f3-big-top-tickets-looted",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 4
+      },
+      "item": {
+        "instanceId": "inst-f3-big-top-tickets-looted",
+        "itemId": "item-big-top-ticket",
+        "quantity": {
+          "known": false
+        }
+      },
+      "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
+      "evidence": [
         {
           "sourceId": "src-bookwormai-book2",
           "confidence": "confirmed"
@@ -540,8 +464,8 @@
     },
     {
       "id": "evt-f3-earth-hobby-potion-carl-consumed",
-      "type": "ItemConsumed",
-      "itemInstanceId": "inst-f3-earth-hobby-potion-carl",
+      "type": "NarrativeEvent",
+      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
@@ -558,8 +482,8 @@
     },
     {
       "id": "evt-f3-earth-hobby-potion-donut-consumed",
-      "type": "ItemConsumed",
-      "itemInstanceId": "inst-f3-earth-hobby-potion-donut",
+      "type": "NarrativeEvent",
+      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
@@ -746,8 +670,8 @@
     },
     {
       "id": "evt-f3-parasite-ice-cream-consumed",
-      "type": "ItemConsumed",
-      "itemInstanceId": "inst-f3-parasite-ice-cream",
+      "type": "NarrativeEvent",
+      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
@@ -782,14 +706,14 @@
     },
     {
       "id": "evt-f3-lottery-ticket-custard-consumed",
-      "type": "ItemConsumed",
-      "itemInstanceId": "inst-f3-lottery-ticket-custard",
+      "type": "NarrativeEvent",
+      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 9
       },
-      "summary": "Carl uses a Fireball or Custard lottery ticket during the fight with Heather the Bear.",
+      "summary": "Carl uses a lottery ticket during the fight with Heather the Bear; the researched result is custard.",
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
@@ -1297,14 +1221,14 @@
     },
     {
       "id": "evt-f3-sepsis-crown-unequipped",
-      "type": "ItemUnequipped",
-      "itemInstanceId": "inst-f3-sepsis-crown",
+      "type": "NarrativeEvent",
+      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 25
       },
-      "summary": "Donut unequips the Sepsis Crown during the wild magic precursor pulses, permanently destroying it.",
+      "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-f2a6829f",
@@ -1382,7 +1306,7 @@
       "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
       "evidence": [
         {
-          "sourceId": "src-wiki-third-floor",
+          "sourceId": "src-wiki-book-2-summaries",
           "locator": {
             "chapter": 26
           },
@@ -1400,21 +1324,13 @@
         "book": 2,
         "chapter": 26
       },
-      "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome. AI upgrades Platinum Quest Boxes to Celestial Quest Boxes, but Borant uses an administrative veto to prevent delivery.",
+      "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome.",
       "evidence": [
         {
           "sourceId": "src-book-2",
           "locator": {
             "chapter": 26
           },
-          "confidence": "confirmed"
-        },
-        {
-          "sourceId": "src-reddit-end-book2",
-          "confidence": "confirmed"
-        },
-        {
-          "sourceId": "src-sparknotes-ch-sum",
           "confidence": "confirmed"
         }
       ],

@@ -11,8 +11,8 @@
         "floor": 3
       }
     },
-    "createdAt": "2026-09-25T02:14:44.048Z",
-    "updatedAt": "2026-09-25T02:14:44.048Z"
+    "createdAt": "2026-09-25T04:36:32.437Z",
+    "updatedAt": "2026-09-25T04:36:32.438Z"
   },
   "floors": [
     {
@@ -166,48 +166,6 @@
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
     },
     {
-      "id": "src-wiki-carl-doomsday",
-      "kind": "wiki",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario (Book)",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Book)"
-    },
-    {
-      "id": "src-wiki-doomsday-item",
-      "kind": "wiki",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario (Item)",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Item)"
-    },
-    {
-      "id": "src-sparknotesai-book-2",
-      "kind": "fan-compendium",
-      "trust": "corroborating",
-      "title": "Book 2 Chapter Summaries & Research",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2"
-    },
-    {
-      "id": "src-bookey-doomsday",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario Summary",
-      "url": "https://www.bookey.app/book/carl's-doomsday-scenario"
-    },
-    {
-      "id": "src-bookwormai-doomsday",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Book 2 Chapter/Book Summary",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Summary"
-    },
-    {
-      "id": "src-sparknotes-ch-sum",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
-      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
-    },
-    {
       "id": "src-bookwormai-book2",
       "kind": "fan-compendium",
       "trust": "corroborating",
@@ -241,13 +199,6 @@
       "trust": "corroborating",
       "title": "Carl's Doomsday Scenario Chapter 25 Summary",
       "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/f2a6829f-0df7-4f99-b05e-5bb250affdef"
-    },
-    {
-      "id": "src-reddit-end-book2",
-      "kind": "discussion",
-      "trust": "candidate",
-      "title": "End of Book 2 Question",
-      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/"
     }
   ],
   "initialState": {
@@ -3901,39 +3852,8 @@
       "kind": "floor-entered"
     },
     {
-      "id": "evt-f3-sepsis-crown-acquired",
-      "sequence": 125,
-      "type": "ItemAcquired",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 1
-      },
-      "summary": "Princess Donut possesses the Enchanted Crown of the Sepsis Whore on Floor 3.",
-      "evidence": [
-        {
-          "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
-        }
-      ],
-      "item": {
-        "instanceId": "inst-f3-sepsis-crown",
-        "itemId": "item-enchanted-crown-sepsis-whore",
-        "name": "Enchanted Crown of the Sepsis Whore",
-        "category": "equipment",
-        "slot": "HEAD",
-        "rarity": "unknown",
-        "description": "A legendary crown worn by Donut before its destruction by a precursor magical shock.",
-        "quantity": {
-          "known": true,
-          "value": 1
-        },
-        "sourceDescription": "Third Floor"
-      }
-    },
-    {
       "id": "evt-f3-race-class-selected",
-      "sequence": 126,
+      "sequence": 125,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -3958,7 +3878,7 @@
     },
     {
       "id": "evt-f3-manager-benefit-activated",
-      "sequence": 127,
+      "sequence": 126,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -3976,7 +3896,7 @@
     },
     {
       "id": "evt-f3-over-city-entered",
-      "sequence": 128,
+      "sequence": 127,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -3997,7 +3917,7 @@
     },
     {
       "id": "evt-f3-starter-village-departed",
-      "sequence": 129,
+      "sequence": 128,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4018,7 +3938,7 @@
     },
     {
       "id": "evt-f3-show-must-go-on-triggered",
-      "sequence": 130,
+      "sequence": 129,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4042,24 +3962,20 @@
     },
     {
       "id": "evt-f3-big-top-ticket-acquired",
-      "sequence": 131,
+      "sequence": 130,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 4
       },
-      "summary": "Carl acquires a Big Top Ticket after Terror the Clown is defeated, looting additional tickets from clown sentries.",
+      "summary": "Carl acquires a Big Top Ticket after Terror the Clown is defeated.",
       "evidence": [
         {
           "sourceId": "src-book-2",
           "locator": {
             "chapter": 4
           },
-          "confidence": "confirmed"
-        },
-        {
-          "sourceId": "src-bookwormai-book2",
           "confidence": "confirmed"
         }
       ],
@@ -4073,6 +3989,35 @@
         "quantity": {
           "known": true,
           "value": 1
+        },
+        "sourceDescription": "Third Floor"
+      }
+    },
+    {
+      "id": "evt-f3-big-top-tickets-looted",
+      "sequence": 131,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 4
+      },
+      "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
+      "evidence": [
+        {
+          "sourceId": "src-bookwormai-book2",
+          "confidence": "confirmed"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f3-big-top-tickets-looted",
+        "itemId": "item-big-top-ticket",
+        "name": "Big Top Ticket",
+        "category": "quest-item",
+        "rarity": "unknown",
+        "description": "A ticket acquired after defeating Terror the Clown during the circus ambush.",
+        "quantity": {
+          "known": false
         },
         "sourceDescription": "Third Floor"
       }
@@ -4137,7 +4082,7 @@
     {
       "id": "evt-f3-earth-hobby-potion-carl-consumed",
       "sequence": 135,
-      "type": "ItemConsumed",
+      "type": "NarrativeEvent",
       "position": {
         "floor": 3,
         "book": 2,
@@ -4150,12 +4095,12 @@
           "confidence": "confirmed"
         }
       ],
-      "itemInstanceId": "inst-f3-earth-hobby-potion-carl"
+      "kind": "other"
     },
     {
       "id": "evt-f3-earth-hobby-potion-donut-consumed",
       "sequence": 136,
-      "type": "ItemConsumed",
+      "type": "NarrativeEvent",
       "position": {
         "floor": 3,
         "book": 2,
@@ -4168,7 +4113,7 @@
           "confidence": "confirmed"
         }
       ],
-      "itemInstanceId": "inst-f3-earth-hobby-potion-donut"
+      "kind": "other"
     },
     {
       "id": "evt-f3-louis-lamour-paperbacks-acquired",
@@ -4192,7 +4137,6 @@
         "name": "Louis L'Amour Paperbacks",
         "category": "miscellaneous",
         "rarity": "unknown",
-        "description": "A collection of Louis L'Amour Western paperbacks awarded by the AI.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4222,7 +4166,6 @@
         "name": "Home Depot Cactus",
         "category": "miscellaneous",
         "rarity": "unknown",
-        "description": "A potted cactus awarded as an Earth hobby reward.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4252,7 +4195,6 @@
         "name": "Large Cat Tree",
         "category": "miscellaneous",
         "rarity": "unknown",
-        "description": "A large carpeted cat tree awarded to Donut.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4282,7 +4224,6 @@
         "name": "Scented Candle",
         "category": "miscellaneous",
         "rarity": "unknown",
-        "description": "A scented candle awarded to Donut.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4356,9 +4297,7 @@
         "itemId": "item-enchanted-anklet-fallen-oak",
         "name": "Enchanted Anklet of the Fallen Oak",
         "category": "equipment",
-        "slot": "FEET",
         "rarity": "unknown",
-        "description": "An enchanted anklet looted by Donut from Grace Bautista's corpse.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4369,7 +4308,7 @@
     {
       "id": "evt-f3-parasite-ice-cream-consumed",
       "sequence": 144,
-      "type": "ItemConsumed",
+      "type": "NarrativeEvent",
       "position": {
         "floor": 3,
         "book": 2,
@@ -4382,7 +4321,7 @@
           "confidence": "confirmed"
         }
       ],
-      "itemInstanceId": "inst-f3-parasite-ice-cream"
+      "kind": "other"
     },
     {
       "id": "evt-f3-parasite-telepathic-link-established",
@@ -4405,20 +4344,20 @@
     {
       "id": "evt-f3-lottery-ticket-custard-consumed",
       "sequence": 146,
-      "type": "ItemConsumed",
+      "type": "NarrativeEvent",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 9
       },
-      "summary": "Carl uses a Fireball or Custard lottery ticket during the fight with Heather the Bear.",
+      "summary": "Carl uses a lottery ticket during the fight with Heather the Bear; the researched result is custard.",
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
           "confidence": "confirmed"
         }
       ],
-      "itemInstanceId": "inst-f3-lottery-ticket-custard"
+      "kind": "other"
     },
     {
       "id": "evt-f3-heather-custard-healed",
@@ -4511,7 +4450,6 @@
         "name": "Skill Potion: Acute Ears",
         "category": "consumable",
         "rarity": "unknown",
-        "description": "A skill potion that grants or improves the Acute Ears skill.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4589,7 +4527,6 @@
         "name": "Scroll of Upgrade",
         "category": "consumable",
         "rarity": "unknown",
-        "description": "A magical scroll used to upgrade an equipped item.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4619,7 +4556,6 @@
         "name": "100,000-Gold Casino Chip",
         "category": "miscellaneous",
         "rarity": "unknown",
-        "description": "A high-value casino chip received from a Lucky Bastard box.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4775,7 +4711,6 @@
           {
             "kind": "box",
             "boxType": "fan-box",
-            "rarity": "rare",
             "description": "Fan Boxes with a 30-hour temporal lock"
           }
         ]
@@ -4803,7 +4738,6 @@
         "name": "Framed Picture of Beatrice",
         "category": "miscellaneous",
         "rarity": "unknown",
-        "description": "A framed photograph of Beatrice and Brad received from a Fan Box.",
         "quantity": {
           "known": true,
           "value": 1
@@ -4979,20 +4913,20 @@
     {
       "id": "evt-f3-sepsis-crown-unequipped",
       "sequence": 168,
-      "type": "ItemUnequipped",
+      "type": "NarrativeEvent",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 25
       },
-      "summary": "Donut unequips the Sepsis Crown during the wild magic precursor pulses, permanently destroying it.",
+      "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-f2a6829f",
           "confidence": "confirmed"
         }
       ],
-      "itemInstanceId": "inst-f3-sepsis-crown"
+      "kind": "other"
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
@@ -5063,7 +4997,7 @@
       "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
       "evidence": [
         {
-          "sourceId": "src-wiki-third-floor",
+          "sourceId": "src-wiki-book-2-summaries",
           "locator": {
             "chapter": 26
           },
@@ -5081,21 +5015,13 @@
         "book": 2,
         "chapter": 26
       },
-      "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome. AI upgrades Platinum Quest Boxes to Celestial Quest Boxes, but Borant uses an administrative veto to prevent delivery.",
+      "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome.",
       "evidence": [
         {
           "sourceId": "src-book-2",
           "locator": {
             "chapter": 26
           },
-          "confidence": "confirmed"
-        },
-        {
-          "sourceId": "src-reddit-end-book2",
-          "confidence": "confirmed"
-        },
-        {
-          "sourceId": "src-sparknotes-ch-sum",
           "confidence": "confirmed"
         }
       ],

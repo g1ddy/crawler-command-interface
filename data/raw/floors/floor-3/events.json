@@ -20,30 +20,6 @@
     ]
   },
   {
-    "id": "evt-f3-sepsis-crown-acquired",
-    "type": "ItemAcquired",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 1
-    },
-    "item": {
-      "instanceId": "inst-f3-sepsis-crown",
-      "itemId": "item-enchanted-crown-sepsis-whore",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
-    },
-    "summary": "Princess Donut possesses the Enchanted Crown of the Sepsis Whore on Floor 3.",
-    "evidence": [
-      {
-        "sourceId": "src-sparknotes-ch-f2a6829f",
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
     "id": "evt-f3-race-class-selected",
     "type": "NarrativeEvent",
     "kind": "choice-made",
@@ -163,7 +139,7 @@
         "value": 1
       }
     },
-    "summary": "Carl acquires a Big Top Ticket after Terror the Clown is defeated, looting additional tickets from clown sentries.",
+    "summary": "Carl acquires a Big Top Ticket after Terror the Clown is defeated.",
     "evidence": [
       {
         "sourceId": "src-book-2",
@@ -171,7 +147,26 @@
           "chapter": 4
         },
         "confidence": "confirmed"
-      },
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-big-top-tickets-looted",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 4
+    },
+    "item": {
+      "instanceId": "inst-f3-big-top-tickets-looted",
+      "itemId": "item-big-top-ticket",
+      "quantity": {
+        "known": false
+      }
+    },
+    "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
+    "evidence": [
       {
         "sourceId": "src-bookwormai-book2",
         "confidence": "confirmed"
@@ -234,8 +229,8 @@
   },
   {
     "id": "evt-f3-earth-hobby-potion-carl-consumed",
-    "type": "ItemConsumed",
-    "itemInstanceId": "inst-f3-earth-hobby-potion-carl",
+    "type": "NarrativeEvent",
+    "kind": "other",
     "position": {
       "floor": 3,
       "book": 2,
@@ -251,8 +246,8 @@
   },
   {
     "id": "evt-f3-earth-hobby-potion-donut-consumed",
-    "type": "ItemConsumed",
-    "itemInstanceId": "inst-f3-earth-hobby-potion-donut",
+    "type": "NarrativeEvent",
+    "kind": "other",
     "position": {
       "floor": 3,
       "book": 2,
@@ -431,8 +426,8 @@
   },
   {
     "id": "evt-f3-parasite-ice-cream-consumed",
-    "type": "ItemConsumed",
-    "itemInstanceId": "inst-f3-parasite-ice-cream",
+    "type": "NarrativeEvent",
+    "kind": "other",
     "position": {
       "floor": 3,
       "book": 2,
@@ -465,14 +460,14 @@
   },
   {
     "id": "evt-f3-lottery-ticket-custard-consumed",
-    "type": "ItemConsumed",
-    "itemInstanceId": "inst-f3-lottery-ticket-custard",
+    "type": "NarrativeEvent",
+    "kind": "other",
     "position": {
       "floor": 3,
       "book": 2,
       "chapter": 9
     },
-    "summary": "Carl uses a Fireball or Custard lottery ticket during the fight with Heather the Bear.",
+    "summary": "Carl uses a lottery ticket during the fight with Heather the Bear; the researched result is custard.",
     "evidence": [
       {
         "sourceId": "src-parapith-ch-sums",
@@ -958,14 +953,14 @@
   },
   {
     "id": "evt-f3-sepsis-crown-unequipped",
-    "type": "ItemUnequipped",
-    "itemInstanceId": "inst-f3-sepsis-crown",
+    "type": "NarrativeEvent",
+    "kind": "other",
     "position": {
       "floor": 3,
       "book": 2,
       "chapter": 25
     },
-    "summary": "Donut unequips the Sepsis Crown during the wild magic precursor pulses, permanently destroying it.",
+    "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
     "evidence": [
       {
         "sourceId": "src-sparknotes-ch-f2a6829f",
@@ -1039,7 +1034,7 @@
     "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
     "evidence": [
       {
-        "sourceId": "src-wiki-third-floor",
+        "sourceId": "src-wiki-book-2-summaries",
         "locator": {
           "chapter": 26
         },
@@ -1056,21 +1051,13 @@
       "book": 2,
       "chapter": 26
     },
-    "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome. AI upgrades Platinum Quest Boxes to Celestial Quest Boxes, but Borant uses an administrative veto to prevent delivery.",
+    "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome.",
     "evidence": [
       {
         "sourceId": "src-book-2",
         "locator": {
           "chapter": 26
         },
-        "confidence": "confirmed"
-      },
-      {
-        "sourceId": "src-reddit-end-book2",
-        "confidence": "confirmed"
-      },
-      {
-        "sourceId": "src-sparknotes-ch-sum",
         "confidence": "confirmed"
       }
     ],

@@ -427,7 +427,7 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
       ) {
         knownItemInstanceIds.add(event.item.instanceId);
       } else if (
-        (event.type === 'ItemEquipped' || event.type === 'ItemUnequipped' || event.type === 'ItemDiscarded' || event.type === 'ItemQuantityChanged') &&
+        (event.type === 'ItemConsumed' || event.type === 'ItemEquipped' || event.type === 'ItemUnequipped' || event.type === 'ItemDiscarded' || event.type === 'ItemQuantityChanged') &&
         'itemInstanceId' in event &&
         event.itemInstanceId
       ) {
@@ -436,8 +436,6 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
             `Domain error: ${eventRef} references itemInstanceId "${event.itemInstanceId}" which was not acquired prior to or at this sequence.`
           );
         }
-      } else if (event.type === 'ItemConsumed' && 'itemInstanceId' in event && event.itemInstanceId) {
-        knownItemInstanceIds.add(event.itemInstanceId);
       }
 
       if (event.type === 'PetAcquired' && 'pet' in event && (event as { pet?: { petId?: string } }).pet?.petId) {
