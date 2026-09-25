@@ -20,6 +20,30 @@
     ]
   },
   {
+    "id": "evt-f3-sepsis-crown-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "item": {
+      "instanceId": "inst-f3-sepsis-crown",
+      "itemId": "item-enchanted-crown-sepsis-whore",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Princess Donut possesses the Enchanted Crown of the Sepsis Whore on Floor 3.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-f2a6829f",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-race-class-selected",
     "type": "NarrativeEvent",
     "kind": "choice-made",
@@ -209,30 +233,6 @@
     ]
   },
   {
-    "id": "evt-f3-earth-hobby-potion-carl-acquired",
-    "type": "ItemAcquired",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 5
-    },
-    "item": {
-      "instanceId": "inst-f3-earth-hobby-potion-carl",
-      "itemId": "item-earth-hobby-potion",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
-    },
-    "summary": "Carl acquires an Earth Hobby Potion in the first safe room.",
-    "evidence": [
-      {
-        "sourceId": "src-abooklovers-summary",
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
     "id": "evt-f3-earth-hobby-potion-carl-consumed",
     "type": "ItemConsumed",
     "itemInstanceId": "inst-f3-earth-hobby-potion-carl",
@@ -242,30 +242,6 @@
       "chapter": 5
     },
     "summary": "Carl consumes an Earth Hobby Potion in the first safe room and receives the Cesta Punta skill.",
-    "evidence": [
-      {
-        "sourceId": "src-abooklovers-summary",
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
-    "id": "evt-f3-earth-hobby-potion-donut-acquired",
-    "type": "ItemAcquired",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 5
-    },
-    "item": {
-      "instanceId": "inst-f3-earth-hobby-potion-donut",
-      "itemId": "item-earth-hobby-potion",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
-    },
-    "summary": "Princess Donut acquires an Earth Hobby Potion in the first safe room.",
     "evidence": [
       {
         "sourceId": "src-abooklovers-summary",
@@ -291,7 +267,7 @@
     ]
   },
   {
-    "id": "evt-f3-carl-hobby-rewards-acquired",
+    "id": "evt-f3-louis-lamour-paperbacks-acquired",
     "type": "ItemAcquired",
     "position": {
       "floor": 3,
@@ -306,7 +282,79 @@
         "value": 1
       }
     },
-    "summary": "Carl receives a collection of Louis L'Amour paperbacks and a Home Depot cactus as AI rewards.",
+    "summary": "Carl receives a collection of Louis L'Amour paperbacks as an AI reward.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-home-depot-cactus-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "item": {
+      "instanceId": "inst-f3-home-depot-cactus",
+      "itemId": "item-home-depot-cactus",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl receives a Home Depot cactus as an AI reward.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-cat-tree-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "item": {
+      "instanceId": "inst-f3-cat-tree",
+      "itemId": "item-cat-tree",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a large cat tree as an AI reward.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-scented-candle-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "item": {
+      "instanceId": "inst-f3-scented-candle",
+      "itemId": "item-scented-candle",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a scented candle as an AI reward.",
     "evidence": [
       {
         "sourceId": "src-abooklovers-summary",
@@ -322,7 +370,7 @@
       "book": 2,
       "chapter": 5
     },
-    "summary": "Donut receives a large cat tree, a scented candle, and the Clockwork Triplicate Spell.",
+    "summary": "Donut receives the Clockwork Triplicate Spell as an AI reward.",
     "spell": {
       "spellId": "spell-clockwork-triplicate",
       "name": "Clockwork Triplicate",
@@ -330,7 +378,7 @@
       "abilityKind": "spell",
       "acquisitionSource": {
         "kind": "loot-box",
-        "name": "Earth Hobby Potion / AI Reward"
+        "name": "AI Hobby Reward"
       }
     },
     "evidence": [
@@ -382,30 +430,6 @@
     ]
   },
   {
-    "id": "evt-f3-parasite-ice-cream-acquired",
-    "type": "ItemAcquired",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 9
-    },
-    "item": {
-      "instanceId": "inst-f3-parasite-ice-cream",
-      "itemId": "item-parasite-ice-cream",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
-    },
-    "summary": "Carl receives an ice cream cone containing parasitic worms from Apollon the Mighty.",
-    "evidence": [
-      {
-        "sourceId": "src-parapith-ch-sums",
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
     "id": "evt-f3-parasite-ice-cream-consumed",
     "type": "ItemConsumed",
     "itemInstanceId": "inst-f3-parasite-ice-cream",
@@ -432,30 +456,6 @@
       "chapter": 9
     },
     "summary": "The parasitic worms establish a telepathic link between Carl and Ringmaster Grimaldi.",
-    "evidence": [
-      {
-        "sourceId": "src-parapith-ch-sums",
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
-    "id": "evt-f3-lottery-ticket-custard-acquired",
-    "type": "ItemAcquired",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 9
-    },
-    "item": {
-      "instanceId": "inst-f3-lottery-ticket-custard",
-      "itemId": "item-lottery-ticket-fireball-custard",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
-    },
-    "summary": "Carl possesses a Fireball or Custard lottery scratchcard ticket during the fight with Heather the Bear.",
     "evidence": [
       {
         "sourceId": "src-parapith-ch-sums",
@@ -505,7 +505,7 @@
       "book": 2,
       "chapter": 11
     },
-    "summary": "Carl uses the Tome of Wisp Armor, granting immunity from mental overrides.",
+    "summary": "Carl uses the Tome of Wisp Armor, gaining the Wisp Armor spell.",
     "spell": {
       "spellId": "spell-wisp-armor",
       "name": "Wisp Armor",
@@ -547,6 +547,30 @@
     ]
   },
   {
+    "id": "evt-f3-acute-ears-potion-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 13
+    },
+    "item": {
+      "instanceId": "inst-f3-acute-ears-potion",
+      "itemId": "item-acute-ears-potion",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a skill potion for Acute Ears and 5,000 gold from her upgraded Quest Box.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-fang-caps-acquired",
     "type": "ItemAcquired",
     "position": {
@@ -562,7 +586,7 @@
         "value": 1
       }
     },
-    "summary": "Donut receives 5,000 gold, a skill potion for Acute Ears, and Enchanted Fang Caps from her upgraded Quest Box.",
+    "summary": "Donut receives Enchanted Fang Caps from her upgraded Quest Box.",
     "evidence": [
       {
         "sourceId": "src-sparknotes-ch-56f65e74",
@@ -603,7 +627,7 @@
         "value": 1
       }
     },
-    "summary": "Carl receives 5,000 gold and a Scroll of Upgrade from his Platinum Quest Box.",
+    "summary": "Carl receives a Scroll of Upgrade and 5,000 gold from his Platinum Quest Box.",
     "evidence": [
       {
         "sourceId": "src-sparknotes-ch-56f65e74",
@@ -766,6 +790,30 @@
     }
   },
   {
+    "id": "evt-f3-picture-of-beatrice-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "item": {
+      "instanceId": "inst-f3-picture-of-beatrice",
+      "itemId": "item-picture-of-beatrice",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a framed picture of Beatrice when her Fan Box unlocks.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-xistera-acquired",
     "type": "ItemAcquired",
     "position": {
@@ -781,7 +829,7 @@
         "value": 1
       }
     },
-    "summary": "Donut receives a framed picture of Beatrice and Carl receives the Xistera when their Fan Boxes unlock.",
+    "summary": "Carl receives the Xistera when his Fan Box unlocks.",
     "evidence": [
       {
         "sourceId": "src-abooklovers-summary",
@@ -873,30 +921,6 @@
         "locator": {
           "chapter": 24
         },
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
-    "id": "evt-f3-sepsis-crown-acquired",
-    "type": "ItemAcquired",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 25
-    },
-    "item": {
-      "instanceId": "inst-f3-sepsis-crown",
-      "itemId": "item-enchanted-crown-sepsis-whore",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
-    },
-    "summary": "Donut possesses the Enchanted Crown of the Sepsis Whore on Floor 3.",
-    "evidence": [
-      {
-        "sourceId": "src-sparknotes-ch-f2a6829f",
         "confidence": "confirmed"
       }
     ]
@@ -1015,7 +1039,7 @@
     "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
     "evidence": [
       {
-        "sourceId": "src-wiki-book-2-summaries",
+        "sourceId": "src-wiki-third-floor",
         "locator": {
           "chapter": 26
         },
