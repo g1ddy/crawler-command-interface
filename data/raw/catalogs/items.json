@@ -280,11 +280,11 @@
     "id": "item-scented-candle",
     "name": "Scented Candle",
     "category": "miscellaneous",
-    "persistent": false
+    "persistent": true
   },
   {
     "id": "item-picture-of-beatrice",
-    "name": "Framed Picture of Beatrice",
+    "name": "Framed Picture of Beatrice and Brad",
     "category": "miscellaneous",
     "persistent": true
   },

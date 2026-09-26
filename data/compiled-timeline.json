@@ -11,8 +11,8 @@
         "floor": 3
       }
     },
-    "createdAt": "2026-09-26T06:08:55.165Z",
-    "updatedAt": "2026-09-26T06:08:55.165Z"
+    "createdAt": "2026-09-26T13:04:17.760Z",
+    "updatedAt": "2026-09-26T13:04:17.760Z"
   },
   "floors": [
     {
@@ -4794,7 +4794,7 @@
           {
             "kind": "box",
             "boxType": "fan-box",
-            "description": "Fan Boxes with a 30-hour temporal lock"
+            "description": "Fan Boxes"
           }
         ]
       }
@@ -4902,7 +4902,7 @@
         "book": 2,
         "chapter": 17
       },
-      "summary": "Donut receives a framed picture of Beatrice when her Fan Box unlocks.",
+      "summary": "Donut receives a framed picture of Beatrice and Brad when her Fan Box unlocks.",
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
@@ -4912,7 +4912,7 @@
       "item": {
         "instanceId": "inst-f3-picture-of-beatrice",
         "itemId": "item-picture-of-beatrice",
-        "name": "Framed Picture of Beatrice",
+        "name": "Framed Picture of Beatrice and Brad",
         "category": "miscellaneous",
         "rarity": "unknown",
         "quantity": {
@@ -5192,7 +5192,7 @@
         "book": 2,
         "chapter": 26
       },
-      "summary": "The Fools Who Broke the Glass outcome causes Celestial Loot Boxes to be awarded to crawlers in the blast zone.",
+      "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone. Quan Ch opens his box before the veto.",
       "evidence": [
         {
           "sourceId": "src-reddit-end-book2",
@@ -5214,7 +5214,7 @@
         "book": 2,
         "chapter": 26
       },
-      "summary": "Borant uses an administrative veto to prevent delivery of the Celestial Quest Boxes.",
+      "summary": "Borant uses an administrative veto to prevent delivery of the remaining 82 Celestial Quest Boxes.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-sum",
