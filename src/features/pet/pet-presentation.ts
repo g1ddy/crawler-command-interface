@@ -1,6 +1,7 @@
-import type { Pet } from "../../../app/domain/types.ts";
+import type { CrawlerEvent, Pet, TimelineEvent } from "../../../app/domain/types.ts";
 import type {
   PresentationChange,
+  PresentationMotionIntent,
   PresentationSemantics,
 } from "../../presentation/semantic/public.ts";
 
@@ -41,18 +42,55 @@ export interface DerivedPetPresentation {
   pets: DerivedPetItem[];
 }
 
+export interface PetPresentationSummary {
+  hasPets: boolean;
+  petCount: number;
+  badgeLabel: string;
+  semantics: PresentationSemantics;
+  primaryPet?: {
+    petId: string;
+    displayName: string;
+    hasExplicitName: boolean;
+    species: string;
+    speciesLabel: string;
+    hostilityState: string;
+    hostilityLabel: string;
+    bondState: string;
+    bondStateLabel: string;
+    bondHolderLabel: string;
+    title?: string;
+    formattedTitle?: string;
+    level?: number;
+    formattedLevel?: string;
+  };
+  motionIntent?: PresentationMotionIntent;
+}
+
 /** Derives the narrow Pet surface from the selected temporal Pet state. */
 export function derivePetPresentation({
   pets,
+  hasBeenEstablished,
 }: {
   pets?: Pet[];
+  hasBeenEstablished?: boolean;
 }): DerivedPetPresentation {
   const activePets = pets ?? [];
   const petCount = activePets.length;
   const hasPets = petCount > 0;
+  const status: PetPresentationStatus = hasPets
+    ? "established"
+    : hasBeenEstablished
+    ? "known-empty"
+    : "not-established";
   const badgeLabel = hasPets
     ? `${petCount} ${petCount === 1 ? "PET" : "PETS"}`
-    : "NO PETS";
+    : status === "known-empty"
+    ? "NO PETS"
+    : status === "not-established"
+    ? "NOT ESTABLISHED"
+    : status === "unavailable"
+    ? "UNAVAILABLE"
+    : "UNKNOWN";
 
   const derivedPets: DerivedPetItem[] = activePets.map((pet) => {
     const displayName = pet.name ?? pet.species ?? "UNKNOWN PET";
@@ -111,8 +149,82 @@ export function derivePetPresentation({
     hasPets,
     petCount,
     badgeLabel,
-    status: hasPets ? "established" : "known-empty",
+    status,
     pets: derivedPets,
+  };
+}
+
+/** Derives Pet summary and transition semantics for composition boundaries. */
+export function derivePetPresentationSummary({
+  pets,
+  events = [],
+  currentSeq = 0,
+  isLivePetTransition = false,
+}: {
+  pets?: Pet[];
+  events?: (TimelineEvent | CrawlerEvent)[];
+  currentSeq?: number;
+  isLivePetTransition?: boolean;
+}): PetPresentationSummary {
+  const historyEvents = events.filter((e) => (e.sequence ?? 0) <= currentSeq);
+  const hasBeenEstablished = historyEvents.some(
+    (e) =>
+      e.type === "PetAcquired" ||
+      e.type === "PetHostilityChanged" ||
+      e.type === "PetBonded" ||
+      e.type === "PetClassificationChanged"
+  );
+
+  const derived = derivePetPresentation({ pets, hasBeenEstablished });
+  const currentEvent = events.find((e) => (e.sequence ?? 0) === currentSeq);
+  const eventType = currentEvent?.type;
+
+  let change: PresentationChange | undefined = undefined;
+  let motionIntent: PresentationMotionIntent | undefined = undefined;
+
+  if (eventType === "PetAcquired") {
+    change = "newly-established";
+    if (isLivePetTransition) {
+      motionIntent = "established";
+    }
+  } else if (
+    eventType === "PetHostilityChanged" ||
+    eventType === "PetBonded" ||
+    eventType === "PetClassificationChanged"
+  ) {
+    change = "changed";
+    if (isLivePetTransition) {
+      motionIntent = "changed";
+    }
+  }
+
+  const semantics = mapPetStatusToSemantics(derived.status, change);
+  const primary = derived.pets[0];
+
+  return {
+    hasPets: derived.hasPets,
+    petCount: derived.petCount,
+    badgeLabel: derived.badgeLabel,
+    semantics,
+    primaryPet: primary
+      ? {
+          petId: primary.petId,
+          displayName: primary.displayName,
+          hasExplicitName: primary.hasExplicitName,
+          species: primary.species,
+          speciesLabel: primary.speciesLabel,
+          hostilityState: primary.hostilityState,
+          hostilityLabel: primary.hostilityLabel,
+          bondState: primary.bondState,
+          bondStateLabel: primary.bondStateLabel,
+          bondHolderLabel: primary.bondHolderLabel,
+          title: primary.title,
+          formattedTitle: primary.formattedTitle,
+          level: primary.level,
+          formattedLevel: primary.formattedLevel,
+        }
+      : undefined,
+    motionIntent,
   };
 }
 
