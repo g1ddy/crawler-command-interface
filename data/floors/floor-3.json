@@ -21,22 +21,22 @@
       "kind": "official-text",
       "trust": "primary",
       "title": "Dungeon Crawler Carl, Book 2: Carl's Doomsday Scenario",
-      "url": "https://www.mattdinniman.com/",
+      "url": "https://example.invalid/dcc-book-2",
       "citationStyle": "Chapter {chapter}"
     },
     {
       "id": "src-wiki-third-floor",
       "kind": "wiki",
       "trust": "corroborating",
-      "title": "The Over City (Third Floor)",
+      "title": "Third Floor - Dungeon Crawler Carl Wiki",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Third_Floor"
     },
     {
       "id": "src-wiki-book-2-summaries",
-      "kind": "wiki",
+      "kind": "fan-compendium",
       "trust": "corroborating",
       "title": "Book 2 Chapter Summaries",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Dungeon_Crawler_Carl_Book_2_Summaries"
     },
     {
       "id": "src-bookwormai-book2",
@@ -53,13 +53,6 @@
       "url": "https://www.abookloversdigest.com/post/carl-s-doomsday-scenario-dungeon-crawler-carl-2"
     },
     {
-      "id": "src-sparknotes-ch-56f65e74",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario Chapter Summary",
-      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/56f65e74-24ff-4419-a1f8-07ddfa91c991"
-    },
-    {
       "id": "src-parapith-ch-sums",
       "kind": "editorial",
       "trust": "corroborating",
@@ -67,11 +60,32 @@
       "url": "https://parapith.weebly.com/book-summaries/carls-doomsday-scenario"
     },
     {
+      "id": "src-sparknotes-ch-56f65e74",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "Carl's Doomsday Scenario Chapter Summary",
+      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/56f65e74-24ff-4419-a1f8-07ddfa91c991"
+    },
+    {
       "id": "src-sparknotes-ch-f2a6829f",
       "kind": "editorial",
       "trust": "corroborating",
       "title": "Carl's Doomsday Scenario Chapter 25 Summary",
       "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/f2a6829f-0df7-4f99-b05e-5bb250affdef"
+    },
+    {
+      "id": "src-reddit-end-book2",
+      "kind": "discussion",
+      "trust": "candidate",
+      "title": "End of Book 2 Question",
+      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/"
+    },
+    {
+      "id": "src-sparknotes-ch-sum",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
+      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
     }
   ],
   "catalog": {
@@ -111,7 +125,7 @@
       },
       {
         "id": "item-louis-lamour-paperbacks",
-        "name": "Louis L'Amour Paperbacks",
+        "name": "Louis L'Amour Paperback Collection",
         "category": "miscellaneous",
         "persistent": true
       },
@@ -172,15 +186,9 @@
         "persistent": true
       },
       {
-        "id": "item-parasite-ice-cream",
-        "name": "Parasite-Laced Ice Cream Cone",
-        "category": "consumable",
-        "persistent": false
-      },
-      {
-        "id": "item-lottery-ticket-fireball-custard",
-        "name": "Lottery Scratchcard Ticket",
-        "category": "consumable",
+        "id": "item-fan-box",
+        "name": "Fan Box",
+        "category": "box",
         "persistent": false
       }
     ],
@@ -1031,7 +1039,7 @@
         "book": 2,
         "chapter": 17
       },
-      "summary": "Carl and Donut reach the one quadrillion views milestone and are awarded Fan Boxes with a 30-hour temporal lock.",
+      "summary": "Carl and Donut reach the one quadrillion views broadcast milestone.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
@@ -1044,6 +1052,49 @@
         "severity": "success"
       },
       "order": 37
+    },
+    {
+      "id": "evt-f3-fan-boxes-awarded",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 17
+      },
+      "item": {
+        "instanceId": "inst-f3-fan-box",
+        "itemId": "item-fan-box",
+        "quantity": {
+          "known": true,
+          "value": 2
+        }
+      },
+      "summary": "Carl and Donut are awarded Fan Boxes with a 30-hour temporal lock.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-56f65e74",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 38
+    },
+    {
+      "id": "evt-f3-fan-boxes-unlocked",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 17
+      },
+      "summary": "The 30-hour temporal lock on Carl and Donut's Fan Boxes expires.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 39
     },
     {
       "id": "evt-f3-picture-of-beatrice-acquired",
@@ -1068,7 +1119,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 38
+      "order": 40
     },
     {
       "id": "evt-f3-xistera-acquired",
@@ -1093,7 +1144,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 39
+      "order": 41
     },
     {
       "id": "evt-f3-katia-joined",
@@ -1114,7 +1165,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 40
+      "order": 42
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
@@ -1135,7 +1186,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 41
+      "order": 43
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
@@ -1161,7 +1212,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 42
+      "order": 44
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
@@ -1185,7 +1236,25 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 43
+      "order": 45
+    },
+    {
+      "id": "evt-f3-sepsis-crown-unequipped",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 25
+      },
+      "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-f2a6829f",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 46
     },
     {
       "id": "evt-f3-doomsday-scenario-created",
@@ -1217,25 +1286,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 44
-    },
-    {
-      "id": "evt-f3-sepsis-crown-unequipped",
-      "type": "NarrativeEvent",
-      "kind": "other",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 25
-      },
-      "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
-      "evidence": [
-        {
-          "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
-        }
-      ],
-      "order": 45
+      "order": 47
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
@@ -1253,7 +1304,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 46
+      "order": 48
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
@@ -1271,7 +1322,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 47
+      "order": 49
     },
     {
       "id": "evt-f3-floor-4-transition",
@@ -1292,7 +1343,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 48
+      "order": 50
     },
     {
       "id": "evt-f3-odette-epilogue",
@@ -1306,14 +1357,50 @@
       "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
       "evidence": [
         {
-          "sourceId": "src-wiki-book-2-summaries",
+          "sourceId": "src-wiki-third-floor",
           "locator": {
             "chapter": 26
           },
           "confidence": "corroborated"
         }
       ],
-      "order": 49
+      "order": 51
+    },
+    {
+      "id": "evt-f3-quest-boxes-upgraded-celestial",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "The AI upgrades the party's Platinum Quest Boxes to Celestial Quest Boxes based on the Hadji and Bandit achievements.",
+      "evidence": [
+        {
+          "sourceId": "src-reddit-end-book2",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 52
+    },
+    {
+      "id": "evt-f3-celestial-boxes-vetoed",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Borant uses an administrative veto to prevent delivery of the Celestial Quest Boxes.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-sum",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 53
     },
     {
       "id": "evt-f3-achievement-bandit",
@@ -1339,7 +1426,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 50
+      "order": 54
     }
   ]
 }

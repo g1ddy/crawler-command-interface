@@ -4,22 +4,22 @@
     "kind": "official-text",
     "trust": "primary",
     "title": "Dungeon Crawler Carl, Book 2: Carl's Doomsday Scenario",
-    "url": "https://www.mattdinniman.com/",
+    "url": "https://example.invalid/dcc-book-2",
     "citationStyle": "Chapter {chapter}"
   },
   {
     "id": "src-wiki-third-floor",
     "kind": "wiki",
     "trust": "corroborating",
-    "title": "The Over City (Third Floor)",
+    "title": "Third Floor - Dungeon Crawler Carl Wiki",
     "url": "https://dungeon-crawler-carl.fandom.com/wiki/Third_Floor"
   },
   {
     "id": "src-wiki-book-2-summaries",
-    "kind": "wiki",
+    "kind": "fan-compendium",
     "trust": "corroborating",
     "title": "Book 2 Chapter Summaries",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Dungeon_Crawler_Carl_Book_2_Summaries"
   },
   {
     "id": "src-bookwormai-book2",
@@ -36,13 +36,6 @@
     "url": "https://www.abookloversdigest.com/post/carl-s-doomsday-scenario-dungeon-crawler-carl-2"
   },
   {
-    "id": "src-sparknotes-ch-56f65e74",
-    "kind": "editorial",
-    "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario Chapter Summary",
-    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/56f65e74-24ff-4419-a1f8-07ddfa91c991"
-  },
-  {
     "id": "src-parapith-ch-sums",
     "kind": "editorial",
     "trust": "corroborating",
@@ -50,10 +43,31 @@
     "url": "https://parapith.weebly.com/book-summaries/carls-doomsday-scenario"
   },
   {
+    "id": "src-sparknotes-ch-56f65e74",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Carl's Doomsday Scenario Chapter Summary",
+    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/56f65e74-24ff-4419-a1f8-07ddfa91c991"
+  },
+  {
     "id": "src-sparknotes-ch-f2a6829f",
     "kind": "editorial",
     "trust": "corroborating",
     "title": "Carl's Doomsday Scenario Chapter 25 Summary",
     "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/f2a6829f-0df7-4f99-b05e-5bb250affdef"
+  },
+  {
+    "id": "src-reddit-end-book2",
+    "kind": "discussion",
+    "trust": "candidate",
+    "title": "End of Book 2 Question",
+    "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/"
+  },
+  {
+    "id": "src-sparknotes-ch-sum",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
+    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
   }
 ]

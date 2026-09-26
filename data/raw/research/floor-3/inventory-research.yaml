@@ -1,7 +1,6 @@
 schemaVersion: crawler-research/v1
 storyId: dcc
 floor: 3
-
 sources:
   - id: src-sparknotes-ch-sum
     kind: editorial
@@ -38,7 +37,6 @@ sources:
     trust: candidate
     title: End of Book 2 Question
     url: https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/
-
 claims:
   - id: F3-CRAWLER-001
     domain: crawler
@@ -52,7 +50,6 @@ claims:
         relationship: supports
     unknowns:
       - exact_modifier_values
-
   - id: F3-CRAWLER-002
     domain: crawler
     kind: event
@@ -62,7 +59,6 @@ claims:
       - sourceId: src-bookwormai-book2
         confidence: confirmed
         relationship: supports
-
   - id: F3-PARTY-001
     domain: party
     kind: event
@@ -72,7 +68,6 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-PARTY-002
     domain: party
     kind: observation
@@ -82,7 +77,6 @@ claims:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed
         relationship: supports
-
   - id: F3-PET-001
     domain: pet
     kind: event
@@ -92,7 +86,6 @@ claims:
       - sourceId: src-bookwormai-book2
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-001
     domain: inventory
     kind: event
@@ -102,7 +95,6 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-002
     domain: inventory
     kind: event
@@ -112,7 +104,6 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-003
     domain: inventory
     kind: event
@@ -122,7 +113,6 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-SKILLS-001
     domain: skills
     kind: state
@@ -134,17 +124,16 @@ claims:
         relationship: supports
     unknowns:
       - exact_mechanical_benefit
-
   - id: F3-INV-004
     domain: inventory
     kind: event
     claim:
       summary: Carl receives a collection of Louis L'Amour paperbacks and a Home Depot cactus as AI rewards.
+      detail: Recorded as a collection of paperbacks without asserting an unevidenced numeric unit count.
     evidence:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-005
     domain: inventory
     kind: event
@@ -154,7 +143,6 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-006
     domain: inventory
     kind: event
@@ -166,31 +154,62 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-ACHIEVEMENT-001
     domain: achievement
     kind: event
     claim:
-      summary: Carl and Donut reach the one quadrillion views milestone and are awarded Fan Boxes with a 30-hour temporal lock.
+      summary: Carl and Donut reach the one quadrillion views broadcast milestone.
+      detail: Exact title wording unconfirmed by available text.
     evidence:
       - sourceId: src-sparknotes-ch-56f65e74
         confidence: confirmed
         relationship: supports
     unknowns:
-      - exact_milestone_wording
-
-  - id: F3-INV-007
+      - exact_milestone_title_wording
+  - id: F3-INV-007a
     domain: inventory
     kind: event
     claim:
-      summary: Donut receives a framed picture of Beatrice and Carl receives the Xistera when their Fan Boxes unlock.
+      summary: Carl and Donut are awarded Fan Boxes with a 30-hour temporal lock.
     dependencies:
       - F3-ACHIEVEMENT-001
+    evidence:
+      - sourceId: src-sparknotes-ch-56f65e74
+        confidence: confirmed
+        relationship: supports
+  - id: F3-INV-007b
+    domain: inventory
+    kind: event
+    claim:
+      summary: The 30-hour temporal lock on Carl and Donut's Fan Boxes expires.
+    dependencies:
+      - F3-INV-007a
     evidence:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
+  - id: F3-INV-007c
+    domain: inventory
+    kind: event
+    claim:
+      summary: Donut receives a framed picture of Beatrice when her Fan Box unlocks.
+    dependencies:
+      - F3-INV-007b
+    evidence:
+      - sourceId: src-abooklovers-summary
+        confidence: confirmed
+        relationship: supports
+  - id: F3-INV-007d
+    domain: inventory
+    kind: event
+    claim:
+      summary: Carl receives the Xistera when his Fan Box unlocks.
+    dependencies:
+      - F3-INV-007b
+    evidence:
+      - sourceId: src-abooklovers-summary
+        confidence: confirmed
+        relationship: supports
   - id: F3-INV-008
     domain: inventory
     kind: event
@@ -200,7 +219,6 @@ claims:
       - sourceId: src-sparknotes-ch-56f65e74
         confidence: confirmed
         relationship: supports
-
   - id: F3-EQUIP-001
     domain: equipment
     kind: event
@@ -212,7 +230,6 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-009
     domain: inventory
     kind: event
@@ -222,7 +239,6 @@ claims:
       - sourceId: src-sparknotes-ch-56f65e74
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-010
     domain: inventory
     kind: event
@@ -232,7 +248,6 @@ claims:
       - sourceId: src-sparknotes-ch-56f65e74
         confidence: confirmed
         relationship: supports
-
   - id: F3-EQUIP-002
     domain: equipment
     kind: event
@@ -245,7 +260,6 @@ claims:
       - sourceId: src-sparknotes-ch-56f65e74
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-011
     domain: inventory
     kind: event
@@ -256,7 +270,6 @@ claims:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-012
     domain: inventory
     kind: event
@@ -266,7 +279,6 @@ claims:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-013
     domain: inventory
     kind: event
@@ -278,7 +290,6 @@ claims:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-014
     domain: inventory
     kind: event
@@ -289,7 +300,6 @@ claims:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-015
     domain: inventory
     kind: event
@@ -301,7 +311,6 @@ claims:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-016
     domain: inventory
     kind: event
@@ -313,7 +322,6 @@ claims:
         relationship: supports
     unknowns:
       - exact_quantity
-
   - id: F3-INV-017
     domain: inventory
     kind: event
@@ -323,7 +331,6 @@ claims:
       - sourceId: src-sparknotes-ch-f2a6829f
         confidence: confirmed
         relationship: supports
-
   - id: F3-EQUIP-003
     domain: equipment
     kind: event
@@ -334,7 +341,6 @@ claims:
       - sourceId: src-sparknotes-ch-f2a6829f
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-018
     domain: inventory
     kind: event
@@ -346,7 +352,6 @@ claims:
         relationship: supports
     unknowns:
       - exact_potions_consumed
-
   - id: F3-INV-019
     domain: inventory
     kind: event
@@ -356,7 +361,6 @@ claims:
       - sourceId: src-sparknotes-ch-f2a6829f
         confidence: confirmed
         relationship: supports
-
   - id: F3-ACHIEVEMENT-002
     domain: achievement
     kind: event
@@ -366,7 +370,6 @@ claims:
       - sourceId: src-reddit-end-book2
         confidence: confirmed
         relationship: supports
-
   - id: F3-INV-020
     domain: inventory
     kind: event

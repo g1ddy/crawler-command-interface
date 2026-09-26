@@ -11,8 +11,8 @@
         "floor": 3
       }
     },
-    "createdAt": "2026-09-25T04:36:32.437Z",
-    "updatedAt": "2026-09-25T04:36:32.438Z"
+    "createdAt": "2026-09-26T00:01:47.110Z",
+    "updatedAt": "2026-09-26T00:01:47.110Z"
   },
   "floors": [
     {
@@ -40,7 +40,7 @@
       "book": 2,
       "bookTitle": "Carl's Doomsday Scenario",
       "startSequence": 124,
-      "endSequence": 173
+      "endSequence": 177
     }
   ],
   "sources": [
@@ -148,22 +148,22 @@
       "kind": "official-text",
       "trust": "primary",
       "title": "Dungeon Crawler Carl, Book 2: Carl's Doomsday Scenario",
-      "url": "https://www.mattdinniman.com/",
+      "url": "https://example.invalid/dcc-book-2",
       "citationStyle": "Chapter {chapter}"
     },
     {
       "id": "src-wiki-third-floor",
       "kind": "wiki",
       "trust": "corroborating",
-      "title": "The Over City (Third Floor)",
+      "title": "Third Floor - Dungeon Crawler Carl Wiki",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Third_Floor"
     },
     {
       "id": "src-wiki-book-2-summaries",
-      "kind": "wiki",
+      "kind": "fan-compendium",
       "trust": "corroborating",
       "title": "Book 2 Chapter Summaries",
-      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Dungeon_Crawler_Carl_Book_2_Summaries"
     },
     {
       "id": "src-bookwormai-book2",
@@ -180,13 +180,6 @@
       "url": "https://www.abookloversdigest.com/post/carl-s-doomsday-scenario-dungeon-crawler-carl-2"
     },
     {
-      "id": "src-sparknotes-ch-56f65e74",
-      "kind": "editorial",
-      "trust": "corroborating",
-      "title": "Carl's Doomsday Scenario Chapter Summary",
-      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/56f65e74-24ff-4419-a1f8-07ddfa91c991"
-    },
-    {
       "id": "src-parapith-ch-sums",
       "kind": "editorial",
       "trust": "corroborating",
@@ -194,11 +187,32 @@
       "url": "https://parapith.weebly.com/book-summaries/carls-doomsday-scenario"
     },
     {
+      "id": "src-sparknotes-ch-56f65e74",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "Carl's Doomsday Scenario Chapter Summary",
+      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/56f65e74-24ff-4419-a1f8-07ddfa91c991"
+    },
+    {
       "id": "src-sparknotes-ch-f2a6829f",
       "kind": "editorial",
       "trust": "corroborating",
       "title": "Carl's Doomsday Scenario Chapter 25 Summary",
       "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/f2a6829f-0df7-4f99-b05e-5bb250affdef"
+    },
+    {
+      "id": "src-reddit-end-book2",
+      "kind": "discussion",
+      "trust": "candidate",
+      "title": "End of Book 2 Question",
+      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/"
+    },
+    {
+      "id": "src-sparknotes-ch-sum",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
+      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
     }
   ],
   "initialState": {
@@ -4134,7 +4148,7 @@
       "item": {
         "instanceId": "inst-f3-louis-lamour-paperbacks",
         "itemId": "item-louis-lamour-paperbacks",
-        "name": "Louis L'Amour Paperbacks",
+        "name": "Louis L'Amour Paperback Collection",
         "category": "miscellaneous",
         "rarity": "unknown",
         "quantity": {
@@ -4690,7 +4704,7 @@
         "book": 2,
         "chapter": 17
       },
-      "summary": "Carl and Donut reach the one quadrillion views milestone and are awarded Fan Boxes with a 30-hour temporal lock.",
+      "summary": "Carl and Donut reach the one quadrillion views broadcast milestone.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
@@ -4717,8 +4731,55 @@
       }
     },
     {
-      "id": "evt-f3-picture-of-beatrice-acquired",
+      "id": "evt-f3-fan-boxes-awarded",
       "sequence": 161,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 17
+      },
+      "summary": "Carl and Donut are awarded Fan Boxes with a 30-hour temporal lock.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-56f65e74",
+          "confidence": "confirmed"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f3-fan-box",
+        "itemId": "item-fan-box",
+        "name": "Fan Box",
+        "category": "box",
+        "rarity": "unknown",
+        "quantity": {
+          "known": true,
+          "value": 2
+        },
+        "sourceDescription": "Third Floor"
+      }
+    },
+    {
+      "id": "evt-f3-fan-boxes-unlocked",
+      "sequence": 162,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 17
+      },
+      "summary": "The 30-hour temporal lock on Carl and Donut's Fan Boxes expires.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "confirmed"
+        }
+      ],
+      "kind": "other"
+    },
+    {
+      "id": "evt-f3-picture-of-beatrice-acquired",
+      "sequence": 163,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4747,7 +4808,7 @@
     },
     {
       "id": "evt-f3-xistera-acquired",
-      "sequence": 162,
+      "sequence": 164,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4777,7 +4838,7 @@
     },
     {
       "id": "evt-f3-katia-joined",
-      "sequence": 163,
+      "sequence": 165,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4798,7 +4859,7 @@
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
-      "sequence": 164,
+      "sequence": 166,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4819,7 +4880,7 @@
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
-      "sequence": 165,
+      "sequence": 167,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
@@ -4851,7 +4912,7 @@
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
-      "sequence": 166,
+      "sequence": 168,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4874,8 +4935,26 @@
       "status": "active"
     },
     {
+      "id": "evt-f3-sepsis-crown-unequipped",
+      "sequence": 169,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 25
+      },
+      "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-f2a6829f",
+          "confidence": "confirmed"
+        }
+      ],
+      "kind": "other"
+    },
+    {
       "id": "evt-f3-doomsday-scenario-created",
-      "sequence": 167,
+      "sequence": 170,
       "type": "ItemCrafted",
       "position": {
         "floor": 3,
@@ -4911,26 +4990,8 @@
       }
     },
     {
-      "id": "evt-f3-sepsis-crown-unequipped",
-      "sequence": 168,
-      "type": "NarrativeEvent",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 25
-      },
-      "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
-      "evidence": [
-        {
-          "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
-        }
-      ],
-      "kind": "other"
-    },
-    {
       "id": "evt-f3-wild-magic-potions-autodrunk",
-      "sequence": 169,
+      "sequence": 171,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4948,7 +5009,7 @@
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
-      "sequence": 170,
+      "sequence": 172,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4966,7 +5027,7 @@
     },
     {
       "id": "evt-f3-floor-4-transition",
-      "sequence": 171,
+      "sequence": 173,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4987,7 +5048,7 @@
     },
     {
       "id": "evt-f3-odette-epilogue",
-      "sequence": 172,
+      "sequence": 174,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4997,7 +5058,7 @@
       "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
       "evidence": [
         {
-          "sourceId": "src-wiki-book-2-summaries",
+          "sourceId": "src-wiki-third-floor",
           "locator": {
             "chapter": 26
           },
@@ -5007,8 +5068,44 @@
       "kind": "dialogue"
     },
     {
+      "id": "evt-f3-quest-boxes-upgraded-celestial",
+      "sequence": 175,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "The AI upgrades the party's Platinum Quest Boxes to Celestial Quest Boxes based on the Hadji and Bandit achievements.",
+      "evidence": [
+        {
+          "sourceId": "src-reddit-end-book2",
+          "confidence": "confirmed"
+        }
+      ],
+      "kind": "other"
+    },
+    {
+      "id": "evt-f3-celestial-boxes-vetoed",
+      "sequence": 176,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Borant uses an administrative veto to prevent delivery of the Celestial Quest Boxes.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-sum",
+          "confidence": "confirmed"
+        }
+      ],
+      "kind": "other"
+    },
+    {
       "id": "evt-f3-achievement-bandit",
-      "sequence": 173,
+      "sequence": 177,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,

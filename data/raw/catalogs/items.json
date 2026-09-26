@@ -260,7 +260,7 @@
   },
   {
     "id": "item-louis-lamour-paperbacks",
-    "name": "Louis L'Amour Paperbacks",
+    "name": "Louis L'Amour Paperback Collection",
     "category": "miscellaneous",
     "persistent": true
   },
@@ -315,6 +315,24 @@
   {
     "id": "item-lottery-ticket-fireball-custard",
     "name": "Lottery Scratchcard Ticket",
+    "category": "consumable",
+    "persistent": false
+  },
+  {
+    "id": "item-fan-box",
+    "name": "Fan Box",
+    "category": "box",
+    "persistent": false
+  },
+  {
+    "id": "item-remote-detonator",
+    "name": "Hobgoblin Remote Detonator",
+    "category": "tool",
+    "persistent": true
+  },
+  {
+    "id": "item-wild-magic-potion",
+    "name": "Digital Inventory Potion",
     "category": "consumable",
     "persistent": false
   }

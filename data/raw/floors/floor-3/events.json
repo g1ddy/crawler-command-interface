@@ -771,7 +771,7 @@
       "book": 2,
       "chapter": 17
     },
-    "summary": "Carl and Donut reach the one quadrillion views milestone and are awarded Fan Boxes with a 30-hour temporal lock.",
+    "summary": "Carl and Donut reach the one quadrillion views broadcast milestone.",
     "evidence": [
       {
         "sourceId": "src-sparknotes-ch-56f65e74",
@@ -783,6 +783,47 @@
       "kind": "achievement",
       "severity": "success"
     }
+  },
+  {
+    "id": "evt-f3-fan-boxes-awarded",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "item": {
+      "instanceId": "inst-f3-fan-box",
+      "itemId": "item-fan-box",
+      "quantity": {
+        "known": true,
+        "value": 2
+      }
+    },
+    "summary": "Carl and Donut are awarded Fan Boxes with a 30-hour temporal lock.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-fan-boxes-unlocked",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "summary": "The 30-hour temporal lock on Carl and Donut's Fan Boxes expires.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "confirmed"
+      }
+    ]
   },
   {
     "id": "evt-f3-picture-of-beatrice-acquired",
@@ -921,6 +962,23 @@
     ]
   },
   {
+    "id": "evt-f3-sepsis-crown-unequipped",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 25
+    },
+    "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-f2a6829f",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-doomsday-scenario-created",
     "type": "ItemCrafted",
     "position": {
@@ -945,23 +1003,6 @@
         },
         "confidence": "confirmed"
       },
-      {
-        "sourceId": "src-sparknotes-ch-f2a6829f",
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
-    "id": "evt-f3-sepsis-crown-unequipped",
-    "type": "NarrativeEvent",
-    "kind": "other",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 25
-    },
-    "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
-    "evidence": [
       {
         "sourceId": "src-sparknotes-ch-f2a6829f",
         "confidence": "confirmed"
@@ -1034,11 +1075,45 @@
     "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
     "evidence": [
       {
-        "sourceId": "src-wiki-book-2-summaries",
+        "sourceId": "src-wiki-third-floor",
         "locator": {
           "chapter": 26
         },
         "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-quest-boxes-upgraded-celestial",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "The AI upgrades the party's Platinum Quest Boxes to Celestial Quest Boxes based on the Hadji and Bandit achievements.",
+    "evidence": [
+      {
+        "sourceId": "src-reddit-end-book2",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-celestial-boxes-vetoed",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "Borant uses an administrative veto to prevent delivery of the Celestial Quest Boxes.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-sum",
+        "confidence": "confirmed"
       }
     ]
   },
