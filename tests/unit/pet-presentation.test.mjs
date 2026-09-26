@@ -9,7 +9,7 @@ test("derivePetPresentation handles empty or undefined pets array", () => {
   assert.equal(empty.hasPets, false);
   assert.equal(empty.status, "not-established");
   assert.equal(empty.petCount, 0);
-  assert.equal(empty.badgeLabel, "NO PETS");
+  assert.equal(empty.badgeLabel, "NOT ESTABLISHED");
   assert.deepEqual(empty.pets, []);
 });
 
