@@ -492,7 +492,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
     pet: {
       hasPets: false,
       petCount: 0,
-      badgeLabel: "NO PETS",
+      badgeLabel: "NOT ESTABLISHED",
       semantics: { status: "not-established", affordance: "none" },
     },
     telemetryItems: [],
@@ -504,7 +504,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
 
   assert.match(htmlUnestablished, /data-testid="arwes-pet-frame"/);
   assert.match(htmlUnestablished, /data-testid="arwes-pet-summary"[^>]*data-status="not-established"/);
-  assert.match(htmlUnestablished, /NO PETS/);
+  assert.match(htmlUnestablished, /NOT ESTABLISHED/);
   assert.match(htmlUnestablished, /Pet domain not established/);
 
   // 2. Established Pet state with newly-established change and motion intent
