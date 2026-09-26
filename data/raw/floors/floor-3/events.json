@@ -36,6 +36,27 @@
           "chapter": 1
         },
         "confidence": "corroborated"
+      },
+      {
+        "sourceId": "src-bookwormai-book2",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-manager-benefit-activated",
+    "type": "NarrativeEvent",
+    "kind": "party-changed",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "summary": "The Former Child Actor class grants the Manager Benefit, making Mordecai Donut's manager and causing his biological form to be forcibly teleported to safe rooms the party enters.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "confirmed"
       }
     ]
   },
@@ -130,6 +151,23 @@
     ]
   },
   {
+    "id": "evt-f3-mongo-consumes-terror-clown",
+    "type": "NarrativeEvent",
+    "kind": "transformation",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 4
+    },
+    "summary": "Mongo consumes the corpse of Terror the Clown, resulting in biological growth.",
+    "evidence": [
+      {
+        "sourceId": "src-bookwormai-book2",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-belly-rubbed-pug-reached",
     "type": "NarrativeEvent",
     "kind": "location-discovered",
@@ -146,6 +184,339 @@
           "chapter": 5
         },
         "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-mordecai-incapacitated-safe-room",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "Mordecai is present in the Belly-Rubbed Pug safe room but is incapacitated and unable to assist during the circus quest.",
+    "evidence": [
+      {
+        "sourceId": "src-parapith-ch-sums",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-earth-hobby-potion-carl-consumed",
+    "type": "NarrativeEvent",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "Carl consumes an Earth Hobby Potion in the first safe room and receives the Cesta Punta skill.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ],
+    "kind": "other"
+  },
+  {
+    "id": "evt-f3-earth-hobby-potion-donut-consumed",
+    "type": "NarrativeEvent",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "Princess Donut consumes an Earth Hobby Potion in the first safe room and receives the Scutelliphily skill.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ],
+    "kind": "other"
+  },
+  {
+    "id": "evt-f3-louis-lamour-paperbacks-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "item": {
+      "instanceId": "inst-f3-louis-lamour-paperbacks",
+      "itemId": "item-louis-lamour-paperbacks",
+      "quantity": {
+        "known": false
+      }
+    },
+    "summary": "Carl receives a collection of Louis L'Amour paperbacks as an AI reward.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-home-depot-cactus-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "item": {
+      "instanceId": "inst-f3-home-depot-cactus",
+      "itemId": "item-home-depot-cactus",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl receives a Home Depot cactus as an AI reward.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-cat-tree-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "item": {
+      "instanceId": "inst-f3-cat-tree",
+      "itemId": "item-cat-tree",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a large cat tree as an AI reward.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-scented-candle-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "item": {
+      "instanceId": "inst-f3-scented-candle",
+      "itemId": "item-scented-candle",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a scented candle as an AI reward.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-clockwork-triplicate-spell-granted",
+    "type": "SpellGranted",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "Donut receives the Clockwork Triplicate Spell as an AI reward.",
+    "spell": {
+      "spellId": "spell-clockwork-triplicate",
+      "name": "Clockwork Triplicate",
+      "owner": "donut",
+      "abilityKind": "spell",
+      "acquisitionSource": {
+        "kind": "loot-box",
+        "name": "AI Hobby Reward"
+      }
+    },
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-clockwork-triplicate-spell-used",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "Donut uses the Clockwork Triplicate Spell.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-enchanted-anklet-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 6
+    },
+    "item": {
+      "instanceId": "inst-f3-enchanted-anklet-fallen-oak",
+      "itemId": "item-enchanted-anklet-fallen-oak",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Princess Donut loots the Enchanted Anklet of the Fallen Oak from Grace Bautista's corpse.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-big-top-tickets-looted",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 6
+    },
+    "item": {
+      "instanceId": "inst-f3-big-top-tickets-looted",
+      "itemId": "item-big-top-ticket",
+      "quantity": {
+        "known": false
+      }
+    },
+    "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
+    "evidence": [
+      {
+        "sourceId": "src-bookwormai-book2",
+        "locator": {
+          "chapter": 6
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-parasite-ice-cream-consumed",
+    "type": "NarrativeEvent",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 9
+    },
+    "summary": "Carl intentionally ingests an ice cream cone containing parasitic worms from Apollon the Mighty.",
+    "evidence": [
+      {
+        "sourceId": "src-parapith-ch-sums",
+        "confidence": "corroborated"
+      }
+    ],
+    "kind": "other"
+  },
+  {
+    "id": "evt-f3-parasite-telepathic-link-established",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 9
+    },
+    "summary": "The parasitic worms establish a telepathic link between Carl and Ringmaster Grimaldi.",
+    "evidence": [
+      {
+        "sourceId": "src-parapith-ch-sums",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-lottery-ticket-custard-consumed",
+    "type": "NarrativeEvent",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 9
+    },
+    "summary": "Carl uses a lottery ticket during the fight with Heather the Bear.",
+    "evidence": [
+      {
+        "sourceId": "src-parapith-ch-sums",
+        "confidence": "corroborated"
+      }
+    ],
+    "kind": "other"
+  },
+  {
+    "id": "evt-f3-heather-custard-healed",
+    "type": "NarrativeEvent",
+    "kind": "encounter-resolved",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 9
+    },
+    "summary": "The custard result heals Heather and removes the parasite control affecting her.",
+    "evidence": [
+      {
+        "sourceId": "src-parapith-ch-sums",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-wisp-armor-spell-granted",
+    "type": "SpellGranted",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 11
+    },
+    "summary": "Carl uses the Tome of Wisp Armor, gaining the Wisp Armor spell.",
+    "spell": {
+      "spellId": "spell-wisp-armor",
+      "name": "Wisp Armor",
+      "owner": "carl",
+      "abilityKind": "spell",
+      "acquisitionSource": {
+        "kind": "dungeon-book",
+        "name": "Tome of Wisp Armor"
+      }
+    },
+    "evidence": [
+      {
+        "sourceId": "src-parapith-ch-sums",
+        "confidence": "corroborated"
       }
     ]
   },
@@ -169,6 +540,137 @@
           "chapter": 11
         },
         "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-acute-ears-potion-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 13
+    },
+    "item": {
+      "instanceId": "inst-f3-acute-ears-potion",
+      "itemId": "item-acute-ears-potion",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a skill potion for Acute Ears and 5,000 gold from her upgraded Quest Box.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-fang-caps-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 13
+    },
+    "item": {
+      "instanceId": "inst-f3-fang-caps",
+      "itemId": "item-fang-caps",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives Enchanted Fang Caps from her upgraded Quest Box.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-fang-caps-equipped",
+    "type": "ItemEquipped",
+    "itemInstanceId": "inst-f3-fang-caps",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 13
+    },
+    "summary": "Donut transfers the Enchanted Fang Caps to Mongo, who equips them.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-scroll-of-upgrade-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 13
+    },
+    "item": {
+      "instanceId": "inst-f3-scroll-of-upgrade",
+      "itemId": "item-scroll-of-upgrade",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl receives a Scroll of Upgrade and 5,000 gold from his Platinum Quest Box.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-casino-chip-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 13
+    },
+    "item": {
+      "instanceId": "inst-f3-casino-chip-100k",
+      "itemId": "item-casino-chip-100k",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl receives a 100,000-gold casino chip from his Lucky Bastard box.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-scroll-of-upgrade-applied",
+    "type": "ItemConsumed",
+    "itemInstanceId": "inst-f3-scroll-of-upgrade",
+    "outcome": "Applied to Enchanted BigBoi Boxers, adding the Freeballing benefit.",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 13
+    },
+    "summary": "Carl applies the Scroll of Upgrade to his Enchanted BigBoi Boxers.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
       }
     ]
   },
@@ -263,6 +765,158 @@
     ]
   },
   {
+    "id": "evt-f3-achievement-one-quadrillion-views",
+    "type": "AchievementUnlocked",
+    "achievementId": "achievement-one-quadrillion-views",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "summary": "Carl and Donut reach the one quadrillion views broadcast milestone.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f3-fan-box-carl-awarded",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "item": {
+      "instanceId": "inst-f3-fan-box-carl",
+      "itemId": "item-fan-box",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl is awarded a Fan Box with a 30-hour temporal lock.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-fan-box-donut-awarded",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "item": {
+      "instanceId": "inst-f3-fan-box-donut",
+      "itemId": "item-fan-box",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut is awarded a Fan Box with a 30-hour temporal lock.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-56f65e74",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-fan-box-carl-unlocked",
+    "type": "NarrativeEvent",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "summary": "The 30-hour temporal lock on Carl's Fan Box expires.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ],
+    "kind": "other"
+  },
+  {
+    "id": "evt-f3-fan-box-donut-unlocked",
+    "type": "NarrativeEvent",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "summary": "The 30-hour temporal lock on Donut's Fan Box expires.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ],
+    "kind": "other"
+  },
+  {
+    "id": "evt-f3-picture-of-beatrice-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "item": {
+      "instanceId": "inst-f3-picture-of-beatrice",
+      "itemId": "item-picture-of-beatrice",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Donut receives a framed picture of Beatrice and Brad when her Fan Box unlocks.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-xistera-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 17
+    },
+    "item": {
+      "instanceId": "inst-f3-xistera",
+      "itemId": "item-xistera",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl receives the Xistera when his Fan Box unlocks.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-katia-joined",
     "type": "NarrativeEvent",
     "kind": "party-changed",
@@ -351,6 +1005,23 @@
     ]
   },
   {
+    "id": "evt-f3-sepsis-crown-unequipped",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 25
+    },
+    "summary": "Donut removes the Enchanted Crown of the Sepsis Whore during the wild magic precursor pulses, and the item's Fleeting property destroys it.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-f2a6829f",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-doomsday-scenario-created",
     "type": "ItemCrafted",
     "position": {
@@ -374,6 +1045,44 @@
           "chapter": 25
         },
         "confidence": "confirmed"
+      },
+      {
+        "sourceId": "src-sparknotes-ch-f2a6829f",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-wild-magic-potions-autodrunk",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 25
+    },
+    "summary": "Wild magic pulses force Carl and Donut to involuntarily auto-drink health and mana potions from their digital inventories.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-f2a6829f",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-remote-detonator-transferred-katia",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 25
+    },
+    "summary": "Carl physically transfers a hobgoblin remote detonator to Katia Grim.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-f2a6829f",
+        "confidence": "corroborated"
       }
     ]
   },
@@ -409,10 +1118,48 @@
     "summary": "Odette conducts a post-descent interview approximately 2.5 days after the descent to Floor 4.",
     "evidence": [
       {
-        "sourceId": "src-wiki-book-2-summaries",
+        "sourceId": "src-wiki-third-floor",
         "locator": {
           "chapter": 26
         },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-quest-boxes-upgraded-celestial",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone. Quan Ch opens his box before the veto.",
+    "evidence": [
+      {
+        "sourceId": "src-reddit-end-book2",
+        "confidence": "candidate"
+      },
+      {
+        "sourceId": "src-dcc-database-celestial-box",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-celestial-boxes-vetoed",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "Borant uses an administrative veto to prevent delivery of the remaining 82 Celestial Quest Boxes.",
+    "evidence": [
+      {
+        "sourceId": "src-sparknotes-ch-sum",
         "confidence": "corroborated"
       }
     ]

@@ -245,5 +245,95 @@
     "category": "tool",
     "persistent": true,
     "description": "A magical carrier capable of teleporting pets into containment and rest states."
+  },
+  {
+    "id": "item-enchanted-anklet-fallen-oak",
+    "name": "Enchanted Anklet of the Fallen Oak",
+    "category": "equipment",
+    "persistent": true
+  },
+  {
+    "id": "item-earth-hobby-potion",
+    "name": "Earth Hobby Potion",
+    "category": "consumable",
+    "persistent": false
+  },
+  {
+    "id": "item-louis-lamour-paperbacks",
+    "name": "Louis L'Amour Paperback Collection",
+    "category": "miscellaneous",
+    "persistent": true
+  },
+  {
+    "id": "item-home-depot-cactus",
+    "name": "Home Depot Cactus",
+    "category": "miscellaneous",
+    "persistent": true
+  },
+  {
+    "id": "item-cat-tree",
+    "name": "Large Cat Tree",
+    "category": "miscellaneous",
+    "persistent": true
+  },
+  {
+    "id": "item-scented-candle",
+    "name": "Scented Candle",
+    "category": "miscellaneous",
+    "persistent": false
+  },
+  {
+    "id": "item-picture-of-beatrice",
+    "name": "Framed Picture of Beatrice and Brad",
+    "category": "miscellaneous",
+    "persistent": true
+  },
+  {
+    "id": "item-acute-ears-potion",
+    "name": "Skill Potion: Acute Ears",
+    "category": "consumable",
+    "persistent": false
+  },
+  {
+    "id": "item-scroll-of-upgrade",
+    "name": "Scroll of Upgrade",
+    "category": "consumable",
+    "persistent": false
+  },
+  {
+    "id": "item-casino-chip-100k",
+    "name": "100,000-Gold Casino Chip",
+    "category": "miscellaneous",
+    "persistent": true
+  },
+  {
+    "id": "item-parasite-ice-cream",
+    "name": "Parasite-Laced Ice Cream Cone",
+    "category": "consumable",
+    "persistent": false
+  },
+  {
+    "id": "item-lottery-ticket-fireball-custard",
+    "name": "Lottery Scratchcard Ticket",
+    "category": "consumable",
+    "persistent": false
+  },
+  {
+    "id": "item-fan-box",
+    "name": "Fan Box",
+    "category": "box",
+    "persistent": false
+  },
+  {
+    "id": "item-remote-detonator",
+    "name": "Hobgoblin Remote Detonator",
+    "category": "tool",
+    "persistent": true
+  },
+  {
+    "id": "item-wild-magic-potion",
+    "name": "Digital Inventory Potion",
+    "category": "consumable",
+    "persistent": false
   }
 ]

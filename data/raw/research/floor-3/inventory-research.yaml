@@ -1,7 +1,6 @@
 schemaVersion: crawler-research/v1
 storyId: dcc
 floor: 3
-
 sources:
   - id: src-sparknotes-ch-sum
     kind: editorial
@@ -38,7 +37,6 @@ sources:
     trust: candidate
     title: End of Book 2 Question
     url: https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/
-
 claims:
   - id: F3-CRAWLER-001
     domain: crawler
@@ -52,7 +50,6 @@ claims:
         relationship: supports
     unknowns:
       - exact_modifier_values
-
   - id: F3-CRAWLER-002
     domain: crawler
     kind: event
@@ -62,7 +59,6 @@ claims:
       - sourceId: src-bookwormai-book2
         confidence: confirmed
         relationship: supports
-
   - id: F3-PARTY-001
     domain: party
     kind: event
@@ -72,7 +68,6 @@ claims:
       - sourceId: src-abooklovers-summary
         confidence: confirmed
         relationship: supports
-
   - id: F3-PARTY-002
     domain: party
     kind: observation
@@ -82,7 +77,6 @@ claims:
       - sourceId: src-parapith-ch-sums
         confidence: confirmed
         relationship: supports
-
   - id: F3-PET-001
     domain: pet
     kind: event
@@ -90,9 +84,8 @@ claims:
       summary: Mongo consumes the corpse of Terror the Clown, resulting in biological growth.
     evidence:
       - sourceId: src-bookwormai-book2
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-001
     domain: inventory
     kind: event
@@ -100,9 +93,8 @@ claims:
       summary: Princess Donut loots the Enchanted Anklet of the Fallen Oak from Grace Bautista's corpse.
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-002
     domain: inventory
     kind: event
@@ -110,9 +102,8 @@ claims:
       summary: Carl consumes an Earth Hobby Potion in the first safe room and receives the Cesta Punta skill.
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-003
     domain: inventory
     kind: event
@@ -120,9 +111,8 @@ claims:
       summary: Princess Donut consumes an Earth Hobby Potion in the first safe room and receives the Scutelliphily skill.
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-SKILLS-001
     domain: skills
     kind: state
@@ -130,21 +120,20 @@ claims:
       summary: The mechanical effect of Donut's Scutelliphily skill remains unrevealed in the researched material.
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
     unknowns:
       - exact_mechanical_benefit
-
   - id: F3-INV-004
     domain: inventory
     kind: event
     claim:
       summary: Carl receives a collection of Louis L'Amour paperbacks and a Home Depot cactus as AI rewards.
+      detail: Recorded as a collection of paperbacks without asserting an unevidenced numeric unit count.
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-005
     domain: inventory
     kind: event
@@ -152,9 +141,8 @@ claims:
       summary: Donut receives a large cat tree, a scented candle, and the Clockwork Triplicate Spell.
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-006
     domain: inventory
     kind: event
@@ -164,33 +152,62 @@ claims:
       - F3-INV-005
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-ACHIEVEMENT-001
     domain: achievement
     kind: event
     claim:
-      summary: Carl and Donut reach the one quadrillion views milestone and are awarded Fan Boxes with a 30-hour temporal lock.
+      summary: Carl and Donut reach one quadrillion views and receive the "One Quadrillion!" achievement.
+      detail: The achievement title is corroborated by the secondary source.
     evidence:
       - sourceId: src-sparknotes-ch-56f65e74
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-    unknowns:
-      - exact_milestone_wording
-
-  - id: F3-INV-007
+  - id: F3-INV-007a
     domain: inventory
     kind: event
     claim:
-      summary: Donut receives a framed picture of Beatrice and Carl receives the Xistera when their Fan Boxes unlock.
+      summary: Carl and Donut are awarded Fan Boxes with a 30-hour temporal lock.
     dependencies:
       - F3-ACHIEVEMENT-001
     evidence:
-      - sourceId: src-abooklovers-summary
-        confidence: confirmed
+      - sourceId: src-sparknotes-ch-56f65e74
+        confidence: corroborated
         relationship: supports
-
+  - id: F3-INV-007b
+    domain: inventory
+    kind: event
+    claim:
+      summary: The 30-hour temporal lock on Carl and Donut's Fan Boxes expires.
+    dependencies:
+      - F3-INV-007a
+    evidence:
+      - sourceId: src-abooklovers-summary
+        confidence: corroborated
+        relationship: supports
+  - id: F3-INV-007c
+    domain: inventory
+    kind: event
+    claim:
+      summary: Donut receives a framed picture of Beatrice and Brad when her Fan Box unlocks.
+    dependencies:
+      - F3-INV-007b
+    evidence:
+      - sourceId: src-abooklovers-summary
+        confidence: corroborated
+        relationship: supports
+  - id: F3-INV-007d
+    domain: inventory
+    kind: event
+    claim:
+      summary: Carl receives the Xistera when his Fan Box unlocks.
+    dependencies:
+      - F3-INV-007b
+    evidence:
+      - sourceId: src-abooklovers-summary
+        confidence: corroborated
+        relationship: supports
   - id: F3-INV-008
     domain: inventory
     kind: event
@@ -198,9 +215,8 @@ claims:
       summary: Donut receives 5,000 gold, a skill potion for Acute Ears, and Enchanted Fang Caps from her upgraded Quest Box.
     evidence:
       - sourceId: src-sparknotes-ch-56f65e74
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-EQUIP-001
     domain: equipment
     kind: event
@@ -210,9 +226,8 @@ claims:
       - F3-INV-008
     evidence:
       - sourceId: src-abooklovers-summary
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-009
     domain: inventory
     kind: event
@@ -220,9 +235,8 @@ claims:
       summary: Carl receives 5,000 gold and a Scroll of Upgrade from his Platinum Quest Box.
     evidence:
       - sourceId: src-sparknotes-ch-56f65e74
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-010
     domain: inventory
     kind: event
@@ -230,9 +244,8 @@ claims:
       summary: Carl receives a 100,000-gold casino chip from his Lucky Bastard box.
     evidence:
       - sourceId: src-sparknotes-ch-56f65e74
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-EQUIP-002
     domain: equipment
     kind: event
@@ -243,9 +256,8 @@ claims:
       - F3-INV-009
     evidence:
       - sourceId: src-sparknotes-ch-56f65e74
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-011
     domain: inventory
     kind: event
@@ -254,9 +266,8 @@ claims:
       detail: The researched material states that its use grants Carl immunity from mental overrides.
     evidence:
       - sourceId: src-parapith-ch-sums
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-012
     domain: inventory
     kind: event
@@ -264,9 +275,8 @@ claims:
       summary: Carl intentionally ingests an ice cream cone containing parasitic worms from Apollon the Mighty.
     evidence:
       - sourceId: src-parapith-ch-sums
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-013
     domain: inventory
     kind: event
@@ -276,20 +286,18 @@ claims:
       - F3-INV-012
     evidence:
       - sourceId: src-parapith-ch-sums
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-014
     domain: inventory
     kind: event
     claim:
-      summary: Carl uses a Fireball or Custard lottery ticket during the fight with Heather the Bear.
-    detail: The researched material identifies the ticket as producing the custard result.
+      summary: Carl uses a lottery ticket during the fight with Heather the Bear.
+      detail: The researched material identifies the ticket as producing the custard result.
     evidence:
       - sourceId: src-parapith-ch-sums
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-015
     domain: inventory
     kind: event
@@ -299,9 +307,8 @@ claims:
       - F3-INV-014
     evidence:
       - sourceId: src-parapith-ch-sums
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-016
     domain: inventory
     kind: event
@@ -309,11 +316,12 @@ claims:
       summary: Carl loots Big Top Tickets from dead clown sentries.
     evidence:
       - sourceId: src-bookwormai-book2
-        confidence: confirmed
+        locator:
+          chapter: 6
+        confidence: corroborated
         relationship: supports
     unknowns:
       - exact_quantity
-
   - id: F3-INV-017
     domain: inventory
     kind: event
@@ -321,9 +329,8 @@ claims:
       summary: Carl seals an overloaded Soul Crystal inside a Sheol Glass Reaper Case, creating Carl's Doomsday Scenario.
     evidence:
       - sourceId: src-sparknotes-ch-f2a6829f
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-EQUIP-003
     domain: equipment
     kind: event
@@ -332,9 +339,8 @@ claims:
       detail: The researched material attributes the destruction to the item's intrinsic Fleeting property triggering on removal.
     evidence:
       - sourceId: src-sparknotes-ch-f2a6829f
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-INV-018
     domain: inventory
     kind: event
@@ -342,11 +348,10 @@ claims:
       summary: Wild magic pulses force Carl and Donut to involuntarily auto-drink health and mana potions from their digital inventories.
     evidence:
       - sourceId: src-sparknotes-ch-f2a6829f
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
     unknowns:
       - exact_potions_consumed
-
   - id: F3-INV-019
     domain: inventory
     kind: event
@@ -354,27 +359,28 @@ claims:
       summary: Carl physically transfers a hobgoblin remote detonator to Katia Grim.
     evidence:
       - sourceId: src-sparknotes-ch-f2a6829f
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports
-
   - id: F3-ACHIEVEMENT-002
     domain: achievement
     kind: event
     claim:
-      summary: The AI upgrades the party's Platinum Quest Boxes to Celestial Quest Boxes based on the Hadji and Bandit achievements.
+      summary: The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone. Quan Ch opens his box before the veto.
     evidence:
       - sourceId: src-reddit-end-book2
-        confidence: confirmed
+        confidence: candidate
         relationship: supports
-
+      - sourceId: src-dcc-database-celestial-box
+        confidence: corroborated
+        relationship: supports
   - id: F3-INV-020
     domain: inventory
     kind: event
     claim:
-      summary: Borant uses an administrative veto to prevent delivery of the Celestial Quest Boxes.
+      summary: Borant uses an administrative veto to prevent delivery of the remaining 82 Celestial Quest Boxes.
     dependencies:
       - F3-ACHIEVEMENT-002
     evidence:
       - sourceId: src-sparknotes-ch-sum
-        confidence: confirmed
+        confidence: corroborated
         relationship: supports

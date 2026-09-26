@@ -4,56 +4,140 @@
     "kind": "official-text",
     "trust": "primary",
     "title": "Dungeon Crawler Carl, Book 2: Carl's Doomsday Scenario",
-    "url": "https://www.mattdinniman.com/",
+    "url": "https://mattdinniman.com/books/carls-doomsday-scenario/",
     "citationStyle": "Chapter {chapter}"
   },
   {
     "id": "src-wiki-third-floor",
     "kind": "wiki",
     "trust": "corroborating",
-    "title": "The Over City (Third Floor)",
+    "title": "Third Floor - Dungeon Crawler Carl Wiki",
     "url": "https://dungeon-crawler-carl.fandom.com/wiki/Third_Floor"
   },
   {
     "id": "src-wiki-book-2-summaries",
-    "kind": "wiki",
-    "trust": "corroborating",
-    "title": "Book 2 Chapter Summaries",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
-  },
-  {
-    "id": "src-wiki-carl-doomsday",
-    "kind": "wiki",
-    "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario (Book)",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Book)"
-  },
-  {
-    "id": "src-wiki-doomsday-item",
-    "kind": "wiki",
-    "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario (Item)",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_(Item)"
-  },
-  {
-    "id": "src-sparknotesai-book-2",
     "kind": "fan-compendium",
     "trust": "corroborating",
-    "title": "Book 2 Chapter Summaries & Research",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2"
+    "title": "Book 2 Chapter Summaries",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Dungeon_Crawler_Carl_Book_2_Summaries"
   },
   {
-    "id": "src-bookey-doomsday",
-    "kind": "editorial",
+    "id": "src-bookwormai-book2",
+    "kind": "fan-compendium",
     "trust": "corroborating",
-    "title": "Carl's Doomsday Scenario Summary",
-    "url": "https://www.bookey.app/book/carl's-doomsday-scenario"
+    "title": "Timeline Book 2",
+    "url": "https://wiki.bookwormai.app/dungeon-crawler-carl/books/dungeon-crawler-carl-02-carls-doomsday-scenario"
   },
   {
-    "id": "src-bookwormai-doomsday",
+    "id": "src-abooklovers-summary",
     "kind": "editorial",
     "trust": "corroborating",
-    "title": "Book 2 Chapter/Book Summary",
-    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Summary"
+    "title": "A Book Lovers Digest Summary",
+    "url": "https://www.abookloversdigest.com/post/carl-s-doomsday-scenario-dungeon-crawler-carl-2"
+  },
+  {
+    "id": "src-parapith-ch-sums",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Parapith Book Summaries",
+    "url": "https://parapith.weebly.com/book-summaries/carls-doomsday-scenario"
+  },
+  {
+    "id": "src-sparknotes-ch-56f65e74",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Carl's Doomsday Scenario Chapter Summary",
+    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/56f65e74-24ff-4419-a1f8-07ddfa91c991"
+  },
+  {
+    "id": "src-sparknotes-ch-f2a6829f",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Carl's Doomsday Scenario Chapter 25 Summary",
+    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/f2a6829f-0df7-4f99-b05e-5bb250affdef"
+  },
+  {
+    "id": "src-reddit-end-book2",
+    "kind": "discussion",
+    "trust": "candidate",
+    "title": "End of Book 2 Question",
+    "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/"
+  },
+  {
+    "id": "src-sparknotes-ch-sum",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
+    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
+  },
+  {
+    "id": "src-dcc-database-celestial-box",
+    "kind": "fan-compendium",
+    "trust": "corroborating",
+    "title": "It's Not My Fault You Fish-Headed Assholes Don't Properly Program Your Quests Box",
+    "url": "https://www.dccdatabase.com/wiki/it%27s_not_my_fault_you_fish-headed_assholes_dont-properly-program-your_quests_box/"
+  },
+  {
+    "id": "src-fandom-mongo",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Mongo - Dungeon Crawler Carl Wiki",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Mongo"
+  },
+  {
+    "id": "src-cookbook-mongo",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Mongo's True Nature - Crawlers Cookbook",
+    "url": "https://crawlerscookbook.com/theories/mongos-true-nature/"
+  },
+  {
+    "id": "src-bookworm-carrier",
+    "kind": "fan-compendium",
+    "trust": "corroborating",
+    "title": "Magical Pet Carrier - Bookworm Wiki",
+    "url": "https://wiki.bookwormai.app/dungeon-crawler-carl/world/magical-pet-carrier"
+  },
+  {
+    "id": "src-reddit-carrier",
+    "kind": "discussion",
+    "trust": "candidate",
+    "title": "Pet Carriers - Reddit",
+    "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1nd5xxb/pet_carriers/"
+  },
+  {
+    "id": "src-sparknotes-ch12",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Carl's Doomsday Scenario Chapter 12 Summary - SparkNotes AI",
+    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/2f4e4094-375e-4f2e-a419-4cb56a1b3ffe"
+  },
+  {
+    "id": "src-reddit-miriam",
+    "kind": "discussion",
+    "trust": "candidate",
+    "title": "The names of Miriam Dom's goats - Reddit",
+    "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1ts94bz/the_names_of_miriam_doms_goats/"
+  },
+  {
+    "id": "src-bookreadfree-id",
+    "kind": "editorial",
+    "trust": "candidate",
+    "title": "Crawler ID Mechanics - BookReadFree",
+    "url": "https://bookreadfree.com/99426/2468076"
+  },
+  {
+    "id": "src-tvtropes-dcc",
+    "kind": "wiki",
+    "trust": "candidate",
+    "title": "Dungeon Crawler Carl - TV Tropes",
+    "url": "https://tvtropes.org/pmwiki/pmwiki.php/Literature/DungeonCrawlerCarl"
+  },
+  {
+    "id": "src-sparknotes-ch14",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "Carl's Doomsday Scenario Chapter 14 Summary - SparkNotes AI",
+    "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/be06e3c2-91d3-4f93-9a6c-d230133b7258"
   }
 ]
