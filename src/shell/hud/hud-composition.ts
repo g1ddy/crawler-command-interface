@@ -8,6 +8,10 @@ import {
   deriveEvidencePresentation,
   mapEvidenceToSemantics,
 } from "../../features/timeline/public.ts";
+import {
+  derivePetPresentation,
+  mapPetStatusToSemantics,
+} from "../../features/pet/public.ts";
 import type {
   PresentationMotionIntent,
   PresentationSemantics,
@@ -67,6 +71,30 @@ export interface HudBroadcastSummary {
   viewers?: ProjectedObservationValue;
 }
 
+export interface HudPetSummary {
+  hasPets: boolean;
+  petCount: number;
+  badgeLabel: string;
+  semantics: PresentationSemantics;
+  primaryPet?: {
+    petId: string;
+    displayName: string;
+    hasExplicitName: boolean;
+    species: string;
+    speciesLabel: string;
+    hostilityState: string;
+    hostilityLabel: string;
+    bondState: string;
+    bondStateLabel: string;
+    bondHolderLabel: string;
+    title?: string;
+    formattedTitle?: string;
+    level?: number;
+    formattedLevel?: string;
+  };
+  motionIntent?: PresentationMotionIntent;
+}
+
 /**
  * Renderer-neutral HUD composition model describing semantic presentation meaning.
  *
@@ -86,6 +114,7 @@ export interface HudCompositionModel {
   attention: HudAttentionSummary;
   vitals: HudVitalsSummary;
   broadcast: HudBroadcastSummary;
+  pet?: HudPetSummary;
   telemetryItems: HudTelemetryPresentation[];
 }
 
@@ -97,6 +126,7 @@ export interface DeriveHudCompositionInput {
   isLive: boolean;
   floorHudTitle: string;
   notificationsSummary?: HudAttentionSummary;
+  petSummary?: HudPetSummary;
   temporalMotionIntent?: PresentationMotionIntent;
   attentionMotionIntent?: PresentationMotionIntent;
 }
@@ -138,9 +168,38 @@ export function deriveHudComposition({
     totalNotificationsCount: 0,
     hasActiveAlerts: false,
   },
+  petSummary,
   temporalMotionIntent,
   attentionMotionIntent,
 }: DeriveHudCompositionInput): HudCompositionModel {
+  const derivedPetPres = derivePetPresentation({ pets: projectedState.pets });
+  const petSemantics = mapPetStatusToSemantics(derivedPetPres.status);
+  const primaryPet = derivedPetPres.pets[0];
+  const defaultPetSummary: HudPetSummary = {
+    hasPets: derivedPetPres.hasPets,
+    petCount: derivedPetPres.petCount,
+    badgeLabel: derivedPetPres.badgeLabel,
+    semantics: petSemantics,
+    primaryPet: primaryPet
+      ? {
+          petId: primaryPet.petId,
+          displayName: primaryPet.displayName,
+          hasExplicitName: primaryPet.hasExplicitName,
+          species: primaryPet.species,
+          speciesLabel: primaryPet.speciesLabel,
+          hostilityState: primaryPet.hostilityState,
+          hostilityLabel: primaryPet.hostilityLabel,
+          bondState: primaryPet.bondState,
+          bondStateLabel: primaryPet.bondStateLabel,
+          bondHolderLabel: primaryPet.bondHolderLabel,
+          title: primaryPet.title,
+          formattedTitle: primaryPet.formattedTitle,
+          level: primaryPet.level,
+          formattedLevel: primaryPet.formattedLevel,
+        }
+      : undefined,
+  };
+  const activePetSummary = petSummary ?? defaultPetSummary;
   const healthItem = createTelemetryItem(
     "health",
     "HEALTH",
@@ -198,6 +257,7 @@ export function deriveHudComposition({
     broadcast: {
       viewers: projectedObservations.broadcast.viewers,
     },
+    pet: activePetSummary,
     telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
   };
 }

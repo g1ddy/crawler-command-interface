@@ -479,3 +479,130 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
   assert.match(html, /SEQ 12/);
   assert.match(html, /REPLAY/);
 });
+
+test("ArwesPresentation renders Pet domain surface across lifecycle states and motion modes", () => {
+  // 1. Unestablished / known-empty Pet state
+  const unestablishedModel = {
+    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    temporal: { mode: "live", sequence: 10, isLive: true },
+    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
+    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
+    vitals: {},
+    broadcast: {},
+    pet: {
+      hasPets: false,
+      petCount: 0,
+      badgeLabel: "NO PETS",
+      semantics: { status: "known-empty", affordance: "none" },
+    },
+    telemetryItems: [],
+  };
+
+  const htmlUnestablished = renderToString(
+    React.createElement(ArwesPresentation, { model: unestablishedModel })
+  );
+
+  assert.match(htmlUnestablished, /data-testid="arwes-pet-frame"/);
+  assert.match(htmlUnestablished, /data-testid="arwes-pet-summary"[^>]*data-status="known-empty"/);
+  assert.match(htmlUnestablished, /NO PETS/);
+  assert.match(htmlUnestablished, /No pet or familiar established/);
+
+  // 2. Established Pet state with newly-established change and motion intent
+  const acquiredModel = {
+    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 2", sequence: 116 },
+    temporal: { mode: "replay", sequence: 116, isLive: false },
+    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
+    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
+    vitals: {},
+    broadcast: {},
+    pet: {
+      hasPets: true,
+      petCount: 1,
+      badgeLabel: "1 PET",
+      semantics: { status: "present", change: "newly-established", affordance: "none" },
+      primaryPet: {
+        petId: "pet-mongo",
+        displayName: "mongoliensis",
+        hasExplicitName: false,
+        species: "mongoliensis",
+        speciesLabel: "Species: mongoliensis",
+        hostilityState: "hostile",
+        hostilityLabel: "HOSTILE",
+        bondState: "unbonded",
+        bondStateLabel: "UNBONDED",
+        bondHolderLabel: "NONE (UNBONDED)",
+      },
+      motionIntent: "established",
+    },
+    telemetryItems: [],
+  };
+
+  const htmlAcquired = renderToString(
+    React.createElement(ArwesPresentation, { model: acquiredModel, motionMode: "reduced" })
+  );
+
+  assert.match(htmlAcquired, /data-testid="arwes-pet-summary"[^>]*data-status="present"[^>]*data-change="newly-established"[^>]*data-motion-intent="established"/);
+  assert.match(htmlAcquired, /mongoliensis/);
+  assert.match(htmlAcquired, /HOSTILE/);
+  assert.match(htmlAcquired, /UNBONDED/);
+
+  // 3. Established Pet state after bonding (Mongo, Royal Steed) in deterministic mode
+  const bondedModel = {
+    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 2", sequence: 118 },
+    temporal: { mode: "replay", sequence: 118, isLive: false },
+    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
+    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
+    vitals: {},
+    broadcast: {},
+    pet: {
+      hasPets: true,
+      petCount: 1,
+      badgeLabel: "1 PET",
+      semantics: { status: "present", change: "changed", affordance: "none" },
+      primaryPet: {
+        petId: "pet-mongo",
+        displayName: "Mongo",
+        hasExplicitName: true,
+        species: "mongoliensis",
+        speciesLabel: "Species: mongoliensis",
+        hostilityState: "non-hostile",
+        hostilityLabel: "NON-HOSTILE",
+        bondState: "bonded",
+        bondStateLabel: "BONDED",
+        bondHolderLabel: "crawler-donut",
+        title: "Royal Steed",
+        formattedTitle: "«Royal Steed»",
+      },
+      motionIntent: "changed",
+    },
+    telemetryItems: [],
+  };
+
+  const htmlBonded = renderToString(
+    React.createElement(ArwesPresentation, { model: bondedModel, motionMode: "deterministic" })
+  );
+
+  assert.match(htmlBonded, /data-testid="arwes-pet-summary"[^>]*data-status="present"[^>]*data-change="changed"[^>]*data-motion-intent="changed"/);
+  assert.match(htmlBonded, /data-testid="arwes-pet-display-name"[^>]*>Mongo</);
+  assert.match(htmlBonded, /data-testid="arwes-pet-title"[^>]*>«Royal Steed»</);
+  assert.match(htmlBonded, /NON-HOSTILE/);
+  assert.match(htmlBonded, /BONDED/);
+});
+
+test("ArwesPresentation maintains renderer exclusivity without alternate HUD markers", () => {
+  const model = {
+    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    temporal: { mode: "live", sequence: 10, isLive: true },
+    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
+    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
+    vitals: {},
+    broadcast: {},
+    telemetryItems: [],
+  };
+
+  const html = renderToString(React.createElement(ArwesPresentation, { model }));
+
+  assert.match(html, /data-hud-renderer="authority-arwes"/);
+  assert.doesNotMatch(html, /data-hud-composition="persistent"/);
+  assert.doesNotMatch(html, /data-hud-renderer="concept"/);
+});

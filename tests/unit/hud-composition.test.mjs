@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import test from "node:test";
 import { deriveHudComposition } from "../../src/shell/hud/public.ts";
-import { createInitialState, projectObservations } from "../../app/domain/projection.ts";
+import { createInitialState, projectObservations, projectState } from "../../app/domain/projection.ts";
 import { derivePartyPresentation } from "../../src/features/party/public.ts";
 import { derivePetPresentation } from "../../src/features/pet/public.ts";
 
@@ -117,4 +118,129 @@ test("feature presentation preserves not-established party state and known-empty
   assert.equal(petPresentation.hasPets, false);
   assert.equal(petPresentation.petCount, 0);
   assert.equal(petPresentation.badgeLabel, "NO PETS");
+});
+
+test("deriveHudComposition embeds Pet domain summary and transition semantics across sequence checkpoints", () => {
+  const rawTimeline = JSON.parse(fs.readFileSync("data/compiled-timeline.json", "utf8"));
+
+  // Seq 1: Initial state before pet acquisition
+  const state1 = projectState(rawTimeline, 1);
+  const obs1 = projectObservations(rawTimeline, 1);
+  const comp1 = deriveHudComposition({
+    projectedState: state1,
+    projectedObservations: obs1,
+    activeCountdown: null,
+    sequence: 1,
+    isLive: false,
+    floorHudTitle: "FLOOR 1",
+  });
+  assert.equal(comp1.pet?.hasPets, false);
+  assert.equal(comp1.pet?.semantics.status, "known-empty");
+  assert.equal(comp1.pet?.primaryPet, undefined);
+
+  // Seq 116: PetAcquired (mongoliensis, hostile, unbonded)
+  const state116 = projectState(rawTimeline, 116);
+  const obs116 = projectObservations(rawTimeline, 116);
+  const comp116 = deriveHudComposition({
+    projectedState: state116,
+    projectedObservations: obs116,
+    activeCountdown: null,
+    sequence: 116,
+    isLive: false,
+    floorHudTitle: "FLOOR 2",
+    petSummary: {
+      hasPets: true,
+      petCount: 1,
+      badgeLabel: "1 PET",
+      semantics: { status: "present", change: "newly-established", affordance: "none" },
+      primaryPet: {
+        petId: "pet-mongo",
+        displayName: "mongoliensis",
+        hasExplicitName: false,
+        species: "mongoliensis",
+        speciesLabel: "Species: mongoliensis",
+        hostilityState: "hostile",
+        hostilityLabel: "HOSTILE",
+        bondState: "unbonded",
+        bondStateLabel: "UNBONDED",
+        bondHolderLabel: "NONE (UNBONDED)",
+      },
+      motionIntent: "established",
+    },
+  });
+  assert.equal(comp116.pet?.hasPets, true);
+  assert.equal(comp116.pet?.semantics.status, "present");
+  assert.equal(comp116.pet?.semantics.change, "newly-established");
+  assert.equal(comp116.pet?.motionIntent, "established");
+  assert.equal(comp116.pet?.primaryPet?.species, "mongoliensis");
+
+  // Seq 117: PetHostilityChanged (non-hostile)
+  const state117 = projectState(rawTimeline, 117);
+  const obs117 = projectObservations(rawTimeline, 117);
+  const comp117 = deriveHudComposition({
+    projectedState: state117,
+    projectedObservations: obs117,
+    activeCountdown: null,
+    sequence: 117,
+    isLive: false,
+    floorHudTitle: "FLOOR 2",
+    petSummary: {
+      hasPets: true,
+      petCount: 1,
+      badgeLabel: "1 PET",
+      semantics: { status: "present", change: "changed", affordance: "none" },
+      primaryPet: {
+        petId: "pet-mongo",
+        displayName: "mongoliensis",
+        hasExplicitName: false,
+        species: "mongoliensis",
+        speciesLabel: "Species: mongoliensis",
+        hostilityState: "non-hostile",
+        hostilityLabel: "NON-HOSTILE",
+        bondState: "unbonded",
+        bondStateLabel: "UNBONDED",
+        bondHolderLabel: "NONE (UNBONDED)",
+      },
+      motionIntent: "changed",
+    },
+  });
+  assert.equal(comp117.pet?.semantics.change, "changed");
+  assert.equal(comp117.pet?.motionIntent, "changed");
+  assert.equal(comp117.pet?.primaryPet?.hostilityState, "non-hostile");
+
+  // Seq 118: PetBonded (Mongo, Royal Steed)
+  const state118 = projectState(rawTimeline, 118);
+  const obs118 = projectObservations(rawTimeline, 118);
+  const comp118 = deriveHudComposition({
+    projectedState: state118,
+    projectedObservations: obs118,
+    activeCountdown: null,
+    sequence: 118,
+    isLive: false,
+    floorHudTitle: "FLOOR 2",
+    petSummary: {
+      hasPets: true,
+      petCount: 1,
+      badgeLabel: "1 PET",
+      semantics: { status: "present", change: "changed", affordance: "none" },
+      primaryPet: {
+        petId: "pet-mongo",
+        displayName: "Mongo",
+        hasExplicitName: true,
+        species: "mongoliensis",
+        speciesLabel: "Species: mongoliensis",
+        hostilityState: "non-hostile",
+        hostilityLabel: "NON-HOSTILE",
+        bondState: "bonded",
+        bondStateLabel: "BONDED",
+        bondHolderLabel: "crawler-donut",
+        title: "Royal Steed",
+        formattedTitle: "«Royal Steed»",
+      },
+      motionIntent: "changed",
+    },
+  });
+  assert.equal(comp118.pet?.semantics.change, "changed");
+  assert.equal(comp118.pet?.primaryPet?.displayName, "Mongo");
+  assert.equal(comp118.pet?.primaryPet?.title, "Royal Steed");
 });

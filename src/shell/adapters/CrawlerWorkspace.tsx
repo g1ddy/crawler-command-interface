@@ -8,6 +8,14 @@ import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import {
+  derivePetPresentation,
+  mapPetStatusToSemantics,
+} from "../../features/pet/public.ts";
+import type {
+  PresentationChange,
+  PresentationMotionIntent,
+} from "../../presentation/semantic/public.ts";
+import {
   availableRootViews,
   deriveNavigationContract,
   resolveRootView,
@@ -162,6 +170,56 @@ export function CrawlerWorkspace({
     };
   }, [events, currentSeq]);
 
+  const petSummary = useMemo(() => {
+    const derived = derivePetPresentation({ pets: projectedState.pets });
+    const currentEvent = events.find((e) => (e.sequence ?? 0) === currentSeq);
+    const eventType = currentEvent?.type;
+
+    let change: PresentationChange | undefined = undefined;
+    let motionIntent: PresentationMotionIntent | undefined = undefined;
+
+    if (eventType === "PetAcquired") {
+      change = "newly-established";
+      motionIntent = "established";
+    } else if (
+      eventType === "PetHostilityChanged" ||
+      eventType === "PetBonded" ||
+      eventType === "PetClassificationChanged"
+    ) {
+      change = "changed";
+      motionIntent = "changed";
+    }
+
+    const semantics = mapPetStatusToSemantics(derived.status, change);
+    const primary = derived.pets[0];
+
+    return {
+      hasPets: derived.hasPets,
+      petCount: derived.petCount,
+      badgeLabel: derived.badgeLabel,
+      semantics,
+      primaryPet: primary
+        ? {
+            petId: primary.petId,
+            displayName: primary.displayName,
+            hasExplicitName: primary.hasExplicitName,
+            species: primary.species,
+            speciesLabel: primary.speciesLabel,
+            hostilityState: primary.hostilityState,
+            hostilityLabel: primary.hostilityLabel,
+            bondState: primary.bondState,
+            bondStateLabel: primary.bondStateLabel,
+            bondHolderLabel: primary.bondHolderLabel,
+            title: primary.title,
+            formattedTitle: primary.formattedTitle,
+            level: primary.level,
+            formattedLevel: primary.formattedLevel,
+          }
+        : undefined,
+      motionIntent,
+    };
+  }, [projectedState.pets, events, currentSeq]);
+
   const prevIsLiveRef = useRef(isLive);
 
   // eslint-disable-next-line react-hooks/refs
@@ -187,6 +245,7 @@ export function CrawlerWorkspace({
         isLive,
         floorHudTitle,
         notificationsSummary,
+        petSummary,
         temporalMotionIntent,
       }),
     [
@@ -197,6 +256,7 @@ export function CrawlerWorkspace({
       isLive,
       floorHudTitle,
       notificationsSummary,
+      petSummary,
       temporalMotionIntent,
     ],
   );
