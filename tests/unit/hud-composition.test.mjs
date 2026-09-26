@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { deriveHudComposition, deriveWorkspacePetSummary } from "../../src/shell/hud/public.ts";
+import { deriveHudComposition } from "../../src/shell/hud/public.ts";
 import { createInitialState, projectObservations, projectState } from "../../app/domain/projection.ts";
 import { derivePartyPresentation } from "../../src/features/party/public.ts";
-import { derivePetPresentation, mapPetStatusToSemantics } from "../../src/features/pet/public.ts";
+import { derivePetPresentation, derivePetPresentationSummary } from "../../src/features/pet/public.ts";
 
 test("deriveHudComposition compiles renderer-neutral model for initial live state", () => {
   const state = createInitialState();
@@ -120,13 +120,13 @@ test("feature presentation preserves not-established party state and not-establi
   assert.equal(petPresentation.badgeLabel, "NO PETS");
 });
 
-test("integration: deriveHudComposition with deriveWorkspacePetSummary across promoted timeline sequences", () => {
+test("integration: deriveHudComposition with derivePetPresentationSummary across promoted timeline sequences", () => {
   const rawTimeline = JSON.parse(fs.readFileSync("data/compiled-timeline.json", "utf8"));
 
   // 1. Seq 1: Pre-acquisition state (replay mode)
   const state1 = projectState(rawTimeline, 1);
   const obs1 = projectObservations(rawTimeline, 1);
-  const petSummary1 = deriveWorkspacePetSummary({
+  const petSummary1 = derivePetPresentationSummary({
     pets: state1.pets,
     events: rawTimeline.events,
     currentSeq: 1,
@@ -151,7 +151,7 @@ test("integration: deriveHudComposition with deriveWorkspacePetSummary across pr
   const obs116 = projectObservations(rawTimeline, 116);
 
   // 2a. Replay scrubbing at Seq 116
-  const petSummary116Replay = deriveWorkspacePetSummary({
+  const petSummary116Replay = derivePetPresentationSummary({
     pets: state116.pets,
     events: rawTimeline.events,
     currentSeq: 116,
@@ -174,7 +174,7 @@ test("integration: deriveHudComposition with deriveWorkspacePetSummary across pr
   assert.equal(comp116Replay.pet?.primaryPet?.species, "mongoliensis");
 
   // 2b. Live transition at Seq 116
-  const petSummary116Live = deriveWorkspacePetSummary({
+  const petSummary116Live = derivePetPresentationSummary({
     pets: state116.pets,
     events: rawTimeline.events,
     currentSeq: 116,
@@ -187,7 +187,7 @@ test("integration: deriveHudComposition with deriveWorkspacePetSummary across pr
   // 3. Seq 117: PetHostilityChanged
   const state117 = projectState(rawTimeline, 117);
   const obs117 = projectObservations(rawTimeline, 117);
-  const petSummary117 = deriveWorkspacePetSummary({
+  const petSummary117 = derivePetPresentationSummary({
     pets: state117.pets,
     events: rawTimeline.events,
     currentSeq: 117,
@@ -211,7 +211,7 @@ test("integration: deriveHudComposition with deriveWorkspacePetSummary across pr
   // 4. Seq 118: PetBonded (Mongo, Royal Steed)
   const state118 = projectState(rawTimeline, 118);
   const obs118 = projectObservations(rawTimeline, 118);
-  const petSummary118 = deriveWorkspacePetSummary({
+  const petSummary118 = derivePetPresentationSummary({
     pets: state118.pets,
     events: rawTimeline.events,
     currentSeq: 118,
@@ -236,7 +236,7 @@ test("integration: deriveHudComposition with deriveWorkspacePetSummary across pr
   // 5. Seq 119: After PetBonded (next event e.g. AchievementUnlocked)
   const state119 = projectState(rawTimeline, 119);
   const obs119 = projectObservations(rawTimeline, 119);
-  const petSummary119 = deriveWorkspacePetSummary({
+  const petSummary119 = derivePetPresentationSummary({
     pets: state119.pets,
     events: rawTimeline.events,
     currentSeq: 119,
@@ -255,4 +255,32 @@ test("integration: deriveHudComposition with deriveWorkspacePetSummary across pr
   assert.equal(comp119.pet?.semantics.status, "present");
   assert.equal(comp119.pet?.semantics.change, undefined); // No longer marked newly-established or changed!
   assert.equal(comp119.pet?.motionIntent, undefined);
+
+  // 6. Seq 124: Floor 3 Entry (evt-f3-entered)
+  // Mongo persists as bonded from Floor 2 across the floor descent boundary
+  const state124 = projectState(rawTimeline, 124);
+  const obs124 = projectObservations(rawTimeline, 124);
+  const petSummary124 = derivePetPresentationSummary({
+    pets: state124.pets,
+    events: rawTimeline.events,
+    currentSeq: 124,
+    isLivePetTransition: false,
+  });
+  const comp124 = deriveHudComposition({
+    projectedState: state124,
+    projectedObservations: obs124,
+    activeCountdown: null,
+    sequence: 124,
+    isLive: false,
+    floorHudTitle: "FLOOR 3",
+    petSummary: petSummary124,
+  });
+
+  assert.equal(comp124.pet?.hasPets, true);
+  assert.equal(comp124.pet?.semantics.status, "present");
+  assert.equal(comp124.pet?.semantics.change, undefined); // NarrativeEvent on Floor 3 entry -> no Pet change
+  assert.equal(comp124.pet?.motionIntent, undefined);
+  assert.equal(comp124.pet?.primaryPet?.displayName, "Mongo");
+  assert.equal(comp124.pet?.primaryPet?.formattedTitle, "«Royal Steed»");
+  assert.equal(comp124.pet?.primaryPet?.bondState, "bonded");
 });

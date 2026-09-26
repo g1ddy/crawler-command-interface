@@ -13,6 +13,16 @@ test("derivePetPresentation handles empty or undefined pets array", () => {
   assert.deepEqual(empty.pets, []);
 });
 
+test("derivePetPresentation distinguishes not-established vs known-empty when pets is empty", () => {
+  const unestablished = derivePetPresentation({ pets: [], hasBeenEstablished: false });
+  assert.equal(unestablished.status, "not-established");
+  assert.equal(unestablished.hasPets, false);
+
+  const knownEmpty = derivePetPresentation({ pets: [], hasBeenEstablished: true });
+  assert.equal(knownEmpty.status, "known-empty");
+  assert.equal(knownEmpty.hasPets, false);
+});
+
 test("derivePetPresentation defensively preserves unknown/unspecified fields without fabricating claims", () => {
   const incompletePet = {
     petId: "pet-unknown",

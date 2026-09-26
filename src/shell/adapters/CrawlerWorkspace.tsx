@@ -4,9 +4,10 @@ import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
 import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
-import { deriveHudComposition, deriveWorkspacePetSummary } from "../hud/public.ts";
+import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
+import { derivePetPresentationSummary } from "../../features/pet/public.ts";
 import type {
   PresentationMotionIntent,
 } from "../../presentation/semantic/public.ts";
@@ -184,7 +185,7 @@ export function CrawlerWorkspace({
 
   const petSummary = useMemo(
     () =>
-      deriveWorkspacePetSummary({
+      derivePetPresentationSummary({
         pets: projectedState.pets,
         events,
         currentSeq,

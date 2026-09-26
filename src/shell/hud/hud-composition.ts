@@ -1,25 +1,20 @@
 import type {
   ActiveCountdownState,
-  CrawlerEvent,
   CrawlerState,
-  Pet,
   ProjectedObservationsState,
   ProjectedObservationValue,
-  TimelineEvent,
 } from "../../../app/domain/types.ts";
 import {
   deriveEvidencePresentation,
   mapEvidenceToSemantics,
 } from "../../features/timeline/public.ts";
-import {
-  derivePetPresentation,
-  mapPetStatusToSemantics,
-} from "../../features/pet/public.ts";
+import type { PetPresentationSummary as HudPetSummary } from "../../features/pet/public.ts";
 import type {
-  PresentationChange,
   PresentationMotionIntent,
   PresentationSemantics,
 } from "../../presentation/semantic/public.ts";
+
+export type { HudPetSummary };
 
 export interface HudSystemIdentity {
   crawlerName: string;
@@ -73,95 +68,6 @@ export interface HudVitalsSummary {
 
 export interface HudBroadcastSummary {
   viewers?: ProjectedObservationValue;
-}
-
-export interface HudPetSummary {
-  hasPets: boolean;
-  petCount: number;
-  badgeLabel: string;
-  semantics: PresentationSemantics;
-  primaryPet?: {
-    petId: string;
-    displayName: string;
-    hasExplicitName: boolean;
-    species: string;
-    speciesLabel: string;
-    hostilityState: string;
-    hostilityLabel: string;
-    bondState: string;
-    bondStateLabel: string;
-    bondHolderLabel: string;
-    title?: string;
-    formattedTitle?: string;
-    level?: number;
-    formattedLevel?: string;
-  };
-  motionIntent?: PresentationMotionIntent;
-}
-
-/** Derives Pet summary and transition semantics for workspace composition. */
-export function deriveWorkspacePetSummary({
-  pets,
-  events,
-  currentSeq,
-  isLivePetTransition = false,
-}: {
-  pets?: Pet[];
-  events: (TimelineEvent | CrawlerEvent)[];
-  currentSeq: number;
-  isLivePetTransition?: boolean;
-}): HudPetSummary {
-  const derived = derivePetPresentation({ pets });
-  const currentEvent = events.find((e) => (e.sequence ?? 0) === currentSeq);
-  const eventType = currentEvent?.type;
-
-  let change: PresentationChange | undefined = undefined;
-  let motionIntent: PresentationMotionIntent | undefined = undefined;
-
-  if (eventType === "PetAcquired") {
-    change = "newly-established";
-    if (isLivePetTransition) {
-      motionIntent = "established";
-    }
-  } else if (
-    eventType === "PetHostilityChanged" ||
-    eventType === "PetBonded" ||
-    eventType === "PetClassificationChanged"
-  ) {
-    change = "changed";
-    if (isLivePetTransition) {
-      motionIntent = "changed";
-    }
-  }
-
-  const semantics = mapPetStatusToSemantics(derived.status, change);
-  const primary = derived.pets[0];
-
-  return {
-    hasPets: derived.hasPets,
-    petCount: derived.petCount,
-    badgeLabel: derived.badgeLabel,
-    semantics,
-    primaryPet: primary
-      ? {
-          petId: primary.petId,
-          displayName: primary.displayName,
-          hasExplicitName: primary.hasExplicitName,
-          species: primary.species,
-          speciesLabel: primary.speciesLabel,
-          hostilityState: primary.hostilityState,
-          hostilityLabel: primary.hostilityLabel,
-          bondState: primary.bondState,
-          bondStateLabel: primary.bondStateLabel,
-          bondHolderLabel: primary.bondHolderLabel,
-          title: primary.title,
-          formattedTitle: primary.formattedTitle,
-          level: primary.level,
-          formattedLevel: primary.formattedLevel,
-        }
-      : undefined,
-    motionIntent,
-  };
 }
 
 /**

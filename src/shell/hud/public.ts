@@ -1,6 +1,5 @@
 export {
   deriveHudComposition,
-  deriveWorkspacePetSummary,
   type HudCompositionModel,
   type HudSystemIdentity,
   type HudTemporalContext,
