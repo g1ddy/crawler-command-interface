@@ -481,7 +481,7 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
 });
 
 test("ArwesPresentation renders Pet domain surface across lifecycle states and motion modes", () => {
-  // 1. Unestablished / known-empty Pet state
+  // 1. Unestablished / not-established Pet state
   const unestablishedModel = {
     system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
@@ -493,7 +493,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
       hasPets: false,
       petCount: 0,
       badgeLabel: "NO PETS",
-      semantics: { status: "known-empty", affordance: "none" },
+      semantics: { status: "not-established", affordance: "none" },
     },
     telemetryItems: [],
   };
@@ -503,9 +503,9 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
   );
 
   assert.match(htmlUnestablished, /data-testid="arwes-pet-frame"/);
-  assert.match(htmlUnestablished, /data-testid="arwes-pet-summary"[^>]*data-status="known-empty"/);
+  assert.match(htmlUnestablished, /data-testid="arwes-pet-summary"[^>]*data-status="not-established"/);
   assert.match(htmlUnestablished, /NO PETS/);
-  assert.match(htmlUnestablished, /No pet or familiar established/);
+  assert.match(htmlUnestablished, /Pet domain not established/);
 
   // 2. Established Pet state with newly-established change and motion intent
   const acquiredModel = {

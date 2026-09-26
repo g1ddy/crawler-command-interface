@@ -1,8 +1,11 @@
 import type {
   ActiveCountdownState,
+  CrawlerEvent,
   CrawlerState,
+  Pet,
   ProjectedObservationsState,
   ProjectedObservationValue,
+  TimelineEvent,
 } from "../../../app/domain/types.ts";
 import {
   deriveEvidencePresentation,
@@ -13,6 +16,7 @@ import {
   mapPetStatusToSemantics,
 } from "../../features/pet/public.ts";
 import type {
+  PresentationChange,
   PresentationMotionIntent,
   PresentationSemantics,
 } from "../../presentation/semantic/public.ts";
@@ -95,6 +99,71 @@ export interface HudPetSummary {
   motionIntent?: PresentationMotionIntent;
 }
 
+/** Derives Pet summary and transition semantics for workspace composition. */
+export function deriveWorkspacePetSummary({
+  pets,
+  events,
+  currentSeq,
+  isLivePetTransition = false,
+}: {
+  pets?: Pet[];
+  events: (TimelineEvent | CrawlerEvent)[];
+  currentSeq: number;
+  isLivePetTransition?: boolean;
+}): HudPetSummary {
+  const derived = derivePetPresentation({ pets });
+  const currentEvent = events.find((e) => (e.sequence ?? 0) === currentSeq);
+  const eventType = currentEvent?.type;
+
+  let change: PresentationChange | undefined = undefined;
+  let motionIntent: PresentationMotionIntent | undefined = undefined;
+
+  if (eventType === "PetAcquired") {
+    change = "newly-established";
+    if (isLivePetTransition) {
+      motionIntent = "established";
+    }
+  } else if (
+    eventType === "PetHostilityChanged" ||
+    eventType === "PetBonded" ||
+    eventType === "PetClassificationChanged"
+  ) {
+    change = "changed";
+    if (isLivePetTransition) {
+      motionIntent = "changed";
+    }
+  }
+
+  const semantics = mapPetStatusToSemantics(derived.status, change);
+  const primary = derived.pets[0];
+
+  return {
+    hasPets: derived.hasPets,
+    petCount: derived.petCount,
+    badgeLabel: derived.badgeLabel,
+    semantics,
+    primaryPet: primary
+      ? {
+          petId: primary.petId,
+          displayName: primary.displayName,
+          hasExplicitName: primary.hasExplicitName,
+          species: primary.species,
+          speciesLabel: primary.speciesLabel,
+          hostilityState: primary.hostilityState,
+          hostilityLabel: primary.hostilityLabel,
+          bondState: primary.bondState,
+          bondStateLabel: primary.bondStateLabel,
+          bondHolderLabel: primary.bondHolderLabel,
+          title: primary.title,
+          formattedTitle: primary.formattedTitle,
+          level: primary.level,
+          formattedLevel: primary.formattedLevel,
+        }
+      : undefined,
+    motionIntent,
+  };
+}
+
 /**
  * Renderer-neutral HUD composition model describing semantic presentation meaning.
  *
@@ -172,34 +241,6 @@ export function deriveHudComposition({
   temporalMotionIntent,
   attentionMotionIntent,
 }: DeriveHudCompositionInput): HudCompositionModel {
-  const derivedPetPres = derivePetPresentation({ pets: projectedState.pets });
-  const petSemantics = mapPetStatusToSemantics(derivedPetPres.status);
-  const primaryPet = derivedPetPres.pets[0];
-  const defaultPetSummary: HudPetSummary = {
-    hasPets: derivedPetPres.hasPets,
-    petCount: derivedPetPres.petCount,
-    badgeLabel: derivedPetPres.badgeLabel,
-    semantics: petSemantics,
-    primaryPet: primaryPet
-      ? {
-          petId: primaryPet.petId,
-          displayName: primaryPet.displayName,
-          hasExplicitName: primaryPet.hasExplicitName,
-          species: primaryPet.species,
-          speciesLabel: primaryPet.speciesLabel,
-          hostilityState: primaryPet.hostilityState,
-          hostilityLabel: primaryPet.hostilityLabel,
-          bondState: primaryPet.bondState,
-          bondStateLabel: primaryPet.bondStateLabel,
-          bondHolderLabel: primaryPet.bondHolderLabel,
-          title: primaryPet.title,
-          formattedTitle: primaryPet.formattedTitle,
-          level: primaryPet.level,
-          formattedLevel: primaryPet.formattedLevel,
-        }
-      : undefined,
-  };
-  const activePetSummary = petSummary ?? defaultPetSummary;
   const healthItem = createTelemetryItem(
     "health",
     "HEALTH",
@@ -257,7 +298,7 @@ export function deriveHudComposition({
     broadcast: {
       viewers: projectedObservations.broadcast.viewers,
     },
-    pet: activePetSummary,
+    pet: petSummary,
     telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
   };
 }

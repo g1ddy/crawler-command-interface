@@ -111,7 +111,7 @@ export function derivePetPresentation({
     hasPets,
     petCount,
     badgeLabel,
-    status: hasPets ? "established" : "known-empty",
+    status: hasPets ? "established" : "not-established",
     pets: derivedPets,
   };
 }

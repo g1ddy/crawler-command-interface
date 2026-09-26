@@ -1,5 +1,6 @@
 export {
   deriveHudComposition,
+  deriveWorkspacePetSummary,
   type HudCompositionModel,
   type HudSystemIdentity,
   type HudTemporalContext,
@@ -7,6 +8,7 @@ export {
   type HudAttentionSummary,
   type HudVitalsSummary,
   type HudBroadcastSummary,
+  type HudPetSummary,
   type HudTelemetryKey,
   type HudTelemetryPresentation,
   type DeriveHudCompositionInput,

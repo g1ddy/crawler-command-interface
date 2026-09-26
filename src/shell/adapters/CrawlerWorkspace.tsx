@@ -4,15 +4,10 @@ import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
 import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
-import { deriveHudComposition } from "../hud/public.ts";
+import { deriveHudComposition, deriveWorkspacePetSummary } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
-import {
-  derivePetPresentation,
-  mapPetStatusToSemantics,
-} from "../../features/pet/public.ts";
 import type {
-  PresentationChange,
   PresentationMotionIntent,
 } from "../../presentation/semantic/public.ts";
 import {
@@ -170,70 +165,38 @@ export function CrawlerWorkspace({
     };
   }, [events, currentSeq]);
 
-  const petSummary = useMemo(() => {
-    const derived = derivePetPresentation({ pets: projectedState.pets });
-    const currentEvent = events.find((e) => (e.sequence ?? 0) === currentSeq);
-    const eventType = currentEvent?.type;
-
-    let change: PresentationChange | undefined = undefined;
-    let motionIntent: PresentationMotionIntent | undefined = undefined;
-
-    if (eventType === "PetAcquired") {
-      change = "newly-established";
-      motionIntent = "established";
-    } else if (
-      eventType === "PetHostilityChanged" ||
-      eventType === "PetBonded" ||
-      eventType === "PetClassificationChanged"
-    ) {
-      change = "changed";
-      motionIntent = "changed";
-    }
-
-    const semantics = mapPetStatusToSemantics(derived.status, change);
-    const primary = derived.pets[0];
-
-    return {
-      hasPets: derived.hasPets,
-      petCount: derived.petCount,
-      badgeLabel: derived.badgeLabel,
-      semantics,
-      primaryPet: primary
-        ? {
-            petId: primary.petId,
-            displayName: primary.displayName,
-            hasExplicitName: primary.hasExplicitName,
-            species: primary.species,
-            speciesLabel: primary.speciesLabel,
-            hostilityState: primary.hostilityState,
-            hostilityLabel: primary.hostilityLabel,
-            bondState: primary.bondState,
-            bondStateLabel: primary.bondStateLabel,
-            bondHolderLabel: primary.bondHolderLabel,
-            title: primary.title,
-            formattedTitle: primary.formattedTitle,
-            level: primary.level,
-            formattedLevel: primary.formattedLevel,
-          }
-        : undefined,
-      motionIntent,
-    };
-  }, [projectedState.pets, events, currentSeq]);
-
   const prevIsLiveRef = useRef(isLive);
+  const prevSeqRef = useRef(currentSeq);
 
   // eslint-disable-next-line react-hooks/refs
   const prevIsLive = prevIsLiveRef.current;
-  let temporalMotionIntent: import("../../presentation/semantic/public.ts").PresentationMotionIntent | undefined = undefined;
+  // eslint-disable-next-line react-hooks/refs
+  const prevSeq = prevSeqRef.current;
+
+  let temporalMotionIntent: PresentationMotionIntent | undefined = undefined;
   if (prevIsLive === true && isLive === false) {
     temporalMotionIntent = "enter-replay";
   } else if (prevIsLive === false && isLive === true) {
     temporalMotionIntent = "return-live";
   }
 
+  const isLivePetTransition = isLive && prevIsLive && currentSeq > prevSeq;
+
+  const petSummary = useMemo(
+    () =>
+      deriveWorkspacePetSummary({
+        pets: projectedState.pets,
+        events,
+        currentSeq,
+        isLivePetTransition,
+      }),
+    [projectedState.pets, events, currentSeq, isLivePetTransition]
+  );
+
   useEffect(() => {
     prevIsLiveRef.current = isLive;
-  }, [isLive]);
+    prevSeqRef.current = currentSeq;
+  }, [isLive, currentSeq]);
 
   const composition = useMemo(
     () =>
