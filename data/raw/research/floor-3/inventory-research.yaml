@@ -316,6 +316,8 @@ claims:
       summary: Carl loots Big Top Tickets from dead clown sentries.
     evidence:
       - sourceId: src-bookwormai-book2
+        locator:
+          chapter: 6
         confidence: corroborated
         relationship: supports
     unknowns:
