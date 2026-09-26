@@ -151,29 +151,6 @@
     ]
   },
   {
-    "id": "evt-f3-big-top-tickets-looted",
-    "type": "ItemAcquired",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 4
-    },
-    "item": {
-      "instanceId": "inst-f3-big-top-tickets-looted",
-      "itemId": "item-big-top-ticket",
-      "quantity": {
-        "known": false
-      }
-    },
-    "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
-    "evidence": [
-      {
-        "sourceId": "src-bookwormai-book2",
-        "confidence": "corroborated"
-      }
-    ]
-  },
-  {
     "id": "evt-f3-mongo-consumes-terror-clown",
     "type": "NarrativeEvent",
     "kind": "transformation",
@@ -186,7 +163,7 @@
     "evidence": [
       {
         "sourceId": "src-bookwormai-book2",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
     ]
   },
@@ -223,7 +200,7 @@
     "evidence": [
       {
         "sourceId": "src-parapith-ch-sums",
-        "confidence": "corroborated"
+        "confidence": "confirmed"
       }
     ]
   },
@@ -378,7 +355,7 @@
     "evidence": [
       {
         "sourceId": "src-abooklovers-summary",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
     ]
   },
@@ -419,6 +396,32 @@
     "evidence": [
       {
         "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-big-top-tickets-looted",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 6
+    },
+    "item": {
+      "instanceId": "inst-f3-big-top-tickets-looted",
+      "itemId": "item-big-top-ticket",
+      "quantity": {
+        "known": false
+      }
+    },
+    "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
+    "evidence": [
+      {
+        "sourceId": "src-bookwormai-book2",
+        "locator": {
+          "chapter": 6
+        },
         "confidence": "corroborated"
       }
     ]
@@ -513,7 +516,7 @@
     "evidence": [
       {
         "sourceId": "src-parapith-ch-sums",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
     ]
   },
@@ -601,7 +604,7 @@
     "evidence": [
       {
         "sourceId": "src-abooklovers-summary",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
     ]
   },
