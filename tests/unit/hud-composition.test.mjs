@@ -117,7 +117,7 @@ test("feature presentation preserves not-established party state and not-establi
   assert.equal(petPresentation.status, "not-established");
   assert.equal(petPresentation.hasPets, false);
   assert.equal(petPresentation.petCount, 0);
-  assert.equal(petPresentation.badgeLabel, "NO PETS");
+  assert.equal(petPresentation.badgeLabel, "NOT ESTABLISHED");
 });
 
 test("integration: deriveHudComposition with derivePetPresentationSummary across promoted timeline sequences", () => {
