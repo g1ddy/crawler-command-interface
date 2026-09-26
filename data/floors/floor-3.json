@@ -21,7 +21,7 @@
       "kind": "official-text",
       "trust": "primary",
       "title": "Dungeon Crawler Carl, Book 2: Carl's Doomsday Scenario",
-      "url": "https://example.invalid/dcc-book-2",
+      "url": "https://mattdinniman.com/books/carls-doomsday-scenario/",
       "citationStyle": "Chapter {chapter}"
     },
     {
@@ -86,6 +86,76 @@
       "trust": "corroborating",
       "title": "Carl's Doomsday Scenario Chapter Summary Floor 3",
       "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd"
+    },
+    {
+      "id": "src-dcc-database-celestial-box",
+      "kind": "fan-compendium",
+      "trust": "corroborating",
+      "title": "It's Not My Fault You Fish-Headed Assholes Don't Properly Program Your Quests Box",
+      "url": "https://www.dccdatabase.com/wiki/it%27s_not_my_fault_you_fish-headed_assholes_dont-properly-program-your_quests_box/"
+    },
+    {
+      "id": "src-fandom-mongo",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Mongo - Dungeon Crawler Carl Wiki",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Mongo"
+    },
+    {
+      "id": "src-cookbook-mongo",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "Mongo's True Nature - Crawlers Cookbook",
+      "url": "https://crawlerscookbook.com/theories/mongos-true-nature/"
+    },
+    {
+      "id": "src-bookworm-carrier",
+      "kind": "fan-compendium",
+      "trust": "corroborating",
+      "title": "Magical Pet Carrier - Bookworm Wiki",
+      "url": "https://wiki.bookwormai.app/dungeon-crawler-carl/world/magical-pet-carrier"
+    },
+    {
+      "id": "src-reddit-carrier",
+      "kind": "discussion",
+      "trust": "candidate",
+      "title": "Pet Carriers - Reddit",
+      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1nd5xxb/pet_carriers/"
+    },
+    {
+      "id": "src-sparknotes-ch12",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "Carl's Doomsday Scenario Chapter 12 Summary - SparkNotes AI",
+      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/2f4e4094-375e-4f2e-a419-4cb56a1b3ffe"
+    },
+    {
+      "id": "src-reddit-miriam",
+      "kind": "discussion",
+      "trust": "candidate",
+      "title": "The names of Miriam Dom's goats - Reddit",
+      "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1ts94bz/the_names_of_miriam_doms_goats/"
+    },
+    {
+      "id": "src-bookreadfree-id",
+      "kind": "editorial",
+      "trust": "candidate",
+      "title": "Crawler ID Mechanics - BookReadFree",
+      "url": "https://bookreadfree.com/99426/2468076"
+    },
+    {
+      "id": "src-tvtropes-dcc",
+      "kind": "wiki",
+      "trust": "candidate",
+      "title": "Dungeon Crawler Carl - TV Tropes",
+      "url": "https://tvtropes.org/pmwiki/pmwiki.php/Literature/DungeonCrawlerCarl"
+    },
+    {
+      "id": "src-sparknotes-ch14",
+      "kind": "editorial",
+      "trust": "corroborating",
+      "title": "Carl's Doomsday Scenario Chapter 14 Summary - SparkNotes AI",
+      "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/be06e3c2-91d3-4f93-9a6c-d230133b7258"
     }
   ],
   "catalog": {
@@ -217,7 +287,7 @@
       },
       {
         "id": "achievement-one-quadrillion-views",
-        "title": "One Quadrillion Views",
+        "title": "One Quadrillion!",
         "recipient": "party",
         "description": "Reached one quadrillion total broadcast views on Floor 3.",
         "reward": [
@@ -408,7 +478,7 @@
       "evidence": [
         {
           "sourceId": "src-bookwormai-book2",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 8
@@ -465,7 +535,7 @@
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 11
@@ -473,7 +543,6 @@
     {
       "id": "evt-f3-earth-hobby-potion-carl-consumed",
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
@@ -483,15 +552,15 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
+      "kind": "other",
       "order": 12
     },
     {
       "id": "evt-f3-earth-hobby-potion-donut-consumed",
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
@@ -501,9 +570,10 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
+      "kind": "other",
       "order": 13
     },
     {
@@ -518,15 +588,14 @@
         "instanceId": "inst-f3-louis-lamour-paperbacks",
         "itemId": "item-louis-lamour-paperbacks",
         "quantity": {
-          "known": true,
-          "value": 1
+          "known": false
         }
       },
       "summary": "Carl receives a collection of Louis L'Amour paperbacks as an AI reward.",
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 14
@@ -551,7 +620,7 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 15
@@ -576,7 +645,7 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 16
@@ -601,7 +670,7 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 17
@@ -646,7 +715,7 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 19
@@ -671,7 +740,7 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 20
@@ -679,7 +748,6 @@
     {
       "id": "evt-f3-parasite-ice-cream-consumed",
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
@@ -689,9 +757,10 @@
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
+      "kind": "other",
       "order": 21
     },
     {
@@ -715,19 +784,19 @@
     {
       "id": "evt-f3-lottery-ticket-custard-consumed",
       "type": "NarrativeEvent",
-      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 9
       },
-      "summary": "Carl uses a lottery ticket during the fight with Heather the Bear; the researched result is custard.",
+      "summary": "Carl uses a lottery ticket during the fight with Heather the Bear.",
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
+      "kind": "other",
       "order": 23
     },
     {
@@ -743,7 +812,7 @@
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 24
@@ -819,7 +888,7 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 27
@@ -844,7 +913,7 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 28
@@ -887,7 +956,7 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 30
@@ -912,7 +981,7 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 31
@@ -931,7 +1000,7 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 32
@@ -1043,7 +1112,7 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "notificationDelivery": {
@@ -1054,7 +1123,7 @@
       "order": 37
     },
     {
-      "id": "evt-f3-fan-boxes-awarded",
+      "id": "evt-f3-fan-box-carl-awarded",
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -1062,39 +1131,82 @@
         "chapter": 17
       },
       "item": {
-        "instanceId": "inst-f3-fan-box",
+        "instanceId": "inst-f3-fan-box-carl",
         "itemId": "item-fan-box",
         "quantity": {
           "known": true,
-          "value": 2
+          "value": 1
         }
       },
-      "summary": "Carl and Donut are awarded Fan Boxes with a 30-hour temporal lock.",
+      "summary": "Carl is awarded a Fan Box with a 30-hour temporal lock.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 38
     },
     {
-      "id": "evt-f3-fan-boxes-unlocked",
-      "type": "NarrativeEvent",
-      "kind": "other",
+      "id": "evt-f3-fan-box-donut-awarded",
+      "type": "ItemAcquired",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 17
       },
-      "summary": "The 30-hour temporal lock on Carl and Donut's Fan Boxes expires.",
+      "item": {
+        "instanceId": "inst-f3-fan-box-donut",
+        "itemId": "item-fan-box",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Donut is awarded a Fan Box with a 30-hour temporal lock.",
       "evidence": [
         {
-          "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "sourceId": "src-sparknotes-ch-56f65e74",
+          "confidence": "corroborated"
         }
       ],
       "order": 39
+    },
+    {
+      "id": "evt-f3-fan-box-carl-unlocked",
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 17
+      },
+      "summary": "The 30-hour temporal lock on Carl's Fan Box expires.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "corroborated"
+        }
+      ],
+      "kind": "other",
+      "order": 40
+    },
+    {
+      "id": "evt-f3-fan-box-donut-unlocked",
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 17
+      },
+      "summary": "The 30-hour temporal lock on Donut's Fan Box expires.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "corroborated"
+        }
+      ],
+      "kind": "other",
+      "order": 41
     },
     {
       "id": "evt-f3-picture-of-beatrice-acquired",
@@ -1116,10 +1228,10 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 40
+      "order": 42
     },
     {
       "id": "evt-f3-xistera-acquired",
@@ -1141,10 +1253,10 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 41
+      "order": 43
     },
     {
       "id": "evt-f3-katia-joined",
@@ -1165,7 +1277,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 42
+      "order": 44
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
@@ -1186,7 +1298,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 43
+      "order": 45
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
@@ -1212,7 +1324,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 44
+      "order": 46
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
@@ -1236,7 +1348,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 45
+      "order": 47
     },
     {
       "id": "evt-f3-sepsis-crown-unequipped",
@@ -1251,10 +1363,10 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 46
+      "order": 48
     },
     {
       "id": "evt-f3-doomsday-scenario-created",
@@ -1283,10 +1395,10 @@
         },
         {
           "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 47
+      "order": 49
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
@@ -1301,10 +1413,10 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 48
+      "order": 50
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
@@ -1319,10 +1431,10 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-f2a6829f",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 49
+      "order": 51
     },
     {
       "id": "evt-f3-floor-4-transition",
@@ -1343,7 +1455,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 50
+      "order": 52
     },
     {
       "id": "evt-f3-odette-epilogue",
@@ -1364,7 +1476,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 51
+      "order": 53
     },
     {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
@@ -1375,14 +1487,18 @@
         "book": 2,
         "chapter": 26
       },
-      "summary": "The AI upgrades the party's Platinum Quest Boxes to Celestial Quest Boxes based on the Hadji and Bandit achievements.",
+      "summary": "The Fools Who Broke the Glass outcome causes Celestial Loot Boxes to be awarded to crawlers in the blast zone.",
       "evidence": [
         {
           "sourceId": "src-reddit-end-book2",
-          "confidence": "confirmed"
+          "confidence": "candidate"
+        },
+        {
+          "sourceId": "src-dcc-database-celestial-box",
+          "confidence": "corroborated"
         }
       ],
-      "order": 52
+      "order": 54
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
@@ -1397,10 +1513,10 @@
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-sum",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 53
+      "order": 55
     },
     {
       "id": "evt-f3-achievement-bandit",
@@ -1426,7 +1542,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 54
+      "order": 56
     }
   ]
 }
