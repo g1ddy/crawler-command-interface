@@ -460,30 +460,6 @@
       "order": 7
     },
     {
-      "id": "evt-f3-big-top-tickets-looted",
-      "type": "ItemAcquired",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 4
-      },
-      "item": {
-        "instanceId": "inst-f3-big-top-tickets-looted",
-        "itemId": "item-big-top-ticket",
-        "quantity": {
-          "known": false
-        }
-      },
-      "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
-      "evidence": [
-        {
-          "sourceId": "src-bookwormai-book2",
-          "confidence": "corroborated"
-        }
-      ],
-      "order": 8
-    },
-    {
       "id": "evt-f3-mongo-consumes-terror-clown",
       "type": "NarrativeEvent",
       "kind": "transformation",
@@ -496,10 +472,10 @@
       "evidence": [
         {
           "sourceId": "src-bookwormai-book2",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 9
+      "order": 8
     },
     {
       "id": "evt-f3-belly-rubbed-pug-reached",
@@ -520,7 +496,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 10
+      "order": 9
     },
     {
       "id": "evt-f3-mordecai-incapacitated-safe-room",
@@ -535,10 +511,10 @@
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
-          "confidence": "corroborated"
+          "confidence": "confirmed"
         }
       ],
-      "order": 11
+      "order": 10
     },
     {
       "id": "evt-f3-earth-hobby-potion-carl-consumed",
@@ -556,7 +532,7 @@
         }
       ],
       "kind": "other",
-      "order": 12
+      "order": 11
     },
     {
       "id": "evt-f3-earth-hobby-potion-donut-consumed",
@@ -574,7 +550,7 @@
         }
       ],
       "kind": "other",
-      "order": 13
+      "order": 12
     },
     {
       "id": "evt-f3-louis-lamour-paperbacks-acquired",
@@ -598,7 +574,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 14
+      "order": 13
     },
     {
       "id": "evt-f3-home-depot-cactus-acquired",
@@ -623,7 +599,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 15
+      "order": 14
     },
     {
       "id": "evt-f3-cat-tree-acquired",
@@ -648,7 +624,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 16
+      "order": 15
     },
     {
       "id": "evt-f3-scented-candle-acquired",
@@ -673,7 +649,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17
+      "order": 16
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-granted",
@@ -697,10 +673,10 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 17
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-used",
@@ -718,7 +694,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19
+      "order": 18
     },
     {
       "id": "evt-f3-enchanted-anklet-acquired",
@@ -740,6 +716,33 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 19
+    },
+    {
+      "id": "evt-f3-big-top-tickets-looted",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 6
+      },
+      "item": {
+        "instanceId": "inst-f3-big-top-tickets-looted",
+        "itemId": "item-big-top-ticket",
+        "quantity": {
+          "known": false
+        }
+      },
+      "summary": "Carl loots additional Big Top Tickets from dead clown sentries.",
+      "evidence": [
+        {
+          "sourceId": "src-bookwormai-book2",
+          "locator": {
+            "chapter": 6
+          },
           "confidence": "corroborated"
         }
       ],
@@ -839,7 +842,7 @@
       "evidence": [
         {
           "sourceId": "src-parapith-ch-sums",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 25
@@ -931,7 +934,7 @@
       "evidence": [
         {
           "sourceId": "src-abooklovers-summary",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 29
