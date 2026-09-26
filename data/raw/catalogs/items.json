@@ -280,7 +280,7 @@
     "id": "item-scented-candle",
     "name": "Scented Candle",
     "category": "miscellaneous",
-    "persistent": true
+    "persistent": false
   },
   {
     "id": "item-picture-of-beatrice",
