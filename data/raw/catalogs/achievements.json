@@ -520,7 +520,7 @@
       {
         "kind": "box",
         "boxType": "fan-box",
-        "description": "Fan Boxes with a 30-hour temporal lock"
+        "description": "Fan Boxes"
       }
     ]
   }
