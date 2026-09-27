@@ -1,7 +1,10 @@
 import { useState } from "react";
 import type { CrawlerState, ProjectedCountdownState, ProjectedObservationsState, ProjectedObservationValue } from "../../../app/domain/types";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
-import { deriveEvidencePresentation } from "../../features/timeline/evidence/evidencePresentation";
+import {
+  deriveEvidencePresentation,
+  mapEvidenceToSemantics,
+} from "../../features/timeline/evidence/evidencePresentation";
 import { Hotlist } from "./hotlist/Hotlist";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 
@@ -13,15 +16,10 @@ function Reading({ label, observation, sequence, onInspect }: {
   onInspect: (reading: ProjectedObservationValue) => void;
 }) {
   const descriptor = deriveEvidencePresentation(observation, sequence);
+  const semantics = mapEvidenceToSemantics(descriptor);
   const dataEvidence = descriptor.state === "current" ? "observed" : descriptor.state;
-  const temporal =
-    descriptor.state === "current"
-      ? "current"
-      : descriptor.state === "last-known"
-      ? "last-known"
-      : undefined;
 
-  return <div className="hud-reading" data-evidence={dataEvidence} {...(temporal ? { "data-temporal": temporal } : {})}>
+  return <div className="hud-reading" data-evidence={dataEvidence} {...(semantics.temporal ? { "data-temporal": semantics.temporal } : {})}>
     <span>{label}</span>
     <strong>{observation ? observation.value.toLocaleString() : "—"}</strong>
     {observation ? <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>

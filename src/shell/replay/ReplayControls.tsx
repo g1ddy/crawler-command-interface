@@ -7,6 +7,7 @@ export interface ReplayControlsProps {
   model: ReplayPresentation;
   commands: ReplayCommandCallbacks;
   children?: ReactNode;
+  isMobile?: boolean;
   isMobileExpanded?: boolean;
   onToggleMobileExpand?: () => void;
 }
@@ -16,10 +17,13 @@ export function ReplayControls({
   model,
   commands,
   children,
+  isMobile = false,
   isMobileExpanded = false,
   onToggleMobileExpand,
 }: ReplayControlsProps) {
   const { scope, position } = model;
+  const isCollapsedMobile = isMobile && !isMobileExpanded;
+
   return (
     <>
       <div className={styles.compactBar} data-testid="replay-compact-bar">
@@ -34,13 +38,13 @@ export function ReplayControls({
           <span className={styles.compactSeq}>SEQ #{position.selectedSequence}</span>
         </div>
         <div className={styles.compactActions}>
-          {!model.isLive && !isMobileExpanded && (
+          {!model.isLive && isCollapsedMobile && (
             <button
               type="button"
               className={styles.compactReturnBtn}
               onClick={commands.returnToLive}
               title="Return to Live sequence"
-              aria-label="Quick Return to Live"
+              aria-label="Return to Live sequence"
             >
               RETURN TO LIVE ⚡
             </button>
@@ -63,6 +67,8 @@ export function ReplayControls({
         className={styles.transportContainer}
         data-expanded={isMobileExpanded}
         data-testid="replay-transport-container"
+        inert={isCollapsedMobile ? true : undefined}
+        hidden={isCollapsedMobile ? true : undefined}
       >
         <div className={styles.transport}>
           <div className={styles.modes} aria-label="Replay mode">

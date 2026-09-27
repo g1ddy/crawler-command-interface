@@ -7,6 +7,7 @@ import {
   evidenceSummary,
   firstCountdownEvidenceSummary,
   formatEvidenceLocator,
+  mapEvidenceToSemantics,
   selectDisplayedReading,
 } from "../../src/features/timeline/evidence/evidencePresentation.ts";
 
@@ -98,15 +99,23 @@ test("deriveEvidencePresentation derives current, last-known, estimated, causal-
   });
 });
 
-test("evidence state maps explicitly to temporal attribute rules", () => {
-  const mapTemporalAttr = (state) =>
-    state === "current" ? "current" : state === "last-known" ? "last-known" : undefined;
+test("mapEvidenceToSemantics produces exact production temporal classification across evidence states", () => {
+  const currentObs = { key: "k", value: 100, sequence: 10, status: "stated", basis: "exact-observation" };
+  const currentEvidence = deriveEvidencePresentation(currentObs, 10);
+  assert.equal(mapEvidenceToSemantics(currentEvidence).temporal, "current");
 
-  assert.equal(mapTemporalAttr("current"), "current");
-  assert.equal(mapTemporalAttr("last-known"), "last-known");
-  assert.equal(mapTemporalAttr("estimated"), undefined);
-  assert.equal(mapTemporalAttr("unknown"), undefined);
-  assert.equal(mapTemporalAttr("causal-only"), undefined);
+  const lastKnownEvidence = deriveEvidencePresentation(currentObs, 25);
+  assert.equal(mapEvidenceToSemantics(lastKnownEvidence).temporal, "last-known");
+
+  const estimatedObs = { key: "k", value: 50, status: "estimated", basis: "sequence-position", sourceSequences: [10, 20] };
+  const estimatedEvidence = deriveEvidencePresentation(estimatedObs, 15);
+  assert.equal(mapEvidenceToSemantics(estimatedEvidence).temporal, undefined);
+
+  const causalOnlyEvidence = deriveEvidencePresentation(null, 15, 100);
+  assert.equal(mapEvidenceToSemantics(causalOnlyEvidence).temporal, undefined);
+
+  const unknownEvidence = deriveEvidencePresentation(null, 15, null);
+  assert.equal(mapEvidenceToSemantics(unknownEvidence).temporal, undefined);
 });
 
 test("evidence presentation preserves source, locator, and confidence", () => {

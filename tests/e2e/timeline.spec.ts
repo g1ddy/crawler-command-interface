@@ -93,7 +93,7 @@ test("Return to Live restores the latest projection", async ({ page }) => {
   await selectSequence(page, 1);
   await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
 
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/ }).first().click();
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/ }).click();
 
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
   await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
@@ -141,7 +141,7 @@ test("live interactions append events without rewriting historical state", async
   await selectSequence(page, floor1EndSequence);
   await expect(page.getByRole("button", { name: /^LOCK/ })).toBeDisabled();
 
-  await page.getByRole("button", { name: /RETURN TO LIVE/ }).first().click();
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/ }).click();
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();
 });
 

@@ -172,7 +172,7 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
 
   // Return to Live
-  await page.getByRole("button", { name: /RETURN TO LIVE/i }).first().click();
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/i }).click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "return-live");
 

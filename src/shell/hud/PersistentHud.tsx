@@ -7,7 +7,10 @@ import type {
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
-import { deriveEvidencePresentation } from "../../features/timeline/evidence/evidencePresentation";
+import {
+  deriveEvidencePresentation,
+  mapEvidenceToSemantics,
+} from "../../features/timeline/evidence/evidencePresentation";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 import { Hotlist } from "./hotlist/Hotlist";
 import styles from "./PersistentHud.module.css";
@@ -24,19 +27,14 @@ function Reading({
   onInspect: (reading: ProjectedObservationValue) => void;
 }) {
   const evidence = deriveEvidencePresentation(observation, sequence);
-  const temporal =
-    evidence.state === "current"
-      ? "current"
-      : evidence.state === "last-known"
-      ? "last-known"
-      : undefined;
+  const semantics = mapEvidenceToSemantics(evidence);
   return (
     <div
       className={styles.reading}
       role="group"
       aria-label={`${label} reading`}
       data-evidence={evidence.state}
-      {...(temporal ? { "data-temporal": temporal } : {})}
+      {...(semantics.temporal ? { "data-temporal": semantics.temporal } : {})}
     >
       <span>{label}</span>
       <strong>{observation?.value.toLocaleString() ?? "—"}</strong>

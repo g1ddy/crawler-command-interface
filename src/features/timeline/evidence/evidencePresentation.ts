@@ -186,7 +186,6 @@ export function mapEvidenceToSemantics(
     case "estimated":
       return {
         status: "present",
-        temporal: "current",
         authority: "estimated",
         affordance,
         provenance,
