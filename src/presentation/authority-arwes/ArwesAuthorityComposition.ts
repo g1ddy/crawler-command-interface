@@ -526,25 +526,6 @@ export function ArwesAuthorityComposition({
                 },
                 temporal.mode.toUpperCase()
               ),
-              false
-                ? createElement(
-                    "span",
-                    {
-                      "data-testid": "hud-historical-badge",
-                      style: {
-                        fontSize: "0.65rem",
-                        fontWeight: 700,
-                        color: "#fbbf24",
-                        backgroundColor: "rgba(245, 158, 11, 0.2)",
-                        border: "1px solid #f59e0b",
-                        borderRadius: "3px",
-                        padding: "0.15rem 0.35rem",
-                        letterSpacing: "0.05em",
-                      },
-                    },
-                    "HISTORICAL"
-                  )
-                : null
             ),
             createElement(
               "div",
