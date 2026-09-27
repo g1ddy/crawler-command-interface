@@ -498,7 +498,6 @@ export function ArwesAuthorityComposition({
             {
               "data-testid": "hud-audience-mode",
               "data-mode": temporal.mode,
-              "data-temporal": temporal.isLive ? "current" : "last-known",
               "data-motion-intent": temporalIntent,
               style: {
                 textAlign: "right",

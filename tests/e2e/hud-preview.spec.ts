@@ -241,3 +241,36 @@ test("System Tools modal consumes token-backed styles and enforces 44px minimum 
   const presentationBox = await presentationBtn.boundingBox();
   expect(presentationBox?.height).toBeGreaterThanOrEqual(44);
 });
+
+test("compact mobile replay controls support expand and collapse interaction", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(pagesPath);
+
+  // Initially on narrow viewport, compact bar is visible and transport controls are collapsed
+  const compactBar = page.getByTestId("replay-compact-bar");
+  await expect(compactBar).toBeVisible();
+
+  const toggleBtn = page.getByRole("button", { name: "Expand replay controls" });
+  await expect(toggleBtn).toBeVisible();
+  await expect(toggleBtn).toHaveAttribute("aria-expanded", "false");
+
+  const transportContainer = page.getByTestId("replay-transport-container");
+  await expect(transportContainer).not.toBeVisible();
+
+  // Expand controls
+  await toggleBtn.click();
+
+  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+  await expect(collapseBtn).toBeVisible();
+  await expect(collapseBtn).toHaveAttribute("aria-expanded", "true");
+  await expect(transportContainer).toBeVisible();
+
+  // Sequence scrubber is now reachable
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await expect(slider).toBeVisible();
+
+  // Collapse controls again
+  await collapseBtn.click();
+  await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
+  await expect(transportContainer).not.toBeVisible();
+});

@@ -121,7 +121,6 @@ export function PersistentHud({
           className={styles.mode}
           data-testid="hud-audience-mode"
           data-mode={liveMode ? "live" : "replay"}
-          data-temporal={liveMode ? "current" : "last-known"}
         >
           <b>{liveMode ? "LIVE" : "REPLAY"}</b>
           {!liveMode && (

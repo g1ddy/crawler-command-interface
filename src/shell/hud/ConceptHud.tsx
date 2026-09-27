@@ -56,7 +56,6 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
       className="hud-replay-state"
       data-testid="hud-audience-mode"
       data-mode={isLive ? "live" : "replay"}
-      data-temporal={isLive ? "current" : "last-known"}
     >
       <b>{isLive ? "LIVE" : "REPLAY"}</b>
       {!isLive && <small className="hud-historical-badge" data-testid="hud-historical-badge">HISTORICAL VIEW</small>}
