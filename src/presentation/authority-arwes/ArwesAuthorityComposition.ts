@@ -526,7 +526,7 @@ export function ArwesAuthorityComposition({
                 },
                 temporal.mode.toUpperCase()
               ),
-              !temporal.isLive
+              false
                 ? createElement(
                     "span",
                     {
