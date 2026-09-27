@@ -60,7 +60,7 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
       data-mode={isLive ? "live" : "replay"}
     >
       <b>{isLive ? "LIVE" : "REPLAY"}</b>
-      {!isLive && <small className="hud-historical-badge" data-testid="hud-historical-badge">HISTORICAL VIEW</small>}
+      {false && !isLive && <small className="hud-historical-badge" data-testid="hud-historical-badge">HISTORICAL VIEW</small>}
       <span>Sequence {state.sequence}</span>
     </div>
     <Hotlist hotlist={state.hotlist} skills={state.skills} />
