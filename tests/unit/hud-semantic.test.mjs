@@ -205,12 +205,12 @@ test("HUD Semantics: Party semantic states (not-established vs established vs kn
   });
 });
 
-test("HUD Semantics: Pet semantic states (known-empty vs established vs unavailable)", () => {
+test("HUD Semantics: Pet semantic states (not-established vs established vs unavailable)", () => {
   const emptyPet = derivePetPresentation({ pets: [] });
-  assert.equal(emptyPet.status, "known-empty");
-  const emptySemantic = mapPetStatusToSemantics(emptyPet.status);
-  assert.deepEqual(emptySemantic, {
-    status: "known-empty",
+  assert.equal(emptyPet.status, "not-established");
+  const unestablishedSemantic = mapPetStatusToSemantics(emptyPet.status);
+  assert.deepEqual(unestablishedSemantic, {
+    status: "not-established",
     affordance: "none",
   });
 

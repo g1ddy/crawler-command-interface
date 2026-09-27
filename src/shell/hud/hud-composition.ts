@@ -8,10 +8,13 @@ import {
   deriveEvidencePresentation,
   mapEvidenceToSemantics,
 } from "../../features/timeline/public.ts";
+import type { PetPresentationSummary as HudPetSummary } from "../../features/pet/public.ts";
 import type {
   PresentationMotionIntent,
   PresentationSemantics,
 } from "../../presentation/semantic/public.ts";
+
+export type { HudPetSummary };
 
 export interface HudSystemIdentity {
   crawlerName: string;
@@ -86,6 +89,7 @@ export interface HudCompositionModel {
   attention: HudAttentionSummary;
   vitals: HudVitalsSummary;
   broadcast: HudBroadcastSummary;
+  pet?: HudPetSummary;
   telemetryItems: HudTelemetryPresentation[];
 }
 
@@ -97,6 +101,7 @@ export interface DeriveHudCompositionInput {
   isLive: boolean;
   floorHudTitle: string;
   notificationsSummary?: HudAttentionSummary;
+  petSummary?: HudPetSummary;
   temporalMotionIntent?: PresentationMotionIntent;
   attentionMotionIntent?: PresentationMotionIntent;
 }
@@ -138,6 +143,7 @@ export function deriveHudComposition({
     totalNotificationsCount: 0,
     hasActiveAlerts: false,
   },
+  petSummary,
   temporalMotionIntent,
   attentionMotionIntent,
 }: DeriveHudCompositionInput): HudCompositionModel {
@@ -198,6 +204,7 @@ export function deriveHudComposition({
     broadcast: {
       viewers: projectedObservations.broadcast.viewers,
     },
+    pet: petSummary,
     telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
   };
 }

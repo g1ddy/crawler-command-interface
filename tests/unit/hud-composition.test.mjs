@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import test from "node:test";
 import { deriveHudComposition } from "../../src/shell/hud/public.ts";
-import { createInitialState, projectObservations } from "../../app/domain/projection.ts";
+import { createInitialState, projectObservations, projectState } from "../../app/domain/projection.ts";
 import { derivePartyPresentation } from "../../src/features/party/public.ts";
-import { derivePetPresentation } from "../../src/features/pet/public.ts";
+import { derivePetPresentation, derivePetPresentationSummary } from "../../src/features/pet/public.ts";
 
 test("deriveHudComposition compiles renderer-neutral model for initial live state", () => {
   const state = createInitialState();
@@ -106,15 +107,180 @@ test("deriveHudComposition exposes explicit command-driven temporal and attentio
   assert.equal(c4.attention.motionIntent, "attention");
 });
 
-test("feature presentation preserves not-established party state and known-empty pet state", () => {
+test("feature presentation preserves not-established party state and not-established pet state", () => {
   const partyPresentation = derivePartyPresentation({ party: undefined });
   assert.equal(partyPresentation.status, "not-established");
   assert.equal(partyPresentation.hasParty, false);
   assert.equal(partyPresentation.memberBadgeLabel, "NOT ESTABLISHED");
 
   const petPresentation = derivePetPresentation({ pets: [] });
-  assert.equal(petPresentation.status, "known-empty");
+  assert.equal(petPresentation.status, "not-established");
   assert.equal(petPresentation.hasPets, false);
   assert.equal(petPresentation.petCount, 0);
-  assert.equal(petPresentation.badgeLabel, "NO PETS");
+  assert.equal(petPresentation.badgeLabel, "NOT ESTABLISHED");
+});
+
+test("integration: deriveHudComposition with derivePetPresentationSummary across promoted timeline sequences", () => {
+  const rawTimeline = JSON.parse(fs.readFileSync("data/compiled-timeline.json", "utf8"));
+
+  // 1. Seq 1: Pre-acquisition state (replay mode)
+  const state1 = projectState(rawTimeline, 1);
+  const obs1 = projectObservations(rawTimeline, 1);
+  const petSummary1 = derivePetPresentationSummary({
+    pets: state1.pets,
+    events: rawTimeline.events,
+    currentSeq: 1,
+    isLivePetTransition: false,
+  });
+  const comp1 = deriveHudComposition({
+    projectedState: state1,
+    projectedObservations: obs1,
+    activeCountdown: null,
+    sequence: 1,
+    isLive: false,
+    floorHudTitle: "FLOOR 1",
+    petSummary: petSummary1,
+  });
+
+  assert.equal(comp1.pet?.hasPets, false);
+  assert.equal(comp1.pet?.semantics.status, "not-established");
+  assert.equal(comp1.pet?.primaryPet, undefined);
+
+  // 2. Seq 116: PetAcquired (historical replay vs live transition)
+  const state116 = projectState(rawTimeline, 116);
+  const obs116 = projectObservations(rawTimeline, 116);
+
+  // 2a. Replay scrubbing at Seq 116
+  const petSummary116Replay = derivePetPresentationSummary({
+    pets: state116.pets,
+    events: rawTimeline.events,
+    currentSeq: 116,
+    isLivePetTransition: false,
+  });
+  const comp116Replay = deriveHudComposition({
+    projectedState: state116,
+    projectedObservations: obs116,
+    activeCountdown: null,
+    sequence: 116,
+    isLive: false,
+    floorHudTitle: "FLOOR 2",
+    petSummary: petSummary116Replay,
+  });
+
+  assert.equal(comp116Replay.pet?.hasPets, true);
+  assert.equal(comp116Replay.pet?.semantics.status, "present");
+  assert.equal(comp116Replay.pet?.semantics.change, "newly-established");
+  assert.equal(comp116Replay.pet?.motionIntent, undefined); // Replay mode -> no motion intent!
+  assert.equal(comp116Replay.pet?.primaryPet?.species, "mongoliensis");
+
+  // 2b. Live transition at Seq 116
+  const petSummary116Live = derivePetPresentationSummary({
+    pets: state116.pets,
+    events: rawTimeline.events,
+    currentSeq: 116,
+    isLivePetTransition: true,
+  });
+  assert.equal(petSummary116Live.semantics.status, "present");
+  assert.equal(petSummary116Live.semantics.change, "newly-established");
+  assert.equal(petSummary116Live.motionIntent, "established"); // Live transition -> motion intent emitted!
+
+  // 3. Seq 117: PetHostilityChanged
+  const state117 = projectState(rawTimeline, 117);
+  const obs117 = projectObservations(rawTimeline, 117);
+  const petSummary117 = derivePetPresentationSummary({
+    pets: state117.pets,
+    events: rawTimeline.events,
+    currentSeq: 117,
+    isLivePetTransition: false,
+  });
+  const comp117 = deriveHudComposition({
+    projectedState: state117,
+    projectedObservations: obs117,
+    activeCountdown: null,
+    sequence: 117,
+    isLive: false,
+    floorHudTitle: "FLOOR 2",
+    petSummary: petSummary117,
+  });
+
+  assert.equal(comp117.pet?.semantics.status, "present");
+  assert.equal(comp117.pet?.semantics.change, "changed");
+  assert.equal(comp117.pet?.motionIntent, undefined);
+  assert.equal(comp117.pet?.primaryPet?.hostilityState, "non-hostile");
+
+  // 4. Seq 118: PetBonded (Mongo, Royal Steed)
+  const state118 = projectState(rawTimeline, 118);
+  const obs118 = projectObservations(rawTimeline, 118);
+  const petSummary118 = derivePetPresentationSummary({
+    pets: state118.pets,
+    events: rawTimeline.events,
+    currentSeq: 118,
+    isLivePetTransition: false,
+  });
+  const comp118 = deriveHudComposition({
+    projectedState: state118,
+    projectedObservations: obs118,
+    activeCountdown: null,
+    sequence: 118,
+    isLive: false,
+    floorHudTitle: "FLOOR 2",
+    petSummary: petSummary118,
+  });
+
+  assert.equal(comp118.pet?.semantics.status, "present");
+  assert.equal(comp118.pet?.semantics.change, "changed");
+  assert.equal(comp118.pet?.motionIntent, undefined);
+  assert.equal(comp118.pet?.primaryPet?.displayName, "Mongo");
+  assert.equal(comp118.pet?.primaryPet?.formattedTitle, "«Royal Steed»");
+
+  // 5. Seq 119: After PetBonded (next event e.g. AchievementUnlocked)
+  const state119 = projectState(rawTimeline, 119);
+  const obs119 = projectObservations(rawTimeline, 119);
+  const petSummary119 = derivePetPresentationSummary({
+    pets: state119.pets,
+    events: rawTimeline.events,
+    currentSeq: 119,
+    isLivePetTransition: false,
+  });
+  const comp119 = deriveHudComposition({
+    projectedState: state119,
+    projectedObservations: obs119,
+    activeCountdown: null,
+    sequence: 119,
+    isLive: false,
+    floorHudTitle: "FLOOR 2",
+    petSummary: petSummary119,
+  });
+
+  assert.equal(comp119.pet?.semantics.status, "present");
+  assert.equal(comp119.pet?.semantics.change, undefined); // No longer marked newly-established or changed!
+  assert.equal(comp119.pet?.motionIntent, undefined);
+
+  // 6. Seq 124: Floor 3 Entry (evt-f3-entered)
+  // Mongo persists as bonded from Floor 2 across the floor descent boundary
+  const state124 = projectState(rawTimeline, 124);
+  const obs124 = projectObservations(rawTimeline, 124);
+  const petSummary124 = derivePetPresentationSummary({
+    pets: state124.pets,
+    events: rawTimeline.events,
+    currentSeq: 124,
+    isLivePetTransition: false,
+  });
+  const comp124 = deriveHudComposition({
+    projectedState: state124,
+    projectedObservations: obs124,
+    activeCountdown: null,
+    sequence: 124,
+    isLive: false,
+    floorHudTitle: "FLOOR 3",
+    petSummary: petSummary124,
+  });
+
+  assert.equal(comp124.pet?.hasPets, true);
+  assert.equal(comp124.pet?.semantics.status, "present");
+  assert.equal(comp124.pet?.semantics.change, undefined); // NarrativeEvent on Floor 3 entry -> no Pet change
+  assert.equal(comp124.pet?.motionIntent, undefined);
+  assert.equal(comp124.pet?.primaryPet?.displayName, "Mongo");
+  assert.equal(comp124.pet?.primaryPet?.formattedTitle, "«Royal Steed»");
+  assert.equal(comp124.pet?.primaryPet?.bondState, "bonded");
 });

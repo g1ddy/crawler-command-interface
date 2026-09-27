@@ -7,6 +7,10 @@ import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPrese
 import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
+import { derivePetPresentationSummary } from "../../features/pet/public.ts";
+import type {
+  PresentationMotionIntent,
+} from "../../presentation/semantic/public.ts";
 import {
   availableRootViews,
   deriveNavigationContract,
@@ -163,19 +167,37 @@ export function CrawlerWorkspace({
   }, [events, currentSeq]);
 
   const prevIsLiveRef = useRef(isLive);
+  const prevSeqRef = useRef(currentSeq);
 
   // eslint-disable-next-line react-hooks/refs
   const prevIsLive = prevIsLiveRef.current;
-  let temporalMotionIntent: import("../../presentation/semantic/public.ts").PresentationMotionIntent | undefined = undefined;
+  // eslint-disable-next-line react-hooks/refs
+  const prevSeq = prevSeqRef.current;
+
+  let temporalMotionIntent: PresentationMotionIntent | undefined = undefined;
   if (prevIsLive === true && isLive === false) {
     temporalMotionIntent = "enter-replay";
   } else if (prevIsLive === false && isLive === true) {
     temporalMotionIntent = "return-live";
   }
 
+  const isLivePetTransition = isLive && prevIsLive && currentSeq > prevSeq;
+
+  const petSummary = useMemo(
+    () =>
+      derivePetPresentationSummary({
+        pets: projectedState.pets,
+        events,
+        currentSeq,
+        isLivePetTransition,
+      }),
+    [projectedState.pets, events, currentSeq, isLivePetTransition]
+  );
+
   useEffect(() => {
     prevIsLiveRef.current = isLive;
-  }, [isLive]);
+    prevSeqRef.current = currentSeq;
+  }, [isLive, currentSeq]);
 
   const composition = useMemo(
     () =>
@@ -187,6 +209,7 @@ export function CrawlerWorkspace({
         isLive,
         floorHudTitle,
         notificationsSummary,
+        petSummary,
         temporalMotionIntent,
       }),
     [
@@ -197,6 +220,7 @@ export function CrawlerWorkspace({
       isLive,
       floorHudTitle,
       notificationsSummary,
+      petSummary,
       temporalMotionIntent,
     ],
   );

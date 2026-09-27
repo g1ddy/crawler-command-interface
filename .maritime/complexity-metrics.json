@@ -329,10 +329,10 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 386,
+    "loc": 410,
     "instability": 0.95,
     "fanIn": 1,
-    "fanOut": 20,
+    "fanOut": 21,
     "scanned": true
   },
   "src/application/crawler-session.ts": {
@@ -375,43 +375,19 @@
     "fanOut": 1,
     "scanned": true
   },
-  "src/presentation/authority-arwes/ArwesPresentation.ts": {
-    "complexity": 7,
-    "loc": 58,
-    "instability": 0.8,
-    "fanIn": 1,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/shell/hud/public.ts": {
+  "src/features/pet/public.ts": {
     "complexity": 1,
-    "loc": 14,
-    "instability": 0.2,
+    "loc": 15,
+    "instability": 0.33,
     "fanIn": 4,
-    "fanOut": 1,
+    "fanOut": 2,
     "scanned": true
   },
-  "src/shell/hud/hud-composition.ts": {
-    "complexity": 6,
-    "loc": 204,
-    "instability": 0.75,
+  "src/features/pet/pet-presentation.ts": {
+    "complexity": 28,
+    "loc": 252,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/features/timeline/public.ts": {
-    "complexity": 1,
-    "loc": 37,
-    "instability": 0.39,
-    "fanIn": 11,
-    "fanOut": 7,
-    "scanned": true
-  },
-  "src/features/timeline/evidence/evidencePresentation.ts": {
-    "complexity": 15,
-    "loc": 209,
-    "instability": 0.22,
-    "fanIn": 7,
     "fanOut": 2,
     "scanned": true
   },
@@ -439,6 +415,46 @@
     "fanOut": 0,
     "scanned": true
   },
+  "src/presentation/authority-arwes/ArwesPresentation.ts": {
+    "complexity": 7,
+    "loc": 58,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/shell/hud/public.ts": {
+    "complexity": 1,
+    "loc": 15,
+    "instability": 0.2,
+    "fanIn": 4,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/shell/hud/hud-composition.ts": {
+    "complexity": 6,
+    "loc": 211,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/features/timeline/public.ts": {
+    "complexity": 1,
+    "loc": 37,
+    "instability": 0.39,
+    "fanIn": 11,
+    "fanOut": 7,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/evidencePresentation.ts": {
+    "complexity": 15,
+    "loc": 209,
+    "instability": 0.22,
+    "fanIn": 7,
+    "fanOut": 2,
+    "scanned": true
+  },
   "src/features/timeline/evidence/TelemetryBadge.tsx": {
     "complexity": 10,
     "loc": 95,
@@ -456,8 +472,8 @@
     "scanned": true
   },
   "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
-    "complexity": 13,
-    "loc": 459,
+    "complexity": 18,
+    "loc": 675,
     "instability": 0.9,
     "fanIn": 1,
     "fanOut": 9,
@@ -709,22 +725,6 @@
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
-    "scanned": true
-  },
-  "src/features/pet/public.ts": {
-    "complexity": 1,
-    "loc": 10,
-    "instability": 0.5,
-    "fanIn": 2,
-    "fanOut": 2,
-    "scanned": true
-  },
-  "src/features/pet/pet-presentation.ts": {
-    "complexity": 28,
-    "loc": 144,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
     "scanned": true
   },
   "src/features/quests/QuestsView.tsx": {
