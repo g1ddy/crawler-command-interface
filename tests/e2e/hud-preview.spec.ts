@@ -277,6 +277,17 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   await page.keyboard.press("Space");
   await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
   await expect(transportContainer).not.toBeVisible();
+
+  // Return to Live remains available in the collapsed mobile bar.
+  await page.getByRole("button", { name: "Expand replay controls" }).click();
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("117");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await page.getByRole("button", { name: "Collapse replay controls" }).click();
+  const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
+  await expect(compactReturn).toBeVisible();
+  await compactReturn.click();
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 });
 
 test("mobile replay disclosure resets when returning from desktop viewport", async ({ page }) => {
