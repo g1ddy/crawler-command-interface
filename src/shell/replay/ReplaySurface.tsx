@@ -1,11 +1,7 @@
 "use client";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 
-function subscribeMobile(callback: () => void) {
-  const mql = window.matchMedia("(max-width: 760px)");
-  mql.addEventListener("change", callback);
-  return () => mql.removeEventListener("change", callback);
-}
+
 function getMobileSnapshot() {
   return typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches;
 }
@@ -36,11 +32,16 @@ export function ReplaySurface({
 }: ReplaySurfaceProps) {
   const [showCountdownEvidence, setShowCountdownEvidence] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const subscribeMobile = useCallback((callback: () => void) => {
+    const mql = window.matchMedia("(max-width: 760px)");
+    const handleChange = () => {
+      if (mql.matches) setIsMobileExpanded(false);
+      callback();
+    };
+    mql.addEventListener("change", handleChange);
+    return () => mql.removeEventListener("change", handleChange);
+  }, []);
   const isMobile = useSyncExternalStore(subscribeMobile, getMobileSnapshot, getMobileServerSnapshot);
-
-  useEffect(() => {
-    if (isMobile) setIsMobileExpanded(false);
-  }, [isMobile]);
 
   const activeCommands: ReplayCommandCallbacks = {
     ...commands,
