@@ -16,6 +16,18 @@
 .mode { display: grid; gap: var(--hud-space-xs); font-size: 0.875rem; min-width: 8rem; }
 .mode b { color: var(--hud-state-success); font-family: var(--hud-font-mono); letter-spacing: 0.14em; }
 .mode[data-mode="replay"] b { color: var(--hud-state-warning); }
+.historicalTag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--hud-font-mono);
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #f59e0b;
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
 .broadcastContext { font-size: 0.75rem; color: var(--hud-text-secondary); font-family: var(--hud-font-mono); }
 
 .readings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--hud-space-md); max-width: 1404px; margin: var(--hud-space-lg) auto 0; border-top: 1px solid var(--hud-border-color); }

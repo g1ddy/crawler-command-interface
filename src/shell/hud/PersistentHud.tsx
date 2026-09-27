@@ -24,13 +24,21 @@ function Reading({
   onInspect: (reading: ProjectedObservationValue) => void;
 }) {
   const evidence = deriveEvidencePresentation(observation, sequence);
+  const isLastKnown = evidence.state === "last-known";
+  const temporal = isLastKnown ? "last-known" : "current";
   return (
-    <div className={styles.reading} role="group" aria-label={`${label} reading`} data-evidence={evidence.state}>
+    <div
+      className={styles.reading}
+      role="group"
+      aria-label={`${label} reading`}
+      data-evidence={evidence.state}
+      data-temporal={temporal}
+    >
       <span>{label}</span>
       <strong>{observation?.value.toLocaleString() ?? "—"}</strong>
       {observation ? (
         <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>
-          {evidence.label}
+          {isLastKnown ? "LAST KNOWN" : evidence.label}
         </button>
       ) : (
         <small>Unknown</small>
@@ -109,8 +117,18 @@ export function PersistentHud({
             <small>No sourced countdown</small>
           )}
         </div>
-        <div className={styles.mode} data-testid="hud-audience-mode" data-mode={liveMode ? "live" : "replay"}>
+        <div
+          className={styles.mode}
+          data-testid="hud-audience-mode"
+          data-mode={liveMode ? "live" : "replay"}
+          data-temporal={liveMode ? "current" : "last-known"}
+        >
           <b>{liveMode ? "LIVE" : "REPLAY"}</b>
+          {!liveMode && (
+            <span className={styles.historicalTag} data-testid="hud-historical-badge">
+              HISTORICAL
+            </span>
+          )}
           <div className={styles.broadcastContext} aria-label="Broadcast context">
             Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}
           </div>

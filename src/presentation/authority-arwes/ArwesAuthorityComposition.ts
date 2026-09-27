@@ -498,6 +498,7 @@ export function ArwesAuthorityComposition({
             {
               "data-testid": "hud-audience-mode",
               "data-mode": temporal.mode,
+              "data-temporal": temporal.isLive ? "current" : "last-known",
               "data-motion-intent": temporalIntent,
               style: {
                 textAlign: "right",
@@ -508,20 +509,43 @@ export function ArwesAuthorityComposition({
               },
             },
             createElement(
-              "span",
-              {
-                "data-testid": "arwes-mode-badge",
-                style: {
-                  fontSize: "0.75rem",
-                  fontWeight: 800,
-                  background: temporal.isLive ? "#15803d" : "#b45309",
-                  color: "#ffffff",
-                  padding: "0.2rem 0.55rem",
-                  borderRadius: "3px",
-                  letterSpacing: "0.06em",
+              "div",
+              { style: { display: "flex", alignItems: "center", gap: "0.35rem" } },
+              createElement(
+                "span",
+                {
+                  "data-testid": "arwes-mode-badge",
+                  style: {
+                    fontSize: "0.75rem",
+                    fontWeight: 800,
+                    background: temporal.isLive ? "#15803d" : "#b45309",
+                    color: "#ffffff",
+                    padding: "0.2rem 0.55rem",
+                    borderRadius: "3px",
+                    letterSpacing: "0.06em",
+                  },
                 },
-              },
-              temporal.mode.toUpperCase()
+                temporal.mode.toUpperCase()
+              ),
+              !temporal.isLive
+                ? createElement(
+                    "span",
+                    {
+                      "data-testid": "hud-historical-badge",
+                      style: {
+                        fontSize: "0.65rem",
+                        fontWeight: 700,
+                        color: "#fbbf24",
+                        backgroundColor: "rgba(245, 158, 11, 0.2)",
+                        border: "1px solid #f59e0b",
+                        borderRadius: "3px",
+                        padding: "0.15rem 0.35rem",
+                        letterSpacing: "0.05em",
+                      },
+                    },
+                    "HISTORICAL"
+                  )
+                : null
             ),
             createElement(
               "div",

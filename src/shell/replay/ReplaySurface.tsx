@@ -23,6 +23,7 @@ export function ReplaySurface({
   projectedObservations,
 }: ReplaySurfaceProps) {
   const [showCountdownEvidence, setShowCountdownEvidence] = useState(false);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   const activeCommands: ReplayCommandCallbacks = {
     ...commands,
@@ -30,8 +31,18 @@ export function ReplaySurface({
   };
 
   return (
-    <aside className={styles.surface} aria-label="Replay controls" data-mode={model.mode}>
-      <ReplayControls model={model} commands={activeCommands}>
+    <aside
+      className={styles.surface}
+      aria-label="Replay controls"
+      data-mode={model.mode}
+      data-mobile-expanded={isMobileExpanded}
+    >
+      <ReplayControls
+        model={model}
+        commands={activeCommands}
+        isMobileExpanded={isMobileExpanded}
+        onToggleMobileExpand={() => setIsMobileExpanded((prev) => !prev)}
+      >
       <TimelineDiagnostics
         events={model.scope.floorEvents}
         observations={model.scope.floorObservations}
