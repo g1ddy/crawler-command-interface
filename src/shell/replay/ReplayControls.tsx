@@ -92,11 +92,6 @@ export function ReplayControls({
               SEQ #{position.selectedSequence}{" "}
               <small>({position.currentEvent?.occurred_at || "exact time not sourced"})</small>
             </h2>
-            {false && !model.isLive && (
-              <p className={styles.historicalBanner} data-testid="historical-context-banner">
-                HISTORICAL VIEW · REPLAYING SEQUENCE #{position.selectedSequence}
-              </p>
-            )}
           </div>
           <div className={styles.steps}>
             <button
