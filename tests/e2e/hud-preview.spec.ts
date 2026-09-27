@@ -278,3 +278,28 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
   await expect(transportContainer).not.toBeVisible();
 });
+
+test("mobile replay disclosure resets when returning from desktop viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(pagesPath);
+
+  const compactBar = page.getByTestId("replay-compact-bar");
+  const transport = page.getByTestId("replay-transport-container");
+  const expandButton = page.getByRole("button", { name: "Expand replay controls" });
+
+  await expect(compactBar).toBeVisible();
+  await expect(expandButton).toHaveAttribute("aria-expanded", "false");
+
+  await expandButton.click();
+  await expect(page.getByRole("button", { name: "Collapse replay controls" })).toHaveAttribute("aria-expanded", "true");
+  await expect(transport).toBeVisible();
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(transport).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const collapsedButton = page.getByRole("button", { name: "Expand replay controls" });
+  await expect(compactBar).toBeVisible();
+  await expect(collapsedButton).toHaveAttribute("aria-expanded", "false");
+  await expect(transport).not.toBeVisible();
+});
