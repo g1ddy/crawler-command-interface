@@ -86,11 +86,7 @@ export function derivePetPresentation({
     ? `${petCount} ${petCount === 1 ? "PET" : "PETS"}`
     : status === "known-empty"
     ? "NO PETS"
-    : status === "not-established"
-    ? "NOT ESTABLISHED"
-    : status === "unavailable"
-    ? "UNAVAILABLE"
-    : "UNKNOWN";
+    : "NOT ESTABLISHED";
 
   const derivedPets: DerivedPetItem[] = activePets.map((pet) => {
     const displayName = pet.name ?? pet.species ?? "UNKNOWN PET";
