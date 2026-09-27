@@ -109,7 +109,8 @@ test("mapEvidenceToSemantics produces exact production temporal classification a
 
   const estimatedObs = { key: "k", value: 50, status: "estimated", basis: "sequence-position", sourceSequences: [10, 20] };
   const estimatedEvidence = deriveEvidencePresentation(estimatedObs, 15);
-  assert.equal(mapEvidenceToSemantics(estimatedEvidence).temporal, undefined);
+  assert.equal(mapEvidenceToSemantics(estimatedEvidence).temporal, "current");
+  assert.equal(mapEvidenceToSemantics(estimatedEvidence).authority, "estimated");
 
   const causalOnlyEvidence = deriveEvidencePresentation(null, 15, 100);
   assert.equal(mapEvidenceToSemantics(causalOnlyEvidence).temporal, undefined);
