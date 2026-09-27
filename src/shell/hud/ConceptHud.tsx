@@ -14,10 +14,14 @@ function Reading({ label, observation, sequence, onInspect }: {
 }) {
   const descriptor = deriveEvidencePresentation(observation, sequence);
   const dataEvidence = descriptor.state === "current" ? "observed" : descriptor.state;
-  const isLastKnown = descriptor.state === "last-known";
-  const temporal = isLastKnown ? "last-known" : "current";
+  const temporal =
+    descriptor.state === "current"
+      ? "current"
+      : descriptor.state === "last-known"
+      ? "last-known"
+      : undefined;
 
-  return <div className="hud-reading" data-evidence={dataEvidence} data-temporal={temporal}>
+  return <div className="hud-reading" data-evidence={dataEvidence} {...(temporal ? { "data-temporal": temporal } : {})}>
     <span>{label}</span>
     <strong>{observation ? observation.value.toLocaleString() : "—"}</strong>
     {observation ? <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>

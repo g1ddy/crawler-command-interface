@@ -34,7 +34,7 @@ export function ReplayControls({
           <span className={styles.compactSeq}>SEQ #{position.selectedSequence}</span>
         </div>
         <div className={styles.compactActions}>
-          {!model.isLive && (
+          {!model.isLive && !isMobileExpanded && (
             <button
               type="button"
               className={styles.compactReturnBtn}

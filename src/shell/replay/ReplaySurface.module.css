@@ -277,3 +277,14 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .surface,
+  .compactModeBadge,
+  .compactReturnBtn,
+  .mobileToggleBtn,
+  .transportContainer {
+    transition: none !important;
+    animation: none !important;
+  }
+}

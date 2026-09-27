@@ -98,6 +98,17 @@ test("deriveEvidencePresentation derives current, last-known, estimated, causal-
   });
 });
 
+test("evidence state maps explicitly to temporal attribute rules", () => {
+  const mapTemporalAttr = (state) =>
+    state === "current" ? "current" : state === "last-known" ? "last-known" : undefined;
+
+  assert.equal(mapTemporalAttr("current"), "current");
+  assert.equal(mapTemporalAttr("last-known"), "last-known");
+  assert.equal(mapTemporalAttr("estimated"), undefined);
+  assert.equal(mapTemporalAttr("unknown"), undefined);
+  assert.equal(mapTemporalAttr("causal-only"), undefined);
+});
+
 test("evidence presentation preserves source, locator, and confidence", () => {
   const evidence = {
     sourceId: "src-floor-2",

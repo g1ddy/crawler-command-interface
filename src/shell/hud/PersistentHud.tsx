@@ -24,15 +24,19 @@ function Reading({
   onInspect: (reading: ProjectedObservationValue) => void;
 }) {
   const evidence = deriveEvidencePresentation(observation, sequence);
-  const isLastKnown = evidence.state === "last-known";
-  const temporal = isLastKnown ? "last-known" : "current";
+  const temporal =
+    evidence.state === "current"
+      ? "current"
+      : evidence.state === "last-known"
+      ? "last-known"
+      : undefined;
   return (
     <div
       className={styles.reading}
       role="group"
       aria-label={`${label} reading`}
       data-evidence={evidence.state}
-      data-temporal={temporal}
+      {...(temporal ? { "data-temporal": temporal } : {})}
     >
       <span>{label}</span>
       <strong>{observation?.value.toLocaleString() ?? "—"}</strong>

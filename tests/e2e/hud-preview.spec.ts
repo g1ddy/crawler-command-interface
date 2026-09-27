@@ -242,7 +242,8 @@ test("System Tools modal consumes token-backed styles and enforces 44px minimum 
   expect(presentationBox?.height).toBeGreaterThanOrEqual(44);
 });
 
-test("compact mobile replay controls support expand and collapse interaction", async ({ page }) => {
+test("compact mobile replay controls support expand, collapse, keyboard focus, and reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
 
@@ -257,8 +258,10 @@ test("compact mobile replay controls support expand and collapse interaction", a
   const transportContainer = page.getByTestId("replay-transport-container");
   await expect(transportContainer).not.toBeVisible();
 
-  // Expand controls
-  await toggleBtn.click();
+  // Keyboard navigation: focus and press Enter on expand toggle
+  await toggleBtn.focus();
+  await expect(toggleBtn).toBeFocused();
+  await page.keyboard.press("Enter");
 
   const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
   await expect(collapseBtn).toBeVisible();
@@ -269,8 +272,9 @@ test("compact mobile replay controls support expand and collapse interaction", a
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await expect(slider).toBeVisible();
 
-  // Collapse controls again
-  await collapseBtn.click();
+  // Collapse controls again via keyboard
+  await collapseBtn.focus();
+  await page.keyboard.press("Space");
   await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
   await expect(transportContainer).not.toBeVisible();
 });
