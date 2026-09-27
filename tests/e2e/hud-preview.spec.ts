@@ -158,6 +158,8 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 
+  await openReplayContext(page);
+
   // Enter replay by scrubbing timeline to sequence 130
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
@@ -170,7 +172,7 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
 
   // Return to Live
-  await page.getByRole("button", { name: "RETURN TO LIVE" }).click();
+  await page.getByRole("button", { name: /RETURN TO LIVE/i }).first().click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "return-live");
 

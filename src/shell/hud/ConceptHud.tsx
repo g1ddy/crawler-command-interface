@@ -21,7 +21,7 @@ function Reading({ label, observation, sequence, onInspect }: {
     <span>{label}</span>
     <strong>{observation ? observation.value.toLocaleString() : "—"}</strong>
     {observation ? <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>
-      {isLastKnown ? "LAST KNOWN" : descriptor.label}
+      {descriptor.label}
     </button> : <small>Unknown</small>}
   </div>;
 }

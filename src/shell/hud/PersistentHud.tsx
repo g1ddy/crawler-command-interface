@@ -38,7 +38,7 @@ function Reading({
       <strong>{observation?.value.toLocaleString() ?? "—"}</strong>
       {observation ? (
         <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>
-          {isLastKnown ? "LAST KNOWN" : evidence.label}
+          {evidence.label}
         </button>
       ) : (
         <small>Unknown</small>

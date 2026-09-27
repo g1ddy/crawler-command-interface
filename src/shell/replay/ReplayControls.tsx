@@ -40,6 +40,7 @@ export function ReplayControls({
               className={styles.compactReturnBtn}
               onClick={commands.returnToLive}
               title="Return to Live sequence"
+              aria-label="Quick Return to Live"
             >
               RETURN TO LIVE ⚡
             </button>
