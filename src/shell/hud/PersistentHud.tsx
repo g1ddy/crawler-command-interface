@@ -125,11 +125,6 @@ export function PersistentHud({
           data-mode={liveMode ? "live" : "replay"}
         >
           <b>{liveMode ? "LIVE" : "REPLAY"}</b>
-          {false && !liveMode && (
-            <span className={styles.historicalTag} data-testid="hud-historical-badge">
-              HISTORICAL
-            </span>
-          )}
           <div className={styles.broadcastContext} aria-label="Broadcast context">
             Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}
           </div>
