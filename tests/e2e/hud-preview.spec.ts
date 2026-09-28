@@ -80,9 +80,26 @@ test("live presentation switching in System Tools preserves session state and up
 
     // Close the focus boundary before querying the accessible background.
     await page.getByRole("button", { name: "CANCEL" }).click();
-    // Verify continuity of replay sequence, live/replay mode, and capabilities
+
+    // Verify exactly one active HUD renderer mounted for the selection
+    if (choice.id === "production") {
+      await expect(page.locator('[data-hud-renderer="persistent"]')).toHaveCount(1);
+      await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(0);
+      await expect(page.locator('[data-hud-renderer="concept"]')).toHaveCount(0);
+    } else if (choice.id === "authority-arwes") {
+      await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
+      await expect(page.locator('[data-hud-renderer="persistent"]')).toHaveCount(0);
+      await expect(page.locator('[data-hud-renderer="concept"]')).toHaveCount(0);
+    } else {
+      await expect(page.locator('[data-hud-renderer="concept"]')).toHaveCount(1);
+      await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(0);
+      await expect(page.locator('[data-hud-renderer="persistent"]')).toHaveCount(0);
+    }
+
+    // Verify continuity of replay sequence, live/replay mode, capabilities, and historical cue
     await expect(slider).toHaveValue("117");
     await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+    await expect(page.locator('[data-testid="historical-context-cue"]:visible').first()).toBeVisible();
     await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
     await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Open data tools" }).click();
@@ -90,6 +107,85 @@ test("live presentation switching in System Tools preserves session state and up
 
   // Close System Tools
   await page.getByRole("button", { name: "CANCEL" }).click();
+});
+
+test("Pet visibility follows selected destination and survives renderer switching when available", async ({ page }) => {
+  await page.goto(pagesPath);
+  await openReplayContext(page);
+
+  // Select "all" floor timeline scope so sequence 130 (bonded pet sequence) is within bounds
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("130");
+
+  const nav = page.getByRole("navigation", { name: "Main Navigation" });
+  const petNavBtn = nav.getByRole("button", { name: "PET", exact: true });
+  await expect(petNavBtn).toBeVisible();
+
+  // Select PET view
+  await petNavBtn.click();
+  await expect(page.getByText("PET & DUNGEON FAMILIARS")).toBeVisible();
+
+  // Select PARTY destination -> Pet contextual content is absent
+  await nav.getByRole("button", { name: "PARTY", exact: true }).click();
+  await expect(page.getByTestId("arwes-pet-frame")).toHaveCount(0);
+
+  // Re-select PET destination
+  await petNavBtn.click();
+  await expect(page.getByText("PET & DUNGEON FAMILIARS")).toBeVisible();
+
+  // Switch renderer to Authority (Arwes POC) via System Tools
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
+  await page.getByRole("button", { name: "CANCEL" }).click();
+
+  // Verify PET destination remains selected and Arwes renders Pet contextual frame
+  await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
+  await expect(page.getByTestId("arwes-pet-frame")).toBeVisible();
+
+  // Switch destination to CRAWLER -> Pet contextual frame is removed in Arwes
+  await nav.getByRole("button", { name: "CRAWLER", exact: true }).click();
+  await expect(page.getByTestId("arwes-pet-frame")).toHaveCount(0);
+
+  // Switch back to PET -> Pet contextual frame is restored in Arwes
+  await petNavBtn.click();
+  await expect(page.getByTestId("arwes-pet-frame")).toBeVisible();
+
+  // Switch back to Production
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await page.getByRole("button", { name: "Production", exact: true }).click();
+  await page.getByRole("button", { name: "CANCEL" }).click();
+
+  // Verify PET view remains active in Production
+  await expect(page.locator('[data-hud-renderer="persistent"]')).toHaveCount(1);
+  await expect(page.getByText("PET & DUNGEON FAMILIARS")).toBeVisible();
+});
+
+test("historical-context cue is visible during Replay in compact, expanded, renderer-switched, and Live states", async ({ page }) => {
+  await page.goto(pagesPath);
+  await openReplayContext(page);
+
+  // Select "all" floor timeline scope and scrub to sequence 130
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("130");
+
+  // Replay mode active: historical cue is visible
+  await expect(page.locator('[data-testid="historical-context-cue"]:visible').first()).toBeVisible();
+
+  // Switch renderer to Authority (Arwes POC) while in Replay
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
+  await page.getByRole("button", { name: "CANCEL" }).click();
+
+  // Historical cue remains visible in Arwes during Replay
+  await expect(page.locator('[data-testid="historical-context-cue"]:visible').first()).toBeVisible();
+
+  // Return to Live removes historical cue
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/i }).click();
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByTestId("historical-context-cue")).toHaveCount(0);
 });
 
 
