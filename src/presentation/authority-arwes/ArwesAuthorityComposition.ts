@@ -5,6 +5,7 @@ import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
 import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
 import { AuthorityTransition } from "./primitives/AuthorityTransition.ts";
+import { AuthorityIndicator } from "./primitives/AuthorityIndicator.ts";
 import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
 import type {
   HudCompositionModel,
@@ -26,58 +27,22 @@ interface TelemetryRowProps {
 }
 
 function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
-  const { key, label, valueDisplay, badgeLabel, semantics } = item;
+  const { key, label, valueDisplay, semantics } = item;
   const rowKey = key;
   const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
 
   const rowMotionIntent: PresentationMotionIntent | undefined = semantics.motionIntent;
 
-  const badgeElement = isInspectable
-    ? createElement(
-        "button",
-        {
-          type: "button",
-          "data-testid": `telemetry-${rowKey}-badge`,
-          onClick: onInspect,
-          style: {
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.25rem",
-            fontSize: "0.65rem",
-            fontWeight: 700,
-            color: "#ffffff",
-            backgroundColor: "#0284c7",
-            border: "none",
-            borderRadius: "3px",
-            padding: "0.2rem 0.45rem",
-            cursor: "pointer",
-            textTransform: "uppercase",
-            letterSpacing: "0.04em",
-          },
-        },
-        badgeLabel,
-        createElement("span", { style: { fontSize: "0.6rem" } }, "🔍")
-      )
-    : createElement(
-        "span",
-        {
-          "data-testid": `telemetry-${rowKey}-badge`,
-          style: {
-            display: "inline-flex",
-            alignItems: "center",
-            fontSize: "0.65rem",
-            fontWeight: 600,
-            color: "#94a3b8",
-            backgroundColor: "rgba(15, 23, 42, 0.6)",
-            border: "1px solid rgba(148, 163, 184, 0.2)",
-            borderRadius: "3px",
-            padding: "0.2rem 0.45rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.04em",
-          },
-        },
-        badgeLabel
-      );
+  const indicatorLabel = isInspectable
+    ? `Inspect ${label.toLowerCase()} evidence: ${item.evidence.detailLabel.toLowerCase()}`
+    : `${label.toLowerCase()} evidence: ${item.evidence.detailLabel.toLowerCase()}`;
+
+  const indicator = createElement(AuthorityIndicator, {
+    marker: item.evidence.marker,
+    label: indicatorLabel,
+    onActivate: isInspectable ? onInspect : undefined,
+    testId: `telemetry-${rowKey}-badge`,
+  });
 
   return createElement(
     AuthorityTransition,
@@ -98,13 +63,15 @@ function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          flexWrap: "nowrap",
+          minWidth: 0,
           padding: "0.35rem 0.5rem",
           borderBottom: "1px solid rgba(56, 189, 248, 0.12)",
         },
       },
       createElement(
         "div",
-        { style: { display: "flex", flexDirection: "column" } },
+        { style: { display: "flex", flexDirection: "column", minWidth: 0, flexShrink: 1 } },
         createElement(
           "span",
           {
@@ -114,6 +81,9 @@ function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
               letterSpacing: "0.05em",
               fontWeight: 600,
               textTransform: "uppercase",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             },
           },
           label
@@ -127,12 +97,15 @@ function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
               fontWeight: 700,
               color: semantics.status === "unknown" ? "#64748b" : "#f8fafc",
               fontFamily: "monospace",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             },
           },
           valueDisplay
         )
       ),
-      createElement("div", { style: { display: "flex", alignItems: "center" } }, badgeElement)
+      createElement("div", { style: { display: "flex", alignItems: "center", flexShrink: 0 } }, indicator)
     )
   );
 }

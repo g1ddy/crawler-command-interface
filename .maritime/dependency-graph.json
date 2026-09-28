@@ -2533,6 +2533,7 @@
         "src/presentation/authority-arwes/ArwesAuthorityComposition.ts",
         "src/presentation/authority-arwes/primitives/AuthorityBackground.ts",
         "src/presentation/authority-arwes/primitives/AuthorityFrame.ts",
+        "src/presentation/authority-arwes/primitives/AuthorityIndicator.ts",
         "src/presentation/authority-arwes/primitives/AuthoritySurface.ts",
         "src/presentation/authority-arwes/primitives/AuthorityText.ts",
         "src/presentation/authority-arwes/primitives/AuthorityTransition.ts",
@@ -4057,6 +4058,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "./primitives/AuthorityIndicator.ts",
+          "resolved": "src/presentation/authority-arwes/primitives/AuthorityIndicator.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "./primitives/AuthoritySurface.ts",
           "resolved": "src/presentation/authority-arwes/primitives/AuthoritySurface.ts",
           "valid": true,
@@ -4296,6 +4314,51 @@
         "npm",
         "import"
       ]
+    },
+    {
+      "source": "src/presentation/authority-arwes/primitives/AuthorityIndicator.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/presentation/authority-arwes/ArwesAuthorityComposition.ts"
+      ],
+      "orphan": false
     },
     {
       "source": "src/presentation/authority-arwes/primitives/AuthoritySurface.ts",
@@ -10160,8 +10223,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 171,
-    "totalDependenciesCruised": 455,
+    "totalCruised": 172,
+    "totalDependenciesCruised": 458,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
