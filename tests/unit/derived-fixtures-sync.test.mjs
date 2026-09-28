@@ -1,26 +1,17 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { writeJsonFixtureIfChanged } from '../../scripts/sync-derived-fixtures.mjs';
 
-test('writeJsonFixtureIfChanged suppresses timestamp-only churn', () => {
+test('writeJsonFixtureIfChanged suppresses timestamp-only churn and preserves byte-for-byte exact file', () => {
   const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
   const targetFile = join(tmpDir, 'compiled-timeline.json');
 
   try {
-    const existingData = {
-      schemaVersion: 'crawler-timeline/v2',
-      timeline: {
-        id: 'tl-1',
-        title: 'Timeline',
-        createdAt: '2026-01-01T00:00:00.000Z',
-        updatedAt: '2026-01-01T00:00:00.000Z',
-      },
-      events: [{ id: 'evt-1', type: 'NarrativeEvent' }],
-    };
-    writeFileSync(targetFile, `${JSON.stringify(existingData, null, 2)}\n`, 'utf8');
+    const existingRawText = '{\n  "schemaVersion": "crawler-timeline/v2",\n  "timeline": {\n    "id": "tl-1",\n    "title": "Timeline",\n    "createdAt": "2026-01-01T00:00:00.000Z",\n    "updatedAt": "2026-01-01T00:00:00.000Z"\n  },\n  "events": [\n    {\n      "id": "evt-1",\n      "type": "NarrativeEvent"\n    }\n  ]\n}\n';
+    writeFileSync(targetFile, existingRawText, 'utf8');
 
     const generatedData = {
       schemaVersion: 'crawler-timeline/v2',
@@ -38,13 +29,13 @@ test('writeJsonFixtureIfChanged suppresses timestamp-only churn', () => {
     assert.equal(result.reason, 'timestamp_only_churn');
 
     const contentOnDisk = readFileSync(targetFile, 'utf8');
-    assert.equal(contentOnDisk, `${JSON.stringify(existingData, null, 2)}\n`);
+    assert.equal(contentOnDisk, existingRawText);
   } finally {
     rmSync(tmpDir, { recursive: true, force: true });
   }
 });
 
-test('writeJsonFixtureIfChanged writes meaningful output changes', () => {
+test('writeJsonFixtureIfChanged writes meaningful output changes, preserving createdAt and updating updatedAt', () => {
   const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
   const targetFile = join(tmpDir, 'compiled-timeline.json');
 
@@ -88,24 +79,16 @@ test('writeJsonFixtureIfChanged writes meaningful output changes', () => {
   }
 });
 
-test('writeJsonFixtureIfChanged preserves pre-modified user work when non-timestamp data is edited', () => {
+test('writeJsonFixtureIfChanged preserves local-only edit byte-for-byte when generated output differs only by timestamps', () => {
   const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
   const targetFile = join(tmpDir, 'compiled-timeline.json');
 
   try {
-    const preModifiedData = {
-      schemaVersion: 'crawler-timeline/v2',
-      timeline: {
-        id: 'tl-1',
-        title: 'Timeline - User Local Edit',
-        createdAt: '2026-01-01T00:00:00.000Z',
-        updatedAt: '2026-01-01T00:00:00.000Z',
-      },
-      events: [{ id: 'evt-1', type: 'NarrativeEvent', note: 'local draft' }],
-    };
-    writeFileSync(targetFile, `${JSON.stringify(preModifiedData, null, 2)}\n`, 'utf8');
+    const preModifiedText = '{\n  "schemaVersion": "crawler-timeline/v2",\n  "timeline": {\n    "id": "tl-1",\n    "title": "Timeline",\n    "createdAt": "2026-01-01T00:00:00.000Z",\n    "updatedAt": "2026-01-01T00:00:00.000Z"\n  },\n  "events": [\n    {\n      "id": "evt-1",\n      "type": "NarrativeEvent",\n      "customLocalNote": "uncommitted local draft"\n    }\n  ]\n}\n';
+    writeFileSync(targetFile, preModifiedText, 'utf8');
 
-    const generatedData = {
+    // Generated output that has the same non-timestamp content as the local edit file
+    const generatedDataWithLocalEdit = {
       schemaVersion: 'crawler-timeline/v2',
       timeline: {
         id: 'tl-1',
@@ -113,14 +96,51 @@ test('writeJsonFixtureIfChanged preserves pre-modified user work when non-timest
         createdAt: '2026-09-28T12:00:00.000Z',
         updatedAt: '2026-09-28T12:00:00.000Z',
       },
-      events: [{ id: 'evt-1', type: 'NarrativeEvent', note: 'compiled from raw' }],
+      events: [
+        {
+          id: 'evt-1',
+          type: 'NarrativeEvent',
+          customLocalNote: 'uncommitted local draft',
+        },
+      ],
     };
 
-    const result = writeJsonFixtureIfChanged(targetFile, generatedData);
+    const result = writeJsonFixtureIfChanged(targetFile, generatedDataWithLocalEdit);
+    assert.equal(result.written, false);
+    assert.equal(result.reason, 'timestamp_only_churn');
+
+    const contentOnDisk = readFileSync(targetFile, 'utf8');
+    assert.equal(contentOnDisk, preModifiedText);
+  } finally {
+    rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('writeJsonFixtureIfChanged overwrites target when generated non-timestamp content has changed', () => {
+  const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
+  const targetFile = join(tmpDir, 'compiled-timeline.json');
+
+  try {
+    const preModifiedText = '{\n  "schemaVersion": "crawler-timeline/v2",\n  "timeline": {\n    "id": "tl-1",\n    "title": "Timeline",\n    "createdAt": "2026-01-01T00:00:00.000Z",\n    "updatedAt": "2026-01-01T00:00:00.000Z"\n  },\n  "events": [\n    {\n      "id": "evt-1",\n      "type": "NarrativeEvent",\n      "localDraft": true\n    }\n  ]\n}\n';
+    writeFileSync(targetFile, preModifiedText, 'utf8');
+
+    // Generated output compiled from raw floor files (does NOT contain localDraft)
+    const generatedDataFromRaw = {
+      schemaVersion: 'crawler-timeline/v2',
+      timeline: {
+        id: 'tl-1',
+        title: 'Timeline',
+        createdAt: '2026-09-28T12:00:00.000Z',
+        updatedAt: '2026-09-28T12:00:00.000Z',
+      },
+      events: [{ id: 'evt-1', type: 'NarrativeEvent' }],
+    };
+
+    const result = writeJsonFixtureIfChanged(targetFile, generatedDataFromRaw);
     assert.equal(result.written, true);
 
     const contentOnDisk = JSON.parse(readFileSync(targetFile, 'utf8'));
-    assert.equal(contentOnDisk.events[0].note, 'compiled from raw');
+    assert.equal(contentOnDisk.events[0].localDraft, undefined);
     assert.equal(contentOnDisk.timeline.createdAt, '2026-01-01T00:00:00.000Z');
   } finally {
     rmSync(tmpDir, { recursive: true, force: true });
@@ -146,6 +166,62 @@ test('writeJsonFixtureIfChanged handles derived floor fixtures cleanly', () => {
     assert.equal(secondResult.written, false);
     assert.equal(secondResult.reason, 'identical');
   } finally {
+    rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('writeJsonFixtureIfChanged creates new file when destination does not exist', () => {
+  const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
+  const targetFile = join(tmpDir, 'new-file.json');
+
+  try {
+    const newData = { foo: 'bar' };
+    const result = writeJsonFixtureIfChanged(targetFile, newData);
+    assert.equal(result.written, true);
+    assert.equal(result.reason, 'created');
+    assert.equal(readFileSync(targetFile, 'utf8'), '{\n  "foo": "bar"\n}\n');
+  } finally {
+    rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('writeJsonFixtureIfChanged throws SyntaxError on invalid JSON rather than overwriting', () => {
+  const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
+  const targetFile = join(tmpDir, 'corrupted.json');
+
+  try {
+    writeFileSync(targetFile, 'INVALID_JSON{', 'utf8');
+    const newData = { foo: 'bar' };
+
+    assert.throws(
+      () => writeJsonFixtureIfChanged(targetFile, newData),
+      (err) => err instanceof SyntaxError,
+    );
+  } finally {
+    rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('writeJsonFixtureIfChanged lets read errors propagate rather than overwriting', () => {
+  if (process.platform === 'win32' || process.getuid?.() === 0) {
+    // Skip file permission test on platforms where chmod 000 is ignored
+    return;
+  }
+
+  const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
+  const targetFile = join(tmpDir, 'unreadable.json');
+
+  try {
+    writeFileSync(targetFile, '{"foo": "bar"}', 'utf8');
+    chmodSync(targetFile, 0o000);
+
+    const newData = { foo: 'baz' };
+    assert.throws(
+      () => writeJsonFixtureIfChanged(targetFile, newData),
+      (err) => err && (err.code === 'EACCES' || err.code === 'EPERM'),
+    );
+  } finally {
+    chmodSync(targetFile, 0o666);
     rmSync(tmpDir, { recursive: true, force: true });
   }
 });
