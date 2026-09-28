@@ -512,6 +512,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
       badgeLabel: "NOT ESTABLISHED",
       semantics: { status: "not-established", affordance: "none" },
     },
+    activeView: "pet",
     telemetryItems: [],
   };
 
@@ -551,6 +552,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
       },
       motionIntent: "established",
     },
+    activeView: "pet",
     telemetryItems: [],
   };
 
@@ -592,6 +594,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
       },
       motionIntent: "changed",
     },
+    activeView: "pet",
     telemetryItems: [],
   };
 

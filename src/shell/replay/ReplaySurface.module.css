@@ -176,6 +176,19 @@
   font-weight: normal;
 }
 
+.historicalCue {
+  font-family: var(--hud-font-mono, monospace);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 3px;
+  padding: 0.15rem 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .historicalBanner {
   font-family: var(--hud-font-mono, monospace);
   font-size: 0.75rem;

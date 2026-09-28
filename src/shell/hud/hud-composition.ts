@@ -10,6 +10,7 @@ import {
   mapEvidenceToSemantics,
 } from "../../features/timeline/public.ts";
 import type { PetPresentationSummary as HudPetSummary } from "../../features/pet/public.ts";
+import type { RootView } from "../navigation/navigation-model.ts";
 import type {
   PresentationMotionIntent,
   PresentationSemantics,
@@ -98,6 +99,7 @@ export interface HudCompositionModel {
   broadcast: HudBroadcastSummary;
   pet?: HudPetSummary;
   telemetryItems: HudTelemetryPresentation[];
+  activeView?: RootView;
 }
 
 export interface DeriveHudCompositionInput {
@@ -111,6 +113,7 @@ export interface DeriveHudCompositionInput {
   petSummary?: HudPetSummary;
   temporalMotionIntent?: PresentationMotionIntent;
   attentionMotionIntent?: PresentationMotionIntent;
+  activeView?: RootView;
 }
 
 function createTelemetryItem(
@@ -157,6 +160,7 @@ export function deriveHudComposition({
   petSummary,
   temporalMotionIntent,
   attentionMotionIntent,
+  activeView,
 }: DeriveHudCompositionInput): HudCompositionModel {
   const healthItem = createTelemetryItem(
     "health",
@@ -217,5 +221,6 @@ export function deriveHudComposition({
     },
     pet: petSummary,
     telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
+    activeView,
   };
 }

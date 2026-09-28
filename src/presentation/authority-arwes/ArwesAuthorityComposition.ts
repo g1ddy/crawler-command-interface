@@ -112,11 +112,12 @@ function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
 
 interface PetSurfaceProps {
   pet?: HudCompositionModel["pet"];
+  activeView?: HudCompositionModel["activeView"];
   motionMode?: AuthorityMotionMode;
 }
 
-function PetSurface({ pet, motionMode }: PetSurfaceProps) {
-  if (!pet) return null;
+function PetSurface({ pet, activeView, motionMode }: PetSurfaceProps) {
+  if (activeView !== "pet" || !pet) return null;
 
   const { badgeLabel, semantics, primaryPet, motionIntent } = pet;
   const isPresent = semantics.status === "present";
@@ -644,6 +645,7 @@ export function ArwesAuthorityComposition({
       /* Pet Surface */
       createElement(PetSurface, {
         pet,
+        activeView: composition.activeView,
         motionMode,
       })
     )
