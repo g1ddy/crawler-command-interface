@@ -3626,6 +3626,24 @@
           "resolved": "src/presentation/semantic/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../navigation/navigation-model.ts",
+          "resolved": "src/shell/navigation/navigation-model.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -3936,6 +3954,20 @@
         "src/features/timeline/history/TimelineHistory.tsx",
         "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
         "src/features/timeline/diagnostics/SequenceInspector.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shell/navigation/navigation-model.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/shell/hud/hud-composition.ts",
+        "src/shell/ActiveFeatureView.tsx",
+        "src/shell/navigation/public.ts",
+        "src/shell/navigation/capabilities.ts",
+        "src/shell/navigation/navigation-contract.ts",
+        "src/shell/navigation/RootNavigation.tsx"
       ],
       "orphan": false
     },
@@ -7485,19 +7517,6 @@
       "orphan": false
     },
     {
-      "source": "src/shell/navigation/navigation-model.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/shell/ActiveFeatureView.tsx",
-        "src/shell/navigation/public.ts",
-        "src/shell/navigation/capabilities.ts",
-        "src/shell/navigation/navigation-contract.ts",
-        "src/shell/navigation/RootNavigation.tsx"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/shell/hud/ConceptHud.tsx",
       "valid": true,
       "dependencies": [
@@ -10142,7 +10161,7 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 171,
-    "totalDependenciesCruised": 454,
+    "totalDependenciesCruised": 455,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
