@@ -254,8 +254,11 @@ test("authority-arwes supports keyboard navigation, focus return, and passive un
   const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
   await expect(manaBadge).toBeVisible();
 
-  // Focus with keyboard / focus method and assert visible focus outline styling
-  await manaBadge.focus();
+  // Reach the evidence button through real keyboard navigation so :focus-visible is active.
+  for (let tabCount = 0; tabCount < 40; tabCount += 1) {
+    if (await manaBadge.evaluate((el) => el === document.activeElement)) break;
+    await page.keyboard.press("Tab");
+  }
   await expect(manaBadge).toBeFocused();
 
   const computedOutline = await manaBadge.evaluate((el) => {
