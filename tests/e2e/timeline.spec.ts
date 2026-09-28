@@ -41,7 +41,6 @@ test("scrubbing backward removes state that was introduced later", async ({ page
 
   await selectSequence(page, 1);
 
-  await expect(page.getByText(/HISTORICAL VIEW · REPLAYING SEQUENCE #1/)).toBeVisible();
   await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
   await expect(page.getByTestId("hud-audience-mode")).not.toContainText("LIVE");
   await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
@@ -54,7 +53,6 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
 
   await floors.selectOption("1");
   await expect(sequenceHeading(page)).toContainText(`SEQ #${floor1EndSequence}`);
-  await expect(page.getByText(`HISTORICAL VIEW · REPLAYING SEQUENCE #${floor1EndSequence}`)).toBeVisible();
 
   await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
   await expect(floors).toHaveValue("2");

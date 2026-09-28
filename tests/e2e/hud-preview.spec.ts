@@ -280,7 +280,15 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
 
   // Return to Live remains available in the collapsed mobile bar.
   await page.getByRole("button", { name: "Expand replay controls" }).click();
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+
+  // Need to open the replay context details to access the combobox
+  const context = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
+  if (await context.getAttribute("open") === null) {
+    await context.locator("summary").click();
+  }
+  // Select "all" floor timeline scope so sequence 117 is within bounds
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+
   await slider.fill("117");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
   await page.getByRole("button", { name: "Collapse replay controls" }).click();

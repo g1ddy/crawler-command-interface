@@ -119,6 +119,7 @@ test("HUD Semantics: estimated telemetry mapping", () => {
 
   assert.deepEqual(semantic, {
     status: "present",
+    temporal: "current",
     authority: "estimated",
     affordance: "inspect",
     provenance: { inspectable: true },
