@@ -23,6 +23,7 @@ export function AuthorityIndicator({
       "button",
       {
         type: "button",
+        className: "arwes-indicator-button",
         "aria-label": label,
         title: label,
         "data-testid": testId,

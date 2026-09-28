@@ -133,9 +133,21 @@ test("authority-arwes supports keyboard navigation, focus return, and passive un
   const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
   await expect(manaBadge).toBeVisible();
 
-  // Focus and activate with Enter key
+  // Focus with keyboard / focus method and assert visible focus outline styling
   await manaBadge.focus();
   await expect(manaBadge).toBeFocused();
+
+  const computedOutline = await manaBadge.evaluate((el) => {
+    const style = window.getComputedStyle(el);
+    return {
+      outlineStyle: style.outlineStyle,
+      outlineWidth: parseFloat(style.outlineWidth) || 0,
+    };
+  });
+  expect(computedOutline.outlineStyle).not.toBe("none");
+  expect(computedOutline.outlineWidth).toBeGreaterThan(0);
+
+  // Activate with Enter key
   await page.keyboard.press("Enter");
 
   // Confirm inspection modal opens
