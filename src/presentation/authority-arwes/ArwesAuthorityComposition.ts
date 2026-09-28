@@ -508,20 +508,24 @@ export function ArwesAuthorityComposition({
               },
             },
             createElement(
-              "span",
-              {
-                "data-testid": "arwes-mode-badge",
-                style: {
-                  fontSize: "0.75rem",
-                  fontWeight: 800,
-                  background: temporal.isLive ? "#15803d" : "#b45309",
-                  color: "#ffffff",
-                  padding: "0.2rem 0.55rem",
-                  borderRadius: "3px",
-                  letterSpacing: "0.06em",
+              "div",
+              { style: { display: "flex", alignItems: "center", gap: "0.35rem" } },
+              createElement(
+                "span",
+                {
+                  "data-testid": "arwes-mode-badge",
+                  style: {
+                    fontSize: "0.75rem",
+                    fontWeight: 800,
+                    background: temporal.isLive ? "#15803d" : "#b45309",
+                    color: "#ffffff",
+                    padding: "0.2rem 0.55rem",
+                    borderRadius: "3px",
+                    letterSpacing: "0.06em",
+                  },
                 },
-              },
-              temporal.mode.toUpperCase()
+                temporal.mode.toUpperCase()
+              ),
             ),
             createElement(
               "div",

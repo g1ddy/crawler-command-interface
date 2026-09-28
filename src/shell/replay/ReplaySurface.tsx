@@ -1,5 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
+
+
+function getMobileSnapshot() {
+  return typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches;
+}
+function getMobileServerSnapshot() {
+  return false;
+}
 import type { ProjectedObservationsState } from "../../../app/domain/types";
 import type {
   ReplayCommandCallbacks,
@@ -23,6 +31,17 @@ export function ReplaySurface({
   projectedObservations,
 }: ReplaySurfaceProps) {
   const [showCountdownEvidence, setShowCountdownEvidence] = useState(false);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const subscribeMobile = useCallback((callback: () => void) => {
+    const mql = window.matchMedia("(max-width: 760px)");
+    const handleChange = () => {
+      if (mql.matches) setIsMobileExpanded(false);
+      callback();
+    };
+    mql.addEventListener("change", handleChange);
+    return () => mql.removeEventListener("change", handleChange);
+  }, []);
+  const isMobile = useSyncExternalStore(subscribeMobile, getMobileSnapshot, getMobileServerSnapshot);
 
   const activeCommands: ReplayCommandCallbacks = {
     ...commands,
@@ -30,8 +49,19 @@ export function ReplaySurface({
   };
 
   return (
-    <aside className={styles.surface} aria-label="Replay controls" data-mode={model.mode}>
-      <ReplayControls model={model} commands={activeCommands}>
+    <aside
+      className={styles.surface}
+      aria-label="Replay controls"
+      data-mode={model.mode}
+      data-mobile-expanded={isMobileExpanded}
+    >
+      <ReplayControls
+        model={model}
+        commands={activeCommands}
+        isMobile={isMobile}
+        isMobileExpanded={isMobileExpanded}
+        onToggleMobileExpand={() => setIsMobileExpanded((prev) => !prev)}
+      >
       <TimelineDiagnostics
         events={model.scope.floorEvents}
         observations={model.scope.floorObservations}

@@ -7,6 +7,7 @@ import {
   evidenceSummary,
   firstCountdownEvidenceSummary,
   formatEvidenceLocator,
+  mapEvidenceToSemantics,
   selectDisplayedReading,
 } from "../../src/features/timeline/evidence/evidencePresentation.ts";
 
@@ -96,6 +97,26 @@ test("deriveEvidencePresentation derives current, last-known, estimated, causal-
     referenceObservationIds: [],
     inspectable: false,
   });
+});
+
+test("mapEvidenceToSemantics produces exact production temporal classification across evidence states", () => {
+  const currentObs = { key: "k", value: 100, sequence: 10, status: "stated", basis: "exact-observation" };
+  const currentEvidence = deriveEvidencePresentation(currentObs, 10);
+  assert.equal(mapEvidenceToSemantics(currentEvidence).temporal, "current");
+
+  const lastKnownEvidence = deriveEvidencePresentation(currentObs, 25);
+  assert.equal(mapEvidenceToSemantics(lastKnownEvidence).temporal, "last-known");
+
+  const estimatedObs = { key: "k", value: 50, status: "estimated", basis: "sequence-position", sourceSequences: [10, 20] };
+  const estimatedEvidence = deriveEvidencePresentation(estimatedObs, 15);
+  assert.equal(mapEvidenceToSemantics(estimatedEvidence).temporal, "current");
+  assert.equal(mapEvidenceToSemantics(estimatedEvidence).authority, "estimated");
+
+  const causalOnlyEvidence = deriveEvidencePresentation(null, 15, 100);
+  assert.equal(mapEvidenceToSemantics(causalOnlyEvidence).temporal, undefined);
+
+  const unknownEvidence = deriveEvidencePresentation(null, 15, null);
+  assert.equal(mapEvidenceToSemantics(unknownEvidence).temporal, undefined);
 });
 
 test("evidence presentation preserves source, locator, and confidence", () => {

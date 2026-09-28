@@ -473,7 +473,7 @@
   },
   "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
     "complexity": 18,
-    "loc": 675,
+    "loc": 679,
     "instability": 0.9,
     "fanIn": 1,
     "fanOut": 9,
@@ -792,8 +792,8 @@
     "scanned": true
   },
   "src/shell/hud/ConceptHud.tsx": {
-    "complexity": 12,
-    "loc": 60,
+    "complexity": 13,
+    "loc": 69,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
@@ -833,7 +833,7 @@
   },
   "src/shell/hud/PersistentHud.tsx": {
     "complexity": 43,
-    "loc": 134,
+    "loc": 148,
     "instability": 0.89,
     "fanIn": 1,
     "fanOut": 8,
@@ -937,7 +937,7 @@
   },
   "src/shell/replay/ReplaySurface.tsx": {
     "complexity": 3,
-    "loc": 58,
+    "loc": 88,
     "instability": 0.89,
     "fanIn": 1,
     "fanOut": 8,
@@ -960,8 +960,8 @@
     "scanned": true
   },
   "src/shell/replay/ReplayControls.tsx": {
-    "complexity": 11,
-    "loc": 69,
+    "complexity": 22,
+    "loc": 167,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,

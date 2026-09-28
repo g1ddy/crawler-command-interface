@@ -7,7 +7,10 @@ import type {
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
-import { deriveEvidencePresentation } from "../../features/timeline/evidence/evidencePresentation";
+import {
+  deriveEvidencePresentation,
+  mapEvidenceToSemantics,
+} from "../../features/timeline/evidence/evidencePresentation";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 import { Hotlist } from "./hotlist/Hotlist";
 import styles from "./PersistentHud.module.css";
@@ -24,8 +27,15 @@ function Reading({
   onInspect: (reading: ProjectedObservationValue) => void;
 }) {
   const evidence = deriveEvidencePresentation(observation, sequence);
+  const semantics = mapEvidenceToSemantics(evidence);
   return (
-    <div className={styles.reading} role="group" aria-label={`${label} reading`} data-evidence={evidence.state}>
+    <div
+      className={styles.reading}
+      role="group"
+      aria-label={`${label} reading`}
+      data-evidence={evidence.state}
+      {...(semantics.temporal ? { "data-temporal": semantics.temporal } : {})}
+    >
       <span>{label}</span>
       <strong>{observation?.value.toLocaleString() ?? "—"}</strong>
       {observation ? (
@@ -109,7 +119,11 @@ export function PersistentHud({
             <small>No sourced countdown</small>
           )}
         </div>
-        <div className={styles.mode} data-testid="hud-audience-mode" data-mode={liveMode ? "live" : "replay"}>
+        <div
+          className={styles.mode}
+          data-testid="hud-audience-mode"
+          data-mode={liveMode ? "live" : "replay"}
+        >
           <b>{liveMode ? "LIVE" : "REPLAY"}</b>
           <div className={styles.broadcastContext} aria-label="Broadcast context">
             Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}

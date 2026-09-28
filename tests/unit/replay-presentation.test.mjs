@@ -203,3 +203,30 @@ test("minimal alternate replay consumer uses model without ReplaySurface", () =>
   assert.equal(output.nextEnabled, false);
   assert.equal(output.returnLiveEnabled, true);
 });
+
+test("temporal context maintains clear LIVE vs REPLAY mode and sequence position during historical scrubbing", () => {
+  const liveContext = deriveReplayPresentation({
+    events: sampleEvents,
+    floors: sampleFloors,
+    selectedFloorOrdinal: "all",
+    selectedSequence: 15,
+    isLive: true,
+  });
+
+  assert.equal(liveContext.mode, "live");
+  assert.equal(liveContext.position.selectedSequence, 15);
+  assert.equal(liveContext.commands.canReturnToLive, false);
+
+  const historicalContext = deriveReplayPresentation({
+    events: sampleEvents,
+    floors: sampleFloors,
+    selectedFloorOrdinal: "all",
+    selectedSequence: 5,
+    isLive: false,
+  });
+
+  assert.equal(historicalContext.mode, "replay");
+  assert.equal(historicalContext.position.selectedSequence, 5);
+  assert.equal(historicalContext.position.currentEvent?.summary, "Found Sword");
+  assert.equal(historicalContext.commands.canReturnToLive, true);
+});

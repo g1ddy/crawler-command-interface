@@ -7,33 +7,129 @@ export interface ReplayControlsProps {
   model: ReplayPresentation;
   commands: ReplayCommandCallbacks;
   children?: ReactNode;
+  isMobile?: boolean;
+  isMobileExpanded?: boolean;
+  onToggleMobileExpand?: () => void;
 }
 
 /** Pure replay controls: nearest sequence, scope and availability come from the shared model. */
-export function ReplayControls({ model, commands, children }: ReplayControlsProps) {
+export function ReplayControls({
+  model,
+  commands,
+  children,
+  isMobile = false,
+  isMobileExpanded = false,
+  onToggleMobileExpand,
+}: ReplayControlsProps) {
   const { scope, position } = model;
-  return <>
-    <div className={styles.transport}>
-      <div className={styles.modes} aria-label="Replay mode">
-        <button aria-pressed={model.isLive} onClick={() => !model.isLive && commands.setLiveMode(true)}>● LIVE</button>
-        <button aria-pressed={!model.isLive} onClick={() => model.isLive && commands.setLiveMode(false)}>↺ REPLAY MODE</button>
+  const isCollapsedMobile = isMobile && !isMobileExpanded;
+
+  return (
+    <>
+      <div className={styles.compactBar} data-testid="replay-compact-bar">
+        <div className={styles.compactStatus}>
+          <span
+            className={styles.compactModeBadge}
+            data-mode={model.mode}
+            aria-label={`Current mode: ${model.isLive ? "Live" : "Replay"}`}
+          >
+            {model.isLive ? "● LIVE" : "↺ REPLAY"}
+          </span>
+          <span className={styles.compactSeq}>SEQ #{position.selectedSequence}</span>
+        </div>
+        <div className={styles.compactActions}>
+          {!model.isLive && isCollapsedMobile && (
+            <button
+              type="button"
+              className={styles.compactReturnBtn}
+              onClick={commands.returnToLive}
+              title="Return to Live sequence"
+              aria-label="Return to Live sequence"
+            >
+              RETURN TO LIVE ⚡
+            </button>
+          )}
+          {onToggleMobileExpand && (
+            <button
+              type="button"
+              className={styles.mobileToggleBtn}
+              aria-expanded={isMobileExpanded}
+              aria-label={isMobileExpanded ? "Collapse replay controls" : "Expand replay controls"}
+              onClick={onToggleMobileExpand}
+            >
+              {isMobileExpanded ? "▲ CONTROLS" : "▼ CONTROLS"}
+            </button>
+          )}
+        </div>
       </div>
-      <div className={styles.position}>
-        <h2>SEQ #{position.selectedSequence} <small>({position.currentEvent?.occurred_at || "exact time not sourced"})</small></h2>
-        {!model.isLive && <p>HISTORICAL VIEW · REPLAYING SEQUENCE #{position.selectedSequence}</p>}
-      </div>
-      <div className={styles.steps}>
-        <button disabled={!model.commands.canStepPrevious} onClick={commands.stepPrevious} title="Previous Event in Selected Scope">◄ PREV</button>
-        <button disabled={!model.commands.canStepNext} onClick={commands.stepNext} title="Next Event in Selected Scope">NEXT ►</button>
-        {!model.isLive && <button onClick={commands.returnToLive}>RETURN TO LIVE ⚡</button>}
-      </div>
-    </div>
-    <input aria-label="Selected timeline sequence" type="range"
-      min={scope.minSequence} max={scope.maxSequence} value={position.selectedSequence}
-      disabled={!model.availability.hasScopedSequences}
-      onChange={e => commands.selectSequence(position.closestSequence(Number(e.target.value)))}
-      className={styles.scrubber} />
-    <details className={styles.context}>
+
+      <div
+        className={styles.transportContainer}
+        data-expanded={isMobileExpanded}
+        data-testid="replay-transport-container"
+        inert={isCollapsedMobile ? true : undefined}
+        hidden={isCollapsedMobile ? true : undefined}
+      >
+        <div className={styles.transport}>
+          <div className={styles.modes} aria-label="Replay mode">
+            <button
+              type="button"
+              aria-pressed={model.isLive}
+              onClick={() => !model.isLive && commands.setLiveMode(true)}
+            >
+              ● LIVE
+            </button>
+            <button
+              type="button"
+              aria-pressed={!model.isLive}
+              onClick={() => model.isLive && commands.setLiveMode(false)}
+            >
+              ↺ REPLAY MODE
+            </button>
+          </div>
+          <div className={styles.position}>
+            <h2>
+              SEQ #{position.selectedSequence}{" "}
+              <small>({position.currentEvent?.occurred_at || "exact time not sourced"})</small>
+            </h2>
+          </div>
+          <div className={styles.steps}>
+            <button
+              type="button"
+              disabled={!model.commands.canStepPrevious}
+              onClick={commands.stepPrevious}
+              title="Previous Event in Selected Scope"
+            >
+              ◄ PREV
+            </button>
+            <button
+              type="button"
+              disabled={!model.commands.canStepNext}
+              onClick={commands.stepNext}
+              title="Next Event in Selected Scope"
+            >
+              NEXT ►
+            </button>
+            {!model.isLive && (
+              <button type="button" onClick={commands.returnToLive}>
+                RETURN TO LIVE ⚡
+              </button>
+            )}
+          </div>
+        </div>
+        <input
+          aria-label="Selected timeline sequence"
+          type="range"
+          min={scope.minSequence}
+          max={scope.maxSequence}
+          value={position.selectedSequence}
+          disabled={!model.availability.hasScopedSequences}
+          onChange={(e) =>
+            commands.selectSequence(position.closestSequence(Number(e.target.value)))
+          }
+          className={styles.scrubber}
+        />
+        <details className={styles.context}>
       <summary>Replay context &amp; tools · {scope.selectedFloorOrdinal === "all" ? "Whole story" : `Floor ${scope.selectedFloorOrdinal}`}</summary>
     <div className={styles.scope}>
       <label htmlFor="floor-scope">FLOOR NAVIGATOR:</label>
@@ -64,5 +160,7 @@ export function ReplayControls({ model, commands, children }: ReplayControlsProp
     </div>)}
     {children}
     </details>
-  </>;
+    </div>
+    </>
+  );
 }

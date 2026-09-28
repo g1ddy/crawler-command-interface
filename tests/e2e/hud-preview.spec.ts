@@ -158,6 +158,8 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 
+  await openReplayContext(page);
+
   // Enter replay by scrubbing timeline to sequence 130
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
@@ -170,7 +172,7 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
 
   // Return to Live
-  await page.getByRole("button", { name: "RETURN TO LIVE" }).click();
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/i }).click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "return-live");
 
@@ -238,4 +240,85 @@ test("System Tools modal consumes token-backed styles and enforces 44px minimum 
   const presentationBtn = page.getByRole("button", { name: "Authority (HUD Preview)" });
   const presentationBox = await presentationBtn.boundingBox();
   expect(presentationBox?.height).toBeGreaterThanOrEqual(44);
+});
+
+test("compact mobile replay controls support expand, collapse, keyboard focus, and reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(pagesPath);
+
+  // Initially on narrow viewport, compact bar is visible and transport controls are collapsed
+  const compactBar = page.getByTestId("replay-compact-bar");
+  await expect(compactBar).toBeVisible();
+
+  const toggleBtn = page.getByRole("button", { name: "Expand replay controls" });
+  await expect(toggleBtn).toBeVisible();
+  await expect(toggleBtn).toHaveAttribute("aria-expanded", "false");
+
+  const transportContainer = page.getByTestId("replay-transport-container");
+  await expect(transportContainer).not.toBeVisible();
+
+  // Keyboard navigation: focus and press Enter on expand toggle
+  await toggleBtn.focus();
+  await expect(toggleBtn).toBeFocused();
+  await page.keyboard.press("Enter");
+
+  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+  await expect(collapseBtn).toBeVisible();
+  await expect(collapseBtn).toHaveAttribute("aria-expanded", "true");
+  await expect(transportContainer).toBeVisible();
+
+  // Sequence scrubber is now reachable
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await expect(slider).toBeVisible();
+
+  // Collapse controls again via keyboard
+  await collapseBtn.focus();
+  await page.keyboard.press("Space");
+  await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
+  await expect(transportContainer).not.toBeVisible();
+
+  // Return to Live remains available in the collapsed mobile bar.
+  await page.getByRole("button", { name: "Expand replay controls" }).click();
+
+  // Need to open the replay context details to access the combobox
+  const context = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
+  if (await context.getAttribute("open") === null) {
+    await context.locator("summary").click();
+  }
+  // Select "all" floor timeline scope so sequence 117 is within bounds
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+
+  await slider.fill("117");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await page.getByRole("button", { name: "Collapse replay controls" }).click();
+  const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
+  await expect(compactReturn).toBeVisible();
+  await compactReturn.click();
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+});
+
+test("mobile replay disclosure resets when returning from desktop viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(pagesPath);
+
+  const compactBar = page.getByTestId("replay-compact-bar");
+  const transport = page.getByTestId("replay-transport-container");
+  const expandButton = page.getByRole("button", { name: "Expand replay controls" });
+
+  await expect(compactBar).toBeVisible();
+  await expect(expandButton).toHaveAttribute("aria-expanded", "false");
+
+  await expandButton.click();
+  await expect(page.getByRole("button", { name: "Collapse replay controls" })).toHaveAttribute("aria-expanded", "true");
+  await expect(transport).toBeVisible();
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(transport).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const collapsedButton = page.getByRole("button", { name: "Expand replay controls" });
+  await expect(compactBar).toBeVisible();
+  await expect(collapsedButton).toHaveAttribute("aria-expanded", "false");
+  await expect(transport).not.toBeVisible();
 });

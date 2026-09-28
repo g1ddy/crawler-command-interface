@@ -1,7 +1,10 @@
 import { useState } from "react";
 import type { CrawlerState, ProjectedCountdownState, ProjectedObservationsState, ProjectedObservationValue } from "../../../app/domain/types";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
-import { deriveEvidencePresentation } from "../../features/timeline/evidence/evidencePresentation";
+import {
+  deriveEvidencePresentation,
+  mapEvidenceToSemantics,
+} from "../../features/timeline/evidence/evidencePresentation";
 import { Hotlist } from "./hotlist/Hotlist";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 
@@ -13,9 +16,10 @@ function Reading({ label, observation, sequence, onInspect }: {
   onInspect: (reading: ProjectedObservationValue) => void;
 }) {
   const descriptor = deriveEvidencePresentation(observation, sequence);
+  const semantics = mapEvidenceToSemantics(descriptor);
   const dataEvidence = descriptor.state === "current" ? "observed" : descriptor.state;
 
-  return <div className="hud-reading" data-evidence={dataEvidence}>
+  return <div className="hud-reading" data-evidence={dataEvidence} {...(semantics.temporal ? { "data-temporal": semantics.temporal } : {})}>
     <span>{label}</span>
     <strong>{observation ? observation.value.toLocaleString() : "—"}</strong>
     {observation ? <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>
@@ -50,8 +54,13 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
       <Reading label="Mana" observation={observations.condition.currentMana} sequence={state.sequence} onInspect={onInspectObservation} />
       <Reading label="Viewers" observation={observations.broadcast.viewers} sequence={state.sequence} onInspect={onInspectObservation} />
     </div>
-    <div className="hud-replay-state" data-testid="hud-audience-mode">
-      <b>{isLive ? "LIVE" : "REPLAY"}</b><span>Sequence {state.sequence}</span>
+    <div
+      className="hud-replay-state"
+      data-testid="hud-audience-mode"
+      data-mode={isLive ? "live" : "replay"}
+    >
+      <b>{isLive ? "LIVE" : "REPLAY"}</b>
+      <span>Sequence {state.sequence}</span>
     </div>
     <Hotlist hotlist={state.hotlist} skills={state.skills} />
     {showEvidence && countdown && <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}><CountdownEvidenceModal countdown={countdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} /></ModalBoundary>}
