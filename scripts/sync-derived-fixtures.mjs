@@ -7,6 +7,32 @@ import { adaptRawFloorDocument } from '../app/domain/raw-adapter.ts';
 import { compileRawFloorFiles } from '../app/domain/raw-compiler.ts';
 
 /**
+ * Performs a deep equality comparison of two JavaScript values.
+ */
+function isDeepEqual(a, b) {
+  if (a === b) return true;
+  if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') {
+    return false;
+  }
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a)) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (!isDeepEqual(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!Object.prototype.hasOwnProperty.call(b, key)) return false;
+    if (!isDeepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
+/**
  * Writes a JSON object to disk if it differs from the existing file.
  * Suppresses timestamp-only churn for timeline documents when non-timestamp content is unchanged.
  */
@@ -19,21 +45,11 @@ export function writeJsonFixtureIfChanged(destination, newObj) {
     return { written: true, reason: 'created' };
   }
 
-  let existingText;
-  try {
-    existingText = readFileSync(destinationPath, 'utf8');
-  } catch {
-    writeFileSync(destinationPath, newFormattedText, 'utf8');
-    return { written: true, reason: 'read_error' };
-  }
+  // Read existing file; let filesystem read errors propagate directly.
+  const existingText = readFileSync(destinationPath, 'utf8');
 
-  let existingObj;
-  try {
-    existingObj = JSON.parse(existingText);
-  } catch {
-    writeFileSync(destinationPath, newFormattedText, 'utf8');
-    return { written: true, reason: 'invalid_json' };
-  }
+  // Parse existing JSON; let SyntaxError or JSON parse errors propagate directly.
+  const existingObj = JSON.parse(existingText);
 
   // Handle timeline objects with createdAt / updatedAt timestamps
   if (
@@ -46,41 +62,38 @@ export function writeJsonFixtureIfChanged(destination, newObj) {
     existingObj.timeline &&
     typeof existingObj.timeline === 'object'
   ) {
-    const candidateWithDiskTimestamps = {
+    // Normalize newObj's timestamps to match existingObj for comparison
+    const normalizedGenerated = {
       ...newObj,
       timeline: {
         ...newObj.timeline,
-        createdAt: existingObj.timeline.createdAt ?? newObj.timeline.createdAt,
-        updatedAt: existingObj.timeline.updatedAt ?? newObj.timeline.updatedAt,
+        createdAt: existingObj.timeline.createdAt,
+        updatedAt: existingObj.timeline.updatedAt,
       },
     };
 
-    const candidateText = `${JSON.stringify(candidateWithDiskTimestamps, null, 2)}\n`;
-    if (candidateText === existingText) {
+    // Parsed object comparison
+    if (isDeepEqual(normalizedGenerated, existingObj)) {
       // Non-timestamp content is identical to what is on disk.
-      // Do not write to disk to prevent timestamp churn.
+      // Do not write to disk, preserving exact existing content, formatting, and timestamps.
       return { written: false, reason: 'timestamp_only_churn' };
     }
 
-    // Meaningful changes exist. Preserve createdAt from disk if present, update updatedAt.
+    // Meaningful changes exist. Preserve existing timeline.createdAt when present, use generated timeline.updatedAt.
     const finalObj = {
       ...newObj,
       timeline: {
         ...newObj.timeline,
-        createdAt: existingObj.timeline.createdAt ?? newObj.timeline.createdAt,
-        updatedAt: newObj.timeline.updatedAt,
+        ...(existingObj.timeline.createdAt !== undefined ? { createdAt: existingObj.timeline.createdAt } : {}),
       },
     };
     const finalText = `${JSON.stringify(finalObj, null, 2)}\n`;
-    if (finalText === existingText) {
-      return { written: false, reason: 'identical' };
-    }
     writeFileSync(destinationPath, finalText, 'utf8');
     return { written: true, reason: 'data_changed' };
   }
 
-  // Ordinary JSON objects (e.g. derived floor files)
-  if (newFormattedText === existingText) {
+  // Ordinary JSON objects (e.g. derived floor files) - compare parsed structures or formatted text
+  if (isDeepEqual(newObj, existingObj) || newFormattedText === existingText) {
     return { written: false, reason: 'identical' };
   }
 
