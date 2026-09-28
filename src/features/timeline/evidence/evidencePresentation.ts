@@ -8,7 +8,23 @@ import type {
 import type { PresentationSemantics } from "../../../presentation/semantic/public.ts";
 
 export type EvidenceState = "current" | "last-known" | "estimated" | "causal-only" | "unknown";
+export type EvidenceGlanceMarker = "●" | "◷" | "≈" | "◆" | "?";
 export type DisplayAuthority = "causal" | "observation";
+
+export function evidenceGlanceMarker(state: EvidenceState): EvidenceGlanceMarker {
+  switch (state) {
+    case "current":
+      return "●";
+    case "last-known":
+      return "◷";
+    case "estimated":
+      return "≈";
+    case "causal-only":
+      return "◆";
+    case "unknown":
+      return "?";
+  }
+}
 
 export interface EvidencePresentation {
   state: EvidenceState;

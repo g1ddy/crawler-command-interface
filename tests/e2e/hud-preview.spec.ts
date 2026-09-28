@@ -116,13 +116,69 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   await expect(healthRow).toBeVisible();
 
   // Target specific telemetry inspection badge (mana)
-  const manaBadge = page.getByTestId("telemetry-mana-badge");
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
   await expect(manaBadge).toBeVisible();
+  await expect(manaBadge).toHaveText("◷");
 
   // Test interactive evidence inspection via application capability callback
   await manaBadge.click();
   await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
   await page.getByRole("button", { name: "CLOSE" }).click();
+});
+
+test("authority-arwes supports keyboard navigation, focus return, and passive unknown evidence", async ({ page }) => {
+  await page.goto(`${pagesPath}?hud=authority-arwes`);
+
+  // Target inspectable mana evidence button via accessible role/name
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
+  await expect(manaBadge).toBeVisible();
+
+  // Focus and activate with Enter key
+  await manaBadge.focus();
+  await expect(manaBadge).toBeFocused();
+  await page.keyboard.press("Enter");
+
+  // Confirm inspection modal opens
+  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
+
+  // Close modal via Close button
+  await page.getByRole("button", { name: "CLOSE" }).click();
+  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).not.toBeVisible();
+
+  // Verify focus returns to the mana evidence indicator button
+  await expect(manaBadge).toBeFocused();
+
+  // Verify unknown health telemetry indicator remains passive (span with role="img", not a button)
+  const healthBadge = page.getByTestId("telemetry-health-badge");
+  await expect(healthBadge).toBeVisible();
+  await expect(healthBadge).toHaveAttribute("role", "img");
+  await expect(healthBadge).toHaveAttribute("aria-label", "health evidence: unknown");
+  await expect(page.getByRole("button", { name: /Inspect health evidence/i })).toHaveCount(0);
+});
+
+test("authority-arwes maintains single-line compact telemetry rows at 390px narrow width without overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+
+  const composition = page.getByTestId("arwes-authority-composition");
+  await expect(composition).toBeVisible();
+
+  // Telemetry rows remain visible
+  const manaRow = page.getByTestId("telemetry-mana");
+  await expect(manaRow).toBeVisible();
+
+  // Compact marker is visible and verbose badge label is absent from persistent row
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
+  await expect(manaBadge).toBeVisible();
+  await expect(manaBadge).toHaveText("◷");
+  await expect(manaRow).not.toContainText("LAST KNOWN · SEQ");
+
+  // No horizontal page overflow
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  // Activate compact marker and verify detailed evidence modal opens
+  await manaBadge.click();
+  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
 });
 
 test("authority-arwes presentation mounts, unmounts cleanly on navigation away, and remounts without stale state", async ({ page }) => {

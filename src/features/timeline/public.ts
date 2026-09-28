@@ -15,9 +15,11 @@ export const SequenceBadge = (props: ComponentProps<typeof SequenceBadgeComp>) =
 export {
   deriveEvidencePresentation,
   displayedReadingAuthority,
+  evidenceGlanceMarker,
   mapEvidenceToSemantics,
   selectDisplayedReading,
   type DisplayAuthority,
+  type EvidenceGlanceMarker,
   type EvidencePresentation,
   type EvidenceState,
 } from "./evidence/evidencePresentation.ts";

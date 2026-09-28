@@ -9,6 +9,7 @@ export {
   type HudBroadcastSummary,
   type HudPetSummary,
   type HudTelemetryKey,
+  type HudEvidencePresentation,
   type HudTelemetryPresentation,
   type DeriveHudCompositionInput,
 } from "./hud-composition.ts";
