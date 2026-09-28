@@ -6,6 +6,7 @@ import type {
 } from "../../../app/domain/types.ts";
 import {
   deriveEvidencePresentation,
+  evidenceGlanceMarker,
   mapEvidenceToSemantics,
 } from "../../features/timeline/public.ts";
 import type { PetPresentationSummary as HudPetSummary } from "../../features/pet/public.ts";
@@ -47,6 +48,11 @@ export interface HudAttentionSummary {
 
 export type HudTelemetryKey = "health" | "mana" | "level" | "viewers";
 
+export interface HudEvidencePresentation {
+  marker: string;
+  detailLabel: string;
+}
+
 /**
  * BOUNDARY RULE:
  * Renderer-neutral presentation describes semantic meaning and inspectability;
@@ -58,6 +64,7 @@ export interface HudTelemetryPresentation {
   label: string;
   valueDisplay: string;
   badgeLabel: string;
+  evidence: HudEvidencePresentation;
   semantics: PresentationSemantics;
 }
 
@@ -127,6 +134,10 @@ function createTelemetryItem(
     label,
     valueDisplay,
     badgeLabel: evidence.badgeLabel,
+    evidence: {
+      marker: evidenceGlanceMarker(evidence.state),
+      detailLabel: evidence.label,
+    },
     semantics,
   };
 }

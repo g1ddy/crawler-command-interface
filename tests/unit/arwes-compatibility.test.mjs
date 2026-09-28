@@ -166,6 +166,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       label: "HEALTH",
       valueDisplay: "84",
       badgeLabel: "SOURCE",
+      evidence: { marker: "●", detailLabel: "Observed" },
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
     },
     {
@@ -173,6 +174,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       label: "MANA",
       valueDisplay: "50",
       badgeLabel: "SOURCE",
+      evidence: { marker: "●", detailLabel: "Observed" },
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
     },
     {
@@ -180,6 +182,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       label: "LEVEL",
       valueDisplay: "3",
       badgeLabel: "LAST KNOWN · SEQ 20",
+      evidence: { marker: "◷", detailLabel: "Last known · sequence 20" },
       semantics: { status: "present", temporal: "last-known", authority: "observed", affordance: "inspect" },
     },
     {
@@ -187,6 +190,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       label: "AUDIENCE VIEWERS",
       valueDisplay: "120",
       badgeLabel: "SOURCE",
+      evidence: { marker: "●", detailLabel: "Observed" },
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
     },
     ],
@@ -216,7 +220,10 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
   assert.match(html, /84/);
   assert.match(html, /50/);
   assert.match(html, /120/);
-  assert.match(html, /LAST KNOWN · SEQ 20/);
+  assert.match(html, /●/);
+  assert.match(html, /◷/);
+  assert.match(html, /aria-label="Inspect level evidence: last known · sequence 20"/);
+  assert.doesNotMatch(html, /LAST KNOWN · SEQ 20/);
 });
 
 test("ArwesPresentation directly exposes semantic attributes for current, last-known, estimated, and unknown states", () => {
@@ -233,6 +240,7 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
       label: "HEALTH",
       valueDisplay: "100",
       badgeLabel: "SOURCE",
+      evidence: { marker: "●", detailLabel: "Observed" },
       semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
     },
     {
@@ -240,6 +248,7 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
       label: "MANA",
       valueDisplay: "50",
       badgeLabel: "LAST KNOWN · SEQ 5",
+      evidence: { marker: "◷", detailLabel: "Last known · sequence 5" },
       semantics: { status: "present", temporal: "last-known", authority: "observed", affordance: "inspect" },
     },
     {
@@ -247,6 +256,7 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
       label: "LEVEL",
       valueDisplay: "4",
       badgeLabel: "ESTIMATED",
+      evidence: { marker: "≈", detailLabel: "Estimated" },
       semantics: { status: "present", temporal: "current", authority: "estimated", affordance: "inspect" },
     },
     {
@@ -254,6 +264,7 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
       label: "AUDIENCE VIEWERS",
       valueDisplay: "— ABSENT",
       badgeLabel: "— ABSENT",
+      evidence: { marker: "?", detailLabel: "Unknown" },
       semantics: { status: "unknown", affordance: "none" },
     },
     ],
@@ -273,8 +284,9 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
   assert.doesNotMatch(html, /data-testid="telemetry-viewers"[^>]*data-authority=/);
   assert.doesNotMatch(html, /data-testid="telemetry-viewers"[^>]*data-temporal=/);
 
-  assert.match(html, /<button[^>]*data-testid="telemetry-health-badge"/);
-  assert.match(html, /<span[^>]*data-testid="telemetry-viewers-badge"/);
+  assert.match(html, /aria-label="Inspect health evidence: observed"[^>]*data-testid="telemetry-health-badge"/);
+  assert.match(html, /aria-label="audience viewers evidence: unknown"[^>]*data-testid="telemetry-viewers-badge"/);
+  assert.doesNotMatch(html, /LAST KNOWN · SEQ 5/);
 });
 
 test("ArwesPresentation keeps stable present telemetry motionIntent undefined", () => {
@@ -291,6 +303,7 @@ test("ArwesPresentation keeps stable present telemetry motionIntent undefined", 
         label: "HEALTH",
         valueDisplay: "100",
         badgeLabel: "SOURCE",
+        evidence: { marker: "●", detailLabel: "Observed" },
         semantics: { status: "present", authority: "observed", affordance: "inspect" },
       },
       {
@@ -298,6 +311,7 @@ test("ArwesPresentation keeps stable present telemetry motionIntent undefined", 
         label: "MANA",
         valueDisplay: "50",
         badgeLabel: "SOURCE",
+        evidence: { marker: "●", detailLabel: "Observed" },
         semantics: { status: "present", motionIntent: "established", authority: "observed", affordance: "inspect" },
       },
       {
@@ -305,6 +319,7 @@ test("ArwesPresentation keeps stable present telemetry motionIntent undefined", 
         label: "LEVEL",
         valueDisplay: "5",
         badgeLabel: "SOURCE",
+        evidence: { marker: "●", detailLabel: "Observed" },
         semantics: { status: "present", motionIntent: "changed", authority: "observed", affordance: "inspect" },
       },
     ],
@@ -339,6 +354,7 @@ test("ArwesPresentation reduced motion produces semantically equivalent markup w
         label: "HEALTH",
         valueDisplay: "80",
         badgeLabel: "SOURCE",
+        evidence: { marker: "●", detailLabel: "Observed" },
         semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
       },
     ],
@@ -424,6 +440,7 @@ test("Ticking countdowns and ordinary telemetry numeric value updates do not emi
         label: "HEALTH",
         valueDisplay: "84",
         badgeLabel: "SOURCE",
+        evidence: { marker: "●", detailLabel: "Observed" },
         semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
       },
     ],

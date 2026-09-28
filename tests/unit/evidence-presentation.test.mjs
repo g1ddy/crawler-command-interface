@@ -4,12 +4,21 @@ import {
   deriveEvidencePresentation,
   displayedReadingAuthority,
   evidenceConfidenceLabel,
+  evidenceGlanceMarker,
   evidenceSummary,
   firstCountdownEvidenceSummary,
   formatEvidenceLocator,
   mapEvidenceToSemantics,
   selectDisplayedReading,
 } from "../../src/features/timeline/evidence/evidencePresentation.ts";
+
+test("evidence glance markers are stable and distinct", () => {
+  assert.equal(evidenceGlanceMarker("current"), "●");
+  assert.equal(evidenceGlanceMarker("last-known"), "◷");
+  assert.equal(evidenceGlanceMarker("estimated"), "≈");
+  assert.equal(evidenceGlanceMarker("causal-only"), "◆");
+  assert.equal(evidenceGlanceMarker("unknown"), "?");
+});
 
 test("selectDisplayedReading uses causal provenance rather than a numeric default heuristic", () => {
   // Unchanged initial state can be represented by the available observation.
