@@ -211,6 +211,7 @@ export function CrawlerWorkspace({
         notificationsSummary,
         petSummary,
         temporalMotionIntent,
+        activeView: resolvedView,
       }),
     [
       projectedState,
@@ -222,6 +223,7 @@ export function CrawlerWorkspace({
       notificationsSummary,
       petSummary,
       temporalMotionIntent,
+      resolvedView,
     ],
   );
 
@@ -384,26 +386,28 @@ export function CrawlerWorkspace({
         />
       }
     >
-      <ActiveFeatureView
-        view={resolvedView}
-        state={projectedState}
-        liveState={liveState}
-        observations={projectedObservations}
-        sources={sources}
-        events={events}
-        sequence={currentSeq}
-        isLive={isLive}
-        provenanceItem={provenanceItem}
-        setProvenanceItem={setProvenanceItem}
-        inventoryFilter={inventoryFilter}
-        setInventoryFilter={setInventoryFilter}
-        equipmentSlot={equipmentSlot}
-        setEquipmentSlot={setEquipmentSlot}
-        onNavigateToSequence={commands.selectSequence}
-        actions={commands.actions}
-        onInspectObservation={setInspectObservation}
-        onInspectStat={setInspectStat}
-      />
+      {presentationChoice === "authority-arwes" && resolvedView === "pet" ? null : (
+        <ActiveFeatureView
+          view={resolvedView}
+          state={projectedState}
+          liveState={liveState}
+          observations={projectedObservations}
+          sources={sources}
+          events={events}
+          sequence={currentSeq}
+          isLive={isLive}
+          provenanceItem={provenanceItem}
+          setProvenanceItem={setProvenanceItem}
+          inventoryFilter={inventoryFilter}
+          setInventoryFilter={setInventoryFilter}
+          equipmentSlot={equipmentSlot}
+          setEquipmentSlot={setEquipmentSlot}
+          onNavigateToSequence={commands.selectSequence}
+          actions={commands.actions}
+          onInspectObservation={setInspectObservation}
+          onInspectStat={setInspectStat}
+        />
+      )}
     </ShellFrame>
   );
 }

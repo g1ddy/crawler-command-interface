@@ -36,6 +36,11 @@ export function ReplayControls({
             {model.isLive ? "● LIVE" : "↺ REPLAY"}
           </span>
           <span className={styles.compactSeq}>SEQ #{position.selectedSequence}</span>
+          {!model.isLive && (
+            <span className={styles.historicalCue} data-testid="historical-context-cue">
+              HISTORICAL INSPECTION
+            </span>
+          )}
         </div>
         <div className={styles.compactActions}>
           {!model.isLive && isCollapsedMobile && (
@@ -92,6 +97,11 @@ export function ReplayControls({
               SEQ #{position.selectedSequence}{" "}
               <small>({position.currentEvent?.occurred_at || "exact time not sourced"})</small>
             </h2>
+            {!model.isLive && (
+              <div className={styles.historicalBanner} data-testid="historical-context-cue">
+                HISTORICAL VIEW · REPLAYING SEQUENCE #{position.selectedSequence}
+              </div>
+            )}
           </div>
           <div className={styles.steps}>
             <button
