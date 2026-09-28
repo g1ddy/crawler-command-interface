@@ -514,3 +514,81 @@ test("mobile replay disclosure resets when returning from desktop viewport", asy
   await expect(collapsedButton).toHaveAttribute("aria-expanded", "false");
   await expect(transport).not.toBeVisible();
 });
+
+test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, and Skills content without page overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+
+  const composition = page.getByTestId("arwes-authority-composition");
+  await expect(composition).toBeVisible();
+
+  // Verify persistent crawler identity in Arwes spine header
+  const spine = page.getByTestId("arwes-spine-header");
+  await expect(spine).toBeVisible();
+  await expect(spine).toContainText("CRAWLER HUD");
+
+  // Verify CRAWLER view begins with player attributes and progression
+  await expect(page.getByText("PLAYER ATTRIBUTES")).toBeVisible();
+
+  // Verify no page-level horizontal overflow
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  const nav = page.getByRole("navigation", { name: "Main Navigation" });
+
+  // Navigate to SKILLS
+  await nav.getByRole("button", { name: "SKILLS", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  // Open Replay context to reach bonded pet sequence 130
+  await openReplayContext(page);
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("130");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+
+  // PET tab is now available -> navigate to PET
+  const petNavBtn = nav.getByRole("button", { name: "PET", exact: true });
+  await expect(petNavBtn).toBeVisible();
+  await petNavBtn.click();
+
+  // Arwes renders Pet surface inside HUD
+  await expect(page.getByTestId("arwes-pet-frame")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  // Navigate to PARTY
+  await nav.getByRole("button", { name: "PARTY", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "PARTY", exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {
+  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+
+  // In Live mode: allocate stat button is enabled if points available
+  const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
+  await expect(allocateBtn).toBeEnabled();
+
+  // Enter Replay mode via sequence scrubber
+  await openReplayContext(page);
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("130");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+
+  // Mutation action is gated (disabled) during replay
+  await expect(allocateBtn).toBeDisabled();
+
+  // Telemetry inspection remains active
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
+  await expect(manaBadge).toBeVisible();
+  await manaBadge.click();
+  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
+  await page.getByRole("button", { name: "CLOSE" }).click();
+
+  // Stat inspection remains active
+  const strengthBtn = page.getByRole("button", { name: "Strength 🔍" });
+  await strengthBtn.click();
+  await expect(page.getByRole("heading", { name: /WHY THIS VALUE\? · STRENGTH/i })).toBeVisible();
+  await page.getByRole("button", { name: "CLOSE INSPECTOR" }).click();
+});
