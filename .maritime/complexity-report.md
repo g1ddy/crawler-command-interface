@@ -1,6 +1,6 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-27
+**Last Updated:** 2026-09-28
 
 ### 🏥 Repository Health Score: **48.0 / 100**
 
@@ -19,9 +19,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/projection/helpers.ts` | **170.2** | 222 | 68 | 2 | 0.4 |
 | `src/features/inventory/ItemInspector.tsx` | **148.1** | 246 | 46 | 7 | 0.88 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **143.5** | 360 | 38 | 7 | 0.88 |
-| `src/presentation/authority-arwes/ArwesAuthorityComposition.ts` | **139.5** | 675 | 18 | 9 | 0.9 |
+| `src/presentation/authority-arwes/ArwesAuthorityComposition.ts` | **139.9** | 679 | 18 | 9 | 0.9 |
 | `src/application/crawler-actions.ts` | **134.8** | 128 | 49 | 4 | 0.8 |
-| `src/shell/hud/PersistentHud.tsx` | **133.2** | 134 | 43 | 8 | 0.89 |
+| `src/shell/hud/PersistentHud.tsx` | **134.6** | 148 | 43 | 8 | 0.89 |
 | `src/shell/adapters/CrawlerWorkspace.tsx` | **132.1** | 410 | 15 | 21 | 0.95 |
 | `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
 
@@ -33,7 +33,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/projection/helpers.ts` | **68** | 222 |
 | `src/application/crawler-actions.ts` | **49** | 128 |
 | `src/features/inventory/ItemInspector.tsx` | **46** | 246 |
-| `src/shell/hud/PersistentHud.tsx` | **43** | 134 |
+| `src/shell/hud/PersistentHud.tsx` | **43** | 148 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **38** | 360 |
 | `app/domain/compiler.ts` | **35** | 368 |
 | `src/features/inventory/equipment/equipment-presentation.ts` | **35** | 158 |
