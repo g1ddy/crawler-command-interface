@@ -425,7 +425,7 @@
   },
   "src/shell/hud/public.ts": {
     "complexity": 1,
-    "loc": 15,
+    "loc": 16,
     "instability": 0.2,
     "fanIn": 4,
     "fanOut": 1,
@@ -433,7 +433,7 @@
   },
   "src/shell/hud/hud-composition.ts": {
     "complexity": 6,
-    "loc": 216,
+    "loc": 227,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
@@ -441,7 +441,7 @@
   },
   "src/features/timeline/public.ts": {
     "complexity": 1,
-    "loc": 37,
+    "loc": 39,
     "instability": 0.39,
     "fanIn": 11,
     "fanOut": 7,
@@ -449,7 +449,7 @@
   },
   "src/features/timeline/evidence/evidencePresentation.ts": {
     "complexity": 15,
-    "loc": 209,
+    "loc": 225,
     "instability": 0.22,
     "fanIn": 7,
     "fanOut": 2,
@@ -481,10 +481,10 @@
   },
   "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
     "complexity": 19,
-    "loc": 681,
-    "instability": 0.9,
+    "loc": 654,
+    "instability": 0.91,
     "fanIn": 1,
-    "fanOut": 9,
+    "fanOut": 10,
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
@@ -501,6 +501,14 @@
     "instability": 0.6,
     "fanIn": 2,
     "fanOut": 3,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityIndicator.ts": {
+    "complexity": 2,
+    "loc": 97,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthoritySurface.ts": {
