@@ -163,27 +163,52 @@ test("Pet visibility follows selected destination and survives renderer switchin
 });
 
 test("historical-context cue is visible during Replay in compact, expanded, renderer-switched, and Live states", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
-  await openReplayContext(page);
+
+  // Expand replay controls on mobile to access timeline scope and sequence scrubber
+  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
+  await expandBtn.click();
+
+  const contextDetails = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
+  if ((await contextDetails.getAttribute("open")) === null) {
+    await contextDetails.locator("summary").click();
+  }
 
   // Select "all" floor timeline scope and scrub to sequence 130
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
 
-  // Replay mode active: historical cue is visible
-  await expect(page.locator('[data-testid="historical-context-cue"]:visible').first()).toBeVisible();
+  const cue = page.locator('[data-testid="historical-context-cue"]:visible').first();
 
-  // Switch renderer to Authority (Arwes POC) while in Replay
+  // Replay mode active with controls expanded: historical cue is visible
+  await expect(cue).toBeVisible();
+
+  // Collapse compact replay controls: historical cue remains visible in compact bar
+  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+  await collapseBtn.click();
+  await expect(cue).toBeVisible();
+
+  // Expand compact replay controls again: historical cue remains visible
+  await expandBtn.click();
+  await expect(cue).toBeVisible();
+
+  // Collapse again
+  await collapseBtn.click();
+  await expect(cue).toBeVisible();
+
+  // Switch renderer to Authority (Arwes POC) via System Tools while in Replay
   await page.getByRole("button", { name: "Open data tools" }).click();
   await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
   await page.getByRole("button", { name: "CANCEL" }).click();
 
   // Historical cue remains visible in Arwes during Replay
-  await expect(page.locator('[data-testid="historical-context-cue"]:visible').first()).toBeVisible();
+  await expect(cue).toBeVisible();
 
   // Return to Live removes historical cue
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/i }).click();
+  const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
+  await compactReturn.click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
   await expect(page.getByTestId("historical-context-cue")).toHaveCount(0);
 });
