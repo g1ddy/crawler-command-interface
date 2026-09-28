@@ -67,8 +67,8 @@ export function writeJsonFixtureIfChanged(destination, newObj) {
       ...newObj,
       timeline: {
         ...newObj.timeline,
-        createdAt: existingObj.timeline.createdAt,
-        updatedAt: existingObj.timeline.updatedAt,
+        ...(existingObj.timeline.createdAt !== undefined ? { createdAt: existingObj.timeline.createdAt } : {}),
+        ...(existingObj.timeline.updatedAt !== undefined ? { updatedAt: existingObj.timeline.updatedAt } : {}),
       },
     };
 

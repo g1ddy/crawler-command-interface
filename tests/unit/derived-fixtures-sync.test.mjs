@@ -79,6 +79,79 @@ test('writeJsonFixtureIfChanged writes meaningful output changes, preserving cre
   }
 });
 
+test('writeJsonFixtureIfChanged suppresses timestamp-only churn when existing timeline is missing createdAt, updatedAt, or both', () => {
+  const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
+
+  try {
+    // Case 1: Existing timeline missing createdAt (has updatedAt)
+    {
+      const targetFile = join(tmpDir, 'missing-created-at.json');
+      const existingRawText = '{\n  "schemaVersion": "crawler-timeline/v2",\n  "timeline": {\n    "id": "tl-1",\n    "title": "Timeline",\n    "updatedAt": "2026-01-01T00:00:00.000Z"\n  },\n  "events": [\n    {\n      "id": "evt-1",\n      "type": "NarrativeEvent"\n    }\n  ]\n}\n';
+      writeFileSync(targetFile, existingRawText, 'utf8');
+
+      const generatedData = {
+        schemaVersion: 'crawler-timeline/v2',
+        timeline: {
+          id: 'tl-1',
+          title: 'Timeline',
+          updatedAt: '2026-09-28T12:00:00.000Z',
+        },
+        events: [{ id: 'evt-1', type: 'NarrativeEvent' }],
+      };
+
+      const result = writeJsonFixtureIfChanged(targetFile, generatedData);
+      assert.equal(result.written, false);
+      assert.equal(result.reason, 'timestamp_only_churn');
+      assert.equal(readFileSync(targetFile, 'utf8'), existingRawText);
+    }
+
+    // Case 2: Existing timeline missing updatedAt (has createdAt)
+    {
+      const targetFile = join(tmpDir, 'missing-updated-at.json');
+      const existingRawText = '{\n  "schemaVersion": "crawler-timeline/v2",\n  "timeline": {\n    "id": "tl-1",\n    "title": "Timeline",\n    "createdAt": "2026-01-01T00:00:00.000Z"\n  },\n  "events": [\n    {\n      "id": "evt-1",\n      "type": "NarrativeEvent"\n    }\n  ]\n}\n';
+      writeFileSync(targetFile, existingRawText, 'utf8');
+
+      const generatedData = {
+        schemaVersion: 'crawler-timeline/v2',
+        timeline: {
+          id: 'tl-1',
+          title: 'Timeline',
+          createdAt: '2026-09-28T12:00:00.000Z',
+        },
+        events: [{ id: 'evt-1', type: 'NarrativeEvent' }],
+      };
+
+      const result = writeJsonFixtureIfChanged(targetFile, generatedData);
+      assert.equal(result.written, false);
+      assert.equal(result.reason, 'timestamp_only_churn');
+      assert.equal(readFileSync(targetFile, 'utf8'), existingRawText);
+    }
+
+    // Case 3: Existing timeline missing both createdAt and updatedAt
+    {
+      const targetFile = join(tmpDir, 'missing-both-timestamps.json');
+      const existingRawText = '{\n  "schemaVersion": "crawler-timeline/v2",\n  "timeline": {\n    "id": "tl-1",\n    "title": "Timeline"\n  },\n  "events": [\n    {\n      "id": "evt-1",\n      "type": "NarrativeEvent"\n    }\n  ]\n}\n';
+      writeFileSync(targetFile, existingRawText, 'utf8');
+
+      const generatedData = {
+        schemaVersion: 'crawler-timeline/v2',
+        timeline: {
+          id: 'tl-1',
+          title: 'Timeline',
+        },
+        events: [{ id: 'evt-1', type: 'NarrativeEvent' }],
+      };
+
+      const result = writeJsonFixtureIfChanged(targetFile, generatedData);
+      assert.equal(result.written, false);
+      assert.equal(result.reason, 'timestamp_only_churn');
+      assert.equal(readFileSync(targetFile, 'utf8'), existingRawText);
+    }
+  } finally {
+    rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 test('writeJsonFixtureIfChanged preserves local-only edit byte-for-byte when generated output differs only by timestamps', () => {
   const tmpDir = mkdtempSync(join(tmpdir(), 'fixture-sync-test-'));
   const targetFile = join(tmpDir, 'compiled-timeline.json');
