@@ -23,10 +23,10 @@ export function ShellFrame({ presentation, isLive, hud, navigation, replay, chil
       {navigation}
       {feedback}
       <div className={preview ? "view" : styles.workspace}>
-        {replay}
         <div id="crawler-workspace" className={styles.feature} tabIndex={-1}>
           {children}
         </div>
+        {replay}
       </div>
       {overlays}
     </main>

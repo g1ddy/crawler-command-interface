@@ -7,6 +7,4 @@ export async function openReplayContext(page: Page) {
     await expandBtn.click();
     await expect(page.getByRole("button", { name: "Collapse replay controls" })).toHaveAttribute("aria-expanded", "true");
   }
-  const context = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
-  if (await context.getAttribute("open") === null) await context.locator("summary").click();
 }

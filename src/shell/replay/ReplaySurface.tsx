@@ -1,6 +1,5 @@
 "use client";
-import { useCallback, useState, useSyncExternalStore } from "react";
-
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 function getMobileSnapshot() {
   return typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches;
@@ -8,6 +7,7 @@ function getMobileSnapshot() {
 function getMobileServerSnapshot() {
   return false;
 }
+
 import type { ProjectedObservationsState } from "../../../app/domain/types";
 import type {
   ReplayCommandCallbacks,
@@ -31,17 +31,50 @@ export function ReplaySurface({
   projectedObservations,
 }: ReplaySurfaceProps) {
   const [showCountdownEvidence, setShowCountdownEvidence] = useState(false);
-  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const surfaceRef = useRef<HTMLElement>(null);
+  const prevExpandedRef = useRef(isExpanded);
+
   const subscribeMobile = useCallback((callback: () => void) => {
     const mql = window.matchMedia("(max-width: 760px)");
     const handleChange = () => {
-      if (mql.matches) setIsMobileExpanded(false);
+      if (mql.matches) setIsExpanded(false);
       callback();
     };
     mql.addEventListener("change", handleChange);
     return () => mql.removeEventListener("change", handleChange);
   }, []);
+
   const isMobile = useSyncExternalStore(subscribeMobile, getMobileSnapshot, getMobileServerSnapshot);
+
+  // Focus management on expand/collapse
+  useEffect(() => {
+    const wasExpanded = prevExpandedRef.current;
+    prevExpandedRef.current = isExpanded;
+
+    if (!surfaceRef.current) return;
+
+    if (!wasExpanded && isExpanded) {
+      // Focus moved into expanded details (heading or first input/button in expanded surface)
+      const target =
+        surfaceRef.current.querySelector<HTMLElement>("#replay-expanded-heading") ||
+        surfaceRef.current.querySelector<HTMLElement>(
+          '[data-testid="replay-transport-container"] button, [data-testid="replay-transport-container"] select'
+        );
+      if (target) {
+        target.tabIndex = -1;
+        target.focus();
+      }
+    } else if (wasExpanded && !isExpanded) {
+      // Return focus to expand/collapse toggle
+      const toggleBtn = surfaceRef.current.querySelector<HTMLElement>(
+        `button[aria-label="Expand replay controls"]`
+      );
+      if (toggleBtn && document.activeElement && surfaceRef.current.contains(document.activeElement)) {
+        toggleBtn.focus();
+      }
+    }
+  }, [isExpanded]);
 
   const activeCommands: ReplayCommandCallbacks = {
     ...commands,
@@ -50,36 +83,38 @@ export function ReplaySurface({
 
   return (
     <aside
+      ref={surfaceRef}
       className={styles.surface}
       aria-label="Replay controls"
       data-mode={model.mode}
-      data-mobile-expanded={isMobileExpanded}
+      data-expanded={isExpanded}
+      data-mobile-expanded={isExpanded}
     >
       <ReplayControls
         model={model}
         commands={activeCommands}
         isMobile={isMobile}
-        isMobileExpanded={isMobileExpanded}
-        onToggleMobileExpand={() => setIsMobileExpanded((prev) => !prev)}
+        isExpanded={isExpanded}
+        onToggleExpand={() => setIsExpanded((prev) => !prev)}
       >
-      <TimelineDiagnostics
-        events={model.scope.floorEvents}
-        observations={model.scope.floorObservations}
-        selectedSequence={model.position.selectedSequence}
-        minSequence={model.scope.minSequence}
-        maxSequence={model.scope.maxSequence}
-        projectedObservations={projectedObservations}
-        onSelectSequence={commands.selectSequence}
-        onInspectObservation={commands.inspectObservation}
-      />
+        <TimelineDiagnostics
+          events={model.scope.floorEvents}
+          observations={model.scope.floorObservations}
+          selectedSequence={model.position.selectedSequence}
+          minSequence={model.scope.minSequence}
+          maxSequence={model.scope.maxSequence}
+          projectedObservations={projectedObservations}
+          onSelectSequence={commands.selectSequence}
+          onInspectObservation={commands.inspectObservation}
+        />
       </ReplayControls>
       {showCountdownEvidence && model.countdowns.activeCountdown && (
         <ModalBoundary label="Countdown evidence" onClose={() => setShowCountdownEvidence(false)}>
-        <CountdownEvidenceModal
-          countdown={model.countdowns.activeCountdown}
-          onClose={() => setShowCountdownEvidence(false)}
-          onNavigateToSequence={commands.selectSequence}
-        />
+          <CountdownEvidenceModal
+            countdown={model.countdowns.activeCountdown}
+            onClose={() => setShowCountdownEvidence(false)}
+            onNavigateToSequence={commands.selectSequence}
+          />
         </ModalBoundary>
       )}
     </aside>

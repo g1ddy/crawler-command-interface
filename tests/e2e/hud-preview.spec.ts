@@ -170,11 +170,6 @@ test("historical-context cue is visible during Replay in compact, expanded, rend
   const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
   await expandBtn.click();
 
-  const contextDetails = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
-  if ((await contextDetails.getAttribute("open")) === null) {
-    await contextDetails.locator("summary").click();
-  }
-
   // Select "all" floor timeline scope and scrub to sequence 130
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
@@ -213,6 +208,46 @@ test("historical-context cue is visible during Replay in compact, expanded, rend
   await expect(page.getByTestId("historical-context-cue")).toHaveCount(0);
 });
 
+test("collapsed replay dock keeps scrubber visible and operable across responsive widths", async ({ page }) => {
+  const widths = [320, 390, 760, 1024, 1440];
+
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto(pagesPath);
+
+    const dock = page.getByRole("complementary", { name: "Replay controls" });
+    await expect(dock).toBeVisible();
+
+    const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+    await expect(slider).toBeVisible();
+
+    // Verify slider is operable while collapsed
+    await openReplayContext(page);
+    await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+    const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+    if (await collapseBtn.isVisible()) {
+      await collapseBtn.click();
+    }
+
+    await slider.fill("10");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+    await expect(page.getByTestId("historical-context-cue")).toBeVisible();
+
+    // Verify exactly 1 Return to Live button exists in Replay mode
+    const returnBtn = page.getByRole("button", { name: "Return to Live sequence" });
+    await expect(returnBtn).toHaveCount(1);
+
+    // Click Return to Live
+    await returnBtn.click();
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+
+    // Verify 0 Return to Live buttons in Live mode
+    await expect(returnBtn).toHaveCount(0);
+
+    // Verify page has no horizontal overflow
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+});
 
 test("authority-arwes presentation is URL-selected and renders Arwes renderer composition foundation", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
@@ -473,11 +508,6 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   // Return to Live remains available in the collapsed mobile bar.
   await page.getByRole("button", { name: "Expand replay controls" }).click();
 
-  // Need to open the replay context details to access the combobox
-  const context = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
-  if (await context.getAttribute("open") === null) {
-    await context.locator("summary").click();
-  }
   // Select "all" floor timeline scope so sequence 117 is within bounds
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
 
