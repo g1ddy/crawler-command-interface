@@ -94,3 +94,59 @@ test("Persistent shell reflows without viewport overflow and supports reduced mo
     await page.screenshot({ path: testInfo.outputPath("authority-mobile.png"), fullPage: true });
   }
 });
+
+test("Primary navigation avoids horizontal scrolling at narrow viewports and preserves touch targets", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  const navContainer = navigation(page);
+  await expect(navContainer).toBeVisible();
+
+  // Verify navigation container requires no horizontal scrolling
+  const hasNoHorizontalScroll = await navContainer.evaluate(
+    (el) => el.scrollWidth <= el.clientWidth,
+  );
+  expect(hasNoHorizontalScroll).toBe(true);
+
+  // Verify all available destination buttons fit, are visible, and meet 44px min height
+  const buttons = navContainer.getByRole("button");
+  const count = await buttons.count();
+  expect(count).toBeGreaterThan(0);
+
+  for (let i = 0; i < count; i++) {
+    const btn = buttons.nth(i);
+    await expect(btn).toBeVisible();
+    const box = await btn.boundingBox();
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+  }
+
+  // Verify clicking a destination updates active state
+  const inventoryBtn = navContainer.getByRole("button", { name: "INVENTORY" });
+  await inventoryBtn.click();
+  await expect(inventoryBtn).toHaveAttribute("aria-pressed", "true");
+
+  // Verify System Tools trigger remains distinct and reachable
+  const toolsBtn = page.getByRole("button", { name: "Open data tools" });
+  await expect(toolsBtn).toBeVisible();
+  const toolsBox = await toolsBtn.boundingBox();
+  expect(toolsBox?.height).toBeGreaterThanOrEqual(44);
+});
+
+test("Primary navigation supports keyboard focus and desktop bar layout", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const navContainer = navigation(page);
+  await expect(navContainer).toBeVisible();
+
+  // Desktop navigation container requires no horizontal scrolling
+  const noScrollDesktop = await navContainer.evaluate(
+    (el) => el.scrollWidth <= el.clientWidth,
+  );
+  expect(noScrollDesktop).toBe(true);
+
+  // Test keyboard navigation (Tab focus) through navigation buttons
+  const crawlerBtn = navContainer.getByRole("button", { name: "CRAWLER" });
+  await crawlerBtn.focus();
+  await expect(crawlerBtn).toBeFocused();
+
+  await page.keyboard.press("Tab");
+  const inventoryBtn = navContainer.getByRole("button", { name: "INVENTORY" });
+  await expect(inventoryBtn).toBeFocused();
+});
