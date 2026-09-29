@@ -28,8 +28,10 @@ async function selectCrawlerSubTab(page: Page, name: "STATS" | "HEALTH / CONDITI
 async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
   // Capture the default compact replay surface, except behind an open inspector.
   if (await page.getByRole("dialog").count() === 0) {
-    const context = page.getByRole("complementary", { name: "Replay controls" }).locator("details").first();
-    if (await context.getAttribute("open") !== null) await context.locator("summary").click();
+    const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+    if (await collapseBtn.isVisible()) {
+      await collapseBtn.click();
+    }
   }
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: stagedScreenshotPath(key), fullPage: false, animations: "disabled" });

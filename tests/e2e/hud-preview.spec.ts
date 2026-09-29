@@ -215,21 +215,22 @@ test("collapsed replay dock keeps scrubber visible and operable across responsiv
     await page.setViewportSize({ width, height: 800 });
     await page.goto(pagesPath);
 
-    const dock = page.getByRole("complementary", { name: "Replay controls" });
-    await expect(dock).toBeVisible();
-
-    const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-    await expect(slider).toBeVisible();
-
-    // Verify slider is operable while collapsed
+    // In live mode, click history log to enter replay
     await openReplayContext(page);
     await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+    const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+    await slider.fill("10");
+
+    const dock = page.getByRole("complementary", { name: "Replay controls" });
+    await expect(dock).toBeVisible();
+    await expect(slider).toBeVisible();
+
     const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
     if (await collapseBtn.isVisible()) {
       await collapseBtn.click();
     }
 
-    await slider.fill("10");
+    await slider.fill("20");
     await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
     await expect(page.getByTestId("historical-context-cue")).toBeVisible();
 
@@ -247,6 +248,61 @@ test("collapsed replay dock keeps scrubber visible and operable across responsiv
     // Verify page has no horizontal overflow
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
+});
+
+test("layout integration: Live mode has no dock, Replay dock resizes feature area without overlap, and resizing maintains state", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(pagesPath);
+
+  // Live mode: replay controls dock is NOT rendered, 0 replay-only space
+  await expect(page.getByRole("complementary", { name: "Replay controls" })).toHaveCount(0);
+
+  // Enter Replay by opening System Tools / tools or scrubbing history
+  await openReplayContext(page);
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("50");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+
+  // Replay controls dock is rendered
+  const dock = page.getByRole("complementary", { name: "Replay controls" });
+  await expect(dock).toBeVisible();
+
+  // Feature area remains independently scrollable and its last interactive control is reachable
+  const featureArea = page.locator("#crawler-workspace");
+  await expect(featureArea).toBeVisible();
+
+  // Navigate to CRAWLER STATS and scroll to bottom
+  const statsBtn = page.getByRole("button", { name: "STATS", exact: true });
+  await statsBtn.click();
+
+  // Collapse dock
+  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+  if (await collapseBtn.isVisible()) {
+    await collapseBtn.click();
+  }
+
+  // Scroll to bottom of feature area and verify last control is visible & clickable
+  const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Charisma" }).or(page.getByRole("button", { name: "Allocate attribute point to Strength" })).first();
+  await allocateBtn.scrollIntoViewIfNeeded();
+  await expect(allocateBtn).toBeVisible();
+
+  // Expand dock and verify last control remains reachable without overlap
+  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
+  await expandBtn.click();
+  await expect(page.getByTestId("replay-transport-container")).toBeVisible();
+
+  await allocateBtn.scrollIntoViewIfNeeded();
+  await expect(allocateBtn).toBeVisible();
+
+  // Resizing viewport maintains expanded state and selected sequence
+  await page.setViewportSize({ width: 1024, height: 800 });
+  await expect(slider).toHaveValue("50");
+  await expect(page.getByTestId("replay-transport-container")).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(slider).toHaveValue("50");
+  await expect(page.getByTestId("replay-transport-container")).toBeVisible();
 });
 
 test("authority-arwes presentation is URL-selected and renders Arwes renderer composition foundation", async ({ page }) => {
@@ -474,9 +530,22 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
 
-  // Initially on narrow viewport, compact bar is visible and transport controls are collapsed
+  // In live mode, enter replay to view compact replay bar
+  await openReplayContext(page);
+
+  // Select "all" floor timeline scope so sequence 117 is within bounds
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("117");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+
+  // Replay controls dock is visible
   const compactBar = page.getByTestId("replay-compact-bar");
   await expect(compactBar).toBeVisible();
+
+  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+  await collapseBtn.click();
 
   const toggleBtn = page.getByRole("button", { name: "Expand replay controls" });
   await expect(toggleBtn).toBeVisible();
@@ -490,59 +559,46 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   await expect(toggleBtn).toBeFocused();
   await page.keyboard.press("Enter");
 
-  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
-  await expect(collapseBtn).toBeVisible();
-  await expect(collapseBtn).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByRole("button", { name: "Collapse replay controls" })).toHaveAttribute("aria-expanded", "true");
   await expect(transportContainer).toBeVisible();
 
-  // Sequence scrubber is now reachable
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  // Sequence scrubber is reachable
   await expect(slider).toBeVisible();
 
   // Collapse controls again via keyboard
-  await collapseBtn.focus();
+  const activeCollapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
+  await activeCollapseBtn.focus();
   await page.keyboard.press("Space");
   await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
   await expect(transportContainer).not.toBeVisible();
 
-  // Return to Live remains available in the collapsed mobile bar.
-  await page.getByRole("button", { name: "Expand replay controls" }).click();
-
-  // Select "all" floor timeline scope so sequence 117 is within bounds
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
-
-  await slider.fill("117");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-  await page.getByRole("button", { name: "Collapse replay controls" }).click();
+  // Return to Live removes replay dock
   const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
   await expect(compactReturn).toBeVisible();
   await compactReturn.click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByRole("complementary", { name: "Replay controls" })).toHaveCount(0);
 });
 
-test("mobile replay disclosure resets when returning from desktop viewport", async ({ page }) => {
+test("mobile replay disclosure maintains state when returning from desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
 
-  const compactBar = page.getByTestId("replay-compact-bar");
+  // Enter replay
+  await openReplayContext(page);
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("117");
+
   const transport = page.getByTestId("replay-transport-container");
-  const expandButton = page.getByRole("button", { name: "Expand replay controls" });
-
-  await expect(compactBar).toBeVisible();
-  await expect(expandButton).toHaveAttribute("aria-expanded", "false");
-
-  await expandButton.click();
-  await expect(page.getByRole("button", { name: "Collapse replay controls" })).toHaveAttribute("aria-expanded", "true");
   await expect(transport).toBeVisible();
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(transport).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
-  const collapsedButton = page.getByRole("button", { name: "Expand replay controls" });
-  await expect(compactBar).toBeVisible();
-  await expect(collapsedButton).toHaveAttribute("aria-expanded", "false");
-  await expect(transport).not.toBeVisible();
+  await expect(transport).toBeVisible();
+  await expect(slider).toHaveValue("117");
 });
 
 test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, and Skills content without page overflow", async ({ page }) => {

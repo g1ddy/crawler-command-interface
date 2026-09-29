@@ -1,12 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-
-function getMobileSnapshot() {
-  return typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches;
-}
-function getMobileServerSnapshot() {
-  return false;
-}
+import { useEffect, useRef, useState } from "react";
 
 import type { ProjectedObservationsState } from "../../../app/domain/types";
 import type {
@@ -35,18 +28,6 @@ export function ReplaySurface({
   const surfaceRef = useRef<HTMLElement>(null);
   const prevExpandedRef = useRef(isExpanded);
 
-  const subscribeMobile = useCallback((callback: () => void) => {
-    const mql = window.matchMedia("(max-width: 760px)");
-    const handleChange = () => {
-      if (mql.matches) setIsExpanded(false);
-      callback();
-    };
-    mql.addEventListener("change", handleChange);
-    return () => mql.removeEventListener("change", handleChange);
-  }, []);
-
-  const isMobile = useSyncExternalStore(subscribeMobile, getMobileSnapshot, getMobileServerSnapshot);
-
   // Focus management on expand/collapse
   useEffect(() => {
     const wasExpanded = prevExpandedRef.current;
@@ -55,7 +36,6 @@ export function ReplaySurface({
     if (!surfaceRef.current) return;
 
     if (!wasExpanded && isExpanded) {
-      // Focus moved into expanded details (heading or first input/button in expanded surface)
       const target =
         surfaceRef.current.querySelector<HTMLElement>("#replay-expanded-heading") ||
         surfaceRef.current.querySelector<HTMLElement>(
@@ -66,7 +46,6 @@ export function ReplaySurface({
         target.focus();
       }
     } else if (wasExpanded && !isExpanded) {
-      // Return focus to expand/collapse toggle
       const toggleBtn = surfaceRef.current.querySelector<HTMLElement>(
         `button[aria-label="Expand replay controls"]`
       );
@@ -93,7 +72,6 @@ export function ReplaySurface({
       <ReplayControls
         model={model}
         commands={activeCommands}
-        isMobile={isMobile}
         isExpanded={isExpanded}
         onToggleExpand={() => setIsExpanded((prev) => !prev)}
       >
