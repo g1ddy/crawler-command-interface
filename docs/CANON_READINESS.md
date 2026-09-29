@@ -171,8 +171,9 @@ The Book Club event must not be used as Party evidence. Floors 1–2 establish t
 | Carl invents Carl's Jug O' Boom. | Primary; Book 1, ch. 33. | `ItemCrafted` with explicitly unknown carried quantity. | Workstation, recipe catalog, component count, or repeatable interaction. |
 | Carl acquires Goo-Inator 3000, described as usable at a workbench. | Corroborating; Floor 2, ch. 31. | Persistent tool catalog entry. | Ownership or availability of a workbench. |
 | Carl acquires a Proximity Trigger, described as a Sapper's-table component. | Corroborating; Floor 2, ch. 34. | Crafting-category item with unknown quantity. | Ownership or availability of a Sapper's table or workflow. |
+| Carl encapsulates active Soul Crystal inside Sheol Glass Reaper Case to create Carl's Doomsday Scenario. | Primary; Book 2, ch. 25. | `ItemCrafted` (`evt-f3-doomsday-scenario-created`) in Floor 3 raw events. | Workstation, recipe catalog, crafting timers, or interactive crafting UI capability. |
 
-Keep the `ItemCrafted` event in Inventory/Timeline history. New source work may add directly supported causal inputs, but Floors 1–2 must not acquire a workstation, Crafting navigation, or an inferred recipe system.
+Keep `ItemCrafted` events in Inventory/Timeline history. Floor 3 establishes a specific field encapsulation act, but supplies no workstation catalog, material requirements table, recipe list, or crafting timer mechanics. Crafting navigation remains deferred and unavailable.
 
 ## Other domain corrections
 

@@ -81,3 +81,56 @@ test("replay projection steps cleanly into and through Floor 3 events", () => {
   assert.ok(finalState.achievements.some((ach) => ach.achievementId === "achievement-ultimate-extreme-power"));
   assert.ok(finalState.achievements.some((ach) => ach.achievementId === "achievement-bandit"));
 });
+
+test("Floor 3 achievement boundaries isolate award items prior to their causal unlocked sequence", () => {
+  const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+  const oneQuadEvent = compiledTimeline.events.find(
+    (e) => e.type === "AchievementUnlocked" && e.achievement?.id === "achievement-one-quadrillion-views"
+  );
+  assert.ok(oneQuadEvent);
+
+  const stateBefore = projectState(compiledTimeline, oneQuadEvent.sequence - 1);
+  assert.equal(
+    stateBefore.achievements.some((a) => a.achievementId === "achievement-one-quadrillion-views"),
+    false
+  );
+  assert.equal(
+    stateBefore.inventory.some((i) => i.itemId === "item-fan-box"),
+    false
+  );
+
+  const stateAt = projectState(compiledTimeline, oneQuadEvent.sequence);
+  assert.equal(
+    stateAt.achievements.some((a) => a.achievementId === "achievement-one-quadrillion-views"),
+    true
+  );
+
+  const fanBoxEvent = compiledTimeline.events.find(
+    (e) => e.type === "ItemAcquired" && e.item?.itemId === "item-fan-box"
+  );
+  assert.ok(fanBoxEvent);
+  const stateAfterFanBox = projectState(compiledTimeline, fanBoxEvent.sequence);
+  assert.equal(
+    stateAfterFanBox.inventory.some((i) => i.itemId === "item-fan-box"),
+    true
+  );
+});
+
+test("Floor 3 ItemCrafted event projects Carl's Doomsday Scenario at its causal boundary", () => {
+  const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+  const craftEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-doomsday-scenario-created");
+  assert.ok(craftEvent);
+  assert.equal(craftEvent.type, "ItemCrafted");
+
+  const stateBefore = projectState(compiledTimeline, craftEvent.sequence - 1);
+  assert.equal(
+    stateBefore.inventory.some((i) => i.itemId === "item-carls-doomsday-scenario"),
+    false
+  );
+
+  const stateAfter = projectState(compiledTimeline, craftEvent.sequence);
+  assert.equal(
+    stateAfter.inventory.some((i) => i.itemId === "item-carls-doomsday-scenario"),
+    true
+  );
+});
