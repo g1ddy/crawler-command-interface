@@ -102,12 +102,13 @@ Produce a detailed, evidence-rich research report that another model can extract
 
 The researcher should optimize for:
 
-- primary-source evidence;
-- precise locators;
+- the best accessible and reasonably credible evidence;
+- precise source identification and locators when available;
 - chronology;
-- explicit uncertainty;
-- contradictions;
-- distinction between direct facts and inference.
+- explicit uncertainty and contradictions;
+- distinction between a source's statement and the researcher's inference.
+
+Primary text and official material are preferred when accessible, but they are not prerequisites. Credible fan wikis, chapter summaries, fan compendia, interviews, articles, and community discussions may establish useful research claims when they are the best available evidence. Do not leave a clear, credible finding unusable merely because the underlying book passage cannot be located online. Record source type and limitations honestly, and preserve unresolved conflicts or ambiguity.
 
 The research agent does **not** need to know CCI's internal schema.
 
@@ -347,7 +348,7 @@ Use only confidence values defined by the supplied schema. The current conceptua
 
 Confidence describes the strength of evidence for the **claim**, not whether CCI should implement it.
 
-A secondary source can support a claim with high confidence when the research report clearly establishes the proposition, but that does not make the source primary or make the claim automatically authoritative CCI data.
+A credible secondary source can support a claim with `confirmed` confidence when it clearly and specifically establishes the proposition for this research workflow, even if the primary book passage is unavailable. Do not require multiple sources solely to reach confirmed confidence. Preserve source kind/trust independently from claim confidence: secondary evidence remains secondary, while confidence reflects how well it supports the particular claim. Use `corroborated` when materially independent sources reinforce one another; do not count sources that repeat the same underlying account as independent. Use `candidate` for tentative or weakly supported claims, and `disputed` when credible evidence conflicts. Inference remains inference even when its premises are confirmed.
 
 ### Unknowns
 
@@ -432,7 +433,7 @@ The following failures are particularly valuable as Stage 2 regression fixtures:
 | Floor 3 scope treated as evidence restriction | Preserve actual chronology |
 | Strong source claim automatically treated as CCI promotion | Keep promotion out of Stage 2 |
 | Different system behaviors labeled contradictory | Require actual proposition incompatibility |
-| Secondary evidence treated as primary | Preserve source trust independently from claim confidence |
+| Secondary evidence treated as primary | Keep the source classified as secondary; it may still support a `confirmed` claim when credible and clear |
 | One broad synthesis replaces multiple atomic facts | Prefer independently reviewable claims |
 | Canon term replaced with software abstraction | Preserve canon terminology |
 
