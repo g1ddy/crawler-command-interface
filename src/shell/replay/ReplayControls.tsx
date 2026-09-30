@@ -147,7 +147,7 @@ export function ReplayControls({
         {children}
       </div>
 
-      {/* Main Dock Bar - ALWAYS visible (in both collapsed & expanded states) */}
+      {/* Main Dock Bar - ALWAYS visible (in both Live & Replay, collapsed & expanded) */}
       <div className={styles.compactBar} data-testid="replay-compact-bar">
         <div className={styles.compactStatus}>
           <span
@@ -157,14 +157,14 @@ export function ReplayControls({
           >
             {model.isLive ? "● LIVE" : "↺ REPLAY"}
           </span>
-          <span className={styles.compactSeq}>
+          <h2 className={styles.compactSeq}>
             SEQ #{position.selectedSequence}
             {position.currentEvent?.occurred_at && (
               <small className={styles.timeReadout}>
                 {" "}({position.currentEvent.occurred_at})
               </small>
             )}
-          </span>
+          </h2>
           {!model.isLive && (
             <span
               className={styles.historicalCue}

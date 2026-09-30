@@ -61,11 +61,14 @@
 }
 
 .compactSeq {
+  margin: 0;
   font-family: var(--hud-font-mono, monospace);
   font-weight: 700;
   font-size: 0.875rem;
   color: var(--hud-text-primary, #f8fafc);
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
 }
 
 .timeReadout {

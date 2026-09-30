@@ -250,23 +250,30 @@ test("collapsed replay dock keeps scrubber visible and operable across responsiv
   }
 });
 
-test("layout integration: Live mode has no dock, Replay dock resizes feature area without overlap, and resizing maintains state", async ({ page }) => {
+test("layout integration: Live mode has compact scrubber, scrubbing enters Replay, and Return to Live appears only in Replay", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
 
-  // Live mode: replay controls dock is NOT rendered, 0 replay-only space
-  await expect(page.getByRole("complementary", { name: "Replay controls" })).toHaveCount(0);
+  // Live mode: compact dock is present with timeline scrubber and ● LIVE badge
+  const dock = page.getByRole("complementary", { name: "Replay controls" });
+  await expect(dock).toBeVisible();
 
-  // Enter Replay by opening System Tools / tools or scrubbing history
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await expect(slider).toBeVisible();
+
+  // Return to Live button is NOT present in Live mode
+  const returnBtn = page.getByRole("button", { name: "Return to Live sequence" });
+  await expect(returnBtn).toHaveCount(0);
+
+  // Enter Replay by scrubbing slider to sequence 50
   await openReplayContext(page);
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("50");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
-  // Replay controls dock is rendered
-  const dock = page.getByRole("complementary", { name: "Replay controls" });
-  await expect(dock).toBeVisible();
+  // In Replay mode: Return to Live button IS present
+  await expect(returnBtn).toBeVisible();
+  await expect(returnBtn).toHaveCount(1);
 
   // Feature area remains independently scrollable and its last interactive control is reachable
   const featureArea = page.locator("#crawler-workspace");
@@ -572,12 +579,13 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
   await expect(transportContainer).not.toBeVisible();
 
-  // Return to Live removes replay dock
+  // Return to Live removes Return to Live button while keeping compact scrubber
   const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
   await expect(compactReturn).toBeVisible();
   await compactReturn.click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
-  await expect(page.getByRole("complementary", { name: "Replay controls" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Return to Live sequence" })).toHaveCount(0);
+  await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
 });
 
 test("mobile replay disclosure maintains state when returning from desktop viewport", async ({ page }) => {
