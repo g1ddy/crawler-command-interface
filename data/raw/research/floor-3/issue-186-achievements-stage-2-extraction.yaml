@@ -1,0 +1,627 @@
+schemaVersion: crawler-research/v1
+storyId: carls-doomsday-scenario
+floor: 3
+
+sources:
+ - id: src-wiki-f3
+   kind: wiki
+   trust: corroborating
+   title: Third Floor
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Third_Floor
+
+ - id: src-wiki-quanch
+   kind: wiki
+   trust: corroborating
+   title: Quan Ch
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Quan_Ch
+
+ - id: src-wiki-questbox
+   kind: wiki
+   trust: corroborating
+   title: Quest Box
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Quest_Box
+
+ - id: src-wiki-fishbox
+   kind: wiki
+   trust: corroborating
+   title: It's Not My Fault You Fish-Headed Assholes Don't Properly Program Your Quests Box
+   url: https://dungeon-crawler-carl.fandom.com/wiki/It%27s_Not_My_Fault_You_Fish-Headed_Assholes_Don%27t_Properly_Program_Your_Quests_Box
+
+ - id: src-wiki-achievements
+   kind: wiki
+   trust: corroborating
+   title: Achievement
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Achievement
+
+ - id: src-wiki-cockblock
+   kind: wiki
+   trust: corroborating
+   title: CockBlock Achievement
+   url: https://dungeon-crawler-carl.fandom.com/wiki/CockBlock_Achievement
+
+ - id: src-wiki-quill
+   kind: wiki
+   trust: corroborating
+   title: Miss Quill
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Miss_Quill
+
+ - id: src-wiki-healscroll
+   kind: wiki
+   trust: corroborating
+   title: Heal Scroll
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Heal_Scroll
+
+ - id: src-wiki-confusingfog
+   kind: wiki
+   trust: corroborating
+   title: Confusing Fog Spell
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Confusing_Fog_Spell
+
+ - id: src-wiki-desperado
+   kind: wiki
+   trust: corroborating
+   title: Desperado Club
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Desperado_Club
+
+ - id: src-wiki-warcriminal
+   kind: wiki
+   trust: corroborating
+   title: War Criminal Achievement
+   url: https://dungeon-crawler-carl.fandom.com/wiki/War_Criminal_Achievement
+
+ - id: src-wiki-donut-f1
+   kind: wiki
+   trust: corroborating
+   title: Donut/Floor 1
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Donut/Floor_1
+
+ - id: src-wiki-book1sum
+   kind: wiki
+   trust: corroborating
+   title: Book 1 Chapter Summaries
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Book_1_Chapter_Summaries
+
+ - id: src-wiki-class
+   kind: wiki
+   trust: corroborating
+   title: Class
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Class
+
+ - id: src-wiki-trap
+   kind: wiki
+   trust: corroborating
+   title: Trap Engineer Skill
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Trap_Engineer_Skill
+
+ - id: src-wiki-hide
+   kind: wiki
+   trust: corroborating
+   title: Hide in Shadows Skill
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Hide_in_Shadows_Skill
+
+ - id: src-wiki-martha
+   kind: wiki
+   trust: corroborating
+   title: Martha Stewart Achievement
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Martha_Stewart_Achievement
+
+ - id: src-wiki-doomsday-16
+   kind: wiki
+   trust: corroborating
+   title: Carl's Doomsday Scenario
+   url: https://wiki.bookwormai.app/dungeon-crawler-carl/world/carl-s-doomsday-scenario
+
+ - id: src-wiki-sepsis
+   kind: wiki
+   trust: corroborating
+   title: Enchanted Crown of the Sepsis Whore
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Enchanted_Crown_of_the_Sepsis_Whore
+
+ - id: src-wiki-fireball
+   kind: wiki
+   trust: corroborating
+   title: Fireball or Custard?
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Fireball_or_Custard%3F
+
+ - id: src-wiki-krasue
+   kind: wiki
+   trust: corroborating
+   title: Krasue
+   url: https://dungeon-crawler-carl.fandom.com/wiki/Krasue
+
+claims:
+ - id: F3-CHR-001
+   domain: crawler
+   kind: event
+   claim:
+     summary: Carl chooses the Compensated Anarchist class on the Third Floor.
+   evidence:
+     - sourceId: src-wiki-f3
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-class
+       confidence: corroborated
+       relationship: supports
+
+ - id: F3-CHR-002
+   domain: crawler
+   kind: state
+   claim:
+     summary: The Compensated Anarchist class grants a +1 boost to the Trap Engineer skill and a +2 boost to the Hide in Shadows skill.
+   evidence:
+     - sourceId: src-wiki-trap
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-hide
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-CHR-001
+
+ - id: F3-CHR-003
+   domain: crawler
+   kind: event
+   claim:
+     summary: Donut chooses the Former Child Actor class on the Third Floor.
+   evidence:
+     - sourceId: src-wiki-f3
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-LOO-001
+   domain: quest
+   kind: event
+   claim:
+     summary: Exactly 83 crawlers survive within the blast radius of the Fools Who Broke the Glass group quest.
+   evidence:
+     - sourceId: src-wiki-fishbox
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-questbox
+       confidence: corroborated
+       relationship: supports
+     - sourceId: src-wiki-quanch
+       confidence: corroborated
+       relationship: supports
+
+ - id: F3-LOO-002
+   domain: inventory
+   kind: event
+   claim:
+     summary: The System AI awards a Quest Box to every crawler who survived the Fools Who Broke the Glass explosion.
+   evidence:
+     - sourceId: src-wiki-fishbox
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-questbox
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-LOO-001
+
+ - id: F3-ACH-001
+   domain: achievement
+   kind: event
+   claim:
+     summary: The 83 surviving crawlers trigger the Bandit Achievement for profiting from the Fools Who Broke the Glass quest without doing the work.
+   evidence:
+     - sourceId: src-wiki-questbox
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-quanch
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-LOO-001
+
+ - id: F3-ACH-002
+   domain: achievement
+   kind: state
+   claim:
+     summary: The Bandit Achievement triggers a two-tier mathematical upgrade to a quest box reward.
+   evidence:
+     - sourceId: src-wiki-questbox
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-achievements
+       confidence: corroborated
+       relationship: supports
+
+ - id: F3-LOO-003
+   domain: inventory
+   kind: event
+   claim:
+     summary: The 83 awarded boxes are upgraded and announced as Celestial Quest Boxes.
+   evidence:
+     - sourceId: src-wiki-questbox
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-LOO-002
+     - F3-ACH-001
+     - F3-ACH-002
+
+ - id: F3-LOO-004
+   domain: inventory
+   kind: event
+   claim:
+     summary: Quan Ch successfully opens his Celestial Quest Box before corporate intervention initiates a systemic freeze.
+   evidence:
+     - sourceId: src-wiki-quanch
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-LOO-003
+
+ - id: F3-INV-001
+   domain: inventory
+   kind: event
+   claim:
+     summary: Quan Ch acquires the Cloak of the Benevolent Champion by opening his Celestial Quest Box.
+   evidence:
+     - sourceId: src-wiki-quanch
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-questbox
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-LOO-004
+
+ - id: F3-LOO-005
+   domain: floor-system
+   kind: event
+   claim:
+     summary: The Borant Corporation uses its single seasonal veto to negate the undelivered Celestial Quest Boxes.
+   evidence:
+     - sourceId: src-wiki-fishbox
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-questbox
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-LOO-003
+
+ - id: F3-LOO-006
+   domain: inventory
+   kind: event
+   claim:
+     summary: Exactly 82 awarded Celestial Quest Boxes are permanently withheld and vetoed.
+     detail: Derived arithmetically in the research report from 83 total awarded boxes minus 1 opened box.
+   evidence:
+     - sourceId: src-wiki-fishbox
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-questbox
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-LOO-004
+     - F3-LOO-005
+
+ - id: F3-LOO-007
+   domain: inventory
+   kind: event
+   claim:
+     summary: The System AI delivers a Platinum-tier replacement box to the 82 survivors who had their rewards vetoed.
+     detail: The box is named the "It's Not My Fault You Fish-Headed Assholes Don't Properly Program Your Quests" Box.
+   evidence:
+     - sourceId: src-wiki-fishbox
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-LOO-006
+
+ - id: F3-ACH-010
+   domain: crawler
+   kind: event
+   claim:
+     summary: Carl assassinates Miss Quill, an NPC whose existence was required to complete another crawler's quest.
+   evidence:
+     - sourceId: src-wiki-cockblock
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-quill
+       confidence: corroborated
+       relationship: supports
+
+ - id: F3-ACH-011
+   domain: achievement
+   kind: event
+   claim:
+     summary: Carl receives the CockBlock Achievement for killing Miss Quill.
+   evidence:
+     - sourceId: src-wiki-cockblock
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-quill
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-ACH-010
+
+ - id: F3-ACH-012
+   domain: achievement
+   kind: event
+   claim:
+     summary: The CockBlock Achievement awards Carl a Silver Quest Box.
+   evidence:
+     - sourceId: src-wiki-cockblock
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-ACH-011
+
+ - id: F3-INV-010
+   domain: inventory
+   kind: state
+   claim:
+     summary: The Silver Quest Box awarded to Carl from the CockBlock Achievement contains three Heal Scrolls.
+   evidence:
+     - sourceId: src-wiki-healscroll
+       confidence: disputed
+       relationship: supports
+   contradictions:
+     - claimId: F3-INV-011
+       relationship: unresolved
+       note: Secondary sources conflict on the contents generated by opening the CockBlock Silver Quest Box.
+
+ - id: F3-INV-011
+   domain: inventory
+   kind: state
+   claim:
+     summary: The Silver Quest Box awarded to Carl from the CockBlock Achievement contains three scrolls of Confusing Fog.
+   evidence:
+     - sourceId: src-wiki-confusingfog
+       confidence: disputed
+       relationship: supports
+   contradictions:
+     - claimId: F3-INV-010
+       relationship: unresolved
+
+ - id: F3-ENT-001
+   domain: floor-system
+   kind: state
+   claim:
+     summary: Entry into the Desperado Club is granted via the Desperado Pass Tattoo.
+   evidence:
+     - sourceId: src-wiki-desperado
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-donut-f1
+       confidence: corroborated
+       relationship: supports
+
+ - id: F3-ENT-002
+   domain: floor-system
+   kind: event
+   claim:
+     summary: Carl and Princess Donut acquired the Desperado Pass Tattoo on the First Floor following a mass-casualty event.
+   evidence:
+     - sourceId: src-wiki-book1sum
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-warcriminal
+       confidence: corroborated
+       relationship: supports
+
+ - id: F3-ENT-003
+   domain: floor-system
+   kind: event
+   claim:
+     summary: Katia Grim later acquires the Desperado Pass Tattoo by killing Hekla.
+   evidence:
+     - sourceId: src-wiki-desperado
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-ENT-004
+   domain: floor-system
+   kind: state
+   claim:
+     summary: Obtaining a Desperado Pass automatically negates a crawler's ability to earn a pass to the competing Club Vanquisher.
+   evidence:
+     - sourceId: src-wiki-desperado
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-ENT-005
+   domain: floor-system
+   kind: state
+   claim:
+     summary: The main room of the Desperado Club is explicitly not a systemic safe room, allowing crawlers to be injured inside.
+   evidence:
+     - sourceId: src-wiki-desperado
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-ENT-006
+   domain: floor-system
+   kind: state
+   claim:
+     summary: Fast travel is restricted in the Desperado Club pocket dimension, forcing crawlers to return through the exact physical door they entered.
+   evidence:
+     - sourceId: src-wiki-desperado
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-CRA-001
+   domain: skills
+   kind: event
+   claim:
+     summary: Carl uses his Trap Engineer skill to handle explosives and construct improvised explosive devices on Floor 3.
+   evidence:
+     - sourceId: src-wiki-trap
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-CRA-002
+   domain: achievement
+   kind: observation
+   claim:
+     summary: The Martha Stewart Achievement, which triggers upon utilizing a systemic workbench to craft for the first time, is not awarded until the Fourth Floor.
+   evidence:
+     - sourceId: src-wiki-martha
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-CRA-003
+   domain: floor-system
+   kind: observation
+   claim:
+     summary: Formal systemic crafting using recipes, material lists, and a crafting UI is not utilized on the Third Floor.
+   evidence:
+     - sourceId: src-wiki-martha
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-CRA-001
+     - F3-CRA-002
+
+ - id: F3-INV-020
+   domain: inventory
+   kind: event
+   claim:
+     summary: Carl successfully contains an overloaded, wild-magic explosive soul crystal inside a Sheol Glass Reaper Case.
+   evidence:
+     - sourceId: src-wiki-f3
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-doomsday-16
+       confidence: corroborated
+       relationship: supports
+
+ - id: F3-INV-021
+   domain: inventory
+   kind: event
+   claim:
+     summary: Containing the soul crystal within the Sheol Glass Reaper Case creates the item named Carl's Doomsday Scenario.
+   evidence:
+     - sourceId: src-wiki-f3
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-doomsday-16
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-INV-020
+
+ - id: F3-EQP-001
+   domain: equipment
+   kind: state
+   claim:
+     summary: Princess Donut continuously wears the Enchanted Crown of the Sepsis Whore.
+   evidence:
+     - sourceId: src-wiki-sepsis
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-EQP-002
+   domain: equipment
+   kind: state
+   claim:
+     summary: Equipping the Enchanted Crown of the Sepsis Whore permanently places the wearer in the royal line of succession for the Blood Sultanate.
+   evidence:
+     - sourceId: src-wiki-sepsis
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-EQP-003
+   domain: magic
+   kind: event
+   claim:
+     summary: During the Fools Who Broke the Glass quest, Remex emits bursts of wild soul magic.
+   evidence:
+     - sourceId: src-wiki-sepsis
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-EQP-004
+   domain: equipment
+   kind: event
+   claim:
+     summary: A burst of wild soul magic permanently destroys the equipped Enchanted Crown of the Sepsis Whore before it can be removed, causing it to crumble to dust.
+   evidence:
+     - sourceId: src-wiki-sepsis
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-EQP-001
+     - F3-EQP-003
+
+ - id: F3-INV-030
+   domain: inventory
+   kind: state
+   claim:
+     summary: The Fireball or Custard? Lottery Ticket has a 50 percent chance to cast a Level 15 Fireball and a 50 percent chance to cast healing strawberry custard upon scratching a spot.
+   evidence:
+     - sourceId: src-wiki-fireball
+       confidence: confirmed
+       relationship: supports
+
+ - id: F3-INV-031
+   domain: inventory
+   kind: event
+   claim:
+     summary: Carl scratches the Fireball or Custard? Lottery Ticket during combat with Heather the Bear.
+   evidence:
+     - sourceId: src-wiki-fireball
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-INV-030
+
+ - id: F3-INV-032
+   domain: magic
+   kind: event
+   claim:
+     summary: The lottery ticket scratch during combat with Heather the Bear produces the custard effect.
+   evidence:
+     - sourceId: src-wiki-fireball
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-INV-031
+
+ - id: F3-INV-033
+   domain: inventory
+   kind: event
+   claim:
+     summary: Carl scratches the Fireball or Custard? Lottery Ticket again while investigating Magistrate Featherfall's basement.
+   evidence:
+     - sourceId: src-wiki-krasue
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-fireball
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-INV-030
+
+ - id: F3-INV-034
+   domain: magic
+   kind: event
+   claim:
+     summary: The lottery ticket scratch in the Magistrate's basement produces a Level 15 Fireball.
+   evidence:
+     - sourceId: src-wiki-krasue
+       confidence: confirmed
+       relationship: supports
+     - sourceId: src-wiki-fireball
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-INV-033
+
+ - id: F3-INV-035
+   domain: magic
+   kind: event
+   claim:
+     summary: The Level 15 Fireball resulting from the lottery ticket incinerates the mobs present and destroys the administrative building.
+   evidence:
+     - sourceId: src-wiki-krasue
+       confidence: confirmed
+       relationship: supports
+   dependencies:
+     - F3-INV-034

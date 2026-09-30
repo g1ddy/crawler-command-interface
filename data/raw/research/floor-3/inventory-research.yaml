@@ -37,6 +37,11 @@ sources:
     trust: candidate
     title: End of Book 2 Question
     url: https://www.reddit.com/r/DungeonCrawlerCarl/comments/1jjoget/end_of_book_2_question/
+  - id: src-dcc-database-celestial-box
+    kind: fan-compendium
+    trust: corroborating
+    title: Celestial Box - Dungeon Crawler Carl Wiki Database
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Celestial_Box
 claims:
   - id: F3-CRAWLER-001
     domain: crawler
