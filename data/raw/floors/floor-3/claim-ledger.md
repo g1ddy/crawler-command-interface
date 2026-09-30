@@ -100,10 +100,38 @@ Note: Research YAML is an evidence-oriented authoring format. The research compi
 | Claim | Locator | Domain | Promotion |
 | --- | --- | --- | --- |
 | Zev broadcasts audience reaction to race/class choices and VIP positioning | Book 2, Ch. 4 | Broadcast / Social | Ledger-only (owned by #185) |
-| Carl extorts exclusive Floor 6 Vengeance of the Daughter contract from Grimaldi | Book 2, Ch. 11 | Broadcast / Entitlement | Ledger-only (owned by #185) |
+| Carl extorts exclusive Floor 6 Vengeance of the Daughter contract from Grimaldi | Book 2, Ch. 11 | Broadcast / Entitlement | Promoted as entitlement research fact (`F3-ENTITLE-001`) |
 | Danger Zone interview interrupted by Skull Empire assassination; Manasa dies | Book 2, Ch. 18 | Broadcast / Faction | Ledger-only (owned by #185) |
 | Carl, Donut, Katia finish at levels 27/26/21 and enter top-10 leaderboard | Book 2, Ch. 26 | Progression / Broadcast | Ledger-only (owned by #182/#185) |
 | Hekla's group places pressure/bounties on Donut because of Mordecai | Book 2, Ch. 26 | Social / Faction | Ledger-only (owned by #185) |
+
+## Achievements, Entitlements, and Crafting Research (#186)
+
+### Achievements & Caused Rewards
+
+1. **One Quadrillion! (`achievement-one-quadrillion-views`)**: Awarded at Book 2 Ch. 17 upon reaching one quadrillion total views. Directly causes Fan Box rewards (`evt-f3-fan-box-carl-awarded`, `evt-f3-fan-box-donut-awarded`) with 30-hour temporal locks.
+2. **Ultimate Extreme Power! (`achievement-ultimate-extreme-power`)**: Awarded at Book 2 Ch. 22 when Carl inherits the town Magistrate title after destroying Miss Quill's office.
+3. **Bandit (`achievement-bandit`)**: Awarded at Book 2 Ch. 26 for the unusual Soul Crystal rescue outcome. Rewards the party with an upgraded quest box tier (Celestial) for 83 crawlers in the blast zone.
+
+### Reward Quantities & Partial Outcomes
+
+- **Celestial Quest Boxes (`Fools Who Broke the Glass` / `Bandit` reward)**:
+  - **Total Awarded**: 83 Celestial-quality boxes.
+  - **Opened / Claimed**: 1 Celestial box opened by Quan Ch before the administrative veto (`evt-f3-quest-boxes-upgraded-celestial`).
+  - **Vetoed / Blocked**: 82 remaining Celestial boxes blocked by Borant's administrative veto (`evt-f3-celestial-boxes-vetoed`).
+  - **Chronology**: Both events occur in Book 2 Ch. 26. The 1 opened box is explicitly preserved as claimed before the remaining 82 are vetoed.
+
+### Durable Entitlements vs. Location Access
+
+- **Town Magistrate Authority**: Durable system title/authority inherited by Carl upon destruction of the Magistrate's office (Book 2 Ch. 22).
+- **Manager Benefit**: Class-granted system entitlement from Former Child Actor class (Book 2 Ch. 1) binding Mordecai to the party and forcibly teleporting his biological form to safe rooms.
+- **Vengeance of the Daughter Contract**: Contract extorted from Grimaldi granting exclusive Floor 6 quest access (Book 2 Ch. 11).
+- **Desperado Club Access**: Location discovery along the Silk Road (Book 2 Ch. 16); modeled as a location transition rather than a global permanent unlock.
+
+### Crafting Evidence & Capability Status
+
+- **Crafted Item**: `evt-f3-doomsday-scenario-created` (`ItemCrafted`, Book 2 Ch. 25) models Carl encapsulating an active Soul Crystal in a Sheol Glass Reaper Case, creating "Carl's Doomsday Scenario".
+- **Crafting Capability Status**: Floor 3 provides no workstation catalog, recipe list, material requirements table, or crafting timer mechanics. Crafting remains deferred / readiness-only in `docs/CANON_READINESS.md` without prematurely enabling Crafting navigation or UI.
 
 ## Catastrophic Floor 3 Sequence & Four Precursor Magical Shocks
 

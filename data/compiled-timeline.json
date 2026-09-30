@@ -12,7 +12,7 @@
       }
     },
     "createdAt": "2026-09-28T00:55:16.404Z",
-    "updatedAt": "2026-09-28T00:55:16.404Z"
+    "updatedAt": "2026-09-29T11:53:04.606Z"
   },
   "floors": [
     {
@@ -4811,7 +4811,7 @@
         "book": 2,
         "chapter": 17
       },
-      "summary": "Carl is awarded a Fan Box with a 30-hour temporal lock.",
+      "summary": "Carl is awarded a Fan Box with a 30-hour temporal lock caused by the One Quadrillion! achievement.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
@@ -4840,7 +4840,7 @@
         "book": 2,
         "chapter": 17
       },
-      "summary": "Donut is awarded a Fan Box with a 30-hour temporal lock.",
+      "summary": "Donut is awarded a Fan Box with a 30-hour temporal lock caused by the One Quadrillion! achievement.",
       "evidence": [
         {
           "sourceId": "src-sparknotes-ch-56f65e74",
@@ -5261,7 +5261,7 @@
             "boxType": "celestial",
             "rarity": "celestial",
             "amount": 83,
-            "description": "83 Celestial-quality boxes (vetoed by Borant)"
+            "description": "83 Celestial-quality boxes (1 opened by Quan Ch, 82 remaining boxes vetoed by Borant)"
           }
         ]
       }
