@@ -116,6 +116,39 @@ test("Floor 3 achievement boundaries isolate award items prior to their causal u
   );
 });
 
+test("Floor 3 end-of-floor events follow strict sequence order for Bandit achievement and Celestial box handling", () => {
+  const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+
+  const banditEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-achievement-bandit");
+  const upgradeEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-quest-boxes-upgraded-celestial");
+  const quanChEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-opened");
+  const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
+
+  assert.ok(banditEvent, "evt-f3-achievement-bandit exists");
+  assert.ok(upgradeEvent, "evt-f3-quest-boxes-upgraded-celestial exists");
+  assert.ok(quanChEvent, "evt-f3-celestial-box-quan-ch-opened exists");
+  assert.ok(vetoEvent, "evt-f3-celestial-boxes-vetoed exists");
+
+  assert.ok(
+    banditEvent.sequence < upgradeEvent.sequence,
+    "Bandit achievement precedes Celestial upgrade"
+  );
+  assert.ok(
+    upgradeEvent.sequence < quanChEvent.sequence,
+    "Celestial upgrade precedes Quan Ch opening"
+  );
+  assert.ok(
+    quanChEvent.sequence < vetoEvent.sequence,
+    "Quan Ch opening precedes Borant veto"
+  );
+
+  assert.equal(banditEvent.achievement?.recipient, "party");
+  assert.equal(
+    banditEvent.achievement?.description,
+    "Awarded to the crawlers who survived Fools Who Broke the Glass."
+  );
+});
+
 test("Floor 3 ItemCrafted event projects Carl's Doomsday Scenario at its causal boundary", () => {
   const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
   const craftEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-doomsday-scenario-created");

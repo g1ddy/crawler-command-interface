@@ -500,7 +500,7 @@
     "id": "achievement-bandit",
     "title": "Bandit",
     "recipient": "party",
-    "description": "Awarded for the unusual Soul Crystal rescue outcome on Floor 3.",
+    "description": "Awarded to the crawlers who survived Fools Who Broke the Glass.",
     "reward": [
       {
         "kind": "box",

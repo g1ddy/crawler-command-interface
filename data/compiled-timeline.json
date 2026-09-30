@@ -12,7 +12,7 @@
       }
     },
     "createdAt": "2026-09-28T00:55:16.404Z",
-    "updatedAt": "2026-09-29T11:53:04.606Z"
+    "updatedAt": "2026-09-30T04:33:37.947Z"
   },
   "floors": [
     {
@@ -40,7 +40,7 @@
       "book": 2,
       "bookTitle": "Carl's Doomsday Scenario",
       "startSequence": 124,
-      "endSequence": 179
+      "endSequence": 180
     }
   ],
   "sources": [
@@ -5187,55 +5187,15 @@
       "kind": "dialogue"
     },
     {
-      "id": "evt-f3-quest-boxes-upgraded-celestial",
-      "sequence": 177,
-      "type": "NarrativeEvent",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 26
-      },
-      "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone. Quan Ch opens his box before the veto.",
-      "evidence": [
-        {
-          "sourceId": "src-reddit-end-book2",
-          "confidence": "candidate"
-        },
-        {
-          "sourceId": "src-dcc-database-celestial-box",
-          "confidence": "corroborated"
-        }
-      ],
-      "kind": "other"
-    },
-    {
-      "id": "evt-f3-celestial-boxes-vetoed",
-      "sequence": 178,
-      "type": "NarrativeEvent",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 26
-      },
-      "summary": "Borant uses an administrative veto to prevent delivery of the remaining 82 Celestial Quest Boxes.",
-      "evidence": [
-        {
-          "sourceId": "src-sparknotes-ch-sum",
-          "confidence": "corroborated"
-        }
-      ],
-      "kind": "other"
-    },
-    {
       "id": "evt-f3-achievement-bandit",
-      "sequence": 179,
+      "sequence": 177,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 26
       },
-      "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome.",
+      "summary": "The crawlers who survived Fools Who Broke the Glass are awarded the Bandit Achievement.",
       "evidence": [
         {
           "sourceId": "src-book-2",
@@ -5254,7 +5214,7 @@
         "id": "achievement-bandit",
         "title": "Bandit",
         "recipient": "party",
-        "description": "Awarded for the unusual Soul Crystal rescue outcome on Floor 3.",
+        "description": "Awarded to the crawlers who survived Fools Who Broke the Glass.",
         "reward": [
           {
             "kind": "box",
@@ -5265,6 +5225,68 @@
           }
         ]
       }
+    },
+    {
+      "id": "evt-f3-quest-boxes-upgraded-celestial",
+      "sequence": 178,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone.",
+      "evidence": [
+        {
+          "sourceId": "src-reddit-end-book2",
+          "confidence": "candidate"
+        },
+        {
+          "sourceId": "src-dcc-database-celestial-box",
+          "confidence": "corroborated"
+        }
+      ],
+      "kind": "other"
+    },
+    {
+      "id": "evt-f3-celestial-box-quan-ch-opened",
+      "sequence": 179,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Quan Ch opens his Celestial Quest Box before the administrative veto takes effect.",
+      "evidence": [
+        {
+          "sourceId": "src-reddit-end-book2",
+          "confidence": "candidate"
+        },
+        {
+          "sourceId": "src-dcc-database-celestial-box",
+          "confidence": "corroborated"
+        }
+      ],
+      "kind": "other"
+    },
+    {
+      "id": "evt-f3-celestial-boxes-vetoed",
+      "sequence": 180,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Borant uses an administrative veto to prevent delivery of the remaining 82 Celestial Quest Boxes.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-sum",
+          "confidence": "corroborated"
+        }
+      ],
+      "kind": "other"
     }
   ],
   "countdowns": [
