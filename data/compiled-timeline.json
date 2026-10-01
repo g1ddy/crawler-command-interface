@@ -5222,7 +5222,15 @@
         "title": "Bandit",
         "recipient": "party",
         "description": "Awarded to the crawlers who survived Fools Who Broke the Glass.",
-        "reward": []
+        "reward": [
+          {
+            "kind": "box",
+            "boxType": "celestial",
+            "rarity": "celestial",
+            "amount": 83,
+            "description": "83 Celestial-quality boxes"
+          }
+        ]
       }
     },
     {
@@ -5238,7 +5246,7 @@
       "evidence": [
         {
           "sourceId": "src-wiki-quanch",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         },
         {
           "sourceId": "src-dcc-database-celestial-box",
@@ -5250,7 +5258,7 @@
     {
       "id": "evt-f3-celestial-box-quan-ch-acquired",
       "sequence": 179,
-      "type": "ItemAcquired",
+      "type": "NarrativeEvent",
       "position": {
         "floor": 3,
         "book": 2,
@@ -5260,27 +5268,15 @@
       "evidence": [
         {
           "sourceId": "src-wiki-quanch",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "item": {
-        "instanceId": "inst-f3-celestial-box-quan-ch",
-        "itemId": "item-celestial-quest-box",
-        "name": "Celestial Quest Box",
-        "category": "box",
-        "rarity": "celestial",
-        "description": "An upgraded Celestial-quality quest box reward granted for surviving the Fools Who Broke the Glass explosion.",
-        "quantity": {
-          "known": true,
-          "value": 1
-        },
-        "sourceDescription": "Third Floor"
-      }
+      "kind": "other"
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-opened",
       "sequence": 180,
-      "type": "ItemConsumed",
+      "type": "NarrativeEvent",
       "position": {
         "floor": 3,
         "book": 2,
@@ -5290,11 +5286,10 @@
       "evidence": [
         {
           "sourceId": "src-wiki-quanch",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "itemInstanceId": "inst-f3-celestial-box-quan-ch",
-      "outcome": "Quan Ch opens the Celestial Quest Box and receives the Cloak of the Benevolent Champion."
+      "kind": "other"
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",

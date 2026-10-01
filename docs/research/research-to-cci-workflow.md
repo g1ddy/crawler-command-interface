@@ -253,8 +253,8 @@ Stage 2 extracts canon claims. Stage 3 is where a supported claim is given an ex
 | Event type | Meaning | Authoring boundary |
 | --- | --- | --- |
 | NarrativeEvent | A source-backed story fact, causal transition, reward/upgrade announcement, veto, grant, or other timeline fact that does **not** establish a specific inventory instance. | Use when the evidence establishes what happened in the story but does not establish one concrete item instance entering inventory. |
-| ItemAcquired | A specific item instance becomes owned/available to a crawler. | Use only when the evidence establishes an individual acquisition boundary. This event establishes the instanceId that later item lifecycle events may reference. |
-| ItemConsumed | An already-acquired item instance is used, opened, expended, or otherwise consumed. | Use only after the referenced item instance has been established by an earlier ItemAcquired boundary. Do not use it to establish acquisition. |
+| ItemAcquired | A specific item instance enters the inventory/ownership state represented by the current CCI projection. | Use only when the evidence establishes an individual acquisition boundary for the crawler whose inventory the existing projection mutates. Do not use it for another crawler merely because the story identifies that crawler as the recipient. |
+| ItemConsumed | An already-acquired item instance is used, opened, expended, or otherwise consumed by the crawler represented by the existing CCI projection. | Use only when the referenced instance already exists in that projected crawler inventory. Do not use it for another crawler when the current projection has no recipient-aware inventory contract. |
 | ItemCrafted | A specific item-creation act is established by the evidence. | Use for the causal creation of an item when the story establishes that act. Do not infer a general recipe, workstation, materials system, timer, or reusable crafting capability from one creation event. |
 
 ### Reward quantity is not inventory cardinality
@@ -263,13 +263,13 @@ A narrative reward can establish a quantity without creating that many inventory
 
 For example, if the evidence says that the Bandit achievement upgrades **83 Platinum Quest Boxes to Celestial tier**, the upgrade remains a NarrativeEvent. It records the causal reward/upgrade fact and its quantity; it does not imply that CCI has 83 individually identified inventory objects.
 
-If the evidence separately establishes that Quan Ch acquires one of those Celestial boxes, represent that boundary as an ItemAcquired event with one concrete instanceId. If the box is then opened, represent the opening as ItemConsumed referencing that same instance.
+If the evidence separately establishes that Quan Ch acquires one of those Celestial boxes, preserve that acquisition as a separate NarrativeEvent because the current CCI item projection owns inventory for the projected crawler and has no recipient-aware inventory contract. Preserve Quan Ch opening the box as another NarrativeEvent for the same reason. Do not introduce recipient-aware inventory architecture for this sourced outcome.
 
 The resulting sequence is intentionally:
 
-AchievementUnlocked → NarrativeEvent (83-box upgrade) → ItemAcquired (one specific box) → ItemConsumed (that box) → NarrativeEvent (82 boxes vetoed)
+AchievementUnlocked → NarrativeEvent (83-box upgrade) → NarrativeEvent (Quan Ch receives one box) → NarrativeEvent (Quan Ch opens it) → NarrativeEvent (82 boxes vetoed)
 
-This distinction prevents a reward quantity from being mistaken for an inventory object count and keeps item lifecycle validation meaningful.
+This distinction prevents a reward quantity from being mistaken for an inventory object count and prevents another crawler’s sourced item activity from mutating the projected crawler’s inventory.
 
 ### Persistence remains evidence-driven
 

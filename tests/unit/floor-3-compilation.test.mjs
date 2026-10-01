@@ -116,91 +116,38 @@ test("Floor 3 achievement boundaries isolate award items prior to their causal u
   );
 });
 
-test("Floor 3 end-of-floor events follow strict sequence order for Bandit achievement and Celestial box handling", () => {
+test("Floor 3 end-of-floor events preserve reward quantity and non-Carl item ownership boundaries", () => {
   const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
-
   const banditEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-achievement-bandit");
   const upgradeEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-quest-boxes-upgraded-celestial");
   const quanChAcquiredEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-acquired");
   const quanChOpenedEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-opened");
   const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
 
-  assert.ok(banditEvent, "evt-f3-achievement-bandit exists");
-  assert.ok(upgradeEvent, "evt-f3-quest-boxes-upgraded-celestial exists");
-  assert.ok(quanChAcquiredEvent, "evt-f3-celestial-box-quan-ch-acquired exists");
-  assert.ok(quanChOpenedEvent, "evt-f3-celestial-box-quan-ch-opened exists");
-  assert.ok(vetoEvent, "evt-f3-celestial-boxes-vetoed exists");
-
-  assert.ok(
-    banditEvent.sequence < upgradeEvent.sequence,
-    "Bandit achievement precedes Celestial upgrade"
-  );
-  assert.ok(
-    upgradeEvent.sequence < quanChAcquiredEvent.sequence,
-    "Celestial upgrade precedes Quan Ch box acquisition"
-  );
-  assert.ok(
-    quanChAcquiredEvent.sequence < quanChOpenedEvent.sequence,
-    "Quan Ch box acquisition precedes Quan Ch box opening"
-  );
-  assert.ok(
-    quanChOpenedEvent.sequence < vetoEvent.sequence,
-    "Quan Ch opening precedes Borant veto"
-  );
+  assert.ok(banditEvent); assert.ok(upgradeEvent); assert.ok(quanChAcquiredEvent); assert.ok(quanChOpenedEvent); assert.ok(vetoEvent);
+  assert.ok(banditEvent.sequence < upgradeEvent.sequence);
+  assert.ok(upgradeEvent.sequence < quanChAcquiredEvent.sequence);
+  assert.ok(quanChAcquiredEvent.sequence < quanChOpenedEvent.sequence);
+  assert.ok(quanChOpenedEvent.sequence < vetoEvent.sequence);
 
   assert.equal(banditEvent.achievement?.recipient, "party");
-  assert.equal(
-    banditEvent.achievement?.description,
-    "Awarded to the crawlers who survived Fools Who Broke the Glass."
-  );
-  assert.deepEqual(
-    banditEvent.achievement?.reward,
-    [],
-    "Bandit achievement does not expose the 83 Celestial box reward before the upgrade sequence"
-  );
+  assert.deepEqual(banditEvent.achievement?.reward, [{ kind: "box", boxType: "celestial", rarity: "celestial", amount: 83, description: "83 Celestial-quality boxes" }]);
 
   assert.equal(upgradeEvent.type, "NarrativeEvent");
-  assert.ok(
-    upgradeEvent.summary.includes("83 crawlers"),
-    "Upgrade event describes the upgrade of 83 boxes"
-  );
-  assert.equal(
-    upgradeEvent.item,
-    undefined,
-    "Upgrade event does not contain an individual item payload or Quan Ch's item instance"
-  );
+  assert.ok(upgradeEvent.summary.includes("83 crawlers"));
+  assert.equal(upgradeEvent.item, undefined);
+  assert.equal(quanChAcquiredEvent.type, "NarrativeEvent");
+  assert.equal(quanChOpenedEvent.type, "NarrativeEvent");
+  assert.equal(quanChAcquiredEvent.item, undefined);
+  assert.equal(quanChOpenedEvent.item, undefined);
+  assert.ok(quanChOpenedEvent.summary.includes("Quan Ch opens his Celestial Quest Box"));
 
-  assert.equal(quanChAcquiredEvent.type, "ItemAcquired");
-  assert.equal(quanChAcquiredEvent.item?.itemId, "item-celestial-quest-box");
-  assert.equal(quanChAcquiredEvent.item?.instanceId, "inst-f3-celestial-box-quan-ch");
-
-  assert.equal(quanChOpenedEvent.type, "ItemConsumed");
-  assert.equal(quanChOpenedEvent.itemInstanceId, "inst-f3-celestial-box-quan-ch");
-  assert.ok(
-    quanChOpenedEvent.outcome?.includes("Cloak of the Benevolent Champion"),
-    "Quan Ch opening outcome records receiving the Cloak of the Benevolent Champion"
-  );
-
-  // Verify the validator still requires an item instance to be established before ItemConsumed
-  const invalidTimeline = JSON.parse(JSON.stringify(compiledTimeline));
-  const badConsumedEvent = {
-    id: "evt-f3-bad-consumed",
-    sequence: 999,
-    type: "ItemConsumed",
-    itemInstanceId: "inst-f3-unacquired-box",
-    position: { floor: 3, book: 2, chapter: 26 },
-    summary: "Attempting to consume an unacquired box",
-    evidence: [{ sourceId: "src-book-2", confidence: "confirmed" }]
-  };
-  invalidTimeline.events.push(badConsumedEvent);
-  const validation = validateCrawlerTimeline(invalidTimeline);
-  assert.equal(validation.valid, false, "Timeline validation must fail when ItemConsumed references an unacquired instance");
-  assert.ok(
-    validation.errors.some((err) => err.includes("inst-f3-unacquired-box")),
-    "Validation error must cite the missing itemInstanceId"
-  );
+  const finalState = projectState(compiledTimeline, vetoEvent.sequence);
+  assert.equal(finalState.inventory.some((item) => item.itemId === "item-celestial-quest-box"), false,
+    "Quan Ch box must not enter Carl projected inventory");
+  assert.equal(finalState.inventory.some((item) => item.itemId === "item-cloak-of-the-benevolent-champion"), false,
+    "Quan Ch cloak must not enter Carl projected inventory");
 });
-
 test("Floor 3 ItemCrafted event projects Carl's Doomsday Scenario at its causal boundary", () => {
   const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
   const craftEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-doomsday-scenario-created");

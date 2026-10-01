@@ -1164,7 +1164,7 @@
     "evidence": [
       {
         "sourceId": "src-wiki-quanch",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       },
       {
         "sourceId": "src-dcc-database-celestial-box",
@@ -1174,33 +1174,24 @@
   },
   {
     "id": "evt-f3-celestial-box-quan-ch-acquired",
-    "type": "ItemAcquired",
+    "type": "NarrativeEvent",
     "position": {
       "floor": 3,
       "book": 2,
       "chapter": 26
     },
-    "item": {
-      "instanceId": "inst-f3-celestial-box-quan-ch",
-      "itemId": "item-celestial-quest-box",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
-    },
     "summary": "Quan Ch receives one Celestial Quest Box from the upgraded reward.",
     "evidence": [
       {
         "sourceId": "src-wiki-quanch",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
-    ]
+    ],
+    "kind": "other"
   },
   {
     "id": "evt-f3-celestial-box-quan-ch-opened",
-    "type": "ItemConsumed",
-    "itemInstanceId": "inst-f3-celestial-box-quan-ch",
-    "outcome": "Quan Ch opens the Celestial Quest Box and receives the Cloak of the Benevolent Champion.",
+    "type": "NarrativeEvent",
     "position": {
       "floor": 3,
       "book": 2,
@@ -1210,9 +1201,10 @@
     "evidence": [
       {
         "sourceId": "src-wiki-quanch",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
-    ]
+    ],
+    "kind": "other"
   },
   {
     "id": "evt-f3-celestial-boxes-vetoed",
