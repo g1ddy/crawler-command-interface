@@ -8,6 +8,37 @@ For authoring rules, source tiers, and the evidence contract, see [RAW_OBSERVATI
 
 A domain becomes navigable only when a source-backed fact has a correct raw representation, replay projection, and useful behavior. Source tier definitions (Primary, Corroborating, and Candidate) and evidence authoring contracts are defined in [RAW_OBSERVATIONS.md](../RAW_OBSERVATIONS.md). Missing or insufficient evidence leaves a capability unknown or unavailable.
 
+## Event and item lifecycle readiness boundary
+
+Readiness decisions must preserve the distinction between a story fact and an established item lifecycle.
+
+### Event-type rules
+
+| Event type | Use when the evidence establishes | Do not infer |
+| --- | --- | --- |
+| NarrativeEvent | A causal story fact, reward/upgrade, veto, grant, or other timeline fact without a specific item instance. | Individual inventory instances merely from a quantity in the narrative. |
+| ItemAcquired | One concrete item instance enters a crawler's inventory/ownership. | Acquisition of additional instances not individually established by the evidence. |
+| ItemConsumed | An already-established item instance is opened, used, expended, or otherwise consumed. | The acquisition boundary itself. The referenced instance must already exist in replay state. |
+| ItemCrafted | A specific item-creation act is sourced. | A general crafting system, recipe catalog, workstation, material requirements, timers, or interactive crafting capability. |
+
+A reward quantity and inventory cardinality are separate facts. An 83-box reward can remain a single NarrativeEvent even though the quantity is 83. If the evidence later establishes one specific box being acquired, that is a separate ItemAcquired boundary; opening that box is a subsequent ItemConsumed boundary.
+
+For the Floor 3 Celestial Quest Box case, the authored lifecycle is:
+
+AchievementUnlocked → NarrativeEvent (83 boxes upgraded) → ItemAcquired (Quan Ch's one box) → ItemConsumed (that box opened) → NarrativeEvent (82 boxes vetoed)
+
+This is the canonical pattern for future extraction/authoring work whenever a narrative reward is followed by an individually established item lifecycle.
+
+### Evidence-driven persistence
+
+Catalog item persistence is intentionally tri-state:
+
+- persistent: true means persistence is explicitly established;
+- persistent: false means non-persistence is explicitly established;
+- omitted persistent means the evidence has not established persistence.
+
+The omitted state is **unknown/unestablished**, not false. Readiness and projection logic must preserve that distinction.
+
 ## Focused readiness
 
 | Domain | Current evidence | Decision |
