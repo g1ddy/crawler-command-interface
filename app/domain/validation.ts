@@ -426,8 +426,10 @@ export function validateCrawlerTimeline(doc: unknown): ValidationResult {
         event.item?.instanceId
       ) {
         knownItemInstanceIds.add(event.item.instanceId);
+      } else if (event.type === 'ItemConsumed' && 'itemInstanceId' in event && event.itemInstanceId) {
+        knownItemInstanceIds.add(event.itemInstanceId);
       } else if (
-        (event.type === 'ItemConsumed' || event.type === 'ItemEquipped' || event.type === 'ItemUnequipped' || event.type === 'ItemDiscarded' || event.type === 'ItemQuantityChanged') &&
+        (event.type === 'ItemEquipped' || event.type === 'ItemUnequipped' || event.type === 'ItemDiscarded' || event.type === 'ItemQuantityChanged') &&
         'itemInstanceId' in event &&
         event.itemInstanceId
       ) {

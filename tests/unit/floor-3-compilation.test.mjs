@@ -153,9 +153,16 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
     "Bandit achievement does not expose the 83 Celestial box reward before the upgrade sequence"
   );
 
-  assert.equal(upgradeEvent.type, "ItemAcquired");
-  assert.equal(upgradeEvent.item?.itemId, "item-celestial-quest-box");
-  assert.equal(upgradeEvent.item?.instanceId, "inst-f3-celestial-box-quan-ch");
+  assert.equal(upgradeEvent.type, "NarrativeEvent");
+  assert.ok(
+    upgradeEvent.summary.includes("83 crawlers"),
+    "Upgrade event describes the upgrade of 83 boxes"
+  );
+  assert.equal(
+    upgradeEvent.item,
+    undefined,
+    "Upgrade event does not contain an individual item payload or Quan Ch's item instance"
+  );
 
   assert.equal(quanChEvent.type, "ItemConsumed");
   assert.equal(quanChEvent.itemInstanceId, "inst-f3-celestial-box-quan-ch");

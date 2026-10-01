@@ -350,7 +350,7 @@
     "category": "equipment",
     "slot": "NECK",
     "rarity": "celestial",
-    "persistent": true,
+    "persistent": false,
     "description": "A Celestial-tier cloak obtained by Quan Ch upon opening his Celestial Quest Box."
   }
 ]

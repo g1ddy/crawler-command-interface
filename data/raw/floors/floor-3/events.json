@@ -1153,19 +1153,12 @@
   },
   {
     "id": "evt-f3-quest-boxes-upgraded-celestial",
-    "type": "ItemAcquired",
+    "type": "NarrativeEvent",
+    "kind": "other",
     "position": {
       "floor": 3,
       "book": 2,
       "chapter": 26
-    },
-    "item": {
-      "instanceId": "inst-f3-celestial-box-quan-ch",
-      "itemId": "item-celestial-quest-box",
-      "quantity": {
-        "known": true,
-        "value": 1
-      }
     },
     "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone.",
     "evidence": [
