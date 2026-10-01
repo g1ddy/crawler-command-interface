@@ -1,0 +1,69 @@
+schemaVersion: crawler-modeling/v1
+decisions:
+  - claimId: P3-PET-001
+    disposition: ledger_only
+    rationale: Mongo identity (pet-mongo) and Donut bond holder were established in Floor 2. No re-acquisition event is needed on Floor 3.
+  - claimId: P3-PET-002
+    disposition: promote
+    target:
+      domain: pet
+      concept: PetLevelChanged
+    rationale: Primary-supported Mongo progression level updates across Floor 3.
+  - claimId: P3-PET-003
+    disposition: ledger_only
+    rationale: Mongo growth is an observed progression pattern; not promoted as a universal level/growth formula without explicit primary mechanic evidence.
+  - claimId: P3-PET-004
+    disposition: promote
+    target:
+      domain: pet
+      concept: PetConditionChanged
+    rationale: Explicitly documented injury event in Book 2 Ch 12.
+  - claimId: P3-PET-005
+    disposition: promote
+    target:
+      domain: pet
+      concept: PetConditionChanged
+    rationale: Explicitly documented recovery event in Book 2 Ch 12.
+  - claimId: P3-PET-006
+    disposition: promote
+    target:
+      domain: pet
+      concept: PetEquipmentEquipped
+    rationale: Documented item installation on Mongo in Book 2 Ch 13.
+  - claimId: P3-PET-007
+    disposition: ledger_only
+    rationale: Descriptive effect observation associated with the equipped fang caps.
+  - claimId: P3-PET-008
+    disposition: promote
+    target:
+      domain: inventory
+      concept: ItemAcquired
+    rationale: Authorized item acquisition representation in raw floor inventory events.
+  - claimId: P3-PET-009
+    disposition: ledger_only
+    rationale: Scoped carrier observation; not promoted as a universal all biological entities rule without primary support.
+  - claimId: P3-PET-010
+    disposition: review
+    target:
+      domain: pet
+      concept: PetDeployment
+    rationale: >-
+      Magical Pet Carrier activation, button teleportation, containment, and rest state
+      are documented as an integrated item capability in Book 2 Ch. 14; preserved as a
+      composite research observation for curation without inventing an unestablished
+      PetDeploymentChanged runtime event contract.
+  - claimId: P3-PET-011
+    disposition: ledger_only
+    rationale: Observable behavior; psychological distress is not promoted as an established fact.
+  - claimId: P3-PET-012
+    disposition: ledger_only
+    rationale: Documented concrete incident in Book 2 Ch 14; universal aggro/saving throw/duration mechanics are not inferred.
+  - claimId: P3-PET-013
+    disposition: ledger_only
+    rationale: Candidate-level evidence; not verified as a universal System rule.
+  - claimId: P3-PET-014
+    disposition: ledger_only
+    rationale: Reported examples in secondary sources; not a verified universal mechanic.
+  - claimId: P3-PET-015
+    disposition: ledger_only
+    rationale: Secondary candidate claim requiring further verification before becoming a general ownership rule.

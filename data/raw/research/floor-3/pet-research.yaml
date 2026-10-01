@@ -1,0 +1,253 @@
+schemaVersion: crawler-research/v1
+storyId: dcc
+floor: 3
+
+sources:
+  - id: src-fandom-mongo
+    kind: wiki
+    trust: corroborating
+    title: Mongo - Dungeon Crawler Carl Wiki
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Mongo
+  - id: src-cookbook-mongo
+    kind: editorial
+    trust: corroborating
+    title: Mongo's True Nature - Crawlers Cookbook
+    url: https://crawlerscookbook.com/theories/mongos-true-nature/
+  - id: src-bookworm-carrier
+    kind: fan-compendium
+    trust: corroborating
+    title: Magical Pet Carrier - Bookworm Wiki
+    url: https://wiki.bookwormai.app/dungeon-crawler-carl/world/magical-pet-carrier
+  - id: src-reddit-carrier
+    kind: discussion
+    trust: candidate
+    title: Pet Carriers - Reddit
+    url: https://www.reddit.com/r/DungeonCrawlerCarl/comments/1nd5xxb/pet_carriers/
+  - id: src-sparknotes-ch12
+    kind: editorial
+    trust: corroborating
+    title: Carl's Doomsday Scenario Chapter 12 Summary - SparkNotes AI
+    url: https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/2f4e4094-375e-4f2e-a419-4cb56a1b3ffe
+  - id: src-reddit-miriam
+    kind: discussion
+    trust: candidate
+    title: The names of Miriam Dom's goats - Reddit
+    url: https://www.reddit.com/r/DungeonCrawlerCarl/comments/1ts94bz/the_names_of_miriam_doms_goats/
+  - id: src-bookreadfree-id
+    kind: editorial
+    trust: candidate
+    title: Crawler ID Mechanics - BookReadFree
+    url: https://bookreadfree.com/99426/2468076
+  - id: src-tvtropes-dcc
+    kind: wiki
+    trust: candidate
+    title: Dungeon Crawler Carl - TV Tropes
+    url: https://tvtropes.org/pmwiki/pmwiki.php/Literature/DungeonCrawlerCarl
+  - id: src-sparknotes-ch14
+    kind: editorial
+    trust: corroborating
+    title: Carl's Doomsday Scenario Chapter 14 Summary - SparkNotes AI
+    url: https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/be06e3c2-91d3-4f93-9a6c-d230133b7258
+
+claims:
+  - id: P3-PET-001
+    domain: pet
+    kind: state
+    claim:
+      summary: Mongo is a dungeon-generated, pet-class Mongoliensis.
+      detail: The researched material identifies Mongo as having hatched from an egg acquired on Floor 2.
+    evidence:
+      - sourceId: src-fandom-mongo
+        relationship: supports
+        confidence: corroborated
+      - sourceId: src-cookbook-mongo
+        relationship: corroborates
+        confidence: corroborated
+
+  - id: P3-PET-002
+    domain: pet
+    kind: event
+    claim:
+      summary: Mongo reaches Levels 6, 10, and 13 during the researched Floor 3 chronology.
+    evidence:
+      - sourceId: src-fandom-mongo
+        relationship: supports
+        confidence: corroborated
+    unknowns:
+      - exact_combat_encounter_for_level_6
+      - exact_combat_encounter_for_level_10
+      - exact_timestamp
+
+  - id: P3-PET-003
+    domain: pet
+    kind: observation
+    claim:
+      summary: Mongo undergoes substantial physical growth during his progression.
+      detail: The researched material describes growth from a roughly 7-inch hatchling to nearly 13 feet long.
+    evidence:
+      - sourceId: src-fandom-mongo
+        relationship: supports
+        confidence: corroborated
+      - sourceId: src-cookbook-mongo
+        relationship: corroborates
+        confidence: corroborated
+    unknowns:
+      - exact_growth_timing
+      - exact_causal_relationship_to_leveling
+
+  - id: P3-PET-004
+    domain: pet
+    kind: event
+    claim:
+      summary: Mongo is critically wounded and impaled by spikes while defending Princess Donut from Level-8 Street Urchin mobs.
+    evidence:
+      - sourceId: src-sparknotes-ch12
+        relationship: supports
+        confidence: corroborated
+    unknowns:
+      - specific_numerical_damage_values
+      - exact_status_effects_inflicted
+
+  - id: P3-PET-005
+    domain: pet
+    kind: event
+    claim:
+      summary: A standard heal scroll fails to resolve Mongo's injuries, after which a specific compound involving a healing potion, cinnamon stick, and thistle rot is used for recovery.
+    evidence:
+      - sourceId: src-sparknotes-ch12
+        relationship: supports
+        confidence: corroborated
+    unknowns:
+      - precise_mechanical_interaction_reason
+
+  - id: P3-PET-006
+    domain: pet
+    kind: event
+    claim:
+      summary: Carl installs the Enchanted Fang Caps of the Expectorating Tizheruk on Mongo.
+    evidence:
+      - sourceId: src-fandom-mongo
+        relationship: supports
+        confidence: corroborated
+
+  - id: P3-PET-007
+    domain: pet
+    kind: observation
+    claim:
+      summary: The Enchanted Fang Caps produce an electrical spark effect associated with Mongo's bite attacks.
+    evidence:
+      - sourceId: src-fandom-mongo
+        relationship: supports
+        confidence: corroborated
+      - sourceId: src-sparknotes-ch14
+        relationship: corroborates
+        confidence: corroborated
+
+  - id: P3-PET-008
+    domain: pet
+    kind: event
+    claim:
+      summary: The party acquires a Magical Pet Carrier on Floor 3.
+    evidence:
+      - sourceId: src-bookworm-carrier
+        relationship: supports
+        confidence: corroborated
+    unknowns:
+      - acquisition_method
+      - exact_economic_transaction_details
+
+  - id: P3-PET-009
+    domain: pet
+    kind: observation
+    claim:
+      summary: The researched material describes living biological entities being contained in a Magical Pet Carrier before pet storage or teleportation.
+    evidence:
+      - sourceId: src-bookworm-carrier
+        relationship: supports
+        confidence: corroborated
+      - sourceId: src-reddit-carrier
+        relationship: corroborates
+        confidence: candidate
+    unknowns:
+      - scope_of_inventory_restriction
+      - whether_the_rule_is_universal
+
+  - id: P3-PET-010
+    domain: pet
+    kind: observation
+    claim:
+      summary: The Magical Pet Carrier uses a button-activated teleportation effect and places the contained pet into a rest state.
+    evidence:
+      - sourceId: src-bookworm-carrier
+        relationship: supports
+        confidence: corroborated
+    unknowns:
+      - exact_recovery_mechanics
+
+  - id: P3-PET-011
+    domain: pet
+    kind: observation
+    claim:
+      summary: Mongo squawks and whines while resisting forced teleportation into the carrier.
+    evidence:
+      - sourceId: src-fandom-mongo
+        relationship: supports
+        confidence: corroborated
+    unknowns:
+      - whether_the_behavior_establishes_any_psychological_state
+
+  - id: P3-PET-012
+    domain: pet
+    kind: event
+    claim:
+      summary: The Scroll of Meat Hooks causes Mongo to abandon his training and charge toward its influence.
+    evidence:
+      - sourceId: src-sparknotes-ch14
+        relationship: supports
+        confidence: corroborated
+    unknowns:
+      - aggro_radius
+      - saving_throw_mechanics
+      - exact_duration
+
+  - id: P3-PET-013
+    domain: pet
+    kind: observation
+    claim:
+      summary: The researched material describes an intelligence threshold below 2 in connection with pet status and inventory restrictions.
+    evidence:
+      - sourceId: src-bookreadfree-id
+        relationship: supports
+        confidence: candidate
+    unknowns:
+      - whether_the_threshold_is_a_universal_system_rule
+      - exact_relationship_between_intelligence_pet_status_and_inventory_access
+
+  - id: P3-PET-014
+    domain: pet
+    kind: observation
+    claim:
+      summary: The Enhanced Pet Biscuit is described as producing substantially different outcomes in different reported cases, including increased sapience, physical enhancement, and hostility.
+    evidence:
+      - sourceId: src-reddit-miriam
+        relationship: supports
+        confidence: candidate
+      - sourceId: src-tvtropes-dcc
+        relationship: corroborates
+        confidence: candidate
+    unknowns:
+      - deterministic_effect_rules
+      - applicability_to_all_pets
+
+  - id: P3-PET-015
+    domain: pet
+    kind: state
+    claim:
+      summary: Research describes an administrative bond establishing ownership between a crawler and a pet and indicates that the bond cannot be arbitrarily transferred.
+    evidence:
+      - sourceId: src-cookbook-mongo
+        relationship: supports
+        confidence: candidate
+    unknowns:
+      - exact_transfer_rules
+      - scope_of_the_non_transferability_claim

@@ -1,0 +1,11 @@
+.frame {
+  min-height: 100dvh;
+  background: var(--hud-canvas-bg);
+  color: var(--hud-text-primary);
+  font-family: var(--hud-font-sans);
+}
+.workspace { max-width: 1500px; margin: auto; padding: var(--hud-space-md) clamp(0.75rem, 3vw, 3rem) var(--hud-space-lg); }
+.feature { min-width: 0; scroll-margin-top: 5rem; }
+.feature:focus-visible { outline: var(--hud-focus-ring); outline-offset: 4px; }
+.skipLink { position: fixed; top: -8rem; left: 1rem; z-index: 200; padding: 1rem; background: var(--hud-panel-bg); color: var(--hud-text-primary); }
+.skipLink:focus { top: 1rem; outline: var(--hud-focus-ring); }

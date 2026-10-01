@@ -17,17 +17,17 @@ Readiness decisions must preserve the distinction between a story fact and an es
 | Event type | Use when the evidence establishes | Do not infer |
 | --- | --- | --- |
 | NarrativeEvent | A causal story fact, reward/upgrade, veto, grant, or other timeline fact without a specific item instance. | Individual inventory instances merely from a quantity in the narrative. |
-| ItemAcquired | One concrete item instance enters the inventory/ownership state represented by the current CCI projection. | Another crawler's item activity when the current projection cannot represent recipient ownership. |
-| ItemConsumed | An already-established item instance is opened, used, expended, or otherwise consumed by the crawler represented by the current CCI projection. | Another crawler's item activity when the current projection cannot represent recipient ownership. The referenced instance must already exist in projected inventory. |
+| ItemAcquired | One concrete item instance enters a crawler's inventory/ownership. | Acquisition of additional instances not individually established by the evidence. |
+| ItemConsumed | An already-established item instance is opened, used, expended, or otherwise consumed. | The acquisition boundary itself. The referenced instance must already exist in replay state. |
 | ItemCrafted | A specific item-creation act is sourced. | A general crafting system, recipe catalog, workstation, material requirements, timers, or interactive crafting capability. |
 
 A reward quantity and inventory cardinality are separate facts. An 83-box reward can remain a single NarrativeEvent even though the quantity is 83. If the evidence later establishes one specific box being acquired, that is a separate ItemAcquired boundary; opening that box is a subsequent ItemConsumed boundary.
 
 For the Floor 3 Celestial Quest Box case, the authored lifecycle is:
 
-AchievementUnlocked → NarrativeEvent (83 boxes upgraded) → NarrativeEvent (Quan Ch receives one box) → NarrativeEvent (Quan Ch opens it) → NarrativeEvent (82 boxes vetoed)
+AchievementUnlocked → NarrativeEvent (83 boxes upgraded) → ItemAcquired (Quan Ch's one box) → ItemConsumed (that box opened) → NarrativeEvent (82 boxes vetoed)
 
-The Quan Ch boundaries are NarrativeEvents because the existing ItemAcquired/ItemConsumed projection mutates the current crawler's inventory and has no recipient-aware ownership field. Do not use those item event types for another crawler's item merely to obtain lifecycle semantics. This is the canonical readiness boundary for future extraction/authoring work whenever a sourced reward belongs to a crawler other than the projected inventory owner.
+This is the canonical pattern for future extraction/authoring work whenever a narrative reward is followed by an individually established item lifecycle.
 
 ### Evidence-driven persistence
 
@@ -38,10 +38,6 @@ Catalog item persistence is intentionally tri-state:
 - omitted persistent means the evidence has not established persistence.
 
 The omitted state is **unknown/unestablished**, not false. Readiness and projection logic must preserve that distinction.
-
-### Current Floor 3 reward lifecycle decision
-
-The Floor 3 Bandit reward is source-backed as **83 Celestial-quality boxes**. The achievement catalog retains that quantity as reward metadata, while the timeline preserves Quan Ch’s individually sourced receipt and opening as narrative boundaries. Carl’s projected inventory must not acquire or consume Quan Ch’s box. The current capability is therefore **timeline/replay evidence only** for Quan Ch’s item activity; no recipient-aware inventory capability is enabled by this evidence.
 
 ## Focused readiness
 

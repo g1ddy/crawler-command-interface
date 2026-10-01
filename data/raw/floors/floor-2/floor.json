@@ -1,0 +1,17 @@
+{
+  "authoringVersion": "crawler-floor-raw/v1",
+  "storyId": "dungeon-crawler-carl",
+  "floor": {
+    "id": "floor-2",
+    "ordinal": 2,
+    "title": "Second Floor",
+    "book": 1,
+    "bookTitle": "Dungeon Crawler Carl",
+    "continuity": "canonical",
+    "coverage": {
+      "kind": "curated-critical",
+      "statement": "Tracks consequential, persistent Carl inventory, milestone progression, broadcast snapshots, and party changes needed to understand the transition to Floor 3. It intentionally omits routine drops, temporary combat consumables, and unresolved quantities.",
+      "completeness": "partial"
+    }
+  }
+}

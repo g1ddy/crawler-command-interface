@@ -1,0 +1,1927 @@
+[
+  {
+    "id": "evt-f1-countdown-start",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "The First Floor opens and its five-day collapse countdown is displayed.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-entered",
+    "type": "NarrativeEvent",
+    "kind": "floor-entered",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 1
+    },
+    "summary": "Carl and Donut enter the First Floor as the 4,119th and 4,122nd crawlers.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 1
+        },
+        "confidence": "confirmed"
+      },
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-party-royal-court-formed",
+    "type": "PartyFormed",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "summary": "After Donut becomes a crawler, she forms the two-member Royal Court of Princess Donut with Carl.",
+    "party": {
+      "partyId": "party-royal-court",
+      "name": "The Royal Court of Princess Donut",
+      "members": [
+        {
+          "crawlerId": "crawler-donut",
+          "name": "Princess Donut",
+          "role": "leader"
+        },
+        {
+          "crawlerId": "crawler-carl",
+          "name": "Carl",
+          "role": "member"
+        }
+      ]
+    },
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      },
+      {
+        "sourceId": "src-booklovers-book-1",
+        "locator": {
+          "section": "Book 1 review"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-achievement-crazy-cat-lady",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-crazy-cat-lady",
+    "summary": "Carl unlocks Crazy Cat Lady.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-trailblazing-crazy-cat-lady",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-trailblazing-crazy-cat-lady",
+    "summary": "Donut unlocks Trailblazing Crazy Cat Lady.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-early-adopter",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-early-adopter",
+    "summary": "Carl unlocks Early Adopter.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-award-early-adopter-box",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "causationId": "evt-f1-achievement-early-adopter",
+    "item": {
+      "instanceId": "inst-f1-award-silver-adventurer-box",
+      "itemId": "item-award-silver-adventurer-box",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "The Dungeon System awards Carl a Silver Adventurer Box for Early Adopter.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "reward",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-empty-pockets",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-empty-pockets",
+    "summary": "Carl unlocks Empty Pockets.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-award-empty-pockets-box",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "causationId": "evt-f1-empty-pockets",
+    "item": {
+      "instanceId": "inst-f1-award-bronze-adventurer-box",
+      "itemId": "item-award-bronze-adventurer-box",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "The Dungeon System awards Carl a Bronze Adventurer Box for Empty Pockets.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "reward",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-no-pants",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-why-no-pants",
+    "summary": "Carl unlocks Why Aren't You Wearing Pants?.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-award-no-pants-box",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "causationId": "evt-f1-no-pants",
+    "item": {
+      "instanceId": "inst-f1-award-gold-apparel-box",
+      "itemId": "item-award-gold-apparel-box",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "The Dungeon System awards Carl a Gold Apparel Box for Why Aren't You Wearing Pants?.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "reward",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-unarmed-combat",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-unarmed-combat",
+    "summary": "Carl unlocks Unarmed Combat.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-award-unarmed-combat-box",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "causationId": "evt-f1-unarmed-combat",
+    "item": {
+      "instanceId": "inst-f1-award-bronze-weapon-box",
+      "itemId": "item-award-bronze-weapon-box",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "The Dungeon System awards Carl a Bronze Weapon Box for Unarmed Combat.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "reward",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-open-early-adopter-box",
+    "type": "ItemDiscarded",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "itemInstanceId": "inst-f1-award-silver-adventurer-box",
+    "reason": "opened",
+    "summary": "Carl opens the Silver Adventurer Box awarded for Early Adopter.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-open-empty-pockets-box",
+    "type": "ItemDiscarded",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "itemInstanceId": "inst-f1-award-bronze-adventurer-box",
+    "reason": "opened",
+    "summary": "Carl opens the Bronze Adventurer Box awarded for Empty Pockets.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-open-no-pants-box",
+    "type": "ItemDiscarded",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "itemInstanceId": "inst-f1-award-gold-apparel-box",
+    "reason": "opened",
+    "summary": "Carl opens the Gold Apparel Box awarded for Why Aren't You Wearing Pants?.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-open-unarmed-combat-box",
+    "type": "ItemDiscarded",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "itemInstanceId": "inst-f1-award-bronze-weapon-box",
+    "reason": "opened",
+    "summary": "Carl opens the Bronze Weapon Box awarded for Unarmed Combat.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 2
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-achievement-loner",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-loner",
+    "summary": "Carl unlocks Loner.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-tutorial-start",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl and Donut begin the First Floor tutorial.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-cascadia-announcement",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Cascadia closes the surface stairwells; just under 13 million entered and fewer than 10 million remain.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      },
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Introductory Announcement"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-tutorial-complete",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl and Donut complete the First Floor tutorial.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-achievement-fall-into-obvious-trap",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 2
+    },
+    "achievementId": "achievement-fall-into-obvious-trap",
+    "summary": "Carl unlocks Fall into an Obvious Trap.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-read-official-dungeon-sign",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-read-official-dungeon-sign",
+    "summary": "Carl unlocks You've Discovered and Read an Official Dungeon Sign.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-inflicted-damage-on-mob",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-inflicted-damage-on-mob",
+    "summary": "Carl unlocks You've Inflicted Damage on a Mob.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-killed-a-mob",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-killed-a-mob",
+    "summary": "Carl unlocks You've Killed a Mob!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-armed-mob-bare-hands",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-armed-mob-bare-hands",
+    "summary": "Carl unlocks You've Killed an Armed Mob with Your Bare Fucking Hands!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-higher-level-mob",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-higher-level-mob",
+    "summary": "Carl unlocks You've Killed a Mob a Higher Level Than Yourself!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-entered-a-guildhall",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-entered-a-guildhall",
+    "summary": "Carl unlocks You've Entered a Guildhall!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-podophilia",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-podophilia",
+    "summary": "Carl unlocks Podophilia!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-boom",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-boom",
+    "summary": "Carl unlocks Boom!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-level-up-baby",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "achievementId": "achievement-level-up-baby",
+    "summary": "Carl unlocks Level-Up, Baby!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-level-2",
+    "type": "LevelChanged",
+    "level": 2,
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 2.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 50)"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-goblin-pass",
+    "type": "PermanentEntitlementGranted",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 5
+    },
+    "entitlement": {
+      "id": "entitlement-goblin-pass-tattoo",
+      "name": "Goblin Pass Tattoo",
+      "location": "left inner forearm"
+    },
+    "summary": "Carl receives the Goblin Pass Tattoo.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "reward",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-trollskin-shirt",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 6
+    },
+    "item": {
+      "instanceId": "inst-f1-trollskin-shirt",
+      "itemId": "item-trollskin-shirt-of-pummeling",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Enchanted Trollskin Shirt of Pummeling.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-basic-healing-spell",
+    "type": "SpellGranted",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 6
+    },
+    "summary": "Carl receives the basic healing spell in the Magic menu tutorial.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 6
+        },
+        "confidence": "confirmed"
+      }
+    ],
+    "spell": {
+      "spellId": "spell-basic-healing",
+      "name": "Basic healing spell",
+      "owner": "carl",
+      "abilityKind": "spell",
+      "acquisitionSource": {
+        "kind": "crawler-menu",
+        "name": "Magic menu tutorial"
+      }
+    }
+  },
+  {
+    "id": "evt-f1-achievement-loot",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 6
+    },
+    "achievementId": "achievement-loot",
+    "summary": "Carl unlocks Loot!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-first-magic-gear",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 6
+    },
+    "achievementId": "achievement-oooh-magic",
+    "summary": "Carl unlocks Oooh, Magic!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-boss-babe",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 11
+    },
+    "achievementId": "achievement-boss-babe",
+    "summary": "Carl unlocks Boss Babe.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-nightgaunt-cloak",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 6
+    },
+    "item": {
+      "instanceId": "inst-f1-nightgaunt-cloak",
+      "itemId": "item-nightgaunt-cloak-of-stoutness",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Enchanted Nightgaunt Cloak of Stoutness.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-toe-ring",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 6
+    },
+    "item": {
+      "instanceId": "inst-f1-toe-ring",
+      "itemId": "item-toe-ring-of-splatter-skunk",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Enchanted Toe Ring of the Splatter Skunk.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-toe-ring-equipped",
+    "type": "ItemEquipped",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 6
+    },
+    "itemInstanceId": "inst-f1-toe-ring",
+    "slot": "FEET",
+    "summary": "Carl equips the Enchanted Toe Ring of the Splatter Skunk.",
+    "evidence": [
+      {
+        "sourceId": "src-book-1",
+        "locator": {
+          "chapter": 6
+        },
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-level-3",
+    "type": "LevelChanged",
+    "level": 3,
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 3.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 78)"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-silver-ring-plus-1-con",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 9
+    },
+    "item": {
+      "instanceId": "inst-f1-silver-ring-plus-1-con",
+      "itemId": "item-silver-ring-plus-1-con",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires a Silver Ring of +1 CON.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-level-5",
+    "type": "LevelChanged",
+    "level": 5,
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 5.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 92)"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-crawlers-4322395",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "The system reports 4,322,395 crawlers remaining on the First Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-crawlers-4148111",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "The system reports 4,148,111 crawlers remaining on the First Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-royal-court-hoarder",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "The Royal Court confronts the Hoarder.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-shade-gnoll-kneepads",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 12
+    },
+    "item": {
+      "instanceId": "inst-f1-shade-gnoll-kneepads",
+      "itemId": "item-spiked-kneepads-shade-gnoll",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Enchanted Spiked Kneepads of the Shade Gnoll Riot Forces after the Hoarder battle.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-episode-1",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode one airs, showing spine-covered wolves, fire blobs, floating stingrays, floating eyeballs, and the first Borough Boss defeat by a 10-person crawler group; 4,006,002 crawlers remain.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      },
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-floor-2-stairs",
+    "type": "NarrativeEvent",
+    "kind": "rule-changed",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "A Cascadia patch populates the Floor 2 stairs, announces the descent head-start rule, reports 15 Borough Bosses and more than 1,500 Neighborhood Bosses killed, and changes Fire Fingers, hallway-bathroom explosions, toilet paper, mob inventory, and inventory momentum rules.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-level-7",
+    "type": "LevelChanged",
+    "level": 7,
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 7.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 120)"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-level-8",
+    "type": "LevelChanged",
+    "level": 8,
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 8.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 138)"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-goblin-copper-chopper",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 17
+    },
+    "item": {
+      "instanceId": "inst-f1-goblin-copper-chopper",
+      "itemId": "item-goblin-copper-chopper",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Goblin Copper Chopper.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-achievement-you-monster",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 19
+    },
+    "achievementId": "achievement-you-monster",
+    "summary": "Carl unlocks You Monster!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-war-criminal",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 19
+    },
+    "achievementId": "achievement-war-criminal",
+    "summary": "Carl unlocks War Criminal.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-crawlers-3594517",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "The system reports 3,594,517 crawlers remaining on the First Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-desperado-pass",
+    "type": "PermanentEntitlementGranted",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 19
+    },
+    "entitlement": {
+      "id": "entitlement-desperado-pass-tattoo",
+      "name": "Desperado Pass Tattoo",
+      "location": "neck"
+    },
+    "summary": "Carl receives the Desperado Pass Tattoo.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "reward",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-silver-ring-plus-2-con",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 19
+    },
+    "item": {
+      "instanceId": "inst-f1-silver-ring-plus-2-con",
+      "itemId": "item-silver-ring-plus-2-con",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires a Silver Ring of +2 CON.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-level-9",
+    "type": "LevelChanged",
+    "level": 9,
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 9.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 194)"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-level-10",
+    "type": "LevelChanged",
+    "level": 10,
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Carl reaches Level 10.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-carl",
+        "locator": {
+          "section": "Book 1 Levels (page 218)"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "progression",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-episode-2",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode two airs, including the Royal Court's encounter with Frank Q and Maggie My.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-system-patch",
+    "type": "NarrativeEvent",
+    "kind": "rule-changed",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "First Floor rules change: toilet suction and bathroom explosions are resolved; language and cross-language support are added; Feral Rabies is curable and no longer airborne; Blender Fiends move down; Street Preacher becomes a Borough Boss; mob strength levels are adjusted.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-puddle-jumper-granted",
+    "type": "SpellGranted",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 25
+    },
+    "summary": "Donut receives Puddle Jumper from the post-Juicer loot boxes.",
+    "evidence": [
+      {
+        "sourceId": "src-bookworm-book-1",
+        "locator": {
+          "section": "Chapter 25"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "spell": {
+      "spellId": "spell-puddle-jumper",
+      "name": "Puddle Jumper",
+      "owner": "donut",
+      "abilityKind": "spell",
+      "acquisitionSource": {
+        "kind": "loot-box",
+        "name": "Post-Juicer loot boxes"
+      }
+    }
+  },
+  {
+    "id": "evt-f1-war-gauntlet",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 25
+    },
+    "item": {
+      "instanceId": "inst-f1-war-gauntlet",
+      "itemId": "item-war-gauntlet-exalted-grull",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Carl acquires the Enchanted War Gauntlet of the Exalted Grull.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-floor-1",
+        "locator": {
+          "section": "Gear Gained"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-achievement-bitchmeat",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "achievementId": "achievement-bitchmeat",
+    "summary": "A crawler unlocks Bitchmeat.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-two-chicks-same-time",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 25
+    },
+    "achievementId": "achievement-two-chicks-same-time",
+    "summary": "Carl unlocks Two Chicks at the Same Time.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-meadow-lark",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "The Royal Court meets Meadow Lark.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-crawlers-2552085",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode three airs as the system reports 2,552,085 crawlers remaining.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-system-patch-late",
+    "type": "NarrativeEvent",
+    "kind": "rule-changed",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "A late First Floor patch changes spells and mob power levels and reiterates the warning not to use hallways as bathrooms.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-ball-of-swine",
+    "type": "NarrativeEvent",
+    "kind": "encounter-resolved",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Royal Court, Meadow Lark, and Agatha defeat the Ball of Swine using Carl's explosives and the dungeon architecture.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-floor-2-descent",
+    "type": "NarrativeEvent",
+    "kind": "other",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Crawlers can descend to Floor 2 without the usual six-hour loss.",
+    "evidence": [
+      {
+        "sourceId": "src-dcc-database-floor-1",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-achievement-borough-boss",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 30
+    },
+    "achievementId": "achievement-borough-boss",
+    "summary": "The party unlocks Borough Boss!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-bully-and-a-thief",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 30
+    },
+    "achievementId": "achievement-bully-and-a-thief",
+    "summary": "Carl unlocks Bully and a Thief!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-battlefield-construction",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 30
+    },
+    "achievementId": "achievement-battlefield-construction",
+    "summary": "Carl unlocks Battlefield Construction!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-little-piggy-went-to-market",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 30
+    },
+    "achievementId": "achievement-little-piggy-went-to-market",
+    "summary": "Carl unlocks This Little Piggy Went to Market!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-achievement-found-stairs",
+    "type": "AchievementUnlocked",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 30
+    },
+    "achievementId": "achievement-found-stairs",
+    "summary": "The party unlocks You Found Stairs!.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Book 1 Achievements"
+        },
+        "confidence": "corroborated"
+      }
+    ],
+    "notificationDelivery": {
+      "delivered": true,
+      "kind": "achievement",
+      "severity": "success"
+    }
+  },
+  {
+    "id": "evt-f1-exit",
+    "type": "NarrativeEvent",
+    "kind": "floor-exited",
+    "position": {
+      "floor": 1,
+      "book": 1,
+      "chapter": 30
+    },
+    "summary": "Carl reaches the stairs and completes the First Floor.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-floor-1-achievements",
+        "locator": {
+          "section": "Achievements for Dungeon Crawling"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-floor-collapse",
+    "type": "NarrativeEvent",
+    "kind": "floor-collapsed",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "The First Floor collapses; 1,292,526 crawlers remain and more than 700,000 die in the collapse.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f1-episode-4",
+    "type": "NarrativeEvent",
+    "kind": "episode-released",
+    "position": {
+      "floor": 1,
+      "book": 1
+    },
+    "summary": "Dungeon Crawler World episode four airs, highlighting three-headed baboons, eggplants with teeth, crawler fights, and races for the stairs.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-first-floor",
+        "locator": {
+          "section": "Floor Timeline & Patch Notes"
+        },
+        "confidence": "corroborated"
+      }
+    ]
+  }
+]

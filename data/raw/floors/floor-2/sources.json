@@ -1,0 +1,52 @@
+[
+  {
+    "id": "src-book-1",
+    "kind": "official-text",
+    "trust": "primary",
+    "title": "Dungeon Crawler Carl, Book 1",
+    "url": "https://www.mattdinniman.com/",
+    "citationStyle": "Chapter {chapter}"
+  },
+  {
+    "id": "src-wiki-carl-floor-2",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Carl/Floor 2",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_2"
+  },
+  {
+    "id": "src-wiki-floor-2-achievements",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Floor 2 Achievements",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_2_Achievements"
+  },
+  {
+    "id": "src-wiki-carl-inventory",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Carl/Inventory",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+  },
+  {
+    "id": "src-dcc-database-carl",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "DCC Database: Carl",
+    "url": "https://www.dccdatabase.com/wiki/carl/"
+  },
+  {
+    "id": "src-dcc-database-floor-2",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "DCC Database: Second Floor",
+    "url": "https://www.dccdatabase.com/wiki/Second_Floor/"
+  },
+  {
+    "id": "src-wiki-second-floor",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Second Floor",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Second_Floor"
+  }
+]

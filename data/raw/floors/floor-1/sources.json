@@ -1,0 +1,73 @@
+[
+  {
+    "id": "src-book-1",
+    "kind": "official-text",
+    "trust": "primary",
+    "title": "Dungeon Crawler Carl, Book 1",
+    "url": "https://www.mattdinniman.com/",
+    "citationStyle": "Chapter {chapter}"
+  },
+  {
+    "id": "src-wiki-carl-floor-1",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Carl/Floor 1",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_1"
+  },
+  {
+    "id": "src-wiki-floor-1-achievements",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Floor 1 Achievements",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Floor_1_Achievements"
+  },
+  {
+    "id": "src-wiki-carl-inventory",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Carl/Inventory",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Inventory"
+  },
+  {
+    "id": "src-dcc-database-carl",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "DCC Database: Carl",
+    "url": "https://www.dccdatabase.com/wiki/carl/"
+  },
+  {
+    "id": "src-reddit-inventory-list",
+    "kind": "discussion",
+    "trust": "candidate",
+    "title": "Carl's inventory list discussion",
+    "url": "https://www.reddit.com/r/DungeonCrawlerCarl/comments/1togyb2/carls_inventory_list/"
+  },
+  {
+    "id": "src-dcc-database-floor-1",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "DCC Database: First Floor",
+    "url": "https://www.dccdatabase.com/wiki/First_Floor/"
+  },
+  {
+    "id": "src-wiki-first-floor",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "First Floor",
+    "url": "https://dungeon-crawler-carl.fandom.com/wiki/First_Floor"
+  },
+  {
+    "id": "src-bookworm-book-1",
+    "kind": "wiki",
+    "trust": "corroborating",
+    "title": "Bookworm Wiki: Dungeon Crawler Carl, Book 1 timeline",
+    "url": "https://wiki.bookwormai.app/dungeon-crawler-carl/timeline"
+  },
+  {
+    "id": "src-booklovers-book-1",
+    "kind": "editorial",
+    "trust": "corroborating",
+    "title": "A Book Lover's Digest: Dungeon Crawler Carl, Book 1",
+    "url": "https://www.abookloversdigest.com/post/dungeon-crawler-carl-book-1"
+  }
+]

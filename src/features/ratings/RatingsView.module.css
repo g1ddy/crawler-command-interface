@@ -1,0 +1,83 @@
+.viewContent {
+  display: grid;
+  gap: var(--hud-space-lg);
+}
+
+.title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--hud-space-md);
+  flex-wrap: wrap;
+  gap: var(--hud-space-md);
+}
+
+.title h1 {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  color: var(--hud-text-author);
+  margin: 0;
+}
+
+.eyebrow {
+  font-size: var(--hud-label-compact);
+  letter-spacing: 0.14em;
+  color: var(--hud-text-subdued);
+  margin: 0 0 var(--hud-space-xs);
+  text-transform: uppercase;
+}
+
+.audienceBadge {
+  font-family: var(--hud-font-mono);
+  font-size: 0.875rem;
+  color: var(--hud-text-secondary);
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border-subtle);
+  padding: var(--hud-space-xs) var(--hud-space-sm);
+  border-radius: var(--hud-radius-sm);
+}
+
+.broadcastPage {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--hud-space-lg);
+}
+
+.metricGroup {
+  display: grid;
+  gap: var(--hud-space-xs);
+}
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--hud-space-sm) 0;
+  border-bottom: 1px solid var(--hud-border-subtle);
+  color: var(--hud-text-secondary);
+  font-size: 0.875rem;
+}
+
+.metricRow:last-child {
+  border-bottom: none;
+}
+
+.metricValue {
+  color: var(--hud-text-primary);
+  font-weight: bold;
+  font-size: 1.25rem;
+  font-family: var(--hud-font-mono);
+  margin-right: var(--hud-space-xs);
+}
+
+.unavailableText {
+  color: var(--hud-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 800px) {
+  .broadcastPage {
+    grid-template-columns: 1fr;
+  }
+}

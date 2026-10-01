@@ -120,7 +120,6 @@ Note: Research YAML is an evidence-oriented authoring format. The research compi
   - **Opened / Claimed**: 1 Celestial box opened by Quan Ch before the administrative veto (`evt-f3-celestial-box-quan-ch-opened`).
   - **Vetoed / Blocked**: 82 remaining Celestial boxes blocked by Borant's administrative veto (`evt-f3-celestial-boxes-vetoed`).
   - **Chronology**: Both events occur in Book 2 Ch. 26. The 1 opened box is explicitly preserved as claimed before the remaining 82 are vetoed.
-  - **CCI ownership boundary**: Quan Ch’s receipt and opening remain separate NarrativeEvents because the current ItemAcquired / ItemConsumed projection mutates the projected crawler’s inventory and cannot represent another crawler’s ownership. This is a narrative lifecycle record, not Carl inventory state.
 
 ### System Titles & Contracts vs. Location Access
 
