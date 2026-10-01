@@ -112,6 +112,12 @@ Every authored event should remain traceable to a declared source.
 
 A summary such as `The countdown resets` is descriptive text. The structured `type`, `countdownId`, and reset fields are the machine-readable fact.
 
+## Source Trust vs. Claim Confidence
+
+Source trust describes the nature/reliability of a source. Claim confidence describes how strongly the available body of evidence establishes a particular claim. They are independent dimensions.
+
+`confirmed` means the available evidence establishes the claim strongly enough for CCI authoring; direct primary-text access is not required. Multiple independent corroborating sources may collectively establish a claim as `confirmed`. A corroborating source remains corroborating; its contribution does not change its source classification into primary evidence.
+
 ## Position and ordering
 
 The order of entries in the raw `events.json` array is the authoritative floor-local chronology. Raw events do not carry a duplicated numeric `order` field. The adapter derives floor-local `order` for compatibility output, and the compiler derives globally increasing `sequence` values for the runtime timeline. `position` separately records where the event belongs in the story.
