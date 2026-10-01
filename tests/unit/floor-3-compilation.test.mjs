@@ -121,12 +121,14 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
 
   const banditEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-achievement-bandit");
   const upgradeEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-quest-boxes-upgraded-celestial");
-  const quanChEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-opened");
+  const quanChAcquiredEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-acquired");
+  const quanChOpenedEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-opened");
   const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
 
   assert.ok(banditEvent, "evt-f3-achievement-bandit exists");
   assert.ok(upgradeEvent, "evt-f3-quest-boxes-upgraded-celestial exists");
-  assert.ok(quanChEvent, "evt-f3-celestial-box-quan-ch-opened exists");
+  assert.ok(quanChAcquiredEvent, "evt-f3-celestial-box-quan-ch-acquired exists");
+  assert.ok(quanChOpenedEvent, "evt-f3-celestial-box-quan-ch-opened exists");
   assert.ok(vetoEvent, "evt-f3-celestial-boxes-vetoed exists");
 
   assert.ok(
@@ -134,11 +136,15 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
     "Bandit achievement precedes Celestial upgrade"
   );
   assert.ok(
-    upgradeEvent.sequence < quanChEvent.sequence,
-    "Celestial upgrade precedes Quan Ch opening"
+    upgradeEvent.sequence < quanChAcquiredEvent.sequence,
+    "Celestial upgrade precedes Quan Ch box acquisition"
   );
   assert.ok(
-    quanChEvent.sequence < vetoEvent.sequence,
+    quanChAcquiredEvent.sequence < quanChOpenedEvent.sequence,
+    "Quan Ch box acquisition precedes Quan Ch box opening"
+  );
+  assert.ok(
+    quanChOpenedEvent.sequence < vetoEvent.sequence,
     "Quan Ch opening precedes Borant veto"
   );
 
@@ -164,11 +170,34 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
     "Upgrade event does not contain an individual item payload or Quan Ch's item instance"
   );
 
-  assert.equal(quanChEvent.type, "ItemConsumed");
-  assert.equal(quanChEvent.itemInstanceId, "inst-f3-celestial-box-quan-ch");
+  assert.equal(quanChAcquiredEvent.type, "ItemAcquired");
+  assert.equal(quanChAcquiredEvent.item?.itemId, "item-celestial-quest-box");
+  assert.equal(quanChAcquiredEvent.item?.instanceId, "inst-f3-celestial-box-quan-ch");
+
+  assert.equal(quanChOpenedEvent.type, "ItemConsumed");
+  assert.equal(quanChOpenedEvent.itemInstanceId, "inst-f3-celestial-box-quan-ch");
   assert.ok(
-    quanChEvent.outcome?.includes("Cloak of the Benevolent Champion"),
+    quanChOpenedEvent.outcome?.includes("Cloak of the Benevolent Champion"),
     "Quan Ch opening outcome records receiving the Cloak of the Benevolent Champion"
+  );
+
+  // Verify the validator still requires an item instance to be established before ItemConsumed
+  const invalidTimeline = JSON.parse(JSON.stringify(compiledTimeline));
+  const badConsumedEvent = {
+    id: "evt-f3-bad-consumed",
+    sequence: 999,
+    type: "ItemConsumed",
+    itemInstanceId: "inst-f3-unacquired-box",
+    position: { floor: 3, book: 2, chapter: 26 },
+    summary: "Attempting to consume an unacquired box",
+    evidence: [{ sourceId: "src-book-2", confidence: "confirmed" }]
+  };
+  invalidTimeline.events.push(badConsumedEvent);
+  const validation = validateCrawlerTimeline(invalidTimeline);
+  assert.equal(validation.valid, false, "Timeline validation must fail when ItemConsumed references an unacquired instance");
+  assert.ok(
+    validation.errors.some((err) => err.includes("inst-f3-unacquired-box")),
+    "Validation error must cite the missing itemInstanceId"
   );
 });
 

@@ -1173,6 +1173,30 @@
     ]
   },
   {
+    "id": "evt-f3-celestial-box-quan-ch-acquired",
+    "type": "ItemAcquired",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "item": {
+      "instanceId": "inst-f3-celestial-box-quan-ch",
+      "itemId": "item-celestial-quest-box",
+      "quantity": {
+        "known": true,
+        "value": 1
+      }
+    },
+    "summary": "Quan Ch receives one Celestial Quest Box from the upgraded reward.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-quanch",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-celestial-box-quan-ch-opened",
     "type": "ItemConsumed",
     "itemInstanceId": "inst-f3-celestial-box-quan-ch",

@@ -12,7 +12,7 @@
       }
     },
     "createdAt": "2026-09-28T00:55:16.404Z",
-    "updatedAt": "2026-10-01T02:02:05.796Z"
+    "updatedAt": "2026-10-01T02:23:53.488Z"
   },
   "floors": [
     {
@@ -40,7 +40,7 @@
       "book": 2,
       "bookTitle": "Carl's Doomsday Scenario",
       "startSequence": 124,
-      "endSequence": 180
+      "endSequence": 181
     }
   ],
   "sources": [
@@ -5248,8 +5248,38 @@
       "kind": "other"
     },
     {
-      "id": "evt-f3-celestial-box-quan-ch-opened",
+      "id": "evt-f3-celestial-box-quan-ch-acquired",
       "sequence": 179,
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Quan Ch receives one Celestial Quest Box from the upgraded reward.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
+        }
+      ],
+      "item": {
+        "instanceId": "inst-f3-celestial-box-quan-ch",
+        "itemId": "item-celestial-quest-box",
+        "name": "Celestial Quest Box",
+        "category": "box",
+        "rarity": "celestial",
+        "description": "An upgraded Celestial-quality quest box reward granted for surviving the Fools Who Broke the Glass explosion.",
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "Third Floor"
+      }
+    },
+    {
+      "id": "evt-f3-celestial-box-quan-ch-opened",
+      "sequence": 180,
       "type": "ItemConsumed",
       "position": {
         "floor": 3,
@@ -5268,7 +5298,7 @@
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
-      "sequence": 180,
+      "sequence": 181,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,

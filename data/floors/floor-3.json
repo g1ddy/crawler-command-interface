@@ -273,7 +273,6 @@
         "name": "Celestial Quest Box",
         "category": "box",
         "rarity": "celestial",
-        "persistent": false,
         "description": "An upgraded Celestial-quality quest box reward granted for surviving the Fools Who Broke the Glass explosion."
       },
       {
@@ -282,7 +281,6 @@
         "category": "equipment",
         "slot": "NECK",
         "rarity": "celestial",
-        "persistent": false,
         "description": "A Celestial-tier cloak obtained by Quan Ch upon opening his Celestial Quest Box."
       }
     ],
@@ -1546,6 +1544,31 @@
       "order": 55
     },
     {
+      "id": "evt-f3-celestial-box-quan-ch-acquired",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "item": {
+        "instanceId": "inst-f3-celestial-box-quan-ch",
+        "itemId": "item-celestial-quest-box",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Quan Ch receives one Celestial Quest Box from the upgraded reward.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 56
+    },
+    {
       "id": "evt-f3-celestial-box-quan-ch-opened",
       "type": "ItemConsumed",
       "itemInstanceId": "inst-f3-celestial-box-quan-ch",
@@ -1562,7 +1585,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 56
+      "order": 57
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
@@ -1580,7 +1603,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 57
+      "order": 58
     }
   ]
 }
