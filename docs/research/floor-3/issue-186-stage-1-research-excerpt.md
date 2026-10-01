@@ -87,7 +87,7 @@ Crafting and workstation rules emerge, establishing that the game’s inventory 
 - **Achievement Modifier:** 83 Platinum Boxes upgraded to 83 Celestial Quest Boxes via the Bandit Achievement. [INDEX_3.1.9]
 - **Intervention:** Corporate showrunners (Borant) utilized a system veto to negate the AI's reward delivery. [INDEX_1.4.1]
 - **Final Reconciled Outcome:**
-  - 1 Celestial Box was successfully opened and claimed by Quan Ch (yielding the Cloak of the Benevolent Champion or a similar Celestial Robe) because he was on a lower floor and opened it before the veto processed. [INDEX_4.1.2]
+  - 1 Celestial Box was successfully opened and claimed by Quan Ch (yielding the Cloak of the Benevolent Champion or a similar Celestial Robe) because he was on a lower floor and opened it before the veto processed. Quan Ch receives and opens one Celestial Quest Box before Borant's veto. This is represented as a narrative event because the existing item projection contract represents the current crawler's inventory and has no recipient/owner field. Carl receives one Celestial Quest Box as an inventory-affecting event; the projected quantity is 1. [INDEX_4.1.2]
   - 82 Celestial Boxes were successfully vetoed, blocked, and withheld from the remaining crawlers (including Carl and Donut). [INDEX_4.1.2]
 
 ## 9. Contradictions, Ambiguities, and Unknowns

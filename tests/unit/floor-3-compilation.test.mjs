@@ -121,12 +121,14 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
 
   const banditEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-achievement-bandit");
   const upgradeEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-quest-boxes-upgraded-celestial");
+  const carlAcquiredEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-carl-acquired");
   const quanChAcquiredEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-acquired");
   const quanChOpenedEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-box-quan-ch-opened");
   const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
 
   assert.ok(banditEvent, "evt-f3-achievement-bandit exists");
   assert.ok(upgradeEvent, "evt-f3-quest-boxes-upgraded-celestial exists");
+  assert.ok(carlAcquiredEvent, "evt-f3-celestial-box-carl-acquired exists");
   assert.ok(quanChAcquiredEvent, "evt-f3-celestial-box-quan-ch-acquired exists");
   assert.ok(quanChOpenedEvent, "evt-f3-celestial-box-quan-ch-opened exists");
   assert.ok(vetoEvent, "evt-f3-celestial-boxes-vetoed exists");
@@ -136,8 +138,12 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
     "Bandit achievement precedes Celestial upgrade"
   );
   assert.ok(
-    upgradeEvent.sequence < quanChAcquiredEvent.sequence,
-    "Celestial upgrade precedes Quan Ch box acquisition"
+    upgradeEvent.sequence < carlAcquiredEvent.sequence,
+    "Celestial upgrade precedes Carl box acquisition"
+  );
+  assert.ok(
+    carlAcquiredEvent.sequence < quanChAcquiredEvent.sequence,
+    "Carl box acquisition precedes Quan Ch box acquisition"
   );
   assert.ok(
     quanChAcquiredEvent.sequence < quanChOpenedEvent.sequence,
@@ -170,15 +176,51 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
     "Upgrade event does not contain an individual item payload or Quan Ch's item instance"
   );
 
-  assert.equal(quanChAcquiredEvent.type, "ItemAcquired");
-  assert.equal(quanChAcquiredEvent.item?.itemId, "item-celestial-quest-box");
-  assert.equal(quanChAcquiredEvent.item?.instanceId, "inst-f3-celestial-box-quan-ch");
+  assert.equal(carlAcquiredEvent.type, "ItemAcquired");
+  assert.equal(carlAcquiredEvent.item?.itemId, "item-celestial-quest-box");
+  assert.equal(carlAcquiredEvent.item?.instanceId, "inst-f3-celestial-box-carl");
 
-  assert.equal(quanChOpenedEvent.type, "ItemConsumed");
-  assert.equal(quanChOpenedEvent.itemInstanceId, "inst-f3-celestial-box-quan-ch");
-  assert.ok(
-    quanChOpenedEvent.outcome?.includes("Cloak of the Benevolent Champion"),
-    "Quan Ch opening outcome records receiving the Cloak of the Benevolent Champion"
+  assert.equal(quanChAcquiredEvent.type, "NarrativeEvent");
+  assert.equal(quanChAcquiredEvent.kind, "other");
+  assert.equal(quanChAcquiredEvent.item, undefined, "Quan Ch narrative acquisition event should not have item field");
+  assert.ok(quanChAcquiredEvent.summary.includes("receives"), "Quan Ch narrative acquisition includes receives");
+
+  assert.equal(quanChOpenedEvent.type, "NarrativeEvent");
+  assert.equal(quanChOpenedEvent.kind, "other");
+  assert.equal(quanChOpenedEvent.itemInstanceId, undefined, "Quan Ch narrative opened event should not have itemInstanceId field");
+  assert.equal(quanChOpenedEvent.outcome, undefined, "Quan Ch narrative opened event should not have outcome field");
+  assert.ok(quanChOpenedEvent.summary.includes("Cloak of the Benevolent Champion"), "Quan Ch narrative opened includes Cloak of the Benevolent Champion");
+
+  const getCelestialBoxCount = (sequence) => {
+    const state = projectState(compiledTimeline.events, sequence);
+    const box = state.inventory.find(i => i.itemId === "item-celestial-quest-box");
+    return box?.quantity || 0;
+  };
+
+  assert.equal(
+    getCelestialBoxCount(upgradeEvent.sequence),
+    0,
+    "Carl has 0 Celestial Quest Boxes before acquisition"
+  );
+  assert.equal(
+    getCelestialBoxCount(carlAcquiredEvent.sequence),
+    1,
+    "Carl has exactly 1 Celestial Quest Box after his acquisition event"
+  );
+  assert.equal(
+    getCelestialBoxCount(quanChAcquiredEvent.sequence),
+    1,
+    "Carl has exactly 1 Celestial Quest Box after Quan Ch's narrative acquisition event"
+  );
+  assert.equal(
+    getCelestialBoxCount(quanChOpenedEvent.sequence),
+    1,
+    "Carl has exactly 1 Celestial Quest Box after Quan Ch's narrative opened event"
+  );
+  assert.equal(
+    getCelestialBoxCount(vetoEvent.sequence),
+    1,
+    "Carl has exactly 1 Celestial Quest Box after the veto event"
   );
 
   // Verify the validator still requires an item instance to be established before ItemConsumed

@@ -263,11 +263,11 @@ A narrative reward can establish a quantity without creating that many inventory
 
 For example, if the evidence says that the Bandit achievement upgrades **83 Platinum Quest Boxes to Celestial tier**, the upgrade remains a NarrativeEvent. It records the causal reward/upgrade fact and its quantity; it does not imply that CCI has 83 individually identified inventory objects.
 
-If the evidence separately establishes that Quan Ch acquires one of those Celestial boxes, represent that boundary as an ItemAcquired event with one concrete instanceId. If the box is then opened, represent the opening as ItemConsumed referencing that same instance.
+If the evidence separately establishes that Carl acquires one of those Celestial boxes, represent that boundary as an ItemAcquired event with one concrete instanceId. If Quan Ch separately receives and opens a box, those are represented as narrative events because the existing item projection contract represents the current crawler's inventory and has no recipient/owner field.
 
 The resulting sequence is intentionally:
 
-AchievementUnlocked → NarrativeEvent (83-box upgrade) → ItemAcquired (one specific box) → ItemConsumed (that box) → NarrativeEvent (82 boxes vetoed)
+AchievementUnlocked → NarrativeEvent (83-box population upgrade) → ItemAcquired (Carl's one box) → NarrativeEvent (Quan Ch receives one box) → NarrativeEvent (Quan Ch opens his box) → NarrativeEvent (82 boxes vetoed)
 
 This distinction prevents a reward quantity from being mistaken for an inventory object count and keeps item lifecycle validation meaningful.
 

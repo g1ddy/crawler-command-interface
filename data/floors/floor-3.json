@@ -1544,7 +1544,7 @@
       "order": 55
     },
     {
-      "id": "evt-f3-celestial-box-quan-ch-acquired",
+      "id": "evt-f3-celestial-box-carl-acquired",
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -1552,33 +1552,32 @@
         "chapter": 26
       },
       "item": {
-        "instanceId": "inst-f3-celestial-box-quan-ch",
+        "instanceId": "inst-f3-celestial-box-carl",
         "itemId": "item-celestial-quest-box",
         "quantity": {
           "known": true,
           "value": 1
         }
       },
-      "summary": "Quan Ch receives one Celestial Quest Box from the upgraded reward.",
+      "summary": "Carl receives one Celestial Quest Box as an inventory-affecting event.",
       "evidence": [
         {
-          "sourceId": "src-wiki-quanch",
-          "confidence": "confirmed"
+          "sourceId": "src-sparknotes-ch-sum",
+          "confidence": "corroborated"
         }
       ],
       "order": 56
     },
     {
-      "id": "evt-f3-celestial-box-quan-ch-opened",
-      "type": "ItemConsumed",
-      "itemInstanceId": "inst-f3-celestial-box-quan-ch",
-      "outcome": "Quan Ch opens the Celestial Quest Box and receives the Cloak of the Benevolent Champion.",
+      "id": "evt-f3-celestial-box-quan-ch-acquired",
+      "type": "NarrativeEvent",
+      "kind": "other",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 26
       },
-      "summary": "Quan Ch opens his Celestial Quest Box before corporate intervention initiates a systemic freeze.",
+      "summary": "Quan Ch receives/claims one Celestial Quest Box before Borant's veto.",
       "evidence": [
         {
           "sourceId": "src-wiki-quanch",
@@ -1586,6 +1585,24 @@
         }
       ],
       "order": 57
+    },
+    {
+      "id": "evt-f3-celestial-box-quan-ch-opened",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Quan Ch opens his Celestial Quest Box and receives its documented contents (the Cloak of the Benevolent Champion).",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 58
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
@@ -1603,7 +1620,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 58
+      "order": 59
     }
   ]
 }

@@ -25,7 +25,7 @@ A reward quantity and inventory cardinality are separate facts. An 83-box reward
 
 For the Floor 3 Celestial Quest Box case, the authored lifecycle is:
 
-AchievementUnlocked → NarrativeEvent (83 boxes upgraded) → ItemAcquired (Quan Ch's one box) → ItemConsumed (that box opened) → NarrativeEvent (82 boxes vetoed)
+AchievementUnlocked → NarrativeEvent (83-box population upgrade) → ItemAcquired (Carl's one box) → NarrativeEvent (Quan Ch receives one box) → NarrativeEvent (Quan Ch opens his box) → NarrativeEvent (82 boxes vetoed)
 
 This is the canonical pattern for future extraction/authoring work whenever a narrative reward is followed by an individually established item lifecycle.
 
