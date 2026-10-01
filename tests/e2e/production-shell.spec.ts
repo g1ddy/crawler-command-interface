@@ -83,7 +83,7 @@ test("closing a nested inspector restores the parent evidence surface", async ({
 
 test("Persistent shell reflows without viewport overflow and supports reduced motion", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.locator("summary").filter({ hasText: "Replay context & tools" }).click();
+  await page.getByRole("button", { name: /Expand replay controls|Collapse replay controls/i }).click();
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const hud = page.locator('[data-hud-composition="persistent"]');
