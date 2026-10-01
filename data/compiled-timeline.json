@@ -12,7 +12,7 @@
       }
     },
     "createdAt": "2026-09-28T00:55:16.404Z",
-    "updatedAt": "2026-09-30T04:33:37.947Z"
+    "updatedAt": "2026-10-01T00:25:38.851Z"
   },
   "floors": [
     {
@@ -283,6 +283,13 @@
       "trust": "corroborating",
       "title": "Carl's Doomsday Scenario Chapter 14 Summary - SparkNotes AI",
       "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/be06e3c2-91d3-4f93-9a6c-d230133b7258"
+    },
+    {
+      "id": "src-wiki-quanch",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Quan Ch - Dungeon Crawler Carl Wiki",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Quan_Ch"
     }
   ],
   "initialState": {
@@ -5215,21 +5222,13 @@
         "title": "Bandit",
         "recipient": "party",
         "description": "Awarded to the crawlers who survived Fools Who Broke the Glass.",
-        "reward": [
-          {
-            "kind": "box",
-            "boxType": "celestial",
-            "rarity": "celestial",
-            "amount": 83,
-            "description": "83 Celestial-quality boxes (1 opened by Quan Ch, 82 remaining boxes vetoed by Borant)"
-          }
-        ]
+        "reward": []
       }
     },
     {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
       "sequence": 178,
-      "type": "NarrativeEvent",
+      "type": "ItemAcquired",
       "position": {
         "floor": 3,
         "book": 2,
@@ -5238,37 +5237,46 @@
       "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone.",
       "evidence": [
         {
-          "sourceId": "src-reddit-end-book2",
-          "confidence": "candidate"
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
         },
         {
           "sourceId": "src-dcc-database-celestial-box",
           "confidence": "corroborated"
         }
       ],
-      "kind": "other"
+      "item": {
+        "instanceId": "inst-f3-celestial-box-quan-ch",
+        "itemId": "item-celestial-quest-box",
+        "name": "Celestial Quest Box",
+        "category": "box",
+        "rarity": "celestial",
+        "description": "An upgraded Celestial-quality quest box reward granted for surviving the Fools Who Broke the Glass explosion.",
+        "quantity": {
+          "known": true,
+          "value": 1
+        },
+        "sourceDescription": "Third Floor"
+      }
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-opened",
       "sequence": 179,
-      "type": "NarrativeEvent",
+      "type": "ItemConsumed",
       "position": {
         "floor": 3,
         "book": 2,
         "chapter": 26
       },
-      "summary": "Quan Ch opens his Celestial Quest Box before the administrative veto takes effect.",
+      "summary": "Quan Ch opens his Celestial Quest Box before corporate intervention initiates a systemic freeze.",
       "evidence": [
         {
-          "sourceId": "src-reddit-end-book2",
-          "confidence": "candidate"
-        },
-        {
-          "sourceId": "src-dcc-database-celestial-box",
-          "confidence": "corroborated"
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
         }
       ],
-      "kind": "other"
+      "itemInstanceId": "inst-f3-celestial-box-quan-ch",
+      "outcome": "Quan Ch opens the Celestial Quest Box and receives the Cloak of the Benevolent Champion."
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",

@@ -147,6 +147,22 @@ test("Floor 3 end-of-floor events follow strict sequence order for Bandit achiev
     banditEvent.achievement?.description,
     "Awarded to the crawlers who survived Fools Who Broke the Glass."
   );
+  assert.deepEqual(
+    banditEvent.achievement?.reward,
+    [],
+    "Bandit achievement does not expose the 83 Celestial box reward before the upgrade sequence"
+  );
+
+  assert.equal(upgradeEvent.type, "ItemAcquired");
+  assert.equal(upgradeEvent.item?.itemId, "item-celestial-quest-box");
+  assert.equal(upgradeEvent.item?.instanceId, "inst-f3-celestial-box-quan-ch");
+
+  assert.equal(quanChEvent.type, "ItemConsumed");
+  assert.equal(quanChEvent.itemInstanceId, "inst-f3-celestial-box-quan-ch");
+  assert.ok(
+    quanChEvent.outcome?.includes("Cloak of the Benevolent Champion"),
+    "Quan Ch opening outcome records receiving the Cloak of the Benevolent Champion"
+  );
 });
 
 test("Floor 3 ItemCrafted event projects Carl's Doomsday Scenario at its causal boundary", () => {
