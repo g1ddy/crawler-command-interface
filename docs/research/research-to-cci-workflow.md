@@ -244,6 +244,48 @@ The extractor must not decide:
 
 Those decisions belong to Stage 3.
 
+## CCI event authoring boundary
+
+Stage 2 extracts canon claims. Stage 3 is where a supported claim is given an existing CCI representation. When the evidence crosses an item lifecycle boundary, preserve that boundary explicitly rather than collapsing several facts into one event.
+
+### Event-type delineation
+
+| Event type | Meaning | Authoring boundary |
+| --- | --- | --- |
+| NarrativeEvent | A source-backed story fact, causal transition, reward/upgrade announcement, veto, grant, or other timeline fact that does **not** establish a specific inventory instance. | Use when the evidence establishes what happened in the story but does not establish one concrete item instance entering inventory. |
+| ItemAcquired | A specific item instance becomes owned/available to a crawler. | Use only when the evidence establishes an individual acquisition boundary. This event establishes the instanceId that later item lifecycle events may reference. |
+| ItemConsumed | An already-acquired item instance is used, opened, expended, or otherwise consumed. | Use only after the referenced item instance has been established by an earlier ItemAcquired boundary. Do not use it to establish acquisition. |
+| ItemCrafted | A specific item-creation act is established by the evidence. | Use for the causal creation of an item when the story establishes that act. Do not infer a general recipe, workstation, materials system, timer, or reusable crafting capability from one creation event. |
+
+### Reward quantity is not inventory cardinality
+
+A narrative reward can establish a quantity without creating that many inventory instances.
+
+For example, if the evidence says that the Bandit achievement upgrades **83 Platinum Quest Boxes to Celestial tier**, the upgrade remains a NarrativeEvent. It records the causal reward/upgrade fact and its quantity; it does not imply that CCI has 83 individually identified inventory objects.
+
+If the evidence separately establishes that Carl acquires one of those Celestial boxes, represent that boundary as an ItemAcquired event with one concrete instanceId. If Quan Ch separately receives and opens a box, those are represented as narrative events because the existing item projection contract represents the current crawler's inventory and has no recipient/owner field.
+
+The resulting sequence is intentionally:
+
+AchievementUnlocked → NarrativeEvent (83-box population upgrade) → ItemAcquired (Carl's one box) → NarrativeEvent (Quan Ch receives one box) → NarrativeEvent (Quan Ch opens his box) → NarrativeEvent (82 boxes vetoed)
+
+This distinction prevents a reward quantity from being mistaken for an inventory object count and keeps item lifecycle validation meaningful.
+
+### Persistence remains evidence-driven
+
+Catalog item persistent is tri-state:
+
+- true — the authored evidence establishes persistence;
+- false — the authored evidence establishes non-persistence;
+- omitted — persistence is not established by the available evidence.
+
+Do not manufacture false merely because a catalog item lacks evidence of persistence. Likewise, do not add true without supporting evidence.
+
+### Extraction-to-authoring rule
+
+When an extraction claim appears to span more than one lifecycle boundary, keep the claim evidence intact and split the CCI representation at the point where the source establishes the boundary. Do not force a single event type to carry acquisition, consumption, reward quantity, and narrative causality simultaneously.
+
+
 ## Conceptual schema
 
 The repository's **current JSON Schema is authoritative**. The example below illustrates the intended contract; it is not a replacement for the repository schema.

@@ -1,0 +1,2429 @@
+
+> crawler-command-ui@0.1.0 verify
+> npm run generate:fixture && npm run typecheck && npm run lint && npm run test:architecture && npm run test:unit && npm run build:live && npm run test:rendered && npm run build:pages && npm run test:artifacts
+
+
+> crawler-command-ui@0.1.0 generate:fixture
+> node --experimental-strip-types scripts/sync-derived-fixtures.mjs
+
+
+> crawler-command-ui@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> crawler-command-ui@0.1.0 lint
+> bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern dist-pages --ignore-pattern .next --max-warnings 0
+
+
+> crawler-command-ui@0.1.0 test:architecture
+> node --test tests/architecture/*.test.mjs && node scripts/check-architecture.mjs
+
+TAP version 13
+# Subtest: rejects domain-must-not-depend-on-ui
+ok 1 - rejects domain-must-not-depend-on-ui
+  ---
+  duration_ms: 29.503175
+  type: 'test'
+  ...
+# Subtest: rejects domain-must-not-depend-on-ui
+ok 2 - rejects domain-must-not-depend-on-ui
+  ---
+  duration_ms: 10.361884
+  type: 'test'
+  ...
+# Subtest: rejects domain-must-not-depend-on-ui
+ok 3 - rejects domain-must-not-depend-on-ui
+  ---
+  duration_ms: 8.228083
+  type: 'test'
+  ...
+# Subtest: rejects domain-must-not-depend-on-ui
+ok 4 - rejects domain-must-not-depend-on-ui
+  ---
+  duration_ms: 5.682318
+  type: 'test'
+  ...
+# Subtest: rejects shared-must-remain-generic
+ok 5 - rejects shared-must-remain-generic
+  ---
+  duration_ms: 8.842148
+  type: 'test'
+  ...
+# Subtest: rejects shared-must-remain-generic
+ok 6 - rejects shared-must-remain-generic
+  ---
+  duration_ms: 6.791164
+  type: 'test'
+  ...
+# Subtest: rejects shared-must-remain-generic
+ok 7 - rejects shared-must-remain-generic
+  ---
+  duration_ms: 7.717434
+  type: 'test'
+  ...
+# Subtest: rejects shared-must-remain-generic
+ok 8 - rejects shared-must-remain-generic
+  ---
+  duration_ms: 9.772846
+  type: 'test'
+  ...
+# Subtest: rejects shared-must-remain-generic
+ok 9 - rejects shared-must-remain-generic
+  ---
+  duration_ms: 7.128056
+  type: 'test'
+  ...
+# Subtest: rejects shared-must-remain-generic
+ok 10 - rejects shared-must-remain-generic
+  ---
+  duration_ms: 8.626541
+  type: 'test'
+  ...
+# Subtest: rejects features-must-not-depend-on-shell
+ok 11 - rejects features-must-not-depend-on-shell
+  ---
+  duration_ms: 5.865452
+  type: 'test'
+  ...
+# Subtest: rejects application-must-not-depend-on-ui
+ok 12 - rejects application-must-not-depend-on-ui
+  ---
+  duration_ms: 7.393789
+  type: 'test'
+  ...
+# Subtest: rejects application-must-not-depend-on-ui
+ok 13 - rejects application-must-not-depend-on-ui
+  ---
+  duration_ms: 5.170294
+  type: 'test'
+  ...
+# Subtest: rejects application-must-not-depend-on-ui
+ok 14 - rejects application-must-not-depend-on-ui
+  ---
+  duration_ms: 5.920523
+  type: 'test'
+  ...
+# Subtest: rejects application-must-not-depend-on-ui
+ok 15 - rejects application-must-not-depend-on-ui
+  ---
+  duration_ms: 4.03149
+  type: 'test'
+  ...
+# Subtest: rejects application-must-not-depend-on-ui
+ok 16 - rejects application-must-not-depend-on-ui
+  ---
+  duration_ms: 5.733429
+  type: 'test'
+  ...
+# Subtest: rejects application-must-not-depend-on-react
+ok 17 - rejects application-must-not-depend-on-react
+  ---
+  duration_ms: 6.996793
+  type: 'test'
+  ...
+# Subtest: rejects shared-browser-must-not-depend-on-host
+ok 18 - rejects shared-browser-must-not-depend-on-host
+  ---
+  duration_ms: 5.033776
+  type: 'test'
+  ...
+# Subtest: rejects features-must-use-public-contracts
+ok 19 - rejects features-must-use-public-contracts
+  ---
+  duration_ms: 4.348004
+  type: 'test'
+  ...
+# Subtest: rejects semantic-must-not-depend-on-arwes
+ok 20 - rejects semantic-must-not-depend-on-arwes
+  ---
+  duration_ms: 5.691038
+  type: 'test'
+  ...
+# Subtest: rejects semantic-must-not-depend-on-react
+ok 21 - rejects semantic-must-not-depend-on-react
+  ---
+  duration_ms: 5.959525
+  type: 'test'
+  ...
+# Subtest: rejects semantic-must-not-depend-on-features
+ok 22 - rejects semantic-must-not-depend-on-features
+  ---
+  duration_ms: 5.981876
+  type: 'test'
+  ...
+# Subtest: rejects Node-only authoring code reachable from a browser runtime root
+ok 23 - rejects Node-only authoring code reachable from a browser runtime root
+  ---
+  duration_ms: 5.6553
+  type: 'test'
+  ...
+# Subtest: rejects runtime imports of build scripts and follows their dependencies
+ok 24 - rejects runtime imports of build scripts and follows their dependencies
+  ---
+  duration_ms: 5.174099
+  type: 'test'
+  ...
+# Subtest: resolves relative non-TypeScript assets as local policy edges
+ok 25 - resolves relative non-TypeScript assets as local policy edges
+  ---
+  duration_ms: 4.766892
+  type: 'test'
+  ...
+# Subtest: rejects feature dependencies on application composition roots
+ok 26 - rejects feature dependencies on application composition roots
+  ---
+  duration_ms: 9.10015
+  type: 'test'
+  ...
+# Subtest: resolves configured path aliases before enforcing local boundaries
+ok 27 - resolves configured path aliases before enforcing local boundaries
+  ---
+  duration_ms: 11.152827
+  type: 'test'
+  ...
+# Subtest: keeps installed packages external after TypeScript resolves them
+ok 28 - keeps installed packages external after TypeScript resolves them
+  ---
+  duration_ms: 8.072953
+  type: 'test'
+  ...
+# Subtest: treats Vinext route modules as Worker runtime roots
+ok 29 - treats Vinext route modules as Worker runtime roots
+  ---
+  duration_ms: 8.753953
+  type: 'test'
+  ...
+# Subtest: rejects bare and node-prefixed built-in module specifiers in runtime code
+ok 30 - rejects bare and node-prefixed built-in module specifiers in runtime code
+  ---
+  duration_ms: 18.652292
+  type: 'test'
+  ...
+# Subtest: allows domain dependencies and an explicit feature public contract
+ok 31 - allows domain dependencies and an explicit feature public contract
+  ---
+  duration_ms: 9.127021
+  type: 'test'
+  ...
+# Subtest: features may consume only focused application contracts
+ok 32 - features may consume only focused application contracts
+  ---
+  duration_ms: 5.68289
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 938.396212
+Architecture policy passed (fresh dependency analysis of current source).
+
+> crawler-command-ui@0.1.0 test:unit
+> node --experimental-strip-types --test "tests/unit/**/*.test.mjs"
+
+TAP version 13
+# Subtest: valid actions append a runtime event at the live endpoint
+ok 1 - valid actions append a runtime event at the live endpoint
+  ---
+  duration_ms: 1401.846663
+  type: 'test'
+  ...
+# Subtest: runtime actions survive validated local persistence and reprojection
+ok 2 - runtime actions survive validated local persistence and reprojection
+  ---
+  duration_ms: 164.767047
+  type: 'test'
+  ...
+# Subtest: authored events still require evidence while runtime events cannot claim it
+ok 3 - authored events still require evidence while runtime events cannot claim it
+  ---
+  duration_ms: 107.726705
+  type: 'test'
+  ...
+# Subtest: actions append to live state without changing historical projection
+ok 4 - actions append to live state without changing historical projection
+  ---
+  duration_ms: 98.100414
+  type: 'test'
+  ...
+# Subtest: equipment workspace can explicitly equip ordinary gear into SPECIAL
+ok 5 - equipment workspace can explicitly equip ordinary gear into SPECIAL
+  ---
+  duration_ms: 81.299888
+  type: 'test'
+  ...
+# Subtest: invalid commands and domain eligibility failures do not append
+ok 6 - invalid commands and domain eligibility failures do not append
+  ---
+  duration_ms: 185.777337
+  type: 'test'
+  ...
+# Subtest: feature components depend on focused actions rather than raw event callbacks
+ok 7 - feature components depend on focused actions rather than raw event callbacks
+  ---
+  duration_ms: 0.929514
+  type: 'test'
+  ...
+# Subtest: Party capability is unavailable before the Royal Court formation boundary and available after it
+ok 8 - Party capability is unavailable before the Royal Court formation boundary and available after it
+  ---
+  duration_ms: 10.446646
+  type: 'test'
+  ...
+# Subtest: Pet capability is unavailable before the useful sourced bond boundary, including acquired-but-unbonded state, and available after bonding
+ok 9 - Pet capability is unavailable before the useful sourced bond boundary, including acquired-but-unbonded state, and available after bonding
+  ---
+  duration_ms: 113.100279
+  type: 'test'
+  ...
+# Subtest: Ratings capability is available only when replay-visible broadcast/audience state exists on compiled timeline
+ok 10 - Ratings capability is available only when replay-visible broadcast/audience state exists on compiled timeline
+  ---
+  duration_ms: 38.594861
+  type: 'test'
+  ...
+# Subtest: Notifications capability is available only when crawler-visible delivered-notification semantics exist on compiled timeline
+ok 11 - Notifications capability is available only when crawler-visible delivered-notification semantics exist on compiled timeline
+  ---
+  duration_ms: 2.702846
+  type: 'test'
+  ...
+# Subtest: Baseline domains (Crawler, Inventory, Skills) remain baseline available
+ok 12 - Baseline domains (Crawler, Inventory, Skills) remain baseline available
+  ---
+  duration_ms: 0.307063
+  type: 'test'
+  ...
+# Subtest: Deferred domains (Quests and Magic) remain gated or unexposed in CanonCapabilities
+ok 13 - Deferred domains (Quests and Magic) remain gated or unexposed in CanonCapabilities
+  ---
+  duration_ms: 0.200166
+  type: 'test'
+  ...
+# Subtest: Non-shell consumer can drive custom composition directly using CanonCapabilities snapshot without shell or React imports
+ok 14 - Non-shell consumer can drive custom composition directly using CanonCapabilities snapshot without shell or React imports
+  ---
+  duration_ms: 2.342131
+  type: 'test'
+  ...
+# Subtest: Arwes compatibility probe renders in React 19 StrictMode
+ok 15 - Arwes compatibility probe renders in React 19 StrictMode
+  ---
+  duration_ms: 22.795492
+  type: 'test'
+  ...
+# Subtest: AuthorityFrame renders stroke styles and svg frames
+ok 16 - AuthorityFrame renders stroke styles and svg frames
+  ---
+  duration_ms: 1.358655
+  type: 'test'
+  ...
+# Subtest: AuthorityTransition handles deterministic and enabled motion modes
+ok 17 - AuthorityTransition handles deterministic and enabled motion modes
+  ---
+  duration_ms: 0.96341
+  type: 'test'
+  ...
+# Subtest: AuthorityText distinguishes instant and decoded delivery
+ok 18 - AuthorityText distinguishes instant and decoded delivery
+  ---
+  duration_ms: 1.219521
+  type: 'test'
+  ...
+# Subtest: AuthorityBackground renders SVG background primitives
+ok 19 - AuthorityBackground renders SVG background primitives
+  ---
+  duration_ms: 1.166469
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation integrates HudCompositionModel into real composition foundation
+ok 20 - ArwesPresentation integrates HudCompositionModel into real composition foundation
+  ---
+  duration_ms: 9.405291
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation directly exposes semantic attributes for current, last-known, estimated, and unknown states
+ok 21 - ArwesPresentation directly exposes semantic attributes for current, last-known, estimated, and unknown states
+  ---
+  duration_ms: 7.698449
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation keeps stable present telemetry motionIntent undefined
+ok 22 - ArwesPresentation keeps stable present telemetry motionIntent undefined
+  ---
+  duration_ms: 9.256778
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation reduced motion produces semantically equivalent markup without physical animation dependency
+ok 23 - ArwesPresentation reduced motion produces semantically equivalent markup without physical animation dependency
+  ---
+  duration_ms: 17.849582
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation ensures initial renders have no spurious transition motion intents
+ok 24 - ArwesPresentation ensures initial renders have no spurious transition motion intents
+  ---
+  duration_ms: 4.846657
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation directly consumes motionIntents from HudCompositionModel
+ok 25 - ArwesPresentation directly consumes motionIntents from HudCompositionModel
+  ---
+  duration_ms: 4.371539
+  type: 'test'
+  ...
+# Subtest: Ticking countdowns and ordinary telemetry numeric value updates do not emit changed motion intents
+ok 26 - Ticking countdowns and ordinary telemetry numeric value updates do not emit changed motion intents
+  ---
+  duration_ms: 11.479254
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation handles minimal HudCompositionModel gracefully
+ok 27 - ArwesPresentation handles minimal HudCompositionModel gracefully
+  ---
+  duration_ms: 3.871088
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation renders Pet domain surface across lifecycle states and motion modes
+ok 28 - ArwesPresentation renders Pet domain surface across lifecycle states and motion modes
+  ---
+  duration_ms: 16.893117
+  type: 'test'
+  ...
+# Subtest: ArwesPresentation maintains renderer exclusivity without alternate HUD markers
+ok 29 - ArwesPresentation maintains renderer exclusivity without alternate HUD markers
+  ---
+  duration_ms: 4.073145
+  type: 'test'
+  ...
+# Subtest: browser tests do not bypass Playwright actionability with force: true
+ok 30 - browser tests do not bypass Playwright actionability with force: true
+  ---
+  duration_ms: 226.066155
+  type: 'test'
+  ...
+# Subtest: compileEvent generic identity compilation preserves non-specialized event payloads
+ok 31 - compileEvent generic identity compilation preserves non-specialized event payloads
+  ---
+  duration_ms: 1.850218
+  type: 'test'
+  ...
+# Subtest: re-compiling raw floor files matches the frozen pre-\#140 semantic timeline
+ok 32 - re-compiling raw floor files matches the frozen pre-\#140 semantic timeline
+  ---
+  duration_ms: 1409.025558
+  type: 'test'
+  ...
+# Subtest: every reachable replay state matches the current projection contract
+ok 33 - every reachable replay state matches the current projection contract
+  ---
+  duration_ms: 1367.970469
+  type: 'test'
+  ...
+# Subtest: formatCountdownDuration formats scheduled, active, and completed durations properly
+ok 34 - formatCountdownDuration formats scheduled, active, and completed durations properly
+  ---
+  duration_ms: 1.712336
+  type: 'test'
+  ...
+# Subtest: projection at pre-activation sequence returns scheduled countdown state with starts-in display
+ok 35 - projection at pre-activation sequence returns scheduled countdown state with starts-in display
+  ---
+  duration_ms: 1.283697
+  type: 'test'
+  ...
+# Subtest: validation rejects negative remainingSeconds while accepting valid activationOffset
+ok 36 - validation rejects negative remainingSeconds while accepting valid activationOffset
+  ---
+  duration_ms: 1.3603
+  type: 'test'
+  ...
+# Subtest: Floor 1's authored collapse-clock opening reference is visible at its exact sequence
+ok 37 - Floor 1's authored collapse-clock opening reference is visible at its exact sequence
+  ---
+  duration_ms: 0.233071
+  type: 'test'
+  ...
+# Subtest: evidence boundary: returns null before the first sourced countdown reference
+ok 38 - evidence boundary: returns null before the first sourced countdown reference
+  ---
+  duration_ms: 0.356942
+  type: 'test'
+  ...
+# Subtest: scheduled countdown references retain time-to-collapse as well as time-to-activation
+ok 39 - scheduled countdown references retain time-to-collapse as well as time-to-activation
+  ---
+  duration_ms: 0.385998
+  type: 'test'
+  ...
+# Subtest: scheduled after-final extrapolation advances activationOffset toward zero while remainingSeconds remains constant
+ok 40 - scheduled after-final extrapolation advances activationOffset toward zero while remainingSeconds remains constant
+  ---
+  duration_ms: 0.676063
+  type: 'test'
+  ...
+# Subtest: Floor 1 retains sourced readings through the sourced descent window
+ok 41 - Floor 1 retains sourced readings through the sourced descent window
+  ---
+  duration_ms: 0.280228
+  type: 'test'
+  ...
+# Subtest: Floor 2's authored collapse-clock references are monotonic
+ok 42 - Floor 2's authored collapse-clock references are monotonic
+  ---
+  duration_ms: 0.627223
+  type: 'test'
+  ...
+# Subtest: the primary floor-collapse clock remains selected when a floor has secondary countdowns
+ok 43 - the primary floor-collapse clock remains selected when a floor has secondary countdowns
+  ---
+  duration_ms: 0.806775
+  type: 'test'
+  ...
+# Subtest: prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence
+ok 44 - prefers elapsed-duration calculations when timestamps are available; falls back to sequence-position with low-confidence
+  ---
+  duration_ms: 0.526177
+  type: 'test'
+  ...
+# Subtest: returns null for non-monotonic (incompatible) references or pause/resume/phase breaks
+ok 45 - returns null for non-monotonic (incompatible) references or pause/resume/phase breaks
+  ---
+  duration_ms: 0.432139
+  type: 'test'
+  ...
+# Subtest: imported timeline with no countdowns metadata returns null and handles floor navigation cleanly
+ok 46 - imported timeline with no countdowns metadata returns null and handles floor navigation cleanly
+  ---
+  duration_ms: 0.257808
+  type: 'test'
+  ...
+# Subtest: live-action appends extend floor end sequence and preserve historical countdown state
+ok 47 - live-action appends extend floor end sequence and preserve historical countdown state
+  ---
+  duration_ms: 0.341442
+  type: 'test'
+  ...
+# Subtest: phase-aware countdown monotonicity accepts legitimate reset boundaries and rejects intra-phase increases
+ok 48 - phase-aware countdown monotonicity accepts legitimate reset boundaries and rejects intra-phase increases
+  ---
+  duration_ms: 4.752786
+  type: 'test'
+  ...
+# Subtest: authored Floor 2 safe-room closure remains distinct and floor scoped
+ok 49 - authored Floor 2 safe-room closure remains distinct and floor scoped
+  ---
+  duration_ms: 0.640405
+  type: 'test'
+  ...
+# Subtest: deriveCrawlerPresentation computes crawler presentation with evidence authority
+ok 50 - deriveCrawlerPresentation computes crawler presentation with evidence authority
+  ---
+  duration_ms: 1.876846
+  type: 'test'
+  ...
+# Subtest: deriveCrawlerPresentation handles unknown/unsourced telemetry without error
+ok 51 - deriveCrawlerPresentation handles unknown/unsourced telemetry without error
+  ---
+  duration_ms: 0.402965
+  type: 'test'
+  ...
+# Subtest: attribute allocation follows the displayed reading instead of causal state
+ok 52 - attribute allocation follows the displayed reading instead of causal state
+  ---
+  duration_ms: 0.495161
+  type: 'test'
+  ...
+# Subtest: isLive mutation gating invariant enforces isLive as strict mutation boundary regardless of points
+ok 53 - isLive mutation gating invariant enforces isLive as strict mutation boundary regardless of points
+  ---
+  duration_ms: 0.671551
+  type: 'test'
+  ...
+# Subtest: CrawlerSessionController manages state and commands cleanly
+ok 54 - CrawlerSessionController manages state and commands cleanly
+  ---
+  duration_ms: 157.072247
+  type: 'test'
+  ...
+# Subtest: presentation choice and local UI state are decoupled from persistence and timeline JSON
+ok 55 - presentation choice and local UI state are decoupled from persistence and timeline JSON
+  ---
+  duration_ms: 1.321947
+  type: 'test'
+  ...
+# Subtest: repository-local graph renderer script is removed
+ok 56 - repository-local graph renderer script is removed
+  ---
+  duration_ms: 1.321746
+  type: 'test'
+  ...
+# Subtest: generated architecture SVG artifact exists and contains valid SVG content
+ok 57 - generated architecture SVG artifact exists and contains valid SVG content
+  ---
+  duration_ms: 13.518119
+  type: 'test'
+  ...
+# Subtest: publish-artifacts workflow configures Maritime analysis and graph rendering
+ok 58 - publish-artifacts workflow configures Maritime analysis and graph rendering
+  ---
+  duration_ms: 2.846321
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged suppresses timestamp-only churn and preserves byte-for-byte exact file
+ok 59 - writeJsonFixtureIfChanged suppresses timestamp-only churn and preserves byte-for-byte exact file
+  ---
+  duration_ms: 4.143117
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged writes meaningful output changes, preserving createdAt and updating updatedAt
+ok 60 - writeJsonFixtureIfChanged writes meaningful output changes, preserving createdAt and updating updatedAt
+  ---
+  duration_ms: 1.725859
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged suppresses timestamp-only churn when existing timeline is missing createdAt, updatedAt, or both
+ok 61 - writeJsonFixtureIfChanged suppresses timestamp-only churn when existing timeline is missing createdAt, updatedAt, or both
+  ---
+  duration_ms: 2.986344
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged preserves local-only edit byte-for-byte when generated output differs only by timestamps
+ok 62 - writeJsonFixtureIfChanged preserves local-only edit byte-for-byte when generated output differs only by timestamps
+  ---
+  duration_ms: 1.247351
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged overwrites target when generated non-timestamp content has changed
+ok 63 - writeJsonFixtureIfChanged overwrites target when generated non-timestamp content has changed
+  ---
+  duration_ms: 2.205464
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged handles derived floor fixtures cleanly
+ok 64 - writeJsonFixtureIfChanged handles derived floor fixtures cleanly
+  ---
+  duration_ms: 1.519993
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged creates new file when destination does not exist
+ok 65 - writeJsonFixtureIfChanged creates new file when destination does not exist
+  ---
+  duration_ms: 1.503095
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged throws SyntaxError on invalid JSON rather than overwriting
+ok 66 - writeJsonFixtureIfChanged throws SyntaxError on invalid JSON rather than overwriting
+  ---
+  duration_ms: 1.584238
+  type: 'test'
+  ...
+# Subtest: writeJsonFixtureIfChanged lets read errors propagate rather than overwriting
+ok 67 - writeJsonFixtureIfChanged lets read errors propagate rather than overwriting
+  ---
+  duration_ms: 1.454451
+  type: 'test'
+  ...
+# Subtest: evidence glance markers are stable and distinct
+ok 68 - evidence glance markers are stable and distinct
+  ---
+  duration_ms: 1.374454
+  type: 'test'
+  ...
+# Subtest: selectDisplayedReading uses causal provenance rather than a numeric default heuristic
+ok 69 - selectDisplayedReading uses causal provenance rather than a numeric default heuristic
+  ---
+  duration_ms: 0.274075
+  type: 'test'
+  ...
+# Subtest: deriveEvidencePresentation derives current, last-known, estimated, causal-only, and unknown states
+ok 70 - deriveEvidencePresentation derives current, last-known, estimated, causal-only, and unknown states
+  ---
+  duration_ms: 1.457111
+  type: 'test'
+  ...
+# Subtest: mapEvidenceToSemantics produces exact production temporal classification across evidence states
+ok 71 - mapEvidenceToSemantics produces exact production temporal classification across evidence states
+  ---
+  duration_ms: 0.371731
+  type: 'test'
+  ...
+# Subtest: evidence presentation preserves source, locator, and confidence
+ok 72 - evidence presentation preserves source, locator, and confidence
+  ---
+  duration_ms: 0.451863
+  type: 'test'
+  ...
+# Subtest: missing evidence confidence retains the historical confirmed default
+ok 73 - missing evidence confidence retains the historical confirmed default
+  ---
+  duration_ms: 0.175332
+  type: 'test'
+  ...
+# Subtest: secondary countdown summary exposes its first sourced reference
+ok 74 - secondary countdown summary exposes its first sourced reference
+  ---
+  duration_ms: 0.388463
+  type: 'test'
+  ...
+# Subtest: Floor 3 raw document loads cleanly and passes raw floor validation
+ok 75 - Floor 3 raw document loads cleanly and passes raw floor validation
+  ---
+  duration_ms: 1089.80163
+  type: 'test'
+  ...
+# Subtest: Floor 3 raw document adapts into a valid CrawlerFloorDocument compatibility object
+ok 76 - Floor 3 raw document adapts into a valid CrawlerFloorDocument compatibility object
+  ---
+  duration_ms: 15.762368
+  type: 'test'
+  ...
+# Subtest: loadAllRawFloorDocuments includes Floor 3 sorted after Floor 1 and Floor 2
+ok 77 - loadAllRawFloorDocuments includes Floor 3 sorted after Floor 1 and Floor 2
+  ---
+  duration_ms: 11.173744
+  type: 'test'
+  ...
+# Subtest: compileRawFloorFiles compiles Floor 3 in global sequence order without compiler special cases
+ok 78 - compileRawFloorFiles compiles Floor 3 in global sequence order without compiler special cases
+  ---
+  duration_ms: 218.315387
+  type: 'test'
+  ...
+# Subtest: replay projection steps cleanly into and through Floor 3 events
+ok 79 - replay projection steps cleanly into and through Floor 3 events
+  ---
+  duration_ms: 2098.046668
+  type: 'test'
+  ...
+# Subtest: Floor 3 achievement boundaries isolate award items prior to their causal unlocked sequence
+ok 80 - Floor 3 achievement boundaries isolate award items prior to their causal unlocked sequence
+  ---
+  duration_ms: 219.75921
+  type: 'test'
+  ...
+# Subtest: Floor 3 end-of-floor events follow strict sequence order for Bandit achievement and Celestial box handling
+ok 81 - Floor 3 end-of-floor events follow strict sequence order for Bandit achievement and Celestial box handling
+  ---
+  duration_ms: 417.621858
+  type: 'test'
+  ...
+# Subtest: Floor 3 ItemCrafted event projects Carl's Doomsday Scenario at its causal boundary
+ok 82 - Floor 3 ItemCrafted event projects Carl's Doomsday Scenario at its causal boundary
+  ---
+  duration_ms: 325.696002
+  type: 'test'
+  ...
+# Subtest: getFloorEndSequence returns fallback when events array is empty
+ok 83 - getFloorEndSequence returns fallback when events array is empty
+  ---
+  duration_ms: 2.665024
+  type: 'test'
+  ...
+# Subtest: getFloorEndSequence returns fallback when no events match the floor
+ok 84 - getFloorEndSequence returns fallback when no events match the floor
+  ---
+  duration_ms: 0.23824
+  type: 'test'
+  ...
+# Subtest: getFloorEndSequence returns the highest sequence for the matching floor
+ok 85 - getFloorEndSequence returns the highest sequence for the matching floor
+  ---
+  duration_ms: 0.173657
+  type: 'test'
+  ...
+# Subtest: getFloorEndSequence handles mixed floors and returns the highest for the matching floor
+ok 86 - getFloorEndSequence handles mixed floors and returns the highest for the matching floor
+  ---
+  duration_ms: 0.222442
+  type: 'test'
+  ...
+# Subtest: getFloorEndSequence handles malformed events gracefully (missing position or floor)
+ok 87 - getFloorEndSequence handles malformed events gracefully (missing position or floor)
+  ---
+  duration_ms: 0.20883
+  type: 'test'
+  ...
+# Subtest: deriveHudComposition compiles renderer-neutral model for initial live state
+ok 88 - deriveHudComposition compiles renderer-neutral model for initial live state
+  ---
+  duration_ms: 2.320259
+  type: 'test'
+  ...
+# Subtest: deriveHudComposition exposes active countdown state without inventing urgency policies
+ok 89 - deriveHudComposition exposes active countdown state without inventing urgency policies
+  ---
+  duration_ms: 0.703528
+  type: 'test'
+  ...
+# Subtest: deriveHudComposition exposes explicit command-driven temporal and attention motionIntents
+ok 90 - deriveHudComposition exposes explicit command-driven temporal and attention motionIntents
+  ---
+  duration_ms: 7.472292
+  type: 'test'
+  ...
+# Subtest: feature presentation preserves not-established party state and not-established pet state
+ok 91 - feature presentation preserves not-established party state and not-established pet state
+  ---
+  duration_ms: 0.663175
+  type: 'test'
+  ...
+# Subtest: integration: deriveHudComposition with derivePetPresentationSummary across promoted timeline sequences
+ok 92 - integration: deriveHudComposition with derivePetPresentationSummary across promoted timeline sequences
+  ---
+  duration_ms: 141.645562
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: PresentationMotionIntent vocabulary is renderer-neutral and explicit
+ok 93 - HUD Semantics: PresentationMotionIntent vocabulary is renderer-neutral and explicit
+  ---
+  duration_ms: 1.667452
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: stable presentation produces no motion intent
+ok 94 - HUD Semantics: stable presentation produces no motion intent
+  ---
+  duration_ms: 0.344674
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: evaluated capability maps only to affordance
+ok 95 - HUD Semantics: evaluated capability maps only to affordance
+  ---
+  duration_ms: 1.00144
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: current observed telemetry mapping
+ok 96 - HUD Semantics: current observed telemetry mapping
+  ---
+  duration_ms: 0.396122
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: last-known telemetry mapping
+ok 97 - HUD Semantics: last-known telemetry mapping
+  ---
+  duration_ms: 0.319009
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: estimated telemetry mapping
+ok 98 - HUD Semantics: estimated telemetry mapping
+  ---
+  duration_ms: 0.231074
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: causal-only telemetry mapping produces causal authority without implied temporal status
+ok 99 - HUD Semantics: causal-only telemetry mapping produces causal authority without implied temporal status
+  ---
+  duration_ms: 0.288867
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: unknown telemetry mapping
+ok 100 - HUD Semantics: unknown telemetry mapping
+  ---
+  duration_ms: 0.171654
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: Party semantic states (not-established vs established vs known-empty)
+ok 101 - HUD Semantics: Party semantic states (not-established vs established vs known-empty)
+  ---
+  duration_ms: 0.804507
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: Pet semantic states (not-established vs established vs unavailable)
+ok 102 - HUD Semantics: Pet semantic states (not-established vs established vs unavailable)
+  ---
+  duration_ms: 1.032413
+  type: 'test'
+  ...
+# Subtest: HUD Semantics: stable presentation produces no motion intent
+ok 103 - HUD Semantics: stable presentation produces no motion intent
+  ---
+  duration_ms: 0.270186
+  type: 'test'
+  ...
+# Subtest: default selection follows the visible sort order
+ok 104 - default selection follows the visible sort order
+  ---
+  duration_ms: 3.535804
+  type: 'test'
+  ...
+# Subtest: search moves selection to a visible item when the selected item is hidden
+ok 105 - search moves selection to a visible item when the selected item is hidden
+  ---
+  duration_ms: 1.031761
+  type: 'test'
+  ...
+# Subtest: an explicitly selected visible item remains selected across sort changes
+ok 106 - an explicitly selected visible item remains selected across sort changes
+  ---
+  duration_ms: 0.316987
+  type: 'test'
+  ...
+# Subtest: compiler preserves missing authored item rarity as unknown
+ok 107 - compiler preserves missing authored item rarity as unknown
+  ---
+  duration_ms: 1066.008362
+  type: 'test'
+  ...
+# Subtest: ItemAcquired does not manufacture missing presentation metadata
+ok 108 - ItemAcquired does not manufacture missing presentation metadata
+  ---
+  duration_ms: 1.076541
+  type: 'test'
+  ...
+# Subtest: award history excludes ordinary loot boxes without achievement causation
+ok 109 - award history excludes ordinary loot boxes without achievement causation
+  ---
+  duration_ms: 1.207697
+  type: 'test'
+  ...
+# Subtest: award history requires causation to resolve to a preceding AchievementUnlocked event
+ok 110 - award history requires causation to resolve to a preceding AchievementUnlocked event
+  ---
+  duration_ms: 0.433329
+  type: 'test'
+  ...
+# Subtest: award history is replay-bounded and records opening only after it occurs
+ok 111 - award history is replay-bounded and records opening only after it occurs
+  ---
+  duration_ms: 0.517449
+  type: 'test'
+  ...
+# Subtest: authored notification delivery is replay bounded and independent of event type
+ok 112 - authored notification delivery is replay bounded and independent of event type
+  ---
+  duration_ms: 2.307975
+  type: 'test'
+  ...
+# Subtest: ratings unavailable state never presents projection defaults as sourced facts
+ok 113 - ratings unavailable state never presents projection defaults as sourced facts
+  ---
+  duration_ms: 0.650536
+  type: 'test'
+  ...
+# Subtest: selected-sequence capabilities cross evidence boundaries and resolve unavailable views
+ok 114 - selected-sequence capabilities cross evidence boundaries and resolve unavailable views
+  ---
+  duration_ms: 0.678906
+  type: 'test'
+  ...
+# Subtest: numeric navigation follows capability-filtered visible order
+ok 115 - numeric navigation follows capability-filtered visible order
+  ---
+  duration_ms: 0.287652
+  type: 'test'
+  ...
+# Subtest: condition UI renders every explicit authored classification without text inference
+ok 116 - condition UI renders every explicit authored classification without text inference
+  ---
+  duration_ms: 2.117728
+  type: 'test'
+  ...
+# Subtest: the Floors 1–2 spell grants preserve the smallest sourced acquisition facts
+ok 117 - the Floors 1–2 spell grants preserve the smallest sourced acquisition facts
+  ---
+  duration_ms: 2.146786
+  type: 'test'
+  ...
+# Subtest: malformed spell grants fail raw schema validation
+ok 118 - malformed spell grants fail raw schema validation
+  ---
+  duration_ms: 963.630856
+  type: 'test'
+  ...
+# Subtest: spell state obeys replay boundaries without entering skills or exposing a Magic capability
+ok 119 - spell state obeys replay boundaries without entering skills or exposing a Magic capability
+  ---
+  duration_ms: 37.810408
+  type: 'test'
+  ...
+# Subtest: the same spell granted to different owners preserves both acquisitions
+ok 120 - the same spell granted to different owners preserves both acquisitions
+  ---
+  duration_ms: 0.417889
+  type: 'test'
+  ...
+# Subtest: Maritime baseline comparison ignores only volatile metadata
+    # Subtest: manifest generatedAt only is not substantive
+    ok 1 - manifest generatedAt only is not substantive
+      ---
+      duration_ms: 87.491308
+      type: 'test'
+      ...
+    # Subtest: report Last Updated only is not substantive
+    ok 2 - report Last Updated only is not substantive
+      ---
+      duration_ms: 87.519022
+      type: 'test'
+      ...
+    # Subtest: dependency graph baseDir only is not substantive
+    ok 3 - dependency graph baseDir only is not substantive
+      ---
+      duration_ms: 88.757464
+      type: 'test'
+      ...
+    # Subtest: metrics changes are substantive
+    ok 4 - metrics changes are substantive
+      ---
+      duration_ms: 76.445921
+      type: 'test'
+      ...
+    # Subtest: graph changes are substantive
+    ok 5 - graph changes are substantive
+      ---
+      duration_ms: 82.903849
+      type: 'test'
+      ...
+    # Subtest: dependencies changes are substantive
+    ok 6 - dependencies changes are substantive
+      ---
+      duration_ms: 88.236768
+      type: 'test'
+      ...
+    # Subtest: violations changes are substantive
+    ok 7 - violations changes are substantive
+      ---
+      duration_ms: 83.969604
+      type: 'test'
+      ...
+    # Subtest: other graph options changes are substantive
+    ok 8 - other graph options changes are substantive
+      ---
+      duration_ms: 88.776184
+      type: 'test'
+      ...
+    # Subtest: nonvolatile manifest changes are substantive
+    ok 9 - nonvolatile manifest changes are substantive
+      ---
+      duration_ms: 106.856686
+      type: 'test'
+      ...
+    # Subtest: added or removed files are substantive
+    ok 10 - added or removed files are substantive
+      ---
+      duration_ms: 123.991045
+      type: 'test'
+      ...
+    1..10
+ok 121 - Maritime baseline comparison ignores only volatile metadata
+  ---
+  duration_ms: 999.160603
+  type: 'test'
+  ...
+# Subtest: Maritime consumer artifact validator enforces contract rules
+    # Subtest: valid non-empty Crawler bundle is accepted
+    ok 1 - valid non-empty Crawler bundle is accepted
+      ---
+      duration_ms: 2.094082
+      type: 'test'
+      ...
+    # Subtest: missing complexity report is rejected
+    ok 2 - missing complexity report is rejected
+      ---
+      duration_ms: 1.433294
+      type: 'test'
+      ...
+    # Subtest: zero-file / zero-scanned bundle is rejected even if claiming health 100
+    ok 3 - zero-file / zero-scanned bundle is rejected even if claiming health 100
+      ---
+      duration_ms: 1.671393
+      type: 'test'
+      ...
+    # Subtest: metric missing from dependency graph is rejected
+    ok 4 - metric missing from dependency graph is rejected
+      ---
+      duration_ms: 1.046276
+      type: 'test'
+      ...
+    # Subtest: local graph module missing from metrics is rejected
+    ok 5 - local graph module missing from metrics is rejected
+      ---
+      duration_ms: 1.061382
+      type: 'test'
+      ...
+    # Subtest: unmeasured metric is rejected
+    ok 6 - unmeasured metric is rejected
+      ---
+      duration_ms: 1.304472
+      type: 'test'
+      ...
+    # Subtest: bundle with wrong source roots is rejected
+    ok 7 - bundle with wrong source roots is rejected
+      ---
+      duration_ms: 0.914527
+      type: 'test'
+      ...
+    # Subtest: beta.3 manifest is rejected after migration
+    ok 8 - beta.3 manifest is rejected after migration
+      ---
+      duration_ms: 0.976088
+      type: 'test'
+      ...
+    # Subtest: empty / non-Crawler SVG is rejected
+    ok 9 - empty / non-Crawler SVG is rejected
+      ---
+      duration_ms: 4.692642
+      type: 'test'
+      ...
+    # Subtest: SVG containing app but not the other source root is rejected
+    ok 10 - SVG containing app but not the other source root is rejected
+      ---
+      duration_ms: 1.497519
+      type: 'test'
+      ...
+    # Subtest: SVG containing src but not the other source root is rejected
+    ok 11 - SVG containing src but not the other source root is rejected
+      ---
+      duration_ms: 1.059951
+      type: 'test'
+      ...
+    1..11
+ok 122 - Maritime consumer artifact validator enforces contract rules
+  ---
+  duration_ms: 21.955203
+  type: 'test'
+  ...
+# Subtest: raw NarrativeEvent authoring requires an explicit kind
+ok 123 - raw NarrativeEvent authoring requires an explicit kind
+  ---
+  duration_ms: 922.568616
+  type: 'test'
+  ...
+# Subtest: maps all narrative kinds and safely falls back
+ok 124 - maps all narrative kinds and safely falls back
+  ---
+  duration_ms: 1.318263
+  type: 'test'
+  ...
+# Subtest: rule history respects scrub position and floor without mutation
+ok 125 - rule history respects scrub position and floor without mutation
+  ---
+  duration_ms: 1.183119
+  type: 'test'
+  ...
+# Subtest: generic history comes from immutable non-narrative events in the selected floor
+ok 126 - generic history comes from immutable non-narrative events in the selected floor
+  ---
+  duration_ms: 0.439647
+  type: 'test'
+  ...
+# Subtest: unanchored story positions disclose missing exact time
+ok 127 - unanchored story positions disclose missing exact time
+  ---
+  duration_ms: 0.286767
+  type: 'test'
+  ...
+# Subtest: unanchored narrative projection never inherits a prior exact-looking timestamp
+ok 128 - unanchored narrative projection never inherits a prior exact-looking timestamp
+  ---
+  duration_ms: 1.00725
+  type: 'test'
+  ...
+# Subtest: typed narrative events are not flattened into generic recent logs
+ok 129 - typed narrative events are not flattened into generic recent logs
+  ---
+  duration_ms: 0.473365
+  type: 'test'
+  ...
+# Subtest: secondary countdown projection disappears when replay moves to another floor
+ok 130 - secondary countdown projection disappears when replay moves to another floor
+  ---
+  duration_ms: 1.075227
+  type: 'test'
+  ...
+# Subtest: Navigation Research Inventory: surface inventory completeness and taxonomy categorization
+ok 131 - Navigation Research Inventory: surface inventory completeness and taxonomy categorization
+  ---
+  duration_ms: 1.360953
+  type: 'test'
+  ...
+# Subtest: Navigation Contract: derives runtime SystemChromeContract containing strictly consumed primary navigation data
+ok 132 - Navigation Contract: derives runtime SystemChromeContract containing strictly consumed primary navigation data
+  ---
+  duration_ms: 0.37052
+  type: 'test'
+  ...
+# Subtest: Navigation Contract: derives primary navigation given full capability snapshot
+ok 133 - Navigation Contract: derives primary navigation given full capability snapshot
+  ---
+  duration_ms: 0.33843
+  type: 'test'
+  ...
+# Subtest: Navigation Contract: filters unavailable root views and falls back safely
+ok 134 - Navigation Contract: filters unavailable root views and falls back safely
+  ---
+  duration_ms: 0.237536
+  type: 'test'
+  ...
+# Subtest: notification projection is semantic and replay-bounded
+ok 135 - notification projection is semantic and replay-bounded
+  ---
+  duration_ms: 2.290896
+  type: 'test'
+  ...
+# Subtest: notification kind remains separate from severity
+ok 136 - notification kind remains separate from severity
+  ---
+  duration_ms: 0.321384
+  type: 'test'
+  ...
+# Subtest: deriveNotificationsPresentation returns structured presentation model for live and replay
+ok 137 - deriveNotificationsPresentation returns structured presentation model for live and replay
+  ---
+  duration_ms: 0.660037
+  type: 'test'
+  ...
+# Subtest: deriveNotificationsPresentation accurately derives active alert status for warning and critical severity
+ok 138 - deriveNotificationsPresentation accurately derives active alert status for warning and critical severity
+  ---
+  duration_ms: 0.3896
+  type: 'test'
+  ...
+# Subtest: deriveNotificationsPresentation handles empty events without fabricating notices
+ok 139 - deriveNotificationsPresentation handles empty events without fabricating notices
+  ---
+  duration_ms: 0.215126
+  type: 'test'
+  ...
+# Subtest: events without delivered notificationDelivery do not generate notifications
+ok 140 - events without delivered notificationDelivery do not generate notifications
+  ---
+  duration_ms: 0.218678
+  type: 'test'
+  ...
+# Subtest: observation projection records exact, carry-forward, and interpolation provenance
+ok 141 - observation projection records exact, carry-forward, and interpolation provenance
+  ---
+  duration_ms: 3.075869
+  type: 'test'
+  ...
+# Subtest: causal provenance survives a later transition back to a nominal default
+ok 142 - causal provenance survives a later transition back to a nominal default
+  ---
+  duration_ms: 1.764567
+  type: 'test'
+  ...
+# Subtest: snapshots reconstruct causal provenance from events before their sequence
+ok 143 - snapshots reconstruct causal provenance from events before their sequence
+  ---
+  duration_ms: 0.619697
+  type: 'test'
+  ...
+# Subtest: modifier-only attribute events do not override base attribute telemetry
+ok 144 - modifier-only attribute events do not override base attribute telemetry
+  ---
+  duration_ms: 0.524479
+  type: 'test'
+  ...
+# Subtest: the Royal Court formation records only the Floor 1 crawler roster
+ok 145 - the Royal Court formation records only the Floor 1 crawler roster
+  ---
+  duration_ms: 2.1137
+  type: 'test'
+  ...
+# Subtest: Party is replay bounded to its explicit formation event
+ok 146 - Party is replay bounded to its explicit formation event
+  ---
+  duration_ms: 6.190676
+  type: 'test'
+  ...
+# Subtest: Party schema rejects a roster without its crawler roles
+ok 147 - Party schema rejects a roster without its crawler roles
+  ---
+  duration_ms: 1571.744065
+  type: 'test'
+  ...
+# Subtest: the Floor 2 Mongo narrative event cannot alter the crawler Party roster
+ok 148 - the Floor 2 Mongo narrative event cannot alter the crawler Party roster
+  ---
+  duration_ms: 50.426065
+  type: 'test'
+  ...
+# Subtest: derivePartyPresentation represents absent party state
+ok 149 - derivePartyPresentation represents absent party state
+  ---
+  duration_ms: 2.792139
+  type: 'test'
+  ...
+# Subtest: derivePartyPresentation preserves sourced identity and roles
+ok 150 - derivePartyPresentation preserves sourced identity and roles
+  ---
+  duration_ms: 0.400255
+  type: 'test'
+  ...
+# Subtest: derivePartyPresentation handles unknown and unrecognized roles gracefully
+ok 151 - derivePartyPresentation handles unknown and unrecognized roles gracefully
+  ---
+  duration_ms: 0.372543
+  type: 'test'
+  ...
+# Subtest: derivePartyPresentation does not infer unsupported member mechanics
+ok 152 - derivePartyPresentation does not infer unsupported member mechanics
+  ---
+  duration_ms: 0.187017
+  type: 'test'
+  ...
+# Subtest: party presentation respects formation boundary in replay
+ok 153 - party presentation respects formation boundary in replay
+  ---
+  duration_ms: 1.246609
+  type: 'test'
+  ...
+# [LocalDeviceStorageAdapter] Failed to load persisted timeline: SyntaxError: Expected property name or '}' in JSON at position 2 (line 1 column 3)
+#     at JSON.parse (<anonymous>)
+#     at LocalDeviceStorageAdapter.loadTimeline (file:///app/app/domain/persistence.ts:34:27)
+#     at TestContext.<anonymous> (file:///app/tests/unit/persistence.test.mjs:56:24)
+#     at Test.runInAsyncScope (node:async_hooks:214:14)
+#     at Test.run (node:internal/test_runner/test:1047:25)
+#     at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+#     at Test.postRun (node:internal/test_runner/test:1173:19)
+#     at Test.run (node:internal/test_runner/test:1101:12)
+#     at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+# [LocalDeviceStorageAdapter] Persisted timeline failed validation: [
+#   "Schema error at /: must have required property 'timeline'",
+#   "Schema error at /: must have required property 'sources'",
+#   "Schema error at /: must have required property 'initialState'",
+#   "Schema error at /: must have required property 'events'",
+#   'Schema error at /schemaVersion: must be equal to one of the allowed values'
+# ]
+# [InMemoryStorageAdapter] Refusing to save invalid timeline document: [
+#   "Schema error at /: must have required property 'timeline'",
+#   "Schema error at /: must have required property 'sources'",
+#   "Schema error at /: must have required property 'initialState'",
+#   "Schema error at /: must have required property 'events'",
+#   'Schema error at /schemaVersion: must be equal to one of the allowed values'
+# ]
+# [OptionalRemoteStorageAdapter] Remote load failed, falling back to local storage: Error: Network offline
+#     at failingFetch (file:///app/tests/unit/persistence.test.mjs:141:11)
+#     at OptionalRemoteStorageAdapter.loadTimeline (file:///app/app/domain/persistence.ts:127:29)
+#     at TestContext.<anonymous> (file:///app/tests/unit/persistence.test.mjs:150:38)
+#     at Test.runInAsyncScope (node:async_hooks:214:14)
+#     at Test.run (node:internal/test_runner/test:1047:25)
+#     at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+#     at Test.postRun (node:internal/test_runner/test:1173:19)
+#     at Test.run (node:internal/test_runner/test:1101:12)
+#     at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+# Subtest: LocalDeviceStorageAdapter saves, loads, and clears valid timeline documents
+ok 154 - LocalDeviceStorageAdapter saves, loads, and clears valid timeline documents
+  ---
+  duration_ms: 1861.37503
+  type: 'test'
+  ...
+# Subtest: LocalDeviceStorageAdapter rejects corrupt or invalid timeline JSON
+ok 155 - LocalDeviceStorageAdapter rejects corrupt or invalid timeline JSON
+  ---
+  duration_ms: 2.530369
+  type: 'test'
+  ...
+# Subtest: InMemoryStorageAdapter holds state in memory and resets cleanly
+ok 156 - InMemoryStorageAdapter holds state in memory and resets cleanly
+  ---
+  duration_ms: 22.637811
+  type: 'test'
+  ...
+# Subtest: InMemoryStorageAdapter ignores invalid timeline document save attempts
+ok 157 - InMemoryStorageAdapter ignores invalid timeline document save attempts
+  ---
+  duration_ms: 24.7682
+  type: 'test'
+  ...
+# Subtest: OptionalRemoteStorageAdapter syncs with remote endpoint and falls back locally
+ok 158 - OptionalRemoteStorageAdapter syncs with remote endpoint and falls back locally
+  ---
+  duration_ms: 54.063632
+  type: 'test'
+  ...
+# Subtest: OptionalRemoteStorageAdapter falls back to local storage on network error
+ok 159 - OptionalRemoteStorageAdapter falls back to local storage on network error
+  ---
+  duration_ms: 15.955535
+  type: 'test'
+  ...
+# Subtest: Pet domain replay boundaries on Floor 2 compiled timeline
+ok 160 - Pet domain replay boundaries on Floor 2 compiled timeline
+  ---
+  duration_ms: 1825.402026
+  type: 'test'
+  ...
+# Subtest: Pet and Party domains remain strictly independent
+ok 161 - Pet and Party domains remain strictly independent
+  ---
+  duration_ms: 208.870026
+  type: 'test'
+  ...
+# Subtest: Pet navigation capability gates on bonded pet state
+ok 162 - Pet navigation capability gates on bonded pet state
+  ---
+  duration_ms: 201.308252
+  type: 'test'
+  ...
+# Subtest: Pet state reducers correctly handle acquisition, hostility, bonding, and classification changes
+ok 163 - Pet state reducers correctly handle acquisition, hostility, bonding, and classification changes
+  ---
+  duration_ms: 0.921391
+  type: 'test'
+  ...
+# Subtest: Domain validation enforces Pet event references
+ok 164 - Domain validation enforces Pet event references
+  ---
+  duration_ms: 0.735889
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation handles empty or undefined pets array
+ok 165 - derivePetPresentation handles empty or undefined pets array
+  ---
+  duration_ms: 5.193967
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation distinguishes not-established vs known-empty when pets is empty
+ok 166 - derivePetPresentation distinguishes not-established vs known-empty when pets is empty
+  ---
+  duration_ms: 0.972893
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation defensively preserves unknown/unspecified fields without fabricating claims
+ok 167 - derivePetPresentation defensively preserves unknown/unspecified fields without fabricating claims
+  ---
+  duration_ms: 1.144296
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation distinguishes unbonded, bonded-without-holder, and unknown-holder states
+ok 168 - derivePetPresentation distinguishes unbonded, bonded-without-holder, and unknown-holder states
+  ---
+  duration_ms: 0.63189
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation formats acquired pet before bonding/naming
+ok 169 - derivePetPresentation formats acquired pet before bonding/naming
+  ---
+  duration_ms: 0.982517
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation formats bonded and named pet with title
+ok 170 - derivePetPresentation formats bonded and named pet with title
+  ---
+  duration_ms: 0.76979
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation preserves temporal replay boundaries across compiled timeline sequence
+ok 171 - derivePetPresentation preserves temporal replay boundaries across compiled timeline sequence
+  ---
+  duration_ms: 74.904826
+  type: 'test'
+  ...
+# Subtest: derivePetPresentation respects optional fields without fabricating mechanics when absent
+ok 172 - derivePetPresentation respects optional fields without fabricating mechanics when absent
+  ---
+  duration_ms: 0.401437
+  type: 'test'
+  ...
+# Subtest: shell feature presentation boundary receives replayed pet state rather than live state
+ok 173 - shell feature presentation boundary receives replayed pet state rather than live state
+  ---
+  duration_ms: 38.592216
+  type: 'test'
+  ...
+# Subtest: deriveInventoryPresentation handles replay before/at/after Inventory boundaries
+ok 174 - deriveInventoryPresentation handles replay before/at/after Inventory boundaries
+  ---
+  duration_ms: 2.044278
+  type: 'test'
+  ...
+# Subtest: deriveEquipmentPresentation handles replay before/at/after Equipment boundaries
+ok 175 - deriveEquipmentPresentation handles replay before/at/after Equipment boundaries
+  ---
+  duration_ms: 0.98612
+  type: 'test'
+  ...
+# Subtest: distinguishes known empty vs unknown/unavailable equipment slot state
+ok 176 - distinguishes known empty vs unknown/unavailable equipment slot state
+  ---
+  duration_ms: 0.318932
+  type: 'test'
+  ...
+# Subtest: preserves evidence descriptor propagation for item and slot observations
+ok 177 - preserves evidence descriptor propagation for item and slot observations
+  ---
+  duration_ms: 0.653207
+  type: 'test'
+  ...
+# Subtest: maintains stable Inventory selection when filtering or search changes
+ok 178 - maintains stable Inventory selection when filtering or search changes
+  ---
+  duration_ms: 0.61099
+  type: 'test'
+  ...
+# Subtest: equipment slots do not infer unmodeled items or fake gear
+ok 179 - equipment slots do not infer unmodeled items or fake gear
+  ---
+  duration_ms: 0.304453
+  type: 'test'
+  ...
+# Subtest: awards causation remains independent from current Inventory
+ok 180 - awards causation remains independent from current Inventory
+  ---
+  duration_ms: 2.685492
+  type: 'test'
+  ...
+# Subtest: action capabilities enforce isLive gating during replay
+ok 181 - action capabilities enforce isLive gating during replay
+  ---
+  duration_ms: 0.376087
+  type: 'test'
+  ...
+# Subtest: item requirement evaluation uses the temporal crawler state during replay
+ok 182 - item requirement evaluation uses the temporal crawler state during replay
+  ---
+  duration_ms: 0.581495
+  type: 'test'
+  ...
+# Subtest: initial state has default crawler stats
+ok 183 - initial state has default crawler stats
+  ---
+  duration_ms: 2.252596
+  type: 'test'
+  ...
+# Subtest: legacy achievement reward text remains visible as a structured reward
+ok 184 - legacy achievement reward text remains visible as a structured reward
+  ---
+  duration_ms: 2.616308
+  type: 'test'
+  ...
+# Subtest: initial-state achievements retain valid recipients
+ok 185 - initial-state achievements retain valid recipients
+  ---
+  duration_ms: 2.666769
+  type: 'test'
+  ...
+# Subtest: projection at sequence 1 creates initial quest record with explicit fixture adapter
+ok 186 - projection at sequence 1 creates initial quest record with explicit fixture adapter
+  ---
+  duration_ms: 0.346876
+  type: 'test'
+  ...
+# Subtest: projection at sequence 4 equips Rogue's Hood
+ok 187 - projection at sequence 4 equips Rogue's Hood
+  ---
+  duration_ms: 0.696951
+  type: 'test'
+  ...
+# Subtest: stat breakdown calculates total value with gear and effects
+ok 188 - stat breakdown calculates total value with gear and effects
+  ---
+  duration_ms: 1.564132
+  type: 'test'
+  ...
+# Subtest: snapshot acceleration produces identical results to full replay
+ok 189 - snapshot acceleration produces identical results to full replay
+  ---
+  duration_ms: 3.541742
+  type: 'test'
+  ...
+# Subtest: item consumption reduces stack quantity
+ok 190 - item consumption reduces stack quantity
+  ---
+  duration_ms: 1.132684
+  type: 'test'
+  ...
+# Subtest: checked-in Floor 6 timeline validates successfully
+ok 191 - checked-in Floor 6 timeline validates successfully
+  ---
+  duration_ms: 987.004412
+  type: 'test'
+  ...
+# Subtest: valid timeline can be exported and re-imported with equivalent projected state
+ok 192 - valid timeline can be exported and re-imported with equivalent projected state
+  ---
+  duration_ms: 15.587796
+  type: 'test'
+  ...
+# Subtest: invalid schema rejects non-compliant documents
+ok 193 - invalid schema rejects non-compliant documents
+  ---
+  duration_ms: 0.405919
+  type: 'test'
+  ...
+# Subtest: notification delivery metadata is accepted only on timeline events
+ok 194 - notification delivery metadata is accepted only on timeline events
+  ---
+  duration_ms: 78.93752
+  type: 'test'
+  ...
+# Subtest: rejects document with duplicate or out-of-order event sequence numbers
+ok 195 - rejects document with duplicate or out-of-order event sequence numbers
+  ---
+  duration_ms: 12.442358
+  type: 'test'
+  ...
+# Subtest: rejects document with duplicate event or source IDs
+ok 196 - rejects document with duplicate event or source IDs
+  ---
+  duration_ms: 7.844055
+  type: 'test'
+  ...
+# Subtest: rejects document with evidence sourceId missing from sources catalog
+ok 197 - rejects document with evidence sourceId missing from sources catalog
+  ---
+  duration_ms: 8.149242
+  type: 'test'
+  ...
+# Subtest: rejects document with item references to unacquired items
+ok 198 - rejects document with item references to unacquired items
+  ---
+  duration_ms: 5.094222
+  type: 'test'
+  ...
+# Subtest: minimal non-Floor-6 document does not inherit Floor 6 state, inventory, quests, or snapshots
+ok 199 - minimal non-Floor-6 document does not inherit Floor 6 state, inventory, quests, or snapshots
+  ---
+  duration_ms: 0.625509
+  type: 'test'
+  ...
+# Subtest: floor-1.json validates successfully against crawler-floor/v2 schema
+ok 200 - floor-1.json validates successfully against crawler-floor/v2 schema
+  ---
+  duration_ms: 66.069267
+  type: 'test'
+  ...
+# Subtest: floor-2.json validates successfully against crawler-floor/v2 schema
+ok 201 - floor-2.json validates successfully against crawler-floor/v2 schema
+  ---
+  duration_ms: 13.106002
+  type: 'test'
+  ...
+# Subtest: compiler produces a valid runtime timeline document from authored floor files
+ok 202 - compiler produces a valid runtime timeline document from authored floor files
+  ---
+  duration_ms: 70.651354
+  type: 'test'
+  ...
+# Subtest: compiler rejects floor files with conflicting item definitions
+ok 203 - compiler rejects floor files with conflicting item definitions
+  ---
+  duration_ms: 37.239733
+  type: 'test'
+  ...
+# Subtest: floor authoring supports replayable EffectApplied events
+ok 204 - floor authoring supports replayable EffectApplied events
+  ---
+  duration_ms: 55.82933
+  type: 'test'
+  ...
+# Subtest: compiler rejects floor files with mismatched storyId
+ok 205 - compiler rejects floor files with mismatched storyId
+  ---
+  duration_ms: 1.74563
+  type: 'test'
+  ...
+# Subtest: floor validator rejects achievement rewards with uncatalogued item references
+ok 206 - floor validator rejects achievement rewards with uncatalogued item references
+  ---
+  duration_ms: 15.065594
+  type: 'test'
+  ...
+# Subtest: ItemCrafted events project crafted items into inventory
+ok 207 - ItemCrafted events project crafted items into inventory
+  ---
+  duration_ms: 31.251674
+  type: 'test'
+  ...
+# Subtest: cross-floor item provenance is preserved when replaying later events
+ok 208 - cross-floor item provenance is preserved when replaying later events
+  ---
+  duration_ms: 5.541969
+  type: 'test'
+  ...
+# Subtest: the checked-in runtime fixture includes Floor 2 and Floor 3 and preserves Floor 1 inventory
+ok 209 - the checked-in runtime fixture includes Floor 2 and Floor 3 and preserves Floor 1 inventory
+  ---
+  duration_ms: 64.078269
+  type: 'test'
+  ...
+# Subtest: projection preserves unknown quantity state for Floor 2 proximity trigger
+ok 210 - projection preserves unknown quantity state for Floor 2 proximity trigger
+  ---
+  duration_ms: 20.154726
+  type: 'test'
+  ...
+# Subtest: compiler rejects floor files with missing item or achievement catalog references
+ok 211 - compiler rejects floor files with missing item or achievement catalog references
+  ---
+  duration_ms: 15.51759
+  type: 'test'
+  ...
+# Subtest: compiled timeline can be exported and re-imported with equivalent projected state
+ok 212 - compiled timeline can be exported and re-imported with equivalent projected state
+  ---
+  duration_ms: 114.00673
+  type: 'test'
+  ...
+# Subtest: ItemEquipped and ItemUnequipped correctly manage equipped slot state and isEquipped flags
+ok 213 - ItemEquipped and ItemUnequipped correctly manage equipped slot state and isEquipped flags
+  ---
+  duration_ms: 0.93298
+  type: 'test'
+  ...
+# Subtest: ItemLocked, ItemUnlocked, ItemLockToggled, and ItemRepaired modify item state
+ok 214 - ItemLocked, ItemUnlocked, ItemLockToggled, and ItemRepaired modify item state
+  ---
+  duration_ms: 0.896058
+  type: 'test'
+  ...
+# Subtest: compareGearStats and checkItemRequirements evaluate gear deltas and requirements
+ok 215 - compareGearStats and checkItemRequirements evaluate gear deltas and requirements
+  ---
+  duration_ms: 0.917032
+  type: 'test'
+  ...
+# Subtest: floor endpoint follows appended events instead of a stale compiled segment
+ok 216 - floor endpoint follows appended events instead of a stale compiled segment
+  ---
+  duration_ms: 0.23753
+  type: 'test'
+  ...
+# Subtest: AttributeModified event allocates attribute points correctly
+ok 217 - AttributeModified event allocates attribute points correctly
+  ---
+  duration_ms: 0.359238
+  type: 'test'
+  ...
+# Subtest: Hotlist remains absent until an explicit replay-bounded assignment
+ok 218 - Hotlist remains absent until an explicit replay-bounded assignment
+  ---
+  duration_ms: 39.429578
+  type: 'test'
+  ...
+# Subtest: item requirement evaluation against live state vs historical state during timeline replay
+ok 219 - item requirement evaluation against live state vs historical state during timeline replay
+  ---
+  duration_ms: 0.474626
+  type: 'test'
+  ...
+# Subtest: QuestUpdated event updates quest status and filtering excludes non-active quests from active tab
+ok 220 - QuestUpdated event updates quest status and filtering excludes non-active quests from active tab
+  ---
+  duration_ms: 0.432637
+  type: 'test'
+  ...
+# Subtest: createInitialState preserves quests without forcing a status when absent
+ok 221 - createInitialState preserves quests without forcing a status when absent
+  ---
+  duration_ms: 0.229623
+  type: 'test'
+  ...
+# Subtest: filtering does not silently classify quests without a status as active
+ok 222 - filtering does not silently classify quests without a status as active
+  ---
+  duration_ms: 0.247803
+  type: 'test'
+  ...
+# Subtest: AchievementUnlocked does not manufacture an icon when none is sourced
+ok 223 - AchievementUnlocked does not manufacture an icon when none is sourced
+  ---
+  duration_ms: 0.280744
+  type: 'test'
+  ...
+# Subtest: Awards / Boxes require an explicit, source-backed inventory transition
+ok 224 - Awards / Boxes require an explicit, source-backed inventory transition
+  ---
+  duration_ms: 1.410186
+  type: 'test'
+  ...
+# Subtest: timeline validation rejects a snapshot that omits an already formed Party
+ok 225 - timeline validation rejects a snapshot that omits an already formed Party
+  ---
+  duration_ms: 16.830019
+  type: 'test'
+  ...
+# Subtest: projection-neutral countdown events and narrative events execute cleanly through applyEvent without mutating crawler state
+ok 226 - projection-neutral countdown events and narrative events execute cleanly through applyEvent without mutating crawler state
+  ---
+  duration_ms: 0.443246
+  type: 'test'
+  ...
+# Subtest: schema event discriminators match FLOOR_EVENT_TYPES runtime const array
+ok 227 - schema event discriminators match FLOOR_EVENT_TYPES runtime const array
+  ---
+  duration_ms: 3.656135
+  type: 'test'
+  ...
+# Subtest: every FLOOR_EVENT_TYPES discriminator is accounted for as either state-projecting or projection-neutral
+ok 228 - every FLOOR_EVENT_TYPES discriminator is accounted for as either state-projecting or projection-neutral
+  ---
+  duration_ms: 0.231208
+  type: 'test'
+  ...
+# Subtest: deriveRatingsPresentation handles empty or unobserved broadcast telemetry gracefully
+ok 229 - deriveRatingsPresentation handles empty or unobserved broadcast telemetry gracefully
+  ---
+  duration_ms: 1.394602
+  type: 'test'
+  ...
+# Subtest: deriveRatingsPresentation formats audience badge correctly with viewers
+ok 230 - deriveRatingsPresentation formats audience badge correctly with viewers
+  ---
+  duration_ms: 44.556977
+  type: 'test'
+  ...
+# Subtest: deriveRatingsPresentation evaluates status to assign correct current, estimated, or last-known evidence
+ok 231 - deriveRatingsPresentation evaluates status to assign correct current, estimated, or last-known evidence
+  ---
+  duration_ms: 0.554636
+  type: 'test'
+  ...
+# Subtest: projectRatingsMetrics maintains backwards compatibility with raw metric projections
+ok 232 - projectRatingsMetrics maintains backwards compatibility with raw metric projections
+  ---
+  duration_ms: 0.347325
+  type: 'test'
+  ...
+# Subtest: raw Floor 1 and Floor 2 documents validate and adapt losslessly to the legacy floor contract
+ok 233 - raw Floor 1 and Floor 2 documents validate and adapt losslessly to the legacy floor contract
+  ---
+  duration_ms: 1111.021573
+  type: 'test'
+  ...
+# Subtest: raw array order deterministically becomes compiled global sequence
+ok 234 - raw array order deterministically becomes compiled global sequence
+  ---
+  duration_ms: 131.486004
+  type: 'test'
+  ...
+# Subtest: raw authoring rejects duplicated numeric order
+ok 235 - raw authoring rejects duplicated numeric order
+  ---
+  duration_ms: 15.887979
+  type: 'test'
+  ...
+# Subtest: raw adapter preserves every compiled timeline projection and countdown result
+ok 236 - raw adapter preserves every compiled timeline projection and countdown result
+  ---
+  duration_ms: 5707.663615
+  type: 'test'
+  ...
+# Subtest: raw HUD observations are compiled at their event sequences without changing legacy state projection
+ok 237 - raw HUD observations are compiled at their event sequences without changing legacy state projection
+  ---
+  duration_ms: 146.808951
+  type: 'test'
+  ...
+# Subtest: raw adapter resolves every supported observation kind without turning evidence into events
+ok 238 - raw adapter resolves every supported observation kind without turning evidence into events
+  ---
+  duration_ms: 61.861972
+  type: 'test'
+  ...
+# Subtest: multiple raw countdown observations compile into identified timers without leaking IDs into derived references
+ok 239 - multiple raw countdown observations compile into identified timers without leaking IDs into derived references
+  ---
+  duration_ms: 32.831264
+  type: 'test'
+  ...
+# Subtest: Floor 1 and Floor 2 retain sourced progression anchors and supporting transitions
+ok 240 - Floor 1 and Floor 2 retain sourced progression anchors and supporting transitions
+  ---
+  duration_ms: 86.391085
+  type: 'test'
+  ...
+# Subtest: Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with recipients and rewards
+ok 241 - Floor 1 and Floor 2 retain the complete Book 1 achievement catalog with recipients and rewards
+  ---
+  duration_ms: 110.457135
+  type: 'test'
+  ...
+# Subtest: floor telemetry preserves authored lower bounds
+ok 242 - floor telemetry preserves authored lower bounds
+  ---
+  duration_ms: 84.584148
+  type: 'test'
+  ...
+# Subtest: PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay
+ok 243 - PermanentEntitlementGranted persists the Dungeonpreneur royalty through later replay
+  ---
+  duration_ms: 109.530303
+  type: 'test'
+  ...
+# Subtest: numeric HUD readings interpolate only when both evidence anchors opt in
+ok 244 - numeric HUD readings interpolate only when both evidence anchors opt in
+  ---
+  duration_ms: 109.589439
+  type: 'test'
+  ...
+# Subtest: raw countdown observations reject missing event IDs and increasing values
+ok 245 - raw countdown observations reject missing event IDs and increasing values
+  ---
+  duration_ms: 72.532943
+  type: 'test'
+  ...
+# Subtest: raw observations reject unrelated, empty, and nullable inventory payloads
+ok 246 - raw observations reject unrelated, empty, and nullable inventory payloads
+  ---
+  duration_ms: 44.257456
+  type: 'test'
+  ...
+# Subtest: countdown phase breaks permit a later reset observation without interpolation
+ok 247 - countdown phase breaks permit a later reset observation without interpolation
+  ---
+  duration_ms: 47.301492
+  type: 'test'
+  ...
+# Subtest: Phase 2: raw schema accepts all expanded HUD event variants and rejects malformed payloads
+ok 248 - Phase 2: raw schema accepts all expanded HUD event variants and rejects malformed payloads
+  ---
+  duration_ms: 50.923105
+  type: 'test'
+  ...
+# Subtest: Phase 2: raw-floor validation verifies referenced IDs and structured countdown phase transitions without keywords
+ok 249 - Phase 2: raw-floor validation verifies referenced IDs and structured countdown phase transitions without keywords
+  ---
+  duration_ms: 57.059307
+  type: 'test'
+  ...
+# Subtest: Phase 2: raw fixture demonstrates partial observations, inventory lifecycle, countdown reset, and projection reached
+ok 250 - Phase 2: raw fixture demonstrates partial observations, inventory lifecycle, countdown reset, and projection reached
+  ---
+  duration_ms: 116.530801
+  type: 'test'
+  ...
+# Subtest: projectObservations returns latest observations across Floor 1-2 with provenance and boundary rules
+ok 251 - projectObservations returns latest observations across Floor 1-2 with provenance and boundary rules
+  ---
+  duration_ms: 226.795827
+  type: 'test'
+  ...
+# Subtest: raw event and observation IDs enforce their schema namespaces
+ok 252 - raw event and observation IDs enforce their schema namespaces
+  ---
+  duration_ms: 41.113009
+  type: 'test'
+  ...
+# Subtest: raw event IDs must match their authored floor ordinal
+ok 253 - raw event IDs must match their authored floor ordinal
+  ---
+  duration_ms: 36.574636
+  type: 'test'
+  ...
+# Subtest: countdown lifecycle events require a known countdownId
+ok 254 - countdown lifecycle events require a known countdownId
+  ---
+  duration_ms: 1091.019368
+  type: 'test'
+  ...
+# Subtest: a lifecycle event for one countdown cannot break monotonicity for another countdown
+ok 255 - a lifecycle event for one countdown cannot break monotonicity for another countdown
+  ---
+  duration_ms: 99.678902
+  type: 'test'
+  ...
+# Subtest: HotlistUpdated validation rejects incomplete payloads and accepts both supported forms
+ok 256 - HotlistUpdated validation rejects incomplete payloads and accepts both supported forms
+  ---
+  duration_ms: 112.004701
+  type: 'test'
+  ...
+# Subtest: HotlistUpdated accepted forms reach projection and mutate the hotlist
+ok 257 - HotlistUpdated accepted forms reach projection and mutate the hotlist
+  ---
+  duration_ms: 2.047102
+  type: 'test'
+  ...
+# Subtest: partial ItemDiscarded preserves equipment state for a remaining stack
+ok 258 - partial ItemDiscarded preserves equipment state for a remaining stack
+  ---
+  duration_ms: 1.08514
+  type: 'test'
+  ...
+# Subtest: full and unquantified ItemDiscarded clear every equipment reference
+ok 259 - full and unquantified ItemDiscarded clear every equipment reference
+  ---
+  duration_ms: 0.758886
+  type: 'test'
+  ...
+# Subtest: generated compatibility floors remain identical to the pre-refactor storage baseline
+ok 260 - generated compatibility floors remain identical to the pre-refactor storage baseline
+  ---
+  duration_ms: 3.407162
+  type: 'test'
+  ...
+# Subtest: floor catalog membership remains local when definitions are shared
+ok 261 - floor catalog membership remains local when definitions are shared
+  ---
+  duration_ms: 5.714237
+  type: 'test'
+  ...
+# Subtest: floor catalog membership is required rather than falling back to the global catalog union
+ok 262 - floor catalog membership is required rather than falling back to the global catalog union
+  ---
+  duration_ms: 18.377798
+  type: 'test'
+  ...
+# Subtest: mode reflects explicit Live and Replay states without UI label inference
+ok 263 - mode reflects explicit Live and Replay states without UI label inference
+  ---
+  duration_ms: 2.465572
+  type: 'test'
+  ...
+# Subtest: scope correctly identifies available floors, current floor, and sequence bounds
+ok 264 - scope correctly identifies available floors, current floor, and sequence bounds
+  ---
+  duration_ms: 1.368628
+  type: 'test'
+  ...
+# Subtest: stepping limits and sequence navigation boundaries operate deterministically
+ok 265 - stepping limits and sequence navigation boundaries operate deterministically
+  ---
+  duration_ms: 0.573811
+  type: 'test'
+  ...
+# Subtest: countdowns isolate primary floor collapse from secondary target countdowns
+ok 266 - countdowns isolate primary floor collapse from secondary target countdowns
+  ---
+  duration_ms: 0.864426
+  type: 'test'
+  ...
+# Subtest: source-honest availability and inspection evaluate to false on empty inputs
+ok 267 - source-honest availability and inspection evaluate to false on empty inputs
+  ---
+  duration_ms: 0.359857
+  type: 'test'
+  ...
+# Subtest: inspection booleans report true when source events and telemetry observations exist
+ok 268 - inspection booleans report true when source events and telemetry observations exist
+  ---
+  duration_ms: 0.352353
+  type: 'test'
+  ...
+# Subtest: minimal alternate replay consumer uses model without ReplaySurface
+ok 269 - minimal alternate replay consumer uses model without ReplaySurface
+  ---
+  duration_ms: 0.400766
+  type: 'test'
+  ...
+# Subtest: temporal context maintains clear LIVE vs REPLAY mode and sequence position during historical scrubbing
+ok 270 - temporal context maintains clear LIVE vs REPLAY mode and sequence position during historical scrubbing
+  ---
+  duration_ms: 0.237827
+  type: 'test'
+  ...
+# Subtest: Research Ingestion: valid Floor 3 research claim fixture parses and validates
+ok 271 - Research Ingestion: valid Floor 3 research claim fixture parses and validates
+  ---
+  duration_ms: 140.617264
+  type: 'test'
+  ...
+# Subtest: Research Compiler: produces direct CCI raw floor shapes matching existing raw floor files
+ok 272 - Research Compiler: produces direct CCI raw floor shapes matching existing raw floor files
+  ---
+  duration_ms: 3.846373
+  type: 'test'
+  ...
+# Subtest: Research Compiler: produces deterministic byte-equivalent outputs for identical inputs
+ok 273 - Research Compiler: produces deterministic byte-equivalent outputs for identical inputs
+  ---
+  duration_ms: 3.365485
+  type: 'test'
+  ...
+# Subtest: Research Compiler: strictly preserves research YAML claim ordering in generated raw curation records
+ok 274 - Research Compiler: strictly preserves research YAML claim ordering in generated raw curation records
+  ---
+  duration_ms: 2.449554
+  type: 'test'
+  ...
+# Subtest: Research Compiler: preserves evidence, locators, and explicit unknowns directly without data loss
+ok 275 - Research Compiler: preserves evidence, locators, and explicit unknowns directly without data loss
+  ---
+  duration_ms: 2.280515
+  type: 'test'
+  ...
+# Subtest: Research Compiler: leaves event type unpopulated for curation when no established CCI contract exists
+ok 276 - Research Compiler: leaves event type unpopulated for curation when no established CCI contract exists
+  ---
+  duration_ms: 2.23835
+  type: 'test'
+  ...
+# Subtest: Research Compiler: uncurated raw records fail existing CCI raw floor schema validation with expected curation gap error
+ok 277 - Research Compiler: uncurated raw records fail existing CCI raw floor schema validation with expected curation gap error
+  ---
+  duration_ms: 877.978247
+  type: 'test'
+  ...
+# Subtest: Research Compiler: CLI script generates raw artifacts in target directory
+ok 278 - Research Compiler: CLI script generates raw artifacts in target directory
+  ---
+  duration_ms: 316.299516
+  type: 'test'
+  ...
+# Subtest: Research Ingestion Contract: rejects duplicate claim IDs
+ok 279 - Research Ingestion Contract: rejects duplicate claim IDs
+  ---
+  duration_ms: 2.160591
+  type: 'test'
+  ...
+# Subtest: Research Ingestion Contract: rejects missing source references
+ok 280 - Research Ingestion Contract: rejects missing source references
+  ---
+  duration_ms: 1.984779
+  type: 'test'
+  ...
+# Subtest: Research Ingestion Contract: trace compilation executes cleanly when modeling decisions are provided
+ok 281 - Research Ingestion Contract: trace compilation executes cleanly when modeling decisions are provided
+  ---
+  duration_ms: 33.162858
+  type: 'test'
+  ...
+# Subtest: Research Compiler: reconciles existing raw floor records without creating duplicates
+ok 282 - Research Compiler: reconciles existing raw floor records without creating duplicates
+  ---
+  duration_ms: 2.96709
+  type: 'test'
+  ...
+# Subtest: Research Compiler: changing research wording does not alter an established event ID during reconciliation
+ok 283 - Research Compiler: changing research wording does not alter an established event ID during reconciliation
+  ---
+  duration_ms: 2.946765
+  type: 'test'
+  ...
+# Subtest: Research Compiler: claims with identical summaries represent separate occurrences and are not merged
+ok 284 - Research Compiler: claims with identical summaries represent separate occurrences and are not merged
+  ---
+  duration_ms: 2.833972
+  type: 'test'
+  ...
+# Subtest: Research Compiler: existing authored fields absent from research survive compilation unchanged
+ok 285 - Research Compiler: existing authored fields absent from research survive compilation unchanged
+  ---
+  duration_ms: 2.834638
+  type: 'test'
+  ...
+# Subtest: Research Compiler: P3-PET-010 carrier behavior leaves event mapping unresolved
+ok 286 - Research Compiler: P3-PET-010 carrier behavior leaves event mapping unresolved
+  ---
+  duration_ms: 2.593812
+  type: 'test'
+  ...
+# Subtest: Research Compiler: generates collision-safe deterministic domain event IDs
+ok 287 - Research Compiler: generates collision-safe deterministic domain event IDs
+  ---
+  duration_ms: 2.50647
+  type: 'test'
+  ...
+# Subtest: Research Compiler: collision detection fails compilation when two different claim IDs normalize to the same event ID
+ok 288 - Research Compiler: collision detection fails compilation when two different claim IDs normalize to the same event ID
+  ---
+  duration_ms: 2.103796
+  type: 'test'
+  ...
+# Subtest: Research Compiler: a changed summary combined with incomplete evidence does not silently overwrite an existing record
+ok 289 - Research Compiler: a changed summary combined with incomplete evidence does not silently overwrite an existing record
+  ---
+  duration_ms: 1.593639
+  type: 'test'
+  ...
+# Subtest: Research Compiler: shared source locators do not imply record identity
+ok 290 - Research Compiler: shared source locators do not imply record identity
+  ---
+  duration_ms: 1.668802
+  type: 'test'
+  ...
+# Subtest: Research Compiler: repeated compilation is idempotent
+ok 291 - Research Compiler: repeated compilation is idempotent
+  ---
+  duration_ms: 1.843844
+  type: 'test'
+  ...
+# Subtest: filterSkills filters skills by category correctly
+ok 292 - filterSkills filters skills by category correctly
+  ---
+  duration_ms: 1.342287
+  type: 'test'
+  ...
+# Subtest: countCategorySkills returns accurate skill counts
+ok 293 - countCategorySkills returns accurate skill counts
+  ---
+  duration_ms: 0.277287
+  type: 'test'
+  ...
+# Subtest: deriveHotlistPresentation maps hotlist slots to skills
+ok 294 - deriveHotlistPresentation maps hotlist slots to skills
+  ---
+  duration_ms: 0.413676
+  type: 'test'
+  ...
+# Subtest: deriveSkillsPresentation compiles full presentation state
+ok 295 - deriveSkillsPresentation compiles full presentation state
+  ---
+  duration_ms: 0.354492
+  type: 'test'
+  ...
+# Subtest: isLive mutation gating disables hotlist assignment during replay
+ok 296 - isLive mutation gating disables hotlist assignment during replay
+  ---
+  duration_ms: 1.149292
+  type: 'test'
+  ...
+# Subtest: bounded and unknown telemetry format without claiming exact values
+ok 297 - bounded and unknown telemetry format without claiming exact values
+  ---
+  duration_ms: 23.576842
+  type: 'test'
+  ...
+# Subtest: projectObservationValue produces exact stated fact when target sequence matches observation
+ok 298 - projectObservationValue produces exact stated fact when target sequence matches observation
+  ---
+  duration_ms: 3.542394
+  type: 'test'
+  ...
+# Subtest: projectObservationValue produces linear estimated value between two linear observation anchors
+ok 299 - projectObservationValue produces linear estimated value between two linear observation anchors
+  ---
+  duration_ms: 0.42032
+  type: 'test'
+  ...
+# Subtest: discrete keys like level do not produce linear interpolation when target sequence is between samples
+ok 300 - discrete keys like level do not produce linear interpolation when target sequence is between samples
+  ---
+  duration_ms: 0.225816
+  type: 'test'
+  ...
+# Subtest: absent observation keys return null without inventing values
+ok 301 - absent observation keys return null without inventing values
+  ---
+  duration_ms: 0.364119
+  type: 'test'
+  ...
+# Subtest: projectObservations returns exact point-in-time HUD telemetry state when scrubbing forward and backward
+ok 302 - projectObservations returns exact point-in-time HUD telemetry state when scrubbing forward and backward
+  ---
+  duration_ms: 5.354592
+  type: 'test'
+  ...
+# Subtest: floor population is exact, floor-scoped telemetry and never interpolated
+ok 303 - floor population is exact, floor-scoped telemetry and never interpolated
+  ---
+  duration_ms: 4.334378
+  type: 'test'
+  ...
+# Subtest: Floor 1 retains sourced boss progress and collapse telemetry
+ok 304 - Floor 1 retains sourced boss progress and collapse telemetry
+  ---
+  duration_ms: 0.383831
+  type: 'test'
+  ...
+# Subtest: linear interpolation never crosses a floor boundary
+ok 305 - linear interpolation never crosses a floor boundary
+  ---
+  duration_ms: 0.578425
+  type: 'test'
+  ...
+# Subtest: linear interpolation never crosses a countdown phase break event
+ok 306 - linear interpolation never crosses a countdown phase break event
+  ---
+  duration_ms: 0.6339
+  type: 'test'
+  ...
+# Subtest: test:unit script uses the canonical unit test glob pattern and all unit tests are in tests/unit/
+ok 307 - test:unit script uses the canonical unit test glob pattern and all unit tests are in tests/unit/
+  ---
+  duration_ms: 10.831251
+  type: 'test'
+  ...
+# Subtest: runtime fixture import path does not compile Ajv schemas
+ok 308 - runtime fixture import path does not compile Ajv schemas
+  ---
+  duration_ms: 66.342438
+  type: 'test'
+  ...
+# Subtest: ordinary PR verification workflows do not commit or push to active branches
+ok 309 - ordinary PR verification workflows do not commit or push to active branches
+  ---
+  duration_ms: 11.802615
+  type: 'test'
+  ...
+# Subtest: Playwright is a PR-associated reusable job consuming the current CI artifact
+ok 310 - Playwright is a PR-associated reusable job consuming the current CI artifact
+  ---
+  duration_ms: 4.610109
+  type: 'test'
+  ...
+# Subtest: artifact workflow keeps verification read-only and gates the only writer
+ok 311 - artifact workflow keeps verification read-only and gates the only writer
+  ---
+  duration_ms: 2.390358
+  type: 'test'
+  ...
+1..311
+# tests 332
+# suites 0
+# pass 332
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18581.603908
+
+> crawler-command-ui@0.1.0 build:live
+> bash scripts/build-verified.sh && node scripts/write-build-provenance.mjs live
+
+/usr/bin/timeout
+Running bounded vinext build...
+
+  vinext build  (Vite 8.0.13)
+
+(node:563300) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1/5] analyze client references...
+[2Ktransforming...✓ 133 modules transformed.
+rendering chunks...
+✓ built in 1.07s
+[2/5] analyze server references...
+[2Ktransforming...✓ 429 modules transformed.
+rendering chunks...
+✓ built in 855ms
+[3/5] build rsc environment...
+[2Ktransforming...✓ 139 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 1.01s
+[4/5] build client environment...
+[2Ktransforming...✓ 529 modules transformed.
+rendering chunks...
+computing gzip size...
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/@arwes/frames/build/esm/internal/formatFrameDimension.js:9:19 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mt[0m[38;5;249mu[0m[38;5;249mr[0m[38;5;249mn[0m[38;5;249m [0m[38;5;249mS[0m[38;5;249mt[0m[38;5;249mr[0m[38;5;249mi[0m[38;5;249mn[0m[38;5;249mg[0m[38;5;249m([0meval[38;5;249m([0m[38;5;249mf[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mm[0m[38;5;249mu[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249m)[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m  │[0m                   ──┬─
+ [38;5;240m  │[0m                     ╰─── Use of direct `eval` here.
+ [38;5;240m  │[0m
+ [38;5;240m  │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m───╯[0m
+
+✓ built in 1.87s
+[5/5] build ssr environment...
+[2Ktransforming...✓ 527 modules transformed.
+rendering chunks...
+computing gzip size...
+[33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/@arwes/frames/build/esm/internal/formatFrameDimension.js:9:19 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mt[0m[38;5;249mu[0m[38;5;249mr[0m[38;5;249mn[0m[38;5;249m [0m[38;5;249mS[0m[38;5;249mt[0m[38;5;249mr[0m[38;5;249mi[0m[38;5;249mn[0m[38;5;249mg[0m[38;5;249m([0meval[38;5;249m([0m[38;5;249mf[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mm[0m[38;5;249mu[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249m)[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m  │[0m                   ──┬─
+ [38;5;240m  │[0m                     ╰─── Use of direct `eval` here.
+ [38;5;240m  │[0m
+ [38;5;240m  │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m───╯[0m
+
+✓ built in 2.21s
+[0m
+  Route (app)
+  ─ ? /
+
+  ? Unknown
+
+  ? Some routes could not be classified. vinext currently uses static analysis
+    and cannot detect dynamic API usage (headers(), cookies(), etc.) at build time.
+    Automatic classification will be improved in a future release.
+
+  Build complete. Run `vinext start` to start the production server.
+
+
+> crawler-command-ui@0.1.0 test:rendered
+> node --experimental-strip-types --test "tests/rendered/**/*.test.mjs"
+
+TAP version 13
+# Subtest: renders development preview metadata
+ok 1 - renders development preview metadata
+  ---
+  duration_ms: 361.043442
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 467.037717
+
+> crawler-command-ui@0.1.0 build:pages
+> vite build --config vite.pages.config.ts && node scripts/write-build-provenance.mjs pages
+
+vite v8.0.13 building client environment for production...
+[2Ktransforming...✓ 493 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-pages/concepts.html                   0.57 kB │ gzip:   0.31 kB
+dist-pages/index.html                      0.76 kB │ gzip:   0.38 kB
+dist-pages/assets/concepts-j-hS3tPw.css   81.89 kB │ gzip:  15.58 kB
+dist-pages/assets/app-DUtqYEiY.js          0.40 kB │ gzip:   0.30 kB
+dist-pages/assets/concepts-BDJDmr34.js     1.60 kB │ gzip:   0.83 kB
+dist-pages/assets/concepts--9m1jm-i.js   858.11 kB │ gzip: 202.98 kB
+
+[33m[EVAL] [0mUse of direct `eval` function is strongly discouraged as it poses security risks and may cause issues with minification.
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m node_modules/@arwes/frames/build/esm/internal/formatFrameDimension.js:9:19 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m9 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mt[0m[38;5;249mu[0m[38;5;249mr[0m[38;5;249mn[0m[38;5;249m [0m[38;5;249mS[0m[38;5;249mt[0m[38;5;249mr[0m[38;5;249mi[0m[38;5;249mn[0m[38;5;249mg[0m[38;5;249m([0meval[38;5;249m([0m[38;5;249mf[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mm[0m[38;5;249mu[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249m)[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m  │[0m                   ──┬─
+ [38;5;240m  │[0m                     ╰─── Use of direct `eval` here.
+ [38;5;240m  │[0m
+ [38;5;240m  │[0m [38;5;115mHelp[0m: Consider using indirect eval. For more information, check the documentation: https://rolldown.rs/guide/troubleshooting#avoiding-direct-eval
+[38;5;246m───╯[0m
+
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/features/timeline/SequenceBadge.tsx is dynamically imported by src/features/timeline/public.ts but also statically imported by src/features/timeline/diagnostics/SequenceInspector.tsx, src/features/timeline/diagnostics/TimelineDiagnostics.tsx, src/features/timeline/history/TimelineHistory.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/features/timeline/evidence/TelemetryBadge.tsx is dynamically imported by src/features/timeline/public.ts but also statically imported by src/features/timeline/diagnostics/SequenceInspector.tsx, src/features/timeline/evidence/TimelineEvidence.tsx, dynamic import will not move module into another chunk.
+
+✓ built in 1.07s
+
+> crawler-command-ui@0.1.0 test:artifacts
+> node --test "tests/artifacts/**/*.test.mjs"
+
+TAP version 13
+# Subtest: live-app build retains the Sites Worker capture contract
+ok 1 - live-app build retains the Sites Worker capture contract
+  ---
+  duration_ms: 2.541363
+  type: 'test'
+  ...
+# Subtest: GitHub Pages build is a self-contained static application
+ok 2 - GitHub Pages build is a self-contained static application
+  ---
+  duration_ms: 0.878582
+  type: 'test'
+  ...
+# Subtest: GitHub Pages build includes the shareable concept laboratory
+ok 3 - GitHub Pages build includes the shareable concept laboratory
+  ---
+  duration_ms: 1.951703
+  type: 'test'
+  ...
+# Subtest: both deployment targets capture the same build and source revisions
+ok 4 - both deployment targets capture the same build and source revisions
+  ---
+  duration_ms: 0.355719
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 95.883751

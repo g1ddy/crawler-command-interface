@@ -335,5 +335,20 @@
     "name": "Digital Inventory Potion",
     "category": "consumable",
     "persistent": false
+  },
+  {
+    "id": "item-celestial-quest-box",
+    "name": "Celestial Quest Box",
+    "category": "box",
+    "rarity": "celestial",
+    "description": "An upgraded Celestial-quality quest box reward granted for surviving the Fools Who Broke the Glass explosion."
+  },
+  {
+    "id": "item-cloak-of-the-benevolent-champion",
+    "name": "Cloak of the Benevolent Champion",
+    "category": "equipment",
+    "slot": "NECK",
+    "rarity": "celestial",
+    "description": "A Celestial-tier cloak obtained by Quan Ch upon opening his Celestial Quest Box."
   }
 ]
