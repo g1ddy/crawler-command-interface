@@ -71,12 +71,12 @@ test("timeline evidence surfaces preserve source locators and confidence", async
   await expect(secondaryCountdown).toContainText("Floor Timeline & Patch Notes");
   await expect(secondaryCountdown).toContainText("CORROBORATED");
 
-  await page.getByRole("button", { name: /COLLAPSE CLOCK EVIDENCE/ }).click();
+  await page.getByRole("button", { name: /Collapse clock evidence/ }).click();
   const countdownModal = page.locator(".modal-content").filter({ hasText: "COUNTDOWN ESTIMATE & PROVENANCE" });
   await expect(countdownModal).toContainText("Evidence: src-dcc-database-floor-2");
   await expect(countdownModal).toContainText("Floor Timeline & Patch Notes");
   await expect(countdownModal).toContainText("CORROBORATED");
-  await countdownModal.getByRole("button", { name: "✕" }).click();
+  await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "📡 TELEMETRY", exact: true }).click();
   const evidenceModal = page.locator(".modal-content").filter({ hasText: "SOURCED HUD OBSERVATIONS" });
@@ -87,11 +87,11 @@ test("timeline evidence surfaces preserve source locators and confidence", async
   await expect(inspectorModal).toContainText("Locator:");
 });
 
-test("Return to Live restores the latest projection", async ({ page }) => {
+test("Return to Live sequence restores the latest projection", async ({ page }) => {
   await selectSequence(page, 1);
   await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
 
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/ }).click();
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /Return to Live sequence/ }).click();
 
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
   await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
@@ -139,7 +139,7 @@ test("live interactions append events without rewriting historical state", async
   await selectSequence(page, floor1EndSequence);
   await expect(page.getByRole("button", { name: /^LOCK/ })).toBeDisabled();
 
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/ }).click();
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /Return to Live sequence/ }).click();
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();
 });
 

@@ -30,7 +30,7 @@ for (const [domain, eventType] of [["PARTY", "PartyFormed"], ["PET", "PetBonded"
     await expect(navigation(page).getByRole("button", { name: "CRAWLER", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(slider).toHaveValue(String(sequence - 1));
     await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
-    await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/i }).click();
+    await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /Return to Live sequence/i }).click();
     await expect(destination).toBeVisible();
     await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
   });
@@ -83,7 +83,7 @@ test("closing a nested inspector restores the parent evidence surface", async ({
 
 test("Persistent shell reflows without viewport overflow and supports reduced motion", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.locator("summary").filter({ hasText: "Replay context & tools" }).click();
+  await page.getByRole("button", { name: /Expand replay controls|Collapse replay controls/i }).click();
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const hud = page.locator('[data-hud-composition="persistent"]');

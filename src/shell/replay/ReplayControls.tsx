@@ -128,7 +128,7 @@ export function ReplayControls({
           )}
           {model.countdowns.activeCountdown && commands.openCountdownEvidence && (
             <button type="button" onClick={commands.openCountdownEvidence}>
-              ⏱ COLLAPSE CLOCK EVIDENCE
+              ⏱ Collapse clock evidence
             </button>
           )}
         </div>
@@ -159,9 +159,9 @@ export function ReplayControls({
           </span>
           <h2 className={styles.compactSeq}>
             SEQ #{position.selectedSequence}
-            {position.currentEvent?.occurred_at && (
+            { (position.currentEvent?.occurred_at || !position.currentEvent?.occurred_at) && (
               <small className={styles.timeReadout}>
-                {" "}({position.currentEvent.occurred_at})
+                {" "}({position.currentEvent?.occurred_at || "exact time not sourced"})
               </small>
             )}
           </h2>

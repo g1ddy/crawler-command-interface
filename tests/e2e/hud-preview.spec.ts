@@ -201,7 +201,7 @@ test("historical-context cue is visible during Replay in compact, expanded, rend
   // Historical cue remains visible in Arwes during Replay
   await expect(cue).toBeVisible();
 
-  // Return to Live removes historical cue
+  // Return to Live sequence removes historical cue
   const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
   await compactReturn.click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
@@ -234,15 +234,15 @@ test("collapsed replay dock keeps scrubber visible and operable across responsiv
     await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
     await expect(page.getByTestId("historical-context-cue")).toBeVisible();
 
-    // Verify exactly 1 Return to Live button exists in Replay mode
+    // Verify exactly 1 Return to Live sequence button exists in Replay mode
     const returnBtn = page.getByRole("button", { name: "Return to Live sequence" });
     await expect(returnBtn).toHaveCount(1);
 
-    // Click Return to Live
+    // Click Return to Live sequence
     await returnBtn.click();
     await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 
-    // Verify 0 Return to Live buttons in Live mode
+    // Verify 0 Return to Live sequence buttons in Live mode
     await expect(returnBtn).toHaveCount(0);
 
     // Verify page has no horizontal overflow
@@ -250,7 +250,7 @@ test("collapsed replay dock keeps scrubber visible and operable across responsiv
   }
 });
 
-test("layout integration: Live mode has compact scrubber, scrubbing enters Replay, and Return to Live appears only in Replay", async ({ page }) => {
+test("layout integration: Live mode has compact scrubber, scrubbing enters Replay, and Return to Live sequence appears only in Replay", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
 
@@ -261,7 +261,7 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await expect(slider).toBeVisible();
 
-  // Return to Live button is NOT present in Live mode
+  // Return to Live sequence button is NOT present in Live mode
   const returnBtn = page.getByRole("button", { name: "Return to Live sequence" });
   await expect(returnBtn).toHaveCount(0);
 
@@ -271,7 +271,7 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
   await slider.fill("50");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
-  // In Replay mode: Return to Live button IS present
+  // In Replay mode: Return to Live sequence button IS present
   await expect(returnBtn).toBeVisible();
   await expect(returnBtn).toHaveCount(1);
 
@@ -461,8 +461,8 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
   await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
 
-  // Return to Live
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/i }).click();
+  // Return to Live sequence
+  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /Return to Live sequence/i }).click();
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "return-live");
 
@@ -579,7 +579,7 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
   await expect(transportContainer).not.toBeVisible();
 
-  // Return to Live removes Return to Live button while keeping compact scrubber
+  // Return to Live sequence removes Return to Live button while keeping compact scrubber
   const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
   await expect(compactReturn).toBeVisible();
   await compactReturn.click();
