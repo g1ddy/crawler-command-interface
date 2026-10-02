@@ -9,10 +9,6 @@ export interface ReplayControlsProps {
   children?: ReactNode;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
-  // Backward compatibility
-  isMobile?: boolean;
-  isMobileExpanded?: boolean;
-  onToggleMobileExpand?: () => void;
 }
 
 /** Pure replay controls: nearest sequence, scope and availability come from the shared model. */
@@ -20,18 +16,14 @@ export function ReplayControls({
   model,
   commands,
   children,
-  isExpanded,
+  isExpanded = false,
   onToggleExpand,
-  isMobileExpanded,
-  onToggleMobileExpand,
 }: ReplayControlsProps) {
   const { scope, position } = model;
-  const expanded = isExpanded ?? isMobileExpanded ?? false;
-  const handleToggle = onToggleExpand ?? onToggleMobileExpand;
+  const expanded = isExpanded;
 
   return (
     <div className={styles.dockContainer}>
-      {/* Expanded details drawer - opens UPWARD above the dock bar */}
       <div
         className={styles.transportContainer}
         data-expanded={expanded}
@@ -147,35 +139,29 @@ export function ReplayControls({
         {children}
       </div>
 
-      {/* Main Dock Bar - ALWAYS visible (in both Live & Replay, collapsed & expanded) */}
       <div className={styles.compactBar} data-testid="replay-compact-bar">
         <div className={styles.compactStatus}>
           <span
             className={styles.compactModeBadge}
             data-mode={model.mode}
-            aria-label={`Current mode: ${model.isLive ? "Live" : "Replay"}`}
+            aria-label="Current mode: Replay"
           >
-            {model.isLive ? "● LIVE" : "↺ REPLAY"}
+            ↺ REPLAY
           </span>
           <h2 className={styles.compactSeq}>
             SEQ #{position.selectedSequence}
-            { (position.currentEvent?.occurred_at || !position.currentEvent?.occurred_at) && (
-              <small className={styles.timeReadout}>
-                {" "}({position.currentEvent?.occurred_at || "exact time not sourced"})
-              </small>
-            )}
+            <small className={styles.timeReadout}>
+              {" "}({position.currentEvent?.occurred_at || "exact time not sourced"})
+            </small>
           </h2>
-          {!model.isLive && (
-            <span
-              className={styles.historicalCue}
-              data-testid="historical-context-cue"
-            >
-              HISTORICAL INSPECTION
-            </span>
-          )}
+          <span
+            className={styles.historicalCue}
+            data-testid="historical-context-cue"
+          >
+            HISTORICAL INSPECTION
+          </span>
         </div>
 
-        {/* Primary Timeline Scrubber - ALWAYS visible in dockBar */}
         <div className={styles.scrubberWrapper}>
           <input
             aria-label="Selected timeline sequence"
@@ -194,18 +180,16 @@ export function ReplayControls({
         </div>
 
         <div className={styles.compactActions}>
-          {!model.isLive && (
-            <button
-              type="button"
-              className={styles.compactReturnBtn}
-              onClick={commands.returnToLive}
-              title="Return to Live sequence"
-              aria-label="Return to Live sequence"
-            >
-              RETURN TO LIVE ⚡
-            </button>
-          )}
-          {handleToggle && (
+          <button
+            type="button"
+            className={styles.compactReturnBtn}
+            onClick={commands.returnToLive}
+            title="Return to Live sequence"
+            aria-label="Return to Live sequence"
+          >
+            RETURN TO LIVE ⚡
+          </button>
+          {onToggleExpand && (
             <button
               type="button"
               className={styles.mobileToggleBtn}
@@ -215,7 +199,7 @@ export function ReplayControls({
                   ? "Collapse replay controls"
                   : "Expand replay controls"
               }
-              onClick={handleToggle}
+              onClick={onToggleExpand}
             >
               {expanded ? "▲ CONTROLS" : "▼ CONTROLS"}
             </button>
