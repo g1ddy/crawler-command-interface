@@ -340,11 +340,13 @@ export function CrawlerWorkspace({
         />
       }
       replay={
-        <ReplaySurface
-          model={replayPresentation}
-          commands={replayCommandsWithInspect}
-          projectedObservations={projectedObservations}
-        />
+        !isLive ? (
+          <ReplaySurface
+            model={replayPresentation}
+            commands={replayCommandsWithInspect}
+            projectedObservations={projectedObservations}
+          />
+        ) : null
       }
       feedback={
         toastMessage && (
