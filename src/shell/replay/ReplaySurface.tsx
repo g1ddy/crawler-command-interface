@@ -28,6 +28,14 @@ export function ReplaySurface({
   const surfaceRef = useRef<HTMLElement>(null);
   const prevExpandedRef = useRef(isExpanded);
 
+  useEffect(() => {
+    if (model.isLive) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsExpanded(false);
+      setShowCountdownEvidence(false);
+    }
+  }, [model.isLive]);
+
   // Focus management on expand/collapse
   useEffect(() => {
     const wasExpanded = prevExpandedRef.current;
@@ -66,8 +74,8 @@ export function ReplaySurface({
       className={styles.surface}
       aria-label="Replay controls"
       data-mode={model.mode}
-      data-expanded={isExpanded}
-      data-mobile-expanded={isExpanded}
+      data-expanded={isExpanded && !model.isLive}
+      data-mobile-expanded={isExpanded && !model.isLive}
     >
       <ReplayControls
         model={model}

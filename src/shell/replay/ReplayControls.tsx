@@ -21,15 +21,16 @@ export function ReplayControls({
 }: ReplayControlsProps) {
   const { scope, position } = model;
   const expanded = isExpanded;
+  const showExpanded = !model.isLive && expanded;
 
   return (
     <div className={styles.dockContainer}>
       <div
         className={styles.transportContainer}
-        data-expanded={expanded}
+        data-expanded={showExpanded}
         data-testid="replay-transport-container"
-        inert={!expanded ? true : undefined}
-        hidden={!expanded}
+        inert={!showExpanded ? true : undefined}
+        hidden={!showExpanded}
       >
         <div className={styles.expandedHeader}>
           <h2 id="replay-expanded-heading" className={styles.expandedHeading}>
@@ -144,9 +145,9 @@ export function ReplayControls({
           <span
             className={styles.compactModeBadge}
             data-mode={model.mode}
-            aria-label="Current mode: Replay"
+            aria-label={`Current mode: ${model.isLive ? 'Live' : 'Replay'}`}
           >
-            ↺ REPLAY
+            {model.isLive ? "● LIVE" : "↺ REPLAY"}
           </span>
           <h2 className={styles.compactSeq}>
             SEQ #{position.selectedSequence}
@@ -154,12 +155,14 @@ export function ReplayControls({
               {" "}({position.currentEvent?.occurred_at || "exact time not sourced"})
             </small>
           </h2>
-          <span
-            className={styles.historicalCue}
-            data-testid="historical-context-cue"
-          >
-            HISTORICAL INSPECTION
-          </span>
+          {!model.isLive && (
+            <span
+              className={styles.historicalCue}
+              data-testid="historical-context-cue"
+            >
+              HISTORICAL INSPECTION
+            </span>
+          )}
         </div>
 
         <div className={styles.scrubberWrapper}>
@@ -180,16 +183,18 @@ export function ReplayControls({
         </div>
 
         <div className={styles.compactActions}>
-          <button
-            type="button"
-            className={styles.compactReturnBtn}
-            onClick={commands.returnToLive}
-            title="Return to Live sequence"
-            aria-label="Return to Live sequence"
-          >
-            RETURN TO LIVE ⚡
-          </button>
-          {onToggleExpand && (
+          {!model.isLive && (
+            <button
+              type="button"
+              className={styles.compactReturnBtn}
+              onClick={commands.returnToLive}
+              title="Return to Live sequence"
+              aria-label="Return to Live sequence"
+            >
+              RETURN TO LIVE ⚡
+            </button>
+          )}
+          {!model.isLive && onToggleExpand && (
             <button
               type="button"
               className={styles.mobileToggleBtn}
