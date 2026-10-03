@@ -500,16 +500,8 @@
     "id": "achievement-bandit",
     "title": "Bandit",
     "recipient": "party",
-    "description": "Awarded for the unusual Soul Crystal rescue outcome on Floor 3.",
-    "reward": [
-      {
-        "kind": "box",
-        "boxType": "celestial",
-        "rarity": "celestial",
-        "amount": 83,
-        "description": "83 Celestial-quality boxes (1 opened by Quan Ch, 82 remaining boxes vetoed by Borant)"
-      }
-    ]
+    "description": "Awarded to the crawlers who survived Fools Who Broke the Glass.",
+    "reward": []
   },
   {
     "id": "achievement-one-quadrillion-views",

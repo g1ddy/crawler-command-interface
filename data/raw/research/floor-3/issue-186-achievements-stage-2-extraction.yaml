@@ -228,7 +228,7 @@ claims:
        relationship: supports
 
  - id: F3-LOO-003
-   domain: inventory
+   domain: narrative
    kind: event
    claim:
      summary: The 83 awarded boxes are upgraded and announced as Celestial Quest Boxes.
@@ -241,8 +241,20 @@ claims:
      - F3-ACH-001
      - F3-ACH-002
 
- - id: F3-LOO-004
+ - id: F3-LOO-003-CARL
    domain: inventory
+   kind: event
+   claim:
+     summary: Carl receives exactly one Celestial Quest Box.
+   evidence:
+     - sourceId: src-sparknotes-ch-sum
+       confidence: corroborated
+       relationship: supports
+   dependencies:
+     - F3-LOO-003
+
+ - id: F3-LOO-004
+   domain: narrative
    kind: event
    claim:
      summary: Quan Ch successfully opens his Celestial Quest Box before corporate intervention initiates a systemic freeze.
@@ -254,7 +266,7 @@ claims:
      - F3-LOO-003
 
  - id: F3-INV-001
-   domain: inventory
+   domain: narrative
    kind: event
    claim:
      summary: Quan Ch acquires the Cloak of the Benevolent Champion by opening his Celestial Quest Box.
@@ -269,7 +281,7 @@ claims:
      - F3-LOO-004
 
  - id: F3-LOO-005
-   domain: floor-system
+   domain: narrative
    kind: event
    claim:
      summary: The Borant Corporation uses its single seasonal veto to negate the undelivered Celestial Quest Boxes.
@@ -284,7 +296,7 @@ claims:
      - F3-LOO-003
 
  - id: F3-LOO-006
-   domain: inventory
+   domain: narrative
    kind: event
    claim:
      summary: Exactly 82 awarded Celestial Quest Boxes are permanently withheld and vetoed.

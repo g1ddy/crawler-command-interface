@@ -423,8 +423,7 @@
       "required": [
         "id",
         "name",
-        "category",
-        "persistent"
+        "category"
       ],
       "properties": {
         "id": {

@@ -64,7 +64,7 @@ export interface CatalogItem {
   category: 'equipment' | 'consumable' | 'quest-item' | 'crafting' | 'box' | 'weapon' | 'tool' | 'document' | 'vehicle' | 'miscellaneous';
   slot?: string;
   rarity?: ItemRarity;
-  persistent: boolean;
+  persistent?: boolean;
   description?: string;
   stats?: Record<string, number>;
 }

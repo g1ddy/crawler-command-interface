@@ -156,6 +156,13 @@
       "trust": "corroborating",
       "title": "Carl's Doomsday Scenario Chapter 14 Summary - SparkNotes AI",
       "url": "https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/be06e3c2-91d3-4f93-9a6c-d230133b7258"
+    },
+    {
+      "id": "src-wiki-quanch",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Quan Ch - Dungeon Crawler Carl Wiki",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Quan_Ch"
     }
   ],
   "catalog": {
@@ -260,6 +267,21 @@
         "name": "Fan Box",
         "category": "box",
         "persistent": false
+      },
+      {
+        "id": "item-celestial-quest-box",
+        "name": "Celestial Quest Box",
+        "category": "box",
+        "rarity": "celestial",
+        "description": "An upgraded Celestial-quality quest box reward granted for surviving the Fools Who Broke the Glass explosion."
+      },
+      {
+        "id": "item-cloak-of-the-benevolent-champion",
+        "name": "Cloak of the Benevolent Champion",
+        "category": "equipment",
+        "slot": "NECK",
+        "rarity": "celestial",
+        "description": "A Celestial-tier cloak obtained by Quan Ch upon opening his Celestial Quest Box."
       }
     ],
     "achievements": [
@@ -274,16 +296,8 @@
         "id": "achievement-bandit",
         "title": "Bandit",
         "recipient": "party",
-        "description": "Awarded for the unusual Soul Crystal rescue outcome on Floor 3.",
-        "reward": [
-          {
-            "kind": "box",
-            "boxType": "celestial",
-            "rarity": "celestial",
-            "amount": 83,
-            "description": "83 Celestial-quality boxes (1 opened by Quan Ch, 82 remaining boxes vetoed by Borant)"
-          }
-        ]
+        "description": "Awarded to the crawlers who survived Fools Who Broke the Glass.",
+        "reward": []
       },
       {
         "id": "achievement-one-quadrillion-views",
@@ -1482,6 +1496,32 @@
       "order": 53
     },
     {
+      "id": "evt-f3-achievement-bandit",
+      "type": "AchievementUnlocked",
+      "achievementId": "achievement-bandit",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "The crawlers who survived Fools Who Broke the Glass are awarded the Bandit Achievement.",
+      "evidence": [
+        {
+          "sourceId": "src-book-2",
+          "locator": {
+            "chapter": 26
+          },
+          "confidence": "confirmed"
+        }
+      ],
+      "notificationDelivery": {
+        "delivered": true,
+        "kind": "achievement",
+        "severity": "success"
+      },
+      "order": 54
+    },
+    {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
       "type": "NarrativeEvent",
       "kind": "other",
@@ -1490,18 +1530,79 @@
         "book": 2,
         "chapter": 26
       },
-      "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone. Quan Ch opens his box before the veto.",
+      "summary": "The Fools Who Broke the Glass quest reward is upgraded to Celestial-tier boxes for 83 crawlers in the blast zone.",
       "evidence": [
         {
-          "sourceId": "src-reddit-end-book2",
-          "confidence": "candidate"
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
         },
         {
           "sourceId": "src-dcc-database-celestial-box",
           "confidence": "corroborated"
         }
       ],
-      "order": 54
+      "order": 55
+    },
+    {
+      "id": "evt-f3-celestial-box-carl-acquired",
+      "type": "ItemAcquired",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "item": {
+        "instanceId": "inst-f3-celestial-box-carl",
+        "itemId": "item-celestial-quest-box",
+        "quantity": {
+          "known": true,
+          "value": 1
+        }
+      },
+      "summary": "Carl receives one Celestial Quest Box as an inventory-affecting event.",
+      "evidence": [
+        {
+          "sourceId": "src-sparknotes-ch-sum",
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 56
+    },
+    {
+      "id": "evt-f3-celestial-box-quan-ch-acquired",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Quan Ch receives/claims one Celestial Quest Box before Borant's veto.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 57
+    },
+    {
+      "id": "evt-f3-celestial-box-quan-ch-opened",
+      "type": "NarrativeEvent",
+      "kind": "other",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Quan Ch opens his Celestial Quest Box and receives its documented contents (the Cloak of the Benevolent Champion).",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-quanch",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 58
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
@@ -1519,33 +1620,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55
-    },
-    {
-      "id": "evt-f3-achievement-bandit",
-      "type": "AchievementUnlocked",
-      "achievementId": "achievement-bandit",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 26
-      },
-      "summary": "The party is awarded the Bandit Achievement for the Soul Crystal rescue outcome.",
-      "evidence": [
-        {
-          "sourceId": "src-book-2",
-          "locator": {
-            "chapter": 26
-          },
-          "confidence": "confirmed"
-        }
-      ],
-      "notificationDelivery": {
-        "delivered": true,
-        "kind": "achievement",
-        "severity": "success"
-      },
-      "order": 56
+      "order": 59
     }
   ]
 }
