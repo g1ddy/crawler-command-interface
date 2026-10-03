@@ -158,9 +158,6 @@ test("Primary navigation supports keyboard focus and desktop bar layout", async 
 });
 
 test("layout integration: Live mode has compact scrubber, scrubbing enters Replay", async ({ page }) => {
-  // Load the page in Live
-  await page.goto("/crawler-command-interface/");
-
   // Assert the shared dock exists
   const dock = page.getByRole("complementary", { name: "Replay controls" });
   await expect(dock).toBeVisible();

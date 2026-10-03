@@ -74,8 +74,8 @@ export function ReplaySurface({
       className={styles.surface}
       aria-label="Replay controls"
       data-mode={model.mode}
-      data-expanded={isExpanded}
-      data-mobile-expanded={isExpanded}
+      data-expanded={isExpanded && !model.isLive}
+      data-mobile-expanded={isExpanded && !model.isLive}
     >
       <ReplayControls
         model={model}
