@@ -51,8 +51,6 @@ test("scrubbing backward removes state that was introduced later", async ({ page
 test("floor navigation selects derived floor endpoints", async ({ page }) => {
   await enterReplayByScrubbing(page);
   await openReplayContext(page);
-  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
-  if (await expandBtn.isVisible() && await expandBtn.getAttribute("aria-expanded") === "false") await expandBtn.click();
   const floors = page.getByRole("combobox", { name: "Floor timeline scope" });
 
   await floors.selectOption("1");
