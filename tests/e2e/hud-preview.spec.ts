@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { openReplayContext } from "../helpers/replay";
+import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
 
 const pagesPath = "/crawler-command-interface/";
 
@@ -34,6 +34,7 @@ for (const query of ["", "?hud=unsupported"]) {
 
 test("live presentation switching in System Tools preserves session state and updates URL", async ({ page }) => {
   await page.goto(pagesPath);
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
 
   // Select "all" floor timeline scope so sequence 117 is within bounds
@@ -111,6 +112,7 @@ test("live presentation switching in System Tools preserves session state and up
 
 test("Pet visibility follows selected destination and survives renderer switching when available", async ({ page }) => {
   await page.goto(pagesPath);
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
 
   // Select "all" floor timeline scope so sequence 130 (bonded pet sequence) is within bounds
@@ -216,6 +218,7 @@ test("collapsed replay dock keeps scrubber visible and operable across responsiv
     await page.goto(pagesPath);
 
     // In live mode, click history log to enter replay
+    await enterReplayByScrubbing(page);
     await openReplayContext(page);
     await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
     const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
@@ -266,6 +269,7 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
   await expect(returnBtn).toHaveCount(0);
 
   // Enter Replay by scrubbing slider to sequence 50
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await slider.fill("50");
@@ -448,6 +452,7 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
 
   // Enter replay by scrubbing timeline to sequence 130
@@ -538,6 +543,7 @@ test("compact mobile replay controls support expand, collapse, keyboard focus, a
   await page.goto(pagesPath);
 
   // In live mode, enter replay to view compact replay bar
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
 
   // Select "all" floor timeline scope so sequence 117 is within bounds
@@ -593,6 +599,7 @@ test("mobile replay disclosure maintains state when returning from desktop viewp
   await page.goto(pagesPath);
 
   // Enter replay
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
@@ -635,6 +642,7 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   // Open Replay context to reach bonded pet sequence 130
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
@@ -664,6 +672,7 @@ test("authority-arwes validates mutation gating during replay while preserving t
   await expect(allocateBtn).toBeEnabled();
 
   // Enter Replay mode via sequence scrubber
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });

@@ -1,12 +1,20 @@
 import { expect, test, type Page } from "@playwright/test";
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
-import { openReplayContext } from "../helpers/replay";
+import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
 
 const sequenceHeading = (page: Page) =>
   page.getByRole("heading", { name: /SEQ #\d+/ });
 
 async function selectSequence(page: Page, sequence: number) {
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
+  if (!(await expandBtn.isVisible())) {
+    await enterReplayByScrubbing(page);
+  }
+  await openReplayContext(page);
+  const combobox = page.getByRole("combobox", { name: "Floor timeline scope" });
+  if (await combobox.isVisible()) {
+    await combobox.selectOption("all");
+  }
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill(String(sequence));
 }
@@ -31,11 +39,12 @@ const floor2SystemPatchSequence = eventSequence("evt-f2-system-patch");
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/crawler-command-interface/");
-  await openReplayContext(page);
-  await expect(page.getByText("FLOOR NAVIGATOR:")).toBeVisible();
 });
 
 test("scrubbing backward removes state that was introduced later", async ({ page }) => {
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
+  await page.getByRole("button", { name: /Return to Live sequence/ }).click();
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
   await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
 
@@ -49,6 +58,8 @@ test("scrubbing backward removes state that was introduced later", async ({ page
 });
 
 test("floor navigation selects derived floor endpoints", async ({ page }) => {
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
   const floors = page.getByRole("combobox", { name: "Floor timeline scope" });
 
   await floors.selectOption("1");
@@ -65,6 +76,7 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
 
 test("timeline evidence surfaces preserve source locators and confidence", async ({ page }) => {
   await selectSequence(page, floor2SystemPatchSequence);
+  await openReplayContext(page);
 
   const secondaryCountdown = page.locator(".secondary-countdown").filter({ hasText: "TIME TO SAFE ROOM CLOSURE" });
   await expect(secondaryCountdown).toContainText("EVIDENCE: src-dcc-database-floor-2");
