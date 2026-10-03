@@ -61,11 +61,7 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
   await expect(sequenceHeading(page)).toContainText(`SEQ #${floor2EndSequence}`);
 
   await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
-  // Wait for combobox or fallback
-  const floors2 = page.getByRole("combobox", { name: "Floor timeline scope" });
-  if (await floors2.isVisible()) {
-    await expect(floors2).toHaveValue("3");
-  }
+await expect(page.getByRole("combobox", { name: "Floor timeline scope" })).toHaveValue("3");
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
 });
 
