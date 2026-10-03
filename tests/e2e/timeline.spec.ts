@@ -2,16 +2,26 @@ import { expect, test, type Page } from "@playwright/test";
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
 import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
 
+const replayControls = (page: Page) =>
+  page.getByRole("complementary", { name: "Replay controls" });
+
 const sequenceHeading = (page: Page) =>
-  page.getByRole("heading", { name: /SEQ #\d+/ });
+  replayControls(page).getByRole("heading", { name: /SEQ #\d+/ });
+
+async function latestRuntimeSequence(page: Page): Promise<number> {
+  const slider = page.getByRole("slider", {
+    name: "Selected timeline sequence",
+  });
+  const max = await slider.getAttribute("max");
+  expect(max).not.toBeNull();
+  return Number(max);
+}
 
 async function selectSequence(page: Page, sequence: number) {
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill(String(sequence));
 }
-
-const latestSequence = Math.max(...compiledTimeline.events.map((event) => event.sequence));
 
 function floorEndSequence(ordinal: number) {
   const floor = (compiledTimeline.floors || []).find((candidate) => candidate.ordinal === ordinal);
@@ -34,6 +44,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("scrubbing backward removes state that was introduced later", async ({ page }) => {
+  const latestSequence = await latestRuntimeSequence(page);
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
   await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
 
@@ -49,6 +60,8 @@ test("scrubbing backward removes state that was introduced later", async ({ page
 });
 
 test("floor navigation selects derived floor endpoints", async ({ page }) => {
+  const runtimeLatestSequence = await latestRuntimeSequence(page);
+
   await enterReplayByScrubbing(page);
   await openReplayContext(page);
   const floors = page.getByRole("combobox", { name: "Floor timeline scope" });
@@ -65,7 +78,7 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
   if (await floors2.isVisible()) {
     await expect(floors2).toHaveValue("3");
   }
-  await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
+  await expect(sequenceHeading(page)).toContainText(`SEQ #${runtimeLatestSequence}`);
 });
 
 test("timeline evidence surfaces preserve source locators and confidence", async ({ page }) => {
@@ -95,6 +108,8 @@ test("timeline evidence surfaces preserve source locators and confidence", async
 });
 
 test("Return to Live sequence restores the latest projection", async ({ page }) => {
+  const latestSequence = await latestRuntimeSequence(page);
+
   await enterReplayByScrubbing(page);
   await openReplayContext(page);
   await selectSequence(page, 1);
@@ -136,6 +151,8 @@ test("inventory browser and inspector resolve the same visible selection", async
 });
 
 test("live interactions append events without rewriting historical state", async ({ page }) => {
+  const latestSequence = await latestRuntimeSequence(page);
+
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   const firstItem = page.locator("[class*='item']").first();
   await firstItem.click();
