@@ -12,7 +12,8 @@ export async function openReplayContext(page: Page) {
 
 export async function enterReplayByScrubbing(page: Page) {
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  const minSequence = await slider.getAttribute("min") ?? "124";
-  await slider.fill(minSequence);
+  const minSequence = await slider.getAttribute("min");
+  expect(minSequence).not.toBeNull();
+  await slider.fill(minSequence!);
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 }

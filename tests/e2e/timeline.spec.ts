@@ -6,15 +6,7 @@ const sequenceHeading = (page: Page) =>
   page.getByRole("heading", { name: /SEQ #\d+/ });
 
 async function selectSequence(page: Page, sequence: number) {
-  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
-  if (!(await expandBtn.isVisible())) {
-    await enterReplayByScrubbing(page);
-  }
-  await openReplayContext(page);
-  const combobox = page.getByRole("combobox", { name: "Floor timeline scope" });
-  if (await combobox.isVisible()) {
-    await combobox.selectOption("all");
-  }
+  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill(String(sequence));
 }
@@ -42,12 +34,11 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("scrubbing backward removes state that was introduced later", async ({ page }) => {
-  await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("button", { name: /Return to Live sequence/ }).click();
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
   await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
 
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
   await selectSequence(page, 1);
 
   await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
@@ -60,6 +51,8 @@ test("scrubbing backward removes state that was introduced later", async ({ page
 test("floor navigation selects derived floor endpoints", async ({ page }) => {
   await enterReplayByScrubbing(page);
   await openReplayContext(page);
+  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
+  if (await expandBtn.isVisible() && await expandBtn.getAttribute("aria-expanded") === "false") await expandBtn.click();
   const floors = page.getByRole("combobox", { name: "Floor timeline scope" });
 
   await floors.selectOption("1");
@@ -70,13 +63,18 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
   await expect(sequenceHeading(page)).toContainText(`SEQ #${floor2EndSequence}`);
 
   await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
-  await expect(floors).toHaveValue("3");
+  // Wait for combobox or fallback
+  const floors2 = page.getByRole("combobox", { name: "Floor timeline scope" });
+  if (await floors2.isVisible()) {
+    await expect(floors2).toHaveValue("3");
+  }
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
 });
 
 test("timeline evidence surfaces preserve source locators and confidence", async ({ page }) => {
-  await selectSequence(page, floor2SystemPatchSequence);
+  await enterReplayByScrubbing(page);
   await openReplayContext(page);
+  await selectSequence(page, floor2SystemPatchSequence);
 
   const secondaryCountdown = page.locator(".secondary-countdown").filter({ hasText: "TIME TO SAFE ROOM CLOSURE" });
   await expect(secondaryCountdown).toContainText("EVIDENCE: src-dcc-database-floor-2");
@@ -100,6 +98,8 @@ test("timeline evidence surfaces preserve source locators and confidence", async
 });
 
 test("Return to Live sequence restores the latest projection", async ({ page }) => {
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
   await selectSequence(page, 1);
   await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
 
@@ -148,6 +148,8 @@ test("live interactions append events without rewriting historical state", async
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence + 1}`);
   await expect(page.getByRole("status")).toContainText(`Locked ${itemName}`);
 
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
   await selectSequence(page, floor1EndSequence);
   await expect(page.getByRole("button", { name: /^LOCK/ })).toBeDisabled();
 

@@ -28,12 +28,13 @@ export function ReplaySurface({
   const surfaceRef = useRef<HTMLElement>(null);
   const prevExpandedRef = useRef(isExpanded);
 
-  if (model.isLive && isExpanded) {
-    setIsExpanded(false);
-  }
-  if (model.isLive && showCountdownEvidence) {
-    setShowCountdownEvidence(false);
-  }
+  useEffect(() => {
+    if (model.isLive) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsExpanded(false);
+      setShowCountdownEvidence(false);
+    }
+  }, [model.isLive]);
 
   // Focus management on expand/collapse
   useEffect(() => {

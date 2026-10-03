@@ -169,8 +169,8 @@ test("historical-context cue is visible during Replay in compact, expanded, rend
   await page.goto(pagesPath);
 
   // Expand replay controls on mobile to access timeline scope and sequence scrubber
-  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
-  await expandBtn.click();
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
 
   // Select "all" floor timeline scope and scrub to sequence 130
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
@@ -188,7 +188,7 @@ test("historical-context cue is visible during Replay in compact, expanded, rend
   await expect(cue).toBeVisible();
 
   // Expand compact replay controls again: historical cue remains visible
-  await expandBtn.click();
+  await page.getByRole("button", { name: "Expand replay controls" }).click();
   await expect(cue).toBeVisible();
 
   // Collapse again
@@ -451,9 +451,6 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.locator(".system-hud")).toHaveCount(0);
   await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
-
-  await enterReplayByScrubbing(page);
-  await openReplayContext(page);
 
   // Enter replay by scrubbing timeline to sequence 130
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
