@@ -7,6 +7,7 @@ export interface RootNavigationProps {
   active: RootView;
   set: (view: RootView) => void;
   capabilities: CanonCapabilities;
+  onOpenTimeline: () => void;
   onOpenTools: () => void;
   contract?: PrimaryNavigationContract;
 }
@@ -15,6 +16,7 @@ export function RootNavigation({
   active,
   set,
   capabilities,
+  onOpenTimeline,
   onOpenTools,
   contract,
 }: RootNavigationProps) {
@@ -43,6 +45,14 @@ export function RootNavigation({
         ))}
       </nav>
       <div className={styles.utilities} role="group" aria-label="Application tools">
+        <button
+          className={styles.tools}
+          onClick={onOpenTimeline}
+          aria-label="Open timeline utility"
+          title="Timeline floor navigation, stepping, and diagnostics"
+        >
+          TIMELINE
+        </button>
         <button
           className={styles.tools}
           onClick={onOpenTools}

@@ -1,12 +1,10 @@
 import { expect, type Page } from "@playwright/test";
 
 export async function openReplayContext(page: Page) {
-  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
-  if (await expandBtn.isVisible()) {
-    if (await expandBtn.getAttribute("aria-expanded") === "false") {
-      await expandBtn.click();
-      await expect(page.getByRole("button", { name: "Collapse replay controls" })).toHaveAttribute("aria-expanded", "true");
-    }
+  const timelineBtn = page.getByRole("button", { name: "TIMELINE", exact: true });
+  if (await timelineBtn.isVisible()) {
+    await timelineBtn.click();
+    await expect(page.getByRole("region", { name: "Timeline navigation panel" })).toBeVisible();
   }
 }
 

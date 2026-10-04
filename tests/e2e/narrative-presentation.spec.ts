@@ -34,38 +34,28 @@ function requireNarrative(kind: string, floor?: number) {
 }
 
 async function selectSequence(page: Page, sequence: number) {
-  await page.getByRole('combobox', { name: 'Floor timeline scope' }).selectOption('all');
-  await page.getByRole('slider', { name: 'Selected timeline sequence' }).fill(String(sequence));
-  await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${sequence}\\b`) })).toBeVisible();
+  const slider = page.getByRole('slider', { name: 'Selected timeline sequence' });
+  await slider.fill(String(sequence));
+  await expect(slider).toHaveValue(String(sequence));
 }
 
-function markerFor(page: Page, event: TestTimelineEvent) {
-  const presentation = getNarrativePresentation(event.kind);
-  return page.getByRole('button', {
-    name: `${presentation.accessibleLabel}: ${event.summary}`,
-    exact: true,
-  });
+function logEntryFor(page: Page, event: TestTimelineEvent) {
+  return page.locator('article.typed-log-entry').filter({ hasText: event.summary });
 }
 
 async function openFloorRules(page: Page) {
+  await openReplayContext(page);
   await page.getByRole('button', { name: '📜 FLOOR RULES', exact: true }).click();
 }
 
 async function openTimelineHistory(page: Page) {
+  await openReplayContext(page);
   await page.getByRole('button', { name: '📜 HISTORY', exact: true }).click();
-}
-
-async function openReplayDiagnostics(page: Page) {
-  const toggle = page.getByRole('button', { name: /REPLAY DIAGNOSTICS/ });
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
 }
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/crawler-command-interface/');
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await expect(page.getByText('FLOOR NAVIGATOR:')).toBeVisible();
 });
 
 test('rule history changes at two scrub positions without hard-coded directives', async ({ page }) => {
@@ -92,29 +82,22 @@ test('episode, collapse, and encounter resolution render as typed timeline marke
   const collapse = requireNarrative('floor-collapsed');
   const encounter = requireNarrative('encounter-resolved');
 
-  // The application opens on the latest floor. These assertions intentionally
-  // span floors, so establish Whole Story scope and reveal the diagnostics
-  // surface before locating any marker.
-  await page.getByRole('combobox', { name: 'Floor timeline scope' }).selectOption('all');
-  await openReplayDiagnostics(page);
+  const maxSeq = Math.max(episode.sequence, collapse.sequence, encounter.sequence);
+  await selectSequence(page, maxSeq);
+  await openTimelineHistory(page);
 
-  const episodeMarker = markerFor(page, episode);
+  const episodeMarker = logEntryFor(page, episode);
   await expect(episodeMarker).toBeVisible();
-  await episodeMarker.focus();
-  await episodeMarker.press('Enter');
-  await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${episode.sequence}\\b`) })).toBeVisible();
 
-  const collapseMarker = markerFor(page, collapse);
+  const collapseMarker = logEntryFor(page, collapse);
   await expect(collapseMarker).toHaveClass(/terminal/);
-  await collapseMarker.focus();
-  await collapseMarker.press('Enter');
-  await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${collapse.sequence}\\b`) })).toBeVisible();
 
-  const encounterMarker = markerFor(page, encounter);
+  const encounterMarker = logEntryFor(page, encounter);
   await expect(encounterMarker).toBeVisible();
-  await encounterMarker.focus();
-  await encounterMarker.press('Enter');
-  await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${encounter.sequence}\\b`) })).toBeVisible();
+
+  await episodeMarker.click();
+  const slider = page.getByRole('slider', { name: 'Selected timeline sequence' });
+  await expect(slider).toHaveValue(String(episode.sequence));
 });
 
 test('unanchored Floor 2 story event never displays an inherited or undefined time', async ({ page }) => {
@@ -128,16 +111,12 @@ test('unanchored Floor 2 story event never displays an inherited or undefined ti
   if (!unanchored) throw new Error('Missing an unanchored Floor 2 narrative event.');
 
   await selectSequence(page, unanchored.sequence);
+  await openTimelineHistory(page);
 
-  await expect(page.getByRole('complementary', { name: 'Replay controls' })).toContainText('exact time not sourced');
-  await expect(page.getByRole('heading', { name: new RegExp(`SEQ #${unanchored.sequence}\\b`) })).toContainText('exact time not sourced');
-
-  await page.getByRole('button', { name: /REPLAY DIAGNOSTICS/ }).click();
-  const marker = markerFor(page, unanchored);
-  await marker.hover();
-  const preview = page.locator('.event-card-preview');
-  await expect(preview).toContainText('exact time not sourced');
-  await expect(preview).not.toContainText('undefined');
+  const entry = logEntryFor(page, unanchored);
+  await expect(entry).toBeVisible();
+  await expect(entry).toContainText('exact time not sourced');
+  await expect(entry).not.toContainText('undefined');
 });
 
 test('floor-scoped LOG never reclassifies a prior-floor narrative as a generic event', async ({ page }) => {
@@ -146,9 +125,12 @@ test('floor-scoped LOG never reclassifies a prior-floor narrative as a generic e
     ...events.filter((event) => event.position?.floor === 2).map((event) => event.sequence),
   );
 
-  const floorSelector = page.getByRole('combobox', { name: 'Floor timeline scope' });
-  await floorSelector.selectOption('2');
-  await page.getByRole('slider', { name: 'Selected timeline sequence' }).fill(String(floor2FirstSequence));
+  await selectSequence(page, floor2FirstSequence);
+  await openReplayContext(page);
+  const floorSelect = page.getByRole('combobox', { name: 'Select floor context' });
+  await floorSelect.selectOption('2');
+  await page.getByRole('button', { name: 'Close timeline controls' }).click();
+
   await openTimelineHistory(page);
 
   const genericFallback = page.locator('details').filter({ hasText: 'GENERIC SYSTEM EVENTS' });

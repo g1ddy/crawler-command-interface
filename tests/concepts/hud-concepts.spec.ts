@@ -11,7 +11,6 @@ test("concepts retain replay state, capability boundaries and device storage", a
   const initialStorage = await page.evaluate(() => JSON.stringify(localStorage));
   const menu = page.getByRole("navigation", { name: "Main Navigation" });
   await expect(menu.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
-  await page.getByLabel("Floor timeline scope").selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.focus();
   await slider.press("Home");
@@ -36,7 +35,8 @@ test("concepts retain replay state, capability boundaries and device storage", a
     await expect(menu.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
   }
 
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /return to live/i }).click();
+  const maxSeq = await slider.getAttribute("max");
+  if (maxSeq) await slider.fill(maxSeq);
   await expect(menu.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
   await expect(menu.getByRole("button", { name: "PET", exact: true })).toBeVisible();
   await expect(page.locator('.hud-reading[data-evidence="last-known"]').getByLabel("Inspect Mana evidence"))
