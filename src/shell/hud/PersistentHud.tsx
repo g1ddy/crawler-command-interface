@@ -7,55 +7,14 @@ import type {
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
-import {
-  deriveEvidencePresentation,
-  mapEvidenceToSemantics,
-} from "../../features/timeline/evidence/evidencePresentation";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 import { Hotlist } from "./hotlist/Hotlist";
 import styles from "./PersistentHud.module.css";
 
-function Reading({
-  label,
-  observation,
-  sequence,
-  onInspect,
-}: {
-  label: string;
-  observation?: ProjectedObservationValue;
-  sequence: number;
-  onInspect: (reading: ProjectedObservationValue) => void;
-}) {
-  const evidence = deriveEvidencePresentation(observation, sequence);
-  const semantics = mapEvidenceToSemantics(evidence);
-  return (
-    <div
-      className={styles.reading}
-      role="group"
-      aria-label={`${label} reading`}
-      data-evidence={evidence.state}
-      {...(semantics.temporal ? { "data-temporal": semantics.temporal } : {})}
-    >
-      <span>{label}</span>
-      <strong>{observation?.value.toLocaleString() ?? "—"}</strong>
-      {observation ? (
-        <button onClick={() => onInspect(observation)} aria-label={`Inspect ${label} evidence`}>
-          {evidence.label}
-        </button>
-      ) : (
-        <small>Unknown</small>
-      )}
-    </div>
-  );
-}
-
 /**
  * Persistent HUD renderer consuming the renderer-neutral composition contract.
- *
- * PROVISIONAL IMPLEMENTATION SLICE:
- * The current masthead arrangement (identity/clock/mode/broadcast/readings) is an implementation slice
- * and does not constitute a final settled product layout. Replay remains visible as system state,
- * while sequence navigation and return-to-live actions retain application capability ownership.
+ * Exposes cross-cutting system context (floor, level collapse clock, live/replay mode, audience)
+ * while crawler identity, progression, and vitals are owned by the Crawler feature.
  */
 export function PersistentHud({
   composition,
@@ -64,39 +23,32 @@ export function PersistentHud({
   countdown,
   floorTitle,
   isLive,
-  onInspectObservation,
   onNavigateToSequence,
 }: {
   composition?: HudCompositionModel;
-  state: Pick<CrawlerState, "crawler" | "sequence" | "hotlist" | "skills">;
-  observations: Pick<ProjectedObservationsState, "condition" | "xpProgress" | "broadcast">;
+  state: Pick<CrawlerState, "sequence" | "hotlist" | "skills">;
+  observations: Pick<ProjectedObservationsState, "broadcast">;
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
   isLive: boolean;
-  onInspectObservation: (reading: ProjectedObservationValue) => void;
+  onInspectObservation?: (reading: ProjectedObservationValue) => void;
   onNavigateToSequence: (sequence: number) => void;
 }) {
   const [showEvidence, setShowEvidence] = useState(false);
 
-  const crawlerName = composition?.system.crawlerName ?? state.crawler.name;
-  const crawlerClass = composition?.system.crawlerClass ?? (state.crawler.class || "Class unknown");
   const title = composition?.system.floorTitle ?? floorTitle;
-  const currentSeq = composition?.system.sequence ?? state.sequence;
   const activeCountdown = composition?.urgency.activeCountdown ?? countdown;
   const formattedClock = composition?.urgency.formattedLabel ?? activeCountdown?.formattedLabel ?? "Collapse time unavailable";
   const liveMode = composition?.temporal.isLive ?? isLive;
   const attention = composition?.attention;
-  const healthObs = composition?.vitals.health ?? observations.condition.currentHealth;
-  const manaObs = composition?.vitals.mana ?? observations.condition.currentMana;
-  const levelObs = composition?.vitals.level ?? observations.xpProgress.level;
   const viewersObs = composition?.broadcast.viewers ?? observations.broadcast.viewers;
 
   return (
     <header className={styles.hud} aria-label="Crawler HUD" data-hud-composition="persistent" data-hud-renderer="persistent">
       <div className={styles.masthead}>
-        <div className={styles.identity}>
-          <div className={styles.identityHeader}>
-            <span className={styles.kicker}>CRAWLER INTERFACE</span>
+        <div className={styles.clock} data-stale={activeCountdown?.isStale || undefined}>
+          <div className={styles.clockHeader}>
+            <span className={styles.kicker}>{title}</span>
             {attention?.hasActiveAlerts && <span className={styles.alertIndicator}>⚠ ALERT</span>}
             {attention && attention.totalNotificationsCount > 0 && (
               <span className={styles.alertIndicator}>
@@ -104,11 +56,6 @@ export function PersistentHud({
               </span>
             )}
           </div>
-          <h1>{crawlerName}</h1>
-          <span>{crawlerClass}</span>
-        </div>
-        <div className={styles.clock} data-stale={activeCountdown?.isStale || undefined}>
-          <span className={styles.kicker}>{title}</span>
           <strong>{formattedClock}</strong>
           {activeCountdown ? (
             <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
@@ -131,11 +78,6 @@ export function PersistentHud({
         </div>
       </div>
 
-      <div className={styles.readings} aria-label="Observed telemetry">
-        <Reading label="Health" observation={healthObs} sequence={currentSeq} onInspect={onInspectObservation} />
-        <Reading label="Mana" observation={manaObs} sequence={currentSeq} onInspect={onInspectObservation} />
-        <Reading label="Level" observation={levelObs} sequence={currentSeq} onInspect={onInspectObservation} />
-      </div>
       <Hotlist hotlist={state.hotlist} skills={state.skills} />
       {showEvidence && activeCountdown && (
         <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}>

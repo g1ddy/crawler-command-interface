@@ -27,12 +27,12 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
   {
     surfaceId: "masthead_identity",
     label: "Crawler Identity & Class",
-    currentOwner: "PersistentHud / deriveHudComposition",
+    currentOwner: "src/features/crawler/",
     purpose: "Persistent indication of active crawler context and system identity",
     scope: "system",
     category: "system_identity",
-    disposition: "provisional",
-    reason: "Essential persistent system context; masthead composition arrangement is provisional",
+    disposition: "remove",
+    reason: "Crawler identity is feature-owned by src/features/crawler/ (PlayerStats); persistent shell chrome exposes cross-cutting system context",
   },
   {
     surfaceId: "primary_navigation_tabs",
@@ -107,12 +107,12 @@ export const NAVIGATION_SURFACE_INVENTORY: readonly NavigationSurfaceInventoryIt
   {
     surfaceId: "telemetry_vitals_readings",
     label: "Vitals Readings (Health, Mana, Level)",
-    currentOwner: "PersistentHud / deriveHudComposition",
+    currentOwner: "src/features/crawler/",
     purpose: "Core crawler vitals telemetry",
     scope: "context",
     category: "contextual_status",
-    disposition: "provisional",
-    reason: "Essential vitals telemetry status; layout in readings bar is provisional",
+    disposition: "remove",
+    reason: "Vitals readings are feature-local Crawler readings owned by HealthConditions and PlayerStats in src/features/crawler/",
   },
   {
     surfaceId: "attention_summary_badge",

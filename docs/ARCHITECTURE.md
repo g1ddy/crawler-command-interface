@@ -96,7 +96,7 @@ When replay crosses back before a capability boundary, the destination disappear
 
 The renderer-neutral navigation contract (`deriveNavigationContract` in `src/shell/navigation/navigation-contract.ts`) organizes navigation and system chrome across four explicit information architecture levels:
 
-1. **Always Present (System Identity & Critical Awareness)**: Persistent system identity (Crawler Name/Class), level collapse clock/urgency, and attention summary (owned semantically by `HudCompositionModel`).
+1. **Always Present (System Identity & Critical Awareness)**: Cross-cutting system context (floor location, sequence), level collapse clock/urgency, and attention summary (owned semantically by `HudCompositionModel`). Persistent shell chrome exposes cross-cutting system context, while crawler identity, progression, and vitals are owned by the Crawler feature (`src/features/crawler/`).
 2. **Contextual (Primary & Domain Navigation)**: Capability-filtered root navigation items (`PrimaryNavigationContract`) and feature-local controls.
 3. **Peripheral (Temporal Controls & System Tools)**: Replay transport, sequence scrubber, floor navigator (`TemporalControlsContract`), Return to Live application capability, and System Tools modal trigger.
 4. **On Demand (Inspectors & Overlays)**: Modal overlays (`StatInspectorModal`, `TelemetryInspectorModal`, `ItemProvenanceDrawer`, `CountdownEvidenceModal`, `FloorRules`, `TimelineHistory`, `TimelineEvidence`, `TimelineToolsModal`) managed with focus trapping and deterministic `Escape` handling via `ModalBoundary`.

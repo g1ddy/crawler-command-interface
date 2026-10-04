@@ -2,7 +2,6 @@
 import { createElement } from "react";
 import { AuthorityFrame } from "./primitives/AuthorityFrame.ts";
 import { AuthoritySurface } from "./primitives/AuthoritySurface.ts";
-import { AuthorityText } from "./primitives/AuthorityText.ts";
 import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
 import { AuthorityTransition } from "./primitives/AuthorityTransition.ts";
 import { AuthorityIndicator } from "./primitives/AuthorityIndicator.ts";
@@ -370,47 +369,6 @@ export function ArwesAuthorityComposition({
             gap: "0.75rem",
           },
         },
-        /* Identity */
-        createElement(
-          "div",
-          { style: { display: "flex", flexDirection: "column" } },
-          createElement(
-            AuthorityText,
-            {
-              delivery: "instant",
-              style: {
-                fontSize: "0.68rem",
-                color: "#0284c7",
-                letterSpacing: "0.08em",
-                fontWeight: 700,
-                textTransform: "uppercase",
-              },
-            },
-            "CRAWLER HUD"
-          ),
-          createElement(
-            "h2",
-            {
-              style: {
-                margin: "0.1rem 0",
-                fontSize: "1.3rem",
-                color: "#38bdf8",
-                fontWeight: 700,
-                letterSpacing: "0.04em",
-              },
-            },
-            createElement(
-              AuthorityText,
-              { delivery: "decoded" },
-              system.crawlerName
-            )
-          ),
-          createElement(
-            "span",
-            { style: { fontSize: "0.75rem", color: "#94a3b8" } },
-            system.crawlerClass
-          )
-        ),
 
         /* Urgency / Collapse Context */
         createElement(
@@ -525,13 +483,13 @@ export function ArwesAuthorityComposition({
         },
       },
 
-      /* Vitals & Telemetry Surface */
+      /* Audience & Telemetry Surface */
       createElement(
         AuthorityFrame,
         {
           significance: "informational",
           variant: "lines",
-          "data-testid": "arwes-vitals-frame",
+          "data-testid": "arwes-telemetry-frame",
         },
         createElement(
           "h3",
@@ -545,7 +503,7 @@ export function ArwesAuthorityComposition({
               textTransform: "uppercase",
             },
           },
-          "TELEMETRY & VITALS"
+          "AUDIENCE TELEMETRY"
         ),
         createElement(
           "div",
