@@ -3,7 +3,6 @@ import type {
   CrawlerState,
   ProjectedCountdownState,
   ProjectedObservationsState,
-  ProjectedObservationValue,
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
@@ -31,7 +30,6 @@ export function PersistentHud({
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
   isLive: boolean;
-  onInspectObservation?: (reading: ProjectedObservationValue) => void;
   onNavigateToSequence: (sequence: number) => void;
 }) {
   const [showEvidence, setShowEvidence] = useState(false);
