@@ -29,30 +29,25 @@ function Reading({ label, observation, sequence, onInspect }: {
 }
 
 export function ConceptHud({ state, observations, countdown, floorTitle, isLive, onInspectObservation, onNavigateToSequence }: {
-  state: CrawlerState;
-  observations: ProjectedObservationsState;
+  state: Pick<CrawlerState, "sequence" | "hotlist" | "skills">;
+  observations: Pick<ProjectedObservationsState, "broadcast">;
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
   isLive: boolean;
-  onInspectObservation: (reading: ProjectedObservationValue) => void;
+  onInspectObservation?: (reading: ProjectedObservationValue) => void;
   onNavigateToSequence: (sequence: number) => void;
 }) {
   const [showEvidence, setShowEvidence] = useState(false);
   return <header className="system-hud" aria-label="Crawler HUD" data-hud-renderer="concept">
-    <div className="hud-identity">
-      <span className="hud-kicker">Crawler interface</span>
-      <h1>{state.crawler.name}</h1>
-      <span>{state.crawler.class || "Class unknown"}</span>
-    </div>
     <div className="hud-collapse" data-evidence={countdown ? countdown.isStale ? "stale" : countdown.status : "unavailable"}>
       <span className="hud-kicker">{floorTitle}</span>
       <strong>{countdown?.formattedLabel ?? "Collapse time unavailable"}</strong>
       {countdown ? <button onClick={() => setShowEvidence(true)}>{`${countdown.isStale ? "Last known" : countdown.status === "estimated" ? "Estimated" : "Observed"} · ${countdown.lifecycleStatus}`} · Evidence</button> : <span>No sourced countdown</span>}
     </div>
-    <div className="hud-readings" aria-label="Observed vitals">
-      <Reading label="Health" observation={observations.condition.currentHealth} sequence={state.sequence} onInspect={onInspectObservation} />
-      <Reading label="Mana" observation={observations.condition.currentMana} sequence={state.sequence} onInspect={onInspectObservation} />
-      <Reading label="Viewers" observation={observations.broadcast.viewers} sequence={state.sequence} onInspect={onInspectObservation} />
+    <div className="hud-readings" aria-label="Observed broadcast context">
+      {onInspectObservation && (
+        <Reading label="Viewers" observation={observations.broadcast.viewers} sequence={state.sequence} onInspect={onInspectObservation} />
+      )}
     </div>
     <div
       className="hud-replay-state"
