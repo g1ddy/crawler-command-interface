@@ -319,7 +319,7 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
 test("authority-arwes presentation is URL-selected and renders Arwes renderer composition foundation", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
-  const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
+  const previewScope = page.locator("[data-hud-presentation]");
   await expect(previewScope).toHaveAttribute("data-hud-presentation", "authority-arwes");
 
   // Verify exclusive renderer selection: exactly 1 Arwes HUD renderer and zero alternate HUD renderers

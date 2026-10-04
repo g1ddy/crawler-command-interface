@@ -41,8 +41,12 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
   return <header className="system-hud" aria-label="Crawler HUD" data-hud-renderer="concept">
     <div className="hud-collapse" data-evidence={countdown ? countdown.isStale ? "stale" : countdown.status : "unavailable"}>
       <span className="hud-kicker">{floorTitle}</span>
-      <strong>{countdown?.formattedLabel ?? "Collapse time unavailable"}</strong>
-      {countdown ? <button onClick={() => setShowEvidence(true)}>{`${countdown.isStale ? "Last known" : countdown.status === "estimated" ? "Estimated" : "Observed"} · ${countdown.lifecycleStatus}`} · Evidence</button> : <span>No sourced countdown</span>}
+      {countdown ? (
+        <>
+          <strong>{countdown.formattedLabel}</strong>
+          <button onClick={() => setShowEvidence(true)}>{`${countdown.isStale ? "Last known" : countdown.status === "estimated" ? "Estimated" : "Observed"} · ${countdown.lifecycleStatus}`} · Evidence</button>
+        </>
+      ) : null}
     </div>
     <div className="hud-readings" aria-label="Observed broadcast context">
       {onInspectObservation && (

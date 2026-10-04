@@ -32,7 +32,7 @@ export interface HudTemporalContext {
 
 export interface HudUrgencySummary {
   activeCountdown: ActiveCountdownState | null;
-  formattedLabel: string;
+  formattedLabel?: string;
   lifecycleStatus?: "scheduled" | "active" | "completed";
 }
 
@@ -171,9 +171,7 @@ export function deriveHudComposition({
     },
     urgency: {
       activeCountdown,
-      formattedLabel: activeCountdown
-        ? activeCountdown.formattedLabel
-        : "Collapse time unavailable",
+      formattedLabel: activeCountdown?.formattedLabel,
       lifecycleStatus: activeCountdown?.lifecycleStatus,
     },
     attention: {
