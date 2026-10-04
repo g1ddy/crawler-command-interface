@@ -371,51 +371,49 @@ export function ArwesAuthorityComposition({
         },
 
         /* Urgency / Collapse Context */
-        createElement(
-          "div",
-          {
-            "data-testid": "arwes-urgency-panel",
-            style: {
-              textAlign: "center",
-              padding: "0.35rem 0.75rem",
-              background: "rgba(15, 23, 42, 0.7)",
-              border: "1px solid rgba(56, 189, 248, 0.3)",
-              borderRadius: "4px",
-            },
-          },
-          createElement(
-            "div",
-            {
-              style: {
-                fontSize: "0.68rem",
-                color: "#7dd3fc",
-                fontWeight: 700,
-                letterSpacing: "0.05em",
+        urgency.formattedLabel
+          ? createElement(
+              "div",
+              {
+                "data-testid": "arwes-urgency-panel",
+                style: {
+                  textAlign: "center",
+                  padding: "0.35rem 0.75rem",
+                  background: "rgba(15, 23, 42, 0.7)",
+                  border: "1px solid rgba(56, 189, 248, 0.3)",
+                  borderRadius: "4px",
+                },
               },
-            },
-            urgency.formattedLabel.toUpperCase()
-          ),
-          urgency.activeCountdown
-            ? createElement(
+              createElement(
                 "div",
                 {
-                  "data-testid": "arwes-countdown-timer",
                   style: {
-                    fontSize: "1.2rem",
-                    fontWeight: 800,
-                    fontFamily: "monospace",
-                    color: "#38bdf8",
-                    marginTop: "0.1rem",
+                    fontSize: "0.68rem",
+                    color: "#7dd3fc",
+                    fontWeight: 700,
+                    letterSpacing: "0.05em",
                   },
                 },
-                urgency.activeCountdown.formattedTime
-              )
-            : createElement(
-                "div",
-                { style: { fontSize: "0.75rem", color: "#64748b", marginTop: "0.2rem" } },
-                "COLLAPSE TIMING UNAVAILABLE"
-              )
-        ),
+                urgency.formattedLabel.toUpperCase()
+              ),
+              urgency.activeCountdown
+                ? createElement(
+                    "div",
+                    {
+                      "data-testid": "arwes-countdown-timer",
+                      style: {
+                        fontSize: "1.2rem",
+                        fontWeight: 800,
+                        fontFamily: "monospace",
+                        color: "#38bdf8",
+                        marginTop: "0.1rem",
+                      },
+                    },
+                    urgency.activeCountdown.formattedTime
+                  )
+                : null
+            )
+          : null,
 
         /* Temporal Context & Floor Location */
         createElement(
