@@ -109,14 +109,14 @@ export function PersistentHud({
         </div>
         <div className={styles.clock} data-stale={activeCountdown?.isStale || undefined}>
           <span className={styles.kicker}>{title}</span>
-          {activeCountdown && (
-            <>
-              <strong>{formattedClock}</strong>
-              <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
-                {activeCountdown.isStale ? "Last known" : activeCountdown.status === "estimated" ? "Estimated" : "Observed"}
-                {" · "}{activeCountdown.lifecycleStatus} · Evidence
-              </button>
-            </>
+          <strong>{formattedClock}</strong>
+          {activeCountdown ? (
+            <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
+              {activeCountdown.isStale ? "Last known" : activeCountdown.status === "estimated" ? "Estimated" : "Observed"}
+              {" · "}{activeCountdown.lifecycleStatus} · Evidence
+            </button>
+          ) : (
+            <small>No sourced countdown</small>
           )}
         </div>
         <div
@@ -124,6 +124,7 @@ export function PersistentHud({
           data-testid="hud-audience-mode"
           data-mode={liveMode ? "live" : "replay"}
         >
+          <b>{liveMode ? "LIVE" : "REPLAY"}</b>
           <div className={styles.broadcastContext} aria-label="Broadcast context">
             Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}
           </div>

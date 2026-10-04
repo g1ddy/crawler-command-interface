@@ -111,11 +111,13 @@ Replay is a persistent application capability and meaningful HUD state; Timeline
 
 Owns globally available:
 
-- persistent global sequence scrubber spanning the complete available story timeline across Floors 1–3;
-- authoritative Live boundary at the rightmost timeline sequence;
-- TIMELINE navigation utility (positioned after NOTIFICATIONS and before SYSTEM TOOLS) owning floor navigation, event stepping, timeline history/evidence triggers, and countdown evidence inspection.
+- selected floor/replay context;
+- Live vs Replay state;
+- sequence scrubber and previous/next stepping;
+- Return to Live;
+- entry points to Floor Rules, Timeline History, Timeline Evidence, and countdown evidence.
 
-The timeline interaction itself communicates Replay vs Live state, and reaching the latest sequence triggers the normal Live transition without needing persistent Return to Live button clutter in the dock.
+The HUD may expose compact Live/Replay state, but sequence navigation and Return to Live remain peripheral application controls. Candidate HUD renderers must not turn those controls into fictional Crawler Menu semantics.
 
 ### Timeline feature (`src/features/timeline/`)
 

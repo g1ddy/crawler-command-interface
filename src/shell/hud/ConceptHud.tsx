@@ -46,12 +46,8 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
     </div>
     <div className="hud-collapse" data-evidence={countdown ? countdown.isStale ? "stale" : countdown.status : "unavailable"}>
       <span className="hud-kicker">{floorTitle}</span>
-      {countdown && (
-        <>
-          <strong>{countdown.formattedLabel}</strong>
-          <button onClick={() => setShowEvidence(true)}>{`${countdown.isStale ? "Last known" : countdown.status === "estimated" ? "Estimated" : "Observed"} · ${countdown.lifecycleStatus}`} · Evidence</button>
-        </>
-      )}
+      <strong>{countdown?.formattedLabel ?? "Collapse time unavailable"}</strong>
+      {countdown ? <button onClick={() => setShowEvidence(true)}>{`${countdown.isStale ? "Last known" : countdown.status === "estimated" ? "Estimated" : "Observed"} · ${countdown.lifecycleStatus}`} · Evidence</button> : <span>No sourced countdown</span>}
     </div>
     <div className="hud-readings" aria-label="Observed vitals">
       <Reading label="Health" observation={observations.condition.currentHealth} sequence={state.sequence} onInspect={onInspectObservation} />
@@ -62,7 +58,10 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
       className="hud-replay-state"
       data-testid="hud-audience-mode"
       data-mode={isLive ? "live" : "replay"}
-    />
+    >
+      <b>{isLive ? "LIVE" : "REPLAY"}</b>
+      <span>Sequence {state.sequence}</span>
+    </div>
     <Hotlist hotlist={state.hotlist} skills={state.skills} />
     {showEvidence && countdown && <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}><CountdownEvidenceModal countdown={countdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} /></ModalBoundary>}
   </header>;
