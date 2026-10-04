@@ -96,7 +96,7 @@ When replay crosses back before a capability boundary, the destination disappear
 
 The renderer-neutral navigation contract (`deriveNavigationContract` in `src/shell/navigation/navigation-contract.ts`) organizes navigation and system chrome across four explicit information architecture levels:
 
-1. **Always Present (System Identity & Critical Awareness)**: Persistent system identity (Crawler Name/Class), level collapse clock/urgency, and attention summary (owned semantically by `HudCompositionModel`).
+1. **Always Present (System Identity & Critical Awareness)**: Cross-cutting system context (floor location, sequence), level collapse clock/urgency, and attention summary (owned semantically by `HudCompositionModel`). Persistent shell chrome exposes cross-cutting system context, while crawler identity, progression, and vitals are owned by the Crawler feature (`src/features/crawler/`).
 2. **Contextual (Primary & Domain Navigation)**: Capability-filtered root navigation items (`PrimaryNavigationContract`) and feature-local controls.
 3. **Peripheral (Temporal Controls & System Tools)**: Replay transport, sequence scrubber, floor navigator (`TemporalControlsContract`), Return to Live application capability, and System Tools modal trigger.
 4. **On Demand (Inspectors & Overlays)**: Modal overlays (`StatInspectorModal`, `TelemetryInspectorModal`, `ItemProvenanceDrawer`, `CountdownEvidenceModal`, `FloorRules`, `TimelineHistory`, `TimelineEvidence`, `TimelineToolsModal`) managed with focus trapping and deterministic `Escape` handling via `ModalBoundary`.
@@ -111,13 +111,11 @@ Replay is a persistent application capability and meaningful HUD state; Timeline
 
 Owns globally available:
 
-- selected floor/replay context;
-- Live vs Replay state;
-- sequence scrubber and previous/next stepping;
-- Return to Live;
-- entry points to Floor Rules, Timeline History, Timeline Evidence, and countdown evidence.
+- persistent global sequence scrubber spanning the complete available story timeline across Floors 1–3;
+- authoritative Live boundary at the rightmost timeline sequence;
+- TIMELINE navigation utility (positioned after NOTIFICATIONS and before SYSTEM TOOLS) owning floor navigation, event stepping, timeline history/evidence triggers, and countdown evidence inspection.
 
-The HUD may expose compact Live/Replay state, but sequence navigation and Return to Live remain peripheral application controls. Candidate HUD renderers must not turn those controls into fictional Crawler Menu semantics.
+The timeline interaction itself communicates Replay vs Live state, and reaching the latest sequence triggers the normal Live transition without needing persistent Return to Live button clutter in the dock.
 
 ### Timeline feature (`src/features/timeline/`)
 

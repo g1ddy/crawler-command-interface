@@ -9,6 +9,7 @@ import { TelemetryInspectorModal } from "../../features/timeline/evidence/Teleme
 import { TimelineHistory } from "../../features/timeline/history/TimelineHistory";
 import { TimelineControls } from "../replay/TimelineControls";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
+import timelineStyles from "../replay/TimelineControls.module.css";
 import { TimelineToolsModal } from "../tools/TimelineToolsModal";
 import type { ReplayCommandCallbacks } from "../../features/timeline/public";
 
@@ -52,9 +53,11 @@ export function WorkspaceOverlays({ snapshot, commands, inspectStat, closeStat,
     {inspectObservation && <ModalBoundary label="Telemetry provenance" onClose={closeObservation}>
       <TelemetryInspectorModal observation={inspectObservation} sources={sources} onClose={closeObservation} />
     </ModalBoundary>}
-    {showTimelinePanel && <ModalBoundary label="Timeline controls" onClose={closeTimelinePanel}>
-      <TimelineControls model={snapshot.replayPresentation} commands={replayCommands} onClose={closeTimelinePanel} />
-    </ModalBoundary>}
+    {showTimelinePanel && (
+      <div className={timelineStyles.disclosure}>
+        <TimelineControls model={snapshot.replayPresentation} commands={replayCommands} onClose={closeTimelinePanel} />
+      </div>
+    )}
     {tools && <ModalBoundary label="System tools" onClose={tools.onClose}>
       <TimelineToolsModal {...tools} />
     </ModalBoundary>}

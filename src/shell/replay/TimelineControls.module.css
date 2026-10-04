@@ -133,3 +133,22 @@
 .secondaryCountdown small {
   color: #94a3b8;
 }
+
+
+.disclosure {
+  position: fixed;
+  top: 4.5rem;
+  right: 1rem;
+  z-index: 60;
+  width: min(42rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 6rem);
+  overflow: auto;
+}
+@media (max-width: 760px) {
+  .disclosure {
+    top: 4rem;
+    right: 0.5rem;
+    width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 4.5rem);
+  }
+}

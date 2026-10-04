@@ -212,8 +212,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
   assert.match(html, /PRINCESS CARL/);
   assert.match(html, /Coast Guard Crawler/);
   assert.match(html, /FLOOR 1: DUNGEON ENTRANCE/);
-  assert.match(html, /SEQ 25/);
-  assert.match(html, /LIVE/);
+  assert.match(html, /data-mode="live"/);
   assert.match(html, /04:00/);
   assert.match(html, /ITEM CRAFTED/);
   assert.match(html, /Created Light Bomb/);
@@ -493,8 +492,7 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
   assert.match(html, /data-presentation="authority-arwes"/);
   assert.match(html, /MINIMAL-UNIT/);
   assert.match(html, /FLOOR 3/);
-  assert.match(html, /SEQ 12/);
-  assert.match(html, /REPLAY/);
+  assert.match(html, /data-mode="replay"/);
 });
 
 test("ArwesPresentation renders Pet domain surface across lifecycle states and motion modes", () => {

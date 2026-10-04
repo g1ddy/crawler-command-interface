@@ -1,17 +1,16 @@
 import { expect, test } from "@playwright/test";
-import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
+import { enterReplayByScrubbing } from "../helpers/replay";
 
 test("concepts retain replay state, capability boundaries and device storage", async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   await page.addInitScript(() => localStorage.setItem("crawler_timeline_doc_v2", "existing-device-data"));
   await page.goto("concepts.html");
-  await enterReplayByScrubbing(page);
-  await openReplayContext(page);
   const initialStorage = await page.evaluate(() => JSON.stringify(localStorage));
   const menu = page.getByRole("navigation", { name: "Main Navigation" });
   await expect(menu.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
-  await page.getByLabel("Floor timeline scope").selectOption("all");
+
+  await enterReplayByScrubbing(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.focus();
   await slider.press("Home");
@@ -20,7 +19,7 @@ test("concepts retain replay state, capability boundaries and device storage", a
   for (const name of ["Authority", "Tactical", "Theater"]) {
     await page.getByRole("button", { name, exact: true }).click();
     await expect(slider).toHaveValue(sequence);
-    await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
     await expect(menu.getByRole("button", { name: "MAGIC", exact: true })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "QUESTS", exact: true })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
@@ -36,11 +35,14 @@ test("concepts retain replay state, capability boundaries and device storage", a
     await expect(menu.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
   }
 
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /return to live/i }).click();
+  const maxSeq = await slider.getAttribute("max");
+  if (maxSeq) await slider.fill(maxSeq);
   await expect(menu.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
   await expect(menu.getByRole("button", { name: "PET", exact: true })).toBeVisible();
-  await expect(page.locator('.hud-reading[data-evidence="last-known"]').getByLabel("Inspect Mana evidence"))
-    .toContainText(/Last known · sequence \d+/);
+  const persistentHud = page.locator('[data-hud-composition="persistent"]');
+  await expect(persistentHud.getByRole("button", { name: /Inspect Mana evidence/i })).toHaveCount(0);
+  await expect(persistentHud.getByRole("button", { name: /Inspect Health evidence/i })).toHaveCount(0);
+  await expect(persistentHud.getByRole("button", { name: /Inspect Level evidence/i })).toHaveCount(0);
   for (const name of ["Authority", "Tactical", "Theater"]) {
     await page.getByRole("button", { name, exact: true }).click();
     await page.screenshot({ path: testInfo.outputPath(`${name.toLowerCase()}-live.png`), fullPage: true });

@@ -29,7 +29,7 @@ const mockCapabilitiesMinimal = {
 
 test("Navigation Research Inventory: surface inventory completeness and taxonomy categorization", () => {
   assert.ok(Array.isArray(NAVIGATION_SURFACE_INVENTORY));
-  assert.strictEqual(NAVIGATION_SURFACE_INVENTORY.length, 14);
+  assert.strictEqual(NAVIGATION_SURFACE_INVENTORY.length, 15);
 
   const categories = new Set(NAVIGATION_SURFACE_INVENTORY.map((item) => item.category));
   assert.ok(categories.has("system_identity"));

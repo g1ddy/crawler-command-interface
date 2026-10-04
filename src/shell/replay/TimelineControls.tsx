@@ -63,7 +63,6 @@ export function TimelineControls({
               )
             }
           >
-            <option value="all">All Floors (Whole Story Mode)</option>
             {scope.availableFloors.map((floor) => (
               <option key={floor.id} value={floor.ordinal}>
                 Floor {floor.ordinal}: {floor.title}

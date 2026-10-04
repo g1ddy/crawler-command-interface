@@ -104,6 +104,7 @@ export function CrawlerWorkspace({
   const [showFloorRules, setShowFloorRules] = useState(false);
   const [showTimelineHistory, setShowTimelineHistory] = useState(false);
   const [showTimelineEvidence, setShowTimelineEvidence] = useState(false);
+  const [showTimelinePanel, setShowTimelinePanel] = useState(false);
   const [inventoryFilter, setInventoryFilter] = useState("ALL ITEMS");
   const [equipmentSlot, setEquipmentSlot] = useState<EquipmentSlot>("TORSO");
 
@@ -230,9 +231,6 @@ export function CrawlerWorkspace({
   const handleInspectTelemetry = useCallback(
     (key: string) => {
       const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
-        health: projectedObservations.condition.currentHealth,
-        mana: projectedObservations.condition.currentMana,
-        level: projectedObservations.xpProgress.level,
         viewers: projectedObservations.broadcast.viewers,
       };
       const obs = observationsMap[key];
@@ -289,9 +287,18 @@ export function CrawlerWorkspace({
       ...commands.replayCommands,
       selectSequence: commands.selectSequence,
       returnToLive: commands.returnToLive,
-      openFloorRules: () => setShowFloorRules(true),
-      openTimelineHistory: () => setShowTimelineHistory(true),
-      openTimelineEvidence: () => setShowTimelineEvidence(true),
+      openFloorRules: () => {
+        setShowTimelinePanel(false);
+        setShowFloorRules(true);
+      },
+      openTimelineHistory: () => {
+        setShowTimelinePanel(false);
+        setShowTimelineHistory(true);
+      },
+      openTimelineEvidence: () => {
+        setShowTimelinePanel(false);
+        setShowTimelineEvidence(true);
+      },
       inspectObservation: setInspectObservation,
     }),
     [commands.replayCommands, commands.selectSequence, commands.returnToLive],
@@ -325,7 +332,6 @@ export function CrawlerWorkspace({
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
-            onInspectObservation={setInspectObservation}
             onNavigateToSequence={commands.selectSequence}
           />
         )
@@ -335,6 +341,7 @@ export function CrawlerWorkspace({
           active={resolvedView}
           set={setView}
           capabilities={capabilities}
+          onOpenTimeline={() => setShowTimelinePanel(true)}
           onOpenTools={openTools}
           contract={navigationContract.primaryNavigation}
         />
@@ -343,7 +350,6 @@ export function CrawlerWorkspace({
         <ReplaySurface
           model={replayPresentation}
           commands={replayCommandsWithInspect}
-          projectedObservations={projectedObservations}
         />
       }
       feedback={
@@ -368,6 +374,9 @@ export function CrawlerWorkspace({
           closeHistory={() => setShowTimelineHistory(false)}
           showTimelineEvidence={showTimelineEvidence}
           closeEvidence={() => setShowTimelineEvidence(false)}
+          showTimelinePanel={showTimelinePanel}
+          closeTimelinePanel={() => setShowTimelinePanel(false)}
+          replayCommands={replayCommandsWithInspect}
           tools={
             showJsonModal
               ? {
