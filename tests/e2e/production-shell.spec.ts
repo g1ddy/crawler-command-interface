@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
-import { openReplayContext } from "../helpers/replay";
+import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
 
 const boundary = (type: string) => {
   const event = compiledTimeline.events.find(event => event.type === type);
@@ -11,11 +11,12 @@ const navigation = (page: Page) => page.getByRole("navigation", { name: "Main Na
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/crawler-command-interface/");
-  await openReplayContext(page);
 });
 
 for (const [domain, eventType] of [["PARTY", "PartyFormed"], ["PET", "PetBonded"]]) {
   test(`${domain} enters at its sourced boundary and falls back without losing replay`, async ({ page }) => {
+    await enterReplayByScrubbing(page);
+    await openReplayContext(page);
     await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
     const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
     const sequence = boundary(eventType);
@@ -30,13 +31,15 @@ for (const [domain, eventType] of [["PARTY", "PartyFormed"], ["PET", "PetBonded"
     await expect(navigation(page).getByRole("button", { name: "CRAWLER", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(slider).toHaveValue(String(sequence - 1));
     await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
-    await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /RETURN TO LIVE/i }).click();
+    await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /Return to Live sequence/i }).click();
     await expect(destination).toBeVisible();
     await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
   });
 }
 
 test("early HUD readings remain unknown rather than displaying causal defaults", async ({ page }) => {
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("1");
   for (const label of ["Health", "Mana", "Level"]) {
@@ -68,6 +71,8 @@ test("System Tools traps focus, blocks navigation shortcuts, and restores its tr
 });
 
 test("closing a nested inspector restores the parent evidence surface", async ({ page }) => {
+  await enterReplayByScrubbing(page);
+  await openReplayContext(page);
   const trigger = page.getByRole("button", { name: "📡 TELEMETRY", exact: true });
   await trigger.click();
   const parent = page.getByRole("dialog", { name: "Timeline evidence", exact: true });
@@ -83,7 +88,8 @@ test("closing a nested inspector restores the parent evidence surface", async ({
 
 test("Persistent shell reflows without viewport overflow and supports reduced motion", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.locator("summary").filter({ hasText: "Replay context & tools" }).click();
+  await enterReplayByScrubbing(page);
+  await page.getByRole("button", { name: /Expand replay controls|Collapse replay controls/i }).click();
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const hud = page.locator('[data-hud-composition="persistent"]');
@@ -149,4 +155,60 @@ test("Primary navigation supports keyboard focus and desktop bar layout", async 
   await page.keyboard.press("Tab");
   const inventoryBtn = navContainer.getByRole("button", { name: "INVENTORY" });
   await expect(inventoryBtn).toBeFocused();
+});
+
+test("layout integration: Live mode has compact scrubber, scrubbing enters Replay", async ({ page }) => {
+  // Assert the shared dock exists
+  const dock = page.getByRole("complementary", { name: "Replay controls" });
+  await expect(dock).toBeVisible();
+
+  // Assert the timeline slider is visible
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await expect(slider).toBeVisible();
+
+  // Assert LIVE is shown
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
+
+  // Assert there are zero Return to Live sequence buttons
+  const returnToLiveBtn = page.getByRole("button", { name: /Return to Live sequence/i });
+  await expect(returnToLiveBtn).toHaveCount(0);
+
+  // Assert expand controls do not exist
+  const expandBtn = page.getByRole("button", { name: /Expand replay controls|Collapse replay controls/i });
+  await expect(expandBtn).toHaveCount(0);
+
+  // Scrub the slider directly from Live
+  await enterReplayByScrubbing(page);
+
+  // Assert the session is now Replay
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+
+  // Assert the historical cue is visible
+  await expect(page.getByTestId("historical-context-cue")).toBeVisible();
+
+  // Assert exactly one Return to Live sequence button exists
+  await expect(returnToLiveBtn).toHaveCount(1);
+
+  // Assert expand controls exist
+  await expect(expandBtn).toHaveCount(1);
+
+  // Expand controls
+  await openReplayContext(page);
+  await expect(page.getByTestId("replay-transport-container")).toBeVisible();
+
+  // Return to Live
+  await returnToLiveBtn.click();
+
+  // Assert Live mode again
+  await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
+
+  // Assert the Return to Live button is gone
+  await expect(returnToLiveBtn).toHaveCount(0);
+
+  // Assert the timeline scrubber remains visible
+  await expect(slider).toBeVisible();
+
+  // Assert expanded replay controls are gone
+  await expect(expandBtn).toHaveCount(0);
+  await expect(page.getByTestId("replay-transport-container")).not.toBeVisible();
 });

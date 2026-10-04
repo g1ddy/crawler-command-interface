@@ -14,21 +14,30 @@ export function ShellFrame({ presentation, isLive, hud, navigation, replay, chil
   feedback: ReactNode;
 }) {
   const preview = presentation !== "production";
-  return <div className={preview ? "concept-hud-wrapper" : styles.frame}
-    data-concept={preview ? presentation : undefined}
-    data-hud-presentation={preview ? presentation : undefined}>
-    <a className={styles.skipLink} href="#crawler-workspace">Skip to active domain</a>
-    <main data-mode={isLive ? "live" : "replay"} data-presentation={presentation} data-concept={presentation}>
-      {hud}
-      {navigation}
-      {feedback}
-      <div className={preview ? "view" : styles.workspace}>
-        {replay}
-        <div id="crawler-workspace" className={styles.feature} tabIndex={-1}>
-          {children}
+  return (
+    <div
+      className={preview ? "concept-hud-wrapper" : styles.frame}
+      data-concept={preview ? presentation : undefined}
+      data-hud-presentation={preview ? presentation : undefined}
+    >
+      <a className={styles.skipLink} href="#crawler-workspace">Skip to active domain</a>
+      <main
+        className={styles.main}
+        data-mode={isLive ? "live" : "replay"}
+        data-presentation={presentation}
+        data-concept={presentation}
+      >
+        {hud}
+        {navigation}
+        {feedback}
+        <div className={preview ? "view" : styles.workspace}>
+          <div id="crawler-workspace" className={styles.feature} tabIndex={-1}>
+            {children}
+          </div>
+          {replay}
         </div>
-      </div>
-      {overlays}
-    </main>
-  </div>;
+        {overlays}
+      </main>
+    </div>
+  );
 }

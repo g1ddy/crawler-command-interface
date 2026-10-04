@@ -13,7 +13,10 @@
   --line: var(--edge);
   color: var(--ink);
   background: #090f15;
-  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
   font: 1rem/1.5 system-ui, sans-serif;
   letter-spacing: normal;
 }
@@ -28,7 +31,7 @@
 .concept-picker button { border: 1px solid #828b93; background: transparent; padding: .5rem 1rem; border-radius: .25rem; }
 .concept-picker button[aria-pressed=true] { background: #edf3f5; color: #111b20; }
 .concept-description { flex-basis: 100%; }
-:is(.concept-lab, .concept-hud-wrapper) main { max-width: 1800px; margin: auto; }
+:is(.concept-lab, .concept-hud-wrapper) main { max-width: 1800px; margin: auto; display: flex; flex-direction: column; flex: 1; min-height: 0; width: 100%; }
 .system-hud { display: grid; grid-template-columns: 1fr 2fr auto; gap: 1.5rem; padding: 2rem; align-items: center; border-bottom: 1px solid var(--edge); }
 .hud-kicker { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .15em; color: var(--muted); }
 .hud-identity h1 { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1; margin: .5rem 0; text-transform: uppercase; }
@@ -55,7 +58,7 @@
 :is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] > b { display: none; }
 :is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] button { font-size: .875rem; padding: 1rem; letter-spacing: .07em; }
 :is(.concept-lab, .concept-hud-wrapper) [data-shell-navigation] [aria-label="Application tools"] { margin-left: auto; }
-:is(.concept-lab, .concept-hud-wrapper) .view { max-width: none; padding: 1.5rem 2rem 3rem; }
+:is(.concept-lab, .concept-hud-wrapper) .view { max-width: none; padding: 1.5rem 2rem 1rem; display: flex; flex-direction: column; flex: 1; min-height: 0; box-sizing: border-box; }
 
 
 :is(.concept-lab, .concept-hud-wrapper) .timeline-scrubber-panel { border-left: 3px solid var(--accent); background: #0b121a; }
@@ -76,14 +79,14 @@
 
 /* Tactical moves domain selection into a persistent left rail. */
 :is(.concept-lab, .concept-hud-wrapper)[data-concept=tactical] { --accent: #bade90; --surface: #131c18; --surface-raised: #1c2921; --edge: #44594a; background: #0b110e; }
-[data-concept=tactical] main { display: grid; grid-template-columns: 210px minmax(0, 1fr); }
+[data-concept=tactical] main { display: grid; grid-template-columns: 210px minmax(0, 1fr); flex: 1; min-height: 0; }
 [data-concept=tactical] .system-hud { grid-column: 1 / -1; padding: 1.25rem 2rem; }
 [data-concept=tactical] .hud-identity h1 { font-size: 2rem; }
 [data-concept=tactical] [data-shell-navigation] { display: flex; flex-direction: column; align-items: stretch; align-self: start; position: sticky; top: 0; padding: 1rem; border-right: 1px solid var(--edge); border-bottom: none; }
 [data-concept=tactical] [data-shell-navigation] button { text-align: left; border-bottom: 0; border-left: 3px solid transparent; }
 [data-concept=tactical] [data-shell-navigation] button[aria-pressed="true"] { border-left-color: var(--accent); background: var(--surface-raised); }
 [data-concept=tactical] [data-shell-navigation] [aria-label="Application tools"] { margin: 2rem 0 0; }
-[data-concept=tactical] .view { padding: 1rem; }
+[data-concept=tactical] .view { padding: 1rem; grid-column: 2; display: flex; flex-direction: column; flex: 1; min-height: 0; }
 [data-concept=tactical] .two-col { grid-template-columns: 1fr; }
 
 /* Theater uses a notice-style clock above a separate menu ribbon. */
