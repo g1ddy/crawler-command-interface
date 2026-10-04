@@ -944,8 +944,8 @@
     "scanned": true
   },
   "src/shell/replay/ReplaySurface.tsx": {
-    "complexity": 3,
-    "loc": 88,
+    "complexity": 11,
+    "loc": 109,
     "instability": 0.89,
     "fanIn": 1,
     "fanOut": 8,
@@ -968,8 +968,8 @@
     "scanned": true
   },
   "src/shell/replay/ReplayControls.tsx": {
-    "complexity": 24,
-    "loc": 177,
+    "complexity": 19,
+    "loc": 217,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
@@ -977,7 +977,7 @@
   },
   "src/shell/ShellFrame.tsx": {
     "complexity": 6,
-    "loc": 35,
+    "loc": 44,
     "instability": 0.75,
     "fanIn": 1,
     "fanOut": 3,
