@@ -1,6 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
 import { compiledTimeline } from '../../app/domain/fixtures/compiled-timeline.ts';
-import { getNarrativePresentation } from '../../app/domain/narrative-presentation.ts';
 import { openReplayContext, enterReplayByScrubbing } from '../helpers/replay';
 
 interface TestTimelineEvent {
