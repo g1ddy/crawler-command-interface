@@ -42,12 +42,15 @@ test("early HUD readings remain unknown rather than displaying causal defaults",
   await openReplayContext(page);
   await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("1");
-  for (const label of ["Health", "Mana", "Level"]) {
-    const reading = page.getByRole("group", { name: `${label} reading` });
-    await expect(reading).toHaveAttribute("data-evidence", "unknown");
-    await expect(reading).toContainText("Unknown");
-    await expect(reading.locator("strong")).toHaveText("—");
-  }
+
+  // Persistent HUD chrome no longer renders persistent Health, Mana, or Level readings
+  await expect(page.getByRole("group", { name: "Health reading" })).toHaveCount(0);
+  await expect(page.getByRole("group", { name: "Mana reading" })).toHaveCount(0);
+  await expect(page.getByRole("group", { name: "Level reading" })).toHaveCount(0);
+
+  // Crawler feature HEALTH / CONDITIONS surface exposes early vitals
+  await page.getByRole("button", { name: "HEALTH / CONDITIONS", exact: true }).click();
+  await expect(page.getByText("VITALS")).toBeVisible();
 });
 
 test("System Tools traps focus, blocks navigation shortcuts, and restores its trigger", async ({ page }) => {

@@ -46,7 +46,7 @@ test.beforeEach(async ({ page }) => {
 test("scrubbing backward removes state that was introduced later", async ({ page }) => {
   const latestSequence = await latestRuntimeSequence(page);
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
-  await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
+  await expect(page.getByText("LEVEL 13")).toBeVisible();
 
   await enterReplayByScrubbing(page);
   await openReplayContext(page);
@@ -54,7 +54,7 @@ test("scrubbing backward removes state that was introduced later", async ({ page
 
   await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
   await expect(page.getByTestId("hud-audience-mode")).not.toContainText("LIVE");
-  await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
+  await expect(page.getByText("LEVEL 13")).toHaveCount(0);
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   await expect(page.locator("[class*='item']")).toHaveCount(0);
 });
@@ -113,12 +113,12 @@ test("Return to Live sequence restores the latest projection", async ({ page }) 
   await enterReplayByScrubbing(page);
   await openReplayContext(page);
   await selectSequence(page, 1);
-  await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
+  await expect(page.getByText("LEVEL 13")).toHaveCount(0);
 
   await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /Return to Live sequence/ }).click();
 
   await expect(sequenceHeading(page)).toContainText(`SEQ #${latestSequence}`);
-  await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
+  await expect(page.getByText("LEVEL 13")).toBeVisible();
   await expect(page.getByTestId("hud-audience-mode")).toContainText("LIVE");
 });
 

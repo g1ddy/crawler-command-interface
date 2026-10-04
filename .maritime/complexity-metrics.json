@@ -329,7 +329,7 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 414,
+    "loc": 410,
     "instability": 0.95,
     "fanIn": 1,
     "fanOut": 21,
@@ -425,15 +425,15 @@
   },
   "src/shell/hud/public.ts": {
     "complexity": 1,
-    "loc": 16,
+    "loc": 15,
     "instability": 0.2,
     "fanIn": 4,
     "fanOut": 1,
     "scanned": true
   },
   "src/shell/hud/hud-composition.ts": {
-    "complexity": 6,
-    "loc": 227,
+    "complexity": 5,
+    "loc": 189,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
@@ -450,8 +450,8 @@
   "src/features/timeline/evidence/evidencePresentation.ts": {
     "complexity": 15,
     "loc": 225,
-    "instability": 0.22,
-    "fanIn": 7,
+    "instability": 0.25,
+    "fanIn": 6,
     "fanOut": 2,
     "scanned": true
   },
@@ -481,10 +481,10 @@
   },
   "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
     "complexity": 19,
-    "loc": 654,
-    "instability": 0.91,
+    "loc": 610,
+    "instability": 0.9,
     "fanIn": 1,
-    "fanOut": 10,
+    "fanOut": 9,
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
@@ -517,14 +517,6 @@
     "instability": 0.5,
     "fanIn": 2,
     "fanOut": 2,
-    "scanned": true
-  },
-  "src/presentation/authority-arwes/primitives/AuthorityText.ts": {
-    "complexity": 9,
-    "loc": 56,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthorityTransition.ts": {
@@ -800,8 +792,8 @@
     "scanned": true
   },
   "src/shell/hud/ConceptHud.tsx": {
-    "complexity": 13,
-    "loc": 69,
+    "complexity": 11,
+    "loc": 68,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
@@ -840,11 +832,11 @@
     "scanned": true
   },
   "src/shell/hud/PersistentHud.tsx": {
-    "complexity": 43,
-    "loc": 148,
-    "instability": 0.89,
+    "complexity": 30,
+    "loc": 88,
+    "instability": 0.88,
     "fanIn": 1,
-    "fanOut": 8,
+    "fanOut": 7,
     "scanned": true
   },
   "src/shell/navigation/public.ts": {
@@ -1045,6 +1037,14 @@
     "instability": 1,
     "fanIn": 0,
     "fanOut": 6,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityText.ts": {
+    "complexity": 9,
+    "loc": 56,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
     "scanned": true
   }
 }

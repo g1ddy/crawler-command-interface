@@ -230,9 +230,6 @@ export function CrawlerWorkspace({
   const handleInspectTelemetry = useCallback(
     (key: string) => {
       const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
-        health: projectedObservations.condition.currentHealth,
-        mana: projectedObservations.condition.currentMana,
-        level: projectedObservations.xpProgress.level,
         viewers: projectedObservations.broadcast.viewers,
       };
       const obs = observationsMap[key];
@@ -325,7 +322,6 @@ export function CrawlerWorkspace({
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
-            onInspectObservation={setInspectObservation}
             onNavigateToSequence={commands.selectSequence}
           />
         )
