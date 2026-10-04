@@ -39,12 +39,17 @@ for (const [domain, eventType] of [["PARTY", "PartyFormed"], ["PET", "PetBonded"
 test("early HUD readings remain unknown rather than displaying causal defaults", async ({ page }) => {
   await enterReplayByScrubbing(page);
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("1");
-  for (const label of ["Health", "Mana", "Level"]) {
-    const reading = page.getByRole("group", { name: `${label} reading` });
-    await expect(reading).toHaveAttribute("data-evidence", "unknown");
-    await expect(reading).toContainText("Unknown");
-    await expect(reading.locator("strong")).toHaveText("—");
-  }
+
+  // Open the timeline utility and check telemetry
+  await openReplayContext(page);
+  const telemetryBtn = page.getByRole("button", { name: "📡 TELEMETRY", exact: true });
+  await telemetryBtn.click();
+
+  const telemetryPanel = page.getByRole("dialog", { name: "Timeline evidence" });
+  await expect(telemetryPanel).toContainText("No condition or attribute observations at this sequence");
+
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Escape");
 });
 
 test("System Tools traps focus, blocks navigation shortcuts, and restores its trigger", async ({ page }) => {
@@ -75,13 +80,15 @@ test("closing a nested inspector restores the parent evidence surface", async ({
   await trigger.click();
   const parent = page.getByRole("dialog", { name: "Timeline evidence", exact: true });
   const reading = parent.locator(".telemetry-pill").first();
+  await expect(reading).toBeVisible();
   await reading.click();
   await expect(page.getByRole("dialog", { name: "Telemetry provenance", exact: true })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(parent).toBeVisible();
   await expect(reading).toBeFocused();
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Open timeline utility" })).toBeFocused();
+  // Expect focus to return to the telemetry trigger, not the timeline close button
+  await expect(trigger).toBeFocused();
 });
 
 test("Persistent shell reflows without viewport overflow and supports reduced motion", async ({ page }, testInfo) => {

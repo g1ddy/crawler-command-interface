@@ -52,8 +52,11 @@ test("Navigation Research Inventory: surface inventory completeness and taxonomy
 
   assert.ok(establishedItems.length > 0);
   assert.ok(provisionalItems.length > 0);
-  assert.strictEqual(removedItems.length, 1);
-  assert.strictEqual(removedItems[0].surfaceId, "duplicate_concept_hud_return_to_live");
+  assert.strictEqual(removedItems.length, 3);
+  const removedIds = removedItems.map(item => item.surfaceId);
+  assert.ok(removedIds.includes("masthead_identity"));
+  assert.ok(removedIds.includes("telemetry_vitals_readings"));
+  assert.ok(removedIds.includes("duplicate_concept_hud_return_to_live"));
 });
 
 test("Navigation Contract: derives runtime SystemChromeContract containing strictly consumed primary navigation data", () => {

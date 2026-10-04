@@ -10,6 +10,14 @@ export async function openReplayContext(page: Page) {
   await expect(panel).toBeVisible();
 }
 
+export async function returnToLive(page: Page) {
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  const maxSequence = await slider.getAttribute("max");
+  expect(maxSequence).not.toBeNull();
+  await slider.fill(maxSequence!);
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+}
+
 export async function enterReplayByScrubbing(page: Page) {
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   const minSequence = await slider.getAttribute("min");

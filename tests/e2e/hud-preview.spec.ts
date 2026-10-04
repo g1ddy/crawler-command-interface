@@ -466,10 +466,10 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();
 
-  // Verify persistent crawler identity in Arwes spine header
+  // Verify persistent floor identity in Arwes spine header
   const spine = page.getByTestId("arwes-spine-header");
   await expect(spine).toBeVisible();
-  await expect(spine).toContainText("CRAWLER HUD");
+  await expect(spine).toContainText("FLOOR 3");
 
   // Verify CRAWLER view begins with player attributes and progression
   await expect(page.getByText("PLAYER ATTRIBUTES")).toBeVisible();
