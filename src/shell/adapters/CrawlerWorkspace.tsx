@@ -290,9 +290,18 @@ export function CrawlerWorkspace({
       ...commands.replayCommands,
       selectSequence: commands.selectSequence,
       returnToLive: commands.returnToLive,
-      openFloorRules: () => setShowFloorRules(true),
-      openTimelineHistory: () => setShowTimelineHistory(true),
-      openTimelineEvidence: () => setShowTimelineEvidence(true),
+      openFloorRules: () => {
+        setShowTimelinePanel(false);
+        setShowFloorRules(true);
+      },
+      openTimelineHistory: () => {
+        setShowTimelinePanel(false);
+        setShowTimelineHistory(true);
+      },
+      openTimelineEvidence: () => {
+        setShowTimelinePanel(false);
+        setShowTimelineEvidence(true);
+      },
       inspectObservation: setInspectObservation,
     }),
     [commands.replayCommands, commands.selectSequence, commands.returnToLive],

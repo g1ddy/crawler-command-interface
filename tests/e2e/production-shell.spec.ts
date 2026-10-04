@@ -69,6 +69,7 @@ test("System Tools traps focus, blocks navigation shortcuts, and restores its tr
 
 test("closing a nested inspector restores the parent evidence surface", async ({ page }) => {
   await enterReplayByScrubbing(page);
+  await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("50");
   await openReplayContext(page);
   const trigger = page.getByRole("button", { name: "📡 TELEMETRY", exact: true });
   await trigger.click();
@@ -80,7 +81,7 @@ test("closing a nested inspector restores the parent evidence surface", async ({
   await expect(parent).toBeVisible();
   await expect(reading).toBeFocused();
   await page.keyboard.press("Escape");
-  await expect(trigger).toBeFocused();
+  await expect(page.getByRole("button", { name: "Open timeline utility" })).toBeFocused();
 });
 
 test("Persistent shell reflows without viewport overflow and supports reduced motion", async ({ page }, testInfo) => {

@@ -122,10 +122,7 @@ export function TimelineControls({
             <button
               type="button"
               className={styles.button}
-              onClick={() => {
-                if (onClose) onClose();
-                commands.openFloorRules?.();
-              }}
+              onClick={commands.openFloorRules}
             >
               📜 FLOOR RULES
             </button>
@@ -134,10 +131,7 @@ export function TimelineControls({
             <button
               type="button"
               className={styles.button}
-              onClick={() => {
-                if (onClose) onClose();
-                commands.openTimelineHistory?.();
-              }}
+              onClick={commands.openTimelineHistory}
             >
               📜 HISTORY
             </button>
@@ -146,10 +140,7 @@ export function TimelineControls({
             <button
               type="button"
               className={styles.button}
-              onClick={() => {
-                if (onClose) onClose();
-                commands.openTimelineEvidence?.();
-              }}
+              onClick={commands.openTimelineEvidence}
             >
               📡 TELEMETRY
             </button>
@@ -158,10 +149,7 @@ export function TimelineControls({
             <button
               type="button"
               className={styles.button}
-              onClick={() => {
-                if (onClose) onClose();
-                commands.openCountdownEvidence?.();
-              }}
+              onClick={commands.openCountdownEvidence}
             >
               ⏱ Collapse clock evidence
             </button>

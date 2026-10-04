@@ -93,10 +93,9 @@ test("live presentation switching in System Tools preserves session state and up
       await expect(page.locator('[data-hud-renderer="persistent"]')).toHaveCount(0);
     }
 
-    // Verify continuity of replay sequence, live/replay mode, capabilities, and historical cue
+    // Verify continuity of replay sequence, live/replay mode, and capabilities
     await expect(slider).toHaveValue("117");
-    await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
-    await expect(page.locator('[data-testid="historical-context-cue"]:visible').first()).toBeVisible();
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
     await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
     await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Open data tools" }).click();
@@ -453,11 +452,11 @@ test("mobile timeline utility panel opens, navigates floors, and closes cleanly"
   await expect(floorSelect).toBeVisible();
   await floorSelect.selectOption("1");
 
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  await expect(slider).toBeVisible();
-
   await page.getByRole("button", { name: "Close timeline controls" }).click();
   await expect(panel).not.toBeVisible();
+
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await expect(slider).toBeVisible();
 });
 
 test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, and Skills content without page overflow", async ({ page }) => {

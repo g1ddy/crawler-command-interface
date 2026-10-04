@@ -1,11 +1,13 @@
 import { expect, type Page } from "@playwright/test";
 
 export async function openReplayContext(page: Page) {
-  const timelineBtn = page.getByRole("button", { name: "TIMELINE", exact: true });
-  if (await timelineBtn.isVisible()) {
-    await timelineBtn.click();
-    await expect(page.getByRole("region", { name: "Timeline navigation panel" })).toBeVisible();
+  const panel = page.getByRole("region", { name: "Timeline navigation panel" });
+  if (await panel.isVisible()) {
+    return;
   }
+  const timelineBtn = page.getByRole("button", { name: "Open timeline utility" });
+  await timelineBtn.click();
+  await expect(panel).toBeVisible();
 }
 
 export async function enterReplayByScrubbing(page: Page) {

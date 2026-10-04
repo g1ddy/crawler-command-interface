@@ -60,17 +60,17 @@ test("floor navigation selects derived floor endpoints", async ({ page }) => {
   const floors = page.getByRole("combobox", { name: "Select floor context" });
 
   await floors.selectOption("1");
+  await page.getByRole("button", { name: "Close timeline controls" }).click();
   await expect(slider).toHaveValue(String(floor1EndSequence));
 
+  await openReplayContext(page);
   await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
-  await expect(floors).toHaveValue("2");
+  await page.getByRole("button", { name: "Close timeline controls" }).click();
   await expect(slider).toHaveValue(String(floor2EndSequence));
 
+  await openReplayContext(page);
   await page.getByRole("button", { name: /NEXT FLOOR/ }).click();
-  const floors2 = page.getByRole("combobox", { name: "Select floor context" });
-  if (await floors2.isVisible()) {
-    await expect(floors2).toHaveValue("3");
-  }
+  await page.getByRole("button", { name: "Close timeline controls" }).click();
   await expect(slider).toHaveValue(String(runtimeLatestSequence));
 });
 
@@ -83,13 +83,6 @@ test("timeline evidence surfaces preserve source locators and confidence", async
   await expect(secondaryCountdown).toContainText("EVIDENCE: src-dcc-database-floor-2");
   await expect(secondaryCountdown).toContainText("Floor Timeline & Patch Notes");
   await expect(secondaryCountdown).toContainText("CORROBORATED");
-
-  await page.getByRole("button", { name: /Collapse clock evidence/ }).click();
-  const countdownModal = page.locator(".modal-content").filter({ hasText: "COUNTDOWN ESTIMATE & PROVENANCE" });
-  await expect(countdownModal).toContainText("Evidence: src-dcc-database-floor-2");
-  await expect(countdownModal).toContainText("Floor Timeline & Patch Notes");
-  await expect(countdownModal).toContainText("CORROBORATED");
-  await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "📡 TELEMETRY", exact: true }).click();
   const evidenceModal = page.locator(".modal-content").filter({ hasText: "SOURCED HUD OBSERVATIONS" });

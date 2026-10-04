@@ -5,7 +5,6 @@ import { enterReplayByScrubbing, openReplayContext } from "../helpers/replay";
 
 async function preparePage(page: Page) {
   await page.goto("/crawler-command-interface/");
-  await openReplayContext(page);
   await expect(page.getByRole("navigation", { name: "Main Navigation" })).toBeVisible();
   await page.addStyleTag({ content: `*, *::before, *::after { animation: none !important; caret-color: transparent !important; transition: none !important; }` });
   await page.evaluate(async () => { await document.fonts.ready; window.scrollTo(0, 0); });
@@ -26,13 +25,6 @@ async function selectCrawlerSubTab(page: Page, name: "STATS" | "HEALTH / CONDITI
 }
 
 async function capture(page: Page, key: keyof typeof SCREENSHOTS) {
-  // Capture the default compact replay surface, except behind an open inspector.
-  if (await page.getByRole("dialog").count() === 0) {
-    const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
-    if (await collapseBtn.isVisible()) {
-      await collapseBtn.click();
-    }
-  }
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: stagedScreenshotPath(key), fullPage: false, animations: "disabled" });
 }
@@ -50,18 +42,14 @@ test.beforeEach(async ({ page }) => { await preparePage(page); });
 
 test("export early replay before conditional canon capabilities", async ({ page }) => {
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("1");
-  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
   await expect(page.getByRole("button", { name: "PARTY", exact: true })).toHaveCount(0);
   await capture(page, "earlyReplay");
 });
 
 test("export replay at the sourced Pet bond boundary", async ({ page }) => {
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const bond = compiledTimeline.events.find(event => event.type === "PetBonded");
   if (!bond) throw new Error("Missing canonical Pet bond");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill(String(bond.sequence));
@@ -72,7 +60,7 @@ test("export replay at the sourced Pet bond boundary", async ({ page }) => {
 
 test("export top-level Crawler tab", async ({ page }) => { await selectCrawlerSubTab(page, "STATS"); await expect(page.getByText("PLAYER ATTRIBUTES", { exact: true })).toBeVisible(); await capture(page, "crawler"); });
 test("export top-level Inventory tab", async ({ page }) => { await selectTopLevelTab(page, "INVENTORY"); await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: /^ALL ITEMS\b/ })).toHaveClass(/on/); await expect(page.getByRole("textbox", { name: "Search items" })).toBeVisible(); await capture(page, "inventory"); });
-test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => { await enterReplayByScrubbing(page); await openReplayContext(page); await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all"); await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13"); await selectTopLevelTab(page, "INVENTORY"); await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click(); await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible(); await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible(); await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible(); await capture(page, "awards"); });
+test("export Inventory Awards and Boxes at the sourced award sequence", async ({ page }) => { await enterReplayByScrubbing(page); await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("13"); await selectTopLevelTab(page, "INVENTORY"); await page.getByRole("button", { name: /^AWARDS \/ BOXES\b/ }).click(); await expect(page.getByText("AWARD LEDGER", { exact: true })).toBeVisible(); await expect(page.getByLabel("Silver Adventurer Box award", { exact: true })).toBeVisible(); await expect(page.getByLabel("Bronze Weapon Box award", { exact: true })).toBeVisible(); await capture(page, "awards"); });
 test("export top-level Skills tab", async ({ page }) => { await selectTopLevelTab(page, "SKILLS"); await expect(page.getByRole("heading", { name: "SKILLS", exact: true })).toBeVisible(); await expect(page.getByText("SKILL LIBRARY", { exact: true })).toBeVisible(); await capture(page, "skills"); });
 test("renders the Hotlist after a live assignment from an isolated test timeline", async ({ page }) => { await seedHotlistSkillsScenario(page); await selectTopLevelTab(page, "SKILLS"); await page.getByRole("button", { name: "Assign to hotlist slot 1", exact: true }).click(); await expect(page.locator('[aria-label="Hotlist"]')).toBeVisible(); await expect(page.locator('[aria-label="Hotlist"]')).toContainText("1"); });
 
@@ -90,10 +78,8 @@ test("renders Quests from an isolated noncanonical fixture without publishing a 
 
 test("Possessions replay boundary and mutation gating: disables actions when scrubbing replay", async ({ page }) => {
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("5");
-  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
   await selectTopLevelTab(page, "INVENTORY");
   await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
@@ -110,8 +96,6 @@ test("Possessions replay boundary and mutation gating: disables actions when scr
 test("root navigation follows the real Party capability boundary during replay", async ({ page }) => {
   const navigation = page.getByRole("navigation", { name: "Main Navigation" });
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("2");
   await expect(navigation.getByRole("button", { name: "PARTY", exact: true })).toHaveCount(0);
@@ -148,10 +132,8 @@ test("mutation gating: live mode behavior when points remain vs empty", async ({
 
 test("mutation gating: historical replay disables stat allocation regardless of live points", async ({ page }) => {
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("15");
-  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
   await selectCrawlerSubTab(page, "STATS");
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
@@ -164,10 +146,8 @@ test("mutation gating: historical replay disables stat allocation regardless of 
 
 test("mutation gating: early replay disables stat allocation", async ({ page }) => {
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("2");
-  await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
+  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
   await selectCrawlerSubTab(page, "STATS");
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
