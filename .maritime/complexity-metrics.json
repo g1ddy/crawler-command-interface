@@ -19,7 +19,7 @@
     "complexity": 1,
     "loc": 2,
     "instability": 0.01,
-    "fanIn": 69,
+    "fanIn": 68,
     "fanOut": 1,
     "scanned": true
   },
@@ -168,8 +168,8 @@
     "scanned": true
   },
   "app/domain/projection/crawler.ts": {
-    "complexity": 13,
-    "loc": 133,
+    "complexity": 22,
+    "loc": 142,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -177,7 +177,7 @@
   },
   "app/domain/projection/inventory.ts": {
     "complexity": 16,
-    "loc": 170,
+    "loc": 172,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -288,7 +288,7 @@
     "scanned": true
   },
   "app/domain/stats.ts": {
-    "complexity": 17,
+    "complexity": 19,
     "loc": 183,
     "instability": 0.13,
     "fanIn": 7,
@@ -329,7 +329,7 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 414,
+    "loc": 426,
     "instability": 0.95,
     "fanIn": 1,
     "fanOut": 21,
@@ -345,7 +345,7 @@
   },
   "src/features/timeline/replay-presentation.ts": {
     "complexity": 24,
-    "loc": 305,
+    "loc": 303,
     "instability": 0.5,
     "fanIn": 3,
     "fanOut": 3,
@@ -442,16 +442,16 @@
   "src/features/timeline/public.ts": {
     "complexity": 1,
     "loc": 39,
-    "instability": 0.39,
-    "fanIn": 11,
+    "instability": 0.35,
+    "fanIn": 13,
     "fanOut": 7,
     "scanned": true
   },
   "src/features/timeline/evidence/evidencePresentation.ts": {
     "complexity": 15,
     "loc": 225,
-    "instability": 0.22,
-    "fanIn": 7,
+    "instability": 0.25,
+    "fanIn": 6,
     "fanOut": 2,
     "scanned": true
   },
@@ -481,10 +481,10 @@
   },
   "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
     "complexity": 19,
-    "loc": 654,
-    "instability": 0.91,
+    "loc": 588,
+    "instability": 0.9,
     "fanIn": 1,
-    "fanOut": 10,
+    "fanOut": 9,
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
@@ -519,14 +519,6 @@
     "fanOut": 2,
     "scanned": true
   },
-  "src/presentation/authority-arwes/primitives/AuthorityText.ts": {
-    "complexity": 9,
-    "loc": 56,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
-    "scanned": true
-  },
   "src/presentation/authority-arwes/primitives/AuthorityTransition.ts": {
     "complexity": 13,
     "loc": 99,
@@ -552,8 +544,8 @@
     "scanned": true
   },
   "src/features/crawler/crawler-presentation.ts": {
-    "complexity": 16,
-    "loc": 169,
+    "complexity": 19,
+    "loc": 171,
     "instability": 0.43,
     "fanIn": 4,
     "fanOut": 3,
@@ -569,7 +561,7 @@
   },
   "src/features/crawler/health/HealthConditions.tsx": {
     "complexity": 8,
-    "loc": 97,
+    "loc": 99,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
@@ -690,8 +682,8 @@
   "src/shared/ui/ModalBoundary.tsx": {
     "complexity": 13,
     "loc": 62,
-    "instability": 0.38,
-    "fanIn": 5,
+    "instability": 0.43,
+    "fanIn": 4,
     "fanOut": 3,
     "scanned": true
   },
@@ -800,8 +792,8 @@
     "scanned": true
   },
   "src/shell/hud/ConceptHud.tsx": {
-    "complexity": 13,
-    "loc": 69,
+    "complexity": 10,
+    "loc": 61,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
@@ -810,8 +802,8 @@
   "src/features/timeline/evidence/CountdownEvidenceModal.tsx": {
     "complexity": 6,
     "loc": 8,
-    "instability": 0.5,
-    "fanIn": 3,
+    "instability": 0.6,
+    "fanIn": 2,
     "fanOut": 3,
     "scanned": true
   },
@@ -840,11 +832,11 @@
     "scanned": true
   },
   "src/shell/hud/PersistentHud.tsx": {
-    "complexity": 43,
-    "loc": 148,
-    "instability": 0.89,
+    "complexity": 29,
+    "loc": 87,
+    "instability": 0.88,
     "fanIn": 1,
-    "fanOut": 8,
+    "fanOut": 7,
     "scanned": true
   },
   "src/shell/navigation/public.ts": {
@@ -873,7 +865,7 @@
   },
   "src/shell/navigation/navigation-research.ts": {
     "complexity": 1,
-    "loc": 168,
+    "loc": 178,
     "instability": 0,
     "fanIn": 1,
     "fanOut": 0,
@@ -881,18 +873,18 @@
   },
   "src/shell/navigation/RootNavigation.tsx": {
     "complexity": 3,
-    "loc": 58,
+    "loc": 68,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
     "scanned": true
   },
   "src/shell/overlays/WorkspaceOverlays.tsx": {
-    "complexity": 7,
-    "loc": 56,
-    "instability": 0.92,
+    "complexity": 8,
+    "loc": 66,
+    "instability": 0.93,
     "fanIn": 1,
-    "fanOut": 11,
+    "fanOut": 14,
     "scanned": true
   },
   "src/features/crawler/stats/StatInspectorModal.tsx": {
@@ -935,6 +927,14 @@
     "fanOut": 5,
     "scanned": true
   },
+  "src/shell/replay/TimelineControls.tsx": {
+    "complexity": 8,
+    "loc": 177,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
   "src/shell/tools/TimelineToolsModal.tsx": {
     "complexity": 3,
     "loc": 103,
@@ -944,35 +944,19 @@
     "scanned": true
   },
   "src/shell/replay/ReplaySurface.tsx": {
-    "complexity": 11,
-    "loc": 109,
-    "instability": 0.89,
-    "fanIn": 1,
-    "fanOut": 8,
-    "scanned": true
-  },
-  "src/features/timeline/diagnostics/TimelineDiagnostics.tsx": {
-    "complexity": 21,
-    "loc": 48,
-    "instability": 0.83,
-    "fanIn": 1,
-    "fanOut": 5,
-    "scanned": true
-  },
-  "src/features/timeline/diagnostics/SequenceInspector.tsx": {
-    "complexity": 25,
-    "loc": 50,
+    "complexity": 1,
+    "loc": 31,
     "instability": 0.75,
     "fanIn": 1,
     "fanOut": 3,
     "scanned": true
   },
   "src/shell/replay/ReplayControls.tsx": {
-    "complexity": 19,
-    "loc": 217,
-    "instability": 0.8,
+    "complexity": 1,
+    "loc": 39,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 4,
+    "fanOut": 2,
     "scanned": true
   },
   "src/shell/ShellFrame.tsx": {
@@ -1000,8 +984,8 @@
     "scanned": true
   },
   "src/application/crawler-session-controller.ts": {
-    "complexity": 20,
-    "loc": 307,
+    "complexity": 21,
+    "loc": 337,
     "instability": 0.92,
     "fanIn": 1,
     "fanOut": 11,
@@ -1021,6 +1005,22 @@
     "instability": 1,
     "fanIn": 0,
     "fanOut": 1,
+    "scanned": true
+  },
+  "src/features/timeline/diagnostics/SequenceInspector.tsx": {
+    "complexity": 25,
+    "loc": 50,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/timeline/diagnostics/TimelineDiagnostics.tsx": {
+    "complexity": 21,
+    "loc": 48,
+    "instability": 1,
+    "fanIn": 0,
+    "fanOut": 5,
     "scanned": true
   },
   "src/main.concepts.tsx": {
@@ -1045,6 +1045,14 @@
     "instability": 1,
     "fanIn": 0,
     "fanOut": 6,
+    "scanned": true
+  },
+  "src/presentation/authority-arwes/primitives/AuthorityText.ts": {
+    "complexity": 9,
+    "loc": 56,
+    "instability": 0.8,
+    "fanIn": 1,
+    "fanOut": 4,
     "scanned": true
   }
 }
