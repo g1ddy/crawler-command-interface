@@ -109,8 +109,10 @@ export function deriveCrawlerPresentation(
   });
 
   const condition = crawler.condition;
-  const vitalVal = (key: keyof typeof condition) =>
-    selectDisplayedReading(condition[key], observations.condition[key]?.value, state.causalProvenance.condition[key]);
+  const vitalVal = (key: keyof typeof condition): number | null => {
+    const val = selectDisplayedReading(condition[key], observations.condition[key]?.value ?? null, state.causalProvenance.condition[key]);
+    return val !== undefined ? val : null;
+  };
   const vitalAuth = (key: "currentHealth" | "currentMana" | "currentStamina") =>
     displayedReadingAuthority(condition[key], observations.condition[key]?.value, state.causalProvenance.condition[key]);
 
@@ -119,7 +121,7 @@ export function deriveCrawlerPresentation(
       name: "HEALTH",
       current: vitalVal("currentHealth"),
       maximum: vitalVal("maxHealth"),
-      causalValue: condition.currentHealth,
+      causalValue: condition.currentHealth ?? null,
       observation: observations.condition.currentHealth || observations.condition.maxHealth,
       displayAuthority: vitalAuth("currentHealth"),
       color: "red",
@@ -128,7 +130,7 @@ export function deriveCrawlerPresentation(
       name: "MANA",
       current: vitalVal("currentMana"),
       maximum: vitalVal("maxMana"),
-      causalValue: condition.currentMana,
+      causalValue: condition.currentMana ?? null,
       observation: observations.condition.currentMana || observations.condition.maxMana,
       displayAuthority: vitalAuth("currentMana"),
       color: "blue",
@@ -137,7 +139,7 @@ export function deriveCrawlerPresentation(
       name: "STAMINA",
       current: vitalVal("currentStamina"),
       maximum: vitalVal("maxStamina"),
-      causalValue: condition.currentStamina,
+      causalValue: condition.currentStamina ?? null,
       observation: observations.condition.currentStamina || observations.condition.maxStamina,
       displayAuthority: vitalAuth("currentStamina"),
       color: "yellow",
