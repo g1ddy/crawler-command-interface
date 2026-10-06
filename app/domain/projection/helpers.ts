@@ -94,12 +94,12 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
   };
 
   const condition = {
-    currentHealth: crawler?.condition?.currentHealth,
-    maxHealth: crawler?.condition?.maxHealth,
-    currentMana: crawler?.condition?.currentMana,
-    maxMana: crawler?.condition?.maxMana,
-    currentStamina: crawler?.condition?.currentStamina,
-    maxStamina: crawler?.condition?.maxStamina,
+    currentHealth: crawler?.condition?.currentHealth ?? null,
+    maxHealth: crawler?.condition?.maxHealth ?? null,
+    currentMana: crawler?.condition?.currentMana ?? null,
+    maxMana: crawler?.condition?.maxMana ?? null,
+    currentStamina: crawler?.condition?.currentStamina ?? null,
+    maxStamina: crawler?.condition?.maxStamina ?? null,
   };
 
   const inventory: InventoryItem[] = (timelineState?.inventory || []).map((i: TimelineItem) => {

@@ -581,10 +581,7 @@ test("projection-neutral countdown events and narrative events execute cleanly t
       countdownId: "countdown-test",
       summary: `Test ${eventType}`,
     });
-    assert.deepEqual(
-      JSON.parse(JSON.stringify(projected.crawler)),
-      JSON.parse(JSON.stringify(initial.crawler))
-    );
+    assert.deepEqual(projected.crawler, initial.crawler);
     assert.equal(projected.recentLogs[0].message, `Test ${eventType}`);
   }
 
@@ -595,10 +592,7 @@ test("projection-neutral countdown events and narrative events execute cleanly t
     kind: "floor-entered",
     summary: "Entered floor",
   });
-  assert.deepEqual(
-    JSON.parse(JSON.stringify(narrativeProjected.crawler)),
-    JSON.parse(JSON.stringify(initial.crawler))
-  );
+  assert.deepEqual(narrativeProjected.crawler, initial.crawler);
   assert.equal(narrativeProjected.recentLogs.length, 0);
 });
 

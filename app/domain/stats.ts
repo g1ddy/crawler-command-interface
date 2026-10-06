@@ -2,11 +2,11 @@ import type { AttributeName, CrawlerState } from './types.ts';
 
 export interface StatBreakdown {
   statName: string;
-  baseValue: number;
+  baseValue: number | null;
   permanentModifiers: number;
   gearContributions: { itemName: string; slot: string; amount: number }[];
   activeEffectContributions: { effectName: string; icon: string; amount: number }[];
-  totalValue: number;
+  totalValue: number | null;
 }
 
 export function getStatBreakdown(state: CrawlerState, statName: string): StatBreakdown {
@@ -21,7 +21,7 @@ export function getStatBreakdown(state: CrawlerState, statName: string): StatBre
     return undefined;
   }
 
-  let baseValue = 0;
+  let baseValue: number | null = 0;
   let permanentModifiers = 0;
 
   if (isAttr) {
@@ -33,9 +33,9 @@ export function getStatBreakdown(state: CrawlerState, statName: string): StatBre
   } else if (statName === 'Movement Speed') {
     baseValue = 100; // base %
   } else if (statName === 'Max Health') {
-    baseValue = state.crawler.condition.maxHealth ?? 0;
+    baseValue = state.crawler.condition.maxHealth ?? null;
   } else if (statName === 'Max Mana') {
-    baseValue = state.crawler.condition.maxMana ?? 0;
+    baseValue = state.crawler.condition.maxMana ?? null;
   }
 
   const gearContributions: { itemName: string; slot: string; amount: number }[] = [];
@@ -74,7 +74,10 @@ export function getStatBreakdown(state: CrawlerState, statName: string): StatBre
   const gearTotal = gearContributions.reduce((sum, g) => sum + g.amount, 0);
   const effectTotal = activeEffectContributions.reduce((sum, e) => sum + e.amount, 0);
 
-  const totalValue = baseValue + permanentModifiers + gearTotal + effectTotal;
+  const totalValue =
+    baseValue !== null
+      ? baseValue + permanentModifiers + gearTotal + effectTotal
+      : null;
 
   return {
     statName,
