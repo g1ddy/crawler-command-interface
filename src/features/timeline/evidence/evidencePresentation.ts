@@ -42,7 +42,7 @@ export interface EvidencePresentation {
  * an initial/default value. Otherwise a source-backed observation supplies the
  * displayed telemetry when one is available.
  */
-export function selectDisplayedReading<T extends number | string | undefined | null>(
+export function selectDisplayedReading<T extends number | string | undefined>(
   causalValue: T,
   observationValue: T,
   causalSequence?: number

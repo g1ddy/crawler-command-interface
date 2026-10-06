@@ -20,7 +20,7 @@ function Vital({
   inspect: (o: ProjectedObservationValue) => void;
 }) {
   const { name, current, maximum, observation, causalValue, displayAuthority, color } = vital;
-  const percent = maximum ? Math.min(100, Math.round((Number(current ?? 0) / maximum) * 100)) : 0;
+  const percent = maximum !== null ? Math.min(100, Math.round((Number(current ?? 0) / maximum) * 100)) : 0;
   const fillClass = METER_COLOR_MAP[color] ?? styles.redFill;
 
   return (
@@ -36,7 +36,7 @@ function Vital({
         />
       </span>
       <b>
-        {current?.toLocaleString() ?? "—"} / {maximum?.toLocaleString() ?? "—"}
+        {current !== null ? current.toLocaleString() : "—"} / {maximum !== null ? maximum.toLocaleString() : "—"}
       </b>
       <em className={styles.meterTrack}>
         <i className={`${styles.meterFill} ${fillClass}`} style={{ width: `${percent}%` }} />

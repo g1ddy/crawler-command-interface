@@ -23,9 +23,9 @@ export interface DerivedAttributePresentation {
 
 export interface DerivedVitalPresentation {
   name: string;
-  current?: number;
-  maximum?: number;
-  causalValue?: number;
+  current: number | null;
+  maximum: number | null;
+  causalValue: number | null;
   observation?: ProjectedObservationValue;
   displayAuthority: DisplayAuthority;
   color: "red" | "blue" | "yellow";
