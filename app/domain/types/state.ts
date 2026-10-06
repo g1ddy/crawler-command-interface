@@ -253,12 +253,12 @@ export interface CrawlerState {
     attributes: Record<AttributeName, number>;
     permanentAttributeModifiers: Record<AttributeName, number>;
     condition: {
-      currentHealth: number;
-      maxHealth: number;
-      currentMana: number;
-      maxMana: number;
-      currentStamina: number;
-      maxStamina: number;
+      currentHealth?: number;
+      maxHealth?: number;
+      currentMana?: number;
+      maxMana?: number;
+      currentStamina?: number;
+      maxStamina?: number;
     };
   };
   inventory: InventoryItem[];

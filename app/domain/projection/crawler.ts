@@ -60,14 +60,14 @@ export function applyConditionChanged(state: CrawlerState, event: Record<string,
   if (event.currentHealth !== undefined) {
     state.crawler.condition.currentHealth = Number(event.currentHealth);
     markCausalField(state, 'currentHealth', sequence);
-    if (state.crawler.condition.currentHealth > state.crawler.condition.maxHealth) {
+    if (state.crawler.condition.currentHealth > (state.crawler.condition.maxHealth ?? 0)) {
       state.crawler.condition.maxHealth = state.crawler.condition.currentHealth;
       markCausalField(state, 'maxHealth', sequence);
     }
   } else if (event.healthDelta !== undefined) {
     state.crawler.condition.currentHealth = Math.min(
-      state.crawler.condition.maxHealth,
-      Math.max(0, state.crawler.condition.currentHealth + Number(event.healthDelta))
+      state.crawler.condition.maxHealth ?? Number.MAX_SAFE_INTEGER,
+      Math.max(0, (state.crawler.condition.currentHealth ?? 0) + Number(event.healthDelta))
     );
     markCausalField(state, 'currentHealth', sequence);
   }
@@ -79,14 +79,14 @@ export function applyConditionChanged(state: CrawlerState, event: Record<string,
   if (event.currentMana !== undefined) {
     state.crawler.condition.currentMana = Number(event.currentMana);
     markCausalField(state, 'currentMana', sequence);
-    if (state.crawler.condition.currentMana > state.crawler.condition.maxMana) {
+    if (state.crawler.condition.currentMana > (state.crawler.condition.maxMana ?? 0)) {
       state.crawler.condition.maxMana = state.crawler.condition.currentMana;
       markCausalField(state, 'maxMana', sequence);
     }
   } else if (event.manaDelta !== undefined) {
     state.crawler.condition.currentMana = Math.min(
-      state.crawler.condition.maxMana,
-      Math.max(0, state.crawler.condition.currentMana + Number(event.manaDelta))
+      state.crawler.condition.maxMana ?? Number.MAX_SAFE_INTEGER,
+      Math.max(0, (state.crawler.condition.currentMana ?? 0) + Number(event.manaDelta))
     );
     markCausalField(state, 'currentMana', sequence);
   }
@@ -98,14 +98,14 @@ export function applyConditionChanged(state: CrawlerState, event: Record<string,
   if (event.currentStamina !== undefined) {
     state.crawler.condition.currentStamina = Number(event.currentStamina);
     markCausalField(state, 'currentStamina', sequence);
-    if (state.crawler.condition.currentStamina > state.crawler.condition.maxStamina) {
+    if (state.crawler.condition.currentStamina > (state.crawler.condition.maxStamina ?? 0)) {
       state.crawler.condition.maxStamina = state.crawler.condition.currentStamina;
       markCausalField(state, 'maxStamina', sequence);
     }
   } else if (event.staminaDelta !== undefined) {
     state.crawler.condition.currentStamina = Math.min(
-      state.crawler.condition.maxStamina,
-      Math.max(0, state.crawler.condition.currentStamina + Number(event.staminaDelta))
+      state.crawler.condition.maxStamina ?? Number.MAX_SAFE_INTEGER,
+      Math.max(0, (state.crawler.condition.currentStamina ?? 0) + Number(event.staminaDelta))
     );
     markCausalField(state, 'currentStamina', sequence);
   }
