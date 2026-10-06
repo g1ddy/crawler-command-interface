@@ -1,0 +1,266 @@
+schemaVersion: crawler-research/v1
+storyId: dcc
+floor: 3
+
+sources:
+  - id: src-wiki-primal
+    kind: wiki
+    trust: corroborating
+    title: Primal - Dungeon Crawler Carl Wiki - Fandom
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Primal
+  - id: src-wiki-carl-f3
+    kind: wiki
+    trust: corroborating
+    title: Carl/Floor 3 - Dungeon Crawler Carl Wiki - Fandom
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_3
+  - id: src-wiki-child-actor
+    kind: wiki
+    trust: corroborating
+    title: Former Child Actor Class | Dungeon Crawler Carl Wiki - Fandom
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Former_Child_Actor_Class
+  - id: src-sparknotes-book2
+    kind: fan-compendium
+    trust: corroborating
+    title: Chapter 24 | Carl's Doomsday Scenario (Dungeon Crawler Carl, #2)
+    url: https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/3e44a2f8-de78-4ff1-ad1d-52d9b07a05ff
+
+claims:
+  - id: f3-crawler-primal-selection
+    domain: crawler
+    kind: event
+    claim:
+      summary: Carl selects the Primal race during the Floor 3 progression/staging sequence.
+      detail: The selection is a persistent progression change establishing ongoing Primal racial capabilities and modifiers.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    unknowns:
+      - exact_system_prompt_wording_for_primal_selection
+
+  - id: f3-crawler-primal-cap
+    domain: crawler
+    kind: state
+    claim:
+      summary: The Primal race permanently removes the standard Level 15 skill training cap.
+      detail: This capability allows skills to be trained to Level 20, with exponential scaling described by the source.
+    evidence:
+      - sourceId: src-wiki-primal
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-crawler-primal-stats
+    domain: crawler
+    kind: state
+    claim:
+      summary: The Primal race imposes a permanent one-point reduction to all five base attributes.
+    evidence:
+      - sourceId: src-wiki-primal
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-crawler-class-anarchist-modifiers
+    domain: crawler
+    kind: state
+    claim:
+      summary: The Compensated Anarchist class applies permanent combat and training modifiers to Carl's profile.
+      detail: The modifiers include -25% bladed-weapon damage, +25% mana cost for attack spells, and +5% bomb/trap training.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-skill-iron-punch-mutation
+    domain: skills
+    kind: event
+    claim:
+      summary: Carl's Iron Punch skill mutates into the Breadbasket effect upon reaching Level 10.
+      detail: The mutation adds a persistent 10% probability of inflicting severe stun on a solid strike.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    unknowns:
+      - whether_level_10_is_a_universal_pugilism_mutation_threshold
+
+  - id: f3-magic-wisp-armor-mitigation
+    domain: magic
+    kind: state
+    claim:
+      summary: Wisp Armor negates 75% of incoming magic damage.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-magic-wisp-armor-immunity
+    domain: magic
+    kind: state
+    claim:
+      summary: Wisp Armor provides temporary absolute immunity to mind-control and psionic effects.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-magic-donut-magic-missile-upgrade
+    domain: magic
+    kind: state
+    claim:
+      summary: Donut receives a Floor 3 Magic Missile upgrade that increases projectile/targeting capability.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    unknowns:
+      - exact_system_prompt_wording_and_projectile_count
+
+  - id: f3-magic-donut-defensive-capability
+    domain: magic
+    kind: state
+    claim:
+      summary: Donut acquires a significant defensive Shield/Forcewall capability during Floor 3 progression.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    unknowns:
+      - exact_system_prompt_wording_and_mechanics
+
+  - id: f3-quest-show-must-go-on-resolved
+    domain: quest
+    kind: event
+    claim:
+      summary: The Show Must Go On quest is resolved diplomatically when Carl uses Wisp Armor to broker a telepathic truce with the Ringmaster.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-quest-show-must-go-on-reward
+    domain: quest
+    kind: event
+    claim:
+      summary: The diplomatic resolution of The Show Must Go On triggers the Hadji Achievement and elevates the reward to a Platinum Quest Box.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    dependencies:
+      - f3-quest-show-must-go-on-resolved
+
+  - id: f3-quest-hoa-cleansing
+    domain: quest
+    kind: event
+    claim:
+      summary: Carl and Donut undertake the HOA / Neighborhood Cleansing quest and progress by clearing the neighborhood houses.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    unknowns:
+      - exact_system_quest_title
+      - exact_reward_details
+
+  - id: f3-quest-hoa-cleansing-completed
+    domain: quest
+    kind: event
+    claim:
+      summary: The HOA / Neighborhood Cleansing quest is completed through resolution with the HOA leadership/boss.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    dependencies:
+      - f3-quest-hoa-cleansing
+    unknowns:
+      - exact_system_quest_title
+      - exact_reward_details
+
+  - id: f3-quest-maestro-instruments
+    domain: quest
+    kind: event
+    claim:
+      summary: Maestro gives Carl and Donut a quest to retrieve his instruments from the Grimaldi brothers.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-quest-maestro-instruments-completed
+    domain: quest
+    kind: event
+    claim:
+      summary: Returning Maestro's instruments completes the retrieval quest.
+    evidence:
+      - sourceId: src-wiki-carl-f3
+        confidence: confirmed
+        relationship: supports
+    dependencies:
+      - f3-quest-maestro-instruments
+    unknowns:
+      - exact_reward_details
+
+  - id: f3-quest-sex-workers-cockblock
+    domain: quest
+    kind: event
+    claim:
+      summary: Carl's assassination of Miss Quill causes the Sex Workers quest reward situation to fail in a way that triggers the CockBlock achievement and transfers the relevant reward outcome to Carl.
+    evidence:
+      - sourceId: src-sparknotes-book2
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-quest-fools-glass-resolved
+    domain: quest
+    kind: event
+    claim:
+      summary: Carl resolves Fools Who Broke the Glass by sealing an overloading Soul Crystal inside a Sheol Glass Reaper Case.
+    evidence:
+      - sourceId: src-sparknotes-book2
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-quest-fools-glass-survival
+    domain: quest
+    kind: event
+    claim:
+      summary: Carl's intervention saves 83 nearby crawlers and prevents the intended mass-casualty outcome.
+    evidence:
+      - sourceId: src-sparknotes-book2
+        confidence: confirmed
+        relationship: supports
+
+  - id: f3-quest-fools-glass-bandit
+    domain: quest
+    kind: event
+    claim:
+      summary: The unexpected survival outcome triggers the Bandit achievement.
+    evidence:
+      - sourceId: src-sparknotes-book2
+        confidence: confirmed
+        relationship: supports
+    dependencies:
+      - f3-quest-fools-glass-survival
+
+  - id: f3-quest-fools-glass-bandit-reward
+    domain: quest
+    kind: event
+    claim:
+      summary: The Bandit achievement causes the associated reward to be upgraded to the Celestial tier.
+    evidence:
+      - sourceId: src-sparknotes-book2
+        confidence: confirmed
+        relationship: supports
+    dependencies:
+      - f3-quest-fools-glass-bandit
+
+  - id: f3-crawler-donut-character-actor-exploit
+    domain: crawler
+    kind: state
+    claim:
+      summary: Donut's Character Actor skill allows her to permanently retain base skill experience earned for temporarily assigned specialty class skills.
+    evidence:
+      - sourceId: src-wiki-child-actor
+        confidence: corroborated
+        relationship: supports
