@@ -58,17 +58,20 @@ export function applyConditionChanged(state: CrawlerState, event: Record<string,
     markCausalField(state, 'maxHealth', sequence);
   }
   if (event.currentHealth !== undefined) {
-    state.crawler.condition.currentHealth = Number(event.currentHealth);
+    const newHealth = Number(event.currentHealth);
+    state.crawler.condition.currentHealth = newHealth;
     markCausalField(state, 'currentHealth', sequence);
-    if (state.crawler.condition.currentHealth > (state.crawler.condition.maxHealth ?? 0)) {
-      state.crawler.condition.maxHealth = state.crawler.condition.currentHealth;
+    if (state.crawler.condition.maxHealth !== null && newHealth > state.crawler.condition.maxHealth) {
+      state.crawler.condition.maxHealth = newHealth;
       markCausalField(state, 'maxHealth', sequence);
     }
-  } else if (event.healthDelta !== undefined) {
-    state.crawler.condition.currentHealth = Math.min(
-      state.crawler.condition.maxHealth ?? Number.MAX_SAFE_INTEGER,
-      Math.max(0, (state.crawler.condition.currentHealth ?? 0) + Number(event.healthDelta))
-    );
+  } else if (event.healthDelta !== undefined && state.crawler.condition.currentHealth !== null) {
+    let currentHealth = state.crawler.condition.currentHealth + Number(event.healthDelta);
+    currentHealth = Math.max(0, currentHealth);
+    if (state.crawler.condition.maxHealth !== null) {
+      currentHealth = Math.min(state.crawler.condition.maxHealth, currentHealth);
+    }
+    state.crawler.condition.currentHealth = currentHealth;
     markCausalField(state, 'currentHealth', sequence);
   }
 
@@ -77,17 +80,20 @@ export function applyConditionChanged(state: CrawlerState, event: Record<string,
     markCausalField(state, 'maxMana', sequence);
   }
   if (event.currentMana !== undefined) {
-    state.crawler.condition.currentMana = Number(event.currentMana);
+    const newMana = Number(event.currentMana);
+    state.crawler.condition.currentMana = newMana;
     markCausalField(state, 'currentMana', sequence);
-    if (state.crawler.condition.currentMana > (state.crawler.condition.maxMana ?? 0)) {
-      state.crawler.condition.maxMana = state.crawler.condition.currentMana;
+    if (state.crawler.condition.maxMana !== null && newMana > state.crawler.condition.maxMana) {
+      state.crawler.condition.maxMana = newMana;
       markCausalField(state, 'maxMana', sequence);
     }
-  } else if (event.manaDelta !== undefined) {
-    state.crawler.condition.currentMana = Math.min(
-      state.crawler.condition.maxMana ?? Number.MAX_SAFE_INTEGER,
-      Math.max(0, (state.crawler.condition.currentMana ?? 0) + Number(event.manaDelta))
-    );
+  } else if (event.manaDelta !== undefined && state.crawler.condition.currentMana !== null) {
+    let currentMana = state.crawler.condition.currentMana + Number(event.manaDelta);
+    currentMana = Math.max(0, currentMana);
+    if (state.crawler.condition.maxMana !== null) {
+      currentMana = Math.min(state.crawler.condition.maxMana, currentMana);
+    }
+    state.crawler.condition.currentMana = currentMana;
     markCausalField(state, 'currentMana', sequence);
   }
 
@@ -96,17 +102,20 @@ export function applyConditionChanged(state: CrawlerState, event: Record<string,
     markCausalField(state, 'maxStamina', sequence);
   }
   if (event.currentStamina !== undefined) {
-    state.crawler.condition.currentStamina = Number(event.currentStamina);
+    const newStamina = Number(event.currentStamina);
+    state.crawler.condition.currentStamina = newStamina;
     markCausalField(state, 'currentStamina', sequence);
-    if (state.crawler.condition.currentStamina > (state.crawler.condition.maxStamina ?? 0)) {
-      state.crawler.condition.maxStamina = state.crawler.condition.currentStamina;
+    if (state.crawler.condition.maxStamina !== null && newStamina > state.crawler.condition.maxStamina) {
+      state.crawler.condition.maxStamina = newStamina;
       markCausalField(state, 'maxStamina', sequence);
     }
-  } else if (event.staminaDelta !== undefined) {
-    state.crawler.condition.currentStamina = Math.min(
-      state.crawler.condition.maxStamina ?? Number.MAX_SAFE_INTEGER,
-      Math.max(0, (state.crawler.condition.currentStamina ?? 0) + Number(event.staminaDelta))
-    );
+  } else if (event.staminaDelta !== undefined && state.crawler.condition.currentStamina !== null) {
+    let currentStamina = state.crawler.condition.currentStamina + Number(event.staminaDelta);
+    currentStamina = Math.max(0, currentStamina);
+    if (state.crawler.condition.maxStamina !== null) {
+      currentStamina = Math.min(state.crawler.condition.maxStamina, currentStamina);
+    }
+    state.crawler.condition.currentStamina = currentStamina;
     markCausalField(state, 'currentStamina', sequence);
   }
 }
