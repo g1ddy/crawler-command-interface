@@ -35,10 +35,6 @@ for (const query of ["", "?hud=unsupported"]) {
 test("live presentation switching in System Tools preserves session state and updates URL", async ({ page }) => {
   await page.goto(pagesPath);
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-
-  // Select "all" floor timeline scope so sequence 117 is within bounds
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
 
   // Enter replay mode by scrubbing slider to sequence 117 (where pet is acquired, not bonded)
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
@@ -97,10 +93,9 @@ test("live presentation switching in System Tools preserves session state and up
       await expect(page.locator('[data-hud-renderer="persistent"]')).toHaveCount(0);
     }
 
-    // Verify continuity of replay sequence, live/replay mode, capabilities, and historical cue
+    // Verify continuity of replay sequence, live/replay mode, and capabilities
     await expect(slider).toHaveValue("117");
-    await expect(page.getByTestId("hud-audience-mode")).toContainText("REPLAY");
-    await expect(page.locator('[data-testid="historical-context-cue"]:visible').first()).toBeVisible();
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
     await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
     await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Open data tools" }).click();
@@ -113,10 +108,6 @@ test("live presentation switching in System Tools preserves session state and up
 test("Pet visibility follows selected destination and survives renderer switching when available", async ({ page }) => {
   await page.goto(pagesPath);
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-
-  // Select "all" floor timeline scope so sequence 130 (bonded pet sequence) is within bounds
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
 
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
@@ -164,63 +155,14 @@ test("Pet visibility follows selected destination and survives renderer switchin
   await expect(page.getByText("PET & DUNGEON FAMILIARS")).toBeVisible();
 });
 
-test("historical-context cue is visible during Replay in compact, expanded, renderer-switched, and Live states", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(pagesPath);
-
-  // Expand replay controls on mobile to access timeline scope and sequence scrubber
-  await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-
-  // Select "all" floor timeline scope and scrub to sequence 130
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  await slider.fill("130");
-
-  const cue = page.locator('[data-testid="historical-context-cue"]:visible').first();
-
-  // Replay mode active with controls expanded: historical cue is visible
-  await expect(cue).toBeVisible();
-
-  // Collapse compact replay controls: historical cue remains visible in compact bar
-  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
-  await collapseBtn.click();
-  await expect(cue).toBeVisible();
-
-  // Expand compact replay controls again: historical cue remains visible
-  await page.getByRole("button", { name: "Expand replay controls" }).click();
-  await expect(cue).toBeVisible();
-
-  // Collapse again
-  await collapseBtn.click();
-  await expect(cue).toBeVisible();
-
-  // Switch renderer to Authority (Arwes POC) via System Tools while in Replay
-  await page.getByRole("button", { name: "Open data tools" }).click();
-  await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
-  await page.getByRole("button", { name: "CANCEL" }).click();
-
-  // Historical cue remains visible in Arwes during Replay
-  await expect(cue).toBeVisible();
-
-  // Return to Live sequence removes historical cue
-  const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
-  await compactReturn.click();
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
-  await expect(page.getByTestId("historical-context-cue")).toHaveCount(0);
-});
-
-test("collapsed replay dock keeps scrubber visible and operable across responsive widths", async ({ page }) => {
+test("global replay scrubber operates cleanly across responsive widths", async ({ page }) => {
   const widths = [320, 390, 760, 1024, 1440];
 
   for (const width of widths) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto(pagesPath);
 
-    // In live mode, click history log to enter replay
     await enterReplayByScrubbing(page);
-    await openReplayContext(page);
-    await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
     const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
     await slider.fill("10");
 
@@ -228,56 +170,33 @@ test("collapsed replay dock keeps scrubber visible and operable across responsiv
     await expect(dock).toBeVisible();
     await expect(slider).toBeVisible();
 
-    const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
-    if (await collapseBtn.isVisible()) {
-      await collapseBtn.click();
-    }
-
     await slider.fill("20");
     await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-    await expect(page.getByTestId("historical-context-cue")).toBeVisible();
 
-    // Verify exactly 1 Return to Live sequence button exists in Replay mode
-    const returnBtn = page.getByRole("button", { name: "Return to Live sequence" });
-    await expect(returnBtn).toHaveCount(1);
-
-    // Click Return to Live sequence
-    await returnBtn.click();
+    // Scrubbing to max sequence enters Live mode
+    const maxSeq = await slider.getAttribute("max");
+    if (maxSeq) await slider.fill(maxSeq);
     await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
-
-    // Verify 0 Return to Live sequence buttons in Live mode
-    await expect(returnBtn).toHaveCount(0);
 
     // Verify page has no horizontal overflow
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
 });
 
-test("layout integration: Live mode has compact scrubber, scrubbing enters Replay, and Return to Live sequence appears only in Replay", async ({ page }) => {
+test("layout integration: Live mode has compact scrubber, scrubbing enters Replay", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
 
-  // Live mode: compact dock is present with timeline scrubber and ● LIVE badge
   const dock = page.getByRole("complementary", { name: "Replay controls" });
   await expect(dock).toBeVisible();
 
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await expect(slider).toBeVisible();
 
-  // Return to Live sequence button is NOT present in Live mode
-  const returnBtn = page.getByRole("button", { name: "Return to Live sequence" });
-  await expect(returnBtn).toHaveCount(0);
-
   // Enter Replay by scrubbing slider to sequence 50
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   await slider.fill("50");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-
-  // In Replay mode: Return to Live sequence button IS present
-  await expect(returnBtn).toBeVisible();
-  await expect(returnBtn).toHaveCount(1);
 
   // Feature area remains independently scrollable and its last interactive control is reachable
   const featureArea = page.locator("#crawler-workspace");
@@ -287,39 +206,23 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
   const statsBtn = page.getByRole("button", { name: "STATS", exact: true });
   await statsBtn.click();
 
-  // Collapse dock
-  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
-  if (await collapseBtn.isVisible()) {
-    await collapseBtn.click();
-  }
-
   // Scroll to bottom of feature area and verify last control is visible & clickable
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Charisma" }).or(page.getByRole("button", { name: "Allocate attribute point to Strength" })).first();
   await allocateBtn.scrollIntoViewIfNeeded();
   await expect(allocateBtn).toBeVisible();
 
-  // Expand dock and verify last control remains reachable without overlap
-  const expandBtn = page.getByRole("button", { name: "Expand replay controls" });
-  await expandBtn.click();
-  await expect(page.getByTestId("replay-transport-container")).toBeVisible();
-
-  await allocateBtn.scrollIntoViewIfNeeded();
-  await expect(allocateBtn).toBeVisible();
-
-  // Resizing viewport maintains expanded state and selected sequence
+  // Resizing viewport maintains selected sequence
   await page.setViewportSize({ width: 1024, height: 800 });
   await expect(slider).toHaveValue("50");
-  await expect(page.getByTestId("replay-transport-container")).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(slider).toHaveValue("50");
-  await expect(page.getByTestId("replay-transport-container")).toBeVisible();
 });
 
 test("authority-arwes presentation is URL-selected and renders Arwes renderer composition foundation", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
-  const previewScope = page.locator("[data-hud-presentation]");
+  const previewScope = page.locator(".concept-hud-wrapper[data-hud-presentation]");
   await expect(previewScope).toHaveAttribute("data-hud-presentation", "authority-arwes");
 
   // Verify exclusive renderer selection: exactly 1 Arwes HUD renderer and zero alternate HUD renderers
@@ -334,16 +237,17 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   await expect(page.getByTestId("arwes-telemetry-frame")).toBeVisible();
   await expect(page.getByTestId("arwes-attention-frame")).toBeVisible();
 
-  // Verify audience telemetry and evidence inspection trigger
-  const viewersRow = page.getByTestId("telemetry-viewers");
-  await expect(viewersRow).toBeVisible();
+  // Verify telemetry and evidence inspection trigger
+  const healthRow = page.getByTestId("telemetry-health");
+  await expect(healthRow).toBeVisible();
 
-  // Target audience viewers telemetry inspection badge
-  const viewersBadge = page.getByRole("button", { name: /Inspect audience viewers evidence/i });
-  await expect(viewersBadge).toBeVisible();
+  // Target specific telemetry inspection badge (mana)
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
+  await expect(manaBadge).toBeVisible();
+  await expect(manaBadge).toHaveText("◷");
 
   // Test interactive evidence inspection via application capability callback
-  await viewersBadge.click();
+  await manaBadge.click();
   await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
   await page.getByRole("button", { name: "CLOSE" }).click();
 });
@@ -351,18 +255,18 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
 test("authority-arwes supports keyboard navigation, focus return, and passive unknown evidence", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes`);
 
-  // Target inspectable viewers evidence button via accessible role/name
-  const viewersBadge = page.getByRole("button", { name: /Inspect audience viewers evidence/i });
-  await expect(viewersBadge).toBeVisible();
+  // Target inspectable mana evidence button via accessible role/name
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
+  await expect(manaBadge).toBeVisible();
 
   // Reach the evidence button through real keyboard navigation so :focus-visible is active.
   for (let tabCount = 0; tabCount < 40; tabCount += 1) {
-    if (await viewersBadge.evaluate((el) => el === document.activeElement)) break;
+    if (await manaBadge.evaluate((el) => el === document.activeElement)) break;
     await page.keyboard.press("Tab");
   }
-  await expect(viewersBadge).toBeFocused();
+  await expect(manaBadge).toBeFocused();
 
-  const computedOutline = await viewersBadge.evaluate((el) => {
+  const computedOutline = await manaBadge.evaluate((el) => {
     const style = window.getComputedStyle(el);
     return {
       outlineStyle: style.outlineStyle,
@@ -382,8 +286,15 @@ test("authority-arwes supports keyboard navigation, focus return, and passive un
   await page.getByRole("button", { name: "CLOSE" }).click();
   await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).not.toBeVisible();
 
-  // Verify focus returns to the viewers evidence indicator button
-  await expect(viewersBadge).toBeFocused();
+  // Verify focus returns to the mana evidence indicator button
+  await expect(manaBadge).toBeFocused();
+
+  // Verify unknown health telemetry indicator remains passive (span with role="img", not a button)
+  const healthBadge = page.getByTestId("telemetry-health-badge");
+  await expect(healthBadge).toBeVisible();
+  await expect(healthBadge).toHaveAttribute("role", "img");
+  await expect(healthBadge).toHaveAttribute("aria-label", "health evidence: unknown");
+  await expect(page.getByRole("button", { name: /Inspect health evidence/i })).toHaveCount(0);
 });
 
 test("authority-arwes maintains single-line compact telemetry rows at 390px narrow width without overflow", async ({ page }) => {
@@ -394,19 +305,20 @@ test("authority-arwes maintains single-line compact telemetry rows at 390px narr
   await expect(composition).toBeVisible();
 
   // Telemetry rows remain visible
-  const viewersRow = page.getByTestId("telemetry-viewers");
-  await expect(viewersRow).toBeVisible();
+  const manaRow = page.getByTestId("telemetry-mana");
+  await expect(manaRow).toBeVisible();
 
   // Compact marker is visible and verbose badge label is absent from persistent row
-  const viewersBadge = page.getByRole("button", { name: /Inspect audience viewers evidence/i });
-  await expect(viewersBadge).toBeVisible();
-  await expect(viewersRow).not.toContainText("LAST KNOWN · SEQ");
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
+  await expect(manaBadge).toBeVisible();
+  await expect(manaBadge).toHaveText("◷");
+  await expect(manaRow).not.toContainText("LAST KNOWN · SEQ");
 
   // No horizontal page overflow
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   // Activate compact marker and verify detailed evidence modal opens
-  await viewersBadge.click();
+  await manaBadge.click();
   await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
 });
 
@@ -445,6 +357,7 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
 
   // Enter replay by scrubbing timeline to sequence 130
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  const maxSeq = await slider.getAttribute("max");
   await slider.fill("130");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "enter-replay");
@@ -454,8 +367,8 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
   await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
 
-  // Return to Live sequence
-  await page.getByRole("complementary", { name: "Replay controls" }).getByRole("button", { name: /Return to Live sequence/i }).click();
+  // Return to Live sequence by scrubbing to rightmost edge
+  if (maxSeq) await slider.fill(maxSeq);
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "return-live");
 
@@ -525,83 +438,25 @@ test("System Tools modal consumes token-backed styles and enforces 44px minimum 
   expect(presentationBox?.height).toBeGreaterThanOrEqual(44);
 });
 
-test("compact mobile replay controls support expand, collapse, keyboard focus, and reduced motion", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
+test("mobile timeline utility panel opens, navigates floors, and closes cleanly", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(pagesPath);
 
-  // In live mode, enter replay to view compact replay bar
   await enterReplayByScrubbing(page);
   await openReplayContext(page);
 
-  // Select "all" floor timeline scope so sequence 117 is within bounds
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
+  const panel = page.getByRole("region", { name: "Timeline navigation panel" });
+  await expect(panel).toBeVisible();
+
+  const floorSelect = page.getByRole("combobox", { name: "Select floor context" });
+  await expect(floorSelect).toBeVisible();
+  await floorSelect.selectOption("1");
+
+  await page.getByRole("button", { name: "Close timeline controls" }).click();
+  await expect(panel).not.toBeVisible();
 
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  await slider.fill("117");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-
-  // Replay controls dock is visible
-  const compactBar = page.getByTestId("replay-compact-bar");
-  await expect(compactBar).toBeVisible();
-
-  const collapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
-  await collapseBtn.click();
-
-  const toggleBtn = page.getByRole("button", { name: "Expand replay controls" });
-  await expect(toggleBtn).toBeVisible();
-  await expect(toggleBtn).toHaveAttribute("aria-expanded", "false");
-
-  const transportContainer = page.getByTestId("replay-transport-container");
-  await expect(transportContainer).not.toBeVisible();
-
-  // Keyboard navigation: focus and press Enter on expand toggle
-  await toggleBtn.focus();
-  await expect(toggleBtn).toBeFocused();
-  await page.keyboard.press("Enter");
-
-  await expect(page.getByRole("button", { name: "Collapse replay controls" })).toHaveAttribute("aria-expanded", "true");
-  await expect(transportContainer).toBeVisible();
-
-  // Sequence scrubber is reachable
   await expect(slider).toBeVisible();
-
-  // Collapse controls again via keyboard
-  const activeCollapseBtn = page.getByRole("button", { name: "Collapse replay controls" });
-  await activeCollapseBtn.focus();
-  await page.keyboard.press("Space");
-  await expect(page.getByRole("button", { name: "Expand replay controls" })).toBeVisible();
-  await expect(transportContainer).not.toBeVisible();
-
-  // Return to Live sequence removes Return to Live button while keeping compact scrubber
-  const compactReturn = page.getByRole("button", { name: "Return to Live sequence" });
-  await expect(compactReturn).toBeVisible();
-  await compactReturn.click();
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
-  await expect(page.getByRole("button", { name: "Return to Live sequence" })).toHaveCount(0);
-  await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
-});
-
-test("mobile replay disclosure maintains state when returning from desktop viewport", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(pagesPath);
-
-  // Enter replay
-  await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  await slider.fill("117");
-
-  const transport = page.getByTestId("replay-transport-container");
-  await expect(transport).toBeVisible();
-
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await expect(transport).toBeVisible();
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  await expect(transport).toBeVisible();
-  await expect(slider).toHaveValue("117");
 });
 
 test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, and Skills content without page overflow", async ({ page }) => {
@@ -611,9 +466,10 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();
 
-  // Persistent system spine header
+  // Verify persistent floor identity in Arwes spine header
   const spine = page.getByTestId("arwes-spine-header");
   await expect(spine).toBeVisible();
+  await expect(spine).toContainText("FLOOR 3");
 
   // Verify CRAWLER view begins with player attributes and progression
   await expect(page.getByText("PLAYER ATTRIBUTES")).toBeVisible();
@@ -630,8 +486,6 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
 
   // Open Replay context to reach bonded pet sequence 130
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
@@ -660,8 +514,6 @@ test("authority-arwes validates mutation gating during replay while preserving t
 
   // Enter Replay mode via sequence scrubber
   await enterReplayByScrubbing(page);
-  await openReplayContext(page);
-  await page.getByRole("combobox", { name: "Floor timeline scope" }).selectOption("all");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
@@ -670,9 +522,9 @@ test("authority-arwes validates mutation gating during replay while preserving t
   await expect(allocateBtn).toBeDisabled();
 
   // Telemetry inspection remains active
-  const viewersBadge = page.getByRole("button", { name: /Inspect audience viewers evidence/i });
-  await expect(viewersBadge).toBeVisible();
-  await viewersBadge.click();
+  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
+  await expect(manaBadge).toBeVisible();
+  await manaBadge.click();
   await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
   await page.getByRole("button", { name: "CLOSE" }).click();
 

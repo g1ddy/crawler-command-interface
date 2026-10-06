@@ -100,8 +100,38 @@ export class CrawlerSessionController {
   public selectSequence(sequence: number) {
     const events = (this.timelineDoc.events as unknown as CrawlerEvent[]) || [];
     const maxSeq = events[events.length - 1]?.sequence ?? 1;
+    const latestFloor =
+      events[events.length - 1]?.position?.floor ??
+      this.timelineDoc.floors?.slice(-1)[0]?.ordinal ??
+      1;
+
     this.selectedSeq = sequence;
     this.isLive = sequence === maxSeq;
+
+    if (this.isLive) {
+      this.selectedFloorOrdinal = latestFloor;
+    } else {
+      let derivedFloor: number | undefined;
+      for (let i = events.length - 1; i >= 0; i--) {
+        const ev = events[i];
+        if (ev.sequence <= sequence && ev.position?.floor !== undefined) {
+          derivedFloor = ev.position.floor;
+          break;
+        }
+      }
+      if (derivedFloor === undefined && this.timelineDoc.floors) {
+        for (const f of this.timelineDoc.floors) {
+          if (sequence >= f.startSequence && sequence <= f.endSequence) {
+            derivedFloor = f.ordinal;
+            break;
+          }
+        }
+      }
+      if (derivedFloor !== undefined) {
+        this.selectedFloorOrdinal = derivedFloor;
+      }
+    }
+
     this.notify();
   }
 

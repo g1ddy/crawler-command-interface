@@ -19,6 +19,8 @@ import type {
 export type { HudPetSummary };
 
 export interface HudSystemIdentity {
+  crawlerName: string;
+  crawlerClass: string;
   floorTitle: string;
   sequence: number;
 }
@@ -32,7 +34,7 @@ export interface HudTemporalContext {
 
 export interface HudUrgencySummary {
   activeCountdown: ActiveCountdownState | null;
-  formattedLabel?: string;
+  formattedLabel: string;
   lifecycleStatus?: "scheduled" | "active" | "completed";
 }
 
@@ -44,7 +46,7 @@ export interface HudAttentionSummary {
   motionIntent?: PresentationMotionIntent;
 }
 
-export type HudTelemetryKey = "viewers";
+export type HudTelemetryKey = "health" | "mana" | "level" | "viewers";
 
 export interface HudEvidencePresentation {
   marker: string;
@@ -66,6 +68,12 @@ export interface HudTelemetryPresentation {
   semantics: PresentationSemantics;
 }
 
+export interface HudVitalsSummary {
+  health?: ProjectedObservationValue;
+  mana?: ProjectedObservationValue;
+  level?: ProjectedObservationValue;
+}
+
 export interface HudBroadcastSummary {
   viewers?: ProjectedObservationValue;
 }
@@ -74,18 +82,20 @@ export interface HudBroadcastSummary {
  * Renderer-neutral HUD composition model describing semantic presentation meaning.
  *
  * INVARIANTS:
- * - Expresses semantic presentation context (system context, temporal state, urgency, attention, broadcast, telemetryItems).
+ * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast, telemetryItems).
  * - Remains strictly renderer-neutral: MUST NOT contain CSS classes, styling tokens, border treatments,
  *   animation-library primitives, executable action callbacks, or renderer-specific component choices (e.g., Arwes/POC types).
  * - Capabilities and action contracts (e.g. Return to Live, sequence navigation, evidence inspection) retain their existing application
  *   ownership and are intentionally NOT modeled as action handlers or tool commands inside this composition model.
- * - Persistent chrome exposes cross-cutting system context; crawler identity, progression, and vitals are owned by the Crawler feature.
+ * - Explicitly PROVISIONAL: The current arrangement of identity, countdown, mode, audience, and vitals
+ *   is an implementation slice and does not represent settled or final persistent HUD product requirements.
  */
 export interface HudCompositionModel {
   system: HudSystemIdentity;
   temporal: HudTemporalContext;
   urgency: HudUrgencySummary;
   attention: HudAttentionSummary;
+  vitals: HudVitalsSummary;
   broadcast: HudBroadcastSummary;
   pet?: HudPetSummary;
   telemetryItems: HudTelemetryPresentation[];
@@ -137,6 +147,7 @@ function createTelemetryItem(
  * Focuses strictly on HUD header/masthead context without domain event projection or hardcoded visual policies.
  */
 export function deriveHudComposition({
+  projectedState,
   projectedObservations,
   activeCountdown,
   sequence,
@@ -151,6 +162,24 @@ export function deriveHudComposition({
   attentionMotionIntent,
   activeView,
 }: DeriveHudCompositionInput): HudCompositionModel {
+  const healthItem = createTelemetryItem(
+    "health",
+    "HEALTH",
+    projectedObservations.condition.currentHealth,
+    sequence
+  );
+  const manaItem = createTelemetryItem(
+    "mana",
+    "MANA",
+    projectedObservations.condition.currentMana,
+    sequence
+  );
+  const levelItem = createTelemetryItem(
+    "level",
+    "LEVEL",
+    projectedObservations.xpProgress.level,
+    sequence
+  );
   const viewersItem = createTelemetryItem(
     "viewers",
     "AUDIENCE VIEWERS",
@@ -160,6 +189,8 @@ export function deriveHudComposition({
 
   return {
     system: {
+      crawlerName: projectedState.crawler.name,
+      crawlerClass: projectedState.crawler.class || "Class unknown",
       floorTitle: floorHudTitle,
       sequence,
     },
@@ -171,18 +202,25 @@ export function deriveHudComposition({
     },
     urgency: {
       activeCountdown,
-      formattedLabel: activeCountdown?.formattedLabel,
+      formattedLabel: activeCountdown
+        ? activeCountdown.formattedLabel
+        : "Collapse time unavailable",
       lifecycleStatus: activeCountdown?.lifecycleStatus,
     },
     attention: {
       ...notificationsSummary,
       motionIntent: attentionMotionIntent,
     },
+    vitals: {
+      health: projectedObservations.condition.currentHealth,
+      mana: projectedObservations.condition.currentMana,
+      level: projectedObservations.xpProgress.level,
+    },
     broadcast: {
       viewers: projectedObservations.broadcast.viewers,
     },
     pet: petSummary,
-    telemetryItems: [viewersItem],
+    telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
     activeView,
   };
 }

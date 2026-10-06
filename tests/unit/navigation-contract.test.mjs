@@ -29,7 +29,7 @@ const mockCapabilitiesMinimal = {
 
 test("Navigation Research Inventory: surface inventory completeness and taxonomy categorization", () => {
   assert.ok(Array.isArray(NAVIGATION_SURFACE_INVENTORY));
-  assert.strictEqual(NAVIGATION_SURFACE_INVENTORY.length, 14);
+  assert.strictEqual(NAVIGATION_SURFACE_INVENTORY.length, 15);
 
   const categories = new Set(NAVIGATION_SURFACE_INVENTORY.map((item) => item.category));
   assert.ok(categories.has("system_identity"));
@@ -53,10 +53,10 @@ test("Navigation Research Inventory: surface inventory completeness and taxonomy
   assert.ok(establishedItems.length > 0);
   assert.ok(provisionalItems.length > 0);
   assert.strictEqual(removedItems.length, 3);
-  const removedIds = new Set(removedItems.map((item) => item.surfaceId));
-  assert.ok(removedIds.has("duplicate_concept_hud_return_to_live"));
-  assert.ok(removedIds.has("masthead_identity"));
-  assert.ok(removedIds.has("telemetry_vitals_readings"));
+  const removedIds = removedItems.map(item => item.surfaceId);
+  assert.ok(removedIds.includes("masthead_identity"));
+  assert.ok(removedIds.includes("telemetry_vitals_readings"));
+  assert.ok(removedIds.includes("duplicate_concept_hud_return_to_live"));
 });
 
 test("Navigation Contract: derives runtime SystemChromeContract containing strictly consumed primary navigation data", () => {

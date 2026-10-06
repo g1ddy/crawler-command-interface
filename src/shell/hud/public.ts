@@ -5,6 +5,7 @@ export {
   type HudTemporalContext,
   type HudUrgencySummary,
   type HudAttentionSummary,
+  type HudVitalsSummary,
   type HudBroadcastSummary,
   type HudPetSummary,
   type HudTelemetryKey,

@@ -208,11 +208,10 @@
         "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
         "src/features/timeline/evidence/TimelineEvidence.tsx",
         "src/features/timeline/history/TimelineHistory.tsx",
-        "src/shell/replay/ReplaySurface.tsx",
-        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-        "src/features/timeline/diagnostics/SequenceInspector.tsx",
         "src/application/crawler-session-controller.ts",
-        "src/application/crawler-actions.ts"
+        "src/application/crawler-actions.ts",
+        "src/features/timeline/diagnostics/SequenceInspector.tsx",
+        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx"
       ],
       "orphan": false
     },
@@ -2551,12 +2550,10 @@
         "src/shell/overlays/WorkspaceOverlays.tsx",
         "src/features/floor/FloorRules.tsx",
         "src/features/timeline/history/TimelineHistory.tsx",
-        "src/shell/replay/ReplaySurface.tsx",
-        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-        "src/shell/replay/ReplayControls.tsx",
         "src/shell/ShellFrame.tsx",
         "src/shell/adapters/useHudPresentation.ts",
         "src/shell/adapters/useCrawlerSession.ts",
+        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
         "src/main.concepts.tsx",
         "src/main.pages.tsx",
         "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts",
@@ -3788,7 +3785,9 @@
         "src/features/inventory/ItemInspector.tsx",
         "src/features/ratings/ratings-presentation.ts",
         "src/features/ratings/RatingsView.tsx",
+        "src/shell/overlays/WorkspaceOverlays.tsx",
         "src/features/floor/FloorRules.tsx",
+        "src/shell/replay/TimelineControls.tsx",
         "src/shell/replay/ReplaySurface.tsx",
         "src/shell/replay/ReplayControls.tsx"
       ],
@@ -3841,7 +3840,7 @@
         "src/shell/hud/ConceptHud.tsx",
         "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
         "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
-        "src/shell/replay/ReplayControls.tsx"
+        "src/shell/replay/TimelineControls.tsx"
       ],
       "orphan": false
     },
@@ -3952,8 +3951,8 @@
       "dependents": [
         "src/features/timeline/public.ts",
         "src/features/timeline/history/TimelineHistory.tsx",
-        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-        "src/features/timeline/diagnostics/SequenceInspector.tsx"
+        "src/features/timeline/diagnostics/SequenceInspector.tsx",
+        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx"
       ],
       "orphan": false
     },
@@ -6546,8 +6545,7 @@
         "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
         "src/shell/hud/ConceptHud.tsx",
         "src/shell/hud/PersistentHud.tsx",
-        "src/shell/overlays/WorkspaceOverlays.tsx",
-        "src/shell/replay/ReplaySurface.tsx"
+        "src/shell/overlays/WorkspaceOverlays.tsx"
       ],
       "orphan": false
     },
@@ -7635,8 +7633,7 @@
       ],
       "dependents": [
         "src/shell/hud/ConceptHud.tsx",
-        "src/shell/hud/PersistentHud.tsx",
-        "src/shell/replay/ReplaySurface.tsx"
+        "src/shell/hud/PersistentHud.tsx"
       ],
       "orphan": false
     },
@@ -8351,6 +8348,24 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/timeline/public",
+          "resolved": "src/features/timeline/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -8359,6 +8374,40 @@
           "moduleSystem": "es6",
           "module": "../../shared/ui/ModalBoundary",
           "resolved": "src/shared/ui/ModalBoundary.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../replay/TimelineControls",
+          "resolved": "src/shell/replay/TimelineControls.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "../replay/TimelineControls.module.css",
+          "resolved": "src/shell/replay/TimelineControls.module.css",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -8401,6 +8450,24 @@
         "src/shell/adapters/CrawlerWorkspace.tsx"
       ],
       "orphan": false
+    },
+    {
+      "source": "src/shell/replay/TimelineControls.module.css",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/shell/overlays/WorkspaceOverlays.tsx",
+        "src/shell/replay/TimelineControls.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
+        "import"
+      ]
     },
     {
       "source": "src/features/crawler/stats/StatInspectorModal.tsx",
@@ -8764,6 +8831,68 @@
       "orphan": false
     },
     {
+      "source": "src/shell/replay/TimelineControls.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/timeline/evidence/evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/timeline/public",
+          "resolved": "src/features/timeline/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./TimelineControls.module.css",
+          "resolved": "src/shell/replay/TimelineControls.module.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/overlays/WorkspaceOverlays.tsx"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/shell/tools/TimelineToolsModal.tsx",
       "valid": true,
       "dependencies": [
@@ -8842,77 +8971,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../features/timeline/diagnostics/TimelineDiagnostics",
-          "resolved": "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../features/timeline/evidence/CountdownEvidenceModal",
-          "resolved": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "../../features/timeline/public",
           "resolved": "src/features/timeline/public.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../shared/ui/ModalBoundary",
-          "resolved": "src/shared/ui/ModalBoundary.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -8949,23 +9009,6 @@
           "resolved": "src/shell/replay/ReplaySurface.module.css",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -8992,184 +9035,9 @@
       ]
     },
     {
-      "source": "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/narrative-presentation",
-          "resolved": "app/domain/narrative-presentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../SequenceBadge",
-          "resolved": "src/features/timeline/SequenceBadge.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./SequenceInspector",
-          "resolved": "src/features/timeline/diagnostics/SequenceInspector.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
-        }
-      ],
-      "dependents": [
-        "src/shell/replay/ReplaySurface.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/diagnostics/SequenceInspector.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../evidence/TelemetryBadge",
-          "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../SequenceBadge",
-          "resolved": "src/features/timeline/SequenceBadge.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/shell/replay/ReplayControls.tsx",
       "valid": true,
       "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../features/timeline/evidence/evidencePresentation",
-          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
         {
           "circular": false,
           "coreModule": false,
@@ -9204,24 +9072,6 @@
           "resolved": "src/shell/replay/ReplaySurface.module.css",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -9738,6 +9588,162 @@
       "orphan": false
     },
     {
+      "source": "src/features/timeline/diagnostics/SequenceInspector.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../evidence/TelemetryBadge",
+          "resolved": "src/features/timeline/evidence/TelemetryBadge.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../SequenceBadge",
+          "resolved": "src/features/timeline/SequenceBadge.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/timeline/diagnostics/TimelineDiagnostics.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/timeline/diagnostics/TimelineDiagnostics.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/narrative-presentation",
+          "resolved": "app/domain/narrative-presentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../SequenceBadge",
+          "resolved": "src/features/timeline/SequenceBadge.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SequenceInspector",
+          "resolved": "src/features/timeline/diagnostics/SequenceInspector.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [],
+      "orphan": false
+    },
+    {
       "source": "src/main.concepts.tsx",
       "valid": true,
       "dependencies": [
@@ -10187,8 +10193,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 172,
-    "totalDependenciesCruised": 456,
+    "totalCruised": 174,
+    "totalDependenciesCruised": 455,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

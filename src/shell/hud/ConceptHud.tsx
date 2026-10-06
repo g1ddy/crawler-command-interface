@@ -53,14 +53,7 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
         <Reading label="Viewers" observation={observations.broadcast.viewers} sequence={state.sequence} onInspect={onInspectObservation} />
       )}
     </div>
-    <div
-      className="hud-replay-state"
-      data-testid="hud-audience-mode"
-      data-mode={isLive ? "live" : "replay"}
-    >
-      <b>{isLive ? "LIVE" : "REPLAY"}</b>
-      <span>Sequence {state.sequence}</span>
-    </div>
+    <div className="hud-replay-state" data-testid="hud-audience-mode" data-mode={isLive ? "live" : "replay"} />
     <Hotlist hotlist={state.hotlist} skills={state.skills} />
     {showEvidence && countdown && <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}><CountdownEvidenceModal countdown={countdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} /></ModalBoundary>}
   </header>;

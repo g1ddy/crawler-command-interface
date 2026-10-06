@@ -30,7 +30,6 @@ test("mode reflects explicit Live and Replay states without UI label inference",
 
   assert.equal(livePres.mode, "live");
   assert.equal(livePres.isLive, true);
-  assert.equal(livePres.commands.canReturnToLive, false);
 
   const replayPres = deriveReplayPresentation({
     events: sampleEvents,
@@ -42,10 +41,9 @@ test("mode reflects explicit Live and Replay states without UI label inference",
 
   assert.equal(replayPres.mode, "replay");
   assert.equal(replayPres.isLive, false);
-  assert.equal(replayPres.commands.canReturnToLive, true);
 });
 
-test("scope correctly identifies available floors, current floor, and sequence bounds", () => {
+test("scope correctly identifies available floors, current floor, and sequence bounds globally", () => {
   const floor1Pres = deriveReplayPresentation({
     events: sampleEvents,
     floors: sampleFloors,
@@ -60,9 +58,10 @@ test("scope correctly identifies available floors, current floor, and sequence b
   assert.equal(floor1Pres.scope.nextFloorOrdinal, 2);
   assert.equal(floor1Pres.commands.canSelectPreviousFloor, false);
   assert.equal(floor1Pres.commands.canSelectNextFloor, true);
-  assert.deepEqual(floor1Pres.scope.scopedSequences, [1, 5]);
+  // Scoped sequences are global across all events/floors
+  assert.deepEqual(floor1Pres.scope.scopedSequences, [1, 5, 10, 15]);
   assert.equal(floor1Pres.scope.minSequence, 1);
-  assert.equal(floor1Pres.scope.maxSequence, 5);
+  assert.equal(floor1Pres.scope.maxSequence, 15);
 
   const allFloorsPres = deriveReplayPresentation({
     events: sampleEvents,
@@ -182,7 +181,6 @@ test("minimal alternate replay consumer uses model without ReplaySurface", () =>
       floorText: model.scope.currentFloorSegment ? model.scope.currentFloorSegment.title : "ALL FLOORS",
       prevEnabled: model.commands.canStepPrevious,
       nextEnabled: model.commands.canStepNext,
-      returnLiveEnabled: model.commands.canReturnToLive,
       countdownLabel: model.countdowns.activeCountdown?.formattedLabel ?? "NO COUNTDOWN",
     };
   }
@@ -200,8 +198,7 @@ test("minimal alternate replay consumer uses model without ReplaySurface", () =>
   assert.equal(output.statusText, "REPLAY MODE - SEQ #5");
   assert.equal(output.floorText, "The Beginning");
   assert.equal(output.prevEnabled, true);
-  assert.equal(output.nextEnabled, false);
-  assert.equal(output.returnLiveEnabled, true);
+  assert.equal(output.nextEnabled, true);
 });
 
 test("temporal context maintains clear LIVE vs REPLAY mode and sequence position during historical scrubbing", () => {
@@ -215,7 +212,6 @@ test("temporal context maintains clear LIVE vs REPLAY mode and sequence position
 
   assert.equal(liveContext.mode, "live");
   assert.equal(liveContext.position.selectedSequence, 15);
-  assert.equal(liveContext.commands.canReturnToLive, false);
 
   const historicalContext = deriveReplayPresentation({
     events: sampleEvents,
@@ -228,5 +224,4 @@ test("temporal context maintains clear LIVE vs REPLAY mode and sequence position
   assert.equal(historicalContext.mode, "replay");
   assert.equal(historicalContext.position.selectedSequence, 5);
   assert.equal(historicalContext.position.currentEvent?.summary, "Found Sword");
-  assert.equal(historicalContext.commands.canReturnToLive, true);
 });

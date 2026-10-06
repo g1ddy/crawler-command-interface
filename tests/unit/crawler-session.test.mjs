@@ -28,6 +28,26 @@ test("CrawlerSessionController manages state and commands cleanly", () => {
   assert.strictEqual(snapshotLive.currentSeq, snapshotLive.maxSeq);
 });
 
+test("selectSequence synchronizes floor context and handles Live boundary at maxSeq", () => {
+  const controller = new CrawlerSessionController({
+    timelineDoc: compiledTimeline,
+    storageAdapter: null,
+  });
+
+  // Select Floor 1 historical sequence (e.g., seq 1)
+  controller.selectSequence(1);
+  const snapSeq1 = controller.getSnapshot();
+  assert.strictEqual(snapSeq1.isLive, false);
+  assert.strictEqual(snapSeq1.selectedFloorOrdinal, 1);
+  assert.strictEqual(snapSeq1.floorHudTitle.includes("FLOOR 1"), true);
+
+  // Select max sequence (Live boundary)
+  controller.selectSequence(snapSeq1.maxSeq);
+  const snapLive = controller.getSnapshot();
+  assert.strictEqual(snapLive.isLive, true);
+  assert.strictEqual(snapLive.selectedFloorOrdinal, snapLive.latestFloor);
+});
+
 test("presentation choice and local UI state are decoupled from persistence and timeline JSON", () => {
   const jsonDocument = JSON.stringify(compiledTimeline);
   assert.strictEqual(jsonDocument.includes("presentationChoice"), false);

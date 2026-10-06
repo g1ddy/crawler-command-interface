@@ -20,8 +20,8 @@ function Vital({
   inspect: (o: ProjectedObservationValue) => void;
 }) {
   const { name, current, maximum, observation, causalValue, displayAuthority, color } = vital;
-  const percent = maximum ? Math.min(100, Math.round((Number(current ?? 0) / maximum) * 100)) : 0;
-  const fillClass = METER_COLOR_MAP[color] ?? styles.redFill;
+  const percent = maximum !== null && current !== null ? Math.min(100, Math.round((current / maximum) * 100)) : 0;
+  const fillClass = current !== null ? METER_COLOR_MAP[color] ?? styles.redFill : "";
 
   return (
     <div className={styles.vitalRow}>
@@ -36,10 +36,12 @@ function Vital({
         />
       </span>
       <b>
-        {current?.toLocaleString() ?? "—"} / {maximum?.toLocaleString() ?? "—"}
+        {current !== null ? current.toLocaleString() : "—"} / {maximum !== null ? maximum.toLocaleString() : "—"}
       </b>
       <em className={styles.meterTrack}>
-        <i className={`${styles.meterFill} ${fillClass}`} style={{ width: `${percent}%` }} />
+        {current !== null ? (
+          <i className={`${styles.meterFill} ${fillClass}`.trim()} style={{ width: `${percent}%` }} />
+        ) : null}
       </em>
     </div>
   );

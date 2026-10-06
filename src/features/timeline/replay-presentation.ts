@@ -41,7 +41,6 @@ export interface ReplayCommands {
   canSelectNextFloor: boolean;
   canStepPrevious: boolean;
   canStepNext: boolean;
-  canReturnToLive: boolean;
   canToggleLive: boolean;
 }
 
@@ -184,8 +183,8 @@ export function deriveReplayPresentation(
 
   const scopedSequences = Array.from(
     new Set([
-      ...floorEvents.map((e) => e.sequence),
-      ...floorObservations.map((o) => o.sequence),
+      ...events.map((e) => e.sequence),
+      ...observations.map((o) => o.sequence),
     ]),
   ).sort((a, b) => a - b);
 
@@ -250,7 +249,6 @@ export function deriveReplayPresentation(
     canSelectNextFloor: nextFloorOrdinal !== null,
     canStepPrevious: currentIndex > 0,
     canStepNext: currentIndex < scopedSequences.length - 1,
-    canReturnToLive: !isLive,
     canToggleLive: true,
   };
 

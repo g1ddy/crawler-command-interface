@@ -33,9 +33,9 @@ export function getStatBreakdown(state: CrawlerState, statName: string): StatBre
   } else if (statName === 'Movement Speed') {
     baseValue = 100; // base %
   } else if (statName === 'Max Health') {
-    baseValue = state.crawler.condition.maxHealth;
+    baseValue = state.crawler.condition.maxHealth ?? 0;
   } else if (statName === 'Max Mana') {
-    baseValue = state.crawler.condition.maxMana;
+    baseValue = state.crawler.condition.maxMana ?? 0;
   }
 
   const gearContributions: { itemName: string; slot: string; amount: number }[] = [];

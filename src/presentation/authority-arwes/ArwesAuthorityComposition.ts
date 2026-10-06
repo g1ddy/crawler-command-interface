@@ -371,7 +371,7 @@ export function ArwesAuthorityComposition({
         },
 
         /* Urgency / Collapse Context */
-        urgency.formattedLabel
+        urgency.activeCountdown
           ? createElement(
               "div",
               {
@@ -396,22 +396,20 @@ export function ArwesAuthorityComposition({
                 },
                 urgency.formattedLabel.toUpperCase()
               ),
-              urgency.activeCountdown
-                ? createElement(
-                    "div",
-                    {
-                      "data-testid": "arwes-countdown-timer",
-                      style: {
-                        fontSize: "1.2rem",
-                        fontWeight: 800,
-                        fontFamily: "monospace",
-                        color: "#38bdf8",
-                        marginTop: "0.1rem",
-                      },
-                    },
-                    urgency.activeCountdown.formattedTime
-                  )
-                : null
+              createElement(
+                "div",
+                {
+                  "data-testid": "arwes-countdown-timer",
+                  style: {
+                    fontSize: "1.2rem",
+                    fontWeight: 800,
+                    fontFamily: "monospace",
+                    color: "#38bdf8",
+                    marginTop: "0.1rem",
+                  },
+                },
+                urgency.activeCountdown.formattedTime
+              )
             )
           : null,
 
@@ -439,31 +437,11 @@ export function ArwesAuthorityComposition({
             },
             createElement(
               "div",
-              { style: { display: "flex", alignItems: "center", gap: "0.35rem" } },
-              createElement(
-                "span",
-                {
-                  "data-testid": "arwes-mode-badge",
-                  style: {
-                    fontSize: "0.75rem",
-                    fontWeight: 800,
-                    background: temporal.isLive ? "#15803d" : "#b45309",
-                    color: "#ffffff",
-                    padding: "0.2rem 0.55rem",
-                    borderRadius: "3px",
-                    letterSpacing: "0.06em",
-                  },
-                },
-                temporal.mode.toUpperCase()
-              ),
-            ),
-            createElement(
-              "div",
               {
                 "data-testid": "arwes-location-info",
                 style: { fontSize: "0.78rem", color: "#cbd5e1", fontWeight: "600" },
               },
-              `${system.floorTitle} · SEQ ${system.sequence}`
+              system.floorTitle
             )
           )
         )

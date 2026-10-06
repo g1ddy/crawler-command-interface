@@ -69,7 +69,6 @@ export function PersistentHud({
           data-testid="hud-audience-mode"
           data-mode={liveMode ? "live" : "replay"}
         >
-          <b>{liveMode ? "LIVE" : "REPLAY"}</b>
           <div className={styles.broadcastContext} aria-label="Broadcast context">
             Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}
           </div>

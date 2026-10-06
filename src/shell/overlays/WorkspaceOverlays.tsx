@@ -7,17 +7,20 @@ import { FloorRules } from "../../features/floor/FloorRules";
 import { TimelineEvidence } from "../../features/timeline/evidence/TimelineEvidence";
 import { TelemetryInspectorModal } from "../../features/timeline/evidence/TelemetryInspectorModal";
 import { TimelineHistory } from "../../features/timeline/history/TimelineHistory";
+import { TimelineControls } from "../replay/TimelineControls";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
+import timelineStyles from "../replay/TimelineControls.module.css";
 import { TimelineToolsModal } from "../tools/TimelineToolsModal";
+import type { ReplayCommandCallbacks } from "../../features/timeline/public";
 
 type Reading = ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation;
 
 /** Feature-owned inspectors composed here, not inside the layout frame. */
 export function WorkspaceOverlays({ snapshot, commands, inspectStat, closeStat,
   inspectObservation, closeObservation, onInspectObservation, showFloorRules, closeFloorRules,
-  showTimelineHistory, closeHistory, showTimelineEvidence, closeEvidence, tools,
+  showTimelineHistory, closeHistory, showTimelineEvidence, closeEvidence, showTimelinePanel, closeTimelinePanel, replayCommands, tools,
 }: {
-  snapshot: Pick<CrawlerSession["snapshot"], "projectedState" | "events" | "sources" | "currentSeq" | "selectedFloorOrdinal" | "projectedObservations">;
+  snapshot: Pick<CrawlerSession["snapshot"], "projectedState" | "events" | "sources" | "currentSeq" | "selectedFloorOrdinal" | "projectedObservations" | "replayPresentation">;
   commands: Pick<CrawlerSession["commands"], "selectSequence">;
   inspectStat: string | null; closeStat: () => void;
   inspectObservation: Reading | null; closeObservation: () => void;
@@ -25,6 +28,8 @@ export function WorkspaceOverlays({ snapshot, commands, inspectStat, closeStat,
   showFloorRules: boolean; closeFloorRules: () => void;
   showTimelineHistory: boolean; closeHistory: () => void;
   showTimelineEvidence: boolean; closeEvidence: () => void;
+  showTimelinePanel: boolean; closeTimelinePanel: () => void;
+  replayCommands: ReplayCommandCallbacks;
   tools: ComponentProps<typeof TimelineToolsModal> | null;
 }) {
   const { projectedState, events, sources, currentSeq, selectedFloorOrdinal, projectedObservations } = snapshot;
@@ -48,6 +53,11 @@ export function WorkspaceOverlays({ snapshot, commands, inspectStat, closeStat,
     {inspectObservation && <ModalBoundary label="Telemetry provenance" onClose={closeObservation}>
       <TelemetryInspectorModal observation={inspectObservation} sources={sources} onClose={closeObservation} />
     </ModalBoundary>}
+    {showTimelinePanel && (
+      <div className={timelineStyles.disclosure}>
+        <TimelineControls model={snapshot.replayPresentation} commands={replayCommands} onClose={closeTimelinePanel} />
+      </div>
+    )}
     {tools && <ModalBoundary label="System tools" onClose={tools.onClose}>
       <TimelineToolsModal {...tools} />
     </ModalBoundary>}

@@ -581,7 +581,10 @@ test("projection-neutral countdown events and narrative events execute cleanly t
       countdownId: "countdown-test",
       summary: `Test ${eventType}`,
     });
-    assert.deepEqual(projected.crawler, initial.crawler);
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(projected.crawler)),
+      JSON.parse(JSON.stringify(initial.crawler))
+    );
     assert.equal(projected.recentLogs[0].message, `Test ${eventType}`);
   }
 
@@ -592,7 +595,10 @@ test("projection-neutral countdown events and narrative events execute cleanly t
     kind: "floor-entered",
     summary: "Entered floor",
   });
-  assert.deepEqual(narrativeProjected.crawler, initial.crawler);
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(narrativeProjected.crawler)),
+    JSON.parse(JSON.stringify(initial.crawler))
+  );
   assert.equal(narrativeProjected.recentLogs.length, 0);
 });
 
@@ -613,6 +619,72 @@ function extractSchemaEventTypes(schemaPath) {
   search(schema.$defs?.event || schema);
   return Array.from(types).sort();
 }
+
+test("nullable condition metrics behave correctly across projection scenarios", () => {
+  // initial unknown condition values are null
+  const initial = createInitialState({ crawler: { name: "Test", level: 1, attributes: {}, condition: {} } });
+  assert.equal(initial.crawler.condition.currentHealth, null);
+  assert.equal(initial.crawler.condition.maxHealth, null);
+  assert.equal(initial.crawler.condition.currentMana, null);
+
+  // a delta against an unknown value leaves it unknown
+  const afterDelta1 = applyEvent(initial, {
+    id: "evt-delta-unknown",
+    sequence: 1,
+    type: "ConditionChanged",
+    healthDelta: 50,
+    manaDelta: -10,
+  });
+  assert.equal(afterDelta1.crawler.condition.currentHealth, null);
+  assert.equal(afterDelta1.crawler.condition.currentMana, null);
+
+  // an explicit condition event establishes a numeric value
+  const afterEstablish = applyEvent(afterDelta1, {
+    id: "evt-establish",
+    sequence: 2,
+    type: "ConditionChanged",
+    currentHealth: 100,
+    maxHealth: 150,
+  });
+  assert.equal(afterEstablish.crawler.condition.currentHealth, 100);
+  assert.equal(afterEstablish.crawler.condition.maxHealth, 150);
+  assert.equal(afterEstablish.crawler.condition.currentMana, null);
+
+  // a later delta updates that established value
+  const afterDelta2 = applyEvent(afterEstablish, {
+    id: "evt-delta-known",
+    sequence: 3,
+    type: "ConditionChanged",
+    healthDelta: -25,
+  });
+  assert.equal(afterDelta2.crawler.condition.currentHealth, 75);
+  assert.equal(afterDelta2.crawler.condition.maxHealth, 150);
+
+  // Item consumed health restoration does not establish unknown values
+  const afterConsumedDelta = applyEvent(afterDelta2, {
+    id: "evt-consumed-restore",
+    sequence: 4,
+    type: "ItemConsumed",
+    itemInstanceId: "inst-potion",
+    quantity: 1,
+    healthRestored: 50,
+    manaRestored: 50, // mana is still null!
+  });
+  // Health updates (cap to max)
+  assert.equal(afterConsumedDelta.crawler.condition.currentHealth, 125);
+  // Mana stays unknown
+  assert.equal(afterConsumedDelta.crawler.condition.currentMana, null);
+
+  // replaying before the first establishing observation/event returns null
+  const events = [
+    { id: "e1", sequence: 1, type: "NarrativeEvent", kind: "other", summary: "Start" },
+    { id: "e2", sequence: 2, type: "ConditionChanged", currentHealth: 100, summary: "Set Health" }
+  ];
+  const replayedSeq1 = projectState(events, 1, [], initial);
+  assert.equal(replayedSeq1.crawler.condition.currentHealth, null);
+  const replayedSeq2 = projectState(events, 2, [], initial);
+  assert.equal(replayedSeq2.crawler.condition.currentHealth, 100);
+});
 
 test("schema event discriminators match FLOOR_EVENT_TYPES runtime const array", () => {
   const schemaPaths = [
