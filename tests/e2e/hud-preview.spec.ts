@@ -234,10 +234,10 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();
   await expect(page.getByTestId("arwes-spine-header")).toBeVisible();
-  await expect(page.getByTestId("arwes-vitals-frame")).toBeVisible();
+  await expect(page.getByTestId("arwes-telemetry-frame")).toBeVisible();
   await expect(page.getByTestId("arwes-attention-frame")).toBeVisible();
 
-  // Verify vitals telemetry and evidence inspection trigger
+  // Verify telemetry and evidence inspection trigger
   const healthRow = page.getByTestId("telemetry-health");
   await expect(healthRow).toBeVisible();
 

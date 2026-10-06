@@ -232,6 +232,9 @@ export function CrawlerWorkspace({
     (key: string) => {
       const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
         viewers: projectedObservations.broadcast.viewers,
+        health: projectedObservations.condition.currentHealth,
+        mana: projectedObservations.condition.currentMana,
+        level: projectedObservations.xpProgress.level,
       };
       const obs = observationsMap[key];
       if (obs) {

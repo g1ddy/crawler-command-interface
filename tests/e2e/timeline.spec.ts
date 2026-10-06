@@ -40,13 +40,17 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   const latestSequence = await latestRuntimeSequence(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await expect(slider).toHaveValue(String(latestSequence));
-  await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
+
+  // Use a piece of state that demonstrably changes.
+  // Let's use the audience count which is part of the persistent HUD telemetry/broadcast state.
+  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("212,000,000,000");
 
   await enterReplayByScrubbing(page);
   await selectSequence(page, 1);
 
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-  await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
+  await expect(page.locator('header[aria-label="Crawler HUD"]')).not.toContainText("212,000,000,000");
+
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   await expect(page.locator("[class*='item']")).toHaveCount(0);
 });
@@ -99,12 +103,12 @@ test("Return to Live sequence restores the latest projection", async ({ page }) 
 
   await enterReplayByScrubbing(page);
   await selectSequence(page, 1);
-  await expect(page.getByRole("group", { name: "Level reading" })).not.toContainText("13");
+  await expect(page.locator('header[aria-label="Crawler HUD"]')).not.toContainText("212,000,000,000");
 
   await slider.fill(String(latestSequence));
 
   await expect(slider).toHaveValue(String(latestSequence));
-  await expect(page.getByRole("group", { name: "Level reading" })).toContainText("13");
+  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("212,000,000,000");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 });
 
