@@ -128,17 +128,19 @@ export function applyItemConsumed(state: CrawlerState, event: Record<string, unk
     item.quantity -= numericQuantity;
     if (item.quantity <= 0) state.inventory = state.inventory.filter((i) => i.instanceId !== instanceId);
   }
-  if (event.healthRestored) {
-    state.crawler.condition.currentHealth = Math.min(
-      state.crawler.condition.maxHealth ?? Number.MAX_SAFE_INTEGER,
-      (state.crawler.condition.currentHealth ?? 0) + Number(event.healthRestored)
-    );
+  if (event.healthRestored && state.crawler.condition.currentHealth !== null) {
+    let currentHealth = state.crawler.condition.currentHealth + Number(event.healthRestored);
+    if (state.crawler.condition.maxHealth !== null) {
+      currentHealth = Math.min(state.crawler.condition.maxHealth, currentHealth);
+    }
+    state.crawler.condition.currentHealth = currentHealth;
   }
-  if (event.manaRestored) {
-    state.crawler.condition.currentMana = Math.min(
-      state.crawler.condition.maxMana ?? Number.MAX_SAFE_INTEGER,
-      (state.crawler.condition.currentMana ?? 0) + Number(event.manaRestored)
-    );
+  if (event.manaRestored && state.crawler.condition.currentMana !== null) {
+    let currentMana = state.crawler.condition.currentMana + Number(event.manaRestored);
+    if (state.crawler.condition.maxMana !== null) {
+      currentMana = Math.min(state.crawler.condition.maxMana, currentMana);
+    }
+    state.crawler.condition.currentMana = currentMana;
   }
 }
 
