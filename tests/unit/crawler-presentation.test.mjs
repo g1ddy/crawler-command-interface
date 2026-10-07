@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deriveCrawlerPresentation } from "../../src/features/crawler/crawler-presentation.ts";
+import { checkItemRequirements } from "../../app/domain/stats.ts";
 
 test("deriveCrawlerPresentation computes crawler presentation with evidence authority", () => {
   const mockState = {
@@ -297,4 +298,89 @@ test("isLive mutation gating invariant enforces isLive as strict mutation bounda
   const liveUnderlyingPoints = 5;
   assert.ok(liveUnderlyingPoints > 0);
   assert.equal(false && (liveUnderlyingPoints > 0), false);
+});
+
+test("checkItemRequirements handles known and unknown null level states correctly", () => {
+  const crawlerKnown = {
+    name: "CARL",
+    level: 10,
+    attributes: { Strength: 20, Dexterity: 10, Constitution: 10, Intelligence: 10, Charisma: 10 },
+    race: "HUMAN",
+    class: "SCOUT",
+  };
+  const crawlerNull = {
+    name: "CARL",
+    level: null,
+    attributes: { Strength: 20, Dexterity: 10, Constitution: 10, Intelligence: 10, Charisma: 10 },
+    race: "HUMAN",
+    class: "SCOUT",
+  };
+
+  const reqs = { level: 5, Strength: 15 };
+
+  const resKnown = checkItemRequirements(crawlerKnown, reqs);
+  assert.equal(resKnown.met, true);
+  assert.equal(resKnown.details.find((d) => d.key === "level")?.current, 10);
+
+  const resNull = checkItemRequirements(crawlerNull, reqs);
+  assert.equal(resNull.met, false);
+  assert.equal(resNull.details.find((d) => d.key === "level")?.current, "N/A");
+  assert.equal(resNull.details.find((d) => d.key === "Strength")?.met, true);
+});
+
+test("enforces complete available-points and actionability matrix across all 6 cases", () => {
+  const baseState = {
+    sequence: 10,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {
+      name: "Carl",
+      level: 5,
+      race: "Primal",
+      class: "Scout",
+      availableAttributePoints: 3,
+      attributes: { Strength: 20 },
+      permanentAttributeModifiers: { Strength: 0 },
+      condition: { currentHealth: 100, maxHealth: 100 },
+    },
+    effects: [],
+  };
+
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+  const zeroPointsObs = {
+    xpProgress: {},
+    attributes: { availableAttributePoints: { sequence: 10, key: "availableAttributePoints", value: 0 } },
+    condition: {},
+  };
+  const positivePointsObs = {
+    xpProgress: {},
+    attributes: { availableAttributePoints: { sequence: 10, key: "availableAttributePoints", value: 3 } },
+    condition: {},
+  };
+
+  // Case 1: Unknown points, Live mode -> display undefined, action disabled
+  const c1 = deriveCrawlerPresentation(baseState, emptyObs);
+  assert.equal(c1.availablePoints, undefined);
+  assert.equal(c1.canAllocatePoints, false);
+  assert.equal(true && c1.canAllocatePoints, false);
+
+  // Case 2: Unknown points, Replay mode -> display undefined, action disabled
+  assert.equal(false && c1.canAllocatePoints, false);
+
+  // Case 3: 0 points, Live mode -> display 0, action disabled
+  const c3 = deriveCrawlerPresentation(baseState, zeroPointsObs);
+  assert.equal(c3.availablePoints, 0);
+  assert.equal(c3.canAllocatePoints, false);
+  assert.equal(true && c3.canAllocatePoints, false);
+
+  // Case 4: 0 points, Replay mode -> display 0, action disabled
+  assert.equal(false && c3.canAllocatePoints, false);
+
+  // Case 5: >0 points, Live mode -> display 3, action enabled
+  const c5 = deriveCrawlerPresentation(baseState, positivePointsObs);
+  assert.equal(c5.availablePoints, 3);
+  assert.equal(c5.canAllocatePoints, true);
+  assert.equal(true && c5.canAllocatePoints, true);
+
+  // Case 6: >0 points, Replay mode -> display 3, action disabled
+  assert.equal(false && c5.canAllocatePoints, false);
 });

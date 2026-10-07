@@ -507,24 +507,31 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
 });
 
 test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+  // Seed scenario with valid available points observation before navigation
+  await page.addInitScript((timelineDoc) => {
+    try {
+      const doc = JSON.parse(JSON.stringify(timelineDoc));
+      if (!doc.observations) doc.observations = [];
+      const maxSeq = doc.events?.at(-1)?.sequence ?? 182;
+      doc.observations.push({
+        id: "obs-e2e-points",
+        kind: "crawler-attributes",
+        sequence: maxSeq,
+        availableAttributePoints: 3,
+        evidence: [{ sourceId: doc.sources?.[0]?.id || "src-book-1", confidence: "confirmed" }],
+      });
+      localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(doc));
+    } catch (e) {
+      console.error(e);
+    }
+  }, compiledTimeline);
 
-  // Import timeline with positive available points observation via System Tools
-  const doc = JSON.parse(JSON.stringify(compiledTimeline));
-  if (!doc.observations) doc.observations = [];
-  const maxSeq = doc.events?.at(-1)?.sequence ?? 182;
-  doc.observations.push({
-    id: "obs-e2e-points",
-    kind: "crawler-attributes",
-    sequence: maxSeq,
-    availableAttributePoints: 3,
-    evidence: [{ sourceId: doc.sources?.[0]?.id || "src-book-1", confidence: "confirmed" }],
-  });
+  await page.goto(pagesPath);
 
+  // Switch to Authority (Arwes POC) via System Tools
   await page.getByRole("button", { name: "Open data tools" }).click();
-  const jsonInput = page.getByPlaceholder("Paste crawler-timeline document JSON here to import...");
-  await jsonInput.fill(JSON.stringify(doc));
-  await page.getByRole("button", { name: "IMPORT TIMELINE ENVELOPE" }).click();
+  await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
+  await page.getByRole("button", { name: "CANCEL" }).click();
 
   // 1. Live mode with available points: allocate button must be enabled
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
