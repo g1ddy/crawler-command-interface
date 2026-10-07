@@ -2,7 +2,9 @@ import { useState } from "react";
 import type { CrawlerState, ProjectedCountdownState, ProjectedObservationsState, ProjectedObservationValue } from "../../../app/domain/types";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
 import {
+  deriveCountdownEvidencePresentation,
   deriveEvidencePresentation,
+  evidenceGlanceMarker,
   mapEvidenceToSemantics,
 } from "../../features/timeline/evidence/evidencePresentation";
 import { Hotlist } from "./hotlist/Hotlist";
@@ -39,15 +41,23 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
 }) {
   const [showEvidence, setShowEvidence] = useState(false);
   return <header className="system-hud" aria-label="Crawler HUD" data-hud-renderer="concept">
-    <div className="hud-collapse" data-evidence={countdown ? countdown.isStale ? "stale" : countdown.status : "unavailable"}>
-      <span className="hud-kicker">{floorTitle}</span>
-      {countdown ? (
-        <>
-          <strong>{countdown.formattedLabel}</strong>
-          <button onClick={() => setShowEvidence(true)}>{`${countdown.isStale ? "Last known" : countdown.status === "estimated" ? "Estimated" : "Observed"} · ${countdown.lifecycleStatus}`} · Evidence</button>
-        </>
-      ) : null}
-    </div>
+    {countdown ? (() => {
+      const evidence = deriveCountdownEvidencePresentation(countdown);
+      const marker = evidenceGlanceMarker(evidence.state);
+      return (
+        <div className="hud-collapse" data-evidence={countdown.isStale ? "stale" : countdown.status}>
+          <span className="hud-kicker">{floorTitle}</span>
+          <strong>{countdown.formattedTime}</strong>
+          <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
+            {marker} Evidence
+          </button>
+        </div>
+      );
+    })() : (
+      <div className="hud-collapse" data-evidence="unavailable">
+        <span className="hud-kicker">{floorTitle}</span>
+      </div>
+    )}
     <div className="hud-readings" aria-label="Observed broadcast context">
       {onInspectObservation && (
         <Reading label="Viewers" observation={observations.broadcast.viewers} sequence={state.sequence} onInspect={onInspectObservation} />

@@ -13,6 +13,7 @@ export const SequenceBadge = (props: ComponentProps<typeof SequenceBadgeComp>) =
   return React.createElement(React.Suspense, { fallback: null }, React.createElement(Component, props));
 };
 export {
+  deriveCountdownEvidencePresentation,
   deriveEvidencePresentation,
   displayedReadingAuthority,
   evidenceGlanceMarker,

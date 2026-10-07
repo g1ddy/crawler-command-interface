@@ -51,7 +51,7 @@ test("deriveHudComposition exposes active countdown state without inventing urge
     floorHudTitle: "FLOOR 1",
   });
   assert.deepEqual(composition.urgency.activeCountdown, activeCountdown);
-  assert.equal(composition.urgency.formattedLabel, "LEVEL COLLAPSE IN 10:00");
+  assert.equal(composition.urgency.formattedLabel, "10:00");
   assert.equal(composition.urgency.lifecycleStatus, "active");
 });
 

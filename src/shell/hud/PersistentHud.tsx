@@ -6,6 +6,10 @@ import type {
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
 import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
+import {
+  deriveCountdownEvidencePresentation,
+  evidenceGlanceMarker,
+} from "../../features/timeline/public";
 import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 import { Hotlist } from "./hotlist/Hotlist";
 import styles from "./PersistentHud.module.css";
@@ -36,7 +40,6 @@ export function PersistentHud({
 
   const title = composition?.system.floorTitle ?? floorTitle;
   const activeCountdown = composition?.urgency.activeCountdown ?? countdown;
-  const formattedClock = composition?.urgency.formattedLabel ?? activeCountdown?.formattedLabel;
   const liveMode = composition?.temporal.isLive ?? isLive;
   const attention = composition?.attention;
   const viewersObs = composition?.broadcast.viewers ?? observations.broadcast.viewers;
@@ -54,15 +57,18 @@ export function PersistentHud({
               </span>
             )}
           </div>
-          {activeCountdown && formattedClock ? (
-            <>
-              <strong>{formattedClock}</strong>
-              <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
-                {activeCountdown.isStale ? "Last known" : activeCountdown.status === "estimated" ? "Estimated" : "Observed"}
-                {" · "}{activeCountdown.lifecycleStatus} · Evidence
-              </button>
-            </>
-          ) : null}
+          {activeCountdown ? (() => {
+            const evidence = deriveCountdownEvidencePresentation(activeCountdown);
+            const marker = evidenceGlanceMarker(evidence.state);
+            return (
+              <>
+                <strong>{activeCountdown.formattedTime}</strong>
+                <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
+                  {marker} Evidence
+                </button>
+              </>
+            );
+          })() : null}
         </div>
         <div
           className={styles.mode}
