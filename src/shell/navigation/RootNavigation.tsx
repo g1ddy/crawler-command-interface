@@ -40,7 +40,18 @@ export function RootNavigation({
             aria-pressed={activeView === item.id}
             onClick={() => set(item.id)}
           >
-            {item.label}
+            <span>{item.label}</span>
+            {"badge" in item && item.badge && (
+              <span
+                className={`${styles.badge} ${item.badge.hasActiveAlerts ? styles.alertBadge : ""}`}
+                aria-label={`${item.badge.count} ${item.badge.count === 1 ? "notice" : "notices"}${item.badge.hasActiveAlerts ? " (active alert)" : ""}`}
+                data-testid={`nav-badge-${item.id}`}
+              >
+                <span aria-hidden="true">
+                  {item.badge.hasActiveAlerts ? "⚠ " : ""}{item.badge.count}
+                </span>
+              </span>
+            )}
           </button>
         ))}
       </nav>

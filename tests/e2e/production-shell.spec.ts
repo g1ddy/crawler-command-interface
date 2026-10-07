@@ -187,6 +187,31 @@ test("Primary navigation supports keyboard focus and desktop bar layout", async 
   await expect(inventoryBtn).toBeFocused();
 });
 
+test("Primary navigation displays compact notification attention badge when source-backed notifications exist", async ({ page }) => {
+  const navContainer = navigation(page);
+  await expect(navContainer).toBeVisible();
+
+  // The default compiled timeline includes notifications at sequence 179 (live endpoint)
+  const noticeBtn = navContainer.getByRole("button", { name: /NOTIFICATIONS/ });
+  await expect(noticeBtn).toBeVisible();
+
+  const badge = page.getByTestId("nav-badge-notifications");
+  await expect(badge).toBeVisible();
+  await expect(badge).toHaveAttribute("aria-label", /notice/);
+
+  // Single-tap navigation opens Notifications view directly
+  await noticeBtn.click();
+  await expect(noticeBtn).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("heading", { name: "NOTIFICATIONS", exact: true })).toBeVisible();
+
+  // In early replay sequence before notifications are delivered, badge is absent
+  await enterReplayByScrubbing(page);
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("1");
+
+  await expect(page.getByTestId("nav-badge-notifications")).toHaveCount(0);
+});
+
 test("layout integration: Live mode has compact scrubber, scrubbing enters Replay", async ({ page }) => {
   // Assert the shared dock exists
   const dock = page.getByRole("complementary", { name: "Replay controls" });

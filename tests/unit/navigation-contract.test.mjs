@@ -104,3 +104,69 @@ test("Navigation Contract: filters unavailable root views and falls back safely"
   assert.strictEqual(questsItem.isAvailable, false);
   assert.strictEqual(questsItem.isActive, false);
 });
+
+test("Navigation Contract: attaches compact attention badge to NOTIFICATIONS when notifications are present", () => {
+  const contractWithNotice = deriveNavigationContract({
+    capabilities: mockCapabilitiesAllActive,
+    activeView: "crawler",
+    notificationsSummary: {
+      totalNotificationsCount: 1,
+      hasActiveAlerts: false,
+    },
+  });
+
+  const noticeItem = contractWithNotice.primaryNavigation.items.find(
+    (item) => item.id === "notifications",
+  );
+  assert.ok(noticeItem);
+  assert.deepStrictEqual(noticeItem.badge, {
+    count: 1,
+    hasActiveAlerts: false,
+    label: "1 notice",
+  });
+
+  const contractWithAlerts = deriveNavigationContract({
+    capabilities: mockCapabilitiesAllActive,
+    activeView: "crawler",
+    notificationsSummary: {
+      totalNotificationsCount: 3,
+      hasActiveAlerts: true,
+    },
+  });
+
+  const alertItem = contractWithAlerts.primaryNavigation.items.find(
+    (item) => item.id === "notifications",
+  );
+  assert.ok(alertItem);
+  assert.deepStrictEqual(alertItem.badge, {
+    count: 3,
+    hasActiveAlerts: true,
+    label: "3 notices (active alert)",
+  });
+});
+
+test("Navigation Contract: omits badge when there are zero notifications or missing summary", () => {
+  const contractZero = deriveNavigationContract({
+    capabilities: mockCapabilitiesAllActive,
+    activeView: "crawler",
+    notificationsSummary: {
+      totalNotificationsCount: 0,
+      hasActiveAlerts: false,
+    },
+  });
+
+  const itemZero = contractZero.primaryNavigation.items.find((i) => i.id === "notifications");
+  assert.ok(itemZero);
+  assert.strictEqual(itemZero.badge, undefined);
+
+  const contractOmitted = deriveNavigationContract({
+    capabilities: mockCapabilitiesAllActive,
+    activeView: "crawler",
+  });
+
+  const itemOmitted = contractOmitted.primaryNavigation.items.find(
+    (i) => i.id === "notifications",
+  );
+  assert.ok(itemOmitted);
+  assert.strictEqual(itemOmitted.badge, undefined);
+});

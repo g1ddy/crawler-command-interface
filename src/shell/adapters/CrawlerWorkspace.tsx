@@ -249,8 +249,9 @@ export function CrawlerWorkspace({
       deriveNavigationContract({
         capabilities,
         activeView: view,
+        notificationsSummary,
       }),
-    [capabilities, view],
+    [capabilities, view, notificationsSummary],
   );
 
   const handleExportJson = useCallback(() => {
