@@ -22,6 +22,8 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
   assert.equal(composition.temporal.mode, "live");
   assert.equal(composition.temporal.isLive, true);
   assert.equal(composition.urgency.activeCountdown, null);
+  assert.equal(composition.urgency.formattedLabel, "");
+  assert.doesNotMatch(composition.urgency.formattedLabel, /Collapse time unavailable|NO SOURCED COUNTDOWN|EXACT TIME/);
   assert.equal(composition.attention.totalNotificationsCount, 0);
   assert.equal(composition.attention.hasActiveAlerts, false);
   assert.equal(composition.vitals.health, undefined);

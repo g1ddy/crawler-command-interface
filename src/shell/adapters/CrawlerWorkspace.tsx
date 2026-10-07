@@ -333,7 +333,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectObservation={setInspectObservation}
-            onNavigateToSequence={commands.selectSequence}
+            onInspectCountdown={() => setShowCountdownEvidence(true)}
           />
         ) : (
           <PersistentHud
@@ -343,7 +343,7 @@ export function CrawlerWorkspace({
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
-            onNavigateToSequence={commands.selectSequence}
+            onInspectCountdown={() => setShowCountdownEvidence(true)}
           />
         )
       }

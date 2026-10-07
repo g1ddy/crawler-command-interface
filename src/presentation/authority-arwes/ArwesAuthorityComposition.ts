@@ -383,8 +383,8 @@ export function ArwesAuthorityComposition({
               const marker = evidenceGlanceMarker(evidence.state);
               const isInspectable = evidence.inspectable && Boolean(onInspectCountdown);
               const indicatorLabel = isInspectable
-                ? `Inspect countdown evidence: ${evidence.label.toLowerCase()}`
-                : `Countdown evidence: ${evidence.label.toLowerCase()}`;
+                ? `Inspect collapse clock evidence: ${evidence.label.toLowerCase()}`
+                : `Collapse clock evidence: ${evidence.label.toLowerCase()}`;
 
               return createElement(
                 "div",
@@ -402,33 +402,16 @@ export function ArwesAuthorityComposition({
                 },
                 createElement(
                   "div",
-                  { style: { display: "flex", flexDirection: "column", textAlign: "left" } },
-                  createElement(
-                    "div",
-                    {
-                      style: {
-                        fontSize: "0.68rem",
-                        color: "#7dd3fc",
-                        fontWeight: 700,
-                        letterSpacing: "0.05em",
-                      },
+                  {
+                    "data-testid": "arwes-countdown-timer",
+                    style: {
+                      fontSize: "1.2rem",
+                      fontWeight: 800,
+                      fontFamily: "monospace",
+                      color: "#38bdf8",
                     },
-                    (urgency.activeCountdown.title || "LEVEL COLLAPSE").toUpperCase()
-                  ),
-                  createElement(
-                    "div",
-                    {
-                      "data-testid": "arwes-countdown-timer",
-                      style: {
-                        fontSize: "1.2rem",
-                        fontWeight: 800,
-                        fontFamily: "monospace",
-                        color: "#38bdf8",
-                        marginTop: "0.1rem",
-                      },
-                    },
-                    urgency.activeCountdown.formattedTime
-                  )
+                  },
+                  urgency.activeCountdown.formattedTime
                 ),
                 createElement(AuthorityIndicator, {
                   marker,

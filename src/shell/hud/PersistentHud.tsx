@@ -1,16 +1,13 @@
-import { useState } from "react";
 import type {
   CrawlerState,
   ProjectedCountdownState,
   ProjectedObservationsState,
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
-import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
 import {
   deriveCountdownEvidencePresentation,
   evidenceGlanceMarker,
 } from "../../features/timeline/public";
-import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 import { Hotlist } from "./hotlist/Hotlist";
 import styles from "./PersistentHud.module.css";
 
@@ -26,7 +23,7 @@ export function PersistentHud({
   countdown,
   floorTitle,
   isLive,
-  onNavigateToSequence,
+  onInspectCountdown,
 }: {
   composition?: HudCompositionModel;
   state: Pick<CrawlerState, "sequence" | "hotlist" | "skills">;
@@ -34,10 +31,9 @@ export function PersistentHud({
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
   isLive: boolean;
-  onNavigateToSequence: (sequence: number) => void;
+  onNavigateToSequence?: (sequence: number) => void;
+  onInspectCountdown?: () => void;
 }) {
-  const [showEvidence, setShowEvidence] = useState(false);
-
   const title = composition?.system.floorTitle ?? floorTitle;
   const activeCountdown = composition?.urgency.activeCountdown ?? countdown;
   const liveMode = composition?.temporal.isLive ?? isLive;
@@ -60,13 +56,25 @@ export function PersistentHud({
           {activeCountdown ? (() => {
             const evidence = deriveCountdownEvidencePresentation(activeCountdown);
             const marker = evidenceGlanceMarker(evidence.state);
+            const isInspectable = evidence.inspectable && Boolean(onInspectCountdown);
+            const ariaLabel = `Inspect collapse clock evidence: ${evidence.label.toLowerCase()}`;
             return (
-              <>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
                 <strong>{activeCountdown.formattedTime}</strong>
-                <button onClick={() => setShowEvidence(true)} aria-label="Inspect collapse clock evidence">
-                  {marker} Evidence
-                </button>
-              </>
+                {isInspectable ? (
+                  <button
+                    type="button"
+                    onClick={onInspectCountdown}
+                    aria-label={ariaLabel}
+                  >
+                    {marker}
+                  </button>
+                ) : (
+                  <span role="img" aria-label={ariaLabel}>
+                    {marker}
+                  </span>
+                )}
+              </div>
             );
           })() : null}
         </div>
@@ -82,11 +90,6 @@ export function PersistentHud({
       </div>
 
       <Hotlist hotlist={state.hotlist} skills={state.skills} />
-      {showEvidence && activeCountdown && (
-        <ModalBoundary label="Countdown evidence" onClose={() => setShowEvidence(false)}>
-          <CountdownEvidenceModal countdown={activeCountdown} onClose={() => setShowEvidence(false)} onNavigateToSequence={onNavigateToSequence} />
-        </ModalBoundary>
-      )}
     </header>
   );
 }

@@ -1,5 +1,10 @@
+import fs from "node:fs";
 import { expect, test } from "@playwright/test";
 import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
+
+const compiledTimeline = JSON.parse(
+  fs.readFileSync(new URL("../../data/compiled-timeline.json", import.meta.url), "utf8")
+);
 
 const pagesPath = "/crawler-command-interface/";
 
@@ -503,6 +508,70 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
   await nav.getByRole("button", { name: "PARTY", exact: true }).click();
   await expect(page.getByRole("heading", { name: "PARTY", exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test("countdown presentation is compact, source-backed, and inspectable across all HUD renderers without persistent verbose filler", async ({ page }) => {
+  const floor1Seq = compiledTimeline.countdowns
+    .find((countdown: { id: string }) => countdown.id === "countdown-floor-1-collapse")
+    ?.references[0]?.sequence;
+
+  expect(typeof floor1Seq).toBe("number");
+
+  const renderers = [
+    { name: "production", query: "", rendererAttr: "persistent" },
+    { name: "authority", query: "?hud=authority", rendererAttr: "concept" },
+    { name: "authority-arwes", query: "?hud=authority-arwes", rendererAttr: "authority-arwes" },
+  ] as const;
+
+  for (const { name, query, rendererAttr } of renderers) {
+    await page.setViewportSize({ width: 360, height: 740 });
+    await page.goto(`${pagesPath}${query}`);
+
+    await enterReplayByScrubbing(page);
+    const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+    await slider.evaluate((el, val) => {
+      const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+      nativeSetter?.call(el, val);
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+    }, String(floor1Seq));
+
+    const hudRenderer = page.locator(`[data-hud-renderer="${rendererAttr}"]`);
+    await expect(hudRenderer).toBeVisible();
+
+    // Verify verbose status labels and filler text are absent
+    await expect(hudRenderer).not.toContainText(/Collapse time unavailable/i);
+    await expect(hudRenderer).not.toContainText(/NO SOURCED COUNTDOWN/i);
+    await expect(hudRenderer).not.toContainText(/EXACT TIME/i);
+    await expect(hudRenderer).not.toContainText(/· STATED/i);
+    await expect(hudRenderer).not.toContainText(/· ESTIMATED/i);
+
+    if (name === "authority-arwes") {
+      const timer = page.getByTestId("arwes-countdown-timer");
+      await expect(timer).toBeVisible();
+      await expect(hudRenderer).not.toContainText(/LEVEL COLLAPSE/i);
+    }
+
+    // Locate accessible evidence inspection control
+    const evidenceBtn = page.getByRole("button", { name: /Inspect collapse clock evidence/i });
+    await expect(evidenceBtn).toBeVisible();
+
+    // Verify visible content is strictly the compact marker
+    const markerText = await evidenceBtn.innerText();
+    expect(["●", "◷", "≈"]).toContain(markerText.trim());
+    expect(markerText).not.toContain("Evidence");
+
+    // Verify no document horizontal overflow
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+    // Click evidence control and verify modal
+    await evidenceBtn.click();
+    await expect(page.getByText("COUNTDOWN ESTIMATE & PROVENANCE")).toBeVisible();
+
+    // Close modal and verify it closes cleanly
+    await page.getByRole("button", { name: "CLOSE" }).click();
+    await expect(page.getByText("COUNTDOWN ESTIMATE & PROVENANCE")).not.toBeVisible();
+  }
 });
 
 test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {

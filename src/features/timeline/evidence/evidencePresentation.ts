@@ -122,9 +122,7 @@ export function deriveCountdownEvidencePresentation(
     };
   }
 
-  const referenceObservationIds = countdown.referencePoints.flatMap((r) =>
-    r.evidence.map((e) => e.sourceId)
-  );
+  const referenceObservationIds: string[] = [];
 
   if (countdown.status === "estimated") {
     return {
