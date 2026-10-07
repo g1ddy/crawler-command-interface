@@ -150,7 +150,7 @@ export function deriveCrawlerPresentation(
 
   return {
     sequence: state.sequence,
-    name: crawler.name,
+    name: crawler.name || "—",
     race: crawler.race || "—",
     class: crawler.class || "—",
     level,

@@ -640,8 +640,6 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "name",
-            "level",
             "attributes",
             "condition"
           ],
@@ -664,6 +662,9 @@
               "$ref": "#/$defs/nonNegativeInteger"
             },
             "maxXp": {
+              "$ref": "#/$defs/nonNegativeInteger"
+            },
+            "availableAttributePoints": {
               "$ref": "#/$defs/nonNegativeInteger"
             },
             "attributes": {

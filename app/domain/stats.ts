@@ -147,21 +147,25 @@ export function checkItemRequirements(
 
     const lowerKey = key.toLowerCase();
     if (lowerKey === 'level') {
-      current = crawler.level;
-      isMet = crawler.level >= Number(required);
+      current = crawler.level ?? 'N/A';
+      isMet = crawler.level !== undefined && crawler.level >= Number(required);
     } else if (lowerKey === 'class') {
-      current = crawler.class;
-      isMet = String(crawler.class).toLowerCase() === String(required).toLowerCase();
+      current = crawler.class ?? 'N/A';
+      isMet = crawler.class !== undefined && String(crawler.class).toLowerCase() === String(required).toLowerCase();
     } else if (lowerKey === 'race') {
-      current = crawler.race;
-      isMet = String(crawler.race).toLowerCase() === String(required).toLowerCase();
+      current = crawler.race ?? 'N/A';
+      isMet = crawler.race !== undefined && String(crawler.race).toLowerCase() === String(required).toLowerCase();
     } else {
       const attributeKey = Object.keys(crawler.attributes).find(
         (attribute) => attribute.toLowerCase() === lowerKey
       ) as AttributeName | undefined;
-      if (attributeKey) {
-        current = crawler.attributes[attributeKey];
-        isMet = crawler.attributes[attributeKey] >= Number(required);
+      const attrVal = attributeKey ? crawler.attributes[attributeKey] : undefined;
+      if (attrVal !== undefined) {
+        current = attrVal;
+        isMet = attrVal >= Number(required);
+      } else {
+        current = 'N/A';
+        isMet = false;
       }
     }
 
