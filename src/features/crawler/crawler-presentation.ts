@@ -37,7 +37,7 @@ export interface DerivedCrawlerPresentation {
   crawlerNumber?: string;
   race: string;
   class: string;
-  level: number | undefined;
+  level: number | null | undefined;
   xp: number | undefined;
   maxXp: number | undefined;
   xpPercent: number;

@@ -178,7 +178,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     crawler: {
       name: crawler?.name || 'CARL',
       crawlerNumber: crawler?.crawlerNumber ?? '4,122',
-      level: crawler?.level || 42,
+      level: crawler?.level ?? 1,
       race: crawler?.race || 'PRIMAL',
       class: crawler?.class || 'SCOUT',
       xp: crawler?.xp ?? 21500,

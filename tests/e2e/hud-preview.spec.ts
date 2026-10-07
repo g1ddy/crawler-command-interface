@@ -508,9 +508,9 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
 test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {
   await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
 
-  // In Live mode: allocate stat button is enabled if points available
+  // Without explicit points evidence, allocation button is properly disabled
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
-  await expect(allocateBtn).toBeEnabled();
+  await expect(allocateBtn).toBeDisabled();
 
   // Enter Replay mode via sequence scrubber
   await enterReplayByScrubbing(page);

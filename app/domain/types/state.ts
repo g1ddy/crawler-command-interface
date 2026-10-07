@@ -81,7 +81,7 @@ export interface TimelineState {
   crawler: {
     name: string;
     crawlerNumber?: string | number;
-    level: number;
+    level: number | null;
     race?: string;
     class?: string;
     xp?: number;
@@ -246,7 +246,7 @@ export interface CrawlerState {
   crawler: {
     name: string;
     crawlerNumber?: string | number;
-    level: number;
+    level: number | null;
     race: string;
     class: string;
     xp: number;
