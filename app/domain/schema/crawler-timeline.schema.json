@@ -651,7 +651,7 @@
               "minLength": 1
             },
             "level": {
-              "type": "integer",
+              "type": ["integer", "null"],
               "minimum": 1
             },
             "race": {

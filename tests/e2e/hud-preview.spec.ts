@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline";
 
 const pagesPath = "/crawler-command-interface/";
 
@@ -506,19 +507,48 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
 });
 
 test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {
+  // Seed scenario with valid available points observation so allocation is active in Live mode
+  await page.addInitScript((timelineDoc) => {
+    try {
+      const raw = localStorage.getItem("crawler_timeline_doc_v2");
+      let doc;
+      if (raw && raw !== "existing-device-data") {
+        try { doc = JSON.parse(raw); } catch {}
+      }
+      if (!doc || typeof doc !== "object") {
+        doc = JSON.parse(JSON.stringify(timelineDoc));
+      }
+      if (!doc.observations) doc.observations = [];
+      const maxSeq = doc.events?.at(-1)?.sequence ?? 182;
+      if (!doc.observations.some((o) => o.id === "obs-e2e-points")) {
+        doc.observations.push({
+          id: "obs-e2e-points",
+          kind: "crawler-attributes",
+          sequence: maxSeq,
+          availableAttributePoints: 3,
+          attributes: { Strength: 24, Dexterity: 18, Constitution: 20, Intelligence: 15, Charisma: 12 },
+          evidence: [{ sourceId: doc.sources?.[0]?.id || "src-book-1", confidence: "confirmed" }],
+        });
+      }
+      localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(doc));
+    } catch (e) {
+      console.error(e);
+    }
+  }, compiledTimeline);
+
   await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
 
-  // Without explicit points evidence, allocation button is properly disabled
+  // 1. Live mode with available points: allocate button must be enabled
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
-  await expect(allocateBtn).toBeDisabled();
+  await expect(allocateBtn).toBeEnabled();
 
-  // Enter Replay mode via sequence scrubber
+  // 2. Scrub into Replay mode
   await enterReplayByScrubbing(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
-  // Mutation action is gated (disabled) during replay
+  // 3. Replay mode gating: allocate button must transition to disabled
   await expect(allocateBtn).toBeDisabled();
 
   // Telemetry inspection remains active
