@@ -12,6 +12,7 @@ test("deriveCrawlerPresentation computes crawler presentation with evidence auth
     },
     crawler: {
       name: "Carl",
+      crawlerNumber: "4,122",
       race: "Primal",
       class: "Scout",
       level: 5,
@@ -65,7 +66,7 @@ test("deriveCrawlerPresentation computes crawler presentation with evidence auth
 
   const presentation = deriveCrawlerPresentation(mockState, mockObservations);
 
-  assert.equal(presentation.name, "CARL");
+  assert.equal(presentation.name, "Carl");
   assert.equal(presentation.crawlerNumber, "4,122");
   assert.equal(presentation.level, 5);
   assert.equal(presentation.canAllocatePoints, true);

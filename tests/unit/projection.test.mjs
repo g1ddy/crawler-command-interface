@@ -15,8 +15,8 @@ const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json",
 
 test("initial state has default crawler stats", () => {
   const state = createInitialState();
-  assert.equal(state.crawler.name, "CARL");
-  assert.equal(state.crawler.level, 1);
+  assert.equal(state.crawler.name, "CARL G.");
+  assert.equal(state.crawler.level, null);
   assert.equal(state.inventory.length, 0);
 });
 

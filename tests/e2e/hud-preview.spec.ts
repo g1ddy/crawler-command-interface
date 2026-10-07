@@ -507,36 +507,24 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
 });
 
 test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {
-  // Seed scenario with valid available points observation so allocation is active in Live mode
-  await page.addInitScript((timelineDoc) => {
-    try {
-      const raw = localStorage.getItem("crawler_timeline_doc_v2");
-      let doc;
-      if (raw && raw !== "existing-device-data") {
-        try { doc = JSON.parse(raw); } catch {}
-      }
-      if (!doc || typeof doc !== "object") {
-        doc = JSON.parse(JSON.stringify(timelineDoc));
-      }
-      if (!doc.observations) doc.observations = [];
-      const maxSeq = doc.events?.at(-1)?.sequence ?? 182;
-      if (!doc.observations.some((o) => o.id === "obs-e2e-points")) {
-        doc.observations.push({
-          id: "obs-e2e-points",
-          kind: "crawler-attributes",
-          sequence: maxSeq,
-          availableAttributePoints: 3,
-          attributes: { Strength: 24, Dexterity: 18, Constitution: 20, Intelligence: 15, Charisma: 12 },
-          evidence: [{ sourceId: doc.sources?.[0]?.id || "src-book-1", confidence: "confirmed" }],
-        });
-      }
-      localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(doc));
-    } catch (e) {
-      console.error(e);
-    }
-  }, compiledTimeline);
-
   await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+
+  // Import timeline with positive available points observation via System Tools
+  const doc = JSON.parse(JSON.stringify(compiledTimeline));
+  if (!doc.observations) doc.observations = [];
+  const maxSeq = doc.events?.at(-1)?.sequence ?? 182;
+  doc.observations.push({
+    id: "obs-e2e-points",
+    kind: "crawler-attributes",
+    sequence: maxSeq,
+    availableAttributePoints: 3,
+    evidence: [{ sourceId: doc.sources?.[0]?.id || "src-book-1", confidence: "confirmed" }],
+  });
+
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  const jsonInput = page.getByPlaceholder("Paste crawler-timeline document JSON here to import...");
+  await jsonInput.fill(JSON.stringify(doc));
+  await page.getByRole("button", { name: "IMPORT TIMELINE ENVELOPE" }).click();
 
   // 1. Live mode with available points: allocate button must be enabled
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
