@@ -31,7 +31,6 @@ export function PersistentHud({
   countdown: ProjectedCountdownState | null;
   floorTitle: string;
   isLive: boolean;
-  onNavigateToSequence?: (sequence: number) => void;
   onInspectCountdown?: () => void;
 }) {
   const title = composition?.system.floorTitle ?? floorTitle;

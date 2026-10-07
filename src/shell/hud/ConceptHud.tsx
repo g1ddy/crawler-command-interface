@@ -34,7 +34,6 @@ export function ConceptHud({ state, observations, countdown, floorTitle, isLive,
   floorTitle: string;
   isLive: boolean;
   onInspectObservation?: (reading: ProjectedObservationValue) => void;
-  onNavigateToSequence?: (sequence: number) => void;
   onInspectCountdown?: () => void;
 }) {
   return <header className="system-hud" aria-label="Crawler HUD" data-hud-renderer="concept">
