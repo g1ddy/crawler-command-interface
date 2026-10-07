@@ -108,39 +108,62 @@ test("Persistent shell reflows without viewport overflow and supports reduced mo
   }
 });
 
-test("Primary navigation avoids horizontal scrolling at narrow viewports and preserves touch targets", async ({ page }) => {
+test("Primary navigation scrolls horizontally at narrow viewports and pairs utilities", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   const navContainer = navigation(page);
   await expect(navContainer).toBeVisible();
 
-  // Verify navigation container requires no horizontal scrolling
-  const hasNoHorizontalScroll = await navContainer.evaluate(
-    (el) => el.scrollWidth <= el.clientWidth,
+  // Verify navigation container is horizontally scrollable when destinations exceed viewport width
+  const isHorizontallyScrollable = await navContainer.evaluate(
+    (el) => el.scrollWidth > el.clientWidth,
   );
-  expect(hasNoHorizontalScroll).toBe(true);
+  expect(isHorizontallyScrollable).toBe(true);
 
-  // Verify all available destination buttons fit, are visible, and meet 44px min height
+  // Verify document itself does not acquire horizontal overflow
+  const noDocumentOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth <= window.innerWidth,
+  );
+  expect(noDocumentOverflow).toBe(true);
+
+  // Verify all available destination buttons are present in canonical order and meet 44px min height
   const buttons = navContainer.getByRole("button");
   const count = await buttons.count();
   expect(count).toBeGreaterThan(0);
 
   for (let i = 0; i < count; i++) {
     const btn = buttons.nth(i);
-    await expect(btn).toBeVisible();
+    await expect(btn).toBeAttached();
     const box = await btn.boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
 
-  // Verify clicking a destination updates active state
-  const inventoryBtn = navContainer.getByRole("button", { name: "INVENTORY" });
-  await inventoryBtn.click();
-  await expect(inventoryBtn).toHaveAttribute("aria-pressed", "true");
+  // Exercise a destination outside initial visible area: scroll into view and activate
+  const lastBtn = buttons.last();
+  await lastBtn.scrollIntoViewIfNeeded();
+  await expect(lastBtn).toBeVisible();
+  await lastBtn.click();
+  await expect(lastBtn).toHaveAttribute("aria-pressed", "true");
 
-  // Verify System Tools trigger remains distinct and reachable
+  // Verify TIMELINE and SYSTEM TOOLS are rendered in the same responsive row at narrow viewport
+  const timelineBtn = page.getByRole("button", { name: "Open timeline utility" });
   const toolsBtn = page.getByRole("button", { name: "Open data tools" });
+
+  await expect(timelineBtn).toBeVisible();
   await expect(toolsBtn).toBeVisible();
+
+  const timelineBox = await timelineBtn.boundingBox();
   const toolsBox = await toolsBtn.boundingBox();
+
+  expect(timelineBox?.height).toBeGreaterThanOrEqual(44);
   expect(toolsBox?.height).toBeGreaterThanOrEqual(44);
+
+  // Paired in the same row: vertical positions match
+  expect(timelineBox && toolsBox && Math.abs(timelineBox.y - toolsBox.y) < 2).toBe(true);
+  // Positioned side-by-side
+  expect(timelineBox && toolsBox && toolsBox.x > timelineBox.x).toBe(true);
+
+  // Verify neither utility causes document-level overflow
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test("Primary navigation supports keyboard focus and desktop bar layout", async ({ page }) => {
