@@ -73,7 +73,7 @@
   },
   "app/domain/types/state.ts": {
     "complexity": 1,
-    "loc": 296,
+    "loc": 298,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
@@ -152,8 +152,8 @@
     "scanned": true
   },
   "app/domain/projection/helpers.ts": {
-    "complexity": 68,
-    "loc": 222,
+    "complexity": 69,
+    "loc": 223,
     "instability": 0.4,
     "fanIn": 3,
     "fanOut": 2,
@@ -544,8 +544,8 @@
     "scanned": true
   },
   "src/features/crawler/crawler-presentation.ts": {
-    "complexity": 19,
-    "loc": 171,
+    "complexity": 33,
+    "loc": 222,
     "instability": 0.43,
     "fanIn": 4,
     "fanOut": 3,
@@ -568,16 +568,16 @@
     "scanned": true
   },
   "src/shared/ui/Panel.tsx": {
-    "complexity": 2,
-    "loc": 12,
+    "complexity": 3,
+    "loc": 27,
     "instability": 0.11,
     "fanIn": 16,
     "fanOut": 2,
     "scanned": true
   },
   "src/features/crawler/stats/PlayerStats.tsx": {
-    "complexity": 9,
-    "loc": 132,
+    "complexity": 11,
+    "loc": 154,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,

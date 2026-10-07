@@ -80,7 +80,8 @@ export interface CrawlerCausalProvenance {
 export interface TimelineState {
   crawler: {
     name: string;
-    level: number;
+    crawlerNumber?: string | number;
+    level: number | null;
     race?: string;
     class?: string;
     xp?: number;
@@ -244,7 +245,8 @@ export interface CrawlerState {
   causalProvenance: CrawlerCausalProvenance;
   crawler: {
     name: string;
-    level: number;
+    crawlerNumber?: string | number;
+    level: number | null;
     race: string;
     class: string;
     xp: number;

@@ -147,8 +147,8 @@ export function checkItemRequirements(
 
     const lowerKey = key.toLowerCase();
     if (lowerKey === 'level') {
-      current = crawler.level;
-      isMet = crawler.level >= Number(required);
+      current = crawler.level ?? 'N/A';
+      isMet = crawler.level != null && crawler.level >= Number(required);
     } else if (lowerKey === 'class') {
       current = crawler.class;
       isMet = String(crawler.class).toLowerCase() === String(required).toLowerCase();

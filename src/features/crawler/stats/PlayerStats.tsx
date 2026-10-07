@@ -28,6 +28,7 @@ export function PlayerStats({
 }) {
   const {
     name,
+    crawlerNumber,
     race,
     class: crawlerClass,
     level,
@@ -40,6 +41,9 @@ export function PlayerStats({
     availablePointsObservation,
     availablePointsAuthority,
     canAllocatePoints,
+    sharedAttributesObservation,
+    sharedAttributesAuthority,
+    hasSharedAttributesEvidence,
     attributes,
     sequence,
   } = presentation;
@@ -49,7 +53,9 @@ export function PlayerStats({
       <header className={styles.profile}>
         <div className={styles.portrait}>C</div>
         <div>
-          <p className={styles.eyebrow}>PLAYER STATS · ACTIVE CRAWLER</p>
+          <p className={styles.eyebrow}>
+            {crawlerNumber ? `CRAWLER #${crawlerNumber}` : "CRAWLER"}
+          </p>
           <h1>{name}</h1>
           <i>LEVEL {level ?? "—"}</i>
           <i>RACE: {race}</i>
@@ -75,7 +81,21 @@ export function PlayerStats({
           </em>
         </div>
       </header>
-      <Panel title="PLAYER ATTRIBUTES">
+      <Panel
+        title="PLAYER ATTRIBUTES"
+        action={
+          hasSharedAttributesEvidence ? (
+            <TelemetryBadge
+              observation={sharedAttributesObservation}
+              displayAuthority={sharedAttributesAuthority}
+              selectedSequence={sequence}
+              onClick={() => {
+                if (sharedAttributesObservation) onInspectObservation(sharedAttributesObservation);
+              }}
+            />
+          ) : undefined
+        }
+      >
         <div className={styles.stats}>
           {attributes.map((attr) => {
             const { name: attrName, color, value, causalValue, observation, displayAuthority } = attr;
@@ -87,13 +107,15 @@ export function PlayerStats({
                     <span>{attrName} 🔍</span>
                     <b>{value ?? "—"}</b>
                   </button>
-                  <TelemetryBadge
-                    observation={observation}
-                    causalValue={causalValue}
-                    displayAuthority={displayAuthority}
-                    selectedSequence={sequence}
-                    onClick={() => observation && onInspectObservation(observation)}
-                  />
+                  {!hasSharedAttributesEvidence && (
+                    <TelemetryBadge
+                      observation={observation}
+                      causalValue={causalValue}
+                      displayAuthority={displayAuthority}
+                      selectedSequence={sequence}
+                      onClick={() => observation && onInspectObservation(observation)}
+                    />
+                  )}
                   <em className={styles.meterTrack}>
                     <i
                       className={`${styles.meterFill} ${fillClass}`}

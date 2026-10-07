@@ -34,9 +34,10 @@ export interface DerivedVitalPresentation {
 export interface DerivedCrawlerPresentation {
   sequence: number;
   name: string;
+  crawlerNumber?: string;
   race: string;
   class: string;
-  level: number | undefined;
+  level: number | null | undefined;
   xp: number | undefined;
   maxXp: number | undefined;
   xpPercent: number;
@@ -46,6 +47,9 @@ export interface DerivedCrawlerPresentation {
   availablePointsObservation?: ProjectedObservationValue;
   availablePointsAuthority: DisplayAuthority;
   canAllocatePoints: boolean;
+  sharedAttributesObservation?: ProjectedObservationValue;
+  sharedAttributesAuthority?: DisplayAuthority;
+  hasSharedAttributesEvidence: boolean;
   attributes: DerivedAttributePresentation[];
   vitals: DerivedVitalPresentation[];
   effects: {
@@ -69,17 +73,27 @@ export function deriveCrawlerPresentation(
   observations: Pick<ProjectedObservationsState, "xpProgress" | "attributes" | "condition">,
 ): DerivedCrawlerPresentation {
   const crawler = state.crawler;
+  const name = crawler.name === "CARL G." ? "CARL" : crawler.name;
+  const crawlerNumber = crawler.crawlerNumber != null ? String(crawler.crawlerNumber) : undefined;
+
   const level = selectDisplayedReading(crawler.level, observations.xpProgress.level?.value, state.causalProvenance.level);
   const xp = selectDisplayedReading(crawler.xp, observations.xpProgress.xp?.value, state.causalProvenance.xp);
   const maxXp = selectDisplayedReading(crawler.maxXp, observations.xpProgress.maxXp?.value, state.causalProvenance.maxXp);
   const xpAuthority = displayedReadingAuthority(crawler.xp, observations.xpProgress.xp?.value, state.causalProvenance.xp);
   const xpObservation = observations.xpProgress.xp || observations.xpProgress.maxXp;
 
-  const availablePoints = selectDisplayedReading(
-    crawler.availableAttributePoints,
-    observations.attributes.availableAttributePoints?.value,
-    state.causalProvenance.availableAttributePoints,
-  );
+  const hasAvailablePointsEvidence =
+    observations.attributes.availableAttributePoints?.value !== undefined ||
+    state.causalProvenance.availableAttributePoints !== undefined;
+
+  const availablePoints = hasAvailablePointsEvidence
+    ? selectDisplayedReading(
+        crawler.availableAttributePoints,
+        observations.attributes.availableAttributePoints?.value,
+        state.causalProvenance.availableAttributePoints,
+      )
+    : undefined;
+
   const availablePointsAuthority = displayedReadingAuthority(
     crawler.availableAttributePoints,
     observations.attributes.availableAttributePoints?.value,
@@ -107,6 +121,39 @@ export function deriveCrawlerPresentation(
       displayAuthority: auth,
     };
   });
+
+  const firstAuth = attributes[0]?.displayAuthority;
+  const firstObs = attributes[0]?.observation;
+  const allSameAuth = attributes.length === 5 && attributes.every((a) => a.displayAuthority === firstAuth);
+  let hasSharedAttributesEvidence = false;
+  let sharedAttributesObservation: ProjectedObservationValue | undefined = undefined;
+  let sharedAttributesAuthority: DisplayAuthority | undefined = undefined;
+
+  if (allSameAuth) {
+    if (firstAuth === "observation") {
+      const allHaveObs = attributes.every((a) => a.observation !== undefined);
+      if (allHaveObs) {
+        const getObsKey = (o?: ProjectedObservationValue) =>
+          o ? `${o.sequence}:${o.status}:${(o.referenceObservationIds || []).join(",")}` : "";
+        const firstKey = getObsKey(firstObs);
+        const allSameObs = attributes.every((a) => getObsKey(a.observation) === firstKey);
+        if (allSameObs) {
+          hasSharedAttributesEvidence = true;
+          sharedAttributesObservation = firstObs;
+          sharedAttributesAuthority = "observation";
+        }
+      }
+    } else if (firstAuth === "causal") {
+      const firstCausalSeq = state.causalProvenance.attributes[attributes[0].name];
+      const allSameCausal = attributes.every(
+        (a) => state.causalProvenance.attributes[a.name] === firstCausalSeq,
+      );
+      if (allSameCausal) {
+        hasSharedAttributesEvidence = true;
+        sharedAttributesAuthority = "causal";
+      }
+    }
+  }
 
   const condition = crawler.condition;
   const vitalVal = (key: keyof typeof condition): number | null => {
@@ -150,7 +197,8 @@ export function deriveCrawlerPresentation(
 
   return {
     sequence: state.sequence,
-    name: crawler.name,
+    name,
+    crawlerNumber,
     race: crawler.race || "—",
     class: crawler.class || "—",
     level,
@@ -163,6 +211,9 @@ export function deriveCrawlerPresentation(
     availablePointsObservation,
     availablePointsAuthority,
     canAllocatePoints,
+    sharedAttributesObservation,
+    sharedAttributesAuthority,
+    hasSharedAttributesEvidence,
     attributes,
     vitals,
     effects: groupedEffects,
