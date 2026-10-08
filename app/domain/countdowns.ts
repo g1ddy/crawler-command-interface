@@ -9,14 +9,13 @@ import type {
 
 export function formatCountdownDuration(
   remainingSeconds: number,
-  isEstimated: boolean = false,
   activationOffset?: number,
   lifecycleStatus?: 'scheduled' | 'active' | 'completed'
 ): string {
   if (lifecycleStatus === 'scheduled' || (activationOffset !== undefined && activationOffset < 0)) {
     const absOffset = Math.abs(activationOffset ?? 0);
     if (absOffset <= 0) {
-      return isEstimated ? 'COUNTDOWN STARTS IN ~0s' : 'COUNTDOWN STARTS IN 0s';
+      return 'COUNTDOWN STARTS IN 0s';
     }
     const days = Math.floor(absOffset / 86400);
     const hours = Math.floor((absOffset % 86400) / 3600);
@@ -34,11 +33,11 @@ export function formatCountdownDuration(
       formatted = `${secs}s`;
     }
 
-    return isEstimated ? `COUNTDOWN STARTS IN ~${formatted}` : `COUNTDOWN STARTS IN ${formatted}`;
+    return `COUNTDOWN STARTS IN ${formatted}`;
   }
 
   if (remainingSeconds <= 0 || lifecycleStatus === 'completed') {
-    return isEstimated ? '~0s left' : '0s left';
+    return '0s left';
   }
 
   const days = Math.floor(remainingSeconds / 86400);
@@ -57,7 +56,7 @@ export function formatCountdownDuration(
     formatted = `${secs}s left`;
   }
 
-  return isEstimated ? `~${formatted}` : formatted;
+  return formatted;
 }
 
 /**
@@ -99,8 +98,7 @@ function makeCountdownState(
       ? 'completed'
       : 'active';
 
-  const isEstimated = status === 'estimated';
-  const formattedTime = formatCountdownDuration(remainingSeconds, isEstimated, activationOffset, lifecycleStatus);
+  const formattedTime = formatCountdownDuration(remainingSeconds, activationOffset, lifecycleStatus);
   const labelSuffix = isStale
     ? 'stated (latest source)'
     : status === 'estimated'

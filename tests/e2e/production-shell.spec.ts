@@ -187,29 +187,45 @@ test("Primary navigation supports keyboard focus and desktop bar layout", async 
   await expect(inventoryBtn).toBeFocused();
 });
 
-test("Primary navigation displays compact notification attention badge when source-backed notifications exist", async ({ page }) => {
+test("Primary navigation attention badge appears only for current-sequence deliveries and clears on progression while history persists", async ({ page }) => {
   const navContainer = navigation(page);
   await expect(navContainer).toBeVisible();
 
-  // The default compiled timeline includes notifications at sequence 179 (live endpoint)
+  // Navigate to sequence 18, which has a delivered achievement notification
+  await enterReplayByScrubbing(page);
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("18");
+
   const noticeBtn = navContainer.getByRole("button", { name: /NOTIFICATIONS/ });
   await expect(noticeBtn).toBeVisible();
 
+  // At sequence 18, the badge must be visible with count 1
   const badge = page.getByTestId("nav-badge-notifications");
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveAttribute("aria-label", /notice/);
+  await expect(badge).toHaveText("1");
 
-  // Single-tap navigation opens Notifications view directly
+  // Accessibility check on the button
+  await expect(noticeBtn).toHaveAttribute("aria-label", /NOTIFICATIONS · 1 notification\(s\) at selected sequence/);
+  // Verify the badge itself is decorative
+  await expect(badge).toHaveAttribute("aria-hidden", "true");
+
+  // Step forward to sequence 19, where no notification is delivered
+  await slider.fill("19");
+
+  // At sequence 19, the badge must disappear since there are no active alerts and no new current-sequence deliveries
+  await expect(badge).toHaveCount(0);
+  // The aria-label is removed or reverts to undefined when no badge is present
+  const updatedLabel = await noticeBtn.getAttribute("aria-label");
+  expect(updatedLabel).toBeNull();
+
+  // Verify notification history is still accessible via the view
   await noticeBtn.click();
   await expect(noticeBtn).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("heading", { name: "NOTIFICATIONS", exact: true })).toBeVisible();
 
-  // In early replay sequence before notifications are delivered, badge is absent
-  await enterReplayByScrubbing(page);
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  await slider.fill("1");
-
-  await expect(page.getByTestId("nav-badge-notifications")).toHaveCount(0);
+  // The history should still render the notification delivered at sequence 18
+  const historyItem = page.getByText("Loner");
+  await expect(historyItem).toBeVisible();
 });
 
 test("layout integration: Live mode has compact scrubber, scrubbing enters Replay", async ({ page }) => {

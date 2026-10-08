@@ -40,6 +40,7 @@ export interface HudUrgencySummary {
 
 export interface HudAttentionSummary {
   totalNotificationsCount: number;
+  currentSequenceNotificationCount: number;
   hasActiveAlerts: boolean;
   latestNotificationTitle?: string;
   latestNotificationMessage?: string;
@@ -155,6 +156,7 @@ export function deriveHudComposition({
   floorHudTitle,
   notificationsSummary = {
     totalNotificationsCount: 0,
+    currentSequenceNotificationCount: 0,
     hasActiveAlerts: false,
   },
   petSummary,

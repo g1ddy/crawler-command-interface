@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import { expect, test } from "@playwright/test";
 import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
-import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline";
 
 const compiledTimeline = JSON.parse(
   fs.readFileSync(new URL("../../data/compiled-timeline.json", import.meta.url), "utf8")
@@ -601,6 +600,22 @@ test("countdown presentation is compact, source-backed, and inspectable across a
     await setSliderValue(floor1Seq);
     await expect(hudRenderer).toContainText("5d 0h left");
     await expect(page.getByRole("button", { name: /Inspect collapse clock evidence/i })).toBeVisible();
+
+    // --- D. Estimated sequence interpolation formatting ---
+    // Go to a sequence past floor1Seq to trigger interpolation estimate (e.g., floor1Seq + 2)
+    const estimatedSeq = floor1Seq + 2;
+    await setSliderValue(estimatedSeq);
+
+    // Verify it remains visible but DOES NOT contain ~
+    await expect(hudRenderer).toContainText(/left/);
+    await expect(hudRenderer).not.toContainText("~");
+
+    // Verify evidence marker transitions to ≈
+    const estimatedEvidenceBtn = page.getByRole("button", { name: /Inspect collapse clock evidence/i });
+    await expect(estimatedEvidenceBtn).toBeVisible();
+    const estimatedMarkerText = await estimatedEvidenceBtn.innerText();
+    expect(estimatedMarkerText.trim()).toBe("≈");
+
   }
 });
 
