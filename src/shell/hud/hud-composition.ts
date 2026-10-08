@@ -202,9 +202,7 @@ export function deriveHudComposition({
     },
     urgency: {
       activeCountdown,
-      formattedLabel: activeCountdown
-        ? activeCountdown.formattedLabel
-        : "Collapse time unavailable",
+      formattedLabel: activeCountdown ? activeCountdown.formattedTime : "",
       lifecycleStatus: activeCountdown?.lifecycleStatus,
     },
     attention: {

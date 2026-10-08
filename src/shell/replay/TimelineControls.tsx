@@ -162,7 +162,7 @@ export function TimelineControls({
           <h3 className={styles.sectionTitle}>Secondary Countdowns</h3>
           {model.countdowns.secondaryCountdowns.map((countdown) => (
             <div className={styles.secondaryCountdown} key={countdown.id}>
-              <span>{countdown.title.toUpperCase()}: {countdown.formattedLabel}</span>
+              <span>{countdown.title.toUpperCase()}: {countdown.formattedTime}</span>
               <small>{countdown.target.replaceAll("-", " ").toUpperCase()}</small>
               <small>
                 EVIDENCE: {firstCountdownEvidenceSummary(countdown.referencePoints)}

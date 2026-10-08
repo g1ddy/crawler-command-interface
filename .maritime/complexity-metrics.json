@@ -329,10 +329,10 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 426,
-    "instability": 0.95,
+    "loc": 445,
+    "instability": 0.96,
     "fanIn": 1,
-    "fanOut": 21,
+    "fanOut": 23,
     "scanned": true
   },
   "src/application/crawler-session.ts": {
@@ -415,9 +415,25 @@
     "fanOut": 0,
     "scanned": true
   },
+  "src/features/timeline/evidence/CountdownEvidenceModal.tsx": {
+    "complexity": 6,
+    "loc": 8,
+    "instability": 0.75,
+    "fanIn": 1,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/features/timeline/evidence/evidencePresentation.ts": {
+    "complexity": 15,
+    "loc": 270,
+    "instability": 0.25,
+    "fanIn": 6,
+    "fanOut": 2,
+    "scanned": true
+  },
   "src/presentation/authority-arwes/ArwesPresentation.ts": {
     "complexity": 7,
-    "loc": 58,
+    "loc": 61,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
@@ -433,7 +449,7 @@
   },
   "src/shell/hud/hud-composition.ts": {
     "complexity": 7,
-    "loc": 227,
+    "loc": 225,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
@@ -441,18 +457,10 @@
   },
   "src/features/timeline/public.ts": {
     "complexity": 1,
-    "loc": 39,
-    "instability": 0.35,
-    "fanIn": 13,
+    "loc": 40,
+    "instability": 0.32,
+    "fanIn": 15,
     "fanOut": 7,
-    "scanned": true
-  },
-  "src/features/timeline/evidence/evidencePresentation.ts": {
-    "complexity": 15,
-    "loc": 225,
-    "instability": 0.25,
-    "fanIn": 6,
-    "fanOut": 2,
     "scanned": true
   },
   "src/features/timeline/evidence/TelemetryBadge.tsx": {
@@ -481,10 +489,10 @@
   },
   "src/presentation/authority-arwes/ArwesAuthorityComposition.ts": {
     "complexity": 19,
-    "loc": 588,
-    "instability": 0.9,
+    "loc": 598,
+    "instability": 0.91,
     "fanIn": 1,
-    "fanOut": 9,
+    "fanOut": 10,
     "scanned": true
   },
   "src/presentation/authority-arwes/primitives/AuthorityBackground.ts": {
@@ -525,6 +533,14 @@
     "instability": 0.56,
     "fanIn": 4,
     "fanOut": 5,
+    "scanned": true
+  },
+  "src/shared/ui/ModalBoundary.tsx": {
+    "complexity": 13,
+    "loc": 62,
+    "instability": 0.5,
+    "fanIn": 3,
+    "fanOut": 3,
     "scanned": true
   },
   "src/shell/ActiveFeatureView.tsx": {
@@ -679,14 +695,6 @@
     "fanOut": 2,
     "scanned": true
   },
-  "src/shared/ui/ModalBoundary.tsx": {
-    "complexity": 13,
-    "loc": 62,
-    "instability": 0.43,
-    "fanIn": 4,
-    "fanOut": 3,
-    "scanned": true
-  },
   "src/features/inventory/public.ts": {
     "complexity": 1,
     "loc": 22,
@@ -792,18 +800,10 @@
     "scanned": true
   },
   "src/shell/hud/ConceptHud.tsx": {
-    "complexity": 10,
-    "loc": 61,
-    "instability": 0.86,
+    "complexity": 5,
+    "loc": 74,
+    "instability": 0.75,
     "fanIn": 1,
-    "fanOut": 6,
-    "scanned": true
-  },
-  "src/features/timeline/evidence/CountdownEvidenceModal.tsx": {
-    "complexity": 6,
-    "loc": 8,
-    "instability": 0.6,
-    "fanIn": 2,
     "fanOut": 3,
     "scanned": true
   },
@@ -832,11 +832,11 @@
     "scanned": true
   },
   "src/shell/hud/PersistentHud.tsx": {
-    "complexity": 29,
-    "loc": 87,
-    "instability": 0.88,
+    "complexity": 21,
+    "loc": 95,
+    "instability": 0.83,
     "fanIn": 1,
-    "fanOut": 7,
+    "fanOut": 5,
     "scanned": true
   },
   "src/shell/navigation/public.ts": {
