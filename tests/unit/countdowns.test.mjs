@@ -25,6 +25,26 @@ test("formatCountdownDuration formats scheduled, active, and completed durations
   assert.equal(formatCountdownDuration(0, undefined, "completed"), "0s left");
 });
 
+test("projection properly distinguishes semantic estimation while formatting remains identical", () => {
+  const statedState = projectCountdownState(compiledDoc, 62, 1);
+  const estimatedState = projectCountdownState(compiledDoc, 63, 1);
+
+  // Check that the formatter outputs the expected string format for the values
+  // without the `~` prefix.
+  assert.equal(statedState.formattedTime, formatCountdownDuration(statedState.remainingSeconds));
+  assert.equal(estimatedState.formattedTime, formatCountdownDuration(estimatedState.remainingSeconds));
+  assert.equal(statedState.formattedTime.includes("~"), false);
+  assert.equal(estimatedState.formattedTime.includes("~"), false);
+
+  // But semantics are cleanly distinct
+  assert.equal(statedState.status, "stated");
+  assert.equal(estimatedState.status, "estimated");
+
+  // And the label specifically identifies the estimated nature
+  assert.ok(estimatedState.formattedLabel.includes("estimated"));
+  assert.ok(statedState.formattedLabel.includes("stated"));
+});
+
 test("projection at pre-activation sequence returns scheduled countdown state with starts-in display", () => {
   const earlyAccessSeq = compiledDoc.events.find((e) => e.id === "evt-f2-early-access").sequence;
   const enteredSeq = compiledDoc.events.find((e) => e.id === "evt-f2-entered").sequence;

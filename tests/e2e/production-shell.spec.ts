@@ -205,7 +205,7 @@ test("Primary navigation attention badge appears only for current-sequence deliv
   await expect(badge).toHaveText("1");
 
   // Accessibility check on the button
-  await expect(noticeBtn).toHaveAttribute("aria-label", /NOTIFICATIONS · 1 notification\(s\) at selected sequence/);
+  await expect(noticeBtn).toHaveAttribute("aria-label", /NOTIFICATIONS · 1 notification at selected sequence/);
   // Verify the badge itself is decorative
   await expect(badge).toHaveAttribute("aria-hidden", "true");
 

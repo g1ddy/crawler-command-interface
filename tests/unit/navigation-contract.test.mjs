@@ -152,8 +152,23 @@ test("Navigation Contract: creates badge with only current-sequence notification
   assert.deepStrictEqual(noticeItem.badge, {
     count: 2,
     hasActiveAlerts: false,
-    label: "2 notification(s) at selected sequence",
+    label: "2 notifications at selected sequence",
   });
+
+  const contractSingle = deriveNavigationContract({
+    capabilities: mockCapabilitiesAllActive,
+    activeView: "crawler",
+    notificationsSummary: {
+      totalNotificationsCount: 1,
+      currentSequenceNotificationCount: 1,
+      hasActiveAlerts: false,
+    },
+  });
+
+  assert.deepStrictEqual(
+    contractSingle.primaryNavigation.items.find(i => i.id === "notifications").badge.label,
+    "1 notification at selected sequence"
+  );
 });
 
 test("Navigation Contract: creates badge for active alert without current-sequence notifications", () => {
@@ -196,6 +211,21 @@ test("Navigation Contract: creates badge for both current-sequence notifications
   assert.deepStrictEqual(bothItem.badge, {
     count: 1,
     hasActiveAlerts: true,
-    label: "1 notification(s) at selected sequence; active alert",
+    label: "1 notification at selected sequence; active alert",
   });
+
+  const contractBothPlural = deriveNavigationContract({
+    capabilities: mockCapabilitiesAllActive,
+    activeView: "crawler",
+    notificationsSummary: {
+      totalNotificationsCount: 10,
+      currentSequenceNotificationCount: 2,
+      hasActiveAlerts: true,
+    },
+  });
+
+  assert.deepStrictEqual(
+    contractBothPlural.primaryNavigation.items.find(i => i.id === "notifications").badge.label,
+    "2 notifications at selected sequence; active alert"
+  );
 });

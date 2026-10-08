@@ -57,10 +57,11 @@ export function deriveNavigationContract({
 
       if (currentSequenceNotificationCount > 0 || hasActiveAlerts) {
         let label = "";
+        const notificationText = currentSequenceNotificationCount === 1 ? "notification" : "notifications";
         if (currentSequenceNotificationCount > 0 && hasActiveAlerts) {
-          label = `${currentSequenceNotificationCount} notification(s) at selected sequence; active alert`;
+          label = `${currentSequenceNotificationCount} ${notificationText} at selected sequence; active alert`;
         } else if (currentSequenceNotificationCount > 0) {
-          label = `${currentSequenceNotificationCount} notification(s) at selected sequence`;
+          label = `${currentSequenceNotificationCount} ${notificationText} at selected sequence`;
         } else if (hasActiveAlerts) {
           label = "Active alert";
         }
