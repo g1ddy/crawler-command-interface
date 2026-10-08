@@ -1,3 +1,4 @@
+import { createInitialState } from "../../app/domain/projection/helpers.ts";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deriveCrawlerPresentation } from "../../src/features/crawler/crawler-presentation.ts";
@@ -287,17 +288,7 @@ test("isLive mutation gating invariant enforces isLive as strict mutation bounda
   const presentationWithoutPoints = deriveCrawlerPresentation(stateWithoutPoints, emptyObs);
 
   assert.equal(presentationWithPoints.canAllocatePoints, true);
-  assert.equal(true && presentationWithPoints.canAllocatePoints, true);
-
   assert.equal(presentationWithoutPoints.canAllocatePoints, false);
-  assert.equal(true && presentationWithoutPoints.canAllocatePoints, false);
-
-  assert.equal(false && presentationWithoutPoints.canAllocatePoints, false);
-  assert.equal(false && presentationWithPoints.canAllocatePoints, false);
-
-  const liveUnderlyingPoints = 5;
-  assert.ok(liveUnderlyingPoints > 0);
-  assert.equal(false && (liveUnderlyingPoints > 0), false);
 });
 
 test("checkItemRequirements handles known and unknown null level states correctly", () => {
@@ -328,7 +319,7 @@ test("checkItemRequirements handles known and unknown null level states correctl
   assert.equal(resNull.details.find((d) => d.key === "Strength")?.met, true);
 });
 
-test("enforces complete available-points and actionability matrix across all 6 cases", () => {
+test("presentation model correctly surfaces canAllocatePoints independent of isLive", () => {
   const baseState = {
     sequence: 10,
     causalProvenance: { attributes: {}, condition: {} },
@@ -357,30 +348,30 @@ test("enforces complete available-points and actionability matrix across all 6 c
     condition: {},
   };
 
-  // Case 1: Unknown points, Live mode -> display undefined, action disabled
+  // unknown points
   const c1 = deriveCrawlerPresentation(baseState, emptyObs);
   assert.equal(c1.availablePoints, undefined);
   assert.equal(c1.canAllocatePoints, false);
-  assert.equal(c1.canAllocatePoints, false);
 
-  // Case 2: Unknown points, Replay mode -> display undefined, action disabled
-  assert.equal(c1.canAllocatePoints, false);
+  // observed zero
+  const c2 = deriveCrawlerPresentation(baseState, zeroPointsObs);
+  assert.equal(c2.availablePoints, 0);
+  assert.equal(c2.canAllocatePoints, false);
 
-  // Case 3: 0 points, Live mode -> display 0, action disabled
-  const c3 = deriveCrawlerPresentation(baseState, zeroPointsObs);
-  assert.equal(c3.availablePoints, 0);
-  assert.equal(c3.canAllocatePoints, false);
-  assert.equal(c3.canAllocatePoints, false);
+  // observed positive value
+  const c3 = deriveCrawlerPresentation(baseState, positivePointsObs);
+  assert.equal(c3.availablePoints, 3);
+  assert.equal(c3.canAllocatePoints, true);
+});
 
-  // Case 4: 0 points, Replay mode -> display 0, action disabled
-  assert.equal(c3.canAllocatePoints, false);
+test("unestablished crawler has no shared attributes evidence", () => {
+  const presentation = deriveCrawlerPresentation(createInitialState(), {
+    xpProgress: {},
+    attributes: {},
+    condition: {},
+  });
 
-  // Case 5: >0 points, Live mode -> display 3, action enabled
-  const c5 = deriveCrawlerPresentation(baseState, positivePointsObs);
-  assert.equal(c5.availablePoints, 3);
-  assert.equal(c5.canAllocatePoints, true);
-  assert.equal(c5.canAllocatePoints, true);
-
-  // Case 6: >0 points, Replay mode -> display 3, action disabled
-  assert.equal(c5.canAllocatePoints, false);
+  assert.equal(presentation.hasSharedAttributesEvidence, false);
+  assert.equal(presentation.sharedAttributesAuthority, undefined);
+  assert.equal(presentation.sharedAttributesObservation, undefined);
 });

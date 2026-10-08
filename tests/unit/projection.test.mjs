@@ -79,8 +79,8 @@ test("stat breakdown calculates total value with gear and effects", () => {
 });
 
 test("snapshot acceleration produces identical results to full replay", () => {
-  const fullReplayState = projectState(floor6Events, 35, []);
-  const snapshotAcceleratedState = projectState(floor6Events, 35, floor6Snapshots);
+  const fullReplayState = projectState(floor6Events, 35, [], createInitialState(floor6Timeline.initialState));
+  const snapshotAcceleratedState = projectState(floor6Events, 35, floor6Snapshots, createInitialState(floor6Timeline.initialState));
   assert.equal(fullReplayState.sequence, snapshotAcceleratedState.sequence);
   assert.equal(fullReplayState.crawler.xp, snapshotAcceleratedState.crawler.xp);
   assert.equal(fullReplayState.inventory.length, snapshotAcceleratedState.inventory.length);
@@ -802,16 +802,40 @@ test("observed vs causal authority distinction is preserved and sequence-specifi
   assert.equal(evidence.badgeLabel, "CAUSAL");
 });
 
-test("regression: missing source-backed facts cannot reappear through downstream presentation fallback", () => {
-  const unestablishedState = createInitialState();
-  const presentation = deriveCrawlerPresentation(unestablishedState, {
+test("regression: createInitialState with no timeline state strictly leaves domain unestablished without inventing facts", () => {
+  const state = createInitialState();
+  const crawler = state.crawler;
+  const broadcast = state.broadcast;
+
+  assert.equal(crawler.name, undefined);
+  assert.equal(crawler.crawlerNumber, undefined);
+  assert.equal(crawler.level, null);
+  assert.equal(crawler.race, undefined);
+  assert.equal(crawler.class, undefined);
+  assert.equal(crawler.xp, undefined);
+  assert.equal(crawler.maxXp, undefined);
+  assert.equal(crawler.availableAttributePoints, undefined);
+  assert.deepEqual(crawler.attributes, {});
+  assert.deepEqual(crawler.permanentAttributeModifiers, {});
+  assert.equal(broadcast.viewers, undefined);
+  assert.equal(broadcast.viewerDelta, undefined);
+  assert.equal(broadcast.followers, undefined);
+  assert.equal(broadcast.fameRank, undefined);
+  assert.equal(broadcast.sponsorInterest, false);
+
+  assert.deepEqual(state.inventory, []);
+  assert.deepEqual(state.achievements, []);
+  assert.deepEqual(state.skills, []);
+  assert.deepEqual(state.effects, []);
+
+  const presentation = deriveCrawlerPresentation(state, {
     xpProgress: {},
     attributes: {},
     condition: {},
   });
 
   assert.equal(presentation.name, "—");
-  assert.equal(presentation.level, null);
+  assert.equal(presentation.level, undefined);
   assert.equal(presentation.xp, undefined);
   assert.equal(presentation.maxXp, undefined);
   assert.equal(presentation.availablePoints, undefined);
@@ -825,4 +849,34 @@ test("regression: missing source-backed facts cannot reappear through downstream
     assert.equal(evidence.state, "unknown");
     assert.equal(evidence.badgeLabel, "— ABSENT");
   }
+});
+
+test("event-derived facts still establish missing fields when initially absent", () => {
+  let state = createInitialState();
+
+  // AttributeModified establishes an attribute that was previously absent
+  state = applyEvent(state, {
+    sequence: 1,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 10,
+    source: "narrative",
+  });
+  assert.equal(state.crawler.attributes.Strength, 10);
+
+  // XPChanged with xpDelta establishes XP starting from an unknown state
+  state = applyEvent(state, {
+    sequence: 2,
+    type: "XPChanged",
+    xpDelta: 100,
+  });
+  assert.equal(state.crawler.xp, 100);
+
+  // LevelChanged establishes level
+  state = applyEvent(state, {
+    sequence: 3,
+    type: "LevelChanged",
+    level: 2,
+  });
+  assert.equal(state.crawler.level, 2);
 });

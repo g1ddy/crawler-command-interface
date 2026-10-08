@@ -73,7 +73,7 @@ export function deriveCrawlerPresentation(
   observations: Pick<ProjectedObservationsState, "xpProgress" | "attributes" | "condition">,
 ): DerivedCrawlerPresentation {
   const crawler = state.crawler;
-  const name = crawler.name === "CARL G." ? "CARL" : crawler.name;
+  const name = crawler.name === "CARL G." ? "CARL" : (crawler.name ?? "—");
   const crawlerNumber = crawler.crawlerNumber != null ? String(crawler.crawlerNumber) : undefined;
 
   const level = selectDisplayedReading(crawler.level, observations.xpProgress.level?.value, state.causalProvenance.level);
@@ -145,12 +145,16 @@ export function deriveCrawlerPresentation(
       }
     } else if (firstAuth === "causal") {
       const firstCausalSeq = state.causalProvenance.attributes[attributes[0].name];
-      const allSameCausal = attributes.every(
-        (a) => state.causalProvenance.attributes[a.name] === firstCausalSeq,
-      );
-      if (allSameCausal) {
-        hasSharedAttributesEvidence = true;
-        sharedAttributesAuthority = "causal";
+      if (firstCausalSeq !== undefined) {
+        const allSameCausal = attributes.every(
+          (attribute) =>
+            state.causalProvenance.attributes[attribute.name] === firstCausalSeq,
+        );
+
+        if (allSameCausal) {
+          hasSharedAttributesEvidence = true;
+          sharedAttributesAuthority = "causal";
+        }
       }
     }
   }
