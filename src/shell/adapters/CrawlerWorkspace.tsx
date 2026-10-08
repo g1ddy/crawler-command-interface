@@ -164,6 +164,7 @@ export function CrawlerWorkspace({
     });
     return {
       totalNotificationsCount: presentation.totalCount,
+      currentSequenceNotificationCount: presentation.currentSequenceNotificationCount,
       hasActiveAlerts: presentation.hasActiveAlerts,
       latestNotificationTitle: presentation.latestNotificationTitle,
       latestNotificationMessage: presentation.latestNotificationMessage,
@@ -252,8 +253,9 @@ export function CrawlerWorkspace({
       deriveNavigationContract({
         capabilities,
         activeView: view,
+        notificationsSummary,
       }),
-    [capabilities, view],
+    [capabilities, view, notificationsSummary],
   );
 
   const handleExportJson = useCallback(() => {

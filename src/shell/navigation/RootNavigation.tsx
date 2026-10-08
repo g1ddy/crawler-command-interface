@@ -33,16 +33,30 @@ export function RootNavigation({
   return (
     <div className={styles.bar} data-shell-navigation>
       <nav className={styles.navigation} aria-label="Main Navigation">
-        {items.map((item) => (
-          <button
-            key={item.id}
-            className={styles.destination}
-            aria-pressed={activeView === item.id}
-            onClick={() => set(item.id)}
-          >
-            {item.label}
-          </button>
-        ))}
+        {items.map((item) => {
+          const badge = "badge" in item ? item.badge : undefined;
+          const ariaLabel = badge ? `${item.label} · ${badge.label}` : undefined;
+          return (
+            <button
+              key={item.id}
+              className={styles.destination}
+              aria-pressed={activeView === item.id}
+              onClick={() => set(item.id)}
+              aria-label={ariaLabel}
+            >
+              <span>{item.label}</span>
+              {badge && (
+                <span
+                  className={`${styles.badge} ${badge.hasActiveAlerts ? styles.alertBadge : ""}`}
+                  aria-hidden="true"
+                  data-testid={`nav-badge-${item.id}`}
+                >
+                  {badge.hasActiveAlerts && badge.count === undefined ? "⚠" : badge.hasActiveAlerts && badge.count !== undefined ? `⚠ ${badge.count}` : badge.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </nav>
       <div className={styles.utilities} role="group" aria-label="Application tools">
         <button

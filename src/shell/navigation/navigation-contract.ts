@@ -1,12 +1,20 @@
 import type { CanonCapabilities } from "../../application/capabilities";
+import type { HudAttentionSummary } from "../hud/hud-composition.ts";
 import { availableRootViews, resolveRootView } from "./capabilities.ts";
 import { ROOT_NAVIGATION, type RootView } from "./navigation-model.ts";
+
+export interface NavigationBadgeContract {
+  count?: number;
+  hasActiveAlerts: boolean;
+  label: string;
+}
 
 export interface NavigationItemContract {
   id: RootView;
   label: string;
   isAvailable: boolean;
   isActive: boolean;
+  badge?: NavigationBadgeContract;
 }
 
 export interface PrimaryNavigationContract {
@@ -26,6 +34,7 @@ export interface SystemChromeContract {
 export interface DeriveNavigationContractInput {
   capabilities: CanonCapabilities;
   activeView: RootView;
+  notificationsSummary?: HudAttentionSummary;
 }
 
 /**
@@ -34,17 +43,43 @@ export interface DeriveNavigationContractInput {
 export function deriveNavigationContract({
   capabilities,
   activeView,
+  notificationsSummary,
 }: DeriveNavigationContractInput): SystemChromeContract {
   const available = availableRootViews(capabilities);
   const resolvedActive = resolveRootView(activeView, capabilities);
 
   const items: NavigationItemContract[] = ROOT_NAVIGATION.map((item) => {
     const isAvailable = Boolean(capabilities[item.id]);
+
+    let badge: NavigationBadgeContract | undefined = undefined;
+    if (item.id === "notifications" && notificationsSummary) {
+      const { currentSequenceNotificationCount, hasActiveAlerts } = notificationsSummary;
+
+      if (currentSequenceNotificationCount > 0 || hasActiveAlerts) {
+        let label = "";
+        const notificationText = currentSequenceNotificationCount === 1 ? "notification" : "notifications";
+        if (currentSequenceNotificationCount > 0 && hasActiveAlerts) {
+          label = `${currentSequenceNotificationCount} ${notificationText} at selected sequence; active alert`;
+        } else if (currentSequenceNotificationCount > 0) {
+          label = `${currentSequenceNotificationCount} ${notificationText} at selected sequence`;
+        } else if (hasActiveAlerts) {
+          label = "Active alert";
+        }
+
+        badge = {
+          count: currentSequenceNotificationCount > 0 ? currentSequenceNotificationCount : undefined,
+          hasActiveAlerts,
+          label,
+        };
+      }
+    }
+
     return {
       id: item.id,
       label: item.label,
       isAvailable,
       isActive: resolvedActive === item.id,
+      badge,
     };
   });
 

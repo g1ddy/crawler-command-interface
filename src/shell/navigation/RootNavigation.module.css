@@ -1,7 +1,28 @@
 .bar { display: flex; gap: var(--hud-space-md); align-items: center; padding-inline: clamp(0.75rem, 3vw, 3rem); border-block: 1px solid var(--hud-border-color); background: var(--hud-canvas-bg); position: sticky; top: 0; z-index: 5; }
 .navigation { display: flex; flex-wrap: wrap; gap: var(--hud-space-xs); flex: 1; }
 .destination, .tools { min-height: var(--hud-touch-target-min); background: transparent; color: var(--hud-text-secondary); border: 0; border-bottom: 3px solid transparent; padding: var(--hud-space-sm); font-size: 0.875rem; font-weight: 600; }
+.destination { display: inline-flex; align-items: center; gap: var(--hud-space-xs); }
 .destination[aria-pressed="true"] { color: var(--hud-text-author); border-color: var(--hud-text-author); background: var(--hud-panel-raised-bg); }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1em 0.45em;
+  font-size: 0.75rem;
+  font-family: var(--hud-font-mono);
+  font-weight: 700;
+  line-height: 1;
+  border-radius: var(--hud-radius-sm);
+  background: var(--hud-evidence-current-bg);
+  border: 1px solid var(--hud-evidence-current-border);
+  color: var(--hud-text-author);
+  letter-spacing: 0.02em;
+}
+.alertBadge {
+  background: var(--hud-evidence-unknown-bg);
+  border-color: var(--hud-state-danger);
+  color: var(--hud-state-danger);
+}
 .destination:hover, .tools:hover { color: var(--hud-text-primary); }
 .destination:focus-visible, .tools:focus-visible { outline: var(--hud-focus-ring); outline-offset: -3px; }
 .utilities { border-left: 1px solid var(--hud-border-color); padding-left: var(--hud-space-sm); display: flex; gap: var(--hud-space-xs); align-items: center; }

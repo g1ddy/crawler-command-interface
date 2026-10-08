@@ -89,7 +89,7 @@
   },
   "app/domain/countdowns.ts": {
     "complexity": 92,
-    "loc": 401,
+    "loc": 399,
     "instability": 0.17,
     "fanIn": 5,
     "fanOut": 1,
@@ -329,7 +329,7 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 445,
+    "loc": 447,
     "instability": 0.96,
     "fanIn": 1,
     "fanOut": 23,
@@ -369,7 +369,7 @@
   },
   "src/features/notifications/notification-presentation.ts": {
     "complexity": 4,
-    "loc": 54,
+    "loc": 59,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -449,9 +449,9 @@
   },
   "src/shell/hud/hud-composition.ts": {
     "complexity": 7,
-    "loc": 225,
-    "instability": 0.83,
-    "fanIn": 1,
+    "loc": 227,
+    "instability": 0.71,
+    "fanIn": 2,
     "fanOut": 5,
     "scanned": true
   },
@@ -856,11 +856,11 @@
     "scanned": true
   },
   "src/shell/navigation/navigation-contract.ts": {
-    "complexity": 1,
-    "loc": 59,
-    "instability": 0.6,
+    "complexity": 11,
+    "loc": 94,
+    "instability": 0.67,
     "fanIn": 2,
-    "fanOut": 3,
+    "fanOut": 4,
     "scanned": true
   },
   "src/shell/navigation/navigation-research.ts": {
@@ -872,8 +872,8 @@
     "scanned": true
   },
   "src/shell/navigation/RootNavigation.tsx": {
-    "complexity": 3,
-    "loc": 68,
+    "complexity": 9,
+    "loc": 82,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,

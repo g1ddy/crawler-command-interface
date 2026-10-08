@@ -42,6 +42,7 @@ test("deriveNotificationsPresentation returns structured presentation model for 
 
   assert.equal(livePres.sequence, 3);
   assert.equal(livePres.totalCount, 2);
+  assert.equal(livePres.currentSequenceNotificationCount, 1);
   assert.equal(livePres.hasNotifications, true);
   assert.equal(livePres.badgeLabel, "2 NOTICES");
   assert.equal(livePres.hasActiveAlerts, false);
@@ -53,6 +54,7 @@ test("deriveNotificationsPresentation returns structured presentation model for 
 
   assert.equal(replayPres.sequence, 1);
   assert.equal(replayPres.totalCount, 1);
+  assert.equal(replayPres.currentSequenceNotificationCount, 1);
   assert.equal(replayPres.badgeLabel, "1 NOTICE");
 
   const achievementNotice = replayPres.notifications[0];
@@ -62,6 +64,13 @@ test("deriveNotificationsPresentation returns structured presentation model for 
   assert.ok(achievementNotice.formattedRewards);
   assert.equal(achievementNotice.formattedRewards[0].kind, "BOX");
   assert.match(achievementNotice.formattedRewards[0].detail, /bronze/);
+
+  // Test that an older history notification doesn't count towards the current sequence
+  const replayNotificationsNoNew = projectNotifications(events, 2);
+  const replayPresNoNew = deriveNotificationsPresentation({ notifications: replayNotificationsNoNew, sequence: 2 });
+  assert.equal(replayPresNoNew.sequence, 2);
+  assert.equal(replayPresNoNew.totalCount, 1);
+  assert.equal(replayPresNoNew.currentSequenceNotificationCount, 0);
 });
 
 test("deriveNotificationsPresentation accurately derives active alert status for warning and critical severity", () => {
@@ -85,6 +94,7 @@ test("deriveNotificationsPresentation handles empty events without fabricating n
   const emptyPres = deriveNotificationsPresentation({ notifications: emptyNotifications, sequence: 5 });
   assert.equal(emptyPres.hasNotifications, false);
   assert.equal(emptyPres.totalCount, 0);
+  assert.equal(emptyPres.currentSequenceNotificationCount, 0);
   assert.equal(emptyPres.notifications.length, 0);
   assert.equal(emptyPres.badgeLabel, "0 NOTICES");
 });

@@ -3790,7 +3790,8 @@
         }
       ],
       "dependents": [
-        "src/shell/hud/public.ts"
+        "src/shell/hud/public.ts",
+        "src/shell/navigation/navigation-contract.ts"
       ],
       "orphan": false
     },
@@ -8023,6 +8024,24 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../hud/hud-composition.ts",
+          "resolved": "src/shell/hud/hud-composition.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -10158,7 +10177,7 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 174,
-    "totalDependenciesCruised": 453,
+    "totalDependenciesCruised": 454,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
