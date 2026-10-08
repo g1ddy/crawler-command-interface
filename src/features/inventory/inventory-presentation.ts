@@ -50,7 +50,7 @@ export interface DeriveInventoryPresentationInput {
   inventory: InventoryItem[];
   equippedSlots: EquippedSlotMap | Record<string, string | null | undefined>;
   observations: Record<string, ProjectedItemObservation | undefined>;
-  crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
+  crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number | null; class?: string; race?: string };
   filter: string;
   search: string;
   sortOrder: InventorySortOrder;

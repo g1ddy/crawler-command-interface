@@ -189,7 +189,7 @@ export function deriveHudComposition({
 
   return {
     system: {
-      crawlerName: projectedState.crawler.name,
+      crawlerName: projectedState.crawler.name ?? "—",
       crawlerClass: projectedState.crawler.class || "Class unknown",
       floorTitle: floorHudTitle,
       sequence,

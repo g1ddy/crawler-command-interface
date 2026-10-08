@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import { expect, test } from "@playwright/test";
 import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
+import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline";
 
 const compiledTimeline = JSON.parse(
   fs.readFileSync(new URL("../../data/compiled-timeline.json", import.meta.url), "utf8")
@@ -604,19 +605,43 @@ test("countdown presentation is compact, source-backed, and inspectable across a
 });
 
 test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
+  // Seed scenario with valid available points observation before navigation
+  await page.addInitScript((timelineDoc) => {
+    try {
+      const doc = JSON.parse(JSON.stringify(timelineDoc));
+      if (!doc.observations) doc.observations = [];
+      const maxSeq = doc.events?.at(-1)?.sequence ?? 182;
+      doc.observations.push({
+        id: "obs-e2e-points",
+        kind: "crawler-attributes",
+        sequence: maxSeq,
+        availableAttributePoints: 3,
+        evidence: [{ sourceId: doc.sources?.[0]?.id || "src-book-1", confidence: "confirmed" }],
+      });
+      localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(doc));
+    } catch (e) {
+      console.error(e);
+    }
+  }, compiledTimeline);
 
-  // In Live mode: allocate stat button is enabled if points available
+  await page.goto(pagesPath);
+
+  // Switch to Authority (Arwes POC) via System Tools
+  await page.getByRole("button", { name: "Open data tools" }).click();
+  await page.getByRole("button", { name: "Authority (Arwes POC)", exact: true }).click();
+  await page.getByRole("button", { name: "CANCEL" }).click();
+
+  // 1. Live mode with available points: allocate button must be enabled
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
   await expect(allocateBtn).toBeEnabled();
 
-  // Enter Replay mode via sequence scrubber
+  // 2. Scrub into Replay mode
   await enterReplayByScrubbing(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
-  // Mutation action is gated (disabled) during replay
+  // 3. Replay mode gating: allocate button must transition to disabled
   await expect(allocateBtn).toBeDisabled();
 
   // Telemetry inspection remains active

@@ -1,16 +1,20 @@
+import { createInitialState } from "../../app/domain/projection/helpers.ts";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deriveCrawlerPresentation } from "../../src/features/crawler/crawler-presentation.ts";
+import { checkItemRequirements } from "../../app/domain/stats.ts";
 
 test("deriveCrawlerPresentation computes crawler presentation with evidence authority", () => {
   const mockState = {
     sequence: 12,
     causalProvenance: {
+      availableAttributePoints: 2,
       attributes: { Strength: 24 },
       condition: { currentHealth: 3000 },
     },
     crawler: {
       name: "Carl",
+      crawlerNumber: "4,122",
       race: "Primal",
       class: "Scout",
       level: 5,
@@ -65,6 +69,7 @@ test("deriveCrawlerPresentation computes crawler presentation with evidence auth
   const presentation = deriveCrawlerPresentation(mockState, mockObservations);
 
   assert.equal(presentation.name, "Carl");
+  assert.equal(presentation.crawlerNumber, "4,122");
   assert.equal(presentation.level, 5);
   assert.equal(presentation.canAllocatePoints, true);
   assert.equal(presentation.attributes.length, 5);
@@ -78,7 +83,7 @@ test("deriveCrawlerPresentation handles unknown/unsourced telemetry without erro
     sequence: 1,
     causalProvenance: { attributes: {}, condition: {} },
     crawler: {
-      name: "Unknown Crawler",
+      name: "UNKNOWN CRAWLER",
       level: 1,
       race: "",
       class: "",
@@ -100,10 +105,35 @@ test("deriveCrawlerPresentation handles unknown/unsourced telemetry without erro
 
   const presentation = deriveCrawlerPresentation(emptyState, emptyObservations);
 
-  assert.equal(presentation.name, "Unknown Crawler");
+  assert.equal(presentation.name, "UNKNOWN CRAWLER");
   assert.equal(presentation.canAllocatePoints, false);
   assert.equal(presentation.effects.beneficial.length, 0);
   assert.equal(presentation.effects.harmful.length, 0);
+});
+
+test("crawler identity normalizes CARL G. to CARL without inventing surname", () => {
+  const stateWithSurname = {
+    sequence: 1,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {
+      name: "CARL G.",
+      crawlerNumber: "4,122",
+      level: 1,
+      race: "HUMAN",
+      class: "SCOUT",
+      xp: 0,
+      maxXp: 1000,
+      availableAttributePoints: 0,
+      attributes: { Strength: 10, Dexterity: 10, Constitution: 10, Intelligence: 10, Charisma: 10 },
+      permanentAttributeModifiers: { Strength: 0, Dexterity: 0, Constitution: 0, Intelligence: 0, Charisma: 0 },
+      condition: { currentHealth: 100, maxHealth: 100, currentMana: 50, maxMana: 50, currentStamina: 50, maxStamina: 50 },
+    },
+    effects: [],
+  };
+
+  const presentation = deriveCrawlerPresentation(stateWithSurname, { xpProgress: {}, attributes: {}, condition: {} });
+  assert.equal(presentation.name, "CARL");
+  assert.equal(presentation.crawlerNumber, "4,122");
 });
 
 test("attribute allocation follows the displayed reading instead of causal state", () => {
@@ -152,14 +182,88 @@ test("attribute allocation follows the displayed reading instead of causal state
   assert.equal(deriveCrawlerPresentation(state, historicalWithPoints).availablePoints, 2);
   assert.equal(deriveCrawlerPresentation(state, historicalWithPoints).canAllocatePoints, true);
 
-  assert.equal(deriveCrawlerPresentation(state, historicalUnknown).availablePoints, 3);
-  assert.equal(deriveCrawlerPresentation(state, historicalUnknown).canAllocatePoints, true);
+  assert.equal(deriveCrawlerPresentation(state, historicalUnknown).availablePoints, undefined);
+  assert.equal(deriveCrawlerPresentation(state, historicalUnknown).canAllocatePoints, false);
+});
+
+test("attribute provenance consolidates into sharedAttributesEvidence when observations match", () => {
+  const sharedObs = { sequence: 10, status: "stated", referenceObservationIds: ["obs-1"], key: "attr", value: 20 };
+  const state = {
+    sequence: 10,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {
+      name: "Carl",
+      level: 1,
+      race: "HUMAN",
+      class: "SCOUT",
+      xp: 0,
+      maxXp: 1000,
+      availableAttributePoints: 0,
+      attributes: { Strength: 24, Dexterity: 18, Constitution: 20, Intelligence: 15, Charisma: 12 },
+      permanentAttributeModifiers: { Strength: 0, Dexterity: 0, Constitution: 0, Intelligence: 0, Charisma: 0 },
+      condition: { currentHealth: 100, maxHealth: 100, currentMana: 50, maxMana: 50, currentStamina: 50, maxStamina: 50 },
+    },
+    effects: [],
+  };
+
+  const matchingObs = {
+    xpProgress: {},
+    attributes: {
+      Strength: { ...sharedObs, key: "Strength", value: 24 },
+      Dexterity: { ...sharedObs, key: "Dexterity", value: 18 },
+      Constitution: { ...sharedObs, key: "Constitution", value: 20 },
+      Intelligence: { ...sharedObs, key: "Intelligence", value: 15 },
+      Charisma: { ...sharedObs, key: "Charisma", value: 12 },
+    },
+    condition: {},
+  };
+
+  const presentation = deriveCrawlerPresentation(state, matchingObs);
+  assert.equal(presentation.hasSharedAttributesEvidence, true);
+  assert.equal(presentation.sharedAttributesAuthority, "observation");
+  assert.deepEqual(presentation.sharedAttributesObservation, matchingObs.attributes.Strength);
+});
+
+test("attribute provenance remains distinct per row when attribute observations differ", () => {
+  const state = {
+    sequence: 10,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {
+      name: "Carl",
+      level: 1,
+      race: "HUMAN",
+      class: "SCOUT",
+      xp: 0,
+      maxXp: 1000,
+      availableAttributePoints: 0,
+      attributes: { Strength: 24, Dexterity: 18, Constitution: 20, Intelligence: 15, Charisma: 12 },
+      permanentAttributeModifiers: { Strength: 0, Dexterity: 0, Constitution: 0, Intelligence: 0, Charisma: 0 },
+      condition: { currentHealth: 100, maxHealth: 100, currentMana: 50, maxMana: 50, currentStamina: 50, maxStamina: 50 },
+    },
+    effects: [],
+  };
+
+  const differingObs = {
+    xpProgress: {},
+    attributes: {
+      Strength: { sequence: 10, status: "stated", referenceObservationIds: ["obs-1"], key: "Strength", value: 24 },
+      Dexterity: { sequence: 8, status: "stated", referenceObservationIds: ["obs-2"], key: "Dexterity", value: 18 },
+      Constitution: { sequence: 10, status: "stated", referenceObservationIds: ["obs-1"], key: "Constitution", value: 20 },
+      Intelligence: { sequence: 10, status: "stated", referenceObservationIds: ["obs-1"], key: "Intelligence", value: 15 },
+      Charisma: { sequence: 10, status: "stated", referenceObservationIds: ["obs-1"], key: "Charisma", value: 12 },
+    },
+    condition: {},
+  };
+
+  const presentation = deriveCrawlerPresentation(state, differingObs);
+  assert.equal(presentation.hasSharedAttributesEvidence, false);
+  assert.equal(presentation.sharedAttributesObservation, undefined);
 });
 
 test("isLive mutation gating invariant enforces isLive as strict mutation boundary regardless of points", () => {
   const stateWithPoints = {
     sequence: 5,
-    causalProvenance: { attributes: {}, condition: {} },
+    causalProvenance: { availableAttributePoints: 3, attributes: {}, condition: {} },
     crawler: {
       name: "Carl",
       level: 5,
@@ -184,15 +288,90 @@ test("isLive mutation gating invariant enforces isLive as strict mutation bounda
   const presentationWithoutPoints = deriveCrawlerPresentation(stateWithoutPoints, emptyObs);
 
   assert.equal(presentationWithPoints.canAllocatePoints, true);
-  assert.equal(true && presentationWithPoints.canAllocatePoints, true);
-
   assert.equal(presentationWithoutPoints.canAllocatePoints, false);
-  assert.equal(true && presentationWithoutPoints.canAllocatePoints, false);
+});
 
-  assert.equal(false && presentationWithoutPoints.canAllocatePoints, false);
-  assert.equal(false && presentationWithPoints.canAllocatePoints, false);
+test("checkItemRequirements handles known and unknown null level states correctly", () => {
+  const crawlerKnown = {
+    name: "CARL",
+    level: 10,
+    attributes: { Strength: 20, Dexterity: 10, Constitution: 10, Intelligence: 10, Charisma: 10 },
+    race: "HUMAN",
+    class: "SCOUT",
+  };
+  const crawlerNull = {
+    name: "CARL",
+    level: null,
+    attributes: { Strength: 20, Dexterity: 10, Constitution: 10, Intelligence: 10, Charisma: 10 },
+    race: "HUMAN",
+    class: "SCOUT",
+  };
 
-  const liveUnderlyingPoints = 5;
-  assert.ok(liveUnderlyingPoints > 0);
-  assert.equal(false && (liveUnderlyingPoints > 0), false);
+  const reqs = { level: 5, Strength: 15 };
+
+  const resKnown = checkItemRequirements(crawlerKnown, reqs);
+  assert.equal(resKnown.met, true);
+  assert.equal(resKnown.details.find((d) => d.key === "level")?.current, 10);
+
+  const resNull = checkItemRequirements(crawlerNull, reqs);
+  assert.equal(resNull.met, false);
+  assert.equal(resNull.details.find((d) => d.key === "level")?.current, "N/A");
+  assert.equal(resNull.details.find((d) => d.key === "Strength")?.met, true);
+});
+
+test("presentation exposes allocation eligibility independently of live mode", () => {
+  const baseState = {
+    sequence: 10,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {
+      name: "Carl",
+      level: 5,
+      race: "Primal",
+      class: "Scout",
+      availableAttributePoints: 3,
+      attributes: { Strength: 20 },
+      permanentAttributeModifiers: { Strength: 0 },
+      condition: { currentHealth: 100, maxHealth: 100 },
+    },
+    effects: [],
+  };
+
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+  const zeroPointsObs = {
+    xpProgress: {},
+    attributes: { availableAttributePoints: { sequence: 10, key: "availableAttributePoints", value: 0 } },
+    condition: {},
+  };
+  const positivePointsObs = {
+    xpProgress: {},
+    attributes: { availableAttributePoints: { sequence: 10, key: "availableAttributePoints", value: 3 } },
+    condition: {},
+  };
+
+  // unknown points
+  const c1 = deriveCrawlerPresentation(baseState, emptyObs);
+  assert.equal(c1.availablePoints, undefined);
+  assert.equal(c1.canAllocatePoints, false);
+
+  // observed zero
+  const c2 = deriveCrawlerPresentation(baseState, zeroPointsObs);
+  assert.equal(c2.availablePoints, 0);
+  assert.equal(c2.canAllocatePoints, false);
+
+  // observed positive value
+  const c3 = deriveCrawlerPresentation(baseState, positivePointsObs);
+  assert.equal(c3.availablePoints, 3);
+  assert.equal(c3.canAllocatePoints, true);
+});
+
+test("unestablished crawler has no shared attributes evidence", () => {
+  const presentation = deriveCrawlerPresentation(createInitialState(), {
+    xpProgress: {},
+    attributes: {},
+    condition: {},
+  });
+
+  assert.equal(presentation.hasSharedAttributesEvidence, false);
+  assert.equal(presentation.sharedAttributesAuthority, undefined);
+  assert.equal(presentation.sharedAttributesObservation, undefined);
 });

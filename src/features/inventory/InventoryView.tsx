@@ -51,7 +51,7 @@ export function InventoryView({
   events?: CrawlerEvent[];
   selectedSequence?: number;
   isLive?: boolean;
-  crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
+  crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number | null; class?: string; race?: string };
   provenanceItem: InventoryItem | null;
   setProvenanceItem: (item: InventoryItem | null) => void;
   filter: string;

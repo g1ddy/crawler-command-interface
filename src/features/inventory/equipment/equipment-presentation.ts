@@ -59,7 +59,7 @@ export interface DeriveEquipmentPresentationInput {
   inventory: InventoryItem[];
   equippedSlots: EquippedSlotMap | Record<string, string | null | undefined>;
   observations: Record<EquipmentSlot, ProjectedEquipmentObservation | undefined>;
-  crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number; class?: string; race?: string };
+  crawler: { attributes?: Partial<Record<AttributeName, number>>; level?: number | null; class?: string; race?: string };
   selectedSlot: EquipmentSlot;
   selectedCandidateId: string | null;
   isLive?: boolean;

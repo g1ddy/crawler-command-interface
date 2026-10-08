@@ -85,13 +85,14 @@ export function deriveCategory(event: Record<string, unknown>): EventCategory {
 export function createInitialState(timelineState?: TimelineState): CrawlerState {
   const crawler = timelineState?.crawler;
 
-  const attributes: Record<AttributeName, number> = {
-    Strength: crawler?.attributes?.Strength ?? 24,
-    Dexterity: crawler?.attributes?.Dexterity ?? 34,
-    Constitution: crawler?.attributes?.Constitution ?? 30,
-    Intelligence: crawler?.attributes?.Intelligence ?? 18,
-    Charisma: crawler?.attributes?.Charisma ?? 20,
-  };
+  const attributes: Partial<Record<AttributeName, number>> = {};
+  if (crawler?.attributes) {
+    for (const [key, val] of Object.entries(crawler.attributes)) {
+      if (typeof val === 'number') {
+        attributes[key as AttributeName] = val;
+      }
+    }
+  }
 
   const condition = {
     currentHealth: crawler?.condition?.currentHealth ?? null,
@@ -164,9 +165,21 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
     ...q,
   }));
 
-  const broadcast = timelineState
-    ? { viewers: 0, viewerDelta: '+0%', followers: 0, fameRank: '#-', sponsorInterest: false }
-    : { viewers: 42100, viewerDelta: '+0%', followers: 3520, fameRank: '#21', sponsorInterest: false };
+  const broadcast = timelineState?.broadcast
+    ? {
+        viewers: timelineState.broadcast.viewers,
+        viewerDelta: timelineState.broadcast.viewerDelta,
+        followers: timelineState.broadcast.followers,
+        fameRank: timelineState.broadcast.fameRank,
+        sponsorInterest: timelineState.broadcast.sponsorInterest ?? false,
+      }
+    : {
+        viewers: undefined,
+        viewerDelta: undefined,
+        followers: undefined,
+        fameRank: undefined,
+        sponsorInterest: false,
+      };
 
   return {
     sequence: 0,
@@ -176,21 +189,16 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
       condition: {},
     },
     crawler: {
-      name: crawler?.name || 'CARL G.',
-      level: crawler?.level || 42,
-      race: crawler?.race || 'PRIMAL',
-      class: crawler?.class || 'SCOUT',
-      xp: crawler?.xp ?? 21500,
-      maxXp: crawler?.maxXp ?? 74000,
-      availableAttributePoints: (crawler as { availableAttributePoints?: number } | undefined)?.availableAttributePoints ?? 5,
+      name: crawler?.name,
+      crawlerNumber: crawler?.crawlerNumber,
+      level: crawler?.level ?? null,
+      race: crawler?.race,
+      class: crawler?.class,
+      xp: crawler?.xp,
+      maxXp: crawler?.maxXp,
+      availableAttributePoints: crawler?.availableAttributePoints,
       attributes,
-      permanentAttributeModifiers: {
-        Strength: 0,
-        Dexterity: 0,
-        Constitution: 0,
-        Intelligence: 0,
-        Charisma: 0,
-      },
+      permanentAttributeModifiers: {},
       condition,
     },
     inventory,
