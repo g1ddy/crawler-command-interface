@@ -174,8 +174,9 @@
         "src/features/timeline/replay-presentation.ts",
         "src/application/capabilities.ts",
         "src/features/pet/pet-presentation.ts",
-        "src/shell/hud/hud-composition.ts",
+        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
         "src/features/timeline/evidence/evidencePresentation.ts",
+        "src/shell/hud/hud-composition.ts",
         "src/features/timeline/evidence/TelemetryBadge.tsx",
         "src/features/timeline/SequenceBadge.tsx",
         "src/shell/ActiveFeatureView.tsx",
@@ -200,7 +201,6 @@
         "src/features/skills/SkillsView.tsx",
         "src/features/skills/skills-presentation.ts",
         "src/shell/hud/ConceptHud.tsx",
-        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
         "src/shell/hud/hotlist/Hotlist.tsx",
         "src/shell/hud/PersistentHud.tsx",
         "src/shell/overlays/WorkspaceOverlays.tsx",
@@ -2535,18 +2535,16 @@
         "src/presentation/authority-arwes/primitives/AuthorityIndicator.ts",
         "src/presentation/authority-arwes/primitives/AuthoritySurface.ts",
         "src/presentation/authority-arwes/primitives/AuthorityTransition.ts",
+        "src/shared/ui/ModalBoundary.tsx",
         "src/shell/ActiveFeatureView.tsx",
         "src/features/crawler/CrawlerView.tsx",
         "src/shared/ui/Panel.tsx",
         "src/features/inventory/InventoryView.tsx",
-        "src/shared/ui/ModalBoundary.tsx",
         "src/features/party/PartyView.tsx",
         "src/features/pet/PetView.tsx",
         "src/features/quests/QuestsView.tsx",
         "src/features/quests/QuestCard.tsx",
         "src/features/skills/SkillsView.tsx",
-        "src/shell/hud/ConceptHud.tsx",
-        "src/shell/hud/PersistentHud.tsx",
         "src/shell/overlays/WorkspaceOverlays.tsx",
         "src/features/floor/FloorRules.tsx",
         "src/features/timeline/history/TimelineHistory.tsx",
@@ -2732,6 +2730,23 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../../features/timeline/evidence/CountdownEvidenceModal",
+          "resolved": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../../presentation/authority-arwes/ArwesPresentation.ts",
           "resolved": "src/presentation/authority-arwes/ArwesPresentation.ts",
           "valid": true,
@@ -2752,6 +2767,23 @@
           "moduleSystem": "es6",
           "module": "../../presentation/semantic/public.ts",
           "resolved": "src/presentation/semantic/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../shared/ui/ModalBoundary",
+          "resolved": "src/shared/ui/ModalBoundary.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -3394,8 +3426,8 @@
       "dependents": [
         "src/shell/adapters/CrawlerWorkspace.tsx",
         "src/features/pet/pet-presentation.ts",
-        "src/shell/hud/hud-composition.ts",
         "src/features/timeline/evidence/evidencePresentation.ts",
+        "src/shell/hud/hud-composition.ts",
         "src/presentation/authority-arwes/ArwesAuthorityComposition.ts",
         "src/presentation/authority-arwes/primitives/AuthorityTransition.ts",
         "src/features/party/party-presentation.ts"
@@ -3437,6 +3469,119 @@
       "dependents": [
         "src/presentation/semantic/public.ts",
         "src/presentation/semantic/capability.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/countdowns",
+          "resolved": "app/domain/countdowns.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./evidencePresentation",
+          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/features/timeline/evidence/evidencePresentation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../../app/domain/types",
+          "resolved": "app/domain/types.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../presentation/semantic/public.ts",
+          "resolved": "src/presentation/semantic/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
+        "src/features/timeline/public.ts",
+        "src/features/timeline/evidence/TelemetryBadge.tsx",
+        "src/shell/hud/ConceptHud.tsx",
+        "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
+        "src/shell/replay/TimelineControls.tsx"
       ],
       "orphan": false
     },
@@ -3778,6 +3923,7 @@
       ],
       "dependents": [
         "src/shell/hud/hud-composition.ts",
+        "src/presentation/authority-arwes/ArwesAuthorityComposition.ts",
         "src/features/crawler/crawler-presentation.ts",
         "src/features/crawler/health/HealthConditions.tsx",
         "src/features/crawler/stats/PlayerStats.tsx",
@@ -3785,62 +3931,12 @@
         "src/features/inventory/ItemInspector.tsx",
         "src/features/ratings/ratings-presentation.ts",
         "src/features/ratings/RatingsView.tsx",
+        "src/shell/hud/PersistentHud.tsx",
         "src/shell/overlays/WorkspaceOverlays.tsx",
         "src/features/floor/FloorRules.tsx",
         "src/shell/replay/TimelineControls.tsx",
         "src/shell/replay/ReplaySurface.tsx",
         "src/shell/replay/ReplayControls.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/evidence/evidencePresentation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../presentation/semantic/public.ts",
-          "resolved": "src/presentation/semantic/public.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/features/timeline/public.ts",
-        "src/features/timeline/evidence/TelemetryBadge.tsx",
-        "src/shell/hud/ConceptHud.tsx",
-        "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-        "src/features/timeline/evidence/TelemetryInspectorModal.tsx",
-        "src/shell/replay/TimelineControls.tsx"
       ],
       "orphan": false
     },
@@ -3974,6 +4070,23 @@
       "source": "src/presentation/authority-arwes/ArwesAuthorityComposition.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/timeline/public.ts",
+          "resolved": "src/features/timeline/public.ts",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -4510,6 +4623,103 @@
       "dependencies": [],
       "dependents": [
         "src/presentation/authority-arwes/primitives/AuthorityTransition.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
+    },
+    {
+      "source": "src/shared/ui/ModalBoundary.tsx",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./ModalBoundary.module.css",
+          "resolved": "src/shared/ui/ModalBoundary.module.css",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react",
+          "resolved": "node_modules/react/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react-dom",
+          "resolved": "node_modules/react-dom/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/shell/adapters/CrawlerWorkspace.tsx",
+        "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
+        "src/shell/overlays/WorkspaceOverlays.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/shared/ui/ModalBoundary.module.css",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/shared/ui/ModalBoundary.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": false,
+      "dependencyTypes": [
+        "local",
+        "import"
+      ]
+    },
+    {
+      "source": "node_modules/react-dom/index.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/shared/ui/ModalBoundary.tsx"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -6486,104 +6696,6 @@
       "orphan": false
     },
     {
-      "source": "src/shared/ui/ModalBoundary.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "./ModalBoundary.module.css",
-          "resolved": "src/shared/ui/ModalBoundary.module.css",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react-dom",
-          "resolved": "node_modules/react-dom/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
-        }
-      ],
-      "dependents": [
-        "src/features/inventory/provenance/ItemProvenanceDrawer.tsx",
-        "src/shell/hud/ConceptHud.tsx",
-        "src/shell/hud/PersistentHud.tsx",
-        "src/shell/overlays/WorkspaceOverlays.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/shared/ui/ModalBoundary.module.css",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/shared/ui/ModalBoundary.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": false,
-      "dependencyTypes": [
-        "local",
-        "import"
-      ]
-    },
-    {
-      "source": "node_modules/react-dom/index.js",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/shared/ui/ModalBoundary.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ]
-    },
-    {
       "source": "src/features/inventory/public.ts",
       "valid": true,
       "dependencies": [
@@ -7495,42 +7607,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../features/timeline/evidence/CountdownEvidenceModal",
-          "resolved": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "../../features/timeline/evidence/evidencePresentation",
           "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../shared/ui/ModalBoundary",
-          "resolved": "src/shared/ui/ModalBoundary.tsx",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -7550,90 +7628,10 @@
           "resolved": "src/shell/hud/hotlist/Hotlist.tsx",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
         "src/shell/adapters/CrawlerWorkspace.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/countdowns",
-          "resolved": "app/domain/countdowns.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../../app/domain/types",
-          "resolved": "app/domain/types.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./evidencePresentation",
-          "resolved": "src/features/timeline/evidence/evidencePresentation.ts",
-          "valid": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/shell/hud/ConceptHud.tsx",
-        "src/shell/hud/PersistentHud.tsx"
       ],
       "orphan": false
     },
@@ -7793,25 +7791,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../features/timeline/evidence/CountdownEvidenceModal",
-          "resolved": "src/features/timeline/evidence/CountdownEvidenceModal.tsx",
-          "valid": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../shared/ui/ModalBoundary",
-          "resolved": "src/shared/ui/ModalBoundary.tsx",
+          "module": "../../features/timeline/public",
+          "resolved": "src/features/timeline/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
         },
@@ -7866,23 +7847,6 @@
           "resolved": "src/shell/hud/public.ts",
           "valid": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react",
-          "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -10194,7 +10158,7 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 174,
-    "totalDependenciesCruised": 455,
+    "totalDependenciesCruised": 453,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
