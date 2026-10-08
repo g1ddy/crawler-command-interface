@@ -253,7 +253,8 @@ export interface CrawlerState {
   causalProvenance: CrawlerCausalProvenance;
   crawler: {
     name?: string;
-    level?: number;
+    crawlerNumber?: string | number;
+    level: number | null;
     race?: string;
     class?: string;
     xp?: number;
