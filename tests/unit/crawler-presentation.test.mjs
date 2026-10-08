@@ -361,26 +361,26 @@ test("enforces complete available-points and actionability matrix across all 6 c
   const c1 = deriveCrawlerPresentation(baseState, emptyObs);
   assert.equal(c1.availablePoints, undefined);
   assert.equal(c1.canAllocatePoints, false);
-  assert.equal(true && c1.canAllocatePoints, false);
+  assert.equal(c1.canAllocatePoints, false);
 
   // Case 2: Unknown points, Replay mode -> display undefined, action disabled
-  assert.equal(false && c1.canAllocatePoints, false);
+  assert.equal(c1.canAllocatePoints, false);
 
   // Case 3: 0 points, Live mode -> display 0, action disabled
   const c3 = deriveCrawlerPresentation(baseState, zeroPointsObs);
   assert.equal(c3.availablePoints, 0);
   assert.equal(c3.canAllocatePoints, false);
-  assert.equal(true && c3.canAllocatePoints, false);
+  assert.equal(c3.canAllocatePoints, false);
 
   // Case 4: 0 points, Replay mode -> display 0, action disabled
-  assert.equal(false && c3.canAllocatePoints, false);
+  assert.equal(c3.canAllocatePoints, false);
 
   // Case 5: >0 points, Live mode -> display 3, action enabled
   const c5 = deriveCrawlerPresentation(baseState, positivePointsObs);
   assert.equal(c5.availablePoints, 3);
   assert.equal(c5.canAllocatePoints, true);
-  assert.equal(true && c5.canAllocatePoints, true);
+  assert.equal(c5.canAllocatePoints, true);
 
   // Case 6: >0 points, Replay mode -> display 3, action disabled
-  assert.equal(false && c5.canAllocatePoints, false);
+  assert.equal(c5.canAllocatePoints, false);
 });
