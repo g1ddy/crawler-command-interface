@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import { expect, test } from "@playwright/test";
 import { openReplayContext, enterReplayByScrubbing } from "../helpers/replay";
-import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline";
 
 const compiledTimeline = JSON.parse(
   fs.readFileSync(new URL("../../data/compiled-timeline.json", import.meta.url), "utf8")
@@ -601,6 +600,34 @@ test("countdown presentation is compact, source-backed, and inspectable across a
     await setSliderValue(floor1Seq);
     await expect(hudRenderer).toContainText("5d 0h left");
     await expect(page.getByRole("button", { name: /Inspect collapse clock evidence/i })).toBeVisible();
+
+    // --- D. Deterministic Regression: stated -> estimated -> stated formatting preservation ---
+    // At sequence 62, there is an exact stated reference
+    await setSliderValue(62);
+    await expect(hudRenderer).toContainText(/left/);
+    await expect(hudRenderer).not.toContainText("~");
+    const statedEvidenceBtn62 = page.getByRole("button", { name: /Inspect collapse clock evidence/i });
+    await expect(statedEvidenceBtn62).toBeVisible();
+    expect((await statedEvidenceBtn62.innerText()).trim()).toBe("●");
+
+    // At sequence 63, the state is estimated (interpolated between 62 and 67)
+    await setSliderValue(63);
+    await expect(hudRenderer).toContainText(/left/);
+    // The format string MUST NOT contain the '~' prefix, proving the presentation text doesn't jump
+    await expect(hudRenderer).not.toContainText("~");
+    const estimatedEvidenceBtn63 = page.getByRole("button", { name: /Inspect collapse clock evidence/i });
+    await expect(estimatedEvidenceBtn63).toBeVisible();
+    // But the evidence marker must still display the ≈ indicating its estimation status
+    expect((await estimatedEvidenceBtn63.innerText()).trim()).toBe("≈");
+
+    // At sequence 67, there is another exact stated reference
+    await setSliderValue(67);
+    await expect(hudRenderer).toContainText(/left/);
+    await expect(hudRenderer).not.toContainText("~");
+    const statedEvidenceBtn67 = page.getByRole("button", { name: /Inspect collapse clock evidence/i });
+    await expect(statedEvidenceBtn67).toBeVisible();
+    expect((await statedEvidenceBtn67.innerText()).trim()).toBe("●");
+
   }
 });
 

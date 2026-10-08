@@ -164,6 +164,7 @@ export function CrawlerWorkspace({
     });
     return {
       totalNotificationsCount: presentation.totalCount,
+      currentSequenceNotificationCount: presentation.currentSequenceNotificationCount,
       hasActiveAlerts: presentation.hasActiveAlerts,
       latestNotificationTitle: presentation.latestNotificationTitle,
       latestNotificationMessage: presentation.latestNotificationMessage,

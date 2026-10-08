@@ -4,7 +4,7 @@ import { availableRootViews, resolveRootView } from "./capabilities.ts";
 import { ROOT_NAVIGATION, type RootView } from "./navigation-model.ts";
 
 export interface NavigationBadgeContract {
-  count: number;
+  count?: number;
   hasActiveAlerts: boolean;
   label: string;
 }
@@ -52,18 +52,26 @@ export function deriveNavigationContract({
     const isAvailable = Boolean(capabilities[item.id]);
 
     let badge: NavigationBadgeContract | undefined = undefined;
-    if (
-      item.id === "notifications" &&
-      notificationsSummary &&
-      notificationsSummary.totalNotificationsCount > 0
-    ) {
-      const count = notificationsSummary.totalNotificationsCount;
-      const hasActiveAlerts = notificationsSummary.hasActiveAlerts;
-      badge = {
-        count,
-        hasActiveAlerts,
-        label: `${count} ${count === 1 ? "notice" : "notices"}${hasActiveAlerts ? " (active alert)" : ""}`,
-      };
+    if (item.id === "notifications" && notificationsSummary) {
+      const { currentSequenceNotificationCount, hasActiveAlerts } = notificationsSummary;
+
+      if (currentSequenceNotificationCount > 0 || hasActiveAlerts) {
+        let label = "";
+        const notificationText = currentSequenceNotificationCount === 1 ? "notification" : "notifications";
+        if (currentSequenceNotificationCount > 0 && hasActiveAlerts) {
+          label = `${currentSequenceNotificationCount} ${notificationText} at selected sequence; active alert`;
+        } else if (currentSequenceNotificationCount > 0) {
+          label = `${currentSequenceNotificationCount} ${notificationText} at selected sequence`;
+        } else if (hasActiveAlerts) {
+          label = "Active alert";
+        }
+
+        badge = {
+          count: currentSequenceNotificationCount > 0 ? currentSequenceNotificationCount : undefined,
+          hasActiveAlerts,
+          label,
+        };
+      }
     }
 
     return {

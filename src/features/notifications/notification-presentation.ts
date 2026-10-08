@@ -6,6 +6,7 @@ export interface DerivedNotificationItem extends CrawlerNotification { icon: str
 export interface DerivedNotificationsPresentation {
   sequence: number;
   totalCount: number;
+  currentSequenceNotificationCount: number;
   badgeLabel: string;
   hasNotifications: boolean;
   hasActiveAlerts: boolean;
@@ -34,6 +35,9 @@ export function deriveNotificationPresentation({
     isAuthoredAtCurrentSequence: item.sequence === sequence,
   }));
   const totalCount = items.length;
+  const currentSequenceNotificationCount = items.filter(
+    (item) => item.isAuthoredAtCurrentSequence
+  ).length;
   const hasActiveAlerts = items.some(
     (item) => item.severity === "warning" || item.severity === "critical",
   );
@@ -43,6 +47,7 @@ export function deriveNotificationPresentation({
   return {
     sequence,
     totalCount,
+    currentSequenceNotificationCount,
     badgeLabel: `${totalCount} ${totalCount === 1 ? "NOTICE" : "NOTICES"}`,
     hasNotifications: totalCount > 0,
     hasActiveAlerts,

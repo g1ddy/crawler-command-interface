@@ -33,27 +33,30 @@ export function RootNavigation({
   return (
     <div className={styles.bar} data-shell-navigation>
       <nav className={styles.navigation} aria-label="Main Navigation">
-        {items.map((item) => (
-          <button
-            key={item.id}
-            className={styles.destination}
-            aria-pressed={activeView === item.id}
-            onClick={() => set(item.id)}
-          >
-            <span>{item.label}</span>
-            {"badge" in item && item.badge && (
-              <span
-                className={`${styles.badge} ${item.badge.hasActiveAlerts ? styles.alertBadge : ""}`}
-                aria-label={`${item.badge.count} ${item.badge.count === 1 ? "notice" : "notices"}${item.badge.hasActiveAlerts ? " (active alert)" : ""}`}
-                data-testid={`nav-badge-${item.id}`}
-              >
-                <span aria-hidden="true">
-                  {item.badge.hasActiveAlerts ? "⚠ " : ""}{item.badge.count}
+        {items.map((item) => {
+          const badge = "badge" in item ? item.badge : undefined;
+          const ariaLabel = badge ? `${item.label} · ${badge.label}` : undefined;
+          return (
+            <button
+              key={item.id}
+              className={styles.destination}
+              aria-pressed={activeView === item.id}
+              onClick={() => set(item.id)}
+              aria-label={ariaLabel}
+            >
+              <span>{item.label}</span>
+              {badge && (
+                <span
+                  className={`${styles.badge} ${badge.hasActiveAlerts ? styles.alertBadge : ""}`}
+                  aria-hidden="true"
+                  data-testid={`nav-badge-${item.id}`}
+                >
+                  {badge.hasActiveAlerts && badge.count === undefined ? "⚠" : badge.hasActiveAlerts && badge.count !== undefined ? `⚠ ${badge.count}` : badge.count}
                 </span>
-              </span>
-            )}
-          </button>
-        ))}
+              )}
+            </button>
+          );
+        })}
       </nav>
       <div className={styles.utilities} role="group" aria-label="Application tools">
         <button
