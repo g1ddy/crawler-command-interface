@@ -640,8 +640,6 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "name",
-            "level",
             "attributes",
             "condition"
           ],
@@ -649,6 +647,12 @@
             "name": {
               "type": "string",
               "minLength": 1
+            },
+            "crawlerNumber": {
+              "oneOf": [
+                { "type": "string", "minLength": 1 },
+                { "type": "integer", "minimum": 0 }
+              ]
             },
             "level": {
               "type": ["integer", "null"],
@@ -664,6 +668,12 @@
               "$ref": "#/$defs/nonNegativeInteger"
             },
             "maxXp": {
+              "$ref": "#/$defs/nonNegativeInteger"
+            },
+            "availableAttributePoints": {
+              "$ref": "#/$defs/nonNegativeInteger"
+            },
+            "availableAttributePoints": {
               "$ref": "#/$defs/nonNegativeInteger"
             },
             "attributes": {

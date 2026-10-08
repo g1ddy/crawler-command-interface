@@ -15,9 +15,19 @@ class MockStorage {
 }
 
 test("valid actions append a runtime event at the live endpoint", () => {
-  const previousEnd = compiledTimeline.events.at(-1).sequence;
+  const document = {
+    ...compiledTimeline,
+    initialState: {
+      ...compiledTimeline.initialState,
+      crawler: {
+        ...compiledTimeline.initialState.crawler,
+        availableAttributePoints: 5,
+      },
+    },
+  };
+  const previousEnd = document.events.at(-1).sequence;
   const result = executeCrawlerCommand(
-    compiledTimeline,
+    document,
     { type: "allocate-attribute", attribute: "Strength" },
     () => "evt-test-action",
   );
@@ -31,11 +41,21 @@ test("valid actions append a runtime event at the live endpoint", () => {
   assert.equal(result.document.events.at(-1), result.event);
   assert.equal(validateCrawlerTimeline(result.document).valid, true);
   assert.equal(projectState(result.document, result.event.sequence).crawler.attributes.Strength,
-    projectState(compiledTimeline, previousEnd).crawler.attributes.Strength + 1);
+    (projectState(document, previousEnd).crawler.attributes.Strength ?? 0) + 1);
 });
 
 test("runtime actions survive validated local persistence and reprojection", () => {
-  const result = executeCrawlerCommand(compiledTimeline, {
+  const document = {
+    ...compiledTimeline,
+    initialState: {
+      ...compiledTimeline.initialState,
+      crawler: {
+        ...compiledTimeline.initialState.crawler,
+        availableAttributePoints: 5,
+      },
+    },
+  };
+  const result = executeCrawlerCommand(document, {
     type: "allocate-attribute",
     attribute: "Dexterity",
   });
@@ -50,11 +70,21 @@ test("runtime actions survive validated local persistence and reprojection", () 
   assert.ok(loaded);
   assert.equal(loaded.events.at(-1).id, result.event.id);
   assert.equal(projectState(loaded, result.event.sequence).crawler.attributes.Dexterity,
-    projectState(compiledTimeline, compiledTimeline.events.at(-1).sequence).crawler.attributes.Dexterity + 1);
+    (projectState(document, document.events.at(-1).sequence).crawler.attributes.Dexterity ?? 0) + 1);
 });
 
 test("authored events still require evidence while runtime events cannot claim it", () => {
-  const runtime = executeCrawlerCommand(compiledTimeline, {
+  const document = {
+    ...compiledTimeline,
+    initialState: {
+      ...compiledTimeline.initialState,
+      crawler: {
+        ...compiledTimeline.initialState.crawler,
+        availableAttributePoints: 5,
+      },
+    },
+  };
+  const runtime = executeCrawlerCommand(document, {
     type: "allocate-attribute",
     attribute: "Charisma",
   });
