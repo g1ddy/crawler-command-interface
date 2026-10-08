@@ -109,6 +109,51 @@ function deriveObservationPresentation(
   };
 }
 
+export function deriveCountdownEvidencePresentation(
+  countdown?: { status: "stated" | "estimated"; isStale: boolean; referencePoints: CountdownReference[] } | null
+): EvidencePresentation {
+  if (!countdown) {
+    return {
+      state: "unknown",
+      label: "Unknown",
+      badgeLabel: "— ABSENT",
+      referenceObservationIds: [],
+      inspectable: false,
+    };
+  }
+
+  const referenceObservationIds: string[] = [];
+
+  if (countdown.status === "estimated") {
+    return {
+      state: "estimated",
+      label: "Estimated",
+      badgeLabel: "📡 ESTIMATED",
+      referenceObservationIds,
+      inspectable: true,
+    };
+  }
+
+  if (countdown.isStale) {
+    const lastRefSequence = countdown.referencePoints[countdown.referencePoints.length - 1]?.sequence;
+    return {
+      state: "last-known",
+      label: lastRefSequence !== undefined ? `Last known · sequence ${lastRefSequence}` : "Last known",
+      badgeLabel: lastRefSequence !== undefined ? `LAST KNOWN · SEQ ${lastRefSequence}` : "LAST KNOWN",
+      referenceObservationIds,
+      inspectable: true,
+    };
+  }
+
+  return {
+    state: "current",
+    label: "Observed",
+    badgeLabel: "SOURCE",
+    referenceObservationIds,
+    inspectable: true,
+  };
+}
+
 export function deriveEvidencePresentation(
   observation?: ProjectedObservationValue | ProjectedItemObservation | ProjectedEquipmentObservation | null,
   selectedSequence?: number,

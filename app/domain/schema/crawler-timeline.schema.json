@@ -640,8 +640,6 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "name",
-            "level",
             "attributes",
             "condition"
           ],
@@ -650,8 +648,14 @@
               "type": "string",
               "minLength": 1
             },
+            "crawlerNumber": {
+              "oneOf": [
+                { "type": "string", "minLength": 1 },
+                { "type": "integer", "minimum": 0 }
+              ]
+            },
             "level": {
-              "type": "integer",
+              "type": ["integer", "null"],
               "minimum": 1
             },
             "race": {
@@ -664,6 +668,9 @@
               "$ref": "#/$defs/nonNegativeInteger"
             },
             "maxXp": {
+              "$ref": "#/$defs/nonNegativeInteger"
+            },
+            "availableAttributePoints": {
               "$ref": "#/$defs/nonNegativeInteger"
             },
             "attributes": {

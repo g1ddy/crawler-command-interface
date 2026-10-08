@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  deriveCountdownEvidencePresentation,
   deriveEvidencePresentation,
   displayedReadingAuthority,
   evidenceConfidenceLabel,
@@ -32,6 +33,53 @@ test("selectDisplayedReading uses causal provenance rather than a numeric defaul
   // Without an observation, causal state remains the only displayable value.
   assert.equal(selectDisplayedReading(50, undefined, undefined), 50);
   assert.equal(displayedReadingAuthority(50, undefined, undefined), "causal");
+});
+
+test("deriveCountdownEvidencePresentation derives current, last-known, estimated, and unknown states without manufacturing observation IDs", () => {
+  const nullEvidence = deriveCountdownEvidencePresentation(null);
+  assert.equal(nullEvidence.state, "unknown");
+  assert.equal(evidenceGlanceMarker(nullEvidence.state), "?");
+  assert.equal(nullEvidence.inspectable, false);
+  assert.deepEqual(nullEvidence.referenceObservationIds, []);
+
+  const currentCountdown = {
+    status: "stated",
+    isStale: false,
+    referencePoints: [{ sequence: 10, evidence: [{ sourceId: "src-1" }] }],
+  };
+  const currentEvidence = deriveCountdownEvidencePresentation(currentCountdown);
+  assert.equal(currentEvidence.state, "current");
+  assert.equal(evidenceGlanceMarker(currentEvidence.state), "●");
+  assert.equal(currentEvidence.label, "Observed");
+  assert.equal(currentEvidence.inspectable, true);
+  assert.deepEqual(currentEvidence.referenceObservationIds, []);
+
+  const staleCountdown = {
+    status: "stated",
+    isStale: true,
+    referencePoints: [{ sequence: 20, evidence: [{ sourceId: "src-1" }] }],
+  };
+  const staleEvidence = deriveCountdownEvidencePresentation(staleCountdown);
+  assert.equal(staleEvidence.state, "last-known");
+  assert.equal(evidenceGlanceMarker(staleEvidence.state), "◷");
+  assert.equal(staleEvidence.label, "Last known · sequence 20");
+  assert.equal(staleEvidence.inspectable, true);
+  assert.deepEqual(staleEvidence.referenceObservationIds, []);
+
+  const estimatedCountdown = {
+    status: "estimated",
+    isStale: false,
+    referencePoints: [
+      { sequence: 10, evidence: [{ sourceId: "src-1" }] },
+      { sequence: 30, evidence: [{ sourceId: "src-2" }] },
+    ],
+  };
+  const estimatedEvidence = deriveCountdownEvidencePresentation(estimatedCountdown);
+  assert.equal(estimatedEvidence.state, "estimated");
+  assert.equal(evidenceGlanceMarker(estimatedEvidence.state), "≈");
+  assert.equal(estimatedEvidence.label, "Estimated");
+  assert.equal(estimatedEvidence.inspectable, true);
+  assert.deepEqual(estimatedEvidence.referenceObservationIds, []);
 });
 
 test("deriveEvidencePresentation derives current, last-known, estimated, causal-only, and unknown states", () => {

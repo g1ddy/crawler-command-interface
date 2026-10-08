@@ -11,11 +11,16 @@ import type {
   HudTelemetryKey,
   HudTelemetryPresentation,
 } from "../../shell/hud/public.ts";
+import {
+  deriveCountdownEvidencePresentation,
+  evidenceGlanceMarker,
+} from "../../features/timeline/public.ts";
 import type { PresentationMotionIntent } from "../semantic/public.ts";
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
   onInspectTelemetry?: (key: HudTelemetryKey) => void;
+  onInspectCountdown?: () => void;
   motionMode?: AuthorityMotionMode;
 }
 
@@ -323,6 +328,7 @@ function PetSurface({ pet, activeView, motionMode }: PetSurfaceProps) {
 export function ArwesAuthorityComposition({
   composition,
   onInspectTelemetry,
+  onInspectCountdown,
   motionMode = "enabled",
 }: ArwesAuthorityCompositionProps) {
   const { system, temporal, urgency, attention, telemetryItems, pet } = composition;
@@ -372,45 +378,49 @@ export function ArwesAuthorityComposition({
 
         /* Urgency / Collapse Context */
         urgency.activeCountdown
-          ? createElement(
-              "div",
-              {
-                "data-testid": "arwes-urgency-panel",
-                style: {
-                  textAlign: "center",
-                  padding: "0.35rem 0.75rem",
-                  background: "rgba(15, 23, 42, 0.7)",
-                  border: "1px solid rgba(56, 189, 248, 0.3)",
-                  borderRadius: "4px",
-                },
-              },
-              createElement(
+          ? (() => {
+              const evidence = deriveCountdownEvidencePresentation(urgency.activeCountdown);
+              const marker = evidenceGlanceMarker(evidence.state);
+              const isInspectable = evidence.inspectable && Boolean(onInspectCountdown);
+              const indicatorLabel = isInspectable
+                ? `Inspect collapse clock evidence: ${evidence.label.toLowerCase()}`
+                : `Collapse clock evidence: ${evidence.label.toLowerCase()}`;
+
+              return createElement(
                 "div",
                 {
+                  "data-testid": "arwes-urgency-panel",
                   style: {
-                    fontSize: "0.68rem",
-                    color: "#7dd3fc",
-                    fontWeight: 700,
-                    letterSpacing: "0.05em",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    padding: "0.35rem 0.75rem",
+                    background: "rgba(15, 23, 42, 0.7)",
+                    border: "1px solid rgba(56, 189, 248, 0.3)",
+                    borderRadius: "4px",
                   },
                 },
-                urgency.formattedLabel.toUpperCase()
-              ),
-              createElement(
-                "div",
-                {
-                  "data-testid": "arwes-countdown-timer",
-                  style: {
-                    fontSize: "1.2rem",
-                    fontWeight: 800,
-                    fontFamily: "monospace",
-                    color: "#38bdf8",
-                    marginTop: "0.1rem",
+                createElement(
+                  "div",
+                  {
+                    "data-testid": "arwes-countdown-timer",
+                    style: {
+                      fontSize: "1.2rem",
+                      fontWeight: 800,
+                      fontFamily: "monospace",
+                      color: "#38bdf8",
+                    },
                   },
-                },
-                urgency.activeCountdown.formattedTime
-              )
-            )
+                  urgency.activeCountdown.formattedTime
+                ),
+                createElement(AuthorityIndicator, {
+                  marker,
+                  label: indicatorLabel,
+                  onActivate: isInspectable ? onInspectCountdown : undefined,
+                  testId: "arwes-countdown-badge",
+                })
+              );
+            })()
           : null,
 
         /* Temporal Context & Floor Location */

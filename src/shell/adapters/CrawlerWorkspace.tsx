@@ -4,6 +4,8 @@ import { ActiveFeatureView } from "../ActiveFeatureView";
 import { PersistentHud } from "../hud/PersistentHud";
 import { ConceptHud } from "../hud/ConceptHud";
 import { ArwesPresentation } from "../../presentation/authority-arwes/ArwesPresentation.ts";
+import { CountdownEvidenceModal } from "../../features/timeline/evidence/CountdownEvidenceModal";
+import { ModalBoundary } from "../../shared/ui/ModalBoundary";
 import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
@@ -104,6 +106,7 @@ export function CrawlerWorkspace({
   const [showFloorRules, setShowFloorRules] = useState(false);
   const [showTimelineHistory, setShowTimelineHistory] = useState(false);
   const [showTimelineEvidence, setShowTimelineEvidence] = useState(false);
+  const [showCountdownEvidence, setShowCountdownEvidence] = useState(false);
   const [showTimelinePanel, setShowTimelinePanel] = useState(false);
   const [inventoryFilter, setInventoryFilter] = useState("ALL ITEMS");
   const [equipmentSlot, setEquipmentSlot] = useState<EquipmentSlot>("TORSO");
@@ -303,6 +306,10 @@ export function CrawlerWorkspace({
         setShowTimelinePanel(false);
         setShowTimelineEvidence(true);
       },
+      openCountdownEvidence: () => {
+        setShowTimelinePanel(false);
+        setShowCountdownEvidence(true);
+      },
       inspectObservation: setInspectObservation,
     }),
     [commands.replayCommands, commands.selectSequence, commands.returnToLive],
@@ -317,6 +324,7 @@ export function CrawlerWorkspace({
           <ArwesPresentation
             model={composition}
             onInspectTelemetry={handleInspectTelemetry}
+            onInspectCountdown={() => setShowCountdownEvidence(true)}
           />
         ) : usesConceptHud ? (
           <ConceptHud
@@ -326,7 +334,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectObservation={setInspectObservation}
-            onNavigateToSequence={commands.selectSequence}
+            onInspectCountdown={() => setShowCountdownEvidence(true)}
           />
         ) : (
           <PersistentHud
@@ -336,7 +344,7 @@ export function CrawlerWorkspace({
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
-            onNavigateToSequence={commands.selectSequence}
+            onInspectCountdown={() => setShowCountdownEvidence(true)}
           />
         )
       }
@@ -364,7 +372,17 @@ export function CrawlerWorkspace({
         )
       }
       overlays={
-        <WorkspaceOverlays
+        <>
+          {showCountdownEvidence && activeCountdown && (
+            <ModalBoundary label="Countdown evidence" onClose={() => setShowCountdownEvidence(false)}>
+              <CountdownEvidenceModal
+                countdown={activeCountdown}
+                onClose={() => setShowCountdownEvidence(false)}
+                onNavigateToSequence={commands.selectSequence}
+              />
+            </ModalBoundary>
+          )}
+          <WorkspaceOverlays
           snapshot={snapshot}
           commands={commands}
           inspectStat={inspectStat}
@@ -397,6 +415,7 @@ export function CrawlerWorkspace({
               : null
           }
         />
+        </>
       }
     >
       {presentationChoice === "authority-arwes" && resolvedView === "pet" ? null : (

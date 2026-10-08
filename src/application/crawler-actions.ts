@@ -42,8 +42,8 @@ export function executeCrawlerCommand(
 
   switch (command.type) {
     case "allocate-attribute":
-      if (!(command.attribute in liveState.crawler.attributes)) return failure("Unknown attribute.");
-      if (liveState.crawler.availableAttributePoints < 1) return failure("No attribute points are available.");
+      if (!["Strength", "Dexterity", "Constitution", "Intelligence", "Charisma"].includes(command.attribute)) return failure("Unknown attribute.");
+      if ((liveState.crawler.availableAttributePoints ?? 0) < 1) return failure("No attribute points are available.");
       fields = { type: "AttributeModified", attribute: command.attribute, source: "allocation", delta: 1, summary: `Allocated +1 point to ${command.attribute}` };
       break;
     case "equip-item": {

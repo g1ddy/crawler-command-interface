@@ -9,15 +9,27 @@ import { compareGearStats, checkItemRequirements, getStatBreakdown } from "../..
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
 import { compileFloorFiles } from "../../app/domain/compiler.ts";
 import { getFloorEndSequence } from "../../app/domain/floors.ts";
+import { deriveCrawlerPresentation } from "../../src/features/crawler/crawler-presentation.ts";
+import { deriveEvidencePresentation } from "../../src/features/timeline/public.ts";
 
 const floor1AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-1.json", "utf8"));
 const floor2AuthoredDoc = JSON.parse(fs.readFileSync("data/floors/floor-2.json", "utf8"));
 
-test("initial state has default crawler stats", () => {
+test("initial state does not fabricate unestablished crawler facts while preserving structural defaults", () => {
   const state = createInitialState();
-  assert.equal(state.crawler.name, "CARL G.");
-  assert.equal(state.crawler.level, 42);
+  assert.equal(state.crawler.name, undefined);
+  assert.equal(state.crawler.level, null);
+  assert.equal(state.crawler.race, undefined);
+  assert.equal(state.crawler.class, undefined);
+  assert.equal(state.crawler.xp, undefined);
+  assert.equal(state.crawler.maxXp, undefined);
+  assert.equal(state.crawler.availableAttributePoints, undefined);
+  assert.deepEqual(state.crawler.attributes, {});
+  assert.equal(state.broadcast.viewers, undefined);
   assert.equal(state.inventory.length, 0);
+  assert.equal(state.achievements.length, 0);
+  assert.equal(state.skills.length, 0);
+  assert.equal(state.effects.length, 0);
 });
 
 test("legacy achievement reward text remains visible as a structured reward", () => {
@@ -59,7 +71,7 @@ test("projection at sequence 4 equips Rogue's Hood", () => {
 });
 
 test("stat breakdown calculates total value with gear and effects", () => {
-  const state = projectState(floor6Events, 30, floor6Snapshots);
+  const state = projectState(floor6Events, 30, floor6Snapshots, createInitialState(floor6Timeline.initialState));
   const dexBreakdown = getStatBreakdown(state, "Dexterity");
   assert.equal(dexBreakdown.baseValue, 34);
   assert.equal(dexBreakdown.gearContributions.length, 2);
@@ -67,8 +79,8 @@ test("stat breakdown calculates total value with gear and effects", () => {
 });
 
 test("snapshot acceleration produces identical results to full replay", () => {
-  const fullReplayState = projectState(floor6Events, 35, []);
-  const snapshotAcceleratedState = projectState(floor6Events, 35, floor6Snapshots);
+  const fullReplayState = projectState(floor6Events, 35, [], createInitialState(floor6Timeline.initialState));
+  const snapshotAcceleratedState = projectState(floor6Events, 35, floor6Snapshots, createInitialState(floor6Timeline.initialState));
   assert.equal(fullReplayState.sequence, snapshotAcceleratedState.sequence);
   assert.equal(fullReplayState.crawler.xp, snapshotAcceleratedState.crawler.xp);
   assert.equal(fullReplayState.inventory.length, snapshotAcceleratedState.inventory.length);
@@ -226,7 +238,7 @@ test("minimal non-Floor-6 document does not inherit Floor 6 state, inventory, qu
   assert.equal(projected.inventory.length, 0);
   assert.equal(projected.quests.length, 0);
   assert.equal(projected.achievements.length, 0);
-  assert.equal(projected.broadcast.viewers, 0);
+  assert.equal(projected.broadcast.viewers, undefined);
 });
 
 // MULTI-FLOOR & AUTHORING TESTS
@@ -447,7 +459,7 @@ test("floor endpoint follows appended events instead of a stale compiled segment
 });
 
 test("AttributeModified event allocates attribute points correctly", () => {
-  let state = createInitialState();
+  let state = createInitialState({ crawler: { attributes: { Strength: 24 }, availableAttributePoints: 5 } });
   assert.equal(state.crawler.availableAttributePoints, 5);
   assert.equal(state.crawler.attributes.Strength, 24);
   state = projectState([{ id: "evt-attr-1", sequence: 1, type: "AttributeModified", attribute: "Strength", source: "allocation", delta: 1, summary: "Allocated +1 point to Strength" }], 1, [], state);
@@ -471,10 +483,11 @@ test("Hotlist remains absent until an explicit replay-bounded assignment", () =>
 });
 
 test("item requirement evaluation against live state vs historical state during timeline replay", () => {
+  const initialState = createInitialState({ crawler: { attributes: { Strength: 24 }, availableAttributePoints: 5 } });
   const events = [{ id: "evt-acq-sword", sequence: 1, type: "ItemAcquired", summary: "Acquired Heavy Greatsword", item: { instanceId: "inst-greatsword", itemId: "item-greatsword", name: "Heavy Greatsword", category: "equipment", slot: "SPECIAL", quantity: 1, requirements: { Strength: 25 } } }, { id: "evt-attr-up", sequence: 2, type: "AttributeModified", attribute: "Strength", source: "allocation", delta: 1, summary: "Allocated +1 point to Strength" }];
-  const historicalState = projectState(events, 1);
+  const historicalState = projectState(events, 1, [], initialState);
   assert.equal(historicalState.crawler.attributes.Strength, 24);
-  const liveState = projectState(events, 2);
+  const liveState = projectState(events, 2, [], initialState);
   assert.equal(liveState.crawler.attributes.Strength, 25);
   const item = historicalState.inventory.find((i) => i.instanceId === "inst-greatsword");
   assert.ok(item);
@@ -752,4 +765,189 @@ test("every FLOOR_EVENT_TYPES discriminator is accounted for as either state-pro
       `Event type "${type}" cannot be both state-projecting and projection-neutral`
     );
   }
+});
+
+test("partial attribute observations preserve only named attributes without inflating snapshot", () => {
+  const state = createInitialState({ crawler: { attributes: { Strength: 15 } } });
+  assert.equal(state.crawler.attributes.Strength, 15);
+  assert.equal(state.crawler.attributes.Dexterity, undefined);
+  assert.equal(state.crawler.attributes.Constitution, undefined);
+  assert.equal(state.crawler.attributes.Intelligence, undefined);
+  assert.equal(state.crawler.attributes.Charisma, undefined);
+});
+
+test("observed vs causal authority distinction is preserved and sequence-specific", () => {
+  let state = createInitialState({ crawler: { attributes: { Strength: 10 } } });
+  state = applyEvent(state, { id: "evt-str-mod", sequence: 5, type: "AttributeModified", attribute: "Strength", delta: 2 }, 5);
+  assert.equal(state.crawler.attributes.Strength, 12);
+  assert.equal(state.causalProvenance.attributes.Strength, 5);
+
+  const obs = { Strength: { key: "crawler-attributes.Strength", value: 10, status: "stated", basis: "exact-observation", referenceObservationIds: ["obs-str"], sequence: 3, evidence: [] } };
+
+  const presentation = deriveCrawlerPresentation(state, {
+    xpProgress: {},
+    attributes: obs,
+    condition: {},
+  });
+
+  const strPresentation = presentation.attributes.find((a) => a.name === "Strength");
+  assert.ok(strPresentation);
+  assert.equal(strPresentation.value, 12);
+  assert.equal(strPresentation.causalValue, 12);
+  assert.equal(strPresentation.displayAuthority, "causal");
+  assert.equal(strPresentation.observation?.value, 10);
+
+  const evidence = deriveEvidencePresentation(strPresentation.observation, 5, strPresentation.causalValue, strPresentation.displayAuthority);
+  assert.equal(evidence.state, "causal-only");
+  assert.equal(evidence.badgeLabel, "CAUSAL");
+});
+
+test("regression: createInitialState with no timeline state strictly leaves domain unestablished without inventing facts", () => {
+  const state = createInitialState();
+  const crawler = state.crawler;
+  const broadcast = state.broadcast;
+
+  assert.equal(crawler.name, undefined);
+  assert.equal(crawler.crawlerNumber, undefined);
+  assert.equal(crawler.level, null);
+  assert.equal(crawler.race, undefined);
+  assert.equal(crawler.class, undefined);
+  assert.equal(crawler.xp, undefined);
+  assert.equal(crawler.maxXp, undefined);
+  assert.equal(crawler.availableAttributePoints, undefined);
+  assert.deepEqual(crawler.attributes, {});
+  assert.deepEqual(crawler.permanentAttributeModifiers, {});
+  assert.equal(broadcast.viewers, undefined);
+  assert.equal(broadcast.viewerDelta, undefined);
+  assert.equal(broadcast.followers, undefined);
+  assert.equal(broadcast.fameRank, undefined);
+  assert.equal(broadcast.sponsorInterest, false);
+
+  assert.deepEqual(state.inventory, []);
+  assert.deepEqual(state.achievements, []);
+  assert.deepEqual(state.skills, []);
+  assert.deepEqual(state.effects, []);
+
+  const presentation = deriveCrawlerPresentation(state, {
+    xpProgress: {},
+    attributes: {},
+    condition: {},
+  });
+
+  assert.equal(presentation.name, "—");
+  assert.equal(presentation.level, undefined);
+  assert.equal(presentation.xp, undefined);
+  assert.equal(presentation.maxXp, undefined);
+  assert.equal(presentation.availablePoints, undefined);
+  assert.equal(presentation.canAllocatePoints, false);
+
+  for (const attr of presentation.attributes) {
+    assert.equal(attr.value, undefined);
+    assert.equal(attr.causalValue, undefined);
+    assert.equal(attr.displayAuthority, "causal");
+    const evidence = deriveEvidencePresentation(attr.observation, 0, attr.causalValue, attr.displayAuthority);
+    assert.equal(evidence.state, "unknown");
+    assert.equal(evidence.badgeLabel, "— ABSENT");
+  }
+});
+
+test("event-derived delta facts preserve unknown baselines without inventing facts", () => {
+  let state = createInitialState();
+
+  // AttributeModified with unknown baseline -> Strength remains unknown
+  state = applyEvent(state, {
+    sequence: 1,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 10,
+    source: "narrative",
+  });
+  assert.equal(state.crawler.attributes.Strength, undefined);
+  assert.equal(state.causalProvenance.attributes.Strength, undefined);
+
+  // XPChanged with xpDelta and unknown baseline -> XP remains unknown
+  state = applyEvent(state, {
+    sequence: 2,
+    type: "XPChanged",
+    xpDelta: 100,
+  });
+  assert.equal(state.crawler.xp, undefined);
+  assert.equal(state.causalProvenance.xp, undefined);
+
+  // LevelChanged with absolute value -> establishes level
+  state = applyEvent(state, {
+    sequence: 3,
+    type: "LevelChanged",
+    level: 2,
+  });
+  assert.equal(state.crawler.level, 2);
+  assert.equal(state.causalProvenance.level, 3);
+});
+
+test("allocation event updates available points without fabricating attribute value from unknown baseline", () => {
+  let state = createInitialState({
+    crawler: { attributes: {}, availableAttributePoints: 5 },
+  });
+
+  state = applyEvent(state, {
+    sequence: 10,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 1,
+    source: "allocation",
+  });
+
+  assert.equal(state.crawler.attributes.Strength, undefined);
+  assert.equal(state.crawler.availableAttributePoints, 4);
+  assert.equal(state.causalProvenance.attributes.Strength, undefined);
+  assert.equal(state.causalProvenance.availableAttributePoints, 10);
+});
+
+test("allocation event updates both attribute and available points from known baselines", () => {
+  let state = createInitialState({
+    crawler: { attributes: { Strength: 15 }, availableAttributePoints: 5 },
+  });
+
+  state = applyEvent(state, {
+    sequence: 10,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 1,
+    source: "allocation",
+  });
+
+  assert.equal(state.crawler.attributes.Strength, 16);
+  assert.equal(state.crawler.availableAttributePoints, 4);
+  assert.equal(state.causalProvenance.attributes.Strength, 10);
+  assert.equal(state.causalProvenance.availableAttributePoints, 10);
+});
+
+test("event-derived delta facts apply normally to known baselines", () => {
+  let state = createInitialState({
+    crawler: {
+      attributes: { Strength: 15 },
+      xp: 50,
+      level: null,
+    }
+  });
+
+  // AttributeModified with known baseline -> Strength changes normally
+  state = applyEvent(state, {
+    sequence: 1,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 10,
+    source: "narrative",
+  });
+  assert.equal(state.crawler.attributes.Strength, 25);
+  assert.equal(state.causalProvenance.attributes.Strength, 1);
+
+  // XPChanged with known baseline -> XP changes normally
+  state = applyEvent(state, {
+    sequence: 2,
+    type: "XPChanged",
+    xpDelta: 100,
+  });
+  assert.equal(state.crawler.xp, 150);
+  assert.equal(state.causalProvenance.xp, 2);
 });
