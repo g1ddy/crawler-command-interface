@@ -673,9 +673,6 @@
             "availableAttributePoints": {
               "$ref": "#/$defs/nonNegativeInteger"
             },
-            "availableAttributePoints": {
-              "$ref": "#/$defs/nonNegativeInteger"
-            },
             "attributes": {
               "type": "object",
               "additionalProperties": {
