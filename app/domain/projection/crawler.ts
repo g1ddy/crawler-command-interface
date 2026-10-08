@@ -16,19 +16,23 @@ export function applyAttributeModified(state: CrawlerState, event: Record<string
   const attr = event.attribute as AttributeName;
   if (!attr) return;
   const delta = Number(event.delta || 0);
-  const currentVal = state.crawler.attributes[attr] ?? 0;
+  const currentVal = state.crawler.attributes[attr];
   if (event.source === 'allocation' || event.isAllocation) {
-    state.crawler.attributes[attr] = currentVal + delta;
+    if (currentVal !== undefined) {
+      state.crawler.attributes[attr] = currentVal + delta;
+      state.causalProvenance.attributes[attr] = sequence;
+    }
     if (state.crawler.availableAttributePoints !== undefined) {
       state.crawler.availableAttributePoints = Math.max(0, state.crawler.availableAttributePoints - delta);
+      state.causalProvenance.availableAttributePoints = sequence;
     }
-    state.causalProvenance.availableAttributePoints = sequence;
-    state.causalProvenance.attributes[attr] = sequence;
   } else if (event.source === 'permanent_modifier') {
     state.crawler.permanentAttributeModifiers[attr] = (state.crawler.permanentAttributeModifiers[attr] ?? 0) + delta;
   } else {
-    state.crawler.attributes[attr] = currentVal + delta;
-    state.causalProvenance.attributes[attr] = sequence;
+    if (currentVal !== undefined) {
+      state.crawler.attributes[attr] = currentVal + delta;
+      state.causalProvenance.attributes[attr] = sequence;
+    }
   }
 }
 
@@ -49,9 +53,10 @@ export function applyXPChanged(state: CrawlerState, event: Record<string, unknow
     state.crawler.xp = Number(event.xp);
     markCausalField(state, 'xp', sequence);
   } else if (event.xpDelta !== undefined) {
-    const currentXp = state.crawler.xp ?? 0;
-    state.crawler.xp = Math.max(0, currentXp + Number(event.xpDelta));
-    markCausalField(state, 'xp', sequence);
+    if (state.crawler.xp !== undefined) {
+      state.crawler.xp = Math.max(0, state.crawler.xp + Number(event.xpDelta));
+      markCausalField(state, 'xp', sequence);
+    }
   }
 }
 

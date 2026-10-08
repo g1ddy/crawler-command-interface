@@ -851,10 +851,10 @@ test("regression: createInitialState with no timeline state strictly leaves doma
   }
 });
 
-test("event-derived facts still establish missing fields when initially absent", () => {
+test("event-derived delta facts preserve unknown baselines without inventing facts", () => {
   let state = createInitialState();
 
-  // AttributeModified establishes an attribute that was previously absent
+  // AttributeModified with unknown baseline -> Strength remains unknown
   state = applyEvent(state, {
     sequence: 1,
     type: "AttributeModified",
@@ -862,21 +862,54 @@ test("event-derived facts still establish missing fields when initially absent",
     delta: 10,
     source: "narrative",
   });
-  assert.equal(state.crawler.attributes.Strength, 10);
+  assert.equal(state.crawler.attributes.Strength, undefined);
+  assert.equal(state.causalProvenance.attributes.Strength, undefined);
 
-  // XPChanged with xpDelta establishes XP starting from an unknown state
+  // XPChanged with xpDelta and unknown baseline -> XP remains unknown
   state = applyEvent(state, {
     sequence: 2,
     type: "XPChanged",
     xpDelta: 100,
   });
-  assert.equal(state.crawler.xp, 100);
+  assert.equal(state.crawler.xp, undefined);
+  assert.equal(state.causalProvenance.xp, undefined);
 
-  // LevelChanged establishes level
+  // LevelChanged with absolute value -> establishes level
   state = applyEvent(state, {
     sequence: 3,
     type: "LevelChanged",
     level: 2,
   });
   assert.equal(state.crawler.level, 2);
+  assert.equal(state.causalProvenance.level, 3);
+});
+
+test("event-derived delta facts apply normally to known baselines", () => {
+  let state = createInitialState({
+    crawler: {
+      attributes: { Strength: 15 },
+      xp: 50,
+      level: null,
+    }
+  });
+
+  // AttributeModified with known baseline -> Strength changes normally
+  state = applyEvent(state, {
+    sequence: 1,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 10,
+    source: "narrative",
+  });
+  assert.equal(state.crawler.attributes.Strength, 25);
+  assert.equal(state.causalProvenance.attributes.Strength, 1);
+
+  // XPChanged with known baseline -> XP changes normally
+  state = applyEvent(state, {
+    sequence: 2,
+    type: "XPChanged",
+    xpDelta: 100,
+  });
+  assert.equal(state.crawler.xp, 150);
+  assert.equal(state.causalProvenance.xp, 2);
 });
