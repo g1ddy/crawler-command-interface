@@ -319,7 +319,7 @@ test("checkItemRequirements handles known and unknown null level states correctl
   assert.equal(resNull.details.find((d) => d.key === "Strength")?.met, true);
 });
 
-test("presentation model correctly surfaces canAllocatePoints independent of isLive", () => {
+test("presentation exposes allocation eligibility independently of live mode", () => {
   const baseState = {
     sequence: 10,
     causalProvenance: { attributes: {}, condition: {} },

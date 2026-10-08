@@ -884,6 +884,44 @@ test("event-derived delta facts preserve unknown baselines without inventing fac
   assert.equal(state.causalProvenance.level, 3);
 });
 
+test("allocation event updates available points without fabricating attribute value from unknown baseline", () => {
+  let state = createInitialState({
+    crawler: { attributes: {}, availableAttributePoints: 5 },
+  });
+
+  state = applyEvent(state, {
+    sequence: 10,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 1,
+    source: "allocation",
+  });
+
+  assert.equal(state.crawler.attributes.Strength, undefined);
+  assert.equal(state.crawler.availableAttributePoints, 4);
+  assert.equal(state.causalProvenance.attributes.Strength, undefined);
+  assert.equal(state.causalProvenance.availableAttributePoints, 10);
+});
+
+test("allocation event updates both attribute and available points from known baselines", () => {
+  let state = createInitialState({
+    crawler: { attributes: { Strength: 15 }, availableAttributePoints: 5 },
+  });
+
+  state = applyEvent(state, {
+    sequence: 10,
+    type: "AttributeModified",
+    attribute: "Strength",
+    delta: 1,
+    source: "allocation",
+  });
+
+  assert.equal(state.crawler.attributes.Strength, 16);
+  assert.equal(state.crawler.availableAttributePoints, 4);
+  assert.equal(state.causalProvenance.attributes.Strength, 10);
+  assert.equal(state.causalProvenance.availableAttributePoints, 10);
+});
+
 test("event-derived delta facts apply normally to known baselines", () => {
   let state = createInitialState({
     crawler: {
