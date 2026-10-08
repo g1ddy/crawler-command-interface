@@ -78,16 +78,17 @@ export interface CrawlerCausalProvenance {
 }
 
 export interface TimelineState {
-  crawler: {
-    name: string;
+  crawler?: {
+    name?: string;
     crawlerNumber?: string | number;
-    level: number | null;
+    level?: number | null;
     race?: string;
     class?: string;
     xp?: number;
     maxXp?: number;
-    attributes: Record<string, number>;
-    condition: Record<string, number>;
+    availableAttributePoints?: number;
+    attributes?: Partial<Record<AttributeName, number>> | Record<string, number>;
+    condition?: Partial<Record<CrawlerConditionMetric, number>> | Record<string, number>;
   };
   inventory?: TimelineItem[];
   achievements?: TimelineAchievement[];
@@ -98,6 +99,13 @@ export interface TimelineState {
   quests?: Record<string, unknown>[];
   entitlements?: TimelineEntitlement[];
   hotlist?: string[];
+  broadcast?: {
+    viewers?: number;
+    viewerDelta?: string;
+    followers?: number;
+    fameRank?: string;
+    sponsorInterest?: boolean;
+  };
 }
 
 export interface TimelineSnapshot {
@@ -244,16 +252,16 @@ export interface CrawlerState {
   occurredAt: string;
   causalProvenance: CrawlerCausalProvenance;
   crawler: {
-    name: string;
+    name?: string;
     crawlerNumber?: string | number;
     level: number | null;
-    race: string;
-    class: string;
-    xp: number;
-    maxXp: number;
-    availableAttributePoints: number;
-    attributes: Record<AttributeName, number>;
-    permanentAttributeModifiers: Record<AttributeName, number>;
+    race?: string;
+    class?: string;
+    xp?: number;
+    maxXp?: number;
+    availableAttributePoints?: number;
+    attributes: Partial<Record<AttributeName, number>>;
+    permanentAttributeModifiers: Partial<Record<AttributeName, number>>;
     condition: {
       currentHealth: number | null;
       maxHealth: number | null;
@@ -275,11 +283,11 @@ export interface CrawlerState {
   achievements: Achievement[];
   entitlements: TimelineEntitlement[];
   broadcast: {
-    viewers: number;
-    viewerDelta: string;
-    followers: number;
-    fameRank: string;
-    sponsorInterest: boolean;
+    viewers?: number;
+    viewerDelta?: string;
+    followers?: number;
+    fameRank?: string;
+    sponsorInterest?: boolean;
   };
   recentLogs: { sequence: number; timestamp: string; message: string; category: EventCategory }[];
 }
