@@ -333,6 +333,27 @@ test("historical position where selected event equals live event (sequence gap b
   assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
 });
 
+test("later observation beyond the last event prevents using a stale event as the Live time reference", () => {
+  const events = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Last event" },
+  ];
+  const observations = [
+    { id: "obs-live-edge", kind: "crawler-condition", sequence: 30, payload: {}, evidence: [] },
+  ];
+
+  const pres = deriveReplayPresentation({
+    events,
+    observations,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(pres.scope.maxSequence, 30);
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
 test("non-finite elapsedSeconds coordinates yield TIME UNKNOWN without NaN or Infinity text", () => {
   const nanEvents = [
     { sequence: 10, position: { floor: 6, elapsedSeconds: NaN }, type: "NarrativeEvent", summary: "Start" },
