@@ -10,27 +10,44 @@ export interface ReplayControlsProps {
 export function ReplayControls({ model, commands }: ReplayControlsProps) {
   const { scope, position } = model;
 
+  const statusLabel = model.isLive ? "LIVE ●" : "HISTORICAL ●";
+
   return (
     <div className={styles.dockContainer}>
       <div className={styles.compactBar} data-testid="replay-compact-bar">
-        <div className={styles.scrubberWrapper}>
-          <input
-            aria-label="Selected timeline sequence"
-            type="range"
-            min={scope.minSequence}
-            max={scope.maxSequence}
-            value={position.selectedSequence}
-            disabled={!model.availability.hasScopedSequences}
-            onChange={(e) =>
-              commands.selectSequence(
-                position.closestSequence(Number(e.target.value))
-              )
-            }
-            className={styles.scrubber}
-          />
+        <div className={styles.orientationRow}>
+          <div
+            className={styles.statusBadge}
+            data-live={model.isLive}
+            data-testid="replay-status-badge"
+          >
+            {statusLabel}
+          </div>
+          <div
+            className={styles.temporalContext}
+            data-live={model.isLive}
+            data-testid="replay-temporal-context"
+          >
+            {position.elapsedTimeAgo}
+          </div>
         </div>
-        <div className={styles.liveIndicator} data-live={model.isLive} aria-hidden="true">
-          LIVE ●
+        <div className={styles.scrubberRow}>
+          <div className={styles.scrubberWrapper}>
+            <input
+              aria-label="Selected timeline sequence"
+              type="range"
+              min={scope.minSequence}
+              max={scope.maxSequence}
+              value={position.selectedSequence}
+              disabled={!model.availability.hasScopedSequences}
+              onChange={(e) =>
+                commands.selectSequence(
+                  position.closestSequence(Number(e.target.value))
+                )
+              }
+              className={styles.scrubber}
+            />
+          </div>
         </div>
       </div>
     </div>

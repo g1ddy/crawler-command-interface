@@ -212,6 +212,7 @@ test("temporal context maintains clear LIVE vs REPLAY mode and sequence position
 
   assert.equal(liveContext.mode, "live");
   assert.equal(liveContext.position.selectedSequence, 15);
+  assert.equal(liveContext.position.elapsedTimeAgo, "NOW");
 
   const historicalContext = deriveReplayPresentation({
     events: sampleEvents,
@@ -224,4 +225,31 @@ test("temporal context maintains clear LIVE vs REPLAY mode and sequence position
   assert.equal(historicalContext.mode, "replay");
   assert.equal(historicalContext.position.selectedSequence, 5);
   assert.equal(historicalContext.position.currentEvent?.summary, "Found Sword");
+  assert.ok(historicalContext.position.elapsedTimeAgo.endsWith("ago"));
+});
+
+test("elapsed time derivation formats NOW at live edge and concise ago format at historical positions", () => {
+  const livePres = deriveReplayPresentation({
+    events: sampleEvents,
+    floors: sampleFloors,
+    countdowns: sampleCountdowns,
+    selectedFloorOrdinal: "all",
+    selectedSequence: 15,
+    isLive: true,
+  });
+
+  assert.equal(livePres.position.elapsedTimeAgo, "NOW");
+
+  const histPres = deriveReplayPresentation({
+    events: sampleEvents,
+    floors: sampleFloors,
+    countdowns: sampleCountdowns,
+    selectedFloorOrdinal: "all",
+    selectedSequence: 1,
+    isLive: false,
+  });
+
+  assert.ok(histPres.position.elapsedTimeAgo !== "NOW");
+  assert.match(histPres.position.elapsedTimeAgo, /^[0-9]+[dhms]/);
+  assert.ok(histPres.position.elapsedTimeAgo.endsWith("ago"));
 });

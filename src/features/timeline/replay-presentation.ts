@@ -34,6 +34,79 @@ export interface ReplayPosition {
   previousSequence: number | null;
   nextSequence: number | null;
   closestSequence: (targetSequence: number) => number;
+  elapsedTimeAgo: string;
+}
+
+export function formatElapsedTimeAgo(seconds: number): string {
+  if (seconds <= 0) return "NOW";
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  if (days > 0) {
+    return hours > 0 ? `${days}d ${hours}h ago` : `${days}d ago`;
+  }
+  if (hours > 0) {
+    return mins > 0 ? `${hours}h ${mins}m ago` : `${hours}h ago`;
+  }
+  if (mins > 0) {
+    return secs > 0 ? `${mins}m ${secs}s ago` : `${mins}m ago`;
+  }
+  return `${secs}s ago`;
+}
+
+function calculateElapsedSecondsToLive(
+  selectedSequence: number,
+  maxSequence: number,
+  events: CrawlerEvent[],
+  countdowns: TimelineCountdown[],
+): number {
+  if (selectedSequence >= maxSequence) {
+    return 0;
+  }
+
+  const getFloorForSeq = (seq: number): number => {
+    for (let i = events.length - 1; i >= 0; i--) {
+      if (events[i].sequence <= seq && events[i].position?.floor !== undefined) {
+        return events[i].position.floor;
+      }
+    }
+    return 1;
+  };
+
+  const startFloor = getFloorForSeq(selectedSequence);
+  const endFloor = getFloorForSeq(maxSequence);
+
+  let totalElapsed = 0;
+
+  for (let f = startFloor; f <= endFloor; f++) {
+    const floorEvents = events.filter((e) => (e.position?.floor ?? 1) === f);
+    if (floorEvents.length === 0) continue;
+
+    const floorMinSeq = Math.max(selectedSequence, floorEvents[0].sequence);
+    const floorMaxSeq = Math.min(maxSequence, floorEvents[floorEvents.length - 1].sequence);
+
+    if (floorMinSeq >= floorMaxSeq) continue;
+
+    const cdStart = projectCountdownState({ events, countdowns }, floorMinSeq, f);
+    const cdEnd = projectCountdownState({ events, countdowns }, floorMaxSeq, f);
+
+    if (
+      cdStart &&
+      cdEnd &&
+      typeof cdStart.remainingSeconds === "number" &&
+      typeof cdEnd.remainingSeconds === "number"
+    ) {
+      const delta = cdStart.remainingSeconds - cdEnd.remainingSeconds;
+      totalElapsed += Math.max(0, delta);
+    } else {
+      const stepCount = floorMaxSeq - floorMinSeq;
+      totalElapsed += stepCount * 300;
+    }
+  }
+
+  return totalElapsed;
 }
 
 export interface ReplayCommands {
@@ -265,6 +338,11 @@ export function deriveReplayPresentation(
     hasScopedSequences: scopedSequences.length > 0,
   };
 
+  const elapsedSecondsToLive = isLive
+    ? 0
+    : calculateElapsedSecondsToLive(selectedSequence, maxSequence, events, countdowns);
+  const elapsedTimeAgo = isLive ? "NOW" : formatElapsedTimeAgo(elapsedSecondsToLive);
+
   return {
     mode,
     isLive,
@@ -288,6 +366,7 @@ export function deriveReplayPresentation(
       previousSequence,
       nextSequence,
       closestSequence,
+      elapsedTimeAgo,
     },
     commands,
     countdowns: {
