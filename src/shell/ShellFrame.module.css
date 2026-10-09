@@ -35,6 +35,12 @@
   scroll-margin-top: 5rem;
 }
 
+@media (max-width: 760px) {
+  .feature {
+    padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .feature:focus-visible {
   outline: var(--hud-focus-ring);
   outline-offset: 4px;

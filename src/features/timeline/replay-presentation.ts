@@ -34,6 +34,117 @@ export interface ReplayPosition {
   previousSequence: number | null;
   nextSequence: number | null;
   closestSequence: (targetSequence: number) => number;
+  elapsedTimeAgo: string;
+}
+
+export function formatElapsedTimeAgo(seconds: number | null): string {
+  if (seconds === null || !Number.isFinite(seconds) || seconds <= 0) {
+    return "TIME UNKNOWN";
+  }
+
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  if (days > 0) {
+    return hours > 0 ? `${days}d ${hours}h ago` : `${days}d ago`;
+  }
+  if (hours > 0) {
+    return mins > 0 ? `${hours}h ${mins}m ago` : `${hours}h ago`;
+  }
+  if (mins > 0) {
+    return secs > 0 ? `${mins}m ${secs}s ago` : `${mins}m ago`;
+  }
+  return `${secs}s ago`;
+}
+
+function getConsistentPosition(
+  candidates: CrawlerEvent[],
+): { floor: number; elapsedSeconds: number } | null {
+  if (candidates.length === 0) return null;
+  let floor: number | undefined;
+  let elapsedSeconds: number | undefined;
+
+  for (const event of candidates) {
+    const posFloor = event.position?.floor;
+    const posElapsed = event.position?.elapsedSeconds;
+
+    if (
+      posFloor === undefined ||
+      typeof posElapsed !== "number" ||
+      !Number.isFinite(posElapsed)
+    ) {
+      return null;
+    }
+
+    if (floor === undefined) {
+      floor = posFloor;
+    } else if (floor !== posFloor) {
+      return null;
+    }
+
+    if (elapsedSeconds === undefined) {
+      elapsedSeconds = posElapsed;
+    } else if (elapsedSeconds !== posElapsed) {
+      return null;
+    }
+  }
+
+  if (floor === undefined || elapsedSeconds === undefined) return null;
+  return { floor, elapsedSeconds };
+}
+
+function calculateElapsedSecondsToLive(
+  selectedSequence: number,
+  maxSequence: number,
+  events: CrawlerEvent[],
+): number | null {
+  if (selectedSequence >= maxSequence) {
+    return null;
+  }
+
+  let selectedSeqMax = -1;
+  for (const event of events) {
+    if (event.sequence <= selectedSequence && event.sequence > selectedSeqMax) {
+      selectedSeqMax = event.sequence;
+    }
+  }
+
+  let liveSeqMax = -1;
+  for (const event of events) {
+    if (event.sequence <= maxSequence && event.sequence > liveSeqMax) {
+      liveSeqMax = event.sequence;
+    }
+  }
+
+  // The Live edge includes observations as well as events. An older event
+  // cannot stand in for the current temporal reference when a later
+  // observation advances the timeline without supplying event coordinates.
+  if (liveSeqMax !== maxSequence) {
+    return null;
+  }
+
+  if (selectedSeqMax < 0 || liveSeqMax < 0) {
+    return null;
+  }
+
+  const selectedCandidates = events.filter((e) => e.sequence === selectedSeqMax);
+  const liveCandidates = events.filter((e) => e.sequence === liveSeqMax);
+
+  const selectedPos = getConsistentPosition(selectedCandidates);
+  const livePos = getConsistentPosition(liveCandidates);
+
+  if (
+    selectedPos &&
+    livePos &&
+    selectedPos.floor === livePos.floor &&
+    livePos.elapsedSeconds > selectedPos.elapsedSeconds
+  ) {
+    return livePos.elapsedSeconds - selectedPos.elapsedSeconds;
+  }
+
+  return null;
 }
 
 export interface ReplayCommands {
@@ -119,6 +230,16 @@ export function deriveReplayPresentation(
   const selectedSequence = inputs.selectedSequence;
   const isLive = inputs.isLive;
 
+  const scopedSequences = Array.from(
+    new Set([
+      ...events.map((e) => e.sequence),
+      ...observations.map((o) => o.sequence),
+    ]),
+  ).sort((a, b) => a - b);
+
+  const minSequence = scopedSequences[0] ?? 1;
+  const maxSequence = scopedSequences[scopedSequences.length - 1] ?? 1;
+
   const mode: ReplayMode = isLive ? "live" : "replay";
 
   const baseFloors =
@@ -181,15 +302,6 @@ export function deriveReplayPresentation(
           return observations.filter((obs) => sequences.has(obs.sequence));
         })();
 
-  const scopedSequences = Array.from(
-    new Set([
-      ...events.map((e) => e.sequence),
-      ...observations.map((o) => o.sequence),
-    ]),
-  ).sort((a, b) => a - b);
-
-  const minSequence = scopedSequences[0] ?? 1;
-  const maxSequence = scopedSequences[scopedSequences.length - 1] ?? 1;
 
   let currentEvent: CrawlerEvent | undefined;
   for (const event of events) {
@@ -265,6 +377,11 @@ export function deriveReplayPresentation(
     hasScopedSequences: scopedSequences.length > 0,
   };
 
+  const elapsedSecondsToLive = isLive
+    ? 0
+    : calculateElapsedSecondsToLive(selectedSequence, maxSequence, events);
+  const elapsedTimeAgo = isLive ? "NOW" : formatElapsedTimeAgo(elapsedSecondsToLive);
+
   return {
     mode,
     isLive,
@@ -288,6 +405,7 @@ export function deriveReplayPresentation(
       previousSequence,
       nextSequence,
       closestSequence,
+      elapsedTimeAgo,
     },
     commands,
     countdowns: {
