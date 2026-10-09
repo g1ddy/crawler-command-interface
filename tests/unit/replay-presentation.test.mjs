@@ -201,7 +201,7 @@ test("minimal alternate replay consumer uses model without ReplaySurface", () =>
   assert.equal(output.nextEnabled, true);
 });
 
-test("Live position displays NOW", () => {
+test("Live edge produces LIVE ● status and NOW temporal context consistently", () => {
   const livePres = deriveReplayPresentation({
     events: sampleEvents,
     floors: sampleFloors,
@@ -213,6 +213,46 @@ test("Live position displays NOW", () => {
   assert.equal(livePres.mode, "live");
   assert.equal(livePres.isLive, true);
   assert.equal(livePres.position.elapsedTimeAgo, "NOW");
+
+  // Selected sequence at max sequence even if isLive was passed as false
+  const atMaxSeqPres = deriveReplayPresentation({
+    events: sampleEvents,
+    floors: sampleFloors,
+    selectedFloorOrdinal: 2,
+    selectedSequence: 15,
+    isLive: false,
+  });
+
+  assert.equal(atMaxSeqPres.mode, "live");
+  assert.equal(atMaxSeqPres.isLive, true);
+  assert.equal(atMaxSeqPres.position.elapsedTimeAgo, "NOW");
+});
+
+test("a selected sequence at the Live edge cannot produce HISTORICAL status paired with NOW", () => {
+  const pres = deriveReplayPresentation({
+    events: sampleEvents,
+    floors: sampleFloors,
+    selectedFloorOrdinal: "all",
+    selectedSequence: 15,
+    isLive: false,
+  });
+
+  assert.notEqual(pres.mode, "replay");
+  assert.equal(pres.isLive, true);
+  assert.equal(pres.position.elapsedTimeAgo, "NOW");
+});
+
+test("historical position before Live edge produces HISTORICAL status and valid elapsed label or TIME UNKNOWN", () => {
+  const pres = deriveReplayPresentation({
+    events: sampleEvents,
+    floors: sampleFloors,
+    selectedFloorOrdinal: 1,
+    selectedSequence: 5,
+    isLive: false,
+  });
+
+  assert.equal(pres.mode, "replay");
+  assert.equal(pres.isLive, false);
 });
 
 test("historical position with valid same-floor elapsed coordinates displays exact relative duration", () => {

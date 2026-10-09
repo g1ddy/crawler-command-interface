@@ -185,7 +185,19 @@ export function deriveReplayPresentation(
   const selectedSequence = inputs.selectedSequence;
   const isLive = inputs.isLive;
 
-  const mode: ReplayMode = isLive ? "live" : "replay";
+  const scopedSequences = Array.from(
+    new Set([
+      ...events.map((e) => e.sequence),
+      ...observations.map((o) => o.sequence),
+    ]),
+  ).sort((a, b) => a - b);
+
+  const minSequence = scopedSequences[0] ?? 1;
+  const maxSequence = scopedSequences[scopedSequences.length - 1] ?? 1;
+
+  const isAtLiveEdge = selectedSequence >= maxSequence;
+  const effectiveIsLive = isLive || isAtLiveEdge;
+  const mode: ReplayMode = effectiveIsLive ? "live" : "replay";
 
   const baseFloors =
     floors.length > 0
@@ -247,15 +259,6 @@ export function deriveReplayPresentation(
           return observations.filter((obs) => sequences.has(obs.sequence));
         })();
 
-  const scopedSequences = Array.from(
-    new Set([
-      ...events.map((e) => e.sequence),
-      ...observations.map((o) => o.sequence),
-    ]),
-  ).sort((a, b) => a - b);
-
-  const minSequence = scopedSequences[0] ?? 1;
-  const maxSequence = scopedSequences[scopedSequences.length - 1] ?? 1;
 
   let currentEvent: CrawlerEvent | undefined;
   for (const event of events) {
@@ -331,14 +334,14 @@ export function deriveReplayPresentation(
     hasScopedSequences: scopedSequences.length > 0,
   };
 
-  const elapsedSecondsToLive = isLive
+  const elapsedSecondsToLive = effectiveIsLive
     ? 0
     : calculateElapsedSecondsToLive(selectedSequence, maxSequence, events);
-  const elapsedTimeAgo = isLive ? "NOW" : formatElapsedTimeAgo(elapsedSecondsToLive);
+  const elapsedTimeAgo = effectiveIsLive ? "NOW" : formatElapsedTimeAgo(elapsedSecondsToLive);
 
   return {
     mode,
-    isLive,
+    isLive: effectiveIsLive,
     scope: {
       availableFloors,
       selectedFloorOrdinal,

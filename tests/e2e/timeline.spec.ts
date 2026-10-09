@@ -162,6 +162,44 @@ test("live interactions append events without rewriting historical state", async
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();
 });
 
+test("timeline scrubber orientation row updates status badge and temporal context during historical scrubbing", async ({ page }) => {
+  const statusBadge = page.getByTestId("replay-status-badge");
+  const temporalContext = page.getByTestId("replay-temporal-context");
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+
+  // Initial Live state
+  await expect(statusBadge).toContainText("LIVE ●");
+  await expect(temporalContext).toContainText("NOW");
+
+  // Scrub to historical position on Floor 1
+  await slider.fill("50");
+  await expect(statusBadge).toContainText("HISTORICAL ●");
+  await expect(temporalContext).toContainText("TIME UNKNOWN");
+
+  // Scrub back to max sequence (Live edge)
+  const maxSeq = await latestRuntimeSequence(page);
+  await slider.fill(String(maxSeq));
+  await expect(statusBadge).toContainText("LIVE ●");
+  await expect(temporalContext).toContainText("NOW");
+});
+
+test("timeline scrubber maintains 44px min touch-target height without page horizontal overflow", async ({ page }) => {
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await expect(slider).toBeVisible();
+
+  const box = await slider.boundingBox();
+  expect(box).not.toBeNull();
+  if (box) {
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+
+  // Check no document-level horizontal overflow
+  const hasOverflow = await page.evaluate(() => {
+    return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+  });
+  expect(hasOverflow).toBe(false);
+});
+
 test("static bundle renders its essential HUD at desktop and mobile sizes", async ({ page }, testInfo) => {
   await expect(page.getByRole("navigation", { name: "Main Navigation" })).toBeVisible();
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
