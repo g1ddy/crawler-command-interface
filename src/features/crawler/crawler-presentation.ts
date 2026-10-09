@@ -40,7 +40,7 @@ export interface DerivedCrawlerPresentation {
   level: number | null | undefined;
   xp: number | undefined;
   maxXp: number | undefined;
-  xpPercent: number;
+  xpPercent: number | undefined;
   xpObservation?: ProjectedObservationValue;
   xpAuthority: DisplayAuthority;
   availablePoints: number | undefined;
@@ -73,7 +73,7 @@ export function deriveCrawlerPresentation(
   observations: Pick<ProjectedObservationsState, "xpProgress" | "attributes" | "condition">,
 ): DerivedCrawlerPresentation {
   const crawler = state.crawler;
-  const name = crawler.name === "CARL G." ? "CARL" : (crawler.name ?? "—");
+  const name = crawler.name ?? "—";
   const crawlerNumber = crawler.crawlerNumber != null ? String(crawler.crawlerNumber) : undefined;
 
   const level = selectDisplayedReading(crawler.level, observations.xpProgress.level?.value, state.causalProvenance.level);
@@ -106,7 +106,10 @@ export function deriveCrawlerPresentation(
   // evidence to offer a state-changing action.
   const canAllocatePoints = availablePoints != null && availablePoints > 0;
 
-  const xpPercent = maxXp ? Math.min(100, Math.round((Number(xp ?? 0) / Number(maxXp)) * 100)) : 0;
+  const xpPercent =
+    xp != null && maxXp != null && Number(maxXp) > 0
+      ? Math.min(100, Math.round((Number(xp) / Number(maxXp)) * 100))
+      : undefined;
 
   const attributes: DerivedAttributePresentation[] = ATTRIBUTE_CONFIGS.map(([name, color]) => {
     const obs = observations.attributes[name];

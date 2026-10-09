@@ -95,13 +95,13 @@ export function deriveEquipmentPresentation(
     return item.slot === selectedSlot || !item.slot;
   });
 
-  const activeCandidate = selectedCandidateId
-    ? slotCandidates.find((c) => c.instanceId === selectedCandidateId) ?? slotCandidates[0] ?? equippedItem
+  const activeCandidate = selectedCandidateId !== null
+    ? slotCandidates.find((c) => c.instanceId === selectedCandidateId)
     : slotCandidates.find((c) => c.instanceId !== equippedInstanceId) ?? slotCandidates[0] ?? equippedItem;
 
   const requirements = activeCandidate
     ? checkItemRequirements(crawler as Parameters<typeof checkItemRequirements>[0], activeCandidate.requirements)
-    : { met: true, details: [] };
+    : { met: false, details: [] };
 
   const statDeltas = compareGearStats(equippedItem, activeCandidate);
 

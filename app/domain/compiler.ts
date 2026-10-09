@@ -323,7 +323,6 @@ export function compileFloorFiles(floorDocs: CrawlerFloorDocument[]): CrawlerTim
     sources: Array.from(sourcesMap.values()),
     initialState: {
       crawler: {
-        name: 'CARL G.',
         level: 1,
         race: 'HUMAN',
         class: 'SCOUT',

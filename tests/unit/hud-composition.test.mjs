@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import { deriveHudComposition } from "../../src/shell/hud/public.ts";
-import { projectObservations, projectState } from "../../app/domain/projection.ts";
+import { createInitialState, projectObservations, projectState } from "../../app/domain/projection.ts";
 import { derivePartyPresentation } from "../../src/features/party/public.ts";
 import { derivePetPresentation, derivePetPresentationSummary } from "../../src/features/pet/public.ts";
 

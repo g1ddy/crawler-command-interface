@@ -7,14 +7,12 @@ import { AuthorityBackground } from "../primitives/AuthorityBackground.ts";
 import { AuthoritySurface } from "../primitives/AuthoritySurface.ts";
 
 export interface ArwesCompatibilityProbeProps {
-  crawlerName?: string;
   floorTitle?: string;
   sequence?: number;
   isLive?: boolean;
 }
 
 export function ArwesCompatibilityProbe({
-  crawlerName = "CRAWLER-01",
   floorTitle = "FLOOR 1",
   sequence = 0,
   isLive = true,
@@ -55,15 +53,6 @@ export function ArwesCompatibilityProbe({
             { delivery: "instant", style: { fontSize: "0.75rem", opacity: 0.7, textTransform: "uppercase" } },
             "AUTHORITY ARWES COMPATIBILITY PROBE"
           ),
-          createElement(
-            "h2",
-            { style: { margin: "0.25rem 0", fontSize: "1.25rem", color: "#38bdf8" } },
-            createElement(
-              AuthorityText,
-              { delivery: "decoded", motionMode },
-              crawlerName
-            )
-          )
         ),
         createElement(
           "div",

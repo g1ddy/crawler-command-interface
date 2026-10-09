@@ -10,7 +10,7 @@ export type PetBondState = "bonded" | "unbonded" | "unknown";
 export type PetPresentationStatus = "not-established" | "established" | "known-empty" | "unknown" | "unavailable";
 
 export interface DerivedPetItem {
-  petId: string;
+  petId?: string;
   displayName: string;
   hasExplicitName: boolean;
   species: string;
@@ -48,7 +48,7 @@ export interface PetPresentationSummary {
   badgeLabel: string;
   semantics: PresentationSemantics;
   primaryPet?: {
-    petId: string;
+    petId?: string;
     displayName: string;
     hasExplicitName: boolean;
     species: string;
@@ -74,7 +74,17 @@ export function derivePetPresentation({
   pets?: Pet[];
   hasBeenEstablished?: boolean;
 }): DerivedPetPresentation {
-  const activePets = pets ?? [];
+  if (pets === undefined) {
+    return {
+      hasPets: false,
+      petCount: 0,
+      badgeLabel: "UNAVAILABLE",
+      status: "unavailable",
+      pets: [],
+    };
+  }
+
+  const activePets = pets;
   const petCount = activePets.length;
   const hasPets = petCount > 0;
   const status: PetPresentationStatus = hasPets
@@ -116,7 +126,7 @@ export function derivePetPresentation({
     const classificationValueFormatted = typeof pet.classification === "string" && pet.classification.trim() ? pet.classification.toUpperCase() : "UNKNOWN";
 
     return {
-      petId: pet.petId ?? "unknown-pet-id",
+      petId: pet.petId,
       displayName,
       hasExplicitName,
       species: pet.species ?? "unknown",
