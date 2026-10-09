@@ -13,7 +13,9 @@ async function latestRuntimeSequence(page: Page): Promise<number> {
 
 async function selectSequence(page: Page, sequence: number) {
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.focus();
   await slider.fill(String(sequence));
+  await slider.dispatchEvent("change");
 }
 
 function floorEndSequence(ordinal: number) {
@@ -160,6 +162,58 @@ test("live interactions append events without rewriting historical state", async
 
   await slider.fill(String(newMaxSeq));
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();
+});
+
+test("timeline scrubber orientation row and session state update consistently on desktop and mobile viewports", async ({ page }) => {
+  const statusBadge = page.getByTestId("replay-status-badge");
+  const temporalContext = page.getByTestId("replay-temporal-context");
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+
+  for (const viewport of [{ width: 1280, height: 800 }, { width: 375, height: 667 }]) {
+    await page.setViewportSize(viewport);
+
+    // Initial Live state
+    await expect(statusBadge).toContainText("LIVE ●");
+    await expect(temporalContext).toContainText("NOW");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+
+    // Scrub to historical position on Floor 1 (sequence 50) using real change event
+    await selectSequence(page, 50);
+    await expect(statusBadge).toContainText("HISTORICAL ●");
+    await expect(temporalContext).toContainText("TIME UNKNOWN");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+
+    // Touch target height check
+    const box = await slider.boundingBox();
+    expect(box).not.toBeNull();
+    if (box) {
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+
+    // Fixed bottom dock check on mobile
+    if (viewport.width <= 760) {
+      const surface = page.locator("[aria-label='Replay controls']");
+      const surfaceBox = await surface.boundingBox();
+      expect(surfaceBox).not.toBeNull();
+      if (surfaceBox) {
+        expect(surfaceBox.y + surfaceBox.height).toBeCloseTo(viewport.height, -1);
+      }
+    }
+
+    // No document-level horizontal overflow
+    const hasOverflow = await page.evaluate(() => {
+      return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+    });
+    expect(hasOverflow).toBe(false);
+
+    // Scrub back to max sequence (Live edge) triggers actual returnToLive()
+    const maxSeq = await latestRuntimeSequence(page);
+    await selectSequence(page, maxSeq);
+
+    await expect(statusBadge).toContainText("LIVE ●");
+    await expect(temporalContext).toContainText("NOW");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  }
 });
 
 test("static bundle renders its essential HUD at desktop and mobile sizes", async ({ page }, testInfo) => {

@@ -201,27 +201,287 @@ test("minimal alternate replay consumer uses model without ReplaySurface", () =>
   assert.equal(output.nextEnabled, true);
 });
 
-test("temporal context maintains clear LIVE vs REPLAY mode and sequence position during historical scrubbing", () => {
-  const liveContext = deriveReplayPresentation({
+test("Live edge when isLive is true produces LIVE mode and NOW temporal context", () => {
+  const livePres = deriveReplayPresentation({
     events: sampleEvents,
     floors: sampleFloors,
-    selectedFloorOrdinal: "all",
+    selectedFloorOrdinal: 2,
     selectedSequence: 15,
     isLive: true,
   });
 
-  assert.equal(liveContext.mode, "live");
-  assert.equal(liveContext.position.selectedSequence, 15);
+  assert.equal(livePres.mode, "live");
+  assert.equal(livePres.isLive, true);
+  assert.equal(livePres.position.elapsedTimeAgo, "NOW");
+});
 
-  const historicalContext = deriveReplayPresentation({
+test("historical position before Live edge produces HISTORICAL status and valid elapsed label or TIME UNKNOWN", () => {
+  const pres = deriveReplayPresentation({
     events: sampleEvents,
     floors: sampleFloors,
-    selectedFloorOrdinal: "all",
+    selectedFloorOrdinal: 1,
     selectedSequence: 5,
     isLive: false,
   });
 
-  assert.equal(historicalContext.mode, "replay");
-  assert.equal(historicalContext.position.selectedSequence, 5);
-  assert.equal(historicalContext.position.currentEvent?.summary, "Found Sword");
+  assert.equal(pres.mode, "replay");
+  assert.equal(pres.isLive, false);
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+
+  const floor6Events = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Mid" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "End" },
+  ];
+
+  const validPres = deriveReplayPresentation({
+    events: floor6Events,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(validPres.mode, "replay");
+  assert.equal(validPres.isLive, false);
+  assert.equal(validPres.position.elapsedTimeAgo, "2h 14m ago");
+});
+
+test("elapsed-time derivation is independent of event array ordering for shuffled inputs", () => {
+  const ascendingEvents = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Seq 10" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Seq 20" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "Seq 30" },
+  ];
+
+  const shuffledEvents = [
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "Seq 30" },
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Seq 10" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Seq 20" },
+  ];
+
+  const ascPres = deriveReplayPresentation({
+    events: ascendingEvents,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  const shufPres = deriveReplayPresentation({
+    events: shuffledEvents,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  // Delta: 8140 - 100 = 8040s = 2h 14m
+  assert.equal(ascPres.position.elapsedTimeAgo, "2h 14m ago");
+  assert.equal(shufPres.position.elapsedTimeAgo, "2h 14m ago");
+});
+
+test("conflicting temporal coordinates at the same sequence yield TIME UNKNOWN regardless of event array order", () => {
+  const conflictingEventsOrderA = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Seq 10 A" },
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 200 }, type: "NarrativeEvent", summary: "Seq 10 B" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "Seq 30" },
+  ];
+
+  const conflictingEventsOrderB = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 200 }, type: "NarrativeEvent", summary: "Seq 10 B" },
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Seq 10 A" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "Seq 30" },
+  ];
+
+  const presA = deriveReplayPresentation({
+    events: conflictingEventsOrderA,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  const presB = deriveReplayPresentation({
+    events: conflictingEventsOrderB,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(presA.position.elapsedTimeAgo, "TIME UNKNOWN");
+  assert.equal(presB.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
+test("historical position where selected event equals live event (sequence gap before max) yields TIME UNKNOWN", () => {
+  const eventsWithGapBeforeMax = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Last Event" },
+  ];
+  // Observations add sequence 30 as maxSequence
+  const observations = [
+    { id: "obs-1", kind: "crawler-condition", sequence: 30, payload: {}, evidence: [] },
+  ];
+
+  // Selected sequence 25 (where selected event is sequence 20 and live event is sequence 20) in replay mode
+  const pres = deriveReplayPresentation({
+    events: eventsWithGapBeforeMax,
+    observations,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 25,
+    isLive: false,
+  });
+
+  assert.equal(pres.mode, "replay");
+  assert.equal(pres.isLive, false);
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
+test("later observation beyond the last event prevents using a stale event as the Live time reference", () => {
+  const events = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Last event" },
+  ];
+  const observations = [
+    { id: "obs-live-edge", kind: "crawler-condition", sequence: 30, payload: {}, evidence: [] },
+  ];
+
+  const pres = deriveReplayPresentation({
+    events,
+    observations,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(pres.scope.maxSequence, 30);
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
+test("non-finite elapsedSeconds coordinates yield TIME UNKNOWN without NaN or Infinity text", () => {
+  const nanEvents = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: NaN }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "End" },
+  ];
+
+  const pres = deriveReplayPresentation({
+    events: nanEvents,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
+test("historical position with valid same-floor elapsed coordinates displays exact relative duration", () => {
+  const floor6Events = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Mid" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "End" },
+  ];
+
+  const presSeq10 = deriveReplayPresentation({
+    events: floor6Events,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  // Delta: 8140 - 100 = 8040s = 2h 14m
+  assert.equal(presSeq10.position.elapsedTimeAgo, "2h 14m ago");
+
+  const presSeq20 = deriveReplayPresentation({
+    events: floor6Events,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 20,
+    isLive: false,
+  });
+
+  // Delta: 8140 - 700 = 7440s = 2h 4m
+  assert.equal(presSeq20.position.elapsedTimeAgo, "2h 4m ago");
+});
+
+test("cross-floor positions do not produce a duration from floor-local elapsed coordinates and report TIME UNKNOWN", () => {
+  const crossFloorEvents = [
+    { sequence: 10, position: { floor: 1, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "F1" },
+    { sequence: 20, position: { floor: 2, elapsedSeconds: 500 }, type: "NarrativeEvent", summary: "F2" },
+  ];
+
+  const pres = deriveReplayPresentation({
+    events: crossFloorEvents,
+    selectedFloorOrdinal: "all",
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
+test("missing or incomplete temporal data displays TIME UNKNOWN without fabricating duration", () => {
+  const missingElapsedEvents = [
+    { sequence: 1, position: { floor: 1 }, type: "NarrativeEvent", summary: "Seq 1" },
+    { sequence: 50, position: { floor: 1 }, type: "NarrativeEvent", summary: "Seq 50" },
+    { sequence: 100, position: { floor: 2 }, type: "NarrativeEvent", summary: "Seq 100" },
+  ];
+
+  const presSeq1 = deriveReplayPresentation({
+    events: missingElapsedEvents,
+    selectedFloorOrdinal: "all",
+    selectedSequence: 1,
+    isLive: false,
+  });
+
+  assert.equal(presSeq1.position.elapsedTimeAgo, "TIME UNKNOWN");
+
+  const presSeq50 = deriveReplayPresentation({
+    events: missingElapsedEvents,
+    selectedFloorOrdinal: 1,
+    selectedSequence: 50,
+    isLive: false,
+  });
+
+  assert.equal(presSeq50.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
+test("countdown resets, pauses, resumes, phase changes, or countdown references do not fabricate elapsed time", () => {
+  const countdownEvents = [
+    { sequence: 10, position: { floor: 1 }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 20, position: { floor: 1 }, type: "CountdownReset", countdownId: "cd-1", newRemainingSeconds: 5000, summary: "Reset" },
+    { sequence: 30, position: { floor: 1 }, type: "NarrativeEvent", summary: "End" },
+  ];
+  const countdownsWithRefs = [
+    {
+      id: "cd-1",
+      title: "Test Countdown",
+      floor: 1,
+      target: "floor-collapse",
+      references: [
+        { sequence: 10, remainingSeconds: 10000, evidence: [] },
+        { sequence: 30, remainingSeconds: 5000, evidence: [] },
+      ],
+    },
+  ];
+
+  const pres = deriveReplayPresentation({
+    events: countdownEvents,
+    countdowns: countdownsWithRefs,
+    selectedFloorOrdinal: 1,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+});
+
+test("sequence gaps alone never determine elapsed duration", () => {
+  const largeSequenceGapEvents = [
+    { sequence: 1, position: { floor: 1 }, type: "NarrativeEvent", summary: "First" },
+    { sequence: 1000, position: { floor: 1 }, type: "NarrativeEvent", summary: "Thousandth" },
+  ];
+
+  const pres = deriveReplayPresentation({
+    events: largeSequenceGapEvents,
+    selectedFloorOrdinal: 1,
+    selectedSequence: 1,
+    isLive: false,
+  });
+
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
 });
