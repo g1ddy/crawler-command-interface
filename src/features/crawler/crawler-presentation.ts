@@ -57,6 +57,7 @@ export interface DerivedCrawlerPresentation {
     harmful: ActiveEffect[];
     injuries: ActiveEffect[];
     other: ActiveEffect[];
+    status: "known-empty" | "established" | "unavailable";
   };
 }
 

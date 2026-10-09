@@ -58,7 +58,7 @@ export function HealthConditions({
   onInspectObservation: (o: ProjectedObservationValue) => void;
 }) {
   const { vitals, effects, sequence } = presentation;
-  const { beneficial, harmful, injuries, other, isUnavailable } = effects;
+  const { beneficial, harmful, injuries, other, status: effectsStatus } = effects;
 
   const renderEffects = (effectList: ActiveEffect[], cardClass?: string) =>
     effectList.length ? (
@@ -71,7 +71,7 @@ export function HealthConditions({
           <small>{e.description}</small>
         </div>
       ))
-    ) : isUnavailable ? (
+    ) : effectsStatus === "unavailable" ? (
       <p className={styles.effectCard}>UNAVAILABLE</p>
     ) : (
       <p className={styles.effectCard}>NO ACTIVE EFFECTS</p>

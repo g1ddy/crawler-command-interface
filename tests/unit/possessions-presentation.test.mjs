@@ -284,6 +284,22 @@ test("awards causation remains independent from current Inventory", () => {
   assert.equal(awardsAt22[0].openedAtSequence, 20);
 });
 
+test("deriveEquipmentPresentation represents missing requested candidate as unavailable with unmet requirements", () => {
+  const missingCandidate = deriveEquipmentPresentation({
+    inventory: [mockShield],
+    equippedSlots: {},
+    observations: {},
+    crawler: mockCrawlerState,
+    selectedSlot: "TORSO",
+    selectedCandidateId: "inst-nonexistent-id",
+    isLive: true,
+  });
+
+  assert.equal(missingCandidate.activeCandidate, undefined);
+  assert.equal(missingCandidate.requirements.met, false);
+  assert.equal(missingCandidate.candidateActions.canEquip, false);
+});
+
 test("action capabilities enforce isLive gating during replay", () => {
   const liveInventory = deriveInventoryPresentation({
     inventory: [mockPotion, mockSword],
