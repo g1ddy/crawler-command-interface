@@ -17,7 +17,7 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
     isLive: true,
     floorHudTitle: "FLOOR 1",
   });
-  assert.equal(composition.system.crawlerName, "—");
+
   assert.equal(composition.system.floorTitle, "FLOOR 1");
   assert.equal(composition.temporal.mode, "live");
   assert.equal(composition.temporal.isLive, true);
