@@ -13,7 +13,9 @@ async function latestRuntimeSequence(page: Page): Promise<number> {
 
 async function selectSequence(page: Page, sequence: number) {
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.focus();
   await slider.fill(String(sequence));
+  await slider.dispatchEvent("change");
 }
 
 function floorEndSequence(ordinal: number) {
@@ -175,8 +177,8 @@ test("timeline scrubber orientation row and session state update consistently on
     await expect(temporalContext).toContainText("NOW");
     await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 
-    // Scrub to historical position on Floor 1 (sequence 50)
-    await slider.fill("50");
+    // Scrub to historical position on Floor 1 (sequence 50) using real change event
+    await selectSequence(page, 50);
     await expect(statusBadge).toContainText("HISTORICAL ●");
     await expect(temporalContext).toContainText("TIME UNKNOWN");
     await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
@@ -188,6 +190,16 @@ test("timeline scrubber orientation row and session state update consistently on
       expect(box.height).toBeGreaterThanOrEqual(44);
     }
 
+    // Fixed bottom dock check on mobile
+    if (viewport.width <= 760) {
+      const surface = page.locator("[aria-label='Replay controls']");
+      const surfaceBox = await surface.boundingBox();
+      expect(surfaceBox).not.toBeNull();
+      if (surfaceBox) {
+        expect(surfaceBox.y + surfaceBox.height).toBeCloseTo(viewport.height, -1);
+      }
+    }
+
     // No document-level horizontal overflow
     const hasOverflow = await page.evaluate(() => {
       return document.documentElement.scrollWidth > document.documentElement.clientWidth;
@@ -196,7 +208,7 @@ test("timeline scrubber orientation row and session state update consistently on
 
     // Scrub back to max sequence (Live edge) triggers actual returnToLive()
     const maxSeq = await latestRuntimeSequence(page);
-    await slider.fill(String(maxSeq));
+    await selectSequence(page, maxSeq);
 
     await expect(statusBadge).toContainText("LIVE ●");
     await expect(temporalContext).toContainText("NOW");

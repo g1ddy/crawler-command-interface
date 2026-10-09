@@ -18,7 +18,28 @@
 
 .surface[data-mode="replay"] {
   border-left-color: var(--hud-state-warning, #f59e0b);
-  background: rgba(18, 14, 8, 0.96);
+  background: var(--hud-panel-bg, #0a1118);
+}
+
+@media (max-width: 760px) {
+  .surface {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin-top: 0;
+    border-radius: var(--hud-radius-sm, 4px) var(--hud-radius-sm, 4px) 0 0;
+    border-left: none;
+    border-top: 2px solid var(--hud-state-success, #22c55e);
+    padding-bottom: calc(var(--hud-space-xs, 4px) + env(safe-area-inset-bottom, 0px));
+    background: #080e14;
+  }
+
+  .surface[data-mode="replay"] {
+    border-top-color: var(--hud-state-warning, #f59e0b);
+    background: #0c0905;
+  }
 }
 
 .dockContainer {
