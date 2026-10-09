@@ -100,11 +100,9 @@ export function deriveEquipmentPresentation(
     ? slotCandidates.find((c) => c.instanceId === selectedCandidateId)
     : slotCandidates.find((c) => c.instanceId !== equippedInstanceId) ?? slotCandidates[0] ?? equippedItem;
 
-  const candidateUnavailable = isCandidateRequested && !activeCandidate;
-
   const requirements = activeCandidate
     ? checkItemRequirements(crawler as Parameters<typeof checkItemRequirements>[0], activeCandidate.requirements)
-    : { met: !candidateUnavailable, details: [] };
+    : { met: false, details: [] };
 
   const statDeltas = compareGearStats(equippedItem, activeCandidate);
 

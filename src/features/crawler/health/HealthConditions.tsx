@@ -73,8 +73,10 @@ export function HealthConditions({
       ))
     ) : effectsStatus === "unavailable" ? (
       <p className={styles.effectCard}>UNAVAILABLE</p>
-    ) : (
+    ) : effectsStatus === "known-empty" ? (
       <p className={styles.effectCard}>NO ACTIVE EFFECTS</p>
+    ) : (
+      <p className={styles.effectCard}>NONE</p>
     );
 
   return (

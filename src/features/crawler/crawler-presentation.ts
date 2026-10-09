@@ -112,15 +112,17 @@ export function deriveCrawlerPresentation(
       ? Math.min(100, Math.round((Number(xp) / Number(maxXp)) * 100))
       : undefined;
 
+  const attributesMap = crawler.attributes || {};
+  const causalAttributesMap = state.causalProvenance?.attributes || {};
   const attributes: DerivedAttributePresentation[] = ATTRIBUTE_CONFIGS.map(([name, color]) => {
     const obs = observations.attributes[name];
-    const val = selectDisplayedReading(crawler.attributes[name], obs?.value, state.causalProvenance.attributes[name]);
-    const auth = displayedReadingAuthority(crawler.attributes[name], obs?.value, state.causalProvenance.attributes[name]);
+    const val = selectDisplayedReading(attributesMap[name], obs?.value, causalAttributesMap[name]);
+    const auth = displayedReadingAuthority(attributesMap[name], obs?.value, causalAttributesMap[name]);
     return {
       name,
       color,
       value: val,
-      causalValue: crawler.attributes[name],
+      causalValue: attributesMap[name],
       observation: obs,
       displayAuthority: auth,
     };
@@ -148,11 +150,11 @@ export function deriveCrawlerPresentation(
         }
       }
     } else if (firstAuth === "causal") {
-      const firstCausalSeq = state.causalProvenance.attributes[attributes[0].name];
+      const firstCausalSeq = causalAttributesMap[attributes[0].name];
       if (firstCausalSeq !== undefined) {
         const allSameCausal = attributes.every(
           (attribute) =>
-            state.causalProvenance.attributes[attribute.name] === firstCausalSeq,
+            causalAttributesMap[attribute.name] === firstCausalSeq,
         );
 
         if (allSameCausal) {
@@ -163,13 +165,14 @@ export function deriveCrawlerPresentation(
     }
   }
 
-  const condition = crawler.condition;
+  const condition = crawler.condition || {};
+  const causalConditionMap = state.causalProvenance?.condition || {};
   const vitalVal = (key: keyof typeof condition): number | null => {
-    const val = selectDisplayedReading(condition[key], observations.condition[key]?.value ?? null, state.causalProvenance.condition[key]);
+    const val = selectDisplayedReading(condition[key], observations.condition[key]?.value ?? null, causalConditionMap[key]);
     return val !== undefined ? val : null;
   };
   const vitalAuth = (key: "currentHealth" | "currentMana" | "currentStamina") =>
-    displayedReadingAuthority(condition[key], observations.condition[key]?.value, state.causalProvenance.condition[key]);
+    displayedReadingAuthority(condition[key], observations.condition[key]?.value, causalConditionMap[key]);
 
   const vitals: DerivedVitalPresentation[] = [
     {

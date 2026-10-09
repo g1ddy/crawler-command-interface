@@ -74,26 +74,19 @@ export function derivePetPresentation({
   pets?: Pet[];
   hasBeenEstablished?: boolean;
 }): DerivedPetPresentation {
-  if (pets === undefined) {
-    return {
-      hasPets: false,
-      petCount: 0,
-      badgeLabel: "UNAVAILABLE",
-      status: "unavailable",
-      pets: [],
-    };
-  }
-
-  const activePets = pets;
+  const activePets = pets ?? [];
   const petCount = activePets.length;
   const hasPets = petCount > 0;
   const status: PetPresentationStatus = hasPets
     ? "established"
-    : hasBeenEstablished
-    ? "known-empty"
-    : "not-established";
+    : pets === undefined
+    ? (hasBeenEstablished ? "unavailable" : "not-established")
+    : (hasBeenEstablished ? "known-empty" : "not-established");
+
   const badgeLabel = hasPets
     ? `${petCount} ${petCount === 1 ? "PET" : "PETS"}`
+    : status === "unavailable"
+    ? "UNAVAILABLE"
     : status === "known-empty"
     ? "NO PETS"
     : "NOT ESTABLISHED";

@@ -284,7 +284,22 @@ test("awards causation remains independent from current Inventory", () => {
   assert.equal(awardsAt22[0].openedAtSequence, 20);
 });
 
-test("deriveEquipmentPresentation represents missing requested candidate as unavailable with unmet requirements", () => {
+test("deriveEquipmentPresentation equipment candidate requirement coverage: no candidate, requested candidate missing, met requirements, unmet requirements", () => {
+  // 1. No selected candidate, no available candidates, no equipped item
+  const noCandidate = deriveEquipmentPresentation({
+    inventory: [],
+    equippedSlots: {},
+    observations: {},
+    crawler: mockCrawlerState,
+    selectedSlot: "TORSO",
+    selectedCandidateId: null,
+    isLive: true,
+  });
+  assert.equal(noCandidate.activeCandidate, undefined);
+  assert.equal(noCandidate.requirements.met, false);
+  assert.equal(noCandidate.candidateActions.canEquip, false);
+
+  // 2. Requested candidate ID no longer available
   const missingCandidate = deriveEquipmentPresentation({
     inventory: [mockShield],
     equippedSlots: {},
@@ -294,10 +309,38 @@ test("deriveEquipmentPresentation represents missing requested candidate as unav
     selectedCandidateId: "inst-nonexistent-id",
     isLive: true,
   });
-
   assert.equal(missingCandidate.activeCandidate, undefined);
   assert.equal(missingCandidate.requirements.met, false);
   assert.equal(missingCandidate.candidateActions.canEquip, false);
+
+  // 3. Valid active candidate whose requirements are met
+  const metCandidate = deriveEquipmentPresentation({
+    inventory: [mockShield],
+    equippedSlots: {},
+    observations: {},
+    crawler: mockCrawlerState, // Strength 20 >= 10 required
+    selectedSlot: "TORSO",
+    selectedCandidateId: "inst-shield-1",
+    isLive: true,
+  });
+  assert.equal(metCandidate.activeCandidate?.instanceId, "inst-shield-1");
+  assert.equal(metCandidate.requirements.met, true);
+  assert.equal(metCandidate.candidateActions.canEquip, true);
+
+  // 4. Valid active candidate whose requirements are not met
+  const lowCrawler = { ...mockCrawlerState, attributes: { Strength: 5 } };
+  const unmetCandidate = deriveEquipmentPresentation({
+    inventory: [mockShield],
+    equippedSlots: {},
+    observations: {},
+    crawler: lowCrawler, // Strength 5 < 10 required
+    selectedSlot: "TORSO",
+    selectedCandidateId: "inst-shield-1",
+    isLive: true,
+  });
+  assert.equal(unmetCandidate.activeCandidate?.instanceId, "inst-shield-1");
+  assert.equal(unmetCandidate.requirements.met, false);
+  assert.equal(unmetCandidate.candidateActions.canEquip, false);
 });
 
 test("action capabilities enforce isLive gating during replay", () => {

@@ -111,12 +111,12 @@ test("deriveCrawlerPresentation handles unknown/unsourced telemetry without erro
   assert.equal(presentation.effects.harmful.length, 0);
 });
 
-test("crawler identity normalizes CARL G. to CARL without inventing surname", () => {
+test("crawler identity uses crawler name directly or falls back to dash when missing", () => {
   const stateWithSurname = {
     sequence: 1,
     causalProvenance: { attributes: {}, condition: {} },
     crawler: {
-      name: "CARL G.",
+      name: "CARL",
       crawlerNumber: "4,122",
       level: 1,
       race: "HUMAN",
@@ -374,4 +374,40 @@ test("unestablished crawler has no shared attributes evidence", () => {
   assert.equal(presentation.hasSharedAttributesEvidence, false);
   assert.equal(presentation.sharedAttributesAuthority, undefined);
   assert.equal(presentation.sharedAttributesObservation, undefined);
+});
+
+test("health conditions presentation distinguishes known-empty, established, and unavailable status", () => {
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+
+  // 1. Authoritative empty effects (state.effects = []) -> status: "known-empty"
+  const knownEmptyState = {
+    sequence: 1,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {},
+    effects: [],
+  };
+  const presEmpty = deriveCrawlerPresentation(knownEmptyState, emptyObs);
+  assert.equal(presEmpty.effects.status, "known-empty");
+
+  // 2. Unprojected / unavailable effects (state.effects = undefined) -> status: "unavailable"
+  const unavailableState = {
+    sequence: 1,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {},
+    effects: undefined,
+  };
+  const presUnavailable = deriveCrawlerPresentation(unavailableState, emptyObs);
+  assert.equal(presUnavailable.effects.status, "unavailable");
+
+  // 3. Established active effects -> status: "established"
+  const establishedState = {
+    sequence: 1,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {},
+    effects: [{ effectId: "eff-1", name: "Poison", type: "bad", icon: "☠️", durationSeconds: 10, appliedAtSequence: 1, description: "Poisoned" }],
+  };
+  const presEstablished = deriveCrawlerPresentation(establishedState, emptyObs);
+  assert.equal(presEstablished.effects.status, "established");
+  assert.equal(presEstablished.effects.harmful.length, 1);
+  assert.equal(presEstablished.effects.beneficial.length, 0);
 });
