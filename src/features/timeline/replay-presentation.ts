@@ -118,6 +118,13 @@ function calculateElapsedSecondsToLive(
     }
   }
 
+  // The Live edge includes observations as well as events. An older event
+  // cannot stand in for the current temporal reference when a later
+  // observation advances the timeline without supplying event coordinates.
+  if (liveSeqMax !== maxSequence) {
+    return null;
+  }
+
   if (selectedSeqMax < 0 || liveSeqMax < 0) {
     return null;
   }
