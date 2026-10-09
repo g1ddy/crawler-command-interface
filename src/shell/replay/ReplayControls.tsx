@@ -40,11 +40,15 @@ export function ReplayControls({ model, commands }: ReplayControlsProps) {
               max={scope.maxSequence}
               value={position.selectedSequence}
               disabled={!model.availability.hasScopedSequences}
-              onChange={(e) =>
-                commands.selectSequence(
-                  position.closestSequence(Number(e.target.value))
-                )
-              }
+              onChange={(e) => {
+                const targetSeq = Number(e.target.value);
+                const closestSeq = position.closestSequence(targetSeq);
+                if (closestSeq >= scope.maxSequence) {
+                  commands.returnToLive();
+                } else {
+                  commands.selectSequence(closestSeq);
+                }
+              }}
               className={styles.scrubber}
             />
           </div>

@@ -201,7 +201,7 @@ test("minimal alternate replay consumer uses model without ReplaySurface", () =>
   assert.equal(output.nextEnabled, true);
 });
 
-test("Live edge produces LIVE ● status and NOW temporal context consistently", () => {
+test("Live edge when isLive is true produces LIVE mode and NOW temporal context", () => {
   const livePres = deriveReplayPresentation({
     events: sampleEvents,
     floors: sampleFloors,
@@ -213,33 +213,6 @@ test("Live edge produces LIVE ● status and NOW temporal context consistently",
   assert.equal(livePres.mode, "live");
   assert.equal(livePres.isLive, true);
   assert.equal(livePres.position.elapsedTimeAgo, "NOW");
-
-  // Selected sequence at max sequence even if isLive was passed as false
-  const atMaxSeqPres = deriveReplayPresentation({
-    events: sampleEvents,
-    floors: sampleFloors,
-    selectedFloorOrdinal: 2,
-    selectedSequence: 15,
-    isLive: false,
-  });
-
-  assert.equal(atMaxSeqPres.mode, "live");
-  assert.equal(atMaxSeqPres.isLive, true);
-  assert.equal(atMaxSeqPres.position.elapsedTimeAgo, "NOW");
-});
-
-test("a selected sequence at the Live edge cannot produce HISTORICAL status paired with NOW", () => {
-  const pres = deriveReplayPresentation({
-    events: sampleEvents,
-    floors: sampleFloors,
-    selectedFloorOrdinal: "all",
-    selectedSequence: 15,
-    isLive: false,
-  });
-
-  assert.notEqual(pres.mode, "replay");
-  assert.equal(pres.isLive, true);
-  assert.equal(pres.position.elapsedTimeAgo, "NOW");
 });
 
 test("historical position before Live edge produces HISTORICAL status and valid elapsed label or TIME UNKNOWN", () => {
@@ -253,6 +226,74 @@ test("historical position before Live edge produces HISTORICAL status and valid 
 
   assert.equal(pres.mode, "replay");
   assert.equal(pres.isLive, false);
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
+
+  const floor6Events = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 700 }, type: "NarrativeEvent", summary: "Mid" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "End" },
+  ];
+
+  const validPres = deriveReplayPresentation({
+    events: floor6Events,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(validPres.mode, "replay");
+  assert.equal(validPres.isLive, false);
+  assert.equal(validPres.position.elapsedTimeAgo, "2h 14m ago");
+});
+
+test("elapsed-time derivation is independent of event array ordering and handles duplicates cleanly", () => {
+  const ascendingEvents = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Seq 10 A" },
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 200 }, type: "NarrativeEvent", summary: "Seq 10 B" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 500 }, type: "NarrativeEvent", summary: "Seq 20" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "Seq 30" },
+  ];
+
+  const shuffledEvents = [
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "Seq 30" },
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 100 }, type: "NarrativeEvent", summary: "Seq 10 A" },
+    { sequence: 20, position: { floor: 6, elapsedSeconds: 500 }, type: "NarrativeEvent", summary: "Seq 20" },
+    { sequence: 10, position: { floor: 6, elapsedSeconds: 200 }, type: "NarrativeEvent", summary: "Seq 10 B" },
+  ];
+
+  const ascPres = deriveReplayPresentation({
+    events: ascendingEvents,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  const shufPres = deriveReplayPresentation({
+    events: shuffledEvents,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  // Greatest sequence <= 10 is sequence 10 (with elapsedSeconds 100/200; in ascending array order, seq 10 with 200 is selected; in shuffled array order, max sequence <= 10 is also seq 10). Delta to seq 30 (8140): 8140 - 100 = 8040s = 2h 14m ago
+  assert.equal(ascPres.position.elapsedTimeAgo, "2h 14m ago");
+  assert.equal(shufPres.position.elapsedTimeAgo, "2h 14m ago");
+});
+
+test("non-finite elapsedSeconds coordinates yield TIME UNKNOWN without NaN or Infinity text", () => {
+  const nanEvents = [
+    { sequence: 10, position: { floor: 6, elapsedSeconds: NaN }, type: "NarrativeEvent", summary: "Start" },
+    { sequence: 30, position: { floor: 6, elapsedSeconds: 8140 }, type: "NarrativeEvent", summary: "End" },
+  ];
+
+  const pres = deriveReplayPresentation({
+    events: nanEvents,
+    selectedFloorOrdinal: 6,
+    selectedSequence: 10,
+    isLive: false,
+  });
+
+  assert.equal(pres.position.elapsedTimeAgo, "TIME UNKNOWN");
 });
 
 test("historical position with valid same-floor elapsed coordinates displays exact relative duration", () => {

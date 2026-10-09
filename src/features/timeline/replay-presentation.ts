@@ -38,7 +38,7 @@ export interface ReplayPosition {
 }
 
 export function formatElapsedTimeAgo(seconds: number | null): string {
-  if (seconds === null) return "TIME UNKNOWN";
+  if (seconds === null || !Number.isFinite(seconds)) return "TIME UNKNOWN";
   if (seconds <= 0) return "NOW";
 
   const days = Math.floor(seconds / 86400);
@@ -72,10 +72,14 @@ function calculateElapsedSecondsToLive(
 
   for (const event of events) {
     if (event.sequence <= selectedSequence) {
-      selectedEvent = event;
+      if (!selectedEvent || event.sequence > selectedEvent.sequence) {
+        selectedEvent = event;
+      }
     }
     if (event.sequence <= maxSequence) {
-      liveEvent = event;
+      if (!liveEvent || event.sequence > liveEvent.sequence) {
+        liveEvent = event;
+      }
     }
   }
 
@@ -94,6 +98,8 @@ function calculateElapsedSecondsToLive(
     selectedPos.floor === livePos.floor &&
     typeof selectedPos.elapsedSeconds === "number" &&
     typeof livePos.elapsedSeconds === "number" &&
+    Number.isFinite(selectedPos.elapsedSeconds) &&
+    Number.isFinite(livePos.elapsedSeconds) &&
     livePos.elapsedSeconds >= selectedPos.elapsedSeconds
   ) {
     return livePos.elapsedSeconds - selectedPos.elapsedSeconds;
@@ -195,9 +201,7 @@ export function deriveReplayPresentation(
   const minSequence = scopedSequences[0] ?? 1;
   const maxSequence = scopedSequences[scopedSequences.length - 1] ?? 1;
 
-  const isAtLiveEdge = selectedSequence >= maxSequence;
-  const effectiveIsLive = isLive || isAtLiveEdge;
-  const mode: ReplayMode = effectiveIsLive ? "live" : "replay";
+  const mode: ReplayMode = isLive ? "live" : "replay";
 
   const baseFloors =
     floors.length > 0
@@ -334,14 +338,14 @@ export function deriveReplayPresentation(
     hasScopedSequences: scopedSequences.length > 0,
   };
 
-  const elapsedSecondsToLive = effectiveIsLive
+  const elapsedSecondsToLive = isLive
     ? 0
     : calculateElapsedSecondsToLive(selectedSequence, maxSequence, events);
-  const elapsedTimeAgo = effectiveIsLive ? "NOW" : formatElapsedTimeAgo(elapsedSecondsToLive);
+  const elapsedTimeAgo = isLive ? "NOW" : formatElapsedTimeAgo(elapsedSecondsToLive);
 
   return {
     mode,
-    isLive: effectiveIsLive,
+    isLive,
     scope: {
       availableFloors,
       selectedFloorOrdinal,
