@@ -71,10 +71,6 @@ export function HealthConditions({
           <small>{e.description}</small>
         </div>
       ))
-    ) : effectsStatus === "unavailable" ? (
-      <p className={styles.effectCard}>UNAVAILABLE</p>
-    ) : effectsStatus === "known-empty" ? (
-      <p className={styles.effectCard}>NO ACTIVE EFFECTS</p>
     ) : (
       <p className={styles.effectCard}>NONE</p>
     );
@@ -90,14 +86,22 @@ export function HealthConditions({
       </Panel>
       <Panel title="CONDITIONS">
         <div className={styles.effects}>
-          <p className={styles.eyebrow}>INJURIES</p>
-          {renderEffects(injuries, styles.badEffect)}
-          <p className={styles.eyebrow}>BENEFICIAL EFFECTS</p>
-          {renderEffects(beneficial, styles.goodEffect)}
-          <p className={styles.eyebrow}>HARMFUL EFFECTS</p>
-          {renderEffects(harmful, styles.badEffect)}
-          <p className={styles.eyebrow}>OTHER / STATUS CONDITIONS</p>
-          {renderEffects(other)}
+          {effectsStatus === "unavailable" ? (
+            <p className={styles.effectCard}>UNAVAILABLE</p>
+          ) : effectsStatus === "known-empty" ? (
+            <p className={styles.effectCard}>NO ACTIVE EFFECTS</p>
+          ) : (
+            <>
+              <p className={styles.eyebrow}>INJURIES</p>
+              {renderEffects(injuries, styles.badEffect)}
+              <p className={styles.eyebrow}>BENEFICIAL EFFECTS</p>
+              {renderEffects(beneficial, styles.goodEffect)}
+              <p className={styles.eyebrow}>HARMFUL EFFECTS</p>
+              {renderEffects(harmful, styles.badEffect)}
+              <p className={styles.eyebrow}>OTHER / STATUS CONDITIONS</p>
+              {renderEffects(other)}
+            </>
+          )}
         </div>
       </Panel>
     </div>
