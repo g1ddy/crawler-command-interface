@@ -38,8 +38,9 @@ export interface ReplayPosition {
 }
 
 export function formatElapsedTimeAgo(seconds: number | null): string {
-  if (seconds === null || !Number.isFinite(seconds)) return "TIME UNKNOWN";
-  if (seconds <= 0) return "NOW";
+  if (seconds === null || !Number.isFinite(seconds) || seconds <= 0) {
+    return "TIME UNKNOWN";
+  }
 
   const days = Math.floor(seconds / 86400);
   const hours = Math.floor((seconds % 86400) / 3600);
@@ -64,45 +65,59 @@ function calculateElapsedSecondsToLive(
   events: CrawlerEvent[],
 ): number | null {
   if (selectedSequence >= maxSequence) {
-    return 0;
-  }
-
-  let selectedEvent: CrawlerEvent | undefined;
-  let liveEvent: CrawlerEvent | undefined;
-
-  for (const event of events) {
-    if (event.sequence <= selectedSequence) {
-      if (!selectedEvent || event.sequence > selectedEvent.sequence) {
-        selectedEvent = event;
-      }
-    }
-    if (event.sequence <= maxSequence) {
-      if (!liveEvent || event.sequence > liveEvent.sequence) {
-        liveEvent = event;
-      }
-    }
-  }
-
-  if (!selectedEvent || !liveEvent) {
     return null;
   }
 
-  const selectedPos = selectedEvent.position;
-  const livePos = liveEvent.position;
+  // Find all events with greatest sequence <= selectedSequence
+  let selectedSeqMax = -1;
+  for (const event of events) {
+    if (event.sequence <= selectedSequence && event.sequence > selectedSeqMax) {
+      selectedSeqMax = event.sequence;
+    }
+  }
+
+  // Find all events with greatest sequence <= maxSequence
+  let liveSeqMax = -1;
+  for (const event of events) {
+    if (event.sequence <= maxSequence && event.sequence > liveSeqMax) {
+      liveSeqMax = event.sequence;
+    }
+  }
+
+  if (selectedSeqMax < 0 || liveSeqMax < 0) {
+    return null;
+  }
+
+  const selectedCandidates = events.filter((e) => e.sequence === selectedSeqMax);
+  const liveCandidates = events.filter((e) => e.sequence === liveSeqMax);
+
+  // Check if candidate events at selectedSeqMax have consistent/unambiguous elapsedSeconds & floor
+  const selectedFloors = new Set(selectedCandidates.map((e) => e.position?.floor));
+  const selectedElapsed = new Set(
+    selectedCandidates.map((e) => e.position?.elapsedSeconds).filter((v) => typeof v === "number" && Number.isFinite(v)),
+  );
+
+  const liveFloors = new Set(liveCandidates.map((e) => e.position?.floor));
+  const liveElapsed = new Set(
+    liveCandidates.map((e) => e.position?.elapsedSeconds).filter((v) => typeof v === "number" && Number.isFinite(v)),
+  );
 
   if (
-    selectedPos &&
-    livePos &&
-    selectedPos.floor !== undefined &&
-    livePos.floor !== undefined &&
-    selectedPos.floor === livePos.floor &&
-    typeof selectedPos.elapsedSeconds === "number" &&
-    typeof livePos.elapsedSeconds === "number" &&
-    Number.isFinite(selectedPos.elapsedSeconds) &&
-    Number.isFinite(livePos.elapsedSeconds) &&
-    livePos.elapsedSeconds >= selectedPos.elapsedSeconds
+    selectedFloors.size !== 1 ||
+    selectedElapsed.size !== 1 ||
+    liveFloors.size !== 1 ||
+    liveElapsed.size !== 1
   ) {
-    return livePos.elapsedSeconds - selectedPos.elapsedSeconds;
+    return null;
+  }
+
+  const selectedFloor = Array.from(selectedFloors)[0];
+  const liveFloor = Array.from(liveFloors)[0];
+  const selSec = Array.from(selectedElapsed)[0] as number;
+  const liveSec = Array.from(liveElapsed)[0] as number;
+
+  if (selectedFloor !== undefined && liveFloor !== undefined && selectedFloor === liveFloor && liveSec > selSec) {
+    return liveSec - selSec;
   }
 
   return null;

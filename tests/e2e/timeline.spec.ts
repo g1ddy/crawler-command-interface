@@ -162,42 +162,46 @@ test("live interactions append events without rewriting historical state", async
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();
 });
 
-test("timeline scrubber orientation row updates status badge and temporal context during historical scrubbing", async ({ page }) => {
+test("timeline scrubber orientation row and session state update consistently on desktop and mobile viewports", async ({ page }) => {
   const statusBadge = page.getByTestId("replay-status-badge");
   const temporalContext = page.getByTestId("replay-temporal-context");
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
 
-  // Initial Live state
-  await expect(statusBadge).toContainText("LIVE ●");
-  await expect(temporalContext).toContainText("NOW");
+  for (const viewport of [{ width: 1280, height: 800 }, { width: 375, height: 667 }]) {
+    await page.setViewportSize(viewport);
 
-  // Scrub to historical position on Floor 1
-  await slider.fill("50");
-  await expect(statusBadge).toContainText("HISTORICAL ●");
-  await expect(temporalContext).toContainText("TIME UNKNOWN");
+    // Initial Live state
+    await expect(statusBadge).toContainText("LIVE ●");
+    await expect(temporalContext).toContainText("NOW");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
 
-  // Scrub back to max sequence (Live edge)
-  const maxSeq = await latestRuntimeSequence(page);
-  await slider.fill(String(maxSeq));
-  await expect(statusBadge).toContainText("LIVE ●");
-  await expect(temporalContext).toContainText("NOW");
-});
+    // Scrub to historical position on Floor 1 (sequence 50)
+    await slider.fill("50");
+    await expect(statusBadge).toContainText("HISTORICAL ●");
+    await expect(temporalContext).toContainText("TIME UNKNOWN");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
 
-test("timeline scrubber maintains 44px min touch-target height without page horizontal overflow", async ({ page }) => {
-  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
-  await expect(slider).toBeVisible();
+    // Touch target height check
+    const box = await slider.boundingBox();
+    expect(box).not.toBeNull();
+    if (box) {
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
 
-  const box = await slider.boundingBox();
-  expect(box).not.toBeNull();
-  if (box) {
-    expect(box.height).toBeGreaterThanOrEqual(44);
+    // No document-level horizontal overflow
+    const hasOverflow = await page.evaluate(() => {
+      return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+    });
+    expect(hasOverflow).toBe(false);
+
+    // Scrub back to max sequence (Live edge) triggers actual returnToLive()
+    const maxSeq = await latestRuntimeSequence(page);
+    await slider.fill(String(maxSeq));
+
+    await expect(statusBadge).toContainText("LIVE ●");
+    await expect(temporalContext).toContainText("NOW");
+    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
   }
-
-  // Check no document-level horizontal overflow
-  const hasOverflow = await page.evaluate(() => {
-    return document.documentElement.scrollWidth > document.documentElement.clientWidth;
-  });
-  expect(hasOverflow).toBe(false);
 });
 
 test("static bundle renders its essential HUD at desktop and mobile sizes", async ({ page }, testInfo) => {
