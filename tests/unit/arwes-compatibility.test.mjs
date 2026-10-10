@@ -15,7 +15,6 @@ test("Arwes compatibility probe renders in React 19 StrictMode", () => {
       StrictMode,
       null,
       React.createElement(ArwesCompatibilityProbe, {
-        crawlerName: "TEST-CRAWLER",
         floorTitle: "FLOOR 2",
         sequence: 42,
         isLive: true,
@@ -24,7 +23,6 @@ test("Arwes compatibility probe renders in React 19 StrictMode", () => {
   );
 
   assert.match(html, /arwes-compatibility-probe/);
-  assert.match(html, /TEST-CRAWLER/);
   assert.match(html, /FLOOR 2/);
   assert.match(html, /SEQ 42/);
   assert.match(html, /LIVE/);
@@ -125,8 +123,6 @@ test("AuthorityBackground renders SVG background primitives", () => {
 test("ArwesPresentation integrates HudCompositionModel into real composition foundation", () => {
   const fullModel = {
     system: {
-      crawlerName: "PRINCESS CARL",
-      crawlerClass: "Coast Guard Crawler",
       floorTitle: "FLOOR 1: DUNGEON ENTRANCE",
       sequence: 25,
     },
@@ -225,7 +221,7 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
 
 test("ArwesPresentation directly exposes semantic attributes for current, last-known, estimated, and unknown states", () => {
   const model = {
-    system: { crawlerName: "CARL", crawlerClass: "Class unknown", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
@@ -288,7 +284,7 @@ test("ArwesPresentation directly exposes semantic attributes for current, last-k
 
 test("ArwesPresentation keeps stable present telemetry motionIntent undefined", () => {
   const model = {
-    system: { crawlerName: "TEST-CRAWLER", crawlerClass: "Test Class", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
@@ -339,7 +335,7 @@ test("ArwesPresentation keeps stable present telemetry motionIntent undefined", 
 
 test("ArwesPresentation reduced motion produces semantically equivalent markup without physical animation dependency", () => {
   const model = {
-    system: { crawlerName: "TEST-CRAWLER", crawlerClass: "Test Class", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "replay", sequence: 10, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
@@ -374,7 +370,7 @@ test("ArwesPresentation reduced motion produces semantically equivalent markup w
 
 test("ArwesPresentation ensures initial renders have no spurious transition motion intents", () => {
   const baseModel = {
-    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false, latestNotificationTitle: undefined },
@@ -393,7 +389,7 @@ test("ArwesPresentation ensures initial renders have no spurious transition moti
 
 test("ArwesPresentation directly consumes motionIntents from HudCompositionModel", () => {
   const modelWithIntent = {
-    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "replay", sequence: 10, isLive: false, motionIntent: "enter-replay" },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 1, hasActiveAlerts: true, latestNotificationTitle: "NEW ALERT", motionIntent: "attention" },
@@ -415,7 +411,7 @@ test("ArwesPresentation directly consumes motionIntents from HudCompositionModel
 
 test("Ticking countdowns and ordinary telemetry numeric value updates do not emit changed motion intents", () => {
   const tickingModel = {
-    system: { crawlerName: "TEST-CRAWLER", crawlerClass: "Test Class", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: {
       activeCountdown: {
@@ -454,8 +450,6 @@ test("Ticking countdowns and ordinary telemetry numeric value updates do not emi
 test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
   const minimalModel = {
     system: {
-      crawlerName: "MINIMAL-UNIT",
-      crawlerClass: "Class unknown",
       floorTitle: "FLOOR 3",
       sequence: 12,
     },
@@ -495,7 +489,7 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
 test("ArwesPresentation renders Pet domain surface across lifecycle states and motion modes", () => {
   // 1. Unestablished / not-established Pet state
   const unestablishedModel = {
-    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
@@ -522,7 +516,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
 
   // 2. Established Pet state with newly-established change and motion intent
   const acquiredModel = {
-    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 2", sequence: 116 },
+    system: { floorTitle: "FLOOR 2", sequence: 116 },
     temporal: { mode: "replay", sequence: 116, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
@@ -562,7 +556,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
 
   // 3. Established Pet state after bonding (Mongo, Royal Steed) in deterministic mode
   const bondedModel = {
-    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 2", sequence: 118 },
+    system: { floorTitle: "FLOOR 2", sequence: 118 },
     temporal: { mode: "replay", sequence: 118, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
@@ -606,7 +600,7 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
 
 test("ArwesPresentation maintains renderer exclusivity without alternate HUD markers", () => {
   const model = {
-    system: { crawlerName: "CARL", crawlerClass: "Scout", floorTitle: "FLOOR 1", sequence: 10 },
+    system: { floorTitle: "FLOOR 1", sequence: 10 },
     temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },

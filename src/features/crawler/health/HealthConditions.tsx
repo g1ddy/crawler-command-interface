@@ -20,7 +20,10 @@ function Vital({
   inspect: (o: ProjectedObservationValue) => void;
 }) {
   const { name, current, maximum, observation, causalValue, displayAuthority, color } = vital;
-  const percent = maximum !== null && current !== null ? Math.min(100, Math.round((current / maximum) * 100)) : 0;
+  const percent =
+    maximum !== null && current !== null && maximum > 0
+      ? Math.min(100, Math.round((current / maximum) * 100))
+      : null;
   const fillClass = current !== null ? METER_COLOR_MAP[color] ?? styles.redFill : "";
 
   return (
@@ -39,7 +42,7 @@ function Vital({
         {current !== null ? current.toLocaleString() : "—"} / {maximum !== null ? maximum.toLocaleString() : "—"}
       </b>
       <em className={styles.meterTrack}>
-        {current !== null ? (
+        {percent !== null ? (
           <i className={`${styles.meterFill} ${fillClass}`.trim()} style={{ width: `${percent}%` }} />
         ) : null}
       </em>
@@ -55,7 +58,7 @@ export function HealthConditions({
   onInspectObservation: (o: ProjectedObservationValue) => void;
 }) {
   const { vitals, effects, sequence } = presentation;
-  const { beneficial, harmful, injuries, other } = effects;
+  const { beneficial, harmful, injuries, other, status: effectsStatus } = effects;
 
   const renderEffects = (effectList: ActiveEffect[], cardClass?: string) =>
     effectList.length ? (
@@ -69,7 +72,7 @@ export function HealthConditions({
         </div>
       ))
     ) : (
-      <p className={styles.effectCard}>UNKNOWN</p>
+      <p className={styles.effectCard}>NONE</p>
     );
 
   return (
@@ -83,14 +86,22 @@ export function HealthConditions({
       </Panel>
       <Panel title="CONDITIONS">
         <div className={styles.effects}>
-          <p className={styles.eyebrow}>INJURIES</p>
-          {renderEffects(injuries, styles.badEffect)}
-          <p className={styles.eyebrow}>BENEFICIAL EFFECTS</p>
-          {renderEffects(beneficial, styles.goodEffect)}
-          <p className={styles.eyebrow}>HARMFUL EFFECTS</p>
-          {renderEffects(harmful, styles.badEffect)}
-          <p className={styles.eyebrow}>OTHER / STATUS CONDITIONS</p>
-          {renderEffects(other)}
+          {effectsStatus === "unavailable" ? (
+            <p className={styles.effectCard}>UNAVAILABLE</p>
+          ) : effectsStatus === "known-empty" ? (
+            <p className={styles.effectCard}>NO ACTIVE EFFECTS</p>
+          ) : (
+            <>
+              <p className={styles.eyebrow}>INJURIES</p>
+              {renderEffects(injuries, styles.badEffect)}
+              <p className={styles.eyebrow}>BENEFICIAL EFFECTS</p>
+              {renderEffects(beneficial, styles.goodEffect)}
+              <p className={styles.eyebrow}>HARMFUL EFFECTS</p>
+              {renderEffects(harmful, styles.badEffect)}
+              <p className={styles.eyebrow}>OTHER / STATUS CONDITIONS</p>
+              {renderEffects(other)}
+            </>
+          )}
         </div>
       </Panel>
     </div>

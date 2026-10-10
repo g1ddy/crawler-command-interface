@@ -1,6 +1,6 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-10-09
+**Last Updated:** 2026-10-10
 
 ### 🏥 Repository Health Score: **47.0 / 100**
 
@@ -19,10 +19,10 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/inventory/ItemInspector.tsx` | **148.1** | 246 | 46 | 7 | 0.88 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **143.5** | 360 | 38 | 7 | 0.88 |
 | `app/domain/projection/helpers.ts` | **143** | 230 | 54 | 2 | 0.4 |
-| `src/shell/adapters/CrawlerWorkspace.tsx` | **139.9** | 447 | 15 | 23 | 0.96 |
+| `src/shell/adapters/CrawlerWorkspace.tsx` | **139.7** | 445 | 15 | 23 | 0.96 |
 | `src/application/crawler-actions.ts` | **136.8** | 128 | 50 | 4 | 0.8 |
 | `src/presentation/authority-arwes/ArwesAuthorityComposition.ts` | **136** | 598 | 19 | 10 | 0.91 |
-| `app/domain/compiler.ts` | **124.1** | 368 | 35 | 2 | 0.67 |
+| `app/domain/compiler.ts` | **124** | 367 | 35 | 2 | 0.67 |
 | `app/domain/research-compiler.ts` | **121.8** | 318 | 33 | 2 | 1 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
@@ -33,8 +33,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `app/domain/projection/helpers.ts` | **54** | 230 |
 | `src/application/crawler-actions.ts` | **50** | 128 |
 | `src/features/inventory/ItemInspector.tsx` | **46** | 246 |
+| `src/features/crawler/crawler-presentation.ts` | **41** | 233 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **38** | 360 |
-| `app/domain/compiler.ts` | **35** | 368 |
-| `src/features/crawler/crawler-presentation.ts` | **35** | 226 |
-| `src/features/inventory/equipment/equipment-presentation.ts` | **35** | 158 |
+| `app/domain/compiler.ts` | **35** | 367 |
 | `app/domain/research-compiler.ts` | **33** | 318 |
+| `src/features/inventory/equipment/equipment-presentation.ts` | **33** | 159 |

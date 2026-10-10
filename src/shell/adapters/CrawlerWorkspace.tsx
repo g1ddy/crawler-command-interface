@@ -207,7 +207,6 @@ export function CrawlerWorkspace({
   const composition = useMemo(
     () =>
       deriveHudComposition({
-        projectedState,
         projectedObservations,
         activeCountdown,
         sequence: currentSeq,
@@ -219,7 +218,6 @@ export function CrawlerWorkspace({
         activeView: resolvedView,
       }),
     [
-      projectedState,
       projectedObservations,
       activeCountdown,
       currentSeq,
