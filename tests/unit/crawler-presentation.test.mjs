@@ -410,4 +410,6 @@ test("health conditions presentation distinguishes known-empty, established, and
   assert.equal(presEstablished.effects.status, "established");
   assert.equal(presEstablished.effects.harmful.length, 1);
   assert.equal(presEstablished.effects.beneficial.length, 0);
+  assert.equal(presEstablished.effects.injuries.length, 0);
+  assert.equal(presEstablished.effects.other.length, 0);
 });
