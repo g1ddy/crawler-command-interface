@@ -9,7 +9,7 @@
   },
   "app/domain/compiler.ts": {
     "complexity": 35,
-    "loc": 368,
+    "loc": 367,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -113,7 +113,7 @@
   },
   "app/domain/fixtures/floor6.ts": {
     "complexity": 1,
-    "loc": 774,
+    "loc": 773,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 2,
@@ -329,7 +329,7 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 447,
+    "loc": 445,
     "instability": 0.96,
     "fanIn": 1,
     "fanOut": 23,
@@ -384,8 +384,8 @@
     "scanned": true
   },
   "src/features/pet/pet-presentation.ts": {
-    "complexity": 28,
-    "loc": 252,
+    "complexity": 27,
+    "loc": 255,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,
@@ -448,8 +448,8 @@
     "scanned": true
   },
   "src/shell/hud/hud-composition.ts": {
-    "complexity": 7,
-    "loc": 227,
+    "complexity": 5,
+    "loc": 220,
     "instability": 0.71,
     "fanIn": 2,
     "fanOut": 5,
@@ -560,24 +560,24 @@
     "scanned": true
   },
   "src/features/crawler/crawler-presentation.ts": {
-    "complexity": 35,
-    "loc": 226,
+    "complexity": 41,
+    "loc": 233,
     "instability": 0.43,
     "fanIn": 4,
     "fanOut": 3,
     "scanned": true
   },
   "src/features/crawler/health/condition-presentation.ts": {
-    "complexity": 1,
-    "loc": 5,
+    "complexity": 4,
+    "loc": 25,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
     "scanned": true
   },
   "src/features/crawler/health/HealthConditions.tsx": {
-    "complexity": 8,
-    "loc": 99,
+    "complexity": 9,
+    "loc": 110,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
@@ -592,8 +592,8 @@
     "scanned": true
   },
   "src/features/crawler/stats/PlayerStats.tsx": {
-    "complexity": 11,
-    "loc": 154,
+    "complexity": 12,
+    "loc": 158,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
@@ -616,8 +616,8 @@
     "scanned": true
   },
   "src/features/inventory/equipment/equipment-presentation.ts": {
-    "complexity": 35,
-    "loc": 158,
+    "complexity": 33,
+    "loc": 159,
     "instability": 0.5,
     "fanIn": 3,
     "fanOut": 3,
@@ -1040,8 +1040,8 @@
     "scanned": true
   },
   "src/presentation/authority-arwes/compatibility/ArwesCompatibilityProbe.ts": {
-    "complexity": 10,
-    "loc": 241,
+    "complexity": 9,
+    "loc": 230,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 6,
