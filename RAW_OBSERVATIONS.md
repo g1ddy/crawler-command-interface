@@ -86,19 +86,32 @@ Collect claims before authoring JSON. Keep a short claim ledger for each floor t
 
 `Source-backed` means that a claim is traceable to evidence of sufficient quality and specificity for that claim. It does **not** require a directly accessible book citation.
 
-Use sources in this order of preference:
+Use sources according to their actual nature and evidentiary value. The workflow is expected to rely on accessible online research; direct access to the physical novel is not a prerequisite for establishing a usable research claim.
 
-1. **Primary** — published text, licensed audiobook, or an official preview. Use `trust: "primary"` and normally `confidence: "confirmed"` only when the cited passage or timestamp was actually inspected and establishes the payload.
-2. **Corroborating** — maintained fan databases, wikis, reference sites, and substantive editorial sources. A reliable corroborating source may independently support a production claim when it states the fact explicitly, offers a reasonably stable locator, and the authored payload contains nothing beyond what that source establishes. Preserve `trust: "corroborating"` and normally `confidence: "corroborated"`; do not upgrade secondary evidence to primary or `confirmed` merely because it attributes the fact to the book.
-3. **Candidate** — discussions, unverified lists, comments, and search snippets. Use these to identify material needing verification; do not normally use them as the sole basis for projected state or a precise causal transition.
+### Source trust and claim confidence are separate
 
-For durable causal transitions, identity/relationship claims, or capability-enabling state, multiple independent corroborating sources are preferred when primary evidence is unavailable. Evidence requirements should scale with precision: an explicit qualitative fact such as a named party membership may be supportable from a reliable secondary reference, while exact numbers, timestamps, countdown values, causation, notification delivery, item quantities, or similarly precise claims require stronger evidence.
+- **Source trust** classifies the source itself: `primary`, `corroborating`, or `candidate`.
+- **Claim confidence** describes how strongly the available evidence supports the specific proposition: `confirmed`, `corroborated`, `candidate`, or `disputed`.
+- A secondary source never becomes a primary source because its claim is strong. Likewise, a claim does not have to remain unconfirmed solely because the primary text is inaccessible.
 
-Never synthesize primary provenance. If the book, audiobook, or official preview was not directly verified, do not add a primary citation or `confirmed` confidence merely because a secondary source names a chapter or says the fact came from the book. Add the verified secondary evidence honestly and upgrade the provenance later if primary material becomes available.
+### Confidence definitions
+
+- **`confirmed`** — The available evidence establishes the proposition strongly enough for the research workflow to treat it as established. This can be based on multiple credible, materially independent online sources that agree on the material details, or exceptionally strong and specific evidence from one credible source. No material contradiction remains unresolved. This label does **not** mean the novel was directly inspected.
+- **`corroborated`** — Credible evidence supports the proposition, but the evidence is narrower, less specific, less independent, or otherwise not strong enough for `confirmed`. A clear claim from one credible secondary source may be `corroborated` even when it is the best evidence available.
+- **`candidate`** — A plausible lead with weak, incomplete, indirect, or insufficiently traceable support. It should not be presented as established.
+- **`disputed`** — Credible evidence materially conflicts, or a significant unresolved ambiguity prevents the proposition from being treated as settled. Preserve the competing accounts.
+
+These values describe evidence strength/condition, not a simple numeric ladder: `disputed` specifically signals conflict.
+
+### Independence and evidence threshold
+
+Do not count websites as independent merely because they have different URLs. Compare their wording, citations, and apparent origin; several pages repeating one recap are one underlying evidence chain, not multiple independent confirmations. Prefer independent sources for precise numbers, chronology, causation, identity/relationship claims, and capability-enabling state. The more exact or consequential the claim, the stronger and more traceable its evidence should be.
+
+Never invent primary provenance or imply direct book inspection. If only secondary sources were accessed, record those sources honestly and assign confidence according to the evidence they provide. Do not ask for primary-text confirmation as a prerequisite to completing online research. Where useful, identify a follow-up that can be resolved through additional accessible sources, a better locator, or comparison of conflicting reports; direct primary-text checking may be noted only as an optional future avenue if someone with access chooses to do it.
 
 For every accepted claim, capture the narrowest stable locator available: book and chapter for primary text, timestamp for audio, and a page/section heading or revision marker for community or editorial sources. If a source supports only a level change, author a level transition or `xp-progress` level anchor; do not infer numeric XP. If a source supports a single stat, item, or broadcast metric, preserve only that field rather than constructing a complete HUD snapshot.
 
-When a corroborating source supplies a page-derived table, note the page in the locator's `section` text until the evidence schema gains a dedicated page field. Add the source once to the floor's `sources.json`, reuse its stable ID, and retain each claim's individual locator and confidence. Recheck community-sourced facts against a primary source when one becomes available, updating the evidence rather than silently changing the payload.
+When a corroborating source supplies a page-derived table, note the page in the locator's `section` text until the evidence schema gains a dedicated page field. Add the source once to the floor's `sources.json`, reuse its stable ID, and retain each claim's individual locator and confidence. If additional accessible evidence later improves or changes the assessment, update the evidence and confidence transparently rather than silently changing the payload.
 
 ## Evidence is part of the observation
 
@@ -116,7 +129,7 @@ A summary such as `The countdown resets` is descriptive text. The structured `ty
 
 Source trust describes the nature/reliability of a source. Claim confidence describes how strongly the available body of evidence establishes a particular claim. They are independent dimensions.
 
-`confirmed` means the available evidence establishes the claim strongly enough for CCI authoring; direct primary-text access is not required. Multiple independent corroborating sources may collectively establish a claim as `confirmed`. A corroborating source remains corroborating; its contribution does not change its source classification into primary evidence.
+Use the confidence definitions above consistently. In particular, `confirmed` may be supported by multiple credible, materially independent online sources, or by exceptionally strong and specific evidence from one credible source. It never asserts that the physical novel was inspected. A corroborating source remains corroborating; its contribution does not change its source classification into primary evidence.
 
 ## Position and ordering
 
