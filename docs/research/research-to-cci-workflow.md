@@ -135,11 +135,13 @@ Convert the Stage 1 research report into a structured research-claim artifact.
 
 The extraction LLM receives:
 
-1. the complete research report;
+1. the complete Stage 1 research report, or an explicitly labeled excerpt with the evidence and source details needed for the claims being extracted;
 2. the current repository JSON Schema;
 3. the extraction prompt below.
 
-It does **not** need CCI source code or repository access.
+An excerpt is a bounded input, not a claim that the full research is exhaustive. Extract only claims supported by the supplied report/excerpt and its included evidence. If additional online research is performed later, add its findings, source identity, locators, and qualifications to the Stage 1 research artifact before extracting them into Stage 2 YAML. Do not add externally discovered claims directly to Stage 2 as though the original Stage 1 input supported them.
+
+The extraction LLM does **not** need CCI source code or repository access.
 
 Its job is **structured evidence extraction**, not CCI modeling, semantic validation, or authoritative authoring.
 
