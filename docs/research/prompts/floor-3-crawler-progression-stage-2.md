@@ -27,8 +27,9 @@ This is evidence extraction, not CCI runtime modeling or semantic validation.
 11. Keep conditions, onset, duration, persistence, and recovery/end boundaries distinct where evidence supports them.
 12. Do not create CCI event IDs, runtime payloads, implementation types, UI behavior, or modeling dispositions.
 13. Use only fields and enum values in `app/domain/schema/research-claim.schema.json`.
-14. Do not include Stage 2 claims merely because they are plausible or known from outside the supplied material. The supplied Stage 1 document is explicitly an excerpt; it may not support every claim in the final Stage 2 ledger. If a claim is not supported by the supplied excerpt or its cited evidence, omit it rather than treating it as confirmed.
-15. Keep source/evidence coverage complete for the claims that are included: every evidence `sourceId` must match a source record, and each source URL must be copied exactly from the supplied report.
+14. Do not include Stage 2 claims merely because they are plausible or known from outside the supplied material. The supplied Stage 1 document may be an excerpt; it may not support every claim in the final Stage 2 ledger. If a claim is not supported by the supplied material or its cited evidence, omit it rather than treating it as confirmed.
+15. Keep source/evidence coverage complete for the claims that are included: every evidence `sourceId` must match a source record, and each source URL must be copied exactly from the supplied material.
+16. The Stage 1 input is a bounded summary, not necessarily the complete research report. Do not assume it contains every useful finding. Stage 2 remains extraction-only: do not browse or introduce new claims from outside the supplied material. If the supplied input lacks evidence needed for a desired claim, preserve that gap for a separate Stage 1 research update rather than filling it from outside knowledge.
 
 ## Required coverage when supported by the supplied material
 
