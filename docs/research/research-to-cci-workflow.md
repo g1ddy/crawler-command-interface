@@ -290,7 +290,7 @@ When an extraction claim appears to span more than one lifecycle boundary, keep 
 
 ## Conceptual schema
 
-The repository's **current JSON Schema is authoritative**. The example below illustrates the intended contract; it is not a replacement for the repository schema.
+The repository's **current JSON Schema is authoritative**. The example below illustrates the intended contract using an identifiable secondary source; it is not a replacement for the repository schema.
 
 ```yaml
 schemaVersion: crawler-research/v1
@@ -298,28 +298,28 @@ storyId: dcc
 floor: 3
 
 sources:
-  - id: src-book-2
-    kind: official-text
-    trust: primary
-    title: Dungeon Crawler Carl — Book 2
-    url: https://example.invalid/source
+  - id: src-dccfansite-ch11
+    kind: fan-compendium
+    trust: corroborating
+    title: Book 2, Chapter 11 · Unofficial DCC Index
+    url: https://www.dccfansite.com/book/2/ch/11/
 
 claims:
-  - id: P3-PET-001
-    domain: pet
+  - id: F3-PROG-013
+    domain: crawler
     kind: event
     claim:
-      summary: Mongo reaches Level 3.
-      detail: Mongo's progression is explicitly described in the researched material.
+      summary: Carl establishes a mind-link with Grimaldi and Signet to help broker peace between them.
     evidence:
-      - sourceId: src-27
+      - sourceId: src-dccfansite-ch11
         locator:
           book: 2
-          chapter: 5
+          chapter: 11
+          section: One of Us
         relationship: supports
-        confidence: confirmed
+        confidence: corroborated
     unknowns:
-      - exact_timestamp
+      - exact_mechanism_beyond_the_reported_parasite_enabled_mind_link
 ```
 
 ### Source records
