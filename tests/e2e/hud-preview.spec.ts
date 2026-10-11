@@ -629,3 +629,40 @@ test("persistent masthead hierarchy enforces exact 2-row responsibilities across
   // Verify document-level horizontal overflow is false
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+test("deliberately long floor title truncates without pushing notification attention off-screen or causing document overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 844 });
+
+  await page.addInitScript((timelineDoc) => {
+    try {
+      const doc = JSON.parse(JSON.stringify(timelineDoc));
+      if (doc.floors && doc.floors.length > 0) {
+        doc.floors[0].title =
+          "EXTREMELY LONG OVERLOOK CITY SECTOR 99 UNDERGROUND COMPLEX BOUNDARY AREA";
+      }
+      localStorage.setItem("crawler_timeline_doc_v2", JSON.stringify(doc));
+    } catch (e) {
+      console.error(e);
+    }
+  }, compiledTimeline);
+
+  await page.goto(pagesPath);
+
+  // Scrub to sequence 18 where a notification delivery is present
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await enterReplayByScrubbing(page);
+  await slider.fill("18");
+
+  const persistentHud = page.locator('[data-hud-composition="persistent"]');
+  await expect(persistentHud).toBeVisible();
+
+  // Row 1: Notice count remains visible on right
+  await expect(persistentHud.locator('[class*="noticeIndicator"]')).toBeVisible();
+  await expect(persistentHud).toContainText("1 NOTICE");
+
+  // Row 2 remains intact: Level on right
+  await expect(persistentHud).toContainText("LVL —");
+
+  // Document has no horizontal overflow
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});

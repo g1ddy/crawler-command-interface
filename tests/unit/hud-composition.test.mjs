@@ -1,10 +1,30 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { deriveHudComposition } from "../../src/shell/hud/public.ts";
+import { deriveHudComposition, formatFloorDisplay } from "../../src/shell/hud/public.ts";
 import { createInitialState, projectObservations, projectState } from "../../app/domain/projection.ts";
 import { derivePartyPresentation } from "../../src/features/party/public.ts";
 import { derivePetPresentation, derivePetPresentationSummary } from "../../src/features/pet/public.ts";
+
+test("formatFloorDisplay enforces exact floor title formatting rules", () => {
+  // Ordinal 3 plus title Third Floor -> FLOOR 3
+  assert.equal(formatFloorDisplay("Third Floor", 3), "FLOOR 3");
+
+  // Ordinal 3 plus title Floor 3 -> FLOOR 3
+  assert.equal(formatFloorDisplay("Floor 3", 3), "FLOOR 3");
+
+  // Ordinal 3 plus a distinct title Over City -> FLOOR 3 · OVER CITY
+  assert.equal(formatFloorDisplay("Over City", 3), "FLOOR 3 · OVER CITY");
+
+  // Title-only input -> uppercased title
+  assert.equal(formatFloorDisplay("Descent"), "DESCENT");
+
+  // Empty title -> empty output
+  assert.equal(formatFloorDisplay(""), "");
+
+  // The existing all-floors case
+  assert.equal(formatFloorDisplay("All Floors (Whole Story)", "all"), "ALL FLOORS (WHOLE STORY)");
+});
 
 test("deriveHudComposition compiles renderer-neutral model for initial live state", () => {
   const state = createInitialState();
