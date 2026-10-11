@@ -11,7 +11,13 @@ This is evidence extraction, not CCI runtime modeling or semantic validation.
 1. Use the supplied Stage 1 material only. Do not browse or fill gaps from outside knowledge.
 2. Keep claims atomic and independently useful; preserve canon terminology.
 3. Preserve exact source titles, URLs, source kinds/trust, locators, and qualifications supplied by the report. Never invent a URL, locator, quotation, or primary-source record.
-4. Source trust describes the source; confidence describes the claim. A secondary source can support a claim marked `confirmed` for this research workflow, but that label does not mean the novel itself was inspected.
+4. Source trust and claim confidence are separate. Keep each source's actual kind/trust even when its evidence has `confirmed` confidence. The novel's physical text is not an expected input and primary-text inspection is not a prerequisite; never ask the user to confirm a claim against the book.
+5. Apply these confidence definitions to each evidence entry:
+   - `confirmed`: the available evidence establishes the proposition strongly enough for this workflow. Multiple credible, materially independent online sources may collectively establish it; exceptionally strong and specific evidence from one credible source may also qualify. No material conflict remains unresolved. This does not mean the novel was inspected.
+   - `corroborated`: credible evidence supports the proposition, but is narrower, less specific, less independent, or otherwise not strong enough for `confirmed`. A single credible secondary source can still be the best available evidence.
+   - `candidate`: plausible but weak, incomplete, indirect, or insufficiently traceable support.
+   - `disputed`: credible evidence materially conflicts or a significant ambiguity remains unresolved.
+   These are not simply four levels on one ladder; `disputed` signals conflict. Count independent evidence chains, not URLs. Pages copying the same recap do not constitute independent corroboration.
 5. Distinguish what a source reports from the researcher's interpretation. Preserve corroboration, contradiction, context, and uncertainty.
 6. Do not infer earlier maximum level from a later level snapshot.
 7. Do not calculate resulting attributes from race/class modifiers or assumed baselines. Record resulting values only when the supplied evidence explicitly reports them.
