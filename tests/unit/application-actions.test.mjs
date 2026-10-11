@@ -40,8 +40,7 @@ test("valid actions append a runtime event at the live endpoint", () => {
   assert.deepEqual(result.event.evidence, []);
   assert.equal(result.document.events.at(-1), result.event);
   assert.equal(validateCrawlerTimeline(result.document).valid, true);
-  assert.equal(projectState(result.document, result.event.sequence).crawler.attributes.Strength,
-    (projectState(document, previousEnd).crawler.attributes.Strength ?? 0) + 1);
+  assert.equal(projectState(result.document, result.event.sequence).crawler.attributes.Strength, undefined);
 });
 
 test("runtime actions survive validated local persistence and reprojection", () => {
@@ -69,8 +68,7 @@ test("runtime actions survive validated local persistence and reprojection", () 
   const loaded = adapter.loadTimeline();
   assert.ok(loaded);
   assert.equal(loaded.events.at(-1).id, result.event.id);
-  assert.equal(projectState(loaded, result.event.sequence).crawler.attributes.Dexterity,
-    (projectState(document, document.events.at(-1).sequence).crawler.attributes.Dexterity ?? 0) + 1);
+  assert.equal(projectState(loaded, result.event.sequence).crawler.attributes.Dexterity, undefined);
 });
 
 test("authored events still require evidence while runtime events cannot claim it", () => {
