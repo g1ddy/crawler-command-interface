@@ -27,6 +27,31 @@ sources:
     trust: "corroborating"
     title: "Timeline - Dungeon Crawler Carl - Bookworm Wiki"
     url: "https://wiki.bookwormai.app/dungeon-crawler-carl/timeline"
+  - id: "src-dccfansite-ch11"
+    kind: "fan-compendium"
+    trust: "corroborating"
+    title: "Book 2, Chapter 11 · Unofficial DCC Index"
+    url: "https://www.dccfansite.com/book/2/ch/11/"
+  - id: "src-fandom-doomsday-item"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Carl's Doomsday Scenario (Item) | Dungeon Crawler Carl Wiki - Fandom"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_%28Item%29"
+  - id: "src-fandom-book2-chapters"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Book 2 Chapter Summaries | Dungeon Crawler Carl Wiki - Fandom"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Book_2_Chapter_Summaries"
+  - id: "src-storiluna-ch8"
+    kind: "editorial"
+    trust: "corroborating"
+    title: "Chapter 8 | Carl's Doomsday Scenario (Dungeon Crawler Carl, #2) | StoriLuna"
+    url: "https://storiluna.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/a9024caf-7804-4305-aeae-02c87292a26b"
+  - id: "src-fandom-third-floor"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "The Over City (Third Floor) | Dungeon Crawler Carl Wiki - Fandom"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Third_Floor"
 claims:
   - id: "F3-PROG-001"
     domain: "crawler"
@@ -140,20 +165,87 @@ claims:
     domain: "crawler"
     kind: "event"
     claim:
-      summary: "Carl intentionally infected himself with parasitic worms to shield his neural pathways from Ringmaster Grimaldi's mind-control mechanics."
+      summary: "Carl intentionally ingested a parasitic worm while protected by Wisp Armor, establishing a mind-link with Grimaldi and Signet that he used to help broker peace between them."
     evidence:
-      - sourceId: "src-bookworm-timeline"
+      - sourceId: "src-dccfansite-ch11"
+        locator:
+          book: 2
+          chapter: 11
+          section: "One of Us"
         relationship: "supports"
-        confidence: "confirmed"
+        confidence: "corroborated"
+        note: "The chapter guide describes Carl swallowing a parasite worm under Wisp Armor protection to mind-link Grimaldi and Signet and broker their peace; it does not describe a neural-pathway mechanism."
+      - sourceId: "src-bookworm-timeline"
+        locator:
+          book: 2
+          chapter: 11
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "Secondary timeline summary also describes Wisp Armor resisting mind control while Carl ingests parasite-infested ice cream to communicate with Grimaldi and reconcile him with Signet."
   - id: "F3-PROG-014"
     domain: "floor-system"
     kind: "event"
     claim:
-      summary: "Carl synthesized 'Carl's Doomsday Scenario' by forcing an exploding Soul Crystal into a Sheol Glass Reaper Case, triggering a four-stage magical foreshock."
+      summary: "During the Floor 3 'Fools Who Broke the Glass' quest, Carl placed a Sheol Glass Reaper Case around an about-to-explode Soul Crystal and stored the resulting unstable explosive, Carl's Doomsday Scenario, in his inventory."
     evidence:
-      - sourceId: "src-bookworm-timeline"
+      - sourceId: "src-fandom-doomsday-item"
+        locator:
+          book: 2
+          chapter: 24
+          section: "Story — Book 2"
         relationship: "supports"
-        confidence: "confirmed"
+        confidence: "corroborated"
+        note: "The item page describes Carl placing the case around the volatile crystal and pulling the resulting item into his inventory; its references include Book 2 chapters 7 and 25, while the chapter-summary source places the quest event in chapter 24."
+      - sourceId: "src-fandom-book2-chapters"
+        locator:
+          book: 2
+          chapter: 24
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "Chapter 24 summary says Carl places the soul gem in the glass case rather than fleeing; the claim is based on secondary chapter summaries, not direct inspection of the novel."
+  - id: "F3-PROG-016"
+    domain: "floor-system"
+    kind: "event"
+    claim:
+      summary: "After Carl's Doomsday Scenario is created, four successive magical foreshocks occur: the first disables magical gear effects, the second activates weapons (causing Conrad E to explode), the third destroys the Sepsis Crown, and the fourth activates crawlers' hotlist items."
+    evidence:
+      - sourceId: "src-fandom-book2-chapters"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter 25 summary explicitly lists the first, second, third, and fourth foreshock effects. This is secondary-source reporting, not book verification."
+      - sourceId: "src-bookworm-timeline"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The timeline summary describes precursor bursts that destabilize magical gear and subsequent chaotic effects; it is less specific than the chapter-summary source."
+  - id: "F3-CHRON-001"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "On Floor 3, an attack inflicted stun and paralysis on Carl and left him unconscious; he regained consciousness fifteen hours later."
+    evidence:
+      - sourceId: "src-storiluna-ch8"
+        locator:
+          book: 2
+          chapter: 8
+          section: "Summary"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter 8 summary explicitly reports the attack, stun, paralysis, unconsciousness, and waking fifteen hours later."
+      - sourceId: "src-fandom-third-floor"
+        locator:
+          section: "Floor Timeline & Patch Notes"
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The floor timeline notes 'knocked unconscious 15 hours' but nearby countdown/date fields are incomplete or inconsistent; it corroborates the duration, not a precise countdown anchor."
+    unknowns:
+      - "exact_countdown_anchor"
+      - "exact_elapsed_time_reference_for_the_fifteen_hour_duration"
   - id: "F3-PROG-015"
     domain: "crawler"
     kind: "state"
