@@ -213,7 +213,7 @@ The researcher may not have direct access to the published books. When primary t
 > - conflicting or qualifying evidence, if any;
 > - what remains unknown.
 >
-> Keep the verification queue targeted rather than exhaustive. Prioritize claims that could materially affect later understanding, especially progression, condition, equipment behavior, deployment restrictions, control/relationship mechanics, and apparent system-wide rules.
+> Keep the evidence follow-up queue targeted rather than exhaustive. Prioritize claims that could materially affect later understanding, especially progression, condition, equipment behavior, deployment restrictions, control/relationship mechanics, and apparent system-wide rules.
 >
 > ## Known areas to verify
 >
