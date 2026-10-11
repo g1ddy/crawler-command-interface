@@ -8,7 +8,7 @@ This document is the design authority for the Stage 1 research pass and subseque
 
 Related workflow:
 - docs/research/research-to-cci-workflow.md
-- docs/research/prompts/pet-research-stage-1.md
+- docs/research/prompts/floor-3-pet-research-stage-1.md
 - docs/research/prompts/research-yaml-extraction-stage-2.md
 - docs/research/floor-3/pet-research-abstract.md
 
