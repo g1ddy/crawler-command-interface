@@ -220,24 +220,18 @@ claims:
         note: "The class page explicitly lists +25% mana cost for damage spells."
   - id: "F3-PROG-012"
     domain: "crawler"
-    kind: "state"
+    kind: "observation"
     claim:
-      summary: "A reconstruction of Carl's unenhanced post-selection base stats gives Strength 10, Intelligence 5, Constitution 10, Dexterity 10, and Charisma 25."
-      detail: "Derived from the starting stats, Primal penalty, class bonuses, prerequisite allocation, and remaining point allocation. The cited stat table includes equipment modifiers, so this is a calculated vector rather than a directly reported row."
+      summary: "The Book 2 page 28 stats table records Carl after class selection and point allocation at Strength 13/16, Intelligence 5, Constitution 19, Dexterity 11, and Charisma 25."
+      detail: "These are the table's reported values, not an unenhanced base-stat vector. The STR pair distinguishes the listed value with and without the War Gauntlet; the table attributes CON to equipped items. This claim preserves the secondary source's recorded snapshot without reconstructing unreported values."
     evidence:
       - sourceId: "src-fandom-carl"
         locator:
           book: 2
           section: "Book 2 Stats — page 28, Post Class Selection / Point Allocation"
-        relationship: "context"
-        confidence: "candidate"
-        note: "The table reports equipment-modified values (STR 13/16, INT 5, CON 19, DEX 11, CHR 25). The unenhanced vector is reconstructed by removing listed equipment bonuses; the page does not report this exact vector as a single row."
-    dependencies:
-      - "F3-PROG-002"
-      - "F3-PROG-004"
-      - "F3-PROG-005"
-      - "F3-PROG-007"
-      - "F3-PROG-009"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The page 28 table explicitly lists STR 13/16, INT 5, CON 19, DEX 11, and CHR 25, with equipment notes for STR and CON."
   - id: "F3-PROG-013"
     domain: "crawler"
     kind: "state"
@@ -338,7 +332,7 @@ claims:
     domain: "floor-system"
     kind: "event"
     claim:
-      summary: "After Carl's Doomsday Scenario is created, four successive magical foreshocks occur: the first disables magical gear effects, the second activates weapons (causing Conrad E to explode), the third destroys the Sepsis Crown, and the fourth activates crawlers' hotlist items."
+      summary: "The first of four successive magical foreshocks disables magical gear effects."
     evidence:
       - sourceId: "src-fandom-book2-chapters"
         locator:
@@ -346,14 +340,80 @@ claims:
           chapter: 25
         relationship: "supports"
         confidence: "corroborated"
-        note: "The chapter 25 summary explicitly lists the first, second, third, and fourth foreshock effects. This is secondary-source reporting, not book verification."
+        note: "The chapter 25 summary identifies the first foreshock as disabling magical gear effects; this is secondary-source reporting, not book verification."
       - sourceId: "src-bookworm-timeline"
         locator:
           book: 2
           chapter: 25
         relationship: "corroborates"
         confidence: "corroborated"
-        note: "The timeline summary describes precursor bursts that destabilize magical gear and subsequent chaotic effects; it is less specific than the chapter-summary source."
+        note: "The timeline summary describes precursor bursts that destabilize magical gear, but is less specific than the chapter-summary source."
+  - id: "F3-PROG-021"
+    domain: "floor-system"
+    kind: "event"
+    claim:
+      summary: "The second of four successive magical foreshocks activates weapons, causing Conrad E to explode."
+    evidence:
+      - sourceId: "src-fandom-book2-chapters"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter 25 summary identifies weapon activation and Conrad E's explosion as the second foreshock; this is secondary-source reporting, not book verification."
+      - sourceId: "src-bookworm-timeline"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The timeline summary describes subsequent chaotic effects, but is less specific than the chapter-summary source."
+    dependencies:
+      - "F3-PROG-019"
+  - id: "F3-PROG-022"
+    domain: "floor-system"
+    kind: "event"
+    claim:
+      summary: "The third of four successive magical foreshocks destroys the Sepsis Crown."
+    evidence:
+      - sourceId: "src-fandom-book2-chapters"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter 25 summary identifies destruction of the Sepsis Crown as the third foreshock; this is secondary-source reporting, not book verification."
+      - sourceId: "src-bookworm-timeline"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The timeline summary describes subsequent chaotic effects, but is less specific than the chapter-summary source."
+    dependencies:
+      - "F3-PROG-021"
+  - id: "F3-PROG-023"
+    domain: "floor-system"
+    kind: "event"
+    claim:
+      summary: "The fourth of four successive magical foreshocks activates crawlers' hotlist items."
+    evidence:
+      - sourceId: "src-fandom-book2-chapters"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter 25 summary identifies activation of crawlers' hotlist items as the fourth foreshock; this is secondary-source reporting, not book verification."
+      - sourceId: "src-bookworm-timeline"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The timeline summary describes subsequent chaotic effects, but is less specific than the chapter-summary source."
+    dependencies:
+      - "F3-PROG-022"
   - id: "F3-CHRON-001"
     domain: "crawler"
     kind: "event"
