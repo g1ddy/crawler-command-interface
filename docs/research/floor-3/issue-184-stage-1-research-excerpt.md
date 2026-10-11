@@ -24,7 +24,7 @@ The researched Floor 3 material identifies persistent class modifiers including:
 - +25% mana cost for attack spells.
 - +5% bomb/trap training.
 
-These are class-level persistent modifiers, not temporary event effects.
+These are class-level persistent modifiers, not temporary event effects. The +5% bomb/trap training modifier is distinct from the two named trap skills below.
 
 ## Skills
 
@@ -34,9 +34,18 @@ Carl's Iron Punch mutates into Breadbasket at Level 10. The researched source de
 
 The research does not establish whether Level 10 is a universal Pugilism mutation threshold.
 
-### Trap capability
+### Trap skills: Find Trap and Backfire
 
-The Floor 3 research identifies trap detection/disarm / trap-engineering capability as a meaningful progression area, including practical use during the HOA/neighborhood sequence. Exact skill naming should remain source-scoped where the evidence does not establish the exact System label.
+The accessible secondary sources identify two distinct trap-related skills associated with Carl's selection of the Compensated Anarchist class on Floor 3:
+
+- **Find Trap:** Carl receives +5 to Find Trap with the class selection. The skill improves trap detection. The wiki describes its first documented activation in Book 3, after the Floor 3 progression; that later activation must not be represented as a Floor 3 event.
+- **Backfire:** Carl gains five levels of Backfire on the Third Floor with the class selection. The skill allows a crawler to pick up, disassemble, and reuse traps/components. The source describes a specific 100%-success removal rule for an untriggered Alarm Module; do not generalize that rule to every trap.
+
+Sources:
+- [Find Trap Skill — Dungeon Crawler Carl Wiki](https://dungeon-crawler-carl.fandom.com/wiki/Find_Trap_Skill)
+- [Backfire Skill — Dungeon Crawler Carl Wiki](https://dungeon-crawler-carl.fandom.com/wiki/Backfire_Skill)
+
+Keep the class's +5% bomb/trap training modifier separate from these skill grants. The broader HOA/neighborhood sequence is not sufficient by itself to assert an additional specific trap-detection or trap-disarm action; add such an event only if a source supports the action directly.
 
 ## Magic
 
@@ -97,11 +106,11 @@ The researched progression is broadly:
 
 Primal selection → Over City / HOA progression → Mongo/Pet progression becomes mechanically relevant → Maestro quest → Grimaldi/instrument sequence → Floor 4 transition.
 
-This chronology should not be treated as an exact timestamped sequence where the sources do not provide that precision.
+This chronology should not be treated as an exact timestamped sequence where the sources do not provide that precision. The first documented Find Trap activation is later, in Book 3, and is not part of the Floor 3 chronology.
 
 ## Research gaps
 
 - Exact System Prompt wording for Primal selection.
 - Exact Pet interface/readout wording.
-- Exact skill naming where secondary sources use descriptive rather than System terminology.
+- Exact System wording for Find Trap and Backfire beyond the named skills and sourced effects.
 - Exact quest reward details where the accessible evidence is not sufficiently precise.
