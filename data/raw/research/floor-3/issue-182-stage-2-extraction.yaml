@@ -74,6 +74,13 @@ claims:
     claim:
       summary: "Carl reached the Third Floor at Level 13 with 36 unallocated stat points available for race/class selection."
     evidence:
+      - sourceId: "src-fandom-carl"
+        locator:
+          book: 2
+          section: "Book 2 Levels — page 29"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The Carl page's Book 2 level table lists Level 13 at page 29."
       - sourceId: "src-fandom-class"
         locator:
           book: 2
