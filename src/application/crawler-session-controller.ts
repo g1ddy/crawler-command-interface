@@ -254,11 +254,38 @@ export class CrawlerSessionController {
       isLive: this.isLive,
     });
 
-    const floorHudTitle = currentFloorSegment
-      ? currentFloorSegment.title
-      : this.selectedFloorOrdinal === "all"
-        ? "All Floors (Whole Story)"
-        : `Floor ${this.selectedFloorOrdinal}`;
+    // Resolve floor context for the selected timeline position (currentSeq)
+    let positionFloorOrdinal: number | undefined;
+    for (let i = events.length - 1; i >= 0; i--) {
+      const ev = events[i];
+      if (ev.sequence <= currentSeq && ev.position?.floor !== undefined) {
+        positionFloorOrdinal = ev.position.floor;
+        break;
+      }
+    }
+    if (positionFloorOrdinal === undefined && this.timelineDoc.floors) {
+      for (const f of this.timelineDoc.floors) {
+        if (currentSeq >= f.startSequence && currentSeq <= f.endSequence) {
+          positionFloorOrdinal = f.ordinal;
+          break;
+        }
+      }
+    }
+
+    const positionFloorSegment =
+      positionFloorOrdinal !== undefined
+        ? this.timelineDoc.floors?.find(
+            (floor: FloorSegment) => floor.ordinal === positionFloorOrdinal,
+          ) ?? null
+        : null;
+
+    const floorHudTitle = positionFloorSegment
+      ? positionFloorSegment.title
+      : positionFloorOrdinal !== undefined
+        ? `Floor ${positionFloorOrdinal}`
+        : "";
+
+    const floorHudOrdinal = positionFloorOrdinal;
 
     return {
       timelineDoc: this.timelineDoc,
@@ -278,6 +305,7 @@ export class CrawlerSessionController {
       activeCountdown,
       replayPresentation,
       floorHudTitle,
+      floorHudOrdinal,
     };
   }
 

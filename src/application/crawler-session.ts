@@ -29,6 +29,7 @@ export interface CrawlerSessionSnapshot {
   activeCountdown: ReturnType<typeof projectCountdownState>;
   replayPresentation: ReplayPresentation;
   floorHudTitle: string;
+  floorHudOrdinal?: number;
 }
 
 export interface CrawlerSessionCommands {

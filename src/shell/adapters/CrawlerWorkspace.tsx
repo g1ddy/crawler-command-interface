@@ -54,6 +54,7 @@ export function CrawlerWorkspace({
       | "activeCountdown"
       | "replayPresentation"
       | "floorHudTitle"
+      | "floorHudOrdinal"
     >;
     commands: Pick<
       CrawlerSession["commands"],
@@ -83,6 +84,7 @@ export function CrawlerWorkspace({
     activeCountdown,
     replayPresentation,
     floorHudTitle,
+    floorHudOrdinal,
   } = snapshot;
 
   const [presentationChoice, setPresentationChoice] = useHudPresentation(hudPresentation);
@@ -204,7 +206,7 @@ export function CrawlerWorkspace({
         sequence: currentSeq,
         isLive,
         floorHudTitle,
-        selectedFloorOrdinal,
+        selectedFloorOrdinal: floorHudOrdinal ?? (selectedFloorOrdinal === "all" ? undefined : selectedFloorOrdinal),
         notificationsSummary,
         petSummary,
         activeView: resolvedView,
@@ -217,6 +219,7 @@ export function CrawlerWorkspace({
       isLive,
       floorHudTitle,
       selectedFloorOrdinal,
+      floorHudOrdinal,
       notificationsSummary,
       petSummary,
       resolvedView,
