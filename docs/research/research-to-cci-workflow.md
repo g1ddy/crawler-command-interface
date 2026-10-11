@@ -122,7 +122,7 @@ The following prompt is the standard starting point for the Floor 3 Pet pilot.
 
 The reusable Floor 3 Pet canon-research prompt is maintained separately:
 
-[Stage 1 — Canon / Deep Research Prompt](./prompts/stage-1-canon-research.md)
+[Stage 1 — Canon / Deep Research Prompt](./prompts/floor-3-pet-research-stage-1.md)
 
 
 ---
@@ -135,11 +135,16 @@ Convert the Stage 1 research report into a structured research-claim artifact.
 
 The extraction LLM receives:
 
-1. the complete research report;
-2. the current repository JSON Schema;
-3. the extraction prompt below.
+1. the complete Stage 1 research report, or an explicitly labeled excerpt;
+2. any supplemental evidence notes supplied for this extraction, when claims were researched or checked separately;
+3. the current repository JSON Schema;
+4. the extraction prompt below.
 
-It does **not** need CCI source code or repository access.
+An excerpt is a bounded summary, not a claim that the full research is exhaustive. Supplemental evidence notes may be concise; a full research report does not need to be checked into the repository. Each supplemental note must identify the specific accessible online source and its exact URL, locator where available, the proposition it supports, and any material limitation or uncertainty. If the original citation has no URL, locate an accessible online source that actually supports or identifies the cited material before using it; otherwise, leave that evidence out of Stage 2 source records and preserve the provenance gap. URL-less notes are not sufficient evidence for a valid Stage 2 source record. A source list by itself does not establish a claim.
+
+Stage 2 may extract claims supported by either the excerpt and its cited evidence or the explicitly supplied supplemental evidence notes. The extraction model does not browse: it must not add claims based on its own outside knowledge, and must not treat a claim as supported merely because a URL appears in a source list. Preserve all source/evidence details in the YAML so the resulting ledger remains auditable without requiring a checked-in full report.
+
+The extraction LLM does **not** need CCI source code or repository access.
 
 Its job is **structured evidence extraction**, not CCI modeling, semantic validation, or authoritative authoring.
 
@@ -151,11 +156,10 @@ A source record represents an **actual identifiable source**, not merely a sourc
 
 Stage 2 should preserve enough identifying information to distinguish the source when the research report provides it:
 
-- books: specific book identity and available bibliographic information;
-- web sources: specific page/work title and URL;
-- interviews, articles, wikis, and other sources: specific work/page/interview identity and available locators.
+- online sources of any type: specific page/work/interview identity and exact URL;
+- available source locators and relevant bibliographic details, when supplied by the accessible online source.
 
-Do not create generic records such as `src-canon-general`, `src-book`, or `src-wiki` merely to satisfy the schema. If the report does not identify the source precisely, preserve the provenance gap rather than inventing a plausible source. Likewise, do not require a URL where the source does not have one.
+Do not create generic records such as `src-canon-general`, `src-book`, or `src-wiki` merely to satisfy the schema. If the report does not identify an accessible online source precisely enough to provide its exact URL, preserve the provenance gap rather than inventing a plausible source. Every source record must include `url`, as required by the repository schema. Do not emit a source record without a URL.
 
 ### Prompt examples are part of the extraction contract
 
@@ -165,7 +169,7 @@ For that reason, examples should demonstrate **source fidelity**, not merely sch
 
 - use an identifiable, mnemonic source ID when the source identity is known;
 - preserve the exact URL supplied by the research report for web sources;
-- omit `url` when the source has no supplied URL, such as a book;
+- require an exact URL for every emitted source record; if no accessible online source URL is supplied, preserve the provenance gap and do not emit a schema-invalid source record;
 - never use placeholder URLs such as `example.com` or `example.invalid`;
 - never invent bibliographic details to make an example look complete;
 - prefer realistic, traceable source metadata over generic examples when illustrating provenance.
@@ -288,7 +292,7 @@ When an extraction claim appears to span more than one lifecycle boundary, keep 
 
 ## Conceptual schema
 
-The repository's **current JSON Schema is authoritative**. The example below illustrates the intended contract; it is not a replacement for the repository schema.
+The repository's **current JSON Schema is authoritative**. The example below illustrates the intended contract using an identifiable secondary source; it is not a replacement for the repository schema.
 
 ```yaml
 schemaVersion: crawler-research/v1
@@ -296,28 +300,28 @@ storyId: dcc
 floor: 3
 
 sources:
-  - id: src-book-2
-    kind: official-text
-    trust: primary
-    title: Dungeon Crawler Carl — Book 2
-    url: https://example.invalid/source
+  - id: src-dccfansite-ch11
+    kind: fan-compendium
+    trust: corroborating
+    title: Book 2, Chapter 11 · Unofficial DCC Index
+    url: https://www.dccfansite.com/book/2/ch/11/
 
 claims:
-  - id: P3-PET-001
-    domain: pet
+  - id: F3-PROG-013
+    domain: crawler
     kind: event
     claim:
-      summary: Mongo reaches Level 3.
-      detail: Mongo's progression is explicitly described in the researched material.
+      summary: Carl establishes a mind-link with Grimaldi and Signet to help broker peace between them.
     evidence:
-      - sourceId: src-27
+      - sourceId: src-dccfansite-ch11
         locator:
           book: 2
-          chapter: 5
+          chapter: 11
+          section: One of Us
         relationship: supports
-        confidence: confirmed
+        confidence: corroborated
     unknowns:
-      - exact_timestamp
+      - exact_mechanism_beyond_the_reported_parasite_enabled_mind_link
 ```
 
 ### Source records
@@ -330,13 +334,12 @@ For each source, preserve the information supplied by the research report, such 
 - source kind;
 - trust classification;
 - title;
-- URL when applicable;
-- bibliographic information when applicable;
-- other schema-supported metadata.
+- exact URL for the accessible online source (required by the schema);
+- bibliographic information and other schema-supported metadata when supplied.
 
-Do not require a URL for sources that do not have one, such as books.
+Every source record must include an exact URL for an accessible online source. If the original citation has no URL (for example, a physical-book citation), first find an accessible online source that actually supports or identifies the cited material and record that page's exact URL. A citation to a URL-less source is not an exemption from the URL requirement. If no suitable accessible URL can be found, do not invent one and do not emit a source record; preserve the provenance gap and do not treat claims supported solely by that untraceable source as valid extracted claims.
 
-Prefer **stable, short, mnemonic source IDs** when the source identity is clear. For example, use `src-book-2`, `src-donut-wiki`, or `src-interview-1` rather than opaque incremental IDs such as `src-27`. Mnemonic IDs give the extraction model a useful retrieval cue when the same source is referenced repeatedly.
+Prefer **stable, short, mnemonic source IDs** when the source identity is clear. For example, use `src-book-2-preview`, `src-donut-wiki`, or `src-interview-online` when those IDs identify the specific accessible online source, rather than opaque incremental IDs such as `src-27`. Mnemonic IDs give the extraction model a useful retrieval cue when the same source is referenced repeatedly.
 
 Do not overload IDs with locator or claim semantics. Avoid IDs such as `src-book-2-chapter-14-mongo-leveling-secondary-fandom`; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
 
@@ -381,16 +384,25 @@ Do not invent relationship kinds.
 
 ### Confidence
 
-Use only confidence values defined by the supplied schema. The current conceptual vocabulary is:
+Use only confidence values defined by the supplied schema. The current schema-defined vocabulary is:
 
 - `confirmed`
-- `probable`
+- `corroborated`
 - `candidate`
 - `disputed`
 
-Confidence describes the strength of evidence for the **claim**, not whether CCI should implement it.
+Confidence describes the strength and condition of the evidence for the **specific claim**, not whether CCI should implement it and not whether a researcher inspected the physical novel.
 
-A credible secondary source can support a claim with `confirmed` confidence when it clearly and specifically establishes the proposition for this research workflow, even if the primary book passage is unavailable. Do not require multiple sources solely to reach confirmed confidence. Preserve source kind/trust independently from claim confidence: secondary evidence remains secondary, while confidence reflects how well it supports the particular claim. Use `corroborated` when materially independent sources reinforce one another; do not count sources that repeat the same underlying account as independent. Use `candidate` for tentative or weakly supported claims, and `disputed` when credible evidence conflicts. Inference remains inference even when its premises are confirmed.
+Allowed values and definitions:
+
+- **`confirmed`** — The available evidence establishes the proposition strongly enough for this research workflow to treat it as established. This can be supported by multiple credible, materially independent online sources that agree on the material details, or by exceptionally strong and specific evidence from one credible source. No material contradiction remains unresolved. `confirmed` does **not** mean the physical novel was inspected.
+- **`corroborated`** — Credible evidence supports the proposition, but is narrower, less specific, less independent, or otherwise not strong enough for `confirmed`. A single credible secondary source may support a claim at this level when it is the best accessible evidence.
+- **`candidate`** — A plausible lead with weak, incomplete, indirect, or insufficiently traceable support. Do not present it as established.
+- **`disputed`** — Credible evidence materially conflicts, or a significant unresolved ambiguity prevents the proposition from being treated as settled. Preserve the competing accounts.
+
+These are not simply four rungs on a ladder: `disputed` denotes conflict. Source trust and claim confidence are separate. Keep the source's actual kind/trust (for example, `wiki` / `corroborating`) even when the claim is `confirmed`.
+
+Count corroboration by independent evidence chains, not URL count. Several sites that copy or paraphrase the same underlying recap do not count as independent sources. Use source-specific evidence notes/locators where available and scale the required strength to claim precision and consequence. Do not require a primary book passage as a gate to `confirmed`; do not imply primary-text access when none occurred. Inference remains inference even when its premises are confirmed.
 
 ### Unknowns
 
@@ -411,7 +423,7 @@ Omission of an unknown does not mean the value is known; extract an explicit unk
 
 The reusable Stage 2 extraction prompt is maintained separately:
 
-[Stage 2 — Research → YAML Extraction Prompt](./prompts/stage-2-research-yaml-extraction.md)
+[Stage 2 — Research → YAML Extraction Prompt](./prompts/research-yaml-extraction-stage-2.md)
 
 
 ## Why the prompt is intentionally limited
@@ -470,7 +482,7 @@ The following failures are particularly valuable as Stage 2 regression fixtures:
 | Missing exact timestamp/quantity | Preserve as unknown |
 | Source ID treated as provenance | Use the source registry and evidence locator |
 | Generic source category presented as a source | Require an identifiable source when the report provides one; otherwise preserve the provenance gap |
-| Book source forced to have URL | Preserve URL only when applicable |
+| Source has no accessible URL | Do not fabricate a URL or emit a source record; preserve the provenance gap and exclude claims that depend solely on that source from valid extraction |
 | Missing source details filled with invented provenance | Preserve the deficiency; never fabricate source identity, URL, or bibliographic details |
 | Floor 3 scope treated as evidence restriction | Preserve actual chronology |
 | Strong source claim automatically treated as CCI promotion | Keep promotion out of Stage 2 |

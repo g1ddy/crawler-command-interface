@@ -65,9 +65,9 @@ A contradiction requires mutually incompatible propositions. Different descripti
 11. Record a contradiction only when the propositions are actually incompatible.
 12. Preserve available source metadata and locators without inventing details.
 13. Treat the Stage 1 **Sources** section as a source-registry transcription task, not a summary. Create one source record for each identifiable online source used by the extracted claims, and copy its supplied title, kind, trust classification, URL, and other schema-supported metadata into the corresponding source record.
-14. **URLs are copied, never inferred.** If the research report supplies a URL for a source, preserve that exact URL in the source record. Do not omit it, replace it with a domain homepage, normalize it to a shorter URL, or invent a different URL. A web source with a supplied URL should remain directly traceable to that page.
+14. **URLs are copied, never inferred.** If the research report supplies a URL for a source, preserve that exact URL in the source record. Do not omit it, replace it with a domain homepage, normalize it to a shorter URL, or invent a different URL. Every emitted source record must have a supplied URL and remain directly traceable to that page.
 15. Do not invent inaccessible primary-source provenance. If the report discusses the underlying story text but the actual evidence available to Stage 1 is an online secondary source, cite that online source and preserve its URL. Do not create a generic primary-text source record merely because the underlying work is the subject of the research.
-16. Never use placeholder URLs such as `example.com`, `example.invalid`, guessed URLs, domain homepages, or fabricated bibliographic details. If the report supplies a URL, copy that exact URL; if it does not, omit the field.
+16. Every source record must include the `url` required by the supplied schema. Only emit a source record when the research materials identify an accessible online source and supply its exact URL. Copy that URL unchanged. Never use placeholder URLs such as `example.com`, `example.invalid`, guessed URLs, domain homepages, or fabricated bibliographic details. If a cited source has no supplied URL, do not invent one or emit a schema-invalid source record; preserve the provenance gap and do not present claims that depend solely on that untraceable source as valid extracted claims. An online source URL is mandatory for every source record.
 17. Prefer stable, short, mnemonic source IDs when the source identity is clear (for example, `src-donut-wiki`, `src-mongo-wiki`, or `src-sparknotes`) rather than opaque incremental IDs such as `src-27`. Mnemonic IDs help the model keep repeated source references straight. Do not derive an ID from information that is not explicitly supplied by the report. Do not overload IDs with locator or claim semantics; source title, URL, locator, trust, and domain belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
 18. Extract claims relevant to the research scope. Earlier or later chronology may be included only when the report uses that evidence to establish continuity, provenance, or context for an in-scope claim. Preserve the actual locator supplied by the online source; do not invent a locator.
 19. Do not decide whether a claim should be promoted into CCI.
@@ -91,8 +91,8 @@ floor: 3
 
 sources:
   - id: src-mongo-wiki
-    kind: community-wiki
-    trust: secondary
+    kind: wiki
+    trust: corroborating
     title: Mongo - Dungeon Crawler Carl Wiki
     url: https://dungeon-crawler-carl.fandom.com/wiki/Mongo
     
@@ -125,8 +125,8 @@ If the Stage 1 report identifies a specific online page, preserve that exact sou
 ```yaml
 sources:
   - id: src-donut-wiki
-    kind: community-wiki
-    trust: secondary
+    kind: wiki
+    trust: corroborating
     title: Princess Donut - Dungeon Crawler Carl Wiki - Fandom
     url: https://dungeon-crawler-carl.fandom.com/wiki/Donut
 ```
@@ -135,7 +135,7 @@ The URL is part of the source provenance. If the report supplied it, copy it exa
 
 For multiple web sources, create separate records with distinct mnemonic IDs such as `src-donut-wiki`, `src-mongo-wiki`, and `src-donut-transformation`. Do not collapse several pages from the same site into one generic source record.
 
-If the report does not identify a URL, do not invent one. A source without a supplied URL is a provenance gap to preserve, not an invitation to guess.
+If the report does not identify an exact URL for an accessible online source, do not invent one or emit a source record without `url`. Preserve the provenance gap; do not present claims that depend solely on that untraceable source as valid extracted claims.
 
 Never use placeholder URLs or fabricated source details in the extracted source registry. Examples in this prompt are expected to follow the same rule as real extraction output.
 
