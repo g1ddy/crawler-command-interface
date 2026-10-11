@@ -388,9 +388,18 @@ Use only confidence values defined by the supplied schema. The current conceptua
 - `candidate`
 - `disputed`
 
-Confidence describes the strength of evidence for the **claim**, not whether CCI should implement it.
+Confidence describes the strength and condition of the evidence for the **specific claim**, not whether CCI should implement it and not whether a researcher inspected the physical novel.
 
-A credible secondary source can support a claim with `confirmed` confidence when it clearly and specifically establishes the proposition for this research workflow, even if the primary book passage is unavailable. Do not require multiple sources solely to reach confirmed confidence. Preserve source kind/trust independently from claim confidence: secondary evidence remains secondary, while confidence reflects how well it supports the particular claim. Use `corroborated` when materially independent sources reinforce one another; do not count sources that repeat the same underlying account as independent. Use `candidate` for tentative or weakly supported claims, and `disputed` when credible evidence conflicts. Inference remains inference even when its premises are confirmed.
+Allowed values and definitions:
+
+- **`confirmed`** — The available evidence establishes the proposition strongly enough for this research workflow to treat it as established. This can be supported by multiple credible, materially independent online sources that agree on the material details, or by exceptionally strong and specific evidence from one credible source. No material contradiction remains unresolved. `confirmed` does **not** mean the physical novel was inspected.
+- **`corroborated`** — Credible evidence supports the proposition, but is narrower, less specific, less independent, or otherwise not strong enough for `confirmed`. A single credible secondary source may support a claim at this level when it is the best accessible evidence.
+- **`candidate`** — A plausible lead with weak, incomplete, indirect, or insufficiently traceable support. Do not present it as established.
+- **`disputed`** — Credible evidence materially conflicts, or a significant unresolved ambiguity prevents the proposition from being treated as settled. Preserve the competing accounts.
+
+These are not simply four rungs on a ladder: `disputed` denotes conflict. Source trust and claim confidence are separate. Keep the source's actual kind/trust (for example, `wiki` / `corroborating`) even when the claim is `confirmed`.
+
+Count corroboration by independent evidence chains, not URL count. Several sites that copy or paraphrase the same underlying recap do not count as independent sources. Use source-specific evidence notes/locators where available and scale the required strength to claim precision and consequence. Do not require a primary book passage as a gate to `confirmed`; do not imply primary-text access when none occurred. Inference remains inference even when its premises are confirmed.
 
 ### Unknowns
 
