@@ -23,6 +23,16 @@ sources:
     trust: corroborating
     title: Chapter 24 | Carl's Doomsday Scenario (Dungeon Crawler Carl, #2)
     url: https://www.sparknotesai.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/3e44a2f8-de78-4ff1-ad1d-52d9b07a05ff
+  - id: src-wiki-find-trap-skill
+    kind: wiki
+    trust: corroborating
+    title: Find Trap Skill | Dungeon Crawler Carl Wiki - Fandom
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Find_Trap_Skill
+  - id: src-wiki-backfire-skill
+    kind: wiki
+    trust: corroborating
+    title: Backfire Skill | Dungeon Crawler Carl Wiki - Fandom
+    url: https://dungeon-crawler-carl.fandom.com/wiki/Backfire_Skill
 
 claims:
   - id: f3-crawler-primal-selection
@@ -64,11 +74,37 @@ claims:
     kind: state
     claim:
       summary: The Compensated Anarchist class applies permanent combat and training modifiers to Carl's profile.
-      detail: The modifiers include -25% bladed-weapon damage, +25% mana cost for attack spells, and +5% bomb/trap training.
+      detail: The modifiers include -25% bladed-weapon damage, +25% mana cost for attack spells, and +5% bomb/trap training. The training modifier is distinct from the separately granted Find Trap and Backfire skills.
     evidence:
       - sourceId: src-wiki-carl-f3
         confidence: confirmed
         relationship: supports
+
+  - id: f3-skill-find-trap-granted
+    domain: skills
+    kind: event
+    claim:
+      summary: Carl receives +5 to Find Trap when he selects the Compensated Anarchist class on Floor 3.
+      detail: Find Trap improves trap detection. Its first documented activation is in Book 3, so that later activation is not a Floor 3 event.
+    evidence:
+      - sourceId: src-wiki-find-trap-skill
+        confidence: confirmed
+        relationship: supports
+    unknowns:
+      - exact_system_prompt_wording_for_skill_grant
+
+  - id: f3-skill-backfire-granted
+    domain: skills
+    kind: event
+    claim:
+      summary: Carl gains five levels of Backfire when he selects the Compensated Anarchist class on Floor 3.
+      detail: Backfire allows a crawler to pick up, disassemble, and reuse traps/components. The source's specific removal rule for an untriggered Alarm Module must not be generalized to all traps.
+    evidence:
+      - sourceId: src-wiki-backfire-skill
+        confidence: confirmed
+        relationship: supports
+    unknowns:
+      - exact_system_prompt_wording_for_skill_grant
 
   - id: f3-skill-iron-punch-mutation
     domain: skills
