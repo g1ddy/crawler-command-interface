@@ -37,34 +37,6 @@ The accessible evidence summarized here is secondary web material. The underlyin
 - Sore as Shit — Dungeon Crawler Carl Wiki - Fandom: https://dungeon-crawler-carl.fandom.com/wiki/Sore_as_Shit
 - Timeline — Dungeon Crawler Carl - Bookworm Wiki: https://wiki.bookwormai.app/dungeon-crawler-carl/timeline
 
-## Supplemental sourced findings added during Stage 2 evidence review
-
-These findings were researched separately after the initial excerpt was drafted. They are included here so the Stage 2 YAML can follow the workflow contract: it extracts from supplied research material and does not browse independently. All sources below are secondary sources; none represents direct inspection of the novel.
-
-### Chapter 11 — parasite infection and mind-link
-
-The Unofficial DCC Index's Book 2, Chapter 11 summary reports that Carl uses Wisp Armor for protection against mind control, ingests a parasitic worm, establishes a mind-link with Grimaldi and Signet, and helps broker peace between them. The supported purpose is the mind-link and peace-brokering. The sources do not establish a specific “neural pathways” mechanism, so that wording should not be used.
-
-### Chapter 24 — Carl's Doomsday Scenario creation
-
-The Fandom item entry for Carl's Doomsday Scenario describes Carl placing a Sheol Glass Reaper Case around an about-to-explode Soul Crystal and storing the resulting unstable explosive in his inventory. The Book 2 chapter-summary page places the glass-case action in Chapter 24. These are secondary accounts of the creation event.
-
-### Chapter 25 — four magical foreshocks
-
-The Book 2 chapter-summary page enumerates four successive foreshocks: the first disables magical gear effects; the second activates weapons, causing Conrad E to explode; the third destroys the Sepsis Crown; and the fourth activates crawlers' hotlist items. This supports a distinct foreshock-effects claim following the item's creation.
-
-### Chapter 8 — fifteen-hour unconsciousness
-
-StoriLuna's Chapter 8 summary reports that an attack hits Carl with stun, paralysis, and unconsciousness, and that he wakes fifteen hours later. The Third Floor wiki timeline separately notes “knocked unconscious 15 hours,” but its nearby countdown/date fields do not establish a reliable exact timer anchor. Preserve the fifteen-hour duration while leaving the precise countdown anchor unresolved.
-
-### Supplemental sources
-
-- Book 2, Chapter 11 — Unofficial DCC Index: https://www.dccfansite.com/book/2/ch/11/
-- Carl's Doomsday Scenario (Item) — Dungeon Crawler Carl Wiki - Fandom: https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_%28Item%29
-- Carl's Doomsday Scenario (Book) — Dungeon Crawler Carl Wiki - Fandom: https://dungeon-crawler-carl.fandom.com/wiki/Carl%27s_Doomsday_Scenario_%28Book%29
-- Chapter 8 — Carl's Doomsday Scenario (Dungeon Crawler Carl, #2) — StoriLuna: https://storiluna.com/books/23895db7-1ea2-448f-95ca-b9d798e812cd/chapters/a9024caf-7804-4305-aeae-02c87292a26b
-- Third Floor — Dungeon Crawler Carl Wiki - Fandom: https://dungeon-crawler-carl.fandom.com/wiki/Third_Floor
-
 ## Explicit unknowns and cautions
 
 - Exact intermediate level-transition times.
