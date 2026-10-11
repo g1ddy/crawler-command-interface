@@ -72,182 +72,17 @@ claims:
     domain: "crawler"
     kind: "state"
     claim:
-      summary: "Carl entered the Floor 3 class selection process at Level 13 with 36 unallocated stat points."
+      summary: "Carl reached the Third Floor at Level 13 with 36 unallocated stat points available for race/class selection."
     evidence:
       - sourceId: "src-fandom-class"
         locator:
           book: 2
           chapter: 2
-          section: "Class selection"
+          section: "Story"
         relationship: "supports"
         confidence: "corroborated"
-        note: "The class page says Carl had 36 available stat points and had to allocate 17 to Charisma and 6 to Dexterity, leaving 13."
-      - sourceId: "src-fandom-stats"
-        locator:
-          book: 2
-          chapter: 2
-          section: "Player Stats Menu"
-        relationship: "corroborates"
-        confidence: "corroborated"
-        note: "Explains that crawlers begin distributing accumulated stat points after selecting race and class on the Third Floor."
+        note: "The class page explicitly states Carl had 36 available stat points when choosing his class."
   - id: "F3-PROG-002"
-    domain: "crawler"
-    kind: "state"
-    claim:
-      summary: "Carl's unenhanced baseline attributes prior to racial and class selection on Floor 3 were Strength 6, Intelligence 3, Constitution 5, Dexterity 5, and Charisma 4."
-    evidence:
-      - sourceId: "src-fandom-carl"
-        locator:
-          book: 1
-          section: "Book 1 Stats — Starting"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The Carl page's Book 1 stats table lists the starting values STR 6, INT 3, CON 5, DEX 5, CHR 4. This is a secondary transcription of the novel."
-  - id: "F3-PROG-003"
-    domain: "crawler"
-    kind: "event"
-    claim:
-      summary: "Carl selected the 'Primal' race during Floor 3 progression."
-    evidence:
-      - sourceId: "src-fandom-primal"
-        locator:
-          book: 2
-          chapter: 2
-          section: "Story"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The page states Carl selects Primal on the Third Floor."
-      - sourceId: "src-fandom-floor3"
-        locator:
-          book: 2
-          chapter: 2
-          section: "Floor 3 progression"
-        relationship: "corroborates"
-        confidence: "corroborated"
-        note: "Floor-specific character summary also records the race selection."
-  - id: "F3-PROG-004"
-    domain: "crawler"
-    kind: "state"
-    claim:
-      summary: "The Primal race applies a -1 penalty to all five base stats."
-    evidence:
-      - sourceId: "src-fandom-primal"
-        locator:
-          section: "Racial Traits — Penalties"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The dedicated race page lists -1 to all base stats."
-
-  - id: "F3-PROG-005"
-    domain: "crawler"
-    kind: "event"
-    claim:
-      summary: "Carl selected the 'Compensated Anarchist' class."
-    evidence:
-      - sourceId: "src-fandom-class"
-        locator:
-          book: 2
-          chapter: 2
-          section: "Story"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The class page identifies Compensated Anarchist as Carl's selected class in Book 2."
-
-  - id: "F3-PROG-006"
-    domain: "crawler"
-    kind: "state"
-    claim:
-      summary: "The Compensated Anarchist class provides a passive bonus of +1 Intelligence and +5 Charisma."
-    evidence:
-      - sourceId: "src-fandom-class"
-        locator:
-          book: 2
-          chapter: 2
-          section: "STATS"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The dedicated class page lists +1 Intelligence and +5 Charisma."
-  - id: "F3-PROG-007"
-    domain: "crawler"
-    kind: "state"
-    claim:
-      summary: "The Compensated Anarchist class requires a minimum baseline of 25 Charisma and 10 Dexterity."
-    evidence:
-      - sourceId: "src-fandom-class"
-        locator:
-          book: 2
-          chapter: 2
-          section: "PREREQUISITES"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The class page lists minimum Charisma 25 and, in its story text, minimum Dexterity 10."
-  - id: "F3-PROG-008"
-    domain: "crawler"
-    kind: "state"
-    claim:
-      summary: "The Compensated Anarchist class applies a -25% damage modifier to bladed weapons."
-    evidence:
-      - sourceId: "src-fandom-class"
-        locator:
-          book: 2
-          chapter: 2
-          section: "NEGATIVES"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The class page explicitly lists -25% damage with bladed weapons."
-
-  - id: "F3-PROG-009"
-    domain: "crawler"
-    kind: "state"
-    claim:
-      summary: "The Compensated Anarchist class increases the mana cost of damage-dealing spells by 25%."
-    evidence:
-      - sourceId: "src-fandom-class"
-        locator:
-          book: 2
-          chapter: 2
-          section: "NEGATIVES"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The class page explicitly lists +25% mana cost for damage spells."
-
-  - id: "F3-PROG-010"
-    domain: "crawler"
-    kind: "event"
-    claim:
-      summary: "Carl allocated 17 stat points to Charisma and 6 to Dexterity to meet the Compensated Anarchist prerequisites, leaving 13 points for additional allocation."
-    evidence:
-      - sourceId: "src-fandom-class"
-        locator:
-          book: 2
-          chapter: 2
-          section: "Story"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The class page explicitly says Carl must allocate 17 points to Charisma and 6 to Dexterity from 36 available, leaving 13."
-      - sourceId: "src-fandom-carl"
-        locator:
-          book: 2
-          section: "Book 2 Stats — page 28, Post Class Selection / Point Allocation"
-        relationship: "corroborates"
-        confidence: "corroborated"
-        note: "The stat table documents post-allocation values, including equipment modifiers."
-
-  - id: "F3-PROG-011"
-    domain: "crawler"
-    kind: "state"
-    claim:
-      summary: "A reconstruction of Carl's unenhanced post-selection base stats gives Strength 10, Intelligence 5, Constitution 10, Dexterity 10, and Charisma 25."
-    evidence:
-      - sourceId: "src-fandom-carl"
-        locator:
-          book: 2
-          section: "Book 2 Stats — page 28, Post Class Selection / Point Allocation"
-        relationship: "context"
-        confidence: "candidate"
-        note: "The table reports equipment-modified values (STR 13/16, INT 5, CON 19, DEX 11, CHR 25). The unenhanced vector is reconstructed by removing listed equipment bonuses; the page does not report this exact vector as a single row."
-
-  - id: "F3-PROG-012"
     domain: "crawler"
     kind: "state"
     claim:
@@ -260,21 +95,7 @@ claims:
         relationship: "supports"
         confidence: "corroborated"
         note: "The Carl stats table lists these starting values as a secondary transcription of the novel."
-
-  - id: "F3-PROG-013"
-    domain: "floor-system"
-    kind: "state"
-    claim:
-      summary: "The 'Sore as Shit' debuff causes pain and soreness for at least 60 minutes after serious injury."
-    evidence:
-      - sourceId: "src-fandom-sore"
-        locator:
-          section: "Effect and Duration"
-        relationship: "supports"
-        confidence: "corroborated"
-        note: "The dedicated debuff page describes the duration and effect; it does not establish a Floor 3-specific occurrence."
-
-  - id: "F3-PROG-014"
+  - id: "F3-PROG-003"
     domain: "crawler"
     kind: "event"
     claim:
@@ -287,9 +108,20 @@ claims:
           section: "Story"
         relationship: "supports"
         confidence: "corroborated"
-        note: "The Primal page says Carl selects this race on the Third Floor."
-
-  - id: "F3-PROG-016"
+        note: "The Primal page states Carl selects this race on the Third Floor."
+  - id: "F3-PROG-004"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Primal race applies a -1 penalty to all five base stats."
+    evidence:
+      - sourceId: "src-fandom-primal"
+        locator:
+          section: "Racial Traits — Penalties"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The dedicated race page lists -1 to all base stats."
+  - id: "F3-PROG-005"
     domain: "crawler"
     kind: "state"
     claim:
@@ -301,8 +133,21 @@ claims:
         relationship: "supports"
         confidence: "corroborated"
         note: "The dedicated race page states that all higher-tier skills are unlocked and can train to level 20."
-
-  - id: "F3-CHRON-001"
+  - id: "F3-PROG-006"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "Carl selected the Compensated Anarchist class."
+    evidence:
+      - sourceId: "src-fandom-class"
+        locator:
+          book: 2
+          chapter: 2
+          section: "Story"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The class page identifies Compensated Anarchist as Carl's selected class in Book 2."
+  - id: "F3-PROG-007"
     domain: "crawler"
     kind: "state"
     claim:
@@ -314,8 +159,7 @@ claims:
         relationship: "supports"
         confidence: "corroborated"
         note: "The class page explicitly lists +1 Intelligence and +5 Charisma."
-
-  - id: "F3-PROG-015"
+  - id: "F3-PROG-008"
     domain: "crawler"
     kind: "state"
     claim:
@@ -329,4 +173,218 @@ claims:
         relationship: "supports"
         confidence: "corroborated"
         note: "The class page lists minimum Charisma 25 in its prerequisites and minimum Dexterity 10 in its Book 2 story text."
-
+  - id: "F3-PROG-009"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "Carl allocated 17 stat points to Charisma and 6 to Dexterity to meet the Compensated Anarchist prerequisites, leaving 13 points for additional allocation."
+    evidence:
+      - sourceId: "src-fandom-class"
+        locator:
+          book: 2
+          chapter: 2
+          section: "Story"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The class page explicitly says Carl must allocate 17 points to Charisma and 6 to Dexterity from 36 available, leaving 13."
+  - id: "F3-PROG-010"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Compensated Anarchist class applies a -25% damage modifier to bladed weapons."
+    evidence:
+      - sourceId: "src-fandom-class"
+        locator:
+          section: "NEGATIVES"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The class page explicitly lists -25% damage with bladed weapons."
+  - id: "F3-PROG-011"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Compensated Anarchist class increases the mana cost of damage-dealing spells by 25%."
+    evidence:
+      - sourceId: "src-fandom-class"
+        locator:
+          section: "NEGATIVES"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The class page explicitly lists +25% mana cost for damage spells."
+  - id: "F3-PROG-012"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "A reconstruction of Carl's unenhanced post-selection base stats gives Strength 10, Intelligence 5, Constitution 10, Dexterity 10, and Charisma 25."
+    evidence:
+      - sourceId: "src-fandom-carl"
+        locator:
+          book: 2
+          section: "Book 2 Stats — page 28, Post Class Selection / Point Allocation"
+        relationship: "context"
+        confidence: "candidate"
+        note: "The table reports equipment-modified values (STR 13/16, INT 5, CON 19, DEX 11, CHR 25). The unenhanced vector is reconstructed by removing listed equipment bonuses; the page does not report this exact vector as a single row."
+    unknowns:
+      - "whether the reconstructed unenhanced vector should be retained as a derived claim"
+  - id: "F3-PROG-013"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Freeballing Benefit grants +100% damage to attacks originating below the waist."
+    evidence:
+      - sourceId: "src-fandom-freeballing"
+        locator:
+          book: 2
+          chapter: 13
+          section: "Story"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The dedicated benefit page describes the 100% damage bonus and cites Book 2, Chapter 13."
+  - id: "F3-PROG-014"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Freeballing Benefit increases training speed for skills originating below the waist by 20%."
+    evidence:
+      - sourceId: "src-fandom-freeballing"
+        locator:
+          book: 2
+          chapter: 13
+          section: "AI Description"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The benefit page's AI description states that below-waist skills train 20% faster."
+  - id: "F3-PROG-015"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Freeballing Benefit restricts the crawler to one layer of clothing or armor over the crotch."
+    evidence:
+      - sourceId: "src-fandom-freeballing"
+        locator:
+          book: 2
+          chapter: 13
+          section: "COST and AI Description"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The benefit page states the one-layer clothing restriction."
+  - id: "F3-PROG-016"
+    domain: "floor-system"
+    kind: "state"
+    claim:
+      summary: "The 'Sore as Shit' debuff causes pain and soreness for at least 60 minutes after serious injury."
+    evidence:
+      - sourceId: "src-fandom-sore"
+        locator:
+          section: "Effect and Duration"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The dedicated debuff page describes the duration and effect; it does not establish a Floor 3-specific occurrence."
+  - id: "F3-PROG-017"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "Carl intentionally ingested a parasitic worm while protected by Wisp Armor, establishing a mind-link with Grimaldi and Signet that he used to help broker peace between them."
+    evidence:
+      - sourceId: "src-dccfansite-ch11"
+        locator:
+          book: 2
+          chapter: 11
+          section: "One of Us"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter guide describes Carl swallowing a parasite worm under Wisp Armor protection to mind-link Grimaldi and Signet and broker their peace; it does not describe a neural-pathway mechanism."
+      - sourceId: "src-bookworm-timeline"
+        locator:
+          book: 2
+          chapter: 11
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "Secondary timeline summary also describes Wisp Armor resisting mind control while Carl ingests parasite-infested ice cream to communicate with Grimaldi and reconcile him with Signet."
+  - id: "F3-PROG-018"
+    domain: "floor-system"
+    kind: "event"
+    claim:
+      summary: "During the Floor 3 'Fools Who Broke the Glass' quest, Carl placed a Sheol Glass Reaper Case around an about-to-explode Soul Crystal and stored the resulting unstable explosive, Carl's Doomsday Scenario, in his inventory."
+    evidence:
+      - sourceId: "src-fandom-doomsday-item"
+        locator:
+          book: 2
+          chapter: 24
+          section: "Story — Book 2"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The item page describes Carl placing the case around the volatile crystal and pulling the resulting item into his inventory; its references include Book 2 chapters 7 and 25, while the chapter-summary source places the quest event in chapter 24."
+      - sourceId: "src-fandom-book2-chapters"
+        locator:
+          book: 2
+          chapter: 24
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "Chapter 24 summary says Carl places the soul gem in the glass case rather than fleeing; this is secondary-source reporting."
+  - id: "F3-PROG-019"
+    domain: "floor-system"
+    kind: "event"
+    claim:
+      summary: "After Carl's Doomsday Scenario is created, four successive magical foreshocks occur: the first disables magical gear effects, the second activates weapons (causing Conrad E to explode), the third destroys the Sepsis Crown, and the fourth activates crawlers' hotlist items."
+    evidence:
+      - sourceId: "src-fandom-book2-chapters"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter 25 summary explicitly lists the first, second, third, and fourth foreshock effects. This is secondary-source reporting, not book verification."
+      - sourceId: "src-bookworm-timeline"
+        locator:
+          book: 2
+          chapter: 25
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The timeline summary describes precursor bursts that destabilize magical gear and subsequent chaotic effects; it is less specific than the chapter-summary source."
+  - id: "F3-CHRON-001"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "On Floor 3, an attack inflicted stun and paralysis on Carl and left him unconscious; he regained consciousness fifteen hours later."
+    evidence:
+      - sourceId: "src-storiluna-ch8"
+        locator:
+          book: 2
+          chapter: 8
+          section: "Summary"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The chapter 8 summary explicitly reports the attack, stun, paralysis, unconsciousness, and waking fifteen hours later."
+      - sourceId: "src-fandom-third-floor"
+        locator:
+          section: "Floor Timeline & Patch Notes"
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The floor timeline notes 'knocked unconscious 15 hours' but nearby countdown/date fields are incomplete or inconsistent; it corroborates the duration, not a precise countdown anchor."
+    unknowns:
+      - "exact_countdown_anchor"
+  - id: "F3-PROG-020"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "Carl concluded Floor 3 at Level 27."
+    evidence:
+      - sourceId: "src-fandom-carl"
+        locator:
+          book: 2
+          section: "Book 2 Levels — page 345"
+        relationship: "supports"
+        confidence: "corroborated"
+        note: "The Carl page's Book 2 level table lists Level 27 at page 345; it is a secondary transcription, not direct novel verification."
+      - sourceId: "src-fandom-floor3"
+        locator:
+          section: "Floor 3 timeline"
+        relationship: "corroborates"
+        confidence: "corroborated"
+        note: "The Floor 3 page supplies floor-specific context for the ending level."
+    unknowns:
+      - "exact_intermediate_level_transition_times"
+      - "exact_maximum_health"
+      - "exact_maximum_mana"
+      - "exact_maximum_stamina"
