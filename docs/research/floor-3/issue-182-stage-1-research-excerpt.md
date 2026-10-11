@@ -26,7 +26,7 @@ The accessible evidence summarized here is secondary web material. The underlyin
 ## Condition and effect anchors
 
 - A secondary page for “Sore as Shit” describes a debuff involving intense pain and muscle soreness for a minimum of 60 minutes after significant kinetic trauma.
-- A separate research report describes Carl being unconscious for fifteen hours beginning at a Floor 3 countdown reference. The exact timer anchor and any conversion should be retained as stated in the complete source report; do not merge it with another floor's countdown.
+- A separate research report describes Carl being unconscious for fifteen hours in a Floor 3 chronology context. The exact countdown anchor is not established by the sources currently available; preserve the fifteen-hour duration without assigning an exact timer value or converting it to another floor's countdown.
 - The evidence summarized in this excerpt does not establish an exhaustive active-effects list at any arbitrary timeline point. Unless a source explicitly reports that there are no active effects, effect state must remain unknown/not established rather than being interpreted as an empty list.
 
 ## Sources represented in this excerpt
