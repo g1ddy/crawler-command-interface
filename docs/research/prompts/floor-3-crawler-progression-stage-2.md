@@ -8,7 +8,7 @@ This is evidence extraction, not CCI runtime modeling or semantic validation.
 
 ## Extraction rules
 
-1. Use the supplied Stage 1 material only. Do not browse or fill gaps from outside knowledge.
+1. Use only the supplied inputs: the Stage 1 report/excerpt and any separately supplied research notes or source-evidence packet. Do not browse or fill gaps from outside knowledge.
 2. Keep claims atomic and independently useful; preserve canon terminology.
 3. Preserve exact source titles, URLs, source kinds/trust, locators, and qualifications supplied by the report. Never invent a URL, locator, quotation, or primary-source record.
 4. Source trust and claim confidence are separate. Keep each source's actual kind/trust even when its evidence has `confirmed` confidence. The novel's physical text is not an expected input and primary-text inspection is not a prerequisite; never ask the user to confirm a claim against the book.
@@ -29,7 +29,7 @@ This is evidence extraction, not CCI runtime modeling or semantic validation.
 13. Use only fields and enum values in `app/domain/schema/research-claim.schema.json`.
 14. Do not include Stage 2 claims merely because they are plausible or known from outside the supplied material. The supplied Stage 1 document may be an excerpt; it may not support every claim in the final Stage 2 ledger. If a claim is not supported by the supplied material or its cited evidence, omit it rather than treating it as confirmed.
 15. Keep source/evidence coverage complete for the claims that are included: every evidence `sourceId` must match a source record, and each source URL must be copied exactly from the supplied material.
-16. The Stage 1 input is a bounded summary, not necessarily the complete research report. Do not assume it contains every useful finding. Stage 2 remains extraction-only: do not browse or introduce new claims from outside the supplied material. If the supplied input lacks evidence needed for a desired claim, preserve that gap for a separate Stage 1 research update rather than filling it from outside knowledge.
+16. The Stage 1 input may be a bounded summary rather than the complete research report. Do not assume it contains every useful finding. Stage 2 remains extraction-only: do not browse or introduce claims from outside the supplied inputs. Separately researched findings may be included only when their claim, identifiable source, locator where available, and qualifications are explicitly supplied in a research notes/evidence packet. Preserve those details in the YAML. Do not require the summary excerpt itself to duplicate the full evidence record.
 
 ## Required coverage when supported by the supplied material
 
