@@ -71,15 +71,35 @@ Note: Research YAML is an evidence-oriented authoring format. The research compi
 | P3-PET-014 | Enhanced Pet Biscuit outcomes (Miriam Dom/goat, Lucia Mar/dog) | Secondary sources | Pet / Consumable | `ledger_only` | Reported secondary examples; not a verified universal mechanic |
 | P3-PET-015 | Administrative pet bond transfer restrictions | Secondary sources | Pet Ownership | `ledger_only` | Secondary candidate claim requiring further primary verification |
 
-## Skills / Magic / Quests Research (Handoff for #184)
+## Skills, Magic, Quests & Progression Research (#184)
 
-| Claim | Locator | Domain | Promotion |
-| --- | --- | --- | --- |
-| Tsarina Signet uses Water Lily on Donut to force Carl's cooperation | Book 2, Ch. 8 | Spell / Quest | Ledger-only (owned by #184) |
-| Carl defeats Heather the Bear; parasite interaction involving Fireball/Custard | Book 2, Ch. 9 | Spell / Encounter | Ledger-only (owned by #184) |
-| Signet uses Heather's blood to summon Ink and Blood elementals | Book 2, Ch. 9 | Spell / Encounter | Ledger-only (owned by #184) |
-| Carl uses Wisp Armor to resist mind control | Book 2, Ch. 11 | Spell | Ledger-only (owned by #184) |
-| Carl uses max-level fireball scratchcard to eliminate Krasue nest | Book 2, Ch. 22 | Spell / Encounter | Ledger-only (owned by #184) |
+The Stage 2 extraction claim surface for Issue #184 is maintained in [`data/raw/research/floor-3/issue-184-stage-2-extraction.yaml`](../../research/floor-3/issue-184-stage-2-extraction.yaml). Every extracted research claim has an explicit disposition:
+
+| Claim ID | Claim Summary / Scope | Domain | Disposition | Preserved Event / Note |
+| --- | --- | --- | --- | --- |
+| `f3-crawler-primal-selection` | Carl selects Primal race during staging | Crawler | Reconciled | `evt-f3-race-class-selected` (provenance evidence) |
+| `f3-crawler-primal-cap` | Level 15 skill cap removed / Level 20 max | Crawler | Research-only | Unestablished in domain contract; preserved in claim ledger |
+| `f3-crawler-primal-stats` | Permanent -1 reduction to base attributes | Crawler | Research-only | Unestablished in domain contract; preserved in claim ledger |
+| `f3-crawler-class-anarchist-modifiers` | Compensated Anarchist combat/training modifiers | Crawler | Research-only | Unestablished class modifier contract; preserved in claim ledger |
+| `f3-skill-find-trap-granted` | +5 Find Trap granted with class selection | Skills | Research-only | Class skill grant; first activation in Book 3 (not Floor 3) |
+| `f3-skill-backfire-granted` | +5 Backfire granted with class selection | Skills | Research-only | Class skill grant; specific disarm mechanics preserved |
+| `f3-skill-iron-punch-mutation` | Iron Punch mutates to Breadbasket at Lvl 10 | Skills | Research-only | Mutation effect; no mutation contract exists in CCI |
+| `f3-magic-wisp-armor-mitigation` | Wisp Armor negates 75% magic damage | Magic | Research-only | Spell effect detail for `evt-f3-wisp-armor-spell-granted` |
+| `f3-magic-wisp-armor-immunity` | Wisp Armor provides psionic/mind-control immunity | Magic | Research-only | Spell effect detail for `evt-f3-wisp-armor-spell-granted` |
+| `f3-magic-donut-magic-missile-upgrade` | Donut Magic Missile projectile upgrade | Magic | Research-only | Capability upgrade; wording/counts unresolved |
+| `f3-magic-donut-defensive-capability` | Donut acquires Shield/Forcewall capability | Magic | Research-only | Defensive capability; exact mechanics unresolved |
+| `f3-quest-show-must-go-on-resolved` | The Show Must Go On resolved via telepathic truce | Quest | Reconciled | `evt-f3-show-must-go-on-completed` (provenance/context) |
+| `f3-quest-show-must-go-on-reward` | Diplomatic resolution triggers Platinum box reward | Quest | Research-only | Reward handling aligned with existing inventory events |
+| `f3-quest-hoa-cleansing` | HOA / Neighborhood Cleansing quest initiated | Quest | Research-only | Title/reward details unresolved; no QuestUpdated event |
+| `f3-quest-hoa-cleansing-completed` | HOA / Neighborhood Cleansing quest completed | Quest | Research-only | Completion details unresolved; no QuestUpdated event |
+| `f3-quest-maestro-instruments` | Retrieve Maestro's Instruments quest initiated | Quest | Research-only | Retrieval quest initiation; reward details unresolved |
+| `f3-quest-maestro-instruments-completed` | Retrieve Maestro's Instruments completed | Quest | Research-only | Completion details unresolved; no QuestUpdated event |
+| `f3-quest-sex-workers-cockblock` | Quill assassination causes quest failure & CockBlock | Quest | Research-only | Research claim for failure/achievement relationship |
+| `f3-quest-fools-glass-resolved` | Soul Crystal sealed in Sheol Glass Reaper Case | Quest | Reconciled | `evt-f3-doomsday-scenario-created` |
+| `f3-quest-fools-glass-survival` | 83 nearby crawlers saved from blast | Quest | Reconciled | `evt-f3-quest-boxes-upgraded-celestial` (population fact) |
+| `f3-quest-fools-glass-bandit` | Unexpected survival triggers Bandit achievement | Quest | Reconciled | `evt-f3-achievement-bandit` |
+| `f3-quest-fools-glass-bandit-reward` | Bandit achievement upgrades reward to Celestial tier | Quest | Reconciled | `evt-f3-quest-boxes-upgraded-celestial` |
+| `f3-crawler-donut-character-actor-exploit` | Character Actor retains XP for specialty skills | Crawler | Research-only | Cross-class skill XP retention unrepresented in CCI |
 
 ## Inventory / Equipment / Loot Research (Handoff for #183)
 
