@@ -52,6 +52,27 @@ test("early HUD readings remain unknown rather than displaying causal defaults",
   await page.keyboard.press("Escape");
 });
 
+
+test("crawler feature retains keyboard-accessible mana evidence inspection outside the masthead", async ({ page }) => {
+  await enterReplayByScrubbing(page);
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await slider.fill("34");
+
+  // The persistent masthead stays compact; sourced vital evidence remains inspectable in its feature view.
+  const manaLabel = page.getByText("MANA", { exact: true });
+  await expect(manaLabel).toBeVisible();
+  const manaEvidence = manaLabel.locator("..").locator(".telemetry-pill");
+  await expect(manaEvidence).toContainText("SOURCE");
+  await expect(manaEvidence).toHaveAttribute("role", "button");
+
+  await manaEvidence.press("Enter");
+  const inspector = page.getByRole("dialog", { name: "Telemetry provenance", exact: true });
+  await expect(inspector).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(inspector).toHaveCount(0);
+  await expect(manaEvidence).toBeFocused();
+});
+
 test("System Tools traps focus, blocks navigation shortcuts, and restores its trigger", async ({ page }) => {
   const trigger = page.getByRole("button", { name: "Open data tools" });
   await trigger.click();

@@ -47,6 +47,49 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
   assert.equal(composition.progression.valueDisplay, "LVL —");
 });
 
+
+test("persistent level follows selected-sequence source observations without leaking future levels", () => {
+  const rawTimeline = JSON.parse(fs.readFileSync("data/compiled-timeline.json", "utf8"));
+
+  const beforeLevel13 = 119;
+  const atLevel13 = 120;
+  const stateBefore = projectState(rawTimeline, beforeLevel13);
+  const observationsBefore = projectObservations(rawTimeline, beforeLevel13);
+  const before = deriveHudComposition({
+    projectedState: stateBefore,
+    projectedObservations: observationsBefore,
+    activeCountdown: null,
+    sequence: beforeLevel13,
+    isLive: false,
+    floorHudTitle: "Third Floor",
+  });
+  assert.equal(before.progression.valueDisplay, "LVL 12");
+
+  const stateAt = projectState(rawTimeline, atLevel13);
+  const observationsAt = projectObservations(rawTimeline, atLevel13);
+  const at = deriveHudComposition({
+    projectedState: stateAt,
+    projectedObservations: observationsAt,
+    activeCountdown: null,
+    sequence: atLevel13,
+    isLive: false,
+    floorHudTitle: "Third Floor",
+  });
+  assert.equal(at.progression.valueDisplay, "LVL 13");
+
+  const initialState = projectState(rawTimeline, 1);
+  const initialObservations = projectObservations(rawTimeline, 1);
+  const initial = deriveHudComposition({
+    projectedState: initialState,
+    projectedObservations: initialObservations,
+    activeCountdown: null,
+    sequence: 1,
+    isLive: false,
+    floorHudTitle: "First Floor",
+  });
+  assert.equal(initial.progression.valueDisplay, "LVL —");
+});
+
 test("deriveHudComposition exposes active countdown state without inventing urgency policies", () => {
   const state = createInitialState();
   const observations = projectObservations({ observations: [], events: [] }, 10);

@@ -58,6 +58,12 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   await expect(hud).toContainText("FLOOR 1");
   await expect(hud).toContainText("LVL —");
 
+  // Level 13 is introduced at sequence 120; replay immediately before it must retain level 12.
+  await selectSequence(page, 119);
+  await expect(hud).toContainText("LVL 12");
+  await selectSequence(page, 120);
+  await expect(hud).toContainText("LVL 13");
+
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   await expect(page.locator("[class*='item']")).toHaveCount(0);
 });
