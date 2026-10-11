@@ -8,9 +8,9 @@ This document is the design authority for the Stage 1 research pass and subseque
 
 Related workflow:
 - docs/research/research-to-cci-workflow.md
-- docs/research/prompts/stage-1-canon-research.md
-- docs/research/prompts/stage-2-research-yaml-extraction.md
-- docs/research/floor-3-pet-research-abstract.md
+- docs/research/prompts/floor-3-pet-research-stage-1.md
+- docs/research/prompts/research-yaml-extraction-stage-2.md
+- docs/research/floor-3/pet-research-abstract.md
 
 The Pet research is the precedent for this work. Issue #183 should follow the same research → extraction → curation boundary rather than inventing a domain-specific pipeline.
 
@@ -393,7 +393,7 @@ The report should be detailed enough that Stage 2 can extract atomic claims with
 
 ## 14. Stage 2 handoff
 
-Use docs/research/prompts/stage-2-research-yaml-extraction.md after Stage 1.
+Use docs/research/prompts/research-yaml-extraction-stage-2.md after Stage 1.
 
 The repository JSON Schema at app/domain/schema/research-claim.schema.json is authoritative.
 
