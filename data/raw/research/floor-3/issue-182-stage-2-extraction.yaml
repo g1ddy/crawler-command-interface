@@ -1,0 +1,170 @@
+schemaVersion: "crawler-research/v1"
+storyId: "dcc"
+floor: 3
+sources:
+  - id: "src-fandom-class"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Compensated Anarchist Class | Dungeon Crawler Carl Wiki - Fandom"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Compensated_Anarchist_Class"
+  - id: "src-fandom-floor3"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Carl/Floor 3 - Dungeon Crawler Carl Wiki - Fandom"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_3"
+  - id: "src-fandom-stats"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Player Stats | Dungeon Crawler Carl Wiki - Fandom"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Player_Stats"
+  - id: "src-fandom-sore"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Sore as Shit - Dungeon Crawler Carl Wiki - Fandom"
+    url: "https://dungeon-crawler-carl.fandom.com/wiki/Sore_as_Shit"
+  - id: "src-bookworm-timeline"
+    kind: "wiki"
+    trust: "corroborating"
+    title: "Timeline - Dungeon Crawler Carl - Bookworm Wiki"
+    url: "https://wiki.bookwormai.app/dungeon-crawler-carl/timeline"
+claims:
+  - id: "F3-PROG-001"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "Carl entered the Floor 3 class selection process at Level 13 with 36 unallocated stat points."
+    evidence:
+      - sourceId: "src-fandom-stats"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-002"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "Carl's unenhanced baseline attributes prior to racial and class selection on Floor 3 were Strength 6, Intelligence 3, Constitution 5, Dexterity 5, and Charisma 4."
+    evidence:
+      - sourceId: "src-fandom-stats"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-003"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "Carl selected the 'Primal' race during Floor 3 progression."
+    evidence:
+      - sourceId: "src-fandom-floor3"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-004"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Primal race applies a persistent -1 penalty to all base statistics and allows skills to be trained to a maximum of Level 20."
+    evidence:
+      - sourceId: "src-fandom-floor3"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-005"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "Carl selected the 'Compensated Anarchist' class."
+    evidence:
+      - sourceId: "src-fandom-class"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-006"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Compensated Anarchist class provides a passive bonus of +1 Intelligence and +5 Charisma."
+    evidence:
+      - sourceId: "src-fandom-class"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-007"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Compensated Anarchist class requires a minimum baseline of 25 Charisma and 10 Dexterity."
+    evidence:
+      - sourceId: "src-fandom-class"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-008"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Compensated Anarchist class inflicts a -25% damage penalty with bladed weapons and a +25% mana cost penalty for damage-dealing spells."
+    evidence:
+      - sourceId: "src-fandom-class"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-009"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "Carl allocated 23 stat points to satisfy class prerequisites (17 to Charisma, 6 to Dexterity) and the remaining 13 points to Strength (5), Intelligence (2), and Constitution (6)."
+    evidence:
+      - sourceId: "src-fandom-stats"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-010"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "Carl's finalized, unenhanced baseline statistics following class and race selection were Strength 10, Intelligence 5, Constitution 10, Dexterity 10, and Charisma 25."
+    evidence:
+      - sourceId: "src-fandom-stats"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-011"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "The Freeballing Benefit grants a +100% damage bonus to physical attacks originating below the waist and a +20% training speed multiplier for lower-body skills, provided no lower-body clothing/armor is worn beyond one layer over the crotch."
+    evidence:
+      - sourceId: "src-fandom-floor3"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-012"
+    domain: "floor-system"
+    kind: "state"
+    claim:
+      summary: "The 'Sore as Shit' debuff causes intense pain and muscle soreness for a minimum of 60 minutes after significant kinetic trauma."
+    evidence:
+      - sourceId: "src-fandom-sore"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-013"
+    domain: "crawler"
+    kind: "event"
+    claim:
+      summary: "Carl intentionally infected himself with parasitic worms to shield his neural pathways from Ringmaster Grimaldi's mind-control mechanics."
+    evidence:
+      - sourceId: "src-bookworm-timeline"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-014"
+    domain: "floor-system"
+    kind: "event"
+    claim:
+      summary: "Carl synthesized 'Carl's Doomsday Scenario' by forcing an exploding Soul Crystal into a Sheol Glass Reaper Case, triggering a four-stage magical foreshock."
+    evidence:
+      - sourceId: "src-bookworm-timeline"
+        relationship: "supports"
+        confidence: "confirmed"
+  - id: "F3-PROG-015"
+    domain: "crawler"
+    kind: "state"
+    claim:
+      summary: "Carl concluded Floor 3 at Level 27."
+    evidence:
+      - sourceId: "src-fandom-floor3"
+        relationship: "supports"
+        confidence: "confirmed"
+    unknowns:
+      - "exact_intermediate_level_transition_times"
+      - "exact_maximum_health"
+      - "exact_maximum_mana"
+      - "exact_maximum_stamina"
