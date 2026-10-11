@@ -54,6 +54,24 @@ export function formatFloorDisplay(title: string, ordinal?: number | "all"): str
   return uppercaseTitle;
 }
 
+export function deriveNotificationAccessibleLabel(
+  attention?: { currentSequenceNotificationCount: number; hasActiveAlerts: boolean }
+): string {
+  const count = attention?.currentSequenceNotificationCount ?? 0;
+  const hasAlerts = attention?.hasActiveAlerts ?? false;
+
+  if (count > 0 && hasAlerts) {
+    return `Notifications: ${count} current notice${count === 1 ? "" : "s"}, active alert`;
+  }
+  if (count > 0) {
+    return `Notifications: ${count} current notice${count === 1 ? "" : "s"}`;
+  }
+  if (hasAlerts) {
+    return "Notifications: active alert";
+  }
+  return "Notifications: no active notices";
+}
+
 export interface HudUrgencySummary {
   activeCountdown: ActiveCountdownState | null;
   formattedLabel: string;

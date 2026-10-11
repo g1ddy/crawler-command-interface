@@ -41,26 +41,60 @@
   flex-shrink: 0;
 }
 
-.alertIndicator {
-  font-size: 0.75rem;
-  padding: 0.15rem 0.45rem;
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.5);
-  color: #ef4444;
-  border-radius: 2px;
-  font-family: var(--hud-font-mono);
-  font-weight: 700;
+.attentionButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--hud-border-quiet, rgba(148, 163, 184, 0.25));
+  border-radius: 4px;
+  color: var(--hud-text-secondary, #94a3b8);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
-.noticeIndicator {
-  font-size: 0.75rem;
-  padding: 0.15rem 0.45rem;
-  background: rgba(56, 189, 248, 0.15);
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #38bdf8;
-  border-radius: 2px;
+.attentionButton:hover,
+.attentionButton:focus-visible {
+  color: var(--hud-text-primary, #f8fafc);
+  border-color: var(--hud-border-active, #38bdf8);
+  outline: 2px solid var(--hud-border-active, #38bdf8);
+  outline-offset: 2px;
+}
+
+.attentionButton[data-has-alerts="true"] {
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ef4444;
+}
+
+.noticeBadge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
   font-family: var(--hud-font-mono);
-  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.alertBadge {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  color: #ef4444;
+  font-size: 0.65rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .urgency {

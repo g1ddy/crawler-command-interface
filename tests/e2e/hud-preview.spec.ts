@@ -618,7 +618,7 @@ test("persistent masthead hierarchy enforces exact 2-row responsibilities across
   await enterReplayByScrubbing(page);
   await slider.fill("18");
   await expect(conceptHud.getByTestId("concept-hud-notice-count")).toBeVisible();
-  await expect(conceptHud).toContainText("1 NOTICE");
+  await expect(conceptHud.getByTestId("concept-hud-notice-count")).toHaveText("1");
 
   // Verify historical selection at sequence 1 shows historical floor context and no notice count
   await slider.fill("1");
@@ -656,9 +656,10 @@ test("deliberately long floor title truncates without pushing notification atten
   const persistentHud = page.locator('[data-hud-composition="persistent"]');
   await expect(persistentHud).toBeVisible();
 
-  // Row 1: Notice count remains visible on right
-  await expect(persistentHud.locator('[class*="noticeIndicator"]')).toBeVisible();
-  await expect(persistentHud).toContainText("1 NOTICE");
+  // Row 1: Bell button with count badge remains visible on right
+  const bell = persistentHud.getByTestId("notification-bell");
+  await expect(bell).toBeVisible();
+  await expect(persistentHud.getByTestId("notification-count-badge")).toHaveText("1");
 
   // Row 2 remains intact: Level on right
   await expect(persistentHud).toContainText("LVL —");

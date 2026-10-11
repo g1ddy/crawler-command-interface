@@ -10,7 +10,7 @@ import { projectState, projectObservations } from "../../app/domain/projection.t
 test("Floor 3 raw document loads cleanly and passes raw floor validation", () => {
   const rawFloor3 = loadRawFloorDocument("floor-3");
   assert.equal(rawFloor3.floor.ordinal, 3);
-  assert.equal(rawFloor3.floor.title, "Third Floor");
+  assert.equal(rawFloor3.floor.title, "Over City");
   assert.equal(rawFloor3.floor.book, 2);
 
   const rawValidation = validateRawCrawlerFloor(rawFloor3);
@@ -22,7 +22,7 @@ test("Floor 3 raw document adapts into a valid CrawlerFloorDocument compatibilit
   const adaptedFloor3 = adaptRawFloorDocument(rawFloor3);
 
   assert.equal(adaptedFloor3.floor.ordinal, 3);
-  assert.equal(adaptedFloor3.floor.title, "Third Floor");
+  assert.equal(adaptedFloor3.floor.title, "Over City");
 
   const adaptedValidation = validateCrawlerFloor(adaptedFloor3);
   assert.equal(adaptedValidation.valid, true, adaptedValidation.errors.join("; "));

@@ -1,6 +1,7 @@
 export {
   deriveHudComposition,
   formatFloorDisplay,
+  deriveNotificationAccessibleLabel,
   type HudCompositionModel,
   type HudSystemIdentity,
   type HudUrgencySummary,

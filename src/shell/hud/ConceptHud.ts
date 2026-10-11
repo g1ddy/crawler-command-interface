@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import type { CrawlerState, ProjectedCountdownState } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public.ts";
-import { formatFloorDisplay } from "./hud-composition.ts";
+import { formatFloorDisplay, deriveNotificationAccessibleLabel } from "./hud-composition.ts";
 import {
   deriveCountdownEvidencePresentation,
   evidenceGlanceMarker,
@@ -14,6 +14,7 @@ export function ConceptHud({
   countdown,
   floorTitle,
   onInspectCountdown,
+  onOpenNotifications,
 }: {
   composition?: HudCompositionModel;
   state: Pick<CrawlerState, "sequence" | "hotlist" | "skills" | "crawler">;
@@ -21,6 +22,7 @@ export function ConceptHud({
   floorTitle?: string;
   isLive?: boolean;
   onInspectCountdown?: () => void;
+  onOpenNotifications?: () => void;
 }) {
   const title = formatFloorDisplay(
     composition?.system.floorTitle ?? floorTitle ?? "",
@@ -31,6 +33,10 @@ export function ConceptHud({
   const levelDisplay =
     composition?.progression.valueDisplay ??
     (state.crawler?.level != null ? `LVL ${state.crawler.level}` : "LVL —");
+
+  const count = attention?.currentSequenceNotificationCount ?? 0;
+  const hasAlerts = attention?.hasActiveAlerts ?? false;
+  const ariaLabel = deriveNotificationAccessibleLabel(attention);
 
   return createElement(
     "header",
@@ -47,25 +53,90 @@ export function ConceptHud({
         { style: { display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" } },
         createElement("span", { className: "hud-kicker" }, title),
         createElement(
-          "div",
-          { style: { display: "flex", alignItems: "center", gap: "0.5rem" } },
-          attention?.hasActiveAlerts
-            ? createElement(
-                "span",
-                { style: { color: "#ef4444", fontWeight: 800, fontSize: "0.75rem" } },
-                "⚠️ ALERT"
-              )
-            : null,
-          attention && attention.currentSequenceNotificationCount > 0
+          "button",
+          {
+            type: "button",
+            onClick: onOpenNotifications,
+            "aria-label": ariaLabel,
+            "data-testid": "notification-bell",
+            "data-has-alerts": String(hasAlerts),
+            "data-count": String(count),
+            style: {
+              position: "relative",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "44px",
+              height: "44px",
+              minWidth: "44px",
+              minHeight: "44px",
+              padding: 0,
+              background: "rgba(15, 23, 42, 0.6)",
+              border: hasAlerts
+                ? "1px solid rgba(239, 68, 68, 0.5)"
+                : "1px solid rgba(148, 163, 184, 0.25)",
+              borderRadius: "4px",
+              color: hasAlerts ? "#ef4444" : "#94a3b8",
+              cursor: "pointer",
+              flexShrink: 0,
+            },
+          },
+          createElement(
+            "svg",
+            {
+              width: "16",
+              height: "16",
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: "2",
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              "aria-hidden": "true",
+            },
+            createElement("path", { d: "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" }),
+            createElement("path", { d: "M13.73 21a2 2 0 0 1-3.46 0" })
+          ),
+          count > 0
             ? createElement(
                 "span",
                 {
                   "data-testid": "concept-hud-notice-count",
-                  style: { color: "#38bdf8", fontWeight: 800, fontSize: "0.75rem", fontFamily: "monospace" },
+                  "aria-hidden": "true",
+                  style: {
+                    position: "absolute",
+                    top: "1px",
+                    right: "1px",
+                    background: "#0284c7",
+                    color: "#ffffff",
+                    fontSize: "0.65rem",
+                    fontWeight: 800,
+                    fontFamily: "monospace",
+                    padding: "1px 4px",
+                    borderRadius: "8px",
+                    lineHeight: 1,
+                  },
                 },
-                `${attention.currentSequenceNotificationCount} NOTICE${
-                  attention.currentSequenceNotificationCount === 1 ? "" : "S"
-                }`
+                String(count)
+              )
+            : null,
+          hasAlerts
+            ? createElement(
+                "span",
+                {
+                  "data-testid": "notification-alert-badge",
+                  "aria-hidden": "true",
+                  style: {
+                    position: "absolute",
+                    bottom: "1px",
+                    right: "1px",
+                    color: "#ef4444",
+                    fontSize: "0.65rem",
+                    fontWeight: 800,
+                    lineHeight: 1,
+                  },
+                },
+                "⚠"
               )
             : null
         )

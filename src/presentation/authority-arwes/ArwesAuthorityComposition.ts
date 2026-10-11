@@ -6,7 +6,7 @@ import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
 import { AuthorityTransition } from "./primitives/AuthorityTransition.ts";
 import { AuthorityIndicator } from "./primitives/AuthorityIndicator.ts";
 import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
-import { formatFloorDisplay, type HudCompositionModel } from "../../shell/hud/public.ts";
+import { formatFloorDisplay, deriveNotificationAccessibleLabel, type HudCompositionModel } from "../../shell/hud/public.ts";
 import {
   deriveCountdownEvidencePresentation,
   evidenceGlanceMarker,
@@ -15,6 +15,7 @@ import {
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
   onInspectCountdown?: () => void;
+  onOpenNotifications?: () => void;
   motionMode?: AuthorityMotionMode;
 }
 
@@ -232,12 +233,17 @@ function PetSurface({ pet, activeView, motionMode }: PetSurfaceProps) {
 export function ArwesAuthorityComposition({
   composition,
   onInspectCountdown,
+  onOpenNotifications,
   motionMode = "enabled",
 }: ArwesAuthorityCompositionProps) {
   const { system, urgency, attention, progression, pet } = composition;
 
   const attentionIntent = attention.motionIntent;
   const title = formatFloorDisplay(system.floorTitle, system.floorOrdinal);
+
+  const count = attention.currentSequenceNotificationCount;
+  const hasAlerts = attention.hasActiveAlerts;
+  const ariaLabel = deriveNotificationAccessibleLabel(attention);
 
   return createElement(
     AuthoritySurface,
@@ -319,42 +325,94 @@ export function ArwesAuthorityComposition({
                 flexShrink: 0,
               },
             },
-            attention.hasActiveAlerts
-              ? createElement(
-                  "span",
-                  {
-                    style: {
-                      fontSize: "0.72rem",
-                      fontWeight: 800,
-                      color: "#ef4444",
-                      background: "rgba(239, 68, 68, 0.2)",
-                      border: "1px solid rgba(239, 68, 68, 0.5)",
-                      padding: "0.15rem 0.4rem",
-                      borderRadius: "2px",
-                      fontFamily: "monospace",
+            createElement(
+              "button",
+              {
+                type: "button",
+                onClick: onOpenNotifications,
+                "aria-label": ariaLabel,
+                "data-testid": "notification-bell",
+                "data-has-alerts": String(hasAlerts),
+                "data-count": String(count),
+                style: {
+                  position: "relative",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "44px",
+                  height: "44px",
+                  minWidth: "44px",
+                  minHeight: "44px",
+                  padding: 0,
+                  background: "rgba(15, 23, 42, 0.6)",
+                  border: hasAlerts
+                    ? "1px solid rgba(239, 68, 68, 0.5)"
+                    : "1px solid rgba(148, 163, 184, 0.25)",
+                  borderRadius: "4px",
+                  color: hasAlerts ? "#ef4444" : "#38bdf8",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                },
+              },
+              createElement(
+                "svg",
+                {
+                  width: "16",
+                  height: "16",
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: "2",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  "aria-hidden": "true",
+                },
+                createElement("path", { d: "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" }),
+                createElement("path", { d: "M13.73 21a2 2 0 0 1-3.46 0" })
+              ),
+              count > 0
+                ? createElement(
+                    "span",
+                    {
+                      "data-testid": "notification-count-badge",
+                      "aria-hidden": "true",
+                      style: {
+                        position: "absolute",
+                        top: "1px",
+                        right: "1px",
+                        background: "#0284c7",
+                        color: "#ffffff",
+                        fontSize: "0.65rem",
+                        fontWeight: 800,
+                        fontFamily: "monospace",
+                        padding: "1px 4px",
+                        borderRadius: "8px",
+                        lineHeight: 1,
+                      },
                     },
-                  },
-                  "⚠️ ALERT"
-                )
-              : null,
-            attention.currentSequenceNotificationCount > 0
-              ? createElement(
-                  "span",
-                  {
-                    style: {
-                      fontSize: "0.72rem",
-                      fontWeight: 800,
-                      color: "#38bdf8",
-                      background: "rgba(56, 189, 248, 0.15)",
-                      border: "1px solid rgba(56, 189, 248, 0.4)",
-                      padding: "0.15rem 0.4rem",
-                      borderRadius: "2px",
-                      fontFamily: "monospace",
+                    String(count)
+                  )
+                : null,
+              hasAlerts
+                ? createElement(
+                    "span",
+                    {
+                      "data-testid": "notification-alert-badge",
+                      "aria-hidden": "true",
+                      style: {
+                        position: "absolute",
+                        bottom: "1px",
+                        right: "1px",
+                        color: "#ef4444",
+                        fontSize: "0.65rem",
+                        fontWeight: 800,
+                        lineHeight: 1,
+                      },
                     },
-                  },
-                  `${attention.currentSequenceNotificationCount} NOTICE${attention.currentSequenceNotificationCount === 1 ? "" : "S"}`
-                )
-              : null
+                    "⚠"
+                  )
+                : null
+            )
           )
         ),
 

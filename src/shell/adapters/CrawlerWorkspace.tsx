@@ -303,6 +303,7 @@ export function CrawlerWorkspace({
           <ArwesPresentation
             model={composition}
             onInspectCountdown={() => setShowCountdownEvidence(true)}
+            onOpenNotifications={() => setView("notifications")}
           />
         ) : usesConceptHud ? (
           <ConceptHud
@@ -312,6 +313,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectCountdown={() => setShowCountdownEvidence(true)}
+            onOpenNotifications={() => setView("notifications")}
           />
         ) : (
           <PersistentHud
@@ -321,6 +323,7 @@ export function CrawlerWorkspace({
             floorTitle={floorHudTitle}
             isLive={isLive}
             onInspectCountdown={() => setShowCountdownEvidence(true)}
+            onOpenNotifications={() => setView("notifications")}
           />
         )
       }

@@ -4,7 +4,7 @@ import type {
   ProjectedCountdownState,
 } from "../../../app/domain/types.ts";
 import type { HudCompositionModel } from "./public.ts";
-import { formatFloorDisplay } from "./hud-composition.ts";
+import { formatFloorDisplay, deriveNotificationAccessibleLabel } from "./hud-composition.ts";
 import {
   deriveCountdownEvidencePresentation,
   evidenceGlanceMarker,
@@ -17,8 +17,9 @@ let styles: Record<string, string> = {
   row: "row",
   floorTitle: "floorTitle",
   attention: "attention",
-  alertIndicator: "alertIndicator",
-  noticeIndicator: "noticeIndicator",
+  attentionButton: "attentionButton",
+  noticeBadge: "noticeBadge",
+  alertBadge: "alertBadge",
   urgency: "urgency",
   countdownContainer: "countdownContainer",
   evidenceButton: "evidenceButton",
@@ -46,6 +47,7 @@ export function PersistentHud({
   countdown,
   floorTitle,
   onInspectCountdown,
+  onOpenNotifications,
 }: {
   composition?: HudCompositionModel;
   state: Pick<CrawlerState, "sequence" | "hotlist" | "skills">;
@@ -53,6 +55,7 @@ export function PersistentHud({
   floorTitle?: string;
   isLive?: boolean;
   onInspectCountdown?: () => void;
+  onOpenNotifications?: () => void;
 }) {
   const title = formatFloorDisplay(
     composition?.system.floorTitle ?? floorTitle ?? "",
@@ -61,6 +64,10 @@ export function PersistentHud({
   const activeCountdown = composition?.urgency.activeCountdown ?? countdown;
   const attention = composition?.attention;
   const levelDisplay = composition?.progression.valueDisplay ?? "LVL —";
+
+  const count = attention?.currentSequenceNotificationCount ?? 0;
+  const hasAlerts = attention?.hasActiveAlerts ?? false;
+  const ariaLabel = deriveNotificationAccessibleLabel(attention);
 
   return createElement(
     "header",
@@ -81,18 +88,56 @@ export function PersistentHud({
         createElement(
           "div",
           { className: styles.attention },
-          attention?.hasActiveAlerts
-            ? createElement("span", { className: styles.alertIndicator }, "⚠ ALERT")
-            : null,
-          attention && attention.currentSequenceNotificationCount > 0
-            ? createElement(
-                "span",
-                { className: styles.noticeIndicator },
-                `${attention.currentSequenceNotificationCount} NOTICE${
-                  attention.currentSequenceNotificationCount === 1 ? "" : "S"
-                }`
-              )
-            : null
+          createElement(
+            "button",
+            {
+              type: "button",
+              className: styles.attentionButton,
+              onClick: onOpenNotifications,
+              "aria-label": ariaLabel,
+              "data-testid": "notification-bell",
+              "data-has-alerts": String(hasAlerts),
+              "data-count": String(count),
+            },
+            createElement(
+              "svg",
+              {
+                width: "16",
+                height: "16",
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: "2",
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+                "aria-hidden": "true",
+              },
+              createElement("path", { d: "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" }),
+              createElement("path", { d: "M13.73 21a2 2 0 0 1-3.46 0" })
+            ),
+            count > 0
+              ? createElement(
+                  "span",
+                  {
+                    className: styles.noticeBadge,
+                    "aria-hidden": "true",
+                    "data-testid": "notification-count-badge",
+                  },
+                  String(count)
+                )
+              : null,
+            hasAlerts
+              ? createElement(
+                  "span",
+                  {
+                    className: styles.alertBadge,
+                    "aria-hidden": "true",
+                    "data-testid": "notification-alert-badge",
+                  },
+                  "⚠"
+                )
+              : null
+          )
         )
       ),
 

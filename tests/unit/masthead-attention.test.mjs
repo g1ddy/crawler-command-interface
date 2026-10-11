@@ -35,8 +35,9 @@ test("Masthead attention matrix across renderers", async (t) => {
         hasActiveAlerts: false,
         totalNotificationsCount: 2,
       },
-      expectNotice: "2 NOTICES",
-      expectAlert: false,
+      expectLabel: "Notifications: 2 current notices",
+      expectBadge: "2",
+      expectAlertBadge: false,
     },
     {
       name: "Case 2: currentSequenceNotificationCount=1, hasActiveAlerts=true, totalNotificationsCount=1",
@@ -45,8 +46,9 @@ test("Masthead attention matrix across renderers", async (t) => {
         hasActiveAlerts: true,
         totalNotificationsCount: 1,
       },
-      expectNotice: "1 NOTICE",
-      expectAlert: true,
+      expectLabel: "Notifications: 1 current notice, active alert",
+      expectBadge: "1",
+      expectAlertBadge: true,
     },
     {
       name: "Case 3: currentSequenceNotificationCount=0, hasActiveAlerts=true, totalNotificationsCount=2",
@@ -55,8 +57,9 @@ test("Masthead attention matrix across renderers", async (t) => {
         hasActiveAlerts: true,
         totalNotificationsCount: 2,
       },
-      expectNotice: false,
-      expectAlert: true,
+      expectLabel: "Notifications: active alert",
+      expectBadge: false,
+      expectAlertBadge: true,
     },
     {
       name: "Case 4: currentSequenceNotificationCount=0, hasActiveAlerts=false, totalNotificationsCount=2 (historical total ignored)",
@@ -65,8 +68,9 @@ test("Masthead attention matrix across renderers", async (t) => {
         hasActiveAlerts: false,
         totalNotificationsCount: 2,
       },
-      expectNotice: false,
-      expectAlert: false,
+      expectLabel: "Notifications: no active notices",
+      expectBadge: false,
+      expectAlertBadge: false,
     },
     {
       name: "Case 5: currentSequenceNotificationCount=0, hasActiveAlerts=false, totalNotificationsCount=0",
@@ -75,8 +79,9 @@ test("Masthead attention matrix across renderers", async (t) => {
         hasActiveAlerts: false,
         totalNotificationsCount: 0,
       },
-      expectNotice: false,
-      expectAlert: false,
+      expectLabel: "Notifications: no active notices",
+      expectBadge: false,
+      expectAlertBadge: false,
     },
   ];
 
@@ -104,17 +109,26 @@ test("Masthead attention matrix across renderers", async (t) => {
         ["ConceptHud", conceptHtml],
         ["ArwesAuthorityComposition", arwesHtml],
       ]) {
-        if (c.expectNotice) {
-          assert.match(html, new RegExp(c.expectNotice), `${name} expected notice text "${c.expectNotice}"`);
+        // Assert accessible label
+        assert.match(html, new RegExp(`aria-label="${c.expectLabel}"`), `${name} expected aria-label "${c.expectLabel}"`);
+
+        // Assert notification count badge
+        if (c.expectBadge) {
+          assert.match(html, new RegExp(`data-testid="(notification-count-badge|concept-hud-notice-count)"[^>]*>${c.expectBadge}<`), `${name} expected badge count "${c.expectBadge}"`);
         } else {
-          assert.doesNotMatch(html, /NOTICE/, `${name} expected no notice indicator`);
+          assert.doesNotMatch(html, /data-testid="(notification-count-badge|concept-hud-notice-count)"/, `${name} expected no notice count badge`);
         }
 
-        if (c.expectAlert) {
-          assert.match(html, /ALERT/, `${name} expected alert treatment`);
+        // Assert alert badge
+        if (c.expectAlertBadge) {
+          assert.match(html, /data-testid="notification-alert-badge"/, `${name} expected alert badge`);
         } else {
-          assert.doesNotMatch(html, /ALERT/, `${name} expected no alert treatment`);
+          assert.doesNotMatch(html, /data-testid="notification-alert-badge"/, `${name} expected no alert badge`);
         }
+
+        // Assert no prominent text labels (like "2 NOTICES" or "⚠️ ALERT") in masthead
+        assert.doesNotMatch(html, />\s*\d+\s+NOTICE/i, `${name} must not render prominent N NOTICES text`);
+        assert.doesNotMatch(html, />\s*⚠️\s*ALERT/i, `${name} must not render prominent ⚠️ ALERT text in masthead`);
       }
     });
   }

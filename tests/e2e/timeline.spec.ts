@@ -225,17 +225,19 @@ test("timeline scrubber orientation row and session state update consistently on
 });
 
 test("notification attention indicator reflects current sequence deliveries at sequence 18 and sequence 19", async ({ page }) => {
-  const hud = page.locator('header[aria-label="Crawler HUD"]');
+  const bell = page.getByTestId("notification-bell");
 
   await enterReplayByScrubbing(page);
 
   // At sequence 18 (evt-f1-achievement-loner), a notification is delivered
   await selectSequence(page, 18);
-  await expect(hud).toContainText("1 NOTICE");
+  await expect(bell).toHaveAttribute("aria-label", "Notifications: 1 current notice");
+  await expect(page.getByTestId("notification-count-badge")).toHaveText("1");
 
   // At sequence 19, no notification is delivered at this sequence -> masthead numeric indicator absent
   await selectSequence(page, 19);
-  await expect(hud).not.toContainText("NOTICE");
+  await expect(bell).toHaveAttribute("aria-label", "Notifications: no active notices");
+  await expect(page.getByTestId("notification-count-badge")).toHaveCount(0);
 });
 
 test("static bundle renders its essential HUD at desktop and mobile sizes", async ({ page }, testInfo) => {

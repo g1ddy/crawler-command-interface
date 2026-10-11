@@ -13,6 +13,7 @@ import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
 export interface ArwesPresentationProps {
   model: HudCompositionModel;
   onInspectCountdown?: () => void;
+  onOpenNotifications?: () => void;
   motionMode?: AuthorityMotionMode;
 }
 
@@ -34,6 +35,7 @@ function resolveMotionMode(explicitMode?: AuthorityMotionMode): AuthorityMotionM
 export function ArwesPresentation({
   model,
   onInspectCountdown,
+  onOpenNotifications,
   motionMode,
 }: ArwesPresentationProps) {
   const activeMotionMode = resolveMotionMode(motionMode);
@@ -49,6 +51,7 @@ export function ArwesPresentation({
     createElement(ArwesAuthorityComposition, {
       composition: model,
       onInspectCountdown,
+      onOpenNotifications,
       motionMode: activeMotionMode,
     })
   );
