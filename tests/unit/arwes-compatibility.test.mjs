@@ -126,11 +126,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       floorTitle: "FLOOR 1: DUNGEON ENTRANCE",
       sequence: 25,
     },
-    temporal: {
-      mode: "live",
-      sequence: 25,
-      isLive: true,
-    },
     urgency: {
       activeCountdown: {
         remainingSeconds: 240,
@@ -176,7 +171,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
 test("ArwesPresentation reduced motion produces semantically equivalent markup without physical animation dependency", () => {
   const model = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "replay", sequence: 10, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
     progression: { level: 5, valueDisplay: "LVL 5" },
@@ -196,7 +190,6 @@ test("ArwesPresentation reduced motion produces semantically equivalent markup w
 test("ArwesPresentation ensures initial renders have no spurious transition motion intents", () => {
   const baseModel = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false, latestNotificationTitle: undefined },
     progression: { level: 1, valueDisplay: "LVL 1" },
@@ -212,7 +205,6 @@ test("ArwesPresentation ensures initial renders have no spurious transition moti
 test("ArwesPresentation directly consumes motionIntents from HudCompositionModel", () => {
   const modelWithIntent = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "replay", sequence: 10, isLive: false, motionIntent: "enter-replay" },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 1, hasActiveAlerts: true, latestNotificationTitle: "NEW ALERT", motionIntent: "attention" },
     progression: { level: 2, valueDisplay: "LVL 2" },
@@ -233,11 +225,6 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
     system: {
       floorTitle: "FLOOR 3",
       sequence: 12,
-    },
-    temporal: {
-      mode: "replay",
-      sequence: 12,
-      isLive: false,
     },
     urgency: {
       activeCountdown: null,
@@ -272,7 +259,6 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
   // 1. Unestablished / not-established Pet state
   const unestablishedModel = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
     progression: { level: 1, valueDisplay: "LVL 1" },
@@ -297,7 +283,6 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
   // 2. Established Pet state with newly-established change and motion intent
   const acquiredModel = {
     system: { floorTitle: "FLOOR 2", sequence: 116 },
-    temporal: { mode: "replay", sequence: 116, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
     progression: { level: 13, valueDisplay: "LVL 13" },
@@ -335,7 +320,6 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
   // 3. Established Pet state after bonding (Mongo, Royal Steed) in deterministic mode
   const bondedModel = {
     system: { floorTitle: "FLOOR 2", sequence: 118 },
-    temporal: { mode: "replay", sequence: 118, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
     progression: { level: 13, valueDisplay: "LVL 13" },
@@ -377,7 +361,6 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
 test("ArwesPresentation maintains renderer exclusivity without alternate HUD markers", () => {
   const model = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
     progression: { level: 1, valueDisplay: "LVL 1" },

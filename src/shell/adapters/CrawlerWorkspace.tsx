@@ -10,7 +10,6 @@ import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import { derivePetPresentationSummary } from "../../features/pet/public.ts";
-import type { PresentationMotionIntent } from "../../presentation/semantic/public.ts";
 import {
   availableRootViews,
   deriveNavigationContract,
@@ -75,6 +74,7 @@ export function CrawlerWorkspace({
     events,
     sources,
     currentSeq,
+    selectedFloorOrdinal,
     isLive,
     projectedState,
     projectedObservations,
@@ -177,13 +177,6 @@ export function CrawlerWorkspace({
   // eslint-disable-next-line react-hooks/refs
   const prevSeq = prevSeqRef.current;
 
-  let temporalMotionIntent: PresentationMotionIntent | undefined = undefined;
-  if (prevIsLive === true && isLive === false) {
-    temporalMotionIntent = "enter-replay";
-  } else if (prevIsLive === false && isLive === true) {
-    temporalMotionIntent = "return-live";
-  }
-
   const isLivePetTransition = isLive && prevIsLive && currentSeq > prevSeq;
 
   const petSummary = useMemo(
@@ -211,9 +204,9 @@ export function CrawlerWorkspace({
         sequence: currentSeq,
         isLive,
         floorHudTitle,
+        selectedFloorOrdinal,
         notificationsSummary,
         petSummary,
-        temporalMotionIntent,
         activeView: resolvedView,
       }),
     [
@@ -223,9 +216,9 @@ export function CrawlerWorkspace({
       currentSeq,
       isLive,
       floorHudTitle,
+      selectedFloorOrdinal,
       notificationsSummary,
       petSummary,
-      temporalMotionIntent,
       resolvedView,
     ]
   );
@@ -310,6 +303,7 @@ export function CrawlerWorkspace({
           />
         ) : usesConceptHud ? (
           <ConceptHud
+            composition={composition}
             state={projectedState}
             countdown={activeCountdown}
             floorTitle={floorHudTitle}

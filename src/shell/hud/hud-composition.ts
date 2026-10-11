@@ -11,14 +11,20 @@ export type { HudPetSummary };
 
 export interface HudSystemIdentity {
   floorTitle: string;
+  floorOrdinal?: number | "all";
   sequence: number;
 }
 
-export interface HudTemporalContext {
-  mode: "live" | "replay";
-  sequence: number;
-  isLive: boolean;
-  motionIntent?: PresentationMotionIntent;
+export function formatFloorDisplay(title: string, ordinal?: number | "all"): string {
+  if (!title) return "";
+  const uppercaseTitle = title.toUpperCase();
+  if (typeof ordinal === "number") {
+    if (uppercaseTitle.startsWith(`FLOOR ${ordinal}`)) {
+      return uppercaseTitle;
+    }
+    return `FLOOR ${ordinal} · ${uppercaseTitle}`;
+  }
+  return uppercaseTitle;
 }
 
 export interface HudUrgencySummary {
@@ -45,14 +51,13 @@ export interface HudProgressionSummary {
  * Renderer-neutral HUD composition model describing semantic presentation meaning.
  *
  * INVARIANTS:
- * - Expresses persistent masthead context (system location, temporal state, urgency countdown, notification attention, compact level progression).
+ * - Expresses persistent masthead context (system location, urgency countdown, notification attention, compact level progression).
  * - Remains strictly renderer-neutral: MUST NOT contain CSS classes, styling tokens, border treatments,
  *   animation-library primitives, executable action callbacks, or renderer-specific component choices.
  * - Capabilities and action contracts retain their existing application ownership outside this model.
  */
 export interface HudCompositionModel {
   system: HudSystemIdentity;
-  temporal: HudTemporalContext;
   urgency: HudUrgencySummary;
   attention: HudAttentionSummary;
   progression: HudProgressionSummary;
@@ -65,11 +70,11 @@ export interface DeriveHudCompositionInput {
   projectedState?: Pick<CrawlerState, "crawler">;
   activeCountdown: ActiveCountdownState | null;
   sequence: number;
-  isLive: boolean;
+  isLive?: boolean;
   floorHudTitle: string;
+  selectedFloorOrdinal?: number | "all";
   notificationsSummary?: HudAttentionSummary;
   petSummary?: HudPetSummary;
-  temporalMotionIntent?: PresentationMotionIntent;
   attentionMotionIntent?: PresentationMotionIntent;
   activeView?: RootView;
   crawlerLevel?: number | null;
@@ -84,15 +89,14 @@ export function deriveHudComposition({
   projectedState,
   activeCountdown,
   sequence,
-  isLive,
   floorHudTitle,
+  selectedFloorOrdinal,
   notificationsSummary = {
     totalNotificationsCount: 0,
     currentSequenceNotificationCount: 0,
     hasActiveAlerts: false,
   },
   petSummary,
-  temporalMotionIntent,
   attentionMotionIntent,
   activeView,
   crawlerLevel,
@@ -107,13 +111,8 @@ export function deriveHudComposition({
   return {
     system: {
       floorTitle: floorHudTitle,
+      floorOrdinal: selectedFloorOrdinal,
       sequence,
-    },
-    temporal: {
-      mode: isLive ? "live" : "replay",
-      sequence,
-      isLive,
-      motionIntent: temporalMotionIntent,
     },
     urgency: {
       activeCountdown,

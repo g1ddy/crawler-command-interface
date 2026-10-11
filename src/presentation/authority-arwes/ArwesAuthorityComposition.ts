@@ -6,7 +6,7 @@ import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
 import { AuthorityTransition } from "./primitives/AuthorityTransition.ts";
 import { AuthorityIndicator } from "./primitives/AuthorityIndicator.ts";
 import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
-import type { HudCompositionModel } from "../../shell/hud/public.ts";
+import { formatFloorDisplay, type HudCompositionModel } from "../../shell/hud/public.ts";
 import {
   deriveCountdownEvidencePresentation,
   evidenceGlanceMarker,
@@ -237,6 +237,7 @@ export function ArwesAuthorityComposition({
   const { system, urgency, attention, progression, pet } = composition;
 
   const attentionIntent = attention.motionIntent;
+  const title = formatFloorDisplay(system.floorTitle, system.floorOrdinal);
 
   return createElement(
     AuthoritySurface,
@@ -306,7 +307,7 @@ export function ArwesAuthorityComposition({
                 flex: "1 1 auto",
               },
             },
-            system.floorTitle
+            title
           ),
           createElement(
             "div",

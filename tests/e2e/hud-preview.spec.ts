@@ -43,7 +43,7 @@ test("live presentation switching in System Tools preserves session state and up
   // Enter replay mode by scrubbing slider to sequence 117 (where pet is acquired, not bonded)
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("117");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   const nav = page.getByRole("navigation", { name: "Main Navigation" });
   await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
@@ -99,7 +99,7 @@ test("live presentation switching in System Tools preserves session state and up
 
     // Verify continuity of replay sequence, live/replay mode, and capabilities
     await expect(slider).toHaveValue("117");
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
     await expect(nav.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
     await expect(nav.getByRole("button", { name: "PARTY", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Open data tools" }).click();
@@ -175,12 +175,12 @@ test("global replay scrubber operates cleanly across responsive widths", async (
     await expect(slider).toBeVisible();
 
     await slider.fill("20");
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
     // Scrubbing to max sequence enters Live mode
     const maxSeq = await slider.getAttribute("max");
     if (maxSeq) await slider.fill(maxSeq);
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 
     // Verify page has no horizontal overflow
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -200,7 +200,7 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
   // Enter Replay by scrubbing slider to sequence 50
   await enterReplayByScrubbing(page);
   await slider.fill("50");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   // Feature area remains independently scrollable and its last interactive control is reachable
   const featureArea = page.locator("#crawler-workspace");
@@ -277,17 +277,17 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
   await expect(page.locator(".system-hud")).toHaveCount(0);
   await expect(page.locator('[data-hud-composition="persistent"]')).toHaveCount(0);
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 
   // Enter replay by scrubbing timeline to sequence 130
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   const maxSeq = await slider.getAttribute("max");
   await slider.fill("130");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   // Return to Live sequence by scrubbing to rightmost edge
   if (maxSeq) await slider.fill(maxSeq);
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 
   // Renderer exclusivity maintained throughout
   await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
@@ -405,7 +405,7 @@ test("authority-arwes validates narrow 360px viewport with sparse Pet, Party, an
   await enterReplayByScrubbing(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   // PET tab is now available -> navigate to PET
   const petNavBtn = nav.getByRole("button", { name: "PET", exact: true });
@@ -578,7 +578,7 @@ test("authority-arwes validates mutation gating during replay while preserving s
   await enterReplayByScrubbing(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("130");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   // 3. Replay mode gating: allocate button must transition to disabled
   await expect(allocateBtn).toBeDisabled();
@@ -588,4 +588,40 @@ test("authority-arwes validates mutation gating during replay while preserving s
   await strengthBtn.click();
   await expect(page.getByRole("heading", { name: /WHY THIS VALUE\? · STRENGTH/i })).toBeVisible();
   await page.getByRole("button", { name: "CLOSE INSPECTOR" }).click();
+});
+
+test("persistent masthead hierarchy enforces exact 2-row responsibilities across renderers", async ({ page }) => {
+  await page.goto(pagesPath);
+
+  const persistentHud = page.locator('[data-hud-composition="persistent"]');
+  await expect(persistentHud).toBeVisible();
+
+  // Masthead has Row 1 (Floor title on left, Notice count on right) and Row 2 (Countdown on left, Level on right)
+  await expect(persistentHud).toContainText("FLOOR 3");
+  await expect(persistentHud).toContainText("LVL 13");
+  await expect(persistentHud).toContainText("NOTICE");
+
+  // Masthead must NOT contain Audience telemetry or Live/historical status badge
+  await expect(persistentHud).not.toContainText("212,000,000,000");
+  await expect(persistentHud).not.toContainText("AUDIENCE");
+  await expect(persistentHud).not.toContainText("LIVE ●");
+  await expect(persistentHud).not.toContainText("HISTORICAL ●");
+
+  // Verify ConceptHud renders notification attention and level
+  await page.goto(`${pagesPath}?hud=tactical`);
+  const conceptHud = page.locator('[data-hud-renderer="concept"]');
+  await expect(conceptHud).toBeVisible();
+  await expect(conceptHud).toContainText("FLOOR 3");
+  await expect(conceptHud).toContainText("LVL 13");
+  await expect(conceptHud.getByTestId("concept-hud-notice-count")).toBeVisible();
+
+  // Verify historical selection shows historical floor context
+  const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
+  await enterReplayByScrubbing(page);
+  await slider.fill("1");
+  await expect(conceptHud).toContainText("FLOOR 1");
+  await expect(conceptHud).toContainText("LVL —");
+
+  // Verify document-level horizontal overflow is false
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });

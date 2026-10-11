@@ -29,10 +29,10 @@ for (const [domain, eventType] of [["PARTY", "PartyFormed"], ["PET", "PetBonded"
     await expect(destination).toHaveCount(0);
     await expect(navigation(page).getByRole("button", { name: "CRAWLER", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(slider).toHaveValue(String(sequence - 1));
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
     if (maxSeq) await slider.fill(maxSeq);
     await expect(destination).toBeVisible();
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
   });
 }
 
@@ -238,7 +238,7 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
   await expect(slider).toBeVisible();
 
   // Assert LIVE mode initially
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 
   // Assert there are zero Return to Live buttons
   await expect(page.getByRole("button", { name: /Return to Live/i })).toHaveCount(0);
@@ -247,13 +247,13 @@ test("layout integration: Live mode has compact scrubber, scrubbing enters Repla
   await enterReplayByScrubbing(page);
 
   // Assert the session is now Replay
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   // Scrubbing to max sequence returns to Live
   const maxSeq = await slider.getAttribute("max");
   if (maxSeq) await slider.fill(maxSeq);
 
   // Assert Live mode again
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
   await expect(slider).toBeVisible();
 });

@@ -39,7 +39,7 @@ test("selectSequence synchronizes floor context and handles Live boundary at max
   const snapSeq1 = controller.getSnapshot();
   assert.strictEqual(snapSeq1.isLive, false);
   assert.strictEqual(snapSeq1.selectedFloorOrdinal, 1);
-  assert.strictEqual(snapSeq1.floorHudTitle.includes("FLOOR 1"), true);
+  assert.strictEqual(snapSeq1.floorHudTitle, "First Floor");
 
   // Select max sequence (Live boundary)
   controller.selectSequence(snapSeq1.maxSeq);

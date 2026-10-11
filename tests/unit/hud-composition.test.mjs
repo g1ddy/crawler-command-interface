@@ -18,8 +18,6 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
     floorHudTitle: "FLOOR 1",
   });
   assert.equal(composition.system.floorTitle, "FLOOR 1");
-  assert.equal(composition.temporal.mode, "live");
-  assert.equal(composition.temporal.isLive, true);
   assert.equal(composition.urgency.activeCountdown, null);
   assert.equal(composition.urgency.formattedLabel, "");
   assert.doesNotMatch(composition.urgency.formattedLabel, /Collapse time unavailable|NO SOURCED COUNTDOWN|EXACT TIME/);
@@ -56,7 +54,7 @@ test("deriveHudComposition exposes active countdown state without inventing urge
   assert.equal(composition.urgency.lifecycleStatus, "active");
 });
 
-test("deriveHudComposition exposes explicit command-driven temporal and attention motionIntents", () => {
+test("deriveHudComposition exposes explicit command-driven attention motionIntents", () => {
   const state = createInitialState();
   const observations = projectObservations({ observations: [], events: [] }, 0);
 
@@ -69,31 +67,7 @@ test("deriveHudComposition exposes explicit command-driven temporal and attentio
     isLive: true,
     floorHudTitle: "FLOOR 1",
   });
-  assert.equal(c1.temporal.motionIntent, undefined);
   assert.equal(c1.attention.motionIntent, undefined);
-
-  // Live -> Replay transition intent passed explicitly
-  const c2 = deriveHudComposition({
-    projectedState: state,
-    projectedObservations: observations,
-    activeCountdown: null,
-    sequence: 0,
-    isLive: false,
-    floorHudTitle: "FLOOR 1",
-    temporalMotionIntent: "enter-replay",
-  });
-  assert.equal(c2.temporal.motionIntent, "enter-replay");
-
-  // Subsequent replay render without transition intent -> undefined
-  const c3 = deriveHudComposition({
-    projectedState: state,
-    projectedObservations: observations,
-    activeCountdown: null,
-    sequence: 1,
-    isLive: false,
-    floorHudTitle: "FLOOR 1",
-  });
-  assert.equal(c3.temporal.motionIntent, undefined);
 
   // Explicit attention motion intent passed
   const c4 = deriveHudComposition({

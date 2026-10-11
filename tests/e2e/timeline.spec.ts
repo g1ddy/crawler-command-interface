@@ -43,15 +43,20 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await expect(slider).toHaveValue(String(latestSequence));
 
-  // Use a piece of state that demonstrably changes.
-  // Let's use the audience count which is part of the persistent HUD telemetry/broadcast state.
-  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("212,000,000,000");
+  const hud = page.locator('header[aria-label="Crawler HUD"]');
+  // Persistent HUD contains floor 3 title and level 13 at latest edge, and no audience telemetry
+  await expect(hud).toContainText("FLOOR 3");
+  await expect(hud).toContainText("LVL 13");
+  await expect(hud).not.toContainText("212,000,000,000");
+  await expect(hud).not.toContainText("AUDIENCE");
 
   await enterReplayByScrubbing(page);
   await selectSequence(page, 1);
 
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-  await expect(page.locator('header[aria-label="Crawler HUD"]')).not.toContainText("212,000,000,000");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
+  // At sequence 1, floor context is Floor 1 and level is unestablished (LVL —)
+  await expect(hud).toContainText("FLOOR 1");
+  await expect(hud).toContainText("LVL —");
 
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
   await expect(page.locator("[class*='item']")).toHaveCount(0);
@@ -103,15 +108,18 @@ test("Return to Live sequence restores the latest projection", async ({ page }) 
   const latestSequence = await latestRuntimeSequence(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
 
+  const hud = page.locator('header[aria-label="Crawler HUD"]');
+
   await enterReplayByScrubbing(page);
   await selectSequence(page, 1);
-  await expect(page.locator('header[aria-label="Crawler HUD"]')).not.toContainText("212,000,000,000");
+  await expect(hud).toContainText("FLOOR 1");
 
   await slider.fill(String(latestSequence));
 
   await expect(slider).toHaveValue(String(latestSequence));
-  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("212,000,000,000");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(hud).toContainText("FLOOR 3");
+  await expect(hud).toContainText("LVL 13");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 });
 
 test("inventory browser and inspector resolve the same visible selection", async ({ page }) => {
@@ -175,13 +183,13 @@ test("timeline scrubber orientation row and session state update consistently on
     // Initial Live state
     await expect(statusBadge).toContainText("LIVE ●");
     await expect(temporalContext).toContainText("NOW");
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 
     // Scrub to historical position on Floor 1 (sequence 50) using real change event
     await selectSequence(page, 50);
     await expect(statusBadge).toContainText("HISTORICAL ●");
     await expect(temporalContext).toContainText("TIME UNKNOWN");
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
     // Touch target height check
     const box = await slider.boundingBox();
@@ -212,7 +220,7 @@ test("timeline scrubber orientation row and session state update consistently on
 
     await expect(statusBadge).toContainText("LIVE ●");
     await expect(temporalContext).toContainText("NOW");
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
   }
 });
 

@@ -255,10 +255,10 @@ export class CrawlerSessionController {
     });
 
     const floorHudTitle = currentFloorSegment
-      ? `FLOOR ${currentFloorSegment.ordinal} · ${currentFloorSegment.title.toUpperCase()}`
+      ? currentFloorSegment.title
       : this.selectedFloorOrdinal === "all"
-        ? "ALL FLOORS (WHOLE STORY)"
-        : `FLOOR ${this.selectedFloorOrdinal}`;
+        ? "All Floors (Whole Story)"
+        : `Floor ${this.selectedFloorOrdinal}`;
 
     return {
       timelineDoc: this.timelineDoc,

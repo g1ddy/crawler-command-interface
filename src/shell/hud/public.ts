@@ -1,8 +1,8 @@
 export {
   deriveHudComposition,
+  formatFloorDisplay,
   type HudCompositionModel,
   type HudSystemIdentity,
-  type HudTemporalContext,
   type HudUrgencySummary,
   type HudAttentionSummary,
   type HudProgressionSummary,

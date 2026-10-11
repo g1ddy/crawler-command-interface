@@ -3,6 +3,7 @@ import type {
   ProjectedCountdownState,
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
+import { formatFloorDisplay } from "./hud-composition";
 import {
   deriveCountdownEvidencePresentation,
   evidenceGlanceMarker,
@@ -29,7 +30,10 @@ export function PersistentHud({
   isLive?: boolean;
   onInspectCountdown?: () => void;
 }) {
-  const title = composition?.system.floorTitle ?? floorTitle ?? "";
+  const title = formatFloorDisplay(
+    composition?.system.floorTitle ?? floorTitle ?? "",
+    composition?.system.floorOrdinal
+  );
   const activeCountdown = composition?.urgency.activeCountdown ?? countdown;
   const attention = composition?.attention;
   const levelDisplay = composition?.progression.valueDisplay ?? "LVL —";

@@ -15,7 +15,7 @@ export async function returnToLive(page: Page) {
   const maxSequence = await slider.getAttribute("max");
   expect(maxSequence).not.toBeNull();
   await slider.fill(maxSequence!);
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 }
 
 export async function enterReplayByScrubbing(page: Page) {
@@ -33,5 +33,5 @@ export async function enterReplayByScrubbing(page: Page) {
     await slider.fill(maxSequence!);
   }
 
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 }

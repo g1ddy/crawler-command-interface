@@ -43,7 +43,7 @@ test.beforeEach(async ({ page }) => { await preparePage(page); });
 test("export early replay before conditional canon capabilities", async ({ page }) => {
   await enterReplayByScrubbing(page);
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("1");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
   await expect(page.getByRole("button", { name: "PARTY", exact: true })).toHaveCount(0);
   await capture(page, "earlyReplay");
 });
@@ -79,7 +79,7 @@ test("renders Quests from an isolated noncanonical fixture without publishing a 
 test("Possessions replay boundary and mutation gating: disables actions when scrubbing replay", async ({ page }) => {
   await enterReplayByScrubbing(page);
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("5");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   await selectTopLevelTab(page, "INVENTORY");
   await expect(page.getByRole("heading", { name: "INVENTORY", exact: true })).toBeVisible();
@@ -133,7 +133,7 @@ test("mutation gating: live mode behavior when points remain vs empty", async ({
 test("mutation gating: historical replay disables stat allocation regardless of live points", async ({ page }) => {
   await enterReplayByScrubbing(page);
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("15");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   await selectCrawlerSubTab(page, "STATS");
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
@@ -147,7 +147,7 @@ test("mutation gating: historical replay disables stat allocation regardless of 
 test("mutation gating: early replay disables stat allocation", async ({ page }) => {
   await enterReplayByScrubbing(page);
   await page.getByRole("slider", { name: "Selected timeline sequence" }).fill("2");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
 
   await selectCrawlerSubTab(page, "STATS");
   const allocateBtn = page.getByRole("button", { name: "Allocate attribute point to Strength" });
