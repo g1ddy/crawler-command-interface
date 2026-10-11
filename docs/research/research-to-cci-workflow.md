@@ -122,7 +122,7 @@ The following prompt is the standard starting point for the Floor 3 Pet pilot.
 
 The reusable Floor 3 Pet canon-research prompt is maintained separately:
 
-[Stage 1 — Canon / Deep Research Prompt](./prompts/stage-1-canon-research.md)
+[Stage 1 — Canon / Deep Research Prompt](./prompts/floor-3-pet-research-stage-1.md)
 
 
 ---
@@ -420,7 +420,7 @@ Omission of an unknown does not mean the value is known; extract an explicit unk
 
 The reusable Stage 2 extraction prompt is maintained separately:
 
-[Stage 2 — Research → YAML Extraction Prompt](./prompts/stage-2-research-yaml-extraction.md)
+[Stage 2 — Research → YAML Extraction Prompt](./prompts/research-yaml-extraction-stage-2.md)
 
 
 ## Why the prompt is intentionally limited
