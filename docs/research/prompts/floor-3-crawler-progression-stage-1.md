@@ -23,7 +23,15 @@ Use the best accessible web evidence. The published novel may not be directly ac
 
 For each substantive claim, record the exact source/page and URL, source type/trust, locator where available, what the source directly states, and relevant uncertainty or qualification. Keep source trust separate from claim confidence.
 
-Do not claim to have inspected the physical book when the evidence is a secondary web source. A secondary source can directly state a proposition without being primary-text verification. Do not count pages that repeat the same underlying account as independent corroboration.
+The expected evidence base is accessible online research; do not assume access to the physical novel. Do not ask the user to confirm claims against the book text, and do not treat primary-text access as a prerequisite for completing the research. A secondary source can directly state a proposition without being primary-text verification. Do not count pages that repeat the same underlying account as independent corroboration.
+
+Use these confidence definitions consistently:
+- `confirmed`: available evidence establishes the proposition strongly enough for this workflow. Multiple credible, materially independent online sources may collectively establish a claim as confirmed; exceptionally strong, specific evidence from one credible source can also qualify. No material conflict remains unresolved. This does not mean the novel was inspected.
+- `corroborated`: credible evidence supports the proposition, but the evidence is narrower, less specific, less independent, or otherwise not strong enough for confirmed.
+- `candidate`: plausible but weak, incomplete, indirect, or insufficiently traceable support.
+- `disputed`: credible sources materially conflict or significant ambiguity remains unresolved.
+
+Source trust and claim confidence are independent. Keep secondary sources classified as secondary even when confidence is confirmed. Count independent evidence chains, not URLs.
 
 Never invent quotations, locators, values, mechanics, durations, or causal relationships. Absence from a source is not evidence that something did not happen. Preserve unknowns and contradictions.
 
