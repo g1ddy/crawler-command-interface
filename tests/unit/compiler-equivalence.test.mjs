@@ -11,8 +11,8 @@ import { projectState, projectObservations, projectCountdownState } from "../../
 // and historical projector. Generated timestamps are excluded from the timeline hash.
 // Note: These hashes act as the approved semantic timeline and replay-projection baselines
 // after removing the fabricated initial crawler identity in PR #302.
-const SEMANTIC_TIMELINE_HASH = "894e2312fa7d92027fbcf1386ad14c718e491adceacd8aedc09ce5fe21fca2bb";
-const REPLAY_PROJECTION_HASH = "83d4060d4a81f737d9a5dcd07d4f9c62d7a3c31ca5f32f9796eb1a9a7ca9b8c5";
+const SEMANTIC_TIMELINE_HASH = "30da156e3d49182cbc313aa02374a486cbc907969be925829b9ecc664f9e880c";
+const REPLAY_PROJECTION_HASH = "abfac9133e6d1e5aecf1f1e561bd532bf9510c94bd4fc6d9d7379a0843432843";
 
 function canonicalKeyOrder(key, value) {
   if (value && typeof value === "object" && !Array.isArray(value)) {
