@@ -9,7 +9,7 @@
   },
   "app/domain/compiler.ts": {
     "complexity": 35,
-    "loc": 367,
+    "loc": 349,
     "instability": 0.67,
     "fanIn": 1,
     "fanOut": 2,

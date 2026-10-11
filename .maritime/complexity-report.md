@@ -1,6 +1,6 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-10-10
+**Last Updated:** 2026-10-11
 
 ### 🏥 Repository Health Score: **47.0 / 100**
 
@@ -22,7 +22,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/shell/adapters/CrawlerWorkspace.tsx` | **139.7** | 445 | 15 | 23 | 0.96 |
 | `src/application/crawler-actions.ts` | **136.8** | 128 | 50 | 4 | 0.8 |
 | `src/presentation/authority-arwes/ArwesAuthorityComposition.ts` | **136** | 598 | 19 | 10 | 0.91 |
-| `app/domain/compiler.ts` | **124** | 367 | 35 | 2 | 0.67 |
+| `app/domain/compiler.ts` | **122.2** | 349 | 35 | 2 | 0.67 |
 | `app/domain/research-compiler.ts` | **121.8** | 318 | 33 | 2 | 1 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
@@ -35,6 +35,6 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/inventory/ItemInspector.tsx` | **46** | 246 |
 | `src/features/crawler/crawler-presentation.ts` | **41** | 233 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **38** | 360 |
-| `app/domain/compiler.ts` | **35** | 367 |
+| `app/domain/compiler.ts` | **35** | 349 |
 | `app/domain/research-compiler.ts` | **33** | 318 |
 | `src/features/inventory/equipment/equipment-presentation.ts` | **33** | 159 |
