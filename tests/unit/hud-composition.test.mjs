@@ -17,7 +17,6 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
     isLive: true,
     floorHudTitle: "FLOOR 1",
   });
-  assert.equal(composition.system.crawlerName, undefined);
   assert.equal(composition.system.floorTitle, "FLOOR 1");
   assert.equal(composition.temporal.mode, "live");
   assert.equal(composition.temporal.isLive, true);
@@ -26,8 +25,8 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
   assert.doesNotMatch(composition.urgency.formattedLabel, /Collapse time unavailable|NO SOURCED COUNTDOWN|EXACT TIME/);
   assert.equal(composition.attention.totalNotificationsCount, 0);
   assert.equal(composition.attention.hasActiveAlerts, false);
-  assert.equal(composition.vitals.health, undefined);
-  assert.equal(composition.broadcast.viewers, undefined);
+  assert.equal(composition.progression.level, null);
+  assert.equal(composition.progression.valueDisplay, "LVL —");
 });
 
 test("deriveHudComposition exposes active countdown state without inventing urgency policies", () => {

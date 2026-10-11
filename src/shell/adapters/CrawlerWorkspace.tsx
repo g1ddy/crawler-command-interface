@@ -10,9 +10,7 @@ import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import { derivePetPresentationSummary } from "../../features/pet/public.ts";
-import type {
-  PresentationMotionIntent,
-} from "../../presentation/semantic/public.ts";
+import type { PresentationMotionIntent } from "../../presentation/semantic/public.ts";
 import {
   availableRootViews,
   deriveNavigationContract,
@@ -208,6 +206,7 @@ export function CrawlerWorkspace({
     () =>
       deriveHudComposition({
         projectedObservations,
+        projectedState,
         activeCountdown,
         sequence: currentSeq,
         isLive,
@@ -219,6 +218,7 @@ export function CrawlerWorkspace({
       }),
     [
       projectedObservations,
+      projectedState,
       activeCountdown,
       currentSeq,
       isLive,
@@ -227,23 +227,7 @@ export function CrawlerWorkspace({
       petSummary,
       temporalMotionIntent,
       resolvedView,
-    ],
-  );
-
-  const handleInspectTelemetry = useCallback(
-    (key: string) => {
-      const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
-        viewers: projectedObservations.broadcast.viewers,
-        health: projectedObservations.condition.currentHealth,
-        mana: projectedObservations.condition.currentMana,
-        level: projectedObservations.xpProgress.level,
-      };
-      const obs = observationsMap[key];
-      if (obs) {
-        setInspectObservation(obs);
-      }
-    },
-    [projectedObservations]
+    ]
   );
 
   const navigationContract = useMemo(
@@ -253,7 +237,7 @@ export function CrawlerWorkspace({
         activeView: view,
         notificationsSummary,
       }),
-    [capabilities, view, notificationsSummary],
+    [capabilities, view, notificationsSummary]
   );
 
   const handleExportJson = useCallback(() => {
@@ -311,7 +295,7 @@ export function CrawlerWorkspace({
       },
       inspectObservation: setInspectObservation,
     }),
-    [commands.replayCommands, commands.selectSequence, commands.returnToLive],
+    [commands.replayCommands, commands.selectSequence, commands.returnToLive]
   );
 
   return (
@@ -322,24 +306,20 @@ export function CrawlerWorkspace({
         presentationChoice === "authority-arwes" ? (
           <ArwesPresentation
             model={composition}
-            onInspectTelemetry={handleInspectTelemetry}
             onInspectCountdown={() => setShowCountdownEvidence(true)}
           />
         ) : usesConceptHud ? (
           <ConceptHud
             state={projectedState}
-            observations={projectedObservations}
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
-            onInspectObservation={setInspectObservation}
             onInspectCountdown={() => setShowCountdownEvidence(true)}
           />
         ) : (
           <PersistentHud
             composition={composition}
             state={projectedState}
-            observations={projectedObservations}
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
             isLive={isLive}
@@ -382,38 +362,38 @@ export function CrawlerWorkspace({
             </ModalBoundary>
           )}
           <WorkspaceOverlays
-          snapshot={snapshot}
-          commands={commands}
-          inspectStat={inspectStat}
-          closeStat={() => setInspectStat(null)}
-          inspectObservation={inspectObservation}
-          closeObservation={() => setInspectObservation(null)}
-          onInspectObservation={setInspectObservation}
-          showFloorRules={showFloorRules}
-          closeFloorRules={() => setShowFloorRules(false)}
-          showTimelineHistory={showTimelineHistory}
-          closeHistory={() => setShowTimelineHistory(false)}
-          showTimelineEvidence={showTimelineEvidence}
-          closeEvidence={() => setShowTimelineEvidence(false)}
-          showTimelinePanel={showTimelinePanel}
-          closeTimelinePanel={() => setShowTimelinePanel(false)}
-          replayCommands={replayCommandsWithInspect}
-          tools={
-            showJsonModal
-              ? {
-                  jsonText,
-                  importError,
-                  presentationChoice,
-                  onJsonTextChange: handleJsonTextChange,
-                  onSelectPresentation: setPresentationChoice,
-                  onImport: handleImportJson,
-                  onExport: handleExportJson,
-                  onReset: handleReset,
-                  onClose: () => setShowJsonModal(false),
-                }
-              : null
-          }
-        />
+            snapshot={snapshot}
+            commands={commands}
+            inspectStat={inspectStat}
+            closeStat={() => setInspectStat(null)}
+            inspectObservation={inspectObservation}
+            closeObservation={() => setInspectObservation(null)}
+            onInspectObservation={setInspectObservation}
+            showFloorRules={showFloorRules}
+            closeFloorRules={() => setShowFloorRules(false)}
+            showTimelineHistory={showTimelineHistory}
+            closeHistory={() => setShowTimelineHistory(false)}
+            showTimelineEvidence={showTimelineEvidence}
+            closeEvidence={() => setShowTimelineEvidence(false)}
+            showTimelinePanel={showTimelinePanel}
+            closeTimelinePanel={() => setShowTimelinePanel(false)}
+            replayCommands={replayCommandsWithInspect}
+            tools={
+              showJsonModal
+                ? {
+                    jsonText,
+                    importError,
+                    presentationChoice,
+                    onJsonTextChange: handleJsonTextChange,
+                    onSelectPresentation: setPresentationChoice,
+                    onImport: handleImportJson,
+                    onExport: handleExportJson,
+                    onReset: handleReset,
+                    onClose: () => setShowJsonModal(false),
+                  }
+                : null
+            }
+          />
         </>
       }
     >

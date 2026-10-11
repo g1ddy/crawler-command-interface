@@ -1,19 +1,11 @@
 import type {
   ActiveCountdownState,
+  CrawlerState,
   ProjectedObservationsState,
-  ProjectedObservationValue,
 } from "../../../app/domain/types.ts";
-import {
-  deriveEvidencePresentation,
-  evidenceGlanceMarker,
-  mapEvidenceToSemantics,
-} from "../../features/timeline/public.ts";
 import type { PetPresentationSummary as HudPetSummary } from "../../features/pet/public.ts";
 import type { RootView } from "../navigation/navigation-model.ts";
-import type {
-  PresentationMotionIntent,
-  PresentationSemantics,
-} from "../../presentation/semantic/public.ts";
+import type { PresentationMotionIntent } from "../../presentation/semantic/public.ts";
 
 export type { HudPetSummary };
 
@@ -44,64 +36,33 @@ export interface HudAttentionSummary {
   motionIntent?: PresentationMotionIntent;
 }
 
-export type HudTelemetryKey = "health" | "mana" | "level" | "viewers";
-
-export interface HudEvidencePresentation {
-  marker: string;
-  detailLabel: string;
-}
-
-/**
- * BOUNDARY RULE:
- * Renderer-neutral presentation describes semantic meaning and inspectability;
- * executable application actions are wired outside the composition model.
- * The renderer chooses the physical affordance, while the application owns the action.
- */
-export interface HudTelemetryPresentation {
-  key: HudTelemetryKey;
-  label: string;
+export interface HudProgressionSummary {
+  level: number | null;
   valueDisplay: string;
-  badgeLabel: string;
-  evidence: HudEvidencePresentation;
-  semantics: PresentationSemantics;
-}
-
-export interface HudVitalsSummary {
-  health?: ProjectedObservationValue;
-  mana?: ProjectedObservationValue;
-  level?: ProjectedObservationValue;
-}
-
-export interface HudBroadcastSummary {
-  viewers?: ProjectedObservationValue;
 }
 
 /**
  * Renderer-neutral HUD composition model describing semantic presentation meaning.
  *
  * INVARIANTS:
- * - Expresses semantic presentation context (identity, temporal state, urgency, attention, vitals, broadcast, telemetryItems).
+ * - Expresses persistent masthead context (system location, temporal state, urgency countdown, notification attention, compact level progression).
  * - Remains strictly renderer-neutral: MUST NOT contain CSS classes, styling tokens, border treatments,
- *   animation-library primitives, executable action callbacks, or renderer-specific component choices (e.g., Arwes/POC types).
- * - Capabilities and action contracts (e.g. Return to Live, sequence navigation, evidence inspection) retain their existing application
- *   ownership and are intentionally NOT modeled as action handlers or tool commands inside this composition model.
- * - Explicitly PROVISIONAL: The current arrangement of identity, countdown, mode, audience, and vitals
- *   is an implementation slice and does not represent settled or final persistent HUD product requirements.
+ *   animation-library primitives, executable action callbacks, or renderer-specific component choices.
+ * - Capabilities and action contracts retain their existing application ownership outside this model.
  */
 export interface HudCompositionModel {
   system: HudSystemIdentity;
   temporal: HudTemporalContext;
   urgency: HudUrgencySummary;
   attention: HudAttentionSummary;
-  vitals: HudVitalsSummary;
-  broadcast: HudBroadcastSummary;
+  progression: HudProgressionSummary;
   pet?: HudPetSummary;
-  telemetryItems: HudTelemetryPresentation[];
   activeView?: RootView;
 }
 
 export interface DeriveHudCompositionInput {
   projectedObservations: ProjectedObservationsState;
+  projectedState?: Pick<CrawlerState, "crawler">;
   activeCountdown: ActiveCountdownState | null;
   sequence: number;
   isLive: boolean;
@@ -111,40 +72,16 @@ export interface DeriveHudCompositionInput {
   temporalMotionIntent?: PresentationMotionIntent;
   attentionMotionIntent?: PresentationMotionIntent;
   activeView?: RootView;
-}
-
-function createTelemetryItem(
-  key: HudTelemetryKey,
-  label: string,
-  observation: ProjectedObservationValue | undefined,
-  sequence: number
-): HudTelemetryPresentation {
-  const evidence = deriveEvidencePresentation(observation, sequence);
-  const semantics = mapEvidenceToSemantics(evidence);
-  const valueDisplay =
-    observation?.value !== undefined && observation?.value !== null
-      ? `${observation.value}`
-      : "— ABSENT";
-
-  return {
-    key,
-    label,
-    valueDisplay,
-    badgeLabel: evidence.badgeLabel,
-    evidence: {
-      marker: evidenceGlanceMarker(evidence.state),
-      detailLabel: evidence.label,
-    },
-    semantics,
-  };
+  crawlerLevel?: number | null;
 }
 
 /**
- * Derives the renderer-neutral HUD composition model from replayed domain state slices and telemetry context.
+ * Derives the renderer-neutral HUD composition model from replayed domain state slices and persistent masthead context.
  * Focuses strictly on HUD header/masthead context without domain event projection or hardcoded visual policies.
  */
 export function deriveHudComposition({
   projectedObservations,
+  projectedState,
   activeCountdown,
   sequence,
   isLive,
@@ -158,31 +95,14 @@ export function deriveHudComposition({
   temporalMotionIntent,
   attentionMotionIntent,
   activeView,
+  crawlerLevel,
 }: DeriveHudCompositionInput): HudCompositionModel {
-  const healthItem = createTelemetryItem(
-    "health",
-    "HEALTH",
-    projectedObservations.condition.currentHealth,
-    sequence
-  );
-  const manaItem = createTelemetryItem(
-    "mana",
-    "MANA",
-    projectedObservations.condition.currentMana,
-    sequence
-  );
-  const levelItem = createTelemetryItem(
-    "level",
-    "LEVEL",
-    projectedObservations.xpProgress.level,
-    sequence
-  );
-  const viewersItem = createTelemetryItem(
-    "viewers",
-    "AUDIENCE VIEWERS",
-    projectedObservations.broadcast.viewers,
-    sequence
-  );
+  const levelNum =
+    crawlerLevel !== undefined
+      ? crawlerLevel
+      : (projectedObservations.xpProgress.level?.value ?? projectedState?.crawler?.level ?? null);
+
+  const levelValueDisplay = levelNum !== null && levelNum !== undefined ? `LVL ${levelNum}` : "LVL —";
 
   return {
     system: {
@@ -204,16 +124,11 @@ export function deriveHudComposition({
       ...notificationsSummary,
       motionIntent: attentionMotionIntent,
     },
-    vitals: {
-      health: projectedObservations.condition.currentHealth,
-      mana: projectedObservations.condition.currentMana,
-      level: projectedObservations.xpProgress.level,
-    },
-    broadcast: {
-      viewers: projectedObservations.broadcast.viewers,
+    progression: {
+      level: levelNum,
+      valueDisplay: levelValueDisplay,
     },
     pet: petSummary,
-    telemetryItems: [healthItem, manaItem, levelItem, viewersItem],
     activeView,
   };
 }

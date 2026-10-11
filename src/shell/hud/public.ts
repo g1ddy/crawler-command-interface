@@ -5,11 +5,7 @@ export {
   type HudTemporalContext,
   type HudUrgencySummary,
   type HudAttentionSummary,
-  type HudVitalsSummary,
-  type HudBroadcastSummary,
+  type HudProgressionSummary,
   type HudPetSummary,
-  type HudTelemetryKey,
-  type HudEvidencePresentation,
-  type HudTelemetryPresentation,
   type DeriveHudCompositionInput,
 } from "./hud-composition.ts";

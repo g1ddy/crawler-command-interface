@@ -1,7 +1,6 @@
 import type {
   CrawlerState,
   ProjectedCountdownState,
-  ProjectedObservationsState,
 } from "../../../app/domain/types";
 import type { HudCompositionModel } from "./public";
 import {
@@ -13,78 +12,84 @@ import styles from "./PersistentHud.module.css";
 
 /**
  * Persistent HUD renderer consuming the renderer-neutral composition contract.
- * Exposes cross-cutting system context (floor, level collapse clock, live/replay mode, audience)
- * while crawler identity, progression, and vitals are owned by the Crawler feature.
+ * Exposes persistent masthead context (floor title, notification attention, countdown clock, crawler level)
+ * while crawler identity, progression details, and vitals are owned by feature views.
  */
 export function PersistentHud({
   composition,
   state,
-  observations,
   countdown,
   floorTitle,
-  isLive,
   onInspectCountdown,
 }: {
   composition?: HudCompositionModel;
   state: Pick<CrawlerState, "sequence" | "hotlist" | "skills">;
-  observations: Pick<ProjectedObservationsState, "broadcast">;
-  countdown: ProjectedCountdownState | null;
-  floorTitle: string;
-  isLive: boolean;
+  countdown?: ProjectedCountdownState | null;
+  floorTitle?: string;
+  isLive?: boolean;
   onInspectCountdown?: () => void;
 }) {
-  const title = composition?.system.floorTitle ?? floorTitle;
+  const title = composition?.system.floorTitle ?? floorTitle ?? "";
   const activeCountdown = composition?.urgency.activeCountdown ?? countdown;
-  const liveMode = composition?.temporal.isLive ?? isLive;
   const attention = composition?.attention;
-  const viewersObs = composition?.broadcast.viewers ?? observations.broadcast.viewers;
+  const levelDisplay = composition?.progression.valueDisplay ?? "LVL —";
 
   return (
-    <header className={styles.hud} aria-label="Crawler HUD" data-hud-composition="persistent" data-hud-renderer="persistent">
+    <header
+      className={styles.hud}
+      aria-label="Crawler HUD"
+      data-hud-composition="persistent"
+      data-hud-renderer="persistent"
+    >
       <div className={styles.masthead}>
-        <div className={styles.clock} data-stale={activeCountdown?.isStale || undefined}>
-          <div className={styles.clockHeader}>
-            <span className={styles.kicker}>{title}</span>
-            {attention?.hasActiveAlerts && <span className={styles.alertIndicator}>⚠ ALERT</span>}
+        {/* Row 1 — floor orientation and attention */}
+        <div className={styles.row}>
+          <div className={styles.floorTitle}>{title}</div>
+          <div className={styles.attention}>
+            {attention?.hasActiveAlerts && (
+              <span className={styles.alertIndicator}>⚠ ALERT</span>
+            )}
             {attention && attention.totalNotificationsCount > 0 && (
-              <span className={styles.alertIndicator}>
-                {attention.totalNotificationsCount} NOTICE{attention.totalNotificationsCount === 1 ? "" : "S"}
+              <span className={styles.noticeIndicator}>
+                {attention.totalNotificationsCount} NOTICE
+                {attention.totalNotificationsCount === 1 ? "" : "S"}
               </span>
             )}
           </div>
-          {activeCountdown ? (() => {
-            const evidence = deriveCountdownEvidencePresentation(activeCountdown);
-            const marker = evidenceGlanceMarker(evidence.state);
-            const isInspectable = evidence.inspectable && Boolean(onInspectCountdown);
-            const ariaLabel = `Inspect collapse clock evidence: ${evidence.label.toLowerCase()}`;
-            return (
-              <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
-                <strong>{activeCountdown.formattedTime}</strong>
-                {isInspectable ? (
-                  <button
-                    type="button"
-                    onClick={onInspectCountdown}
-                    aria-label={ariaLabel}
-                  >
-                    {marker}
-                  </button>
-                ) : (
-                  <span role="img" aria-label={ariaLabel}>
-                    {marker}
-                  </span>
-                )}
-              </div>
-            );
-          })() : null}
         </div>
-        <div
-          className={styles.mode}
-          data-testid="hud-audience-mode"
-          data-mode={liveMode ? "live" : "replay"}
-        >
-          <div className={styles.broadcastContext} aria-label="Broadcast context">
-            Audience: {viewersObs?.value != null ? viewersObs.value.toLocaleString() : "—"}
+
+        {/* Row 2 — countdown/evidence and progression */}
+        <div className={styles.row}>
+          <div className={styles.urgency}>
+            {activeCountdown ? (
+              (() => {
+                const evidence = deriveCountdownEvidencePresentation(activeCountdown);
+                const marker = evidenceGlanceMarker(evidence.state);
+                const isInspectable = evidence.inspectable && Boolean(onInspectCountdown);
+                const ariaLabel = `Inspect collapse clock evidence: ${evidence.label.toLowerCase()}`;
+                return (
+                  <div className={styles.countdownContainer}>
+                    <strong>{activeCountdown.formattedTime}</strong>
+                    {isInspectable ? (
+                      <button
+                        type="button"
+                        onClick={onInspectCountdown}
+                        aria-label={ariaLabel}
+                        className={styles.evidenceButton}
+                      >
+                        {marker}
+                      </button>
+                    ) : (
+                      <span role="img" aria-label={ariaLabel} className={styles.evidenceMarker}>
+                        {marker}
+                      </span>
+                    )}
+                  </div>
+                );
+              })()
+            ) : null}
           </div>
+          <div className={styles.level}>{levelDisplay}</div>
         </div>
       </div>
 

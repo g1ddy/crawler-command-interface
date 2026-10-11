@@ -6,112 +6,16 @@ import { AuthorityBackground } from "./primitives/AuthorityBackground.ts";
 import { AuthorityTransition } from "./primitives/AuthorityTransition.ts";
 import { AuthorityIndicator } from "./primitives/AuthorityIndicator.ts";
 import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
-import type {
-  HudCompositionModel,
-  HudTelemetryKey,
-  HudTelemetryPresentation,
-} from "../../shell/hud/public.ts";
+import type { HudCompositionModel } from "../../shell/hud/public.ts";
 import {
   deriveCountdownEvidencePresentation,
   evidenceGlanceMarker,
 } from "../../features/timeline/public.ts";
-import type { PresentationMotionIntent } from "../semantic/public.ts";
 
 export interface ArwesAuthorityCompositionProps {
   composition: HudCompositionModel;
-  onInspectTelemetry?: (key: HudTelemetryKey) => void;
   onInspectCountdown?: () => void;
   motionMode?: AuthorityMotionMode;
-}
-
-interface TelemetryRowProps {
-  item: HudTelemetryPresentation;
-  onInspect?: () => void;
-  motionMode?: AuthorityMotionMode;
-}
-
-function TelemetryRow({ item, onInspect, motionMode }: TelemetryRowProps) {
-  const { key, label, valueDisplay, semantics } = item;
-  const rowKey = key;
-  const isInspectable = semantics.affordance === "inspect" && Boolean(onInspect);
-
-  const rowMotionIntent: PresentationMotionIntent | undefined = semantics.motionIntent;
-
-  const indicatorLabel = isInspectable
-    ? `Inspect ${label.toLowerCase()} evidence: ${item.evidence.detailLabel.toLowerCase()}`
-    : `${label.toLowerCase()} evidence: ${item.evidence.detailLabel.toLowerCase()}`;
-
-  const indicator = createElement(AuthorityIndicator, {
-    marker: item.evidence.marker,
-    label: indicatorLabel,
-    onActivate: isInspectable ? onInspect : undefined,
-    testId: `telemetry-${rowKey}-badge`,
-  });
-
-  return createElement(
-    AuthorityTransition,
-    {
-      motionIntent: rowMotionIntent,
-      motionMode,
-    },
-    createElement(
-      "div",
-      {
-        className: "arwes-telemetry-row",
-        "data-testid": `telemetry-${rowKey}`,
-        "data-status": semantics.status,
-        ...(semantics.authority ? { "data-authority": semantics.authority } : {}),
-        ...(semantics.temporal ? { "data-temporal": semantics.temporal } : {}),
-        ...(rowMotionIntent ? { "data-motion-intent": rowMotionIntent } : {}),
-        style: {
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "nowrap",
-          minWidth: 0,
-          padding: "0.35rem 0.5rem",
-          borderBottom: "1px solid rgba(56, 189, 248, 0.12)",
-        },
-      },
-      createElement(
-        "div",
-        { style: { display: "flex", flexDirection: "column", minWidth: 0, flexShrink: 1 } },
-        createElement(
-          "span",
-          {
-            style: {
-              fontSize: "0.68rem",
-              color: "#94a3b8",
-              letterSpacing: "0.05em",
-              fontWeight: 600,
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            },
-          },
-          label
-        ),
-        createElement(
-          "span",
-          {
-            "data-testid": `telemetry-${rowKey}-value`,
-            style: {
-              fontSize: "1.05rem",
-              fontWeight: 700,
-              color: semantics.status === "unknown" ? "#64748b" : "#f8fafc",
-              fontFamily: "monospace",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            },
-          },
-          valueDisplay
-        )
-      ),
-      createElement("div", { style: { display: "flex", alignItems: "center", flexShrink: 0 } }, indicator)
-    )
-  );
 }
 
 interface PetSurfaceProps {
@@ -327,13 +231,11 @@ function PetSurface({ pet, activeView, motionMode }: PetSurfaceProps) {
 
 export function ArwesAuthorityComposition({
   composition,
-  onInspectTelemetry,
   onInspectCountdown,
   motionMode = "enabled",
 }: ArwesAuthorityCompositionProps) {
-  const { system, temporal, urgency, attention, telemetryItems, pet } = composition;
+  const { system, urgency, attention, progression, pet } = composition;
 
-  const temporalIntent = temporal.motionIntent;
   const attentionIntent = attention.motionIntent;
 
   return createElement(
@@ -369,90 +271,165 @@ export function ArwesAuthorityComposition({
         {
           style: {
             display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "0.75rem",
+            flexDirection: "column",
+            gap: "0.5rem",
+            width: "100%",
           },
         },
 
-        /* Urgency / Collapse Context */
-        urgency.activeCountdown
-          ? (() => {
-              const evidence = deriveCountdownEvidencePresentation(urgency.activeCountdown);
-              const marker = evidenceGlanceMarker(evidence.state);
-              const isInspectable = evidence.inspectable && Boolean(onInspectCountdown);
-              const indicatorLabel = isInspectable
-                ? `Inspect collapse clock evidence: ${evidence.label.toLowerCase()}`
-                : `Collapse clock evidence: ${evidence.label.toLowerCase()}`;
-
-              return createElement(
-                "div",
-                {
-                  "data-testid": "arwes-urgency-panel",
-                  style: {
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "0.35rem 0.75rem",
-                    background: "rgba(15, 23, 42, 0.7)",
-                    border: "1px solid rgba(56, 189, 248, 0.3)",
-                    borderRadius: "4px",
-                  },
-                },
-                createElement(
-                  "div",
-                  {
-                    "data-testid": "arwes-countdown-timer",
-                    style: {
-                      fontSize: "1.2rem",
-                      fontWeight: 800,
-                      fontFamily: "monospace",
-                      color: "#38bdf8",
-                    },
-                  },
-                  urgency.activeCountdown.formattedTime
-                ),
-                createElement(AuthorityIndicator, {
-                  marker,
-                  label: indicatorLabel,
-                  onActivate: isInspectable ? onInspectCountdown : undefined,
-                  testId: "arwes-countdown-badge",
-                })
-              );
-            })()
-          : null,
-
-        /* Temporal Context & Floor Location */
+        /* Row 1: Floor location and Attention treatment */
         createElement(
-          AuthorityTransition,
+          "div",
           {
-            motionIntent: temporalIntent,
-            motionMode,
-            "data-testid": "arwes-temporal-transition",
+            style: {
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "0.75rem",
+              width: "100%",
+            },
           },
           createElement(
             "div",
             {
-              "data-testid": "hud-audience-mode",
-              "data-mode": temporal.mode,
-              "data-motion-intent": temporalIntent,
+              "data-testid": "arwes-location-info",
               style: {
-                textAlign: "right",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-                gap: "0.25rem",
+                fontSize: "0.9rem",
+                color: "#cbd5e1",
+                fontWeight: "700",
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                minWidth: 0,
+                flex: "1 1 auto",
               },
             },
-            createElement(
-              "div",
-              {
-                "data-testid": "arwes-location-info",
-                style: { fontSize: "0.78rem", color: "#cbd5e1", fontWeight: "600" },
+            system.floorTitle
+          ),
+          createElement(
+            "div",
+            {
+              style: {
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                flexShrink: 0,
               },
-              system.floorTitle
-            )
+            },
+            attention.hasActiveAlerts
+              ? createElement(
+                  "span",
+                  {
+                    style: {
+                      fontSize: "0.72rem",
+                      fontWeight: 800,
+                      color: "#ef4444",
+                      background: "rgba(239, 68, 68, 0.2)",
+                      border: "1px solid rgba(239, 68, 68, 0.5)",
+                      padding: "0.15rem 0.4rem",
+                      borderRadius: "2px",
+                      fontFamily: "monospace",
+                    },
+                  },
+                  "⚠️ ALERT"
+                )
+              : null,
+            attention.totalNotificationsCount > 0
+              ? createElement(
+                  "span",
+                  {
+                    style: {
+                      fontSize: "0.72rem",
+                      fontWeight: 800,
+                      color: "#38bdf8",
+                      background: "rgba(56, 189, 248, 0.15)",
+                      border: "1px solid rgba(56, 189, 248, 0.4)",
+                      padding: "0.15rem 0.4rem",
+                      borderRadius: "2px",
+                      fontFamily: "monospace",
+                    },
+                  },
+                  `${attention.totalNotificationsCount} NOTICE${attention.totalNotificationsCount === 1 ? "" : "S"}`
+                )
+              : null
+          )
+        ),
+
+        /* Row 2: Countdown / Evidence and Crawler Level */
+        createElement(
+          "div",
+          {
+            style: {
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "0.75rem",
+              width: "100%",
+            },
+          },
+          urgency.activeCountdown
+            ? (() => {
+                const evidence = deriveCountdownEvidencePresentation(urgency.activeCountdown);
+                const marker = evidenceGlanceMarker(evidence.state);
+                const isInspectable = evidence.inspectable && Boolean(onInspectCountdown);
+                const indicatorLabel = isInspectable
+                  ? `Inspect collapse clock evidence: ${evidence.label.toLowerCase()}`
+                  : `Collapse clock evidence: ${evidence.label.toLowerCase()}`;
+
+                return createElement(
+                  "div",
+                  {
+                    "data-testid": "arwes-urgency-panel",
+                    style: {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      background: "rgba(15, 23, 42, 0.7)",
+                      border: "1px solid rgba(56, 189, 248, 0.3)",
+                      borderRadius: "4px",
+                      padding: "0.2rem 0.5rem",
+                      minWidth: 0,
+                      flex: "1 1 auto",
+                    },
+                  },
+                  createElement(
+                    "div",
+                    {
+                      "data-testid": "arwes-countdown-timer",
+                      style: {
+                        fontSize: "1.1rem",
+                        fontWeight: 800,
+                        fontFamily: "monospace",
+                        color: "#38bdf8",
+                      },
+                    },
+                    urgency.activeCountdown.formattedTime
+                  ),
+                  createElement(AuthorityIndicator, {
+                    marker,
+                    label: indicatorLabel,
+                    onActivate: isInspectable ? onInspectCountdown : undefined,
+                    testId: "arwes-countdown-badge",
+                  })
+                );
+              })()
+            : createElement("div", { style: { flex: "1 1 auto" } }),
+          createElement(
+            "div",
+            {
+              "data-testid": "arwes-level-display",
+              style: {
+                fontSize: "1rem",
+                fontWeight: 800,
+                fontFamily: "monospace",
+                color: "#38bdf8",
+                flexShrink: 0,
+                whiteSpace: "nowrap",
+              },
+            },
+            progression?.valueDisplay ?? "LVL —"
           )
         )
       )
@@ -468,45 +445,6 @@ export function ArwesAuthorityComposition({
           gap: "0.85rem",
         },
       },
-
-      /* Audience & Telemetry Surface */
-      createElement(
-        AuthorityFrame,
-        {
-          significance: "informational",
-          variant: "lines",
-          "data-testid": "arwes-telemetry-frame",
-        },
-        createElement(
-          "h3",
-          {
-            style: {
-              margin: "0 0 0.5rem 0",
-              fontSize: "0.8rem",
-              color: "#7dd3fc",
-              letterSpacing: "0.06em",
-              fontWeight: 700,
-              textTransform: "uppercase",
-            },
-          },
-          "AUDIENCE TELEMETRY"
-        ),
-        createElement(
-          "div",
-          { style: { display: "flex", flexDirection: "column" } },
-          telemetryItems.map((item, idx) => {
-            const rowKey = item.key as HudTelemetryKey;
-            return createElement(TelemetryRow, {
-              key: rowKey || idx,
-              item,
-              motionMode,
-              onInspect: onInspectTelemetry
-                ? () => onInspectTelemetry(rowKey)
-                : undefined,
-            });
-          })
-        )
-      ),
 
       /* System Attention Surface */
       createElement(

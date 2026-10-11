@@ -255,7 +255,7 @@ export class CrawlerSessionController {
     });
 
     const floorHudTitle = currentFloorSegment
-      ? `FLOOR ${currentFloorSegment.ordinal}: ${currentFloorSegment.title}`
+      ? `FLOOR ${currentFloorSegment.ordinal} · ${currentFloorSegment.title.toUpperCase()}`
       : this.selectedFloorOrdinal === "all"
         ? "ALL FLOORS (WHOLE STORY)"
         : `FLOOR ${this.selectedFloorOrdinal}`;

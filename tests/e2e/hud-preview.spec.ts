@@ -18,7 +18,6 @@ for (const variant of ["authority", "tactical", "theater"] as const) {
     await expect(previewScope).toHaveCSS("--surface", variant === "tactical" ? "#131c18" : variant === "theater" ? "#21151b" : "#101820");
     await expect(page.locator('header[aria-label="Crawler HUD"]')).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Main Navigation" }).getByText("MAGIC", { exact: true })).toHaveCount(0);
-    await expect(page.locator('.hud-reading[data-evidence="last-known"]').first()).toContainText(/Last known · sequence \d+/);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     if (variant === "authority") {
       await page.getByRole("button", { name: "Open data tools" }).click();
@@ -239,92 +238,12 @@ test("authority-arwes presentation is URL-selected and renders Arwes renderer co
   const composition = page.getByTestId("arwes-authority-composition");
   await expect(composition).toBeVisible();
   await expect(page.getByTestId("arwes-spine-header")).toBeVisible();
-  await expect(page.getByTestId("arwes-telemetry-frame")).toBeVisible();
+  await expect(page.getByTestId("arwes-location-info")).toBeVisible();
+  await expect(page.getByTestId("arwes-level-display")).toBeVisible();
   await expect(page.getByTestId("arwes-attention-frame")).toBeVisible();
 
-  // Verify telemetry and evidence inspection trigger
-  const healthRow = page.getByTestId("telemetry-health");
-  await expect(healthRow).toBeVisible();
-
-  // Target specific telemetry inspection badge (mana)
-  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
-  await expect(manaBadge).toBeVisible();
-  await expect(manaBadge).toHaveText("◷");
-
-  // Test interactive evidence inspection via application capability callback
-  await manaBadge.click();
-  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
-  await page.getByRole("button", { name: "CLOSE" }).click();
-});
-
-test("authority-arwes supports keyboard navigation, focus return, and passive unknown evidence", async ({ page }) => {
-  await page.goto(`${pagesPath}?hud=authority-arwes`);
-
-  // Target inspectable mana evidence button via accessible role/name
-  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
-  await expect(manaBadge).toBeVisible();
-
-  // Reach the evidence button through real keyboard navigation so :focus-visible is active.
-  for (let tabCount = 0; tabCount < 40; tabCount += 1) {
-    if (await manaBadge.evaluate((el) => el === document.activeElement)) break;
-    await page.keyboard.press("Tab");
-  }
-  await expect(manaBadge).toBeFocused();
-
-  const computedOutline = await manaBadge.evaluate((el) => {
-    const style = window.getComputedStyle(el);
-    return {
-      outlineStyle: style.outlineStyle,
-      outlineWidth: parseFloat(style.outlineWidth) || 0,
-    };
-  });
-  expect(computedOutline.outlineStyle).not.toBe("none");
-  expect(computedOutline.outlineWidth).toBeGreaterThan(0);
-
-  // Activate with Enter key
-  await page.keyboard.press("Enter");
-
-  // Confirm inspection modal opens
-  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
-
-  // Close modal via Close button
-  await page.getByRole("button", { name: "CLOSE" }).click();
-  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).not.toBeVisible();
-
-  // Verify focus returns to the mana evidence indicator button
-  await expect(manaBadge).toBeFocused();
-
-  // Verify unknown health telemetry indicator remains passive (span with role="img", not a button)
-  const healthBadge = page.getByTestId("telemetry-health-badge");
-  await expect(healthBadge).toBeVisible();
-  await expect(healthBadge).toHaveAttribute("role", "img");
-  await expect(healthBadge).toHaveAttribute("aria-label", "health evidence: unknown");
-  await expect(page.getByRole("button", { name: /Inspect health evidence/i })).toHaveCount(0);
-});
-
-test("authority-arwes maintains single-line compact telemetry rows at 390px narrow width without overflow", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(`${pagesPath}?hud=authority-arwes&motion=deterministic`);
-
-  const composition = page.getByTestId("arwes-authority-composition");
-  await expect(composition).toBeVisible();
-
-  // Telemetry rows remain visible
-  const manaRow = page.getByTestId("telemetry-mana");
-  await expect(manaRow).toBeVisible();
-
-  // Compact marker is visible and verbose badge label is absent from persistent row
-  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
-  await expect(manaBadge).toBeVisible();
-  await expect(manaBadge).toHaveText("◷");
-  await expect(manaRow).not.toContainText("LAST KNOWN · SEQ");
-
-  // No horizontal page overflow
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-
-  // Activate compact marker and verify detailed evidence modal opens
-  await manaBadge.click();
-  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
+  // Audience telemetry frame is absent from persistent composition
+  await expect(page.getByTestId("arwes-telemetry-frame")).toHaveCount(0);
 });
 
 test("authority-arwes presentation mounts, unmounts cleanly on navigation away, and remounts without stale state", async ({ page }) => {
@@ -365,17 +284,10 @@ test("authority-arwes handles live -> enter-replay -> return-live sequence with 
   const maxSeq = await slider.getAttribute("max");
   await slider.fill("130");
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "enter-replay");
-
-  // Scrub again within replay mode to sequence 135 -> temporal mode stays replay, transient motionIntent is cleared
-  await slider.fill("135");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
-  await expect(page.getByTestId("hud-audience-mode")).not.toHaveAttribute("data-motion-intent");
 
   // Return to Live sequence by scrubbing to rightmost edge
   if (maxSeq) await slider.fill(maxSeq);
   await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "live");
-  await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-motion-intent", "return-live");
 
   // Renderer exclusivity maintained throughout
   await expect(page.locator('[data-hud-renderer="authority-arwes"]')).toHaveCount(1);
@@ -631,7 +543,7 @@ test("countdown presentation is compact, source-backed, and inspectable across a
   }
 });
 
-test("authority-arwes validates mutation gating during replay while preserving telemetry and stat inspection", async ({ page }) => {
+test("authority-arwes validates mutation gating during replay while preserving stat inspection", async ({ page }) => {
   // Seed scenario with valid available points observation before navigation
   await page.addInitScript((timelineDoc) => {
     try {
@@ -670,13 +582,6 @@ test("authority-arwes validates mutation gating during replay while preserving t
 
   // 3. Replay mode gating: allocate button must transition to disabled
   await expect(allocateBtn).toBeDisabled();
-
-  // Telemetry inspection remains active
-  const manaBadge = page.getByRole("button", { name: /Inspect mana evidence/i });
-  await expect(manaBadge).toBeVisible();
-  await manaBadge.click();
-  await expect(page.getByText("TELEMETRY OBSERVATION & PROVENANCE")).toBeVisible();
-  await page.getByRole("button", { name: "CLOSE" }).click();
 
   // Stat inspection remains active
   const strengthBtn = page.getByRole("button", { name: "Strength 🔍" });
