@@ -140,7 +140,7 @@ The extraction LLM receives:
 3. the current repository JSON Schema;
 4. the extraction prompt below.
 
-An excerpt is a bounded summary, not a claim that the full research is exhaustive. Supplemental evidence notes may be concise; a full research report does not need to be checked into the repository. Each supplemental note must identify the specific accessible online source and its exact URL, locator where available, the proposition it supports, and any material limitation or uncertainty. URL-less notes are not sufficient evidence for a valid Stage 2 source record. A source list by itself does not establish a claim.
+An excerpt is a bounded summary, not a claim that the full research is exhaustive. Supplemental evidence notes may be concise; a full research report does not need to be checked into the repository. Each supplemental note must identify the specific accessible online source and its exact URL, locator where available, the proposition it supports, and any material limitation or uncertainty. If the original citation has no URL, locate an accessible online source that actually supports or identifies the cited material before using it; otherwise, leave that evidence out of Stage 2 source records and preserve the provenance gap. URL-less notes are not sufficient evidence for a valid Stage 2 source record. A source list by itself does not establish a claim.
 
 Stage 2 may extract claims supported by either the excerpt and its cited evidence or the explicitly supplied supplemental evidence notes. The extraction model does not browse: it must not add claims based on its own outside knowledge, and must not treat a claim as supported merely because a URL appears in a source list. Preserve all source/evidence details in the YAML so the resulting ledger remains auditable without requiring a checked-in full report.
 
@@ -337,7 +337,7 @@ For each source, preserve the information supplied by the research report, such 
 - exact URL for the accessible online source (required by the schema);
 - bibliographic information and other schema-supported metadata when supplied.
 
-Every source record must include an exact URL for an accessible online source. If the research materials cite a book or other source without providing an accessible online URL, do not invent a URL or emit a source record that violates the schema. Preserve the provenance gap and do not treat claims supported solely by that untraceable source as valid extracted claims.
+Every source record must include an exact URL for an accessible online source. If the original citation has no URL (for example, a physical-book citation), first find an accessible online source that actually supports or identifies the cited material and record that page's exact URL. A citation to a URL-less source is not an exemption from the URL requirement. If no suitable accessible URL can be found, do not invent one and do not emit a source record; preserve the provenance gap and do not treat claims supported solely by that untraceable source as valid extracted claims.
 
 Prefer **stable, short, mnemonic source IDs** when the source identity is clear. For example, use `src-book-2-preview`, `src-donut-wiki`, or `src-interview-online` when those IDs identify the specific accessible online source, rather than opaque incremental IDs such as `src-27`. Mnemonic IDs give the extraction model a useful retrieval cue when the same source is referenced repeatedly.
 
