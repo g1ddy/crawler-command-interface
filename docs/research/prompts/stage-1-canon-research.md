@@ -139,7 +139,7 @@ The researcher may not have direct access to the published books. When primary t
 >
 > **UNKNOWN** — the research does not establish the requested detail.
 >
-> Also identify when an important claim is **SECONDARY-ONLY / PRIMARY-VERIFICATION-REQUIRED**.
+> Also identify when an important claim is **SECONDARY-ONLY**. This is an honest description of the accessible evidence, not a defect that blocks the research result or a request that the user obtain the physical novel.
 >
 > Never convert an inference into a fact.
 >
@@ -202,14 +202,14 @@ The researcher may not have direct access to the published books. When primary t
 > - **Unavailable** — a relevant source appears to exist but was not accessible.
 > - **Insufficient precision** — the evidence supports the concept but not the requested detail.
 > - **Conflicting secondary evidence** — accessible sources disagree.
-> - **Primary verification required** — secondary evidence exists, but the claim should be checked against the published text before being treated as canon-confirmed.
+> - **Additional online corroboration useful** — the claim would benefit from another independent accessible source, a more precise source locator, or a comparison against a conflicting online account.
 >
-> For important unresolved or secondary-only claims, create a **Primary Verification Queue** when primary-text verification would materially improve confidence. This is a follow-up task, not something you should pretend to complete without access to the book. Include:
+> For important unresolved or secondary-only claims, create an **Evidence Follow-up Queue** only when further work could materially improve the available evidence. Do not make primary-text inspection a prerequisite, and do not ask the user to confirm claims against the physical book. Prefer follow-ups that can be completed through accessible online research. Include:
 >
-> - claim/question to verify;
-> - why verification matters;
-> - best book/chapter/page/section locator available;
-> - accessible secondary evidence supporting it;
+> - claim/question to investigate;
+> - why further evidence matters;
+> - best available online source/page/section locator;
+> - accessible evidence already supporting it;
 > - conflicting or qualifying evidence, if any;
 > - what remains unknown.
 >
@@ -273,7 +273,7 @@ The researcher may not have direct access to the published books. When primary t
 > 14. Inferences
 > 15. Evidence Gaps / Unknowns
 > 16. Potential Contradictions
-> 17. Primary Verification Queue
+> 17. Evidence Follow-up Queue
 > 18. Recommended Follow-up Research
 >
 > The report will be consumed by a separate LLM that converts evidence into a strict machine-readable research claim format.
