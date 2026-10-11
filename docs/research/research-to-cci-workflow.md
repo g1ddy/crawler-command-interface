@@ -140,7 +140,7 @@ The extraction LLM receives:
 3. the current repository JSON Schema;
 4. the extraction prompt below.
 
-An excerpt is a bounded summary, not a claim that the full research is exhaustive. Supplemental evidence notes may be concise; a full research report does not need to be checked into the repository. Each supplemental note must identify the specific source, exact URL when applicable, locator where available, the proposition it supports, and any material limitation or uncertainty. A source list by itself does not establish a claim.
+An excerpt is a bounded summary, not a claim that the full research is exhaustive. Supplemental evidence notes may be concise; a full research report does not need to be checked into the repository. Each supplemental note must identify the specific accessible online source and its exact URL, locator where available, the proposition it supports, and any material limitation or uncertainty. URL-less notes are not sufficient evidence for a valid Stage 2 source record. A source list by itself does not establish a claim.
 
 Stage 2 may extract claims supported by either the excerpt and its cited evidence or the explicitly supplied supplemental evidence notes. The extraction model does not browse: it must not add claims based on its own outside knowledge, and must not treat a claim as supported merely because a URL appears in a source list. Preserve all source/evidence details in the YAML so the resulting ledger remains auditable without requiring a checked-in full report.
 
@@ -156,11 +156,10 @@ A source record represents an **actual identifiable source**, not merely a sourc
 
 Stage 2 should preserve enough identifying information to distinguish the source when the research report provides it:
 
-- books: specific book identity and available bibliographic information;
-- web sources: specific page/work title and URL;
-- interviews, articles, wikis, and other sources: specific work/page/interview identity and available locators.
+- online sources of any type: specific page/work/interview identity and exact URL;
+- available source locators and relevant bibliographic details, when supplied by the accessible online source.
 
-Do not create generic records such as `src-canon-general`, `src-book`, or `src-wiki` merely to satisfy the schema. If the report does not identify the source precisely, preserve the provenance gap rather than inventing a plausible source. Likewise, do not require a URL where the source does not have one.
+Do not create generic records such as `src-canon-general`, `src-book`, or `src-wiki` merely to satisfy the schema. If the report does not identify an accessible online source precisely enough to provide its exact URL, preserve the provenance gap rather than inventing a plausible source. Every source record must include `url`, as required by the repository schema. Do not emit a source record without a URL.
 
 ### Prompt examples are part of the extraction contract
 
@@ -170,7 +169,7 @@ For that reason, examples should demonstrate **source fidelity**, not merely sch
 
 - use an identifiable, mnemonic source ID when the source identity is known;
 - preserve the exact URL supplied by the research report for web sources;
-- omit `url` when the source has no supplied URL, such as a book;
+- require an exact URL for every emitted source record; if no accessible online source URL is supplied, preserve the provenance gap and do not emit a schema-invalid source record;
 - never use placeholder URLs such as `example.com` or `example.invalid`;
 - never invent bibliographic details to make an example look complete;
 - prefer realistic, traceable source metadata over generic examples when illustrating provenance.
@@ -484,7 +483,7 @@ The following failures are particularly valuable as Stage 2 regression fixtures:
 | Missing exact timestamp/quantity | Preserve as unknown |
 | Source ID treated as provenance | Use the source registry and evidence locator |
 | Generic source category presented as a source | Require an identifiable source when the report provides one; otherwise preserve the provenance gap |
-| Book source forced to have URL | Preserve URL only when applicable |
+| Source has no accessible URL | Do not fabricate a URL or emit a source record; preserve the provenance gap and exclude claims that depend solely on that source from valid extraction |
 | Missing source details filled with invented provenance | Preserve the deficiency; never fabricate source identity, URL, or bibliographic details |
 | Floor 3 scope treated as evidence restriction | Preserve actual chronology |
 | Strong source claim automatically treated as CCI promotion | Keep promotion out of Stage 2 |
