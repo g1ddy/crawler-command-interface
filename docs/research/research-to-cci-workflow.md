@@ -135,11 +135,14 @@ Convert the Stage 1 research report into a structured research-claim artifact.
 
 The extraction LLM receives:
 
-1. the complete Stage 1 research report, or an explicitly labeled excerpt with the evidence and source details needed for the claims being extracted;
-2. the current repository JSON Schema;
-3. the extraction prompt below.
+1. the complete Stage 1 research report, or an explicitly labeled excerpt;
+2. any supplemental evidence notes supplied for this extraction, when claims were researched or checked separately;
+3. the current repository JSON Schema;
+4. the extraction prompt below.
 
-An excerpt is a bounded input, not a claim that the full research is exhaustive. Extract only claims supported by the supplied report/excerpt and its included evidence. If additional online research is performed later, add its findings, source identity, locators, and qualifications to the Stage 1 research artifact before extracting them into Stage 2 YAML. Do not add externally discovered claims directly to Stage 2 as though the original Stage 1 input supported them.
+An excerpt is a bounded summary, not a claim that the full research is exhaustive. Supplemental evidence notes may be concise; a full research report does not need to be checked into the repository. Each supplemental note must identify the specific source, exact URL when applicable, locator where available, the proposition it supports, and any material limitation or uncertainty. A source list by itself does not establish a claim.
+
+Stage 2 may extract claims supported by either the excerpt and its cited evidence or the explicitly supplied supplemental evidence notes. The extraction model does not browse: it must not add claims based on its own outside knowledge, and must not treat a claim as supported merely because a URL appears in a source list. Preserve all source/evidence details in the YAML so the resulting ledger remains auditable without requiring a checked-in full report.
 
 The extraction LLM does **not** need CCI source code or repository access.
 
@@ -383,10 +386,10 @@ Do not invent relationship kinds.
 
 ### Confidence
 
-Use only confidence values defined by the supplied schema. The current conceptual vocabulary is:
+Use only confidence values defined by the supplied schema. The current schema-defined vocabulary is:
 
 - `confirmed`
-- `probable`
+- `corroborated`
 - `candidate`
 - `disputed`
 
