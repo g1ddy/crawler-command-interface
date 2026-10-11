@@ -170,11 +170,18 @@ Earlier or later evidence may be retained when the Stage 1 report explicitly use
 
 # 3. Evidence and secondary-source policy
 
-Credible secondary sources are valid evidence for this workflow.
+Credible online secondary sources are expected and valid evidence for this workflow. The physical novel is not an expected input. Do not ask the user to confirm claims against the book text, and do not treat primary-text inspection as a prerequisite for completing the research ledger.
 
-A clear, credible secondary-source finding may receive `confidence: confirmed` even when the primary book passage is unavailable.
+## Confidence definitions
 
-Do not downgrade a finding to `candidate` or `unknown` merely because the evidence is secondary or the book text could not be checked.
+Assign confidence to each evidence entry according to the strength and condition of the available evidence for that proposition:
+
+- `confirmed` — The available evidence establishes the proposition strongly enough for this workflow to treat it as established. Multiple credible, materially independent online sources may collectively establish it; exceptionally strong and specific evidence from one credible source may also qualify. No material contradiction remains unresolved. This does not mean the novel was inspected.
+- `corroborated` — Credible evidence supports the proposition, but is narrower, less specific, less independent, or otherwise not strong enough for `confirmed`. One credible secondary source can be useful and support this level even when it is the best accessible evidence.
+- `candidate` — A plausible lead with weak, incomplete, indirect, or insufficiently traceable support.
+- `disputed` — Credible evidence materially conflicts or significant unresolved ambiguity prevents the proposition from being treated as settled.
+
+These values are not simply four rungs on a ladder: `disputed` denotes conflict. Count independent evidence chains, not URLs; multiple sites repeating the same underlying account are not independent corroboration. Source trust and claim confidence are separate.
 
 ## Keep source classification separate from claim confidence
 
