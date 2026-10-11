@@ -596,10 +596,9 @@ test("persistent masthead hierarchy enforces exact 2-row responsibilities across
   const persistentHud = page.locator('[data-hud-composition="persistent"]');
   await expect(persistentHud).toBeVisible();
 
-  // Masthead has Row 1 (Floor title on left, Notice count on right) and Row 2 (Countdown on left, Level on right)
+  // Masthead has Row 1 (Floor title on left) and Row 2 (Countdown on left, Level on right)
   await expect(persistentHud).toContainText("FLOOR 3");
   await expect(persistentHud).toContainText("LVL 13");
-  await expect(persistentHud).toContainText("NOTICE");
 
   // Masthead must NOT contain Audience telemetry or Live/historical status badge
   await expect(persistentHud).not.toContainText("212,000,000,000");
@@ -613,14 +612,19 @@ test("persistent masthead hierarchy enforces exact 2-row responsibilities across
   await expect(conceptHud).toBeVisible();
   await expect(conceptHud).toContainText("FLOOR 3");
   await expect(conceptHud).toContainText("LVL 13");
-  await expect(conceptHud.getByTestId("concept-hud-notice-count")).toBeVisible();
 
-  // Verify historical selection shows historical floor context
+  // At sequence 18, currentSequenceNotificationCount is 1 -> notice count visible
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await enterReplayByScrubbing(page);
+  await slider.fill("18");
+  await expect(conceptHud.getByTestId("concept-hud-notice-count")).toBeVisible();
+  await expect(conceptHud).toContainText("1 NOTICE");
+
+  // Verify historical selection at sequence 1 shows historical floor context and no notice count
   await slider.fill("1");
   await expect(conceptHud).toContainText("FLOOR 1");
   await expect(conceptHud).toContainText("LVL —");
+  await expect(conceptHud.getByTestId("concept-hud-notice-count")).toHaveCount(0);
 
   // Verify document-level horizontal overflow is false
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

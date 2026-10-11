@@ -224,10 +224,30 @@ test("timeline scrubber orientation row and session state update consistently on
   }
 });
 
+test("notification attention indicator reflects current sequence deliveries at sequence 18 and sequence 19", async ({ page }) => {
+  const hud = page.locator('header[aria-label="Crawler HUD"]');
+
+  await enterReplayByScrubbing(page);
+
+  // At sequence 18 (evt-f1-achievement-loner), a notification is delivered
+  await selectSequence(page, 18);
+  await expect(hud).toContainText("1 NOTICE");
+
+  // At sequence 19, no notification is delivered at this sequence -> masthead numeric indicator absent
+  await selectSequence(page, 19);
+  await expect(hud).not.toContainText("NOTICE");
+});
+
 test("static bundle renders its essential HUD at desktop and mobile sizes", async ({ page }, testInfo) => {
   await expect(page.getByRole("navigation", { name: "Main Navigation" })).toBeVisible();
   await expect(page.getByRole("slider", { name: "Selected timeline sequence" })).toBeVisible();
-  await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("Audience");
+  const hud = page.locator('header[aria-label="Crawler HUD"]');
+  await expect(hud).toBeVisible();
+  await expect(hud).toContainText("FLOOR 3");
+  await expect(hud).toContainText("LVL 13");
+  await expect(hud).not.toContainText("Audience");
+  await expect(hud).not.toContainText("212,000,000,000");
+  await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "true");
 
   if (testInfo.project.name === "mobile-chromium") {
     await expect(page.locator('[data-hud-composition="persistent"]')).toBeVisible();

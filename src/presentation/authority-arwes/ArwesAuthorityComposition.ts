@@ -337,7 +337,7 @@ export function ArwesAuthorityComposition({
                   "⚠️ ALERT"
                 )
               : null,
-            attention.totalNotificationsCount > 0
+            attention.currentSequenceNotificationCount > 0
               ? createElement(
                   "span",
                   {
@@ -352,7 +352,7 @@ export function ArwesAuthorityComposition({
                       fontFamily: "monospace",
                     },
                   },
-                  `${attention.totalNotificationsCount} NOTICE${attention.totalNotificationsCount === 1 ? "" : "S"}`
+                  `${attention.currentSequenceNotificationCount} NOTICE${attention.currentSequenceNotificationCount === 1 ? "" : "S"}`
                 )
               : null
           )
