@@ -1,6 +1,5 @@
 import type {
   ActiveCountdownState,
-  CrawlerState,
   ProjectedObservationsState,
   ProjectedObservationValue,
 } from "../../../app/domain/types.ts";
@@ -19,8 +18,6 @@ import type {
 export type { HudPetSummary };
 
 export interface HudSystemIdentity {
-  crawlerName: string;
-  crawlerClass: string;
   floorTitle: string;
   sequence: number;
 }
@@ -104,7 +101,6 @@ export interface HudCompositionModel {
 }
 
 export interface DeriveHudCompositionInput {
-  projectedState: CrawlerState;
   projectedObservations: ProjectedObservationsState;
   activeCountdown: ActiveCountdownState | null;
   sequence: number;
@@ -148,7 +144,6 @@ function createTelemetryItem(
  * Focuses strictly on HUD header/masthead context without domain event projection or hardcoded visual policies.
  */
 export function deriveHudComposition({
-  projectedState,
   projectedObservations,
   activeCountdown,
   sequence,
@@ -191,8 +186,6 @@ export function deriveHudComposition({
 
   return {
     system: {
-      crawlerName: projectedState.crawler.name ?? "—",
-      crawlerClass: projectedState.crawler.class || "Class unknown",
       floorTitle: floorHudTitle,
       sequence,
     },

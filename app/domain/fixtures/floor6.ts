@@ -38,7 +38,6 @@ export const floor6Timeline: CrawlerTimelineDocument = {
   ],
   initialState: {
     crawler: {
-      name: 'CARL G.',
       level: 42,
       race: 'PRIMAL',
       class: 'SCOUT',

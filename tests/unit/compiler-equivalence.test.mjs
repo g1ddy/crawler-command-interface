@@ -9,8 +9,10 @@ import { projectState, projectObservations, projectCountdownState } from "../../
 
 // Frozen from the pre-#140 base commit (8e28a22) using the historical compiler output
 // and historical projector. Generated timestamps are excluded from the timeline hash.
-const PRE_140_TIMELINE_HASH = "46cacf241c16c1825b5d3e5f1fad7bc22fc6a051b63e8aa423f6fc7930514b01";
-const REPLAY_PROJECTION_HASH = "a0caddff9d9327610e5711d3d6720a0d4d85167c5212e302fe88d65ca78274f9";
+// Note: These hashes act as the approved semantic timeline and replay-projection baselines
+// after removing the fabricated initial crawler identity in PR #302.
+const SEMANTIC_TIMELINE_HASH = "30da156e3d49182cbc313aa02374a486cbc907969be925829b9ecc664f9e880c";
+const REPLAY_PROJECTION_HASH = "abfac9133e6d1e5aecf1f1e561bd532bf9510c94bd4fc6d9d7379a0843432843";
 
 function canonicalKeyOrder(key, value) {
   if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -80,8 +82,8 @@ test("re-compiling raw floor files matches the frozen pre-#140 semantic timeline
 
   assert.equal(
     sha256(normalizeTimeline(freshTimeline)),
-    PRE_140_TIMELINE_HASH,
-    "Compiled timeline semantics diverged from the pre-#140 baseline."
+    SEMANTIC_TIMELINE_HASH,
+    "Compiled timeline semantics diverged from the semantic baseline."
   );
 });
 

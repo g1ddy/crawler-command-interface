@@ -77,7 +77,9 @@ export function PlayerStats({
             />
           </span>
           <em className={styles.xpTrack}>
-            <b className={styles.xpFill} style={{ width: `${xpPercent}%` }} />
+            {xpPercent != null ? (
+              <b className={styles.xpFill} style={{ width: `${xpPercent}%` }} />
+            ) : null}
           </em>
         </div>
       </header>
@@ -117,10 +119,12 @@ export function PlayerStats({
                     />
                   )}
                   <em className={styles.meterTrack}>
-                    <i
-                      className={`${styles.meterFill} ${fillClass}`}
-                      style={{ width: `${value != null ? Math.min(100, Number(value) * 2) : 0}%` }}
-                    />
+                    {value != null ? (
+                      <i
+                        className={`${styles.meterFill} ${fillClass}`}
+                        style={{ width: `${Math.min(100, Number(value) * 2)}%` }}
+                      />
+                    ) : null}
                   </em>
                 </div>
                 <div className={styles.attrActions}>

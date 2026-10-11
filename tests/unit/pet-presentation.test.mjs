@@ -4,23 +4,30 @@ import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts
 import { projectState } from "../../app/domain/projection.ts";
 import { derivePetPresentation } from "../../src/features/pet/public.ts";
 
-test("derivePetPresentation handles empty or undefined pets array", () => {
-  const empty = derivePetPresentation({ pets: undefined });
-  assert.equal(empty.hasPets, false);
-  assert.equal(empty.status, "not-established");
-  assert.equal(empty.petCount, 0);
-  assert.equal(empty.badgeLabel, "NOT ESTABLISHED");
-  assert.deepEqual(empty.pets, []);
-});
+test("derivePetPresentation handles missing-state cases and authority boundaries", () => {
+  // 1. pets: undefined and not yet established -> not-established
+  const unestablishedUndefined = derivePetPresentation({ pets: undefined, hasBeenEstablished: false });
+  assert.equal(unestablishedUndefined.status, "not-established");
+  assert.equal(unestablishedUndefined.badgeLabel, "NOT ESTABLISHED");
+  assert.equal(unestablishedUndefined.hasPets, false);
 
-test("derivePetPresentation distinguishes not-established vs known-empty when pets is empty", () => {
-  const unestablished = derivePetPresentation({ pets: [], hasBeenEstablished: false });
-  assert.equal(unestablished.status, "not-established");
-  assert.equal(unestablished.hasPets, false);
+  // 2. pets: undefined after having been established -> unavailable
+  const establishedUndefined = derivePetPresentation({ pets: undefined, hasBeenEstablished: true });
+  assert.equal(establishedUndefined.status, "unavailable");
+  assert.equal(establishedUndefined.badgeLabel, "UNAVAILABLE");
+  assert.equal(establishedUndefined.hasPets, false);
 
-  const knownEmpty = derivePetPresentation({ pets: [], hasBeenEstablished: true });
-  assert.equal(knownEmpty.status, "known-empty");
-  assert.equal(knownEmpty.hasPets, false);
+  // 3. pets: [] and not yet established -> not-established
+  const unestablishedEmpty = derivePetPresentation({ pets: [], hasBeenEstablished: false });
+  assert.equal(unestablishedEmpty.status, "not-established");
+  assert.equal(unestablishedEmpty.badgeLabel, "NOT ESTABLISHED");
+  assert.equal(unestablishedEmpty.hasPets, false);
+
+  // 4. pets: [] after having been established -> known-empty
+  const establishedEmpty = derivePetPresentation({ pets: [], hasBeenEstablished: true });
+  assert.equal(establishedEmpty.status, "known-empty");
+  assert.equal(establishedEmpty.badgeLabel, "NO PETS");
+  assert.equal(establishedEmpty.hasPets, false);
 });
 
 test("derivePetPresentation defensively preserves unknown/unspecified fields without fabricating claims", () => {

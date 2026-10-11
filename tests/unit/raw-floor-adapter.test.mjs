@@ -560,7 +560,7 @@ test("Phase 2: raw fixture demonstrates partial observations, inventory lifecycl
   assert.equal(stateAtConsume.crawler.condition.currentHealth, 1500, "HP 1200 + 300 restored by consumed potion = 1500");
   assert.equal(stateAtConsume.crawler.xp, 28000, "XP updated to 28000");
   assert.equal(stateAtConsume.crawler.maxXp, 80000, "MaxXP updated to 80000");
-  assert.equal(stateAtConsume.crawler.attributes.Strength, 12, "Base 10 + 2 allocated Strength = 12");
+  assert.equal(stateAtConsume.crawler.attributes.Strength, undefined, "Strength is undefined as base 10 was removed and delta not applied");
 
   const stateAtDiscard = projectState(compiled, seqAtDiscard);
   assert.equal(
@@ -697,4 +697,35 @@ test("raw event IDs must match their authored floor ordinal", () => {
   const validation = validateRawCrawlerFloor(doc);
   assert.equal(validation.valid, false);
   assert.ok(validation.errors.some((error) => error.includes("must use prefix \"evt-f1-\"")));
+});
+
+test("regression: initial crawler state baseline contains only empty structured containers without fabricated defaults", () => {
+  const compiled = compileRawFloorFiles([rawFloor1]);
+
+  // 1. Initial State strictly empty containers
+  const initialCrawler = compiled.initialState.crawler;
+  assert.deepEqual(Object.keys(initialCrawler).sort(), ["attributes", "condition"]);
+  assert.deepEqual(initialCrawler.attributes, {});
+  assert.deepEqual(initialCrawler.condition, {});
+
+  // 2. Projected state respects the unestablished initial baseline
+  const projectedInitial = projectState(compiled, 0).crawler;
+  assert.equal(projectedInitial.level, null, "projected baseline level must be null");
+  assert.equal(projectedInitial.xp, undefined, "projected baseline xp must be undefined");
+  assert.equal(projectedInitial.maxXp, undefined, "projected baseline maxXp must be undefined");
+  assert.deepEqual(projectedInitial.attributes, {}, "projected baseline attributes must be empty");
+  assert.deepEqual(projectedInitial.condition, {
+    currentHealth: null, maxHealth: null,
+    currentMana: null, maxMana: null,
+    currentStamina: null, maxStamina: null
+  }, "projected baseline condition must be exactly null defaults");
+
+  // 3. Observations remain intact and project accurately at their sequences
+  const manaObservation = compiled.observations.find((obs) => obs.id === "obs-f1-magic-baseline");
+  assert.ok(manaObservation);
+
+  const projectedMana = projectObservationValue(compiled, manaObservation.sequence, "crawler-condition.currentMana");
+  assert.ok(projectedMana);
+  assert.equal(projectedMana.status, "stated");
+  assert.equal(projectedMana.value, 3);
 });
