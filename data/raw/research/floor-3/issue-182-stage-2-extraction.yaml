@@ -223,6 +223,7 @@ claims:
     kind: "state"
     claim:
       summary: "A reconstruction of Carl's unenhanced post-selection base stats gives Strength 10, Intelligence 5, Constitution 10, Dexterity 10, and Charisma 25."
+      detail: "Derived from the starting stats, Primal penalty, class bonuses, prerequisite allocation, and remaining point allocation. The cited stat table includes equipment modifiers, so this is a calculated vector rather than a directly reported row."
     evidence:
       - sourceId: "src-fandom-carl"
         locator:
@@ -231,8 +232,12 @@ claims:
         relationship: "context"
         confidence: "candidate"
         note: "The table reports equipment-modified values (STR 13/16, INT 5, CON 19, DEX 11, CHR 25). The unenhanced vector is reconstructed by removing listed equipment bonuses; the page does not report this exact vector as a single row."
-    unknowns:
-      - "whether the reconstructed unenhanced vector should be retained as a derived claim"
+    dependencies:
+      - "F3-PROG-002"
+      - "F3-PROG-004"
+      - "F3-PROG-005"
+      - "F3-PROG-007"
+      - "F3-PROG-009"
   - id: "F3-PROG-013"
     domain: "crawler"
     kind: "state"
