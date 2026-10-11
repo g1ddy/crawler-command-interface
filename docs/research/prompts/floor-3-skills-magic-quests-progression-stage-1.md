@@ -51,7 +51,10 @@ Research concrete Floor 3 skill changes and progression, including:
 
 - Primal-related skill capability/training changes.
 - Iron Punch / Breadbasket mutation and its trigger/effect.
-- Trap detection/disarm or trap-engineering capability where the evidence establishes a meaningful Floor 3 progression change.
+- Trap-related progression: separately investigate named skills, exact skill-point/level grants, and general effects for Find Trap and Backfire when sources identify them.
+- Distinguish class-level modifiers such as Compensated Anarchist's +5% bomb/trap training from separate skill grants.
+- Preserve chronology: a skill granted on Floor 3 may first be activated or demonstrated later. Do not move a later activation back to Floor 3.
+- Trap detection/disarm or trap-engineering capability during the HOA/neighborhood sequence only where the evidence supports a specific action directly.
 - Any other newly acquired or materially upgraded skill that is explicitly supported.
 
 ### Magic

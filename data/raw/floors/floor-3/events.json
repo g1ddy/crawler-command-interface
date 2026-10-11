@@ -40,6 +40,10 @@
       {
         "sourceId": "src-bookwormai-book2",
         "confidence": "confirmed"
+      },
+      {
+        "sourceId": "src-wiki-carl-f3",
+        "confidence": "confirmed"
       }
     ]
   },
@@ -491,6 +495,10 @@
       {
         "sourceId": "src-parapith-ch-sums",
         "confidence": "corroborated"
+      },
+      {
+        "sourceId": "src-wiki-carl-f3",
+        "confidence": "confirmed"
       }
     ]
   },
@@ -539,6 +547,10 @@
         "locator": {
           "chapter": 11
         },
+        "confidence": "confirmed"
+      },
+      {
+        "sourceId": "src-wiki-carl-f3",
         "confidence": "confirmed"
       }
     ]

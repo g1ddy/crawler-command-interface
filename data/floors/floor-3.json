@@ -163,6 +163,13 @@
       "trust": "corroborating",
       "title": "Quan Ch - Dungeon Crawler Carl Wiki",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Quan_Ch"
+    },
+    {
+      "id": "src-wiki-carl-f3",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Carl/Floor 3 - Dungeon Crawler Carl Wiki",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_3"
     }
   ],
   "catalog": {
@@ -356,6 +363,10 @@
         },
         {
           "sourceId": "src-bookwormai-book2",
+          "confidence": "confirmed"
+        },
+        {
+          "sourceId": "src-wiki-carl-f3",
           "confidence": "confirmed"
         }
       ],
@@ -830,6 +841,10 @@
         {
           "sourceId": "src-parapith-ch-sums",
           "confidence": "corroborated"
+        },
+        {
+          "sourceId": "src-wiki-carl-f3",
+          "confidence": "confirmed"
         }
       ],
       "order": 24
@@ -880,6 +895,10 @@
           "locator": {
             "chapter": 11
           },
+          "confidence": "confirmed"
+        },
+        {
+          "sourceId": "src-wiki-carl-f3",
           "confidence": "confirmed"
         }
       ],

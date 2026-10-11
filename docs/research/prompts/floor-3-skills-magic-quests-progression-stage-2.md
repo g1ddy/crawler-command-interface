@@ -21,6 +21,10 @@ The output is evidence extraction, not CCI runtime modeling.
 11. Do not include inventory/equipment claims unless the fact is specifically necessary to establish an in-scope skill, magic, quest, or progression capability.
 12. Do not turn population-level reward facts into Carl inventory quantities.
 13. Use only fields and enum values allowed by app/domain/schema/research-claim.schema.json.
+14. Keep the Compensated Anarchist +5% bomb/trap training modifier separate from individual skill grants.
+15. For Find Trap, distinguish the Floor 3 +5 skill grant from the first documented activation in Book 3; do not author the later activation as a Floor 3 event.
+16. For Backfire, preserve the five-level grant and the general pickup/disassemble/reuse capability. Do not generalize the source's specific untriggered Alarm Module removal rule to all traps.
+17. Do not infer a specific trap-detection/disarm action during the HOA/neighborhood sequence unless the supplied report directly supports that action.
 
 ## Required coverage
 
@@ -29,6 +33,7 @@ The resulting ledger should cover the research actually established for:
 - Primal race selection and persistent consequences.
 - Compensated Anarchist persistent modifiers.
 - Iron Punch / Breadbasket progression.
+- Find Trap and Backfire, including their distinct Floor 3 grants and source-backed mechanics.
 - Wisp Armor's independently established effects.
 - Other supported Floor 3 magic progression.
 - The Show Must Go On.
@@ -47,6 +52,8 @@ For Fools Who Broke the Glass, keep separate claims for the resolution, the affe
 For Wisp Armor, keep separate claims for damage mitigation and mind-control/psionic immunity.
 
 Keep quest resolution separate from the capability used to resolve it.
+
+Keep each named skill grant separate from the class's persistent modifiers. If the evidence establishes a later first activation, record it only as a chronology qualification or a separate claim with its actual floor/book scope.
 
 ## Exclusions
 
