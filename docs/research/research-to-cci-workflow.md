@@ -334,13 +334,12 @@ For each source, preserve the information supplied by the research report, such 
 - source kind;
 - trust classification;
 - title;
-- URL when applicable;
-- bibliographic information when applicable;
-- other schema-supported metadata.
+- exact URL for the accessible online source (required by the schema);
+- bibliographic information and other schema-supported metadata when supplied.
 
-Do not require a URL for sources that do not have one, such as books.
+Every source record must include an exact URL for an accessible online source. If the research materials cite a book or other source without providing an accessible online URL, do not invent a URL or emit a source record that violates the schema. Preserve the provenance gap and do not treat claims supported solely by that untraceable source as valid extracted claims.
 
-Prefer **stable, short, mnemonic source IDs** when the source identity is clear. For example, use `src-book-2`, `src-donut-wiki`, or `src-interview-1` rather than opaque incremental IDs such as `src-27`. Mnemonic IDs give the extraction model a useful retrieval cue when the same source is referenced repeatedly.
+Prefer **stable, short, mnemonic source IDs** when the source identity is clear. For example, use `src-book-2-preview`, `src-donut-wiki`, or `src-interview-online` when those IDs identify the specific accessible online source, rather than opaque incremental IDs such as `src-27`. Mnemonic IDs give the extraction model a useful retrieval cue when the same source is referenced repeatedly.
 
 Do not overload IDs with locator or claim semantics. Avoid IDs such as `src-book-2-chapter-14-mongo-leveling-secondary-fandom`; book, chapter, trust, domain, and other metadata belong in structured fields. If no useful mnemonic is available, a simple stable identifier such as `src-27` is acceptable.
 
