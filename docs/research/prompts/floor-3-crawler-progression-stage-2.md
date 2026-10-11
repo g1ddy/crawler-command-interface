@@ -51,23 +51,27 @@ schemaVersion: crawler-research/v1
 storyId: dcc
 floor: 3
 sources:
-  - id: src-example
-    kind: wiki
+  - id: src-dccfansite-ch11
+    kind: fan-compendium
     trust: corroborating
-    title: Exact source title
-    url: https://example.org/exact-page
+    title: Book 2, Chapter 11 · Unofficial DCC Index
+    url: https://www.dccfansite.com/book/2/ch/11/
 claims:
-  - id: F3-PROG-001
+  - id: F3-PROG-013
     domain: crawler
-    kind: state
+    kind: event
     claim:
-      summary: A narrowly stated proposition.
+      summary: Carl establishes a mind-link with Grimaldi and Signet to help broker peace between them.
     evidence:
-      - sourceId: src-example
+      - sourceId: src-dccfansite-ch11
+        locator:
+          book: 2
+          chapter: 11
+          section: One of Us
         relationship: supports
         confidence: corroborated
     unknowns:
-      - exact_transition_time
+      - exact_mechanism_beyond_the_reported_parasite_enabled_mind_link
 ```
 
 Use the actual source URL supplied in the input. Valid claim domains include `crawler` and `floor-system` for this scope; valid kinds are `event`, `observation`, and `state`. Put `unknowns`, `dependencies`, and `contradictions` at the claim-record level, alongside `claim` and `evidence`, as defined by the schema.
