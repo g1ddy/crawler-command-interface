@@ -119,7 +119,7 @@ Every authored event should remain traceable to a declared source.
 
 - Add the source to the floor's `sources.json` collection before referencing it.
 - Use stable source IDs and reference them from `evidence`.
-- Set confidence according to what the source establishes; do not upgrade inference or secondary provenance to confirmed fact.
+- Set confidence according to what the evidence establishes; do not present inference as fact or misrepresent secondary provenance as primary. Credible secondary evidence may support a `confirmed` claim when the claim-specific evidence threshold is met.
 - Keep `summary` human-readable, but never depend on summary text to drive domain behavior.
 - When multiple sources corroborate an observation, preserve the useful evidence rather than collapsing provenance into prose.
 

@@ -57,7 +57,7 @@ The omitted state is **unknown/unestablished**, not false. Readiness and project
 | Claim | Source tier and locator | Current representation | What is missing |
 | --- | --- | --- | --- |
 | Carl receives the basic healing spell while his HUD shows 3/3 mana. | Primary; Book 1, ch. 6. | `evt-f1-basic-healing-spell` grants `Basic healing spell` to Carl through the Magic menu tutorial. | Mechanics remain intentionally unmodeled. |
-| Donut receives Puddle Jumper from post-Juicer loot boxes. | Corroborating; Bookworm Wiki, Book 1 timeline, ch. 25. | `evt-f1-puddle-jumper-granted` records the distinct spell and its loot-box acquisition. | A primary locator and mechanics remain intentionally unmodeled. |
+| Donut receives Puddle Jumper from post-Juicer loot boxes. | Corroborating; Bookworm Wiki, Book 1 timeline, ch. 25. | `evt-f1-puddle-jumper-granted` records the distinct spell and its loot-box acquisition. | A more specific locator, if available, and mechanics remain intentionally unmodeled. |
 | Donut joins the Dungeon Book of the Floor Club and receives Second Chance. | Primary; Book 1, ch. 31. | `evt-f2-dungeon-book-club` grants the distinct spell `Second Chance` to Donut and names the Dungeon Book as its acquisition source. | Effect mechanics and any independently evidenced persistent club unlock. |
 | Enchanted BigBoi Boxers grant Protective Shell to Carl. | Corroborating; Floor 2 gear acquisition, ch. 31. | `evt-f2-protective-shell-granted` retains the source equipment instance as acquisition provenance. | Mechanics and any behavior after the equipment is lost or unequipped remain intentionally unmodeled. |
 
@@ -73,8 +73,8 @@ The Pet evidence spans more than Mongo's final bond. The model should preserve c
 
 | Claim | Source tier and locator | Current representation | What is missing |
 | --- | --- | --- | --- |
-| Donut enters as Carl's biological cat and is initially treated as a pet/familiar rather than a normal trained crawler. | Corroborating; Pets & Dungeon Familiars reference, Classification / Dungeon Familiars, citing early Book 1 material. | No typed Pet/classification state. | Primary verification and a classification contract distinct from Party. |
-| Donut has a crawler ID and level before regular crawler reclassification but no class at that point. | Corroborating; Pets & Dungeon Familiars reference, Dungeon Familiars / Story, citing Book 1 ch. 2. | Not represented. | Primary verification and optional fields that preserve unknowns instead of manufacturing crawler completeness. |
+| Donut enters as Carl's biological cat and is initially treated as a pet/familiar rather than a normal trained crawler. | Corroborating; Pets & Dungeon Familiars reference, Classification / Dungeon Familiars, citing early Book 1 material. | No typed Pet/classification state. | A sufficiently specific, traceable online locator and a classification contract distinct from Party; primary-text access is not a prerequisite. |
+| Donut has a crawler ID and level before regular crawler reclassification but no class at that point. | Corroborating; Pets & Dungeon Familiars reference, Dungeon Familiars / Story, citing Book 1 ch. 2. | Not represented. | A sufficiently specific, traceable online locator and optional fields that preserve unknowns instead of manufacturing crawler completeness. |
 | An enhanced pet biscuit causes Donut's transition from pet/familiar to regular crawler before the Royal Court is formed. | Corroborating; Pets & Dungeon Familiars reference, Story. | `evt-f1-party-royal-court-formed` begins after the transition but does not represent it. | A typed classification transition if #130 determines the history is necessary to the Pet model. |
 
 The existing Party formation remains correct and should not be overloaded with Donut's prior pet status. Origin/classification history is Pet-domain evidence; crawler Party membership begins only after Donut is a crawler.
@@ -103,9 +103,9 @@ The research cutoff is the end of *Carl's Doomsday Scenario* / Floor 3. Later-bo
 | --- | --- | --- | --- |
 | Mongo arrives on Floor 3 still bonded to Donut. | High confidence; official Book 2 material explicitly places Carl, Donut, and Mongo on Floor 3, corroborated by Floor 2 bond/transition material. | Bonded Pet state persists across floors and must not be re-created as a new acquisition. | Preserve the same stable pet identity and relationship when Floor 3 is authored. |
 | Mongo is a progression-bearing entity rather than a static inventory item. | High confidence; multiple chapter-level secondary sources agree on independent level progression during Floor 3. | Pet level/progression belongs to Pet state, separate from crawler XP/level. | Add numeric anchors only at verified chronology points; do not infer XP totals between them. |
-| Mongo is observed around Level 4 during the circus sequence. | High confidence secondary chronology. | First known Floor 3 level anchor. | Verify exact chapter/scene against primary text before authoring a numeric transition. |
-| Mongo reaches Level 6 after the Mold Lion encounter. | High confidence secondary chronology. | Distinct later level anchor and combat-linked progression. | Verify exact primary locator; do not manufacture intervening levels. |
-| Mongo later reaches Level 13 on Floor 3. | High confidence secondary chronology. | Confirms substantial independent progression within the floor. | Verify exact primary locator and author only the observed level boundary. |
+| Mongo is observed around Level 4 during the circus sequence. | High confidence secondary chronology. | First known Floor 3 level anchor. | Use the strongest accessible, traceable online locator for the chapter/scene before authoring a numeric transition; do not require primary-text access. |
+| Mongo reaches Level 6 after the Mold Lion encounter. | High confidence secondary chronology. | Distinct later level anchor and combat-linked progression. | Record the strongest accessible, traceable online locator; do not manufacture intervening levels. |
+| Mongo later reaches Level 13 on Floor 3. | High confidence secondary chronology. | Confirms substantial independent progression within the floor. | Record the strongest accessible, traceable online locator and author only the observed level boundary. |
 | Mongo physically grows as he levels, eventually becoming nearly pony-sized by the Level 13 point. | High confidence secondary chronology. | `observedSize` / growth description is a sourced changing Pet property, not a fixed species constant. | Preserve descriptive observations; do not infer dimensions or future maximum size. |
 | Mongo participates directly in combat. | High confidence; chapter summaries describe him attacking during the Mold Lion encounter and later finishing remaining monsters. | Pet has active/deployed behavior and combat participation independent of Party roster membership. | Do not create a general combat-AI subsystem merely from participation; author only explicit combat/state transitions if useful. |
 | Mongo can be independently injured while Donut has a different condition. | High confidence; Floor 3 sequence describes Mongo wounded/whimpering while Donut is incapacitated. | Pet health/condition is independent of owner condition. | Do not reuse `crawler-condition` automatically; #130/Floor 3 should define Pet-specific condition semantics if needed. |
@@ -123,7 +123,7 @@ The research cutoff is the end of *Carl's Doomsday Scenario* / Floor 3. Later-bo
 
 #### Floor 3 Pet chronology handoff
 
-The future Floor 3 claim ledger should preserve this approximate order without treating it as final until primary chapters are inspected:
+The future Floor 3 claim ledger should preserve this approximate order as provisional and refine it only when accessible, traceable evidence supports a different sequence; primary-chapter access is not required:
 
 1. Floor 2 → 3: Mongo persists as Donut's bonded pet.
 2. Early Floor 3: training/combat continues; Level 4 observation.
@@ -135,7 +135,7 @@ The future Floor 3 claim ledger should preserve this approximate order without t
 8. Later Floor 3: Level 13 / nearly pony-sized growth observation.
 9. Book 2 ch. 17 Meat Hooks incident belongs at its verified story position and demonstrates temporary pet-directed behavioral interference.
 
-This ordering is a research scaffold, not an authored sequence. Exact chapter order must win when primary verification is performed.
+This ordering is a research scaffold, not an authored sequence. Refine the order only when accessible evidence supports it; do not imply that primary-text verification is available or required.
 
 #### Minimum future Floor 3 Pet event/state vocabulary suggested by the evidence
 
@@ -169,7 +169,7 @@ This is why `origin`, current classification, hostility, bond state, and owner/b
 
 ### Later-book boundary
 
-The Pets/Familiars reference combines Book 1–2 material with rules clarified much later. For a Floors 1–3 implementation, do **not** backport later evidence merely because it appears on the same reference page. In particular, keep the following out unless a Books 1–2 primary passage independently establishes the exact rule:
+The Pets/Familiars reference combines Book 1–2 material with rules clarified much later. For a Floors 1–3 implementation, do **not** backport later evidence merely because it appears on the same reference page. In particular, keep the following out unless credible, traceable evidence specifically establishes the exact rule within Books 1–2:
 
 - detailed weakness-inspection facilities/rules;
 - pet stables and expanded Bonded Pets options;
@@ -224,7 +224,7 @@ Use published text or licensed audio when available through an official edition.
 - [Soundbooth Theater series](https://soundbooththeater.com/series/dungeon-crawler-carl/)
 - [Audible series](https://www.audible.com/series/Dungeon-Crawler-Carl-Audiobooks/B0937JMKYV)
 - [Pets & Dungeon Familiars](https://dungeon-crawler-carl.fandom.com/wiki/Pets_%26_Dungeon_Familiars) — corroborating research index containing both early-book and later-book material; claims must be scoped to the cited source chronology rather than copied wholesale.
-- Chapter-level secondary summaries used during Floor 3 research are discovery/corroborating evidence until exact primary passages are inspected; exact numbers and chronology should be upgraded only after primary verification.
+- Chapter-level secondary summaries are valid accessible evidence and must retain their secondary source classification. Confidence depends on specificity, credibility, material independence, and unresolved contradictions—not on whether primary text was inspected. Use exact, traceable online locators; do not require primary-book access to establish a claim.
 
 Because this PR is research-only, Pet discovery sources that are not referenced by existing raw events are intentionally kept in ledgers rather than added to executable Floor 1/2 `sources.json` catalogs.
 
