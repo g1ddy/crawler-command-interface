@@ -295,6 +295,7 @@ export function CrawlerWorkspace({
   return (
     <ShellFrame
       presentation={presentationChoice}
+      isLive={isLive}
 
       hud={
         presentationChoice === "authority-arwes" ? (
