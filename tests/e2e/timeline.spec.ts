@@ -42,6 +42,7 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   const latestSequence = await latestRuntimeSequence(page);
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await expect(slider).toHaveValue(String(latestSequence));
+  await expect(page.locator("main[data-mode]")).toHaveAttribute("data-mode", "live");
 
   const hud = page.locator('header[aria-label="Crawler HUD"]');
   // Persistent HUD contains floor 3 title and level 13 at latest edge, and no audience telemetry
@@ -54,6 +55,7 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   await selectSequence(page, 1);
 
   await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
+  await expect(page.locator("main[data-mode]")).toHaveAttribute("data-mode", "replay");
   // At sequence 1, floor context is Floor 1 and level is unestablished (LVL —)
   await expect(hud).toContainText("FLOOR 1");
   await expect(hud).toContainText("LVL —");
