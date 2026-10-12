@@ -170,6 +170,20 @@
       "trust": "corroborating",
       "title": "Carl/Floor 3 - Dungeon Crawler Carl Wiki",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Carl/Floor_3"
+    },
+    {
+      "id": "src-wiki-find-trap-skill",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Find Trap Skill - Dungeon Crawler Carl Wiki",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Find_Trap_Skill"
+    },
+    {
+      "id": "src-wiki-backfire-skill",
+      "kind": "wiki",
+      "trust": "corroborating",
+      "title": "Backfire Skill - Dungeon Crawler Carl Wiki",
+      "url": "https://dungeon-crawler-carl.fandom.com/wiki/Backfire_Skill"
     }
   ],
   "catalog": {
@@ -344,6 +358,52 @@
       "order": 1
     },
     {
+      "id": "evt-f3-skill-find-trap-granted",
+      "type": "SkillGranted",
+      "skillId": "skill-find-trap",
+      "name": "Find Trap",
+      "rank": "RANK 5",
+      "icon": "👁️",
+      "description": "Granted by Compensated Anarchist class selection (+5 to Find Trap). Improves trap detection capability.",
+      "category": "utility",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 1
+      },
+      "summary": "Carl receives +5 to Find Trap upon selecting the Compensated Anarchist class.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-find-trap-skill",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 2
+    },
+    {
+      "id": "evt-f3-skill-backfire-granted",
+      "type": "SkillGranted",
+      "skillId": "skill-backfire",
+      "name": "Backfire",
+      "rank": "RANK 5",
+      "icon": "💥",
+      "description": "Granted by Compensated Anarchist class selection (5 levels of Backfire). Allows picking up, disassembling, and reusing trap components.",
+      "category": "utility",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 1
+      },
+      "summary": "Carl gains five levels of Backfire upon selecting the Compensated Anarchist class.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-backfire-skill",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 3
+    },
+    {
       "id": "evt-f3-race-class-selected",
       "type": "NarrativeEvent",
       "kind": "choice-made",
@@ -370,7 +430,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 2
+      "order": 4
     },
     {
       "id": "evt-f3-manager-benefit-activated",
@@ -388,7 +448,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 3
+      "order": 5
     },
     {
       "id": "evt-f3-over-city-entered",
@@ -409,7 +469,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 4
+      "order": 6
     },
     {
       "id": "evt-f3-starter-village-departed",
@@ -430,7 +490,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 5
+      "order": 7
     },
     {
       "id": "evt-f3-show-must-go-on-triggered",
@@ -454,7 +514,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 6
+      "order": 8
     },
     {
       "id": "evt-f3-big-top-ticket-acquired",
@@ -482,7 +542,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 7
+      "order": 9
     },
     {
       "id": "evt-f3-mongo-consumes-terror-clown",
@@ -500,7 +560,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 8
+      "order": 10
     },
     {
       "id": "evt-f3-belly-rubbed-pug-reached",
@@ -521,7 +581,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 9
+      "order": 11
     },
     {
       "id": "evt-f3-mordecai-incapacitated-safe-room",
@@ -539,7 +599,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 10
+      "order": 12
     },
     {
       "id": "evt-f3-earth-hobby-potion-carl-consumed",
@@ -557,7 +617,7 @@
         }
       ],
       "kind": "other",
-      "order": 11
+      "order": 13
     },
     {
       "id": "evt-f3-earth-hobby-potion-donut-consumed",
@@ -575,7 +635,7 @@
         }
       ],
       "kind": "other",
-      "order": 12
+      "order": 14
     },
     {
       "id": "evt-f3-louis-lamour-paperbacks-acquired",
@@ -599,7 +659,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 13
+      "order": 15
     },
     {
       "id": "evt-f3-home-depot-cactus-acquired",
@@ -624,7 +684,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 14
+      "order": 16
     },
     {
       "id": "evt-f3-cat-tree-acquired",
@@ -649,7 +709,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 15
+      "order": 17
     },
     {
       "id": "evt-f3-scented-candle-acquired",
@@ -674,7 +734,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 16
+      "order": 18
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-granted",
@@ -701,7 +761,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17
+      "order": 19
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-used",
@@ -719,7 +779,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 20
     },
     {
       "id": "evt-f3-enchanted-anklet-acquired",
@@ -744,7 +804,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19
+      "order": 21
     },
     {
       "id": "evt-f3-big-top-tickets-looted",
@@ -771,7 +831,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 20
+      "order": 22
     },
     {
       "id": "evt-f3-parasite-ice-cream-consumed",
@@ -789,7 +849,7 @@
         }
       ],
       "kind": "other",
-      "order": 21
+      "order": 23
     },
     {
       "id": "evt-f3-parasite-telepathic-link-established",
@@ -807,7 +867,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 22
+      "order": 24
     },
     {
       "id": "evt-f3-lottery-ticket-custard-consumed",
@@ -825,7 +885,7 @@
         }
       ],
       "kind": "other",
-      "order": 23
+      "order": 25
     },
     {
       "id": "evt-f3-heather-custard-healed",
@@ -847,7 +907,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 24
+      "order": 26
     },
     {
       "id": "evt-f3-wisp-armor-spell-granted",
@@ -874,7 +934,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 25
+      "order": 27
     },
     {
       "id": "evt-f3-show-must-go-on-completed",
@@ -902,7 +962,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 26
+      "order": 28
     },
     {
       "id": "evt-f3-acute-ears-potion-acquired",
@@ -927,7 +987,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27
+      "order": 29
     },
     {
       "id": "evt-f3-fang-caps-acquired",
@@ -952,7 +1012,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 28
+      "order": 30
     },
     {
       "id": "evt-f3-fang-caps-equipped",
@@ -970,7 +1030,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29
+      "order": 31
     },
     {
       "id": "evt-f3-scroll-of-upgrade-acquired",
@@ -995,7 +1055,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 30
+      "order": 32
     },
     {
       "id": "evt-f3-casino-chip-acquired",
@@ -1020,7 +1080,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 31
+      "order": 33
     },
     {
       "id": "evt-f3-scroll-of-upgrade-applied",
@@ -1039,7 +1099,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 32
+      "order": 34
     },
     {
       "id": "evt-f3-medium-skyfowl-settlement-reached",
@@ -1060,7 +1120,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 33
+      "order": 35
     },
     {
       "id": "evt-f3-magical-pet-carrier-acquired",
@@ -1088,7 +1148,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 34
+      "order": 36
     },
     {
       "id": "evt-f3-desperado-club-reached",
@@ -1109,7 +1169,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 35
+      "order": 37
     },
     {
       "id": "evt-f3-sex-workers-quest-triggered",
@@ -1133,7 +1193,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 36
+      "order": 38
     },
     {
       "id": "evt-f3-achievement-one-quadrillion-views",
@@ -1156,7 +1216,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 37
+      "order": 39
     },
     {
       "id": "evt-f3-fan-box-carl-awarded",
@@ -1181,7 +1241,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 38
+      "order": 40
     },
     {
       "id": "evt-f3-fan-box-donut-awarded",
@@ -1206,7 +1266,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 39
+      "order": 41
     },
     {
       "id": "evt-f3-fan-box-carl-unlocked",
@@ -1224,7 +1284,7 @@
         }
       ],
       "kind": "other",
-      "order": 40
+      "order": 42
     },
     {
       "id": "evt-f3-fan-box-donut-unlocked",
@@ -1242,7 +1302,7 @@
         }
       ],
       "kind": "other",
-      "order": 41
+      "order": 43
     },
     {
       "id": "evt-f3-picture-of-beatrice-acquired",
@@ -1267,7 +1327,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 42
+      "order": 44
     },
     {
       "id": "evt-f3-xistera-acquired",
@@ -1292,7 +1352,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 43
+      "order": 45
     },
     {
       "id": "evt-f3-katia-joined",
@@ -1313,7 +1373,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 44
+      "order": 46
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
@@ -1334,7 +1394,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 45
+      "order": 47
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
@@ -1360,7 +1420,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 46
+      "order": 48
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
@@ -1384,7 +1444,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 47
+      "order": 49
     },
     {
       "id": "evt-f3-sepsis-crown-unequipped",
@@ -1402,7 +1462,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 48
+      "order": 50
     },
     {
       "id": "evt-f3-doomsday-scenario-created",
@@ -1434,7 +1494,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 49
+      "order": 51
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
@@ -1452,7 +1512,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 50
+      "order": 52
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
@@ -1470,7 +1530,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 51
+      "order": 53
     },
     {
       "id": "evt-f3-floor-4-transition",
@@ -1491,7 +1551,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 52
+      "order": 54
     },
     {
       "id": "evt-f3-odette-epilogue",
@@ -1512,7 +1572,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 53
+      "order": 55
     },
     {
       "id": "evt-f3-achievement-bandit",
@@ -1538,7 +1598,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 54
+      "order": 56
     },
     {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
@@ -1560,7 +1620,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55
+      "order": 57
     },
     {
       "id": "evt-f3-celestial-box-carl-acquired",
@@ -1585,7 +1645,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 56
+      "order": 58
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-acquired",
@@ -1603,7 +1663,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 57
+      "order": 59
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-opened",
@@ -1621,7 +1681,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 58
+      "order": 60
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
@@ -1639,7 +1699,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 59
+      "order": 61
     }
   ]
 }

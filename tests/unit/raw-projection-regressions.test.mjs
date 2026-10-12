@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { compileRawFloorFiles } from "../../app/domain/raw-compiler.ts";
-import { applyEvent, createInitialState } from "../../app/domain/projection.ts";
+import { applyEvent, createInitialState, projectState } from "../../app/domain/projection.ts";
+import { deriveCrawlerPresentation } from "../../src/features/crawler/crawler-presentation.ts";
 import { loadRawFloorDocument } from "../../app/domain/raw-loader.ts";
 import { validateCrawlerTimeline, validateRawCrawlerFloor } from "../../app/domain/validation.ts";
 
@@ -197,4 +198,114 @@ test("full and unquantified ItemDiscarded clear every equipment reference", () =
     assert.equal(result.equippedSlots.RING, null);
     assertEquipmentConsistent(result, "inst-stack");
   }
+});
+
+test("initial production projection leaves unsourced attributes and stats unset without default baselines of 10", () => {
+  const doc = compileRawFloorFiles([clone(rawFloor1)]);
+  const initial = createInitialState(doc.initialState);
+
+  for (const attr of ["Strength", "Dexterity", "Constitution", "Intelligence", "Charisma"]) {
+    assert.equal(
+      initial.crawler.attributes[attr],
+      undefined,
+      `attribute ${attr} should be undefined in initial state`
+    );
+  }
+
+  assert.equal(initial.crawler.level, null, "initial level should be null when unsourced");
+  assert.equal(initial.crawler.xp, undefined, "initial xp should be undefined when unsourced");
+  assert.equal(initial.crawler.maxXp, undefined, "initial maxXp should be undefined when unsourced");
+  assert.equal(initial.crawler.availableAttributePoints, undefined, "initial stat points should be undefined");
+
+  assert.equal(initial.crawler.condition.currentHealth, null);
+  assert.equal(initial.crawler.condition.maxHealth, null);
+  assert.equal(initial.crawler.condition.currentMana, null);
+  assert.equal(initial.crawler.condition.maxMana, null);
+  assert.equal(initial.crawler.condition.currentStamina, null);
+  assert.equal(initial.crawler.condition.maxStamina, null);
+});
+
+test("authored crawler stats become visible strictly at their sequence and do not leak backward", () => {
+  const testEvents = [
+    { sequence: 1, type: "NarrativeEvent", summary: "Sequence 1 event" },
+    { sequence: 2, type: "LevelChanged", level: 2, summary: "Reached Level 2" },
+    { sequence: 3, type: "NarrativeEvent", summary: "Sequence 3 event" },
+  ];
+
+  const initialState = createInitialState();
+  assert.equal(initialState.crawler.level, null, "Initial level must be null");
+
+  const seq1State = projectState(testEvents, 1, [], initialState);
+  assert.equal(seq1State.crawler.level, null, "Level must remain null at sequence 1 prior to LevelChanged");
+
+  const seq2State = projectState(testEvents, 2, [], initialState);
+  assert.equal(seq2State.crawler.level, 2, "Level must equal 2 at sequence 2");
+
+  const seq3State = projectState(testEvents, 3, [], initialState);
+  assert.equal(seq3State.crawler.level, 2, "Level must remain 2 at sequence 3");
+
+  const replayedSeq1 = projectState(testEvents, 1, [], initialState);
+  assert.equal(replayedSeq1.crawler.level, null, "Replaying sequence 1 must remain null and not leak backward");
+});
+
+test("effect state presentation distinguishes unestablished, known-empty, and established active effects across replay", () => {
+  const events = [
+    { sequence: 1, type: "NarrativeEvent", summary: "Pre-effect observation" },
+    {
+      sequence: 2,
+      type: "EffectApplied",
+      effectId: "eff-f3-poison",
+      name: "Minor Poison",
+      effectType: "bad",
+      icon: "☠️",
+      durationSeconds: 30,
+      description: "Taking 5 damage per tick",
+    },
+    { sequence: 3, type: "NarrativeEvent", summary: "Subsequent event omitting effects payload" },
+    { sequence: 4, type: "EffectExpired", effectId: "eff-f3-poison", summary: "Poison wears off" },
+  ];
+
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+
+  // 1. Unestablished / unprojected effect state -> status: "unavailable"
+  const unestablishedState = {
+    sequence: 1,
+    causalProvenance: { attributes: {}, condition: {} },
+    crawler: {},
+    effects: undefined,
+  };
+  const presUnestablished = deriveCrawlerPresentation(unestablishedState, emptyObs);
+  assert.equal(presUnestablished.effects.status, "unavailable");
+
+  // 2. Initial state before first effect onset (sequence 1)
+  const seq1State = projectState(events, 1, [], createInitialState());
+  const presSeq1 = deriveCrawlerPresentation(seq1State, emptyObs);
+  assert.equal(presSeq1.effects.status, "known-empty");
+  assert.equal(presSeq1.effects.harmful.length, 0);
+
+  // 3. Applied effect at sequence 2 -> status: "established" with 1 harmful effect
+  const seq2State = projectState(events, 2, [], createInitialState());
+  const presSeq2 = deriveCrawlerPresentation(seq2State, emptyObs);
+  assert.equal(presSeq2.effects.status, "established");
+  assert.equal(presSeq2.effects.harmful.length, 1);
+  assert.equal(presSeq2.effects.harmful[0].effectId, "eff-f3-poison");
+
+  // 4. Carrying forward last-known effect across sequence 3 -> status: "established"
+  const seq3State = projectState(events, 3, [], createInitialState());
+  const presSeq3 = deriveCrawlerPresentation(seq3State, emptyObs);
+  assert.equal(presSeq3.effects.status, "established");
+  assert.equal(presSeq3.effects.harmful.length, 1);
+  assert.equal(presSeq3.effects.harmful[0].effectId, "eff-f3-poison");
+
+  // 5. Expired effect at sequence 4 -> status: "known-empty"
+  const seq4State = projectState(events, 4, [], createInitialState());
+  const presSeq4 = deriveCrawlerPresentation(seq4State, emptyObs);
+  assert.equal(presSeq4.effects.status, "known-empty");
+  assert.equal(presSeq4.effects.harmful.length, 0);
+
+  // 6. Replay sequence 1 after processing sequence 4 -> status: "known-empty" without backward leakage
+  const replayedSeq1 = projectState(events, 1, [], createInitialState());
+  const presReplaySeq1 = deriveCrawlerPresentation(replayedSeq1, emptyObs);
+  assert.equal(presReplaySeq1.effects.status, "known-empty");
+  assert.equal(presReplaySeq1.effects.harmful.length, 0);
 });
