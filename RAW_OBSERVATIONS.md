@@ -84,9 +84,9 @@ Use snapshots only when the source actually supports a point-in-time collection 
 
 Collect claims before authoring JSON. Keep a short claim ledger for each floor that records the fact, its source, the exact locator, source tier, and whether it is an event, an observation, or both. Then author only the claims that the source directly supports. The durable domain readiness ledger is [docs/CANON_READINESS.md](docs/CANON_READINESS.md); update it when new evidence changes a capability decision.
 
-`Source-backed` means that a claim is traceable to evidence of sufficient quality and specificity for that claim. It does **not** require a directly accessible book citation.
+`Source-backed` means that a claim is traceable to evidence of sufficient quality and specificity for that claim. It does **not** require a directly accessible book citation. This project’s research workflow does not have direct access to the physical books; use accessible online sources and never imply that the book itself was inspected when it was not.
 
-Use sources according to their actual nature and evidentiary value. The workflow is expected to rely on accessible online research; direct access to the physical novel is not a prerequisite for establishing a usable research claim.
+Use sources according to their actual nature and evidentiary value. Credible secondary sites can collectively support a `confirmed` claim when their claim-specific evidence is materially independent, agrees on the important details, and meets the documented confidence threshold. `Confirmed` describes the strength of the evidence, not whether a source is primary. Direct access to the physical novel is not a prerequisite for establishing a usable research claim.
 
 ### Source trust and claim confidence are separate
 
@@ -96,7 +96,7 @@ Use sources according to their actual nature and evidentiary value. The workflow
 
 ### Confidence definitions
 
-- **`confirmed`** — The available evidence establishes the proposition strongly enough for the research workflow to treat it as established. This can be based on multiple credible, materially independent online sources that agree on the material details, or exceptionally strong and specific evidence from one credible source. No material contradiction remains unresolved. This label does **not** mean the novel was directly inspected.
+- **`confirmed`** — The available evidence establishes the proposition strongly enough for the research workflow to treat it as established. This can be based on multiple credible, materially independent online sources that agree on the material details, or exceptionally strong and specific evidence from one credible source. Independent credible secondary sites may therefore support `confirmed` when their combined claim-specific evidence meets this threshold. No material contradiction remains unresolved. This label does **not** mean the novel was directly inspected.
 - **`corroborated`** — Credible evidence supports the proposition, but the evidence is narrower, less specific, less independent, or otherwise not strong enough for `confirmed`. A clear claim from one credible secondary source may be `corroborated` even when it is the best evidence available.
 - **`candidate`** — A plausible lead with weak, incomplete, indirect, or insufficiently traceable support. It should not be presented as established.
 - **`disputed`** — Credible evidence materially conflicts, or a significant unresolved ambiguity prevents the proposition from being treated as settled. Preserve the competing accounts.
