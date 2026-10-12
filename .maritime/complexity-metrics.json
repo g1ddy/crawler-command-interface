@@ -73,7 +73,7 @@
   },
   "app/domain/types/state.ts": {
     "complexity": 1,
-    "loc": 306,
+    "loc": 308,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
@@ -153,7 +153,7 @@
   },
   "app/domain/projection/helpers.ts": {
     "complexity": 54,
-    "loc": 230,
+    "loc": 231,
     "instability": 0.4,
     "fanIn": 3,
     "fanOut": 2,
@@ -560,8 +560,8 @@
     "scanned": true
   },
   "src/features/crawler/crawler-presentation.ts": {
-    "complexity": 41,
-    "loc": 233,
+    "complexity": 43,
+    "loc": 240,
     "instability": 0.43,
     "fanIn": 4,
     "fanOut": 3,

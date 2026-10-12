@@ -81,8 +81,8 @@ The Stage 2 extraction claim surface for Issue #184 is maintained in [`data/raw/
 | `f3-crawler-primal-cap` | Level 15 skill cap removed / Level 20 max | Crawler | Research-only | Unestablished in domain contract; preserved in claim ledger |
 | `f3-crawler-primal-stats` | Permanent -1 reduction to base attributes | Crawler | Research-only | Unestablished in domain contract; preserved in claim ledger |
 | `f3-crawler-class-anarchist-modifiers` | Compensated Anarchist combat/training modifiers | Crawler | Research-only | Unestablished class modifier contract; preserved in claim ledger |
-| `f3-skill-find-trap-granted` | +5 Find Trap granted with class selection | Skills | Research-only | Class skill grant; first activation in Book 3 (not Floor 3) |
-| `f3-skill-backfire-granted` | +5 Backfire granted with class selection | Skills | Research-only | Class skill grant; specific disarm mechanics preserved |
+| `f3-skill-find-trap-granted` | +5 Find Trap granted with class selection | Skills | Promoted | Class skill grant promoted (`evt-f3-skill-find-trap-granted`) |
+| `f3-skill-backfire-granted` | +5 Backfire granted with class selection | Skills | Promoted | Class skill grant promoted (`evt-f3-skill-backfire-granted`) |
 | `f3-skill-iron-punch-mutation` | Iron Punch mutates to Breadbasket at Lvl 10 | Skills | Research-only | Mutation effect; no mutation contract exists in CCI |
 | `f3-magic-wisp-armor-mitigation` | Wisp Armor negates 75% magic damage | Magic | Research-only | Spell effect detail for `evt-f3-wisp-armor-spell-granted` |
 | `f3-magic-wisp-armor-immunity` | Wisp Armor provides psionic/mind-control immunity | Magic | Research-only | Spell effect detail for `evt-f3-wisp-armor-spell-granted` |
@@ -100,6 +100,11 @@ The Stage 2 extraction claim surface for Issue #184 is maintained in [`data/raw/
 | `f3-quest-fools-glass-bandit` | Unexpected survival triggers Bandit achievement | Quest | Reconciled | `evt-f3-achievement-bandit` |
 | `f3-quest-fools-glass-bandit-reward` | Bandit achievement upgrades reward to Celestial tier | Quest | Reconciled | `evt-f3-quest-boxes-upgraded-celestial` |
 | `f3-crawler-donut-character-actor-exploit` | Character Actor retains XP for specialty skills | Crawler | Research-only | Cross-class skill XP retention unrepresented in CCI |
+
+## Equipment Requirements & Candidate Evaluation Model Gap Analysis
+
+- **Base vs. Enhanced Attribute Vector Gap**: Page 28 attribute snapshot reports both unenhanced base values and equipped totals (e.g. STR 13 base / 16 equipped). The current runtime `checkItemRequirements` evaluates candidates against the current replayed `crawler` state attributes. It does not model equipment attribute stacking cycles or pre-calculated unenhanced base vectors separately.
+- **Candidate Slot Context Gap**: When evaluating candidate equipment items in `deriveEquipmentPresentation`, requirement checks against `candidateItem` evaluate requirements against current state attributes. However, if an equipped item currently provides stat bonuses that enable meeting a requirement, unequipping it would cause total stats to fall below the requirement. The current model does not evaluate counterfactual stat subtraction prior to candidate comparison, leaving full equipment swapping logic as a model gap for dedicated equipment management features.
 
 ## Inventory / Equipment / Loot Research (Handoff for #183)
 

@@ -48,6 +48,50 @@
     ]
   },
   {
+    "id": "evt-f3-skill-find-trap-granted",
+    "type": "SkillGranted",
+    "skillId": "skill-find-trap",
+    "name": "Find Trap",
+    "rank": "RANK 5",
+    "icon": "👁️",
+    "description": "Granted by Compensated Anarchist class selection (+5 to Find Trap). Improves trap detection capability.",
+    "category": "utility",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "summary": "Carl receives +5 to Find Trap upon selecting the Compensated Anarchist class.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-find-trap-skill",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-skill-backfire-granted",
+    "type": "SkillGranted",
+    "skillId": "skill-backfire",
+    "name": "Backfire",
+    "rank": "RANK 5",
+    "icon": "💥",
+    "description": "Granted by Compensated Anarchist class selection (5 levels of Backfire). Allows picking up, disassembling, and reusing trap components.",
+    "category": "utility",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "summary": "Carl gains five levels of Backfire upon selecting the Compensated Anarchist class.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-backfire-skill",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-manager-benefit-activated",
     "type": "NarrativeEvent",
     "kind": "party-changed",

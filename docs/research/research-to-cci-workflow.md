@@ -108,7 +108,7 @@ The researcher should optimize for:
 - explicit uncertainty and contradictions;
 - distinction between a source's statement and the researcher's inference.
 
-Primary text and official material are preferred when accessible, but they are not prerequisites. Credible fan wikis, chapter summaries, fan compendia, interviews, articles, and community discussions may establish useful research claims when they are the best available evidence. Do not leave a clear, credible finding unusable merely because the underlying book passage cannot be located online. Record source type and limitations honestly, and preserve unresolved conflicts or ambiguity.
+This project’s research workflow does not have direct access to the physical books. Treat accessible online material as the available evidence base; do not imply that a novel, ebook, or audiobook was directly inspected unless that access actually occurred. Primary text and official material are preferred when accessible, but they are not prerequisites. Credible fan wikis, chapter summaries, fan compendia, interviews, articles, and community discussions may establish useful research claims when they are the best available evidence. Do not leave a clear, credible finding unusable merely because the underlying book passage cannot be located online. Record source type and limitations honestly, and preserve unresolved conflicts or ambiguity.
 
 The research agent does **not** need to know CCI's internal schema.
 
@@ -395,7 +395,7 @@ Confidence describes the strength and condition of the evidence for the **specif
 
 Allowed values and definitions:
 
-- **`confirmed`** — The available evidence establishes the proposition strongly enough for this research workflow to treat it as established. This can be supported by multiple credible, materially independent online sources that agree on the material details, or by exceptionally strong and specific evidence from one credible source. No material contradiction remains unresolved. `confirmed` does **not** mean the physical novel was inspected.
+- **`confirmed`** — The available evidence establishes the proposition strongly enough for this research workflow to treat it as established. This can be supported by multiple credible, materially independent online sources that agree on the material details, or by exceptionally strong and specific evidence from one credible source. In particular, a claim corroborated by independent credible secondary sites may be `confirmed` when their combined claim-specific evidence meets this threshold. No material contradiction remains unresolved. `confirmed` does **not** mean the physical novel was inspected.
 - **`corroborated`** — Credible evidence supports the proposition, but is narrower, less specific, less independent, or otherwise not strong enough for `confirmed`. A single credible secondary source may support a claim at this level when it is the best accessible evidence.
 - **`candidate`** — A plausible lead with weak, incomplete, indirect, or insufficiently traceable support. Do not present it as established.
 - **`disputed`** — Credible evidence materially conflicts, or a significant unresolved ambiguity prevents the proposition from being treated as settled. Preserve the competing accounts.
