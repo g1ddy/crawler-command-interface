@@ -9,6 +9,7 @@ import { validateCrawlerTimeline, validateRawCrawlerFloor } from "../../app/doma
 
 const rawFloor1 = loadRawFloorDocument("floor-1");
 const rawFloor2 = loadRawFloorDocument("floor-2");
+const rawFloor3 = loadRawFloorDocument("floor-3");
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -248,64 +249,49 @@ test("authored crawler stats become visible strictly at their sequence and do no
   assert.equal(replayedSeq1.crawler.level, null, "Replaying sequence 1 must remain null and not leak backward");
 });
 
-test("effect state presentation distinguishes unestablished, known-empty, and established active effects across replay", () => {
-  const events = [
-    { sequence: 1, type: "NarrativeEvent", summary: "Pre-effect observation" },
-    {
-      sequence: 2,
-      type: "EffectApplied",
-      effectId: "eff-f3-poison",
-      name: "Minor Poison",
-      effectType: "bad",
-      icon: "☠️",
-      durationSeconds: 30,
-      description: "Taking 5 damage per tick",
-    },
-    { sequence: 3, type: "NarrativeEvent", summary: "Subsequent event omitting effects payload" },
-    { sequence: 4, type: "EffectExpired", effectId: "eff-f3-poison", summary: "Poison wears off" },
-  ];
+test("production Floor 3 projection keeps unobserved effects unknown and does not infer an empty list on expiry", () => {
+  const effectDoc = clone(rawFloor3);
+  appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-pre", type: "NarrativeEvent", summary: "No effect state reported" });
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-regression-effect-applied", type: "EffectApplied", effectId: "eff-f3-poison",
+    name: "Minor Poison", effectType: "bad", icon: "☠️", durationSeconds: 30,
+    description: "Taking 5 damage per tick", summary: "Poison begins",
+  });
+  appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-omitted", type: "NarrativeEvent", summary: "Later event omits effects payload" });
+  appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-expired", type: "EffectExpired", effectId: "eff-f3-poison", summary: "Poison wears off" });
 
-  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
-
-  // 1. Unestablished / unprojected effect state -> status: "unavailable"
-  const unestablishedState = {
-    sequence: 1,
-    causalProvenance: { attributes: {}, condition: {} },
-    crawler: {},
-    effects: undefined,
+  const timeline = compileRawFloorFiles([effectDoc]);
+  const sequenceOf = (id) => {
+    const event = timeline.events.find((entry) => entry.id === id);
+    assert.ok(event, `compiled production timeline should contain ${id}`);
+    return event.sequence;
   };
-  const presUnestablished = deriveCrawlerPresentation(unestablishedState, emptyObs);
-  assert.equal(presUnestablished.effects.status, "unavailable");
+  const preSequence = sequenceOf("evt-f3-regression-effect-pre");
+  const appliedSequence = sequenceOf("evt-f3-regression-effect-applied");
+  const omittedSequence = sequenceOf("evt-f3-regression-effect-omitted");
+  const expiredSequence = sequenceOf("evt-f3-regression-effect-expired");
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+  const present = (sequence) => deriveCrawlerPresentation(projectState(timeline, sequence), emptyObs);
 
-  // 2. Initial state before first effect onset (sequence 1)
-  const seq1State = projectState(events, 1, [], createInitialState());
-  const presSeq1 = deriveCrawlerPresentation(seq1State, emptyObs);
-  assert.equal(presSeq1.effects.status, "known-empty");
-  assert.equal(presSeq1.effects.harmful.length, 0);
+  const before = present(preSequence);
+  assert.equal(before.effects.status, "unavailable");
+  assert.equal(before.effects.harmful.length, 0);
 
-  // 3. Applied effect at sequence 2 -> status: "established" with 1 harmful effect
-  const seq2State = projectState(events, 2, [], createInitialState());
-  const presSeq2 = deriveCrawlerPresentation(seq2State, emptyObs);
-  assert.equal(presSeq2.effects.status, "established");
-  assert.equal(presSeq2.effects.harmful.length, 1);
-  assert.equal(presSeq2.effects.harmful[0].effectId, "eff-f3-poison");
+  const applied = present(appliedSequence);
+  assert.equal(applied.effects.status, "established");
+  assert.equal(applied.effects.harmful.length, 1);
+  assert.equal(applied.effects.harmful[0].effectId, "eff-f3-poison");
 
-  // 4. Carrying forward last-known effect across sequence 3 -> status: "established"
-  const seq3State = projectState(events, 3, [], createInitialState());
-  const presSeq3 = deriveCrawlerPresentation(seq3State, emptyObs);
-  assert.equal(presSeq3.effects.status, "established");
-  assert.equal(presSeq3.effects.harmful.length, 1);
-  assert.equal(presSeq3.effects.harmful[0].effectId, "eff-f3-poison");
+  const omitted = present(omittedSequence);
+  assert.equal(omitted.effects.status, "established");
+  assert.equal(omitted.effects.harmful.length, 1);
+  assert.equal(omitted.effects.harmful[0].effectId, "eff-f3-poison");
 
-  // 5. Expired effect at sequence 4 -> status: "known-empty"
-  const seq4State = projectState(events, 4, [], createInitialState());
-  const presSeq4 = deriveCrawlerPresentation(seq4State, emptyObs);
-  assert.equal(presSeq4.effects.status, "known-empty");
-  assert.equal(presSeq4.effects.harmful.length, 0);
+  const expired = present(expiredSequence);
+  assert.equal(expired.effects.status, "established");
+  assert.equal(expired.effects.harmful.length, 0);
 
-  // 6. Replay sequence 1 after processing sequence 4 -> status: "known-empty" without backward leakage
-  const replayedSeq1 = projectState(events, 1, [], createInitialState());
-  const presReplaySeq1 = deriveCrawlerPresentation(replayedSeq1, emptyObs);
-  assert.equal(presReplaySeq1.effects.status, "known-empty");
-  assert.equal(presReplaySeq1.effects.harmful.length, 0);
+  const replayedBefore = present(preSequence);
+  assert.equal(replayedBefore.effects.status, "unavailable");
+  assert.equal(replayedBefore.effects.harmful.length, 0);
 });

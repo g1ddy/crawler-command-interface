@@ -129,6 +129,7 @@ export function applyConditionChanged(state: CrawlerState, event: Record<string,
 }
 
 export function applyEffectApplied(state: CrawlerState, event: Record<string, unknown>, sequence: number): void {
+  state.effectStateAuthority = 'established';
   const effectId = String(event.effectId);
   state.effects = state.effects.filter((e) => e.effectId !== effectId);
   state.effects.push({
@@ -144,6 +145,7 @@ export function applyEffectApplied(state: CrawlerState, event: Record<string, un
 }
 
 export function applyEffectExpired(state: CrawlerState, event: Record<string, unknown>): void {
+  state.effectStateAuthority = 'established';
   const effectId = String(event.effectId);
   state.effects = state.effects.filter((e) => e.effectId !== effectId);
 }

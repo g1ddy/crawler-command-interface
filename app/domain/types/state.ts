@@ -274,6 +274,8 @@ export interface CrawlerState {
   inventory: InventoryItem[];
   equippedSlots: EquippedSlotMap;
   effects: ActiveEffect[];
+  /** Whether source-backed events have established the effect-state timeline. */
+  effectStateAuthority?: 'unestablished' | 'established';
   skills: Skill[];
   spells: Spell[];
   party?: Party;

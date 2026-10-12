@@ -20,6 +20,34 @@
     ]
   },
   {
+    "id": "evt-f3-race-class-selected",
+    "type": "NarrativeEvent",
+    "kind": "choice-made",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "summary": "Donut selects Cat race and Former Child Actor class; Carl selects Primal race and Compensated Anarchist class at the selection terminal.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-book-2-summaries",
+        "locator": {
+          "chapter": 1
+        },
+        "confidence": "corroborated"
+      },
+      {
+        "sourceId": "src-bookwormai-book2",
+        "confidence": "confirmed"
+      },
+      {
+        "sourceId": "src-wiki-carl-f3",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-skill-find-trap-granted",
     "type": "SkillGranted",
     "skillId": "skill-find-trap",
@@ -59,34 +87,6 @@
     "evidence": [
       {
         "sourceId": "src-wiki-backfire-skill",
-        "confidence": "confirmed"
-      }
-    ]
-  },
-  {
-    "id": "evt-f3-race-class-selected",
-    "type": "NarrativeEvent",
-    "kind": "choice-made",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 1
-    },
-    "summary": "Donut selects Cat race and Former Child Actor class; Carl selects Primal race and Compensated Anarchist class at the selection terminal.",
-    "evidence": [
-      {
-        "sourceId": "src-wiki-book-2-summaries",
-        "locator": {
-          "chapter": 1
-        },
-        "confidence": "corroborated"
-      },
-      {
-        "sourceId": "src-bookwormai-book2",
-        "confidence": "confirmed"
-      },
-      {
-        "sourceId": "src-wiki-carl-f3",
         "confidence": "confirmed"
       }
     ]

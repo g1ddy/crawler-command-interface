@@ -215,6 +215,7 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
       SPECIAL: null,
     },
     effects: [],
+    effectStateAuthority: 'unestablished',
     skills,
     spells,
     party,

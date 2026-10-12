@@ -70,7 +70,7 @@ const ATTRIBUTE_CONFIGS: Array<[AttributeName, "red" | "green" | "yellow" | "blu
 ];
 
 export function deriveCrawlerPresentation(
-  state: Pick<CrawlerState, "crawler" | "effects" | "sequence" | "causalProvenance">,
+  state: Pick<CrawlerState, "crawler" | "effects" | "effectStateAuthority" | "sequence" | "causalProvenance">,
   observations: Pick<ProjectedObservationsState, "xpProgress" | "attributes" | "condition">,
 ): DerivedCrawlerPresentation {
   const crawler = state.crawler;
@@ -205,6 +205,13 @@ export function deriveCrawlerPresentation(
   ];
 
   const groupedEffects = groupConditions(state.effects);
+  // An empty initializer is not evidence that the crawler has no active effects.
+  // Expiring a tracked effect also does not prove that the complete list is empty.
+  if (state.effectStateAuthority !== 'established') {
+    groupedEffects.status = 'unavailable';
+  } else if (groupedEffects.beneficial.length + groupedEffects.harmful.length + groupedEffects.injuries.length + groupedEffects.other.length === 0) {
+    groupedEffects.status = 'established';
+  }
 
   return {
     sequence: state.sequence,
