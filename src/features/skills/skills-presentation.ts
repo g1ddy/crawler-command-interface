@@ -40,6 +40,10 @@ export function countCategorySkills(skills: Skill[], filter: string): number {
   return skills.filter((s) => s.category && s.category.toUpperCase() === filter).length;
 }
 
+export function canAssignSkillToHotlist(skill: Skill | undefined): boolean {
+  return skill !== undefined && skill.owner !== "donut";
+}
+
 export function deriveHotlistPresentation(hotlist: string[], skills: Skill[]): HotlistSlotPresentation[] {
   const skillsById = new Map(skills.map((skill) => [skill.skillId, skill]));
   return Array.from({ length: 10 }, (_, index) => {
