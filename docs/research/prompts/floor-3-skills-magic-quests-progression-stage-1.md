@@ -127,4 +127,6 @@ Produce a detailed Markdown report with:
 12. Contradictions
 13. Targeted verification queue
 
+This is an optional follow-up queue for unresolved questions that may be answerable through additional accessible online research. It is not a requirement to inspect the physical book or obtain a primary-text locator. Do not block a claim solely because primary text is unavailable; assign confidence from the credible, traceable evidence available and preserve any remaining uncertainty.
+
 Do not produce YAML or JSON.
