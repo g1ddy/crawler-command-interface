@@ -385,6 +385,7 @@ test("health conditions presentation distinguishes known-empty, established, and
     causalProvenance: { attributes: {}, condition: {} },
     crawler: {},
     effects: [],
+    effectStateAuthority: "established",
   };
   const presEmpty = deriveCrawlerPresentation(knownEmptyState, emptyObs);
   assert.equal(presEmpty.effects.status, "known-empty");
@@ -405,6 +406,7 @@ test("health conditions presentation distinguishes known-empty, established, and
     causalProvenance: { attributes: {}, condition: {} },
     crawler: {},
     effects: [{ effectId: "eff-1", name: "Poison", type: "bad", icon: "☠️", durationSeconds: 10, appliedAtSequence: 1, description: "Poisoned" }],
+    effectStateAuthority: "established",
   };
   const presEstablished = deriveCrawlerPresentation(establishedState, emptyObs);
   assert.equal(presEstablished.effects.status, "established");

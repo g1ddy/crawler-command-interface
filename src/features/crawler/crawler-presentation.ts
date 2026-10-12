@@ -210,7 +210,7 @@ export function deriveCrawlerPresentation(
   if (state.effectStateAuthority !== 'established') {
     groupedEffects.status = 'unavailable';
   } else if (groupedEffects.beneficial.length + groupedEffects.harmful.length + groupedEffects.injuries.length + groupedEffects.other.length === 0) {
-    groupedEffects.status = 'established';
+    groupedEffects.status = 'known-empty';
   }
 
   return {

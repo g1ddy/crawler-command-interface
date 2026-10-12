@@ -251,13 +251,13 @@ test("authored crawler stats become visible strictly at their sequence and do no
 
 test("production Floor 3 projection keeps unobserved effects unknown and does not infer an empty list on expiry", () => {
   const effectDoc = clone(rawFloor3);
-  appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-pre", type: "NarrativeEvent", summary: "No effect state reported" });
+  appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-pre", type: "NarrativeEvent", kind: "other", summary: "No effect state reported" });
   appendRawEvent(effectDoc, {
     id: "evt-f3-regression-effect-applied", type: "EffectApplied", effectId: "eff-f3-poison",
-    name: "Minor Poison", effectType: "bad", icon: "☠️", durationSeconds: 30,
-    description: "Taking 5 damage per tick", summary: "Poison begins",
+    name: "Minor Poison", effectType: "bad", durationSeconds: 30,
+    summary: "Poison begins",
   });
-  appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-omitted", type: "NarrativeEvent", summary: "Later event omits effects payload" });
+  appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-omitted", type: "NarrativeEvent", kind: "other", summary: "Later event omits effects payload" });
   appendRawEvent(effectDoc, { id: "evt-f3-regression-effect-expired", type: "EffectExpired", effectId: "eff-f3-poison", summary: "Poison wears off" });
 
   const timeline = compileRawFloorFiles([effectDoc]);
@@ -278,17 +278,17 @@ test("production Floor 3 projection keeps unobserved effects unknown and does no
   assert.equal(before.effects.harmful.length, 0);
 
   const applied = present(appliedSequence);
-  assert.equal(applied.effects.status, "established");
+  assert.equal(applied.effects.status, "unavailable");
   assert.equal(applied.effects.harmful.length, 1);
   assert.equal(applied.effects.harmful[0].effectId, "eff-f3-poison");
 
   const omitted = present(omittedSequence);
-  assert.equal(omitted.effects.status, "established");
+  assert.equal(omitted.effects.status, "unavailable");
   assert.equal(omitted.effects.harmful.length, 1);
   assert.equal(omitted.effects.harmful[0].effectId, "eff-f3-poison");
 
   const expired = present(expiredSequence);
-  assert.equal(expired.effects.status, "established");
+  assert.equal(expired.effects.status, "unavailable");
   assert.equal(expired.effects.harmful.length, 0);
 
   const replayedBefore = present(preSequence);
