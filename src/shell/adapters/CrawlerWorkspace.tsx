@@ -204,7 +204,6 @@ export function CrawlerWorkspace({
         projectedState,
         activeCountdown,
         sequence: currentSeq,
-        isLive,
         floorHudTitle,
         selectedFloorOrdinal: floorHudOrdinal ?? (selectedFloorOrdinal === "all" ? undefined : selectedFloorOrdinal),
         notificationsSummary,
@@ -216,7 +215,6 @@ export function CrawlerWorkspace({
       projectedState,
       activeCountdown,
       currentSeq,
-      isLive,
       floorHudTitle,
       selectedFloorOrdinal,
       floorHudOrdinal,
@@ -298,6 +296,7 @@ export function CrawlerWorkspace({
     <ShellFrame
       presentation={presentationChoice}
       isLive={isLive}
+
       hud={
         presentationChoice === "authority-arwes" ? (
           <ArwesPresentation
@@ -311,7 +310,7 @@ export function CrawlerWorkspace({
             state={projectedState}
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
-            isLive={isLive}
+
             onInspectCountdown={() => setShowCountdownEvidence(true)}
             onOpenNotifications={() => setView("notifications")}
           />
@@ -321,7 +320,7 @@ export function CrawlerWorkspace({
             state={projectedState}
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
-            isLive={isLive}
+
             onInspectCountdown={() => setShowCountdownEvidence(true)}
             onOpenNotifications={() => setView("notifications")}
           />

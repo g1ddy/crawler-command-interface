@@ -43,14 +43,18 @@ export function isOrdinalRestated(title: string, ordinal: number): boolean {
 }
 
 export function formatFloorDisplay(title: string, ordinal?: number | "all"): string {
-  if (!title) return "";
-  const uppercaseTitle = title.toUpperCase().trim();
+  const uppercaseTitle = (title || "").trim().toUpperCase();
+
   if (typeof ordinal === "number") {
+    if (!uppercaseTitle) {
+      return `FLOOR ${ordinal}`;
+    }
     if (isOrdinalRestated(uppercaseTitle, ordinal)) {
       return `FLOOR ${ordinal}`;
     }
     return `FLOOR ${ordinal} · ${uppercaseTitle}`;
   }
+
   return uppercaseTitle;
 }
 
@@ -115,7 +119,6 @@ export interface DeriveHudCompositionInput {
   projectedState?: Pick<CrawlerState, "crawler">;
   activeCountdown: ActiveCountdownState | null;
   sequence: number;
-  isLive?: boolean;
   floorHudTitle: string;
   selectedFloorOrdinal?: number | "all";
   notificationsSummary?: HudAttentionSummary;

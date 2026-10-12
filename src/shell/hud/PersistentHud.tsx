@@ -28,7 +28,7 @@ export function PersistentHud({
   state: Pick<CrawlerState, "sequence" | "hotlist" | "skills">;
   countdown?: ProjectedCountdownState | null;
   floorTitle?: string;
-  isLive?: boolean;
+
   onInspectCountdown?: () => void;
   onOpenNotifications?: () => void;
 }) {
