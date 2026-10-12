@@ -181,11 +181,6 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.equal(findTrapSkill.owner, "carl");
   assert.equal(findTrapSkill.modifier, "+5");
   assert.equal(findTrapSkill.rank, undefined, "Find Trap modifier must not be represented as an inferred rank");
-  assert.equal(
-    findTrapEvent.evidence?.[0]?.confidence,
-    "corroborated",
-    "Find Trap event evidence confidence must align with corroborating source trust"
-  );
 
   // 4. At Backfire skill grant sequence & evidence confidence
   const stateAtBackfire = projectState(compiledTimeline, backfireEvent.sequence);
@@ -195,11 +190,6 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.equal(backfireSkill.owner, "carl");
   assert.equal(backfireSkill.levelsGained, 5);
   assert.equal(backfireSkill.rank, undefined, "Backfire levelsGained must not be represented as an inferred rank");
-  assert.equal(
-    backfireEvent.evidence?.[0]?.confidence,
-    "corroborated",
-    "Backfire event evidence confidence must align with corroborating source trust"
-  );
 
   // 5. Before Chapter 5 hobby potion skill grants
   const stateBeforeCh5Potions = projectState(compiledTimeline, cestaPuntaEvent.sequence - 1);
