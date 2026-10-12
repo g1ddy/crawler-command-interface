@@ -329,7 +329,7 @@
   },
   "src/shell/adapters/CrawlerWorkspace.tsx": {
     "complexity": 15,
-    "loc": 425,
+    "loc": 424,
     "instability": 0.96,
     "fanIn": 1,
     "fanOut": 22,
@@ -449,7 +449,7 @@
   },
   "src/shell/hud/hud-composition.ts": {
     "complexity": 12,
-    "loc": 179,
+    "loc": 182,
     "instability": 0.5,
     "fanIn": 4,
     "fanOut": 4,
