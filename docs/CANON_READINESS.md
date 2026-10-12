@@ -57,7 +57,7 @@ The omitted state is **unknown/unestablished**, not false. Readiness and project
 | Claim | Source tier and locator | Current representation | What is missing |
 | --- | --- | --- | --- |
 | Carl receives the basic healing spell while his HUD shows 3/3 mana. | Primary; Book 1, ch. 6. | `evt-f1-basic-healing-spell` grants `Basic healing spell` to Carl through the Magic menu tutorial. | Mechanics remain intentionally unmodeled. |
-| Donut receives Puddle Jumper from post-Juicer loot boxes. | Corroborating; Bookworm Wiki, Book 1 timeline, ch. 25. | `evt-f1-puddle-jumper-granted` records the distinct spell and its loot-box acquisition. | A primary locator and mechanics remain intentionally unmodeled. |
+| Donut receives Puddle Jumper from post-Juicer loot boxes. | Corroborating; Bookworm Wiki, Book 1 timeline, ch. 25. | `evt-f1-puddle-jumper-granted` records the distinct spell and its loot-box acquisition. | A more specific locator, if available, and mechanics remain intentionally unmodeled. |
 | Donut joins the Dungeon Book of the Floor Club and receives Second Chance. | Primary; Book 1, ch. 31. | `evt-f2-dungeon-book-club` grants the distinct spell `Second Chance` to Donut and names the Dungeon Book as its acquisition source. | Effect mechanics and any independently evidenced persistent club unlock. |
 | Enchanted BigBoi Boxers grant Protective Shell to Carl. | Corroborating; Floor 2 gear acquisition, ch. 31. | `evt-f2-protective-shell-granted` retains the source equipment instance as acquisition provenance. | Mechanics and any behavior after the equipment is lost or unequipped remain intentionally unmodeled. |
 
@@ -123,7 +123,7 @@ The research cutoff is the end of *Carl's Doomsday Scenario* / Floor 3. Later-bo
 
 #### Floor 3 Pet chronology handoff
 
-The future Floor 3 claim ledger should preserve this approximate order without treating it as final until primary chapters are inspected:
+The future Floor 3 claim ledger should preserve this approximate order as provisional and refine it only when accessible, traceable evidence supports a different sequence; primary-chapter access is not required:
 
 1. Floor 2 → 3: Mongo persists as Donut's bonded pet.
 2. Early Floor 3: training/combat continues; Level 4 observation.
@@ -169,7 +169,7 @@ This is why `origin`, current classification, hostility, bond state, and owner/b
 
 ### Later-book boundary
 
-The Pets/Familiars reference combines Book 1–2 material with rules clarified much later. For a Floors 1–3 implementation, do **not** backport later evidence merely because it appears on the same reference page. In particular, keep the following out unless a Books 1–2 primary passage independently establishes the exact rule:
+The Pets/Familiars reference combines Book 1–2 material with rules clarified much later. For a Floors 1–3 implementation, do **not** backport later evidence merely because it appears on the same reference page. In particular, keep the following out unless credible, traceable evidence specifically establishes the exact rule within Books 1–2:
 
 - detailed weakness-inspection facilities/rules;
 - pet stables and expanded Bonded Pets options;
