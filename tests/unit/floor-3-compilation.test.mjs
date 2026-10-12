@@ -135,6 +135,123 @@ test("Floor 3 achievement boundaries isolate award items prior to their causal u
   );
 });
 
+test("Floor 3 skill grants and crawler progression project cleanly across replay boundaries", () => {
+  const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+
+  const raceClassNarrative = compiledTimeline.events.find((e) => e.id === "evt-f3-race-class-selected");
+  const raceClassEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-carl-race-class-selected");
+  const findTrapEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-skill-find-trap-granted");
+  const backfireEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-skill-backfire-granted");
+  const cestaPuntaNarrative = compiledTimeline.events.find((e) => e.id === "evt-f3-earth-hobby-potion-carl-consumed");
+  const cestaPuntaEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-skill-cesta-punta-granted");
+  const scutelliphilyNarrative = compiledTimeline.events.find((e) => e.id === "evt-f3-earth-hobby-potion-donut-consumed");
+  const scutelliphilyEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-skill-scutelliphily-granted");
+  const level27Event = compiledTimeline.events.find((e) => e.id === "evt-f3-carl-level-27");
+
+  // Verify narrative events were preserved intact
+  assert.ok(raceClassNarrative && raceClassNarrative.type === "NarrativeEvent");
+  assert.ok(cestaPuntaNarrative && cestaPuntaNarrative.type === "NarrativeEvent");
+  assert.ok(scutelliphilyNarrative && scutelliphilyNarrative.type === "NarrativeEvent");
+
+  // Verify state-bearing events exist
+  assert.ok(raceClassEvent && raceClassEvent.type === "RaceClassSelected");
+  assert.ok(findTrapEvent && findTrapEvent.type === "SkillGranted");
+  assert.ok(backfireEvent && backfireEvent.type === "SkillGranted");
+  assert.ok(cestaPuntaEvent && cestaPuntaEvent.type === "SkillGranted");
+  assert.ok(scutelliphilyEvent && scutelliphilyEvent.type === "SkillGranted");
+  assert.ok(level27Event && level27Event.type === "LevelChanged");
+
+  // 1. Before Chapter 1 selection
+  const stateBeforeCh1 = projectState(compiledTimeline, raceClassEvent.sequence - 1);
+  assert.equal(stateBeforeCh1.crawler?.race, undefined);
+  assert.equal(stateBeforeCh1.crawler?.class, undefined);
+  assert.equal(stateBeforeCh1.skills.some((s) => s.skillId === "skill-find-trap"), false);
+  assert.equal(stateBeforeCh1.skills.some((s) => s.skillId === "skill-backfire"), false);
+
+  // 2. At Carl's race/class selection sequence
+  const stateAtRaceClass = projectState(compiledTimeline, raceClassEvent.sequence);
+  assert.equal(stateAtRaceClass.crawler?.race, "Primal");
+  assert.equal(stateAtRaceClass.crawler?.class, "Compensated Anarchist");
+
+  // 3. At Find Trap skill grant sequence & evidence confidence
+  const stateAtFindTrap = projectState(compiledTimeline, findTrapEvent.sequence);
+  const findTrapSkill = stateAtFindTrap.skills.find((s) => s.skillId === "skill-find-trap");
+  assert.ok(findTrapSkill);
+  assert.equal(findTrapSkill.name, "Find Trap");
+  assert.equal(findTrapSkill.owner, "carl");
+  assert.equal(findTrapSkill.modifier, "+5");
+  assert.equal(findTrapSkill.rank, undefined, "Find Trap modifier must not be represented as an inferred rank");
+
+  // 4. At Backfire skill grant sequence & evidence confidence
+  const stateAtBackfire = projectState(compiledTimeline, backfireEvent.sequence);
+  const backfireSkill = stateAtBackfire.skills.find((s) => s.skillId === "skill-backfire");
+  assert.ok(backfireSkill);
+  assert.equal(backfireSkill.name, "Backfire");
+  assert.equal(backfireSkill.owner, "carl");
+  assert.equal(backfireSkill.levelsGained, 5);
+  assert.equal(backfireSkill.rank, undefined, "Backfire levelsGained must not be represented as an inferred rank");
+
+  // 5. Before Chapter 5 hobby potion skill grants
+  const stateBeforeCh5Potions = projectState(compiledTimeline, cestaPuntaEvent.sequence - 1);
+  assert.equal(stateBeforeCh5Potions.skills.some((s) => s.skillId === "skill-cesta-punta"), false);
+  assert.equal(stateBeforeCh5Potions.skills.some((s) => s.skillId === "skill-scutelliphily"), false);
+
+  // 6. At Cesta Punta grant
+  const stateAtCestaPunta = projectState(compiledTimeline, cestaPuntaEvent.sequence);
+  const cestaPuntaSkill = stateAtCestaPunta.skills.find((s) => s.skillId === "skill-cesta-punta");
+  assert.ok(cestaPuntaSkill);
+  assert.equal(cestaPuntaSkill.name, "Cesta Punta");
+  assert.equal(cestaPuntaSkill.owner, "carl");
+  assert.equal(cestaPuntaSkill.rank, undefined, "Missing rank must remain undefined");
+  assert.equal(cestaPuntaSkill.cooldown, undefined, "Missing cooldown must remain undefined");
+  assert.equal(cestaPuntaSkill.category, undefined, "Missing category must remain undefined");
+
+  // 7. At Scutelliphily grant
+  const stateAtScutelliphily = projectState(compiledTimeline, scutelliphilyEvent.sequence);
+  const scutelliphilySkill = stateAtScutelliphily.skills.find((s) => s.skillId === "skill-scutelliphily");
+  assert.ok(scutelliphilySkill);
+  assert.equal(scutelliphilySkill.name, "Scutelliphily");
+  assert.equal(scutelliphilySkill.owner, "donut");
+
+  // 8. Level progression at Chapter 26 - Chronological position & no unestablished previousLevel assertion
+  const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
+  const floor4TransitionEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-floor-4-transition");
+
+  assert.ok(vetoEvent, "Borant veto event exists");
+  assert.ok(floor4TransitionEvent, "Floor 4 transition event exists");
+
+  assert.equal(floor4TransitionEvent.position.chapter, 25, "Floor 4 transition occurs at Chapter 25");
+  assert.equal(level27Event.position.chapter, 26, "Level 27 event occurs at Chapter 26 epilogue");
+  assert.equal(level27Event.previousLevel, undefined, "Level 27 event must not assert an unestablished previousLevel");
+
+  assert.ok(
+    vetoEvent.sequence < level27Event.sequence,
+    "Level 27 event follows the Chapter 26 Celestial box veto event in Chapter 26 epilogue"
+  );
+  assert.ok(
+    floor4TransitionEvent.sequence < level27Event.sequence,
+    "Floor 4 transition event (Ch 25) precedes the Chapter 26 epilogue Level 27 event in timeline order"
+  );
+
+  const stateBeforeLevel27 = projectState(compiledTimeline, level27Event.sequence - 1);
+  assert.notEqual(
+    stateBeforeLevel27.crawler?.level,
+    27,
+    "Before Level 27 sequence, projected level must not be 27"
+  );
+
+  const stateAtLevel27 = projectState(compiledTimeline, level27Event.sequence);
+  assert.equal(stateAtLevel27.crawler?.level, 27, "At Level 27 sequence, projected level must be 27");
+
+  // Backward scrubbing verification across Level 27
+  const stateScrubbedBack = projectState(compiledTimeline, level27Event.sequence - 1);
+  assert.equal(
+    stateScrubbedBack.crawler?.level,
+    stateBeforeLevel27.crawler?.level,
+    "Scrubbing backward across Level 27 restores the earlier level correctly"
+  );
+});
+
 test("Floor 3 end-of-floor events follow strict sequence order for Bandit achievement and Celestial box handling", () => {
   const compiledTimeline = compileRawFloorFiles(loadAllRawFloorDocuments());
 

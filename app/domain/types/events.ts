@@ -266,6 +266,29 @@ export interface QuestUpdatedEvent extends TimelineEventBase {
   status: 'active' | 'completed' | 'failed';
 }
 
+export interface SkillGrantedEvent extends TimelineEventBase {
+  type: 'SkillGranted';
+  skillId: string;
+  name: string;
+  owner?: 'carl' | 'donut';
+  rank?: string;
+  icon?: string;
+  description?: string;
+  cooldown?: string;
+  category?: 'combat' | 'utility' | 'passive';
+  cost?: string;
+  synergies?: string[];
+  modifier?: string;
+  levelsGained?: number;
+}
+
+export interface RaceClassSelectedEvent extends TimelineEventBase {
+  type: 'RaceClassSelected';
+  crawlerId?: string;
+  race?: string;
+  class?: string;
+}
+
 export interface HotlistUpdatedEvent extends TimelineEventBase {
   type: 'HotlistUpdated';
   hotlist?: string[];
@@ -332,6 +355,7 @@ export type TimelineEvent =
   | ItemEquippedEvent
   | ItemUnequippedEvent
   | PermanentEntitlementGrantedEvent
+  | SkillGrantedEvent
   | SpellGrantedEvent
   | PartyFormedEvent
   | PetAcquiredEvent
@@ -340,6 +364,7 @@ export type TimelineEvent =
   | PetClassificationChangedEvent
   | NarrativeEvent
   | LevelChangedEvent
+  | RaceClassSelectedEvent
   | AttributeModifiedEvent
   | ConditionChangedEvent
   | XPChangedEvent
@@ -390,6 +415,7 @@ export const FLOOR_EVENT_TYPES = [
   'EffectApplied',
   'EffectExpired',
   'SkillGranted',
+  'RaceClassSelected',
   'CountdownReset',
   'CountdownPaused',
   'CountdownResumed',
@@ -435,11 +461,17 @@ interface FloorEventCommon {
   previousLevel?: number;
   skillId?: string;
   name?: string;
+  owner?: 'carl' | 'donut';
   icon?: string;
   rank?: string;
   description?: string;
   cooldown?: string;
   category?: 'combat' | 'utility' | 'passive';
+  modifier?: string;
+  levelsGained?: number;
+  race?: string;
+  class?: string;
+  crawlerId?: string;
   effectId?: string;
   effectType?: 'good' | 'bad' | 'injury' | 'other';
   notificationDelivery?: NotificationDelivery;

@@ -12,7 +12,7 @@
       }
     },
     "createdAt": "2026-09-28T00:55:16.404Z",
-    "updatedAt": "2026-10-12T01:12:25.087Z"
+    "updatedAt": "2026-10-12T04:18:26.373Z"
   },
   "floors": [
     {
@@ -40,7 +40,7 @@
       "book": 2,
       "bookTitle": "Carl's Doomsday Scenario",
       "startSequence": 124,
-      "endSequence": 184
+      "endSequence": 188
     }
   ],
   "sources": [
@@ -3974,8 +3974,28 @@
       "kind": "choice-made"
     },
     {
-      "id": "evt-f3-skill-find-trap-granted",
+      "id": "evt-f3-carl-race-class-selected",
       "sequence": 126,
+      "type": "RaceClassSelected",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 1
+      },
+      "summary": "Carl selects Primal race and Compensated Anarchist class at the selection terminal.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-f3",
+          "confidence": "confirmed"
+        }
+      ],
+      "crawlerId": "carl",
+      "race": "Primal",
+      "class": "Compensated Anarchist"
+    },
+    {
+      "id": "evt-f3-skill-find-trap-granted",
+      "sequence": 127,
       "type": "SkillGranted",
       "position": {
         "floor": 3,
@@ -3986,19 +4006,17 @@
       "evidence": [
         {
           "sourceId": "src-wiki-find-trap-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "skillId": "skill-find-trap",
       "name": "Find Trap",
-      "rank": "RANK 5",
-      "icon": "👁️",
-      "description": "Granted by Compensated Anarchist class selection (+5 to Find Trap). Improves trap detection capability.",
-      "category": "utility"
+      "owner": "carl",
+      "modifier": "+5"
     },
     {
       "id": "evt-f3-skill-backfire-granted",
-      "sequence": 127,
+      "sequence": 128,
       "type": "SkillGranted",
       "position": {
         "floor": 3,
@@ -4009,19 +4027,17 @@
       "evidence": [
         {
           "sourceId": "src-wiki-backfire-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "skillId": "skill-backfire",
       "name": "Backfire",
-      "rank": "RANK 5",
-      "icon": "💥",
-      "description": "Granted by Compensated Anarchist class selection (5 levels of Backfire). Allows picking up, disassembling, and reusing trap components.",
-      "category": "utility"
+      "owner": "carl",
+      "levelsGained": 5
     },
     {
       "id": "evt-f3-manager-benefit-activated",
-      "sequence": 128,
+      "sequence": 129,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4039,7 +4055,7 @@
     },
     {
       "id": "evt-f3-over-city-entered",
-      "sequence": 129,
+      "sequence": 130,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4060,7 +4076,7 @@
     },
     {
       "id": "evt-f3-starter-village-departed",
-      "sequence": 130,
+      "sequence": 131,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4081,7 +4097,7 @@
     },
     {
       "id": "evt-f3-show-must-go-on-triggered",
-      "sequence": 131,
+      "sequence": 132,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4105,7 +4121,7 @@
     },
     {
       "id": "evt-f3-big-top-ticket-acquired",
-      "sequence": 132,
+      "sequence": 133,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4138,7 +4154,7 @@
     },
     {
       "id": "evt-f3-mongo-consumes-terror-clown",
-      "sequence": 133,
+      "sequence": 134,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4156,7 +4172,7 @@
     },
     {
       "id": "evt-f3-belly-rubbed-pug-reached",
-      "sequence": 134,
+      "sequence": 135,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4177,7 +4193,7 @@
     },
     {
       "id": "evt-f3-mordecai-incapacitated-safe-room",
-      "sequence": 135,
+      "sequence": 136,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4195,7 +4211,7 @@
     },
     {
       "id": "evt-f3-earth-hobby-potion-carl-consumed",
-      "sequence": 136,
+      "sequence": 137,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4212,8 +4228,28 @@
       "kind": "other"
     },
     {
+      "id": "evt-f3-skill-cesta-punta-granted",
+      "sequence": 138,
+      "type": "SkillGranted",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 5
+      },
+      "summary": "Carl acquires the Cesta Punta skill from consuming an Earth Hobby Potion.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "corroborated"
+        }
+      ],
+      "skillId": "skill-cesta-punta",
+      "name": "Cesta Punta",
+      "owner": "carl"
+    },
+    {
       "id": "evt-f3-earth-hobby-potion-donut-consumed",
-      "sequence": 137,
+      "sequence": 139,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4230,8 +4266,28 @@
       "kind": "other"
     },
     {
+      "id": "evt-f3-skill-scutelliphily-granted",
+      "sequence": 140,
+      "type": "SkillGranted",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 5
+      },
+      "summary": "Princess Donut acquires the Scutelliphily skill from consuming an Earth Hobby Potion.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "corroborated"
+        }
+      ],
+      "skillId": "skill-scutelliphily",
+      "name": "Scutelliphily",
+      "owner": "donut"
+    },
+    {
       "id": "evt-f3-louis-lamour-paperbacks-acquired",
-      "sequence": 138,
+      "sequence": 141,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4259,7 +4315,7 @@
     },
     {
       "id": "evt-f3-home-depot-cactus-acquired",
-      "sequence": 139,
+      "sequence": 142,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4288,7 +4344,7 @@
     },
     {
       "id": "evt-f3-cat-tree-acquired",
-      "sequence": 140,
+      "sequence": 143,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4317,7 +4373,7 @@
     },
     {
       "id": "evt-f3-scented-candle-acquired",
-      "sequence": 141,
+      "sequence": 144,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4346,7 +4402,7 @@
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-granted",
-      "sequence": 142,
+      "sequence": 145,
       "type": "SpellGranted",
       "position": {
         "floor": 3,
@@ -4373,7 +4429,7 @@
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-used",
-      "sequence": 143,
+      "sequence": 146,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4391,7 +4447,7 @@
     },
     {
       "id": "evt-f3-enchanted-anklet-acquired",
-      "sequence": 144,
+      "sequence": 147,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4420,7 +4476,7 @@
     },
     {
       "id": "evt-f3-big-top-tickets-looted",
-      "sequence": 145,
+      "sequence": 148,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4452,7 +4508,7 @@
     },
     {
       "id": "evt-f3-parasite-ice-cream-consumed",
-      "sequence": 146,
+      "sequence": 149,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4470,7 +4526,7 @@
     },
     {
       "id": "evt-f3-parasite-telepathic-link-established",
-      "sequence": 147,
+      "sequence": 150,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4488,7 +4544,7 @@
     },
     {
       "id": "evt-f3-lottery-ticket-custard-consumed",
-      "sequence": 148,
+      "sequence": 151,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4506,7 +4562,7 @@
     },
     {
       "id": "evt-f3-heather-custard-healed",
-      "sequence": 149,
+      "sequence": 152,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4528,7 +4584,7 @@
     },
     {
       "id": "evt-f3-wisp-armor-spell-granted",
-      "sequence": 150,
+      "sequence": 153,
       "type": "SpellGranted",
       "position": {
         "floor": 3,
@@ -4555,7 +4611,7 @@
     },
     {
       "id": "evt-f3-show-must-go-on-completed",
-      "sequence": 151,
+      "sequence": 154,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4583,7 +4639,7 @@
     },
     {
       "id": "evt-f3-acute-ears-potion-acquired",
-      "sequence": 152,
+      "sequence": 155,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4612,7 +4668,7 @@
     },
     {
       "id": "evt-f3-fang-caps-acquired",
-      "sequence": 153,
+      "sequence": 156,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4642,7 +4698,7 @@
     },
     {
       "id": "evt-f3-fang-caps-equipped",
-      "sequence": 154,
+      "sequence": 157,
       "type": "ItemEquipped",
       "position": {
         "floor": 3,
@@ -4660,7 +4716,7 @@
     },
     {
       "id": "evt-f3-scroll-of-upgrade-acquired",
-      "sequence": 155,
+      "sequence": 158,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4689,7 +4745,7 @@
     },
     {
       "id": "evt-f3-casino-chip-acquired",
-      "sequence": 156,
+      "sequence": 159,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4718,7 +4774,7 @@
     },
     {
       "id": "evt-f3-scroll-of-upgrade-applied",
-      "sequence": 157,
+      "sequence": 160,
       "type": "ItemConsumed",
       "position": {
         "floor": 3,
@@ -4737,7 +4793,7 @@
     },
     {
       "id": "evt-f3-medium-skyfowl-settlement-reached",
-      "sequence": 158,
+      "sequence": 161,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4758,7 +4814,7 @@
     },
     {
       "id": "evt-f3-magical-pet-carrier-acquired",
-      "sequence": 159,
+      "sequence": 162,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4791,7 +4847,7 @@
     },
     {
       "id": "evt-f3-desperado-club-reached",
-      "sequence": 160,
+      "sequence": 163,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4812,7 +4868,7 @@
     },
     {
       "id": "evt-f3-sex-workers-quest-triggered",
-      "sequence": 161,
+      "sequence": 164,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -4836,7 +4892,7 @@
     },
     {
       "id": "evt-f3-achievement-one-quadrillion-views",
-      "sequence": 162,
+      "sequence": 165,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
@@ -4871,7 +4927,7 @@
     },
     {
       "id": "evt-f3-fan-box-carl-awarded",
-      "sequence": 163,
+      "sequence": 166,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4900,7 +4956,7 @@
     },
     {
       "id": "evt-f3-fan-box-donut-awarded",
-      "sequence": 164,
+      "sequence": 167,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4929,7 +4985,7 @@
     },
     {
       "id": "evt-f3-fan-box-carl-unlocked",
-      "sequence": 165,
+      "sequence": 168,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4947,7 +5003,7 @@
     },
     {
       "id": "evt-f3-fan-box-donut-unlocked",
-      "sequence": 166,
+      "sequence": 169,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -4965,7 +5021,7 @@
     },
     {
       "id": "evt-f3-picture-of-beatrice-acquired",
-      "sequence": 167,
+      "sequence": 170,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -4994,7 +5050,7 @@
     },
     {
       "id": "evt-f3-xistera-acquired",
-      "sequence": 168,
+      "sequence": 171,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -5024,7 +5080,7 @@
     },
     {
       "id": "evt-f3-katia-joined",
-      "sequence": 169,
+      "sequence": 172,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5045,7 +5101,7 @@
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
-      "sequence": 170,
+      "sequence": 173,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5066,7 +5122,7 @@
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
-      "sequence": 171,
+      "sequence": 174,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
@@ -5098,7 +5154,7 @@
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
-      "sequence": 172,
+      "sequence": 175,
       "type": "QuestUpdated",
       "position": {
         "floor": 3,
@@ -5122,7 +5178,7 @@
     },
     {
       "id": "evt-f3-sepsis-crown-unequipped",
-      "sequence": 173,
+      "sequence": 176,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5140,7 +5196,7 @@
     },
     {
       "id": "evt-f3-doomsday-scenario-created",
-      "sequence": 174,
+      "sequence": 177,
       "type": "ItemCrafted",
       "position": {
         "floor": 3,
@@ -5177,7 +5233,7 @@
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
-      "sequence": 175,
+      "sequence": 178,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5195,7 +5251,7 @@
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
-      "sequence": 176,
+      "sequence": 179,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5213,7 +5269,7 @@
     },
     {
       "id": "evt-f3-floor-4-transition",
-      "sequence": 177,
+      "sequence": 180,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5234,7 +5290,7 @@
     },
     {
       "id": "evt-f3-odette-epilogue",
-      "sequence": 178,
+      "sequence": 181,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5255,7 +5311,7 @@
     },
     {
       "id": "evt-f3-achievement-bandit",
-      "sequence": 179,
+      "sequence": 182,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
@@ -5287,7 +5343,7 @@
     },
     {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
-      "sequence": 180,
+      "sequence": 183,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5309,7 +5365,7 @@
     },
     {
       "id": "evt-f3-celestial-box-carl-acquired",
-      "sequence": 181,
+      "sequence": 184,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -5339,7 +5395,7 @@
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-acquired",
-      "sequence": 182,
+      "sequence": 185,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5357,7 +5413,7 @@
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-opened",
-      "sequence": 183,
+      "sequence": 186,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5375,7 +5431,7 @@
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
-      "sequence": 184,
+      "sequence": 187,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5390,6 +5446,24 @@
         }
       ],
       "kind": "other"
+    },
+    {
+      "id": "evt-f3-carl-level-27",
+      "sequence": 188,
+      "type": "LevelChanged",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Carl reaches Level 27 by the end of Floor 3.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-f3",
+          "confidence": "confirmed"
+        }
+      ],
+      "level": 27
     }
   ],
   "countdowns": [

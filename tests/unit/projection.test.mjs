@@ -737,6 +737,7 @@ test("every FLOOR_EVENT_TYPES discriminator is accounted for as either state-pro
     "PermanentEntitlementGranted",
     "AttributeModified",
     "LevelChanged",
+    "RaceClassSelected",
     "XPChanged",
     "HotlistUpdated",
     "EffectApplied",
