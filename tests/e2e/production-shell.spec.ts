@@ -65,6 +65,7 @@ test("crawler feature retains keyboard-accessible mana evidence inspection outsi
   await expect(manaLabel).toBeVisible();
   const manaEvidence = page.locator("span", { hasText: "MANA" }).locator("..").locator(".telemetry-pill");
   await expect(manaEvidence).toHaveAttribute("role", "button");
+  await expect(manaEvidence).toContainText("SOURCE");
 
   await manaEvidence.focus();
   await manaEvidence.press("Enter");
