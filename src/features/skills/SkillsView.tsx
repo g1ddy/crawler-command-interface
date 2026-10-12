@@ -27,7 +27,7 @@ export function SkillsView({
   const { skills, filteredSkills, categoryFilters, selectedSkill, hotlistSlots } = presentation;
 
   const handleAssignHotlist = (hotlistIndex: number) => {
-    if (!isLive || !canAssignSkillToHotlist(selectedSkill)) return;
+    if (!isLive || !selectedSkill || !canAssignSkillToHotlist(selectedSkill)) return;
     actions.assignHotlistSlot(hotlistIndex, selectedSkill.skillId);
   };
 
