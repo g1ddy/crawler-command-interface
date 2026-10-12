@@ -1196,26 +1196,6 @@
     ]
   },
   {
-    "id": "evt-f3-floor-4-transition",
-    "type": "NarrativeEvent",
-    "kind": "floor-exited",
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 25
-    },
-    "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
-    "evidence": [
-      {
-        "sourceId": "src-wiki-third-floor",
-        "locator": {
-          "section": "Floor Exit"
-        },
-        "confidence": "corroborated"
-      }
-    ]
-  },
-  {
     "id": "evt-f3-odette-epilogue",
     "type": "NarrativeEvent",
     "kind": "dialogue",
@@ -1371,6 +1351,26 @@
       {
         "sourceId": "src-wiki-carl-f3",
         "confidence": "confirmed"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-floor-4-transition",
+    "type": "NarrativeEvent",
+    "kind": "floor-exited",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-third-floor",
+        "locator": {
+          "section": "Floor Exit"
+        },
+        "confidence": "corroborated"
       }
     ]
   }

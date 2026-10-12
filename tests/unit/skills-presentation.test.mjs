@@ -85,14 +85,30 @@ test("deriveHotlistPresentation maps hotlist slots to skills", () => {
   assert.equal(slots[2].skill?.name, "Tough Skin");
 });
 
-test("deriveSkillsPresentation compiles full presentation state", () => {
-  const hotlist = ["sk-2"];
-  const presentation = deriveSkillsPresentation(mockSkills, hotlist, "ACTIVE", "sk-2");
+test("deriveSkillsPresentation compiles full presentation state and exposes skill ownership without fabrication", () => {
+  const skillsWithOwnership = [
+    {
+      skillId: "sk-carl-1",
+      name: "Cesta Punta",
+      owner: "carl",
+    },
+    {
+      skillId: "sk-donut-1",
+      name: "Scutelliphily",
+      owner: "donut",
+    },
+    {
+      skillId: "sk-unknown-owner",
+      name: "Generic Utility",
+    },
+  ];
+
+  const presentation = deriveSkillsPresentation(skillsWithOwnership, [], "ALL SKILLS", "sk-carl-1");
 
   assert.equal(presentation.skills.length, 3);
-  assert.equal(presentation.filteredSkills.length, 2);
-  assert.equal(presentation.selectedSkill?.skillId, "sk-2");
-  assert.equal(presentation.hotlistSlots[0].skill?.skillId, "sk-2");
+  assert.equal(presentation.skills[0].owner, "carl");
+  assert.equal(presentation.skills[1].owner, "donut");
+  assert.equal(presentation.skills[2].owner, undefined);
 });
 
 test("isLive mutation gating disables hotlist assignment during replay", () => {

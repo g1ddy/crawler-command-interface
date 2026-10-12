@@ -67,7 +67,10 @@ export function SkillsView({
               >
                 <i>{x.icon || "✦"}</i>
                 <span>
-                  <b>{x.name}</b>
+                  <b>
+                    {x.name}
+                    {x.owner && <small className={styles.ownerBadge}> · {x.owner.toUpperCase()}</small>}
+                  </b>
                   <small>{x.description || "—"}</small>
                 </span>
                 <em>{x.cooldown || "—"}</em>

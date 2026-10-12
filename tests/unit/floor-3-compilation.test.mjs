@@ -215,10 +215,18 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
 
   // 8. Level progression at Chapter 26 - Chronological position verification
   const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
+  const floor4TransitionEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-floor-4-transition");
+
   assert.ok(vetoEvent, "Borant veto event exists");
+  assert.ok(floor4TransitionEvent, "Floor 4 transition event exists");
+
   assert.ok(
     vetoEvent.sequence < level27Event.sequence,
-    "Level 27 event must be chronologically positioned at the end of Floor 3 (after Chapter 26 veto event)"
+    "Level 27 event must follow the Chapter 26 Celestial box veto event"
+  );
+  assert.ok(
+    level27Event.sequence < floor4TransitionEvent.sequence,
+    "Level 27 event must precede the Floor 4 transition event so progression occurs before exiting Floor 3"
   );
 
   const stateBeforeLevel27 = projectState(compiledTimeline, level27Event.sequence - 1);
@@ -229,7 +237,10 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   );
 
   const stateAtLevel27 = projectState(compiledTimeline, level27Event.sequence);
-  assert.equal(stateAtLevel27.crawler?.level, 27, "At and after Level 27 sequence, projected level must be 27");
+  assert.equal(stateAtLevel27.crawler?.level, 27, "At Level 27 sequence, projected level must be 27");
+
+  const stateAtFloor4Exit = projectState(compiledTimeline, floor4TransitionEvent.sequence);
+  assert.equal(stateAtFloor4Exit.crawler?.level, 27, "At Floor 4 transition, projected level remains 27");
 
   // Backward scrubbing verification across Level 27
   const stateScrubbedBack = projectState(compiledTimeline, level27Event.sequence - 1);
