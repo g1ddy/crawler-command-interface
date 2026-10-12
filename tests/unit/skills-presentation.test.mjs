@@ -5,6 +5,7 @@ import {
   deriveHotlistPresentation,
   filterSkills,
   countCategorySkills,
+  canAssignSkillToHotlist,
 } from "../../src/features/skills/skills-presentation.ts";
 
 const mockSkills = [
@@ -138,4 +139,12 @@ test("isLive mutation gating disables hotlist assignment during replay", () => {
   const replayResult = handleAssignHotlist(false, selectedSkill, 0);
   assert.equal(replayResult, false);
   assert.equal(assignedSlot, null);
+});
+
+
+test("hotlist assignment permits Carl and legacy skills but rejects Donut-owned skills", () => {
+  assert.equal(canAssignSkillToHotlist({ skillId: "carl-skill", name: "Cesta Punta", owner: "carl" }), true);
+  assert.equal(canAssignSkillToHotlist({ skillId: "legacy-skill", name: "Existing Skill" }), true);
+  assert.equal(canAssignSkillToHotlist({ skillId: "donut-skill", name: "Scutelliphily", owner: "donut" }), false);
+  assert.equal(canAssignSkillToHotlist(undefined), false);
 });
