@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { CrawlerState } from "../../../app/domain/types.ts";
 import { Panel } from "../../shared/ui/Panel.tsx";
 import type { SkillActions } from "../../application/crawler-action-contracts.ts";
-import { deriveSkillsPresentation } from "./skills-presentation.ts";
+import { canAssignSkillToHotlist, deriveSkillsPresentation } from "./skills-presentation.ts";
 import styles from "./SkillsView.module.css";
 
 export function SkillsView({
@@ -27,7 +27,7 @@ export function SkillsView({
   const { skills, filteredSkills, categoryFilters, selectedSkill, hotlistSlots } = presentation;
 
   const handleAssignHotlist = (hotlistIndex: number) => {
-    if (!isLive || !selectedSkill) return;
+    if (!isLive || !canAssignSkillToHotlist(selectedSkill)) return;
     actions.assignHotlistSlot(hotlistIndex, selectedSkill.skillId);
   };
 
@@ -131,7 +131,7 @@ export function SkillsView({
                     <button
                       key={slot.slotIndex}
                       className={`${styles.slotBtn} ${isAssignedToThisSkill ? styles.assigned : ""}`}
-                      disabled={!isLive}
+                      disabled={!isLive || !canAssignSkillToHotlist(selectedSkill)}
                       onClick={() => handleAssignHotlist(slot.slotIndex)}
                       aria-label={`Assign to hotlist slot ${slot.slotNumber}`}
                     >
