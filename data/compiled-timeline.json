@@ -302,14 +302,14 @@
       "id": "src-wiki-find-trap-skill",
       "kind": "wiki",
       "trust": "corroborating",
-      "title": "Find Trap Skill | Dungeon Crawler Carl Wiki",
+      "title": "Find Trap Skill - Dungeon Crawler Carl Wiki",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Find_Trap_Skill"
     },
     {
       "id": "src-wiki-backfire-skill",
       "kind": "wiki",
       "trust": "corroborating",
-      "title": "Backfire Skill | Dungeon Crawler Carl Wiki",
+      "title": "Backfire Skill - Dungeon Crawler Carl Wiki",
       "url": "https://dungeon-crawler-carl.fandom.com/wiki/Backfire_Skill"
     }
   ],
@@ -5195,29 +5195,8 @@
       "kind": "other"
     },
     {
-      "id": "evt-f3-floor-4-transition",
-      "sequence": 177,
-      "type": "NarrativeEvent",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 25
-      },
-      "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-third-floor",
-          "locator": {
-            "section": "Floor Exit"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "kind": "floor-exited"
-    },
-    {
       "id": "evt-f3-doomsday-scenario-created",
-      "sequence": 178,
+      "sequence": 177,
       "type": "ItemCrafted",
       "position": {
         "floor": 3,
@@ -5254,7 +5233,7 @@
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
-      "sequence": 179,
+      "sequence": 178,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5272,7 +5251,7 @@
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
-      "sequence": 180,
+      "sequence": 179,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5287,6 +5266,27 @@
         }
       ],
       "kind": "other"
+    },
+    {
+      "id": "evt-f3-floor-4-transition",
+      "sequence": 180,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 25
+      },
+      "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-third-floor",
+          "locator": {
+            "section": "Floor Exit"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "kind": "floor-exited"
     },
     {
       "id": "evt-f3-odette-epilogue",

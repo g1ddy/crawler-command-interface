@@ -12,7 +12,7 @@ import { projectState, projectObservations, projectCountdownState } from "../../
 // Note: These hashes act as the approved semantic timeline and replay-projection baselines
 // after removing the fabricated initial crawler identity in PR #302.
 const SEMANTIC_TIMELINE_HASH = "30da156e3d49182cbc313aa02374a486cbc907969be925829b9ecc664f9e880c";
-const REPLAY_PROJECTION_HASH = "abfac9133e6d1e5aecf1f1e561bd532bf9510c94bd4fc6d9d7379a0843432843";
+const REPLAY_PROJECTION_HASH = "c8e9f6cabcd6f05d45e34f9b6a97613f45427c7152ac650ea2f9b0bf998909a3";
 
 function canonicalKeyOrder(key, value) {
   if (value && typeof value === "object" && !Array.isArray(value)) {
