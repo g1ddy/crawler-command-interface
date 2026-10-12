@@ -173,7 +173,7 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.equal(stateAtRaceClass.crawler?.race, "Primal");
   assert.equal(stateAtRaceClass.crawler?.class, "Compensated Anarchist");
 
-  // 3. At Find Trap skill grant sequence
+  // 3. At Find Trap skill grant sequence & evidence confidence
   const stateAtFindTrap = projectState(compiledTimeline, findTrapEvent.sequence);
   const findTrapSkill = stateAtFindTrap.skills.find((s) => s.skillId === "skill-find-trap");
   assert.ok(findTrapSkill);
@@ -181,8 +181,13 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.equal(findTrapSkill.owner, "carl");
   assert.equal(findTrapSkill.modifier, "+5");
   assert.equal(findTrapSkill.rank, undefined, "Find Trap modifier must not be represented as an inferred rank");
+  assert.equal(
+    findTrapEvent.evidence?.[0]?.confidence,
+    "corroborated",
+    "Find Trap event evidence confidence must align with corroborating source trust"
+  );
 
-  // 4. At Backfire skill grant sequence
+  // 4. At Backfire skill grant sequence & evidence confidence
   const stateAtBackfire = projectState(compiledTimeline, backfireEvent.sequence);
   const backfireSkill = stateAtBackfire.skills.find((s) => s.skillId === "skill-backfire");
   assert.ok(backfireSkill);
@@ -190,6 +195,11 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.equal(backfireSkill.owner, "carl");
   assert.equal(backfireSkill.levelsGained, 5);
   assert.equal(backfireSkill.rank, undefined, "Backfire levelsGained must not be represented as an inferred rank");
+  assert.equal(
+    backfireEvent.evidence?.[0]?.confidence,
+    "corroborated",
+    "Backfire event evidence confidence must align with corroborating source trust"
+  );
 
   // 5. Before Chapter 5 hobby potion skill grants
   const stateBeforeCh5Potions = projectState(compiledTimeline, cestaPuntaEvent.sequence - 1);
@@ -213,20 +223,24 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.equal(scutelliphilySkill.name, "Scutelliphily");
   assert.equal(scutelliphilySkill.owner, "donut");
 
-  // 8. Level progression at Chapter 26 - Chronological position verification
+  // 8. Level progression at Chapter 26 - Chronological position & no unestablished previousLevel assertion
   const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
   const floor4TransitionEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-floor-4-transition");
 
   assert.ok(vetoEvent, "Borant veto event exists");
   assert.ok(floor4TransitionEvent, "Floor 4 transition event exists");
 
+  assert.equal(floor4TransitionEvent.position.chapter, 25, "Floor 4 transition occurs at Chapter 25");
+  assert.equal(level27Event.position.chapter, 26, "Level 27 event occurs at Chapter 26 epilogue");
+  assert.equal(level27Event.previousLevel, undefined, "Level 27 event must not assert an unestablished previousLevel");
+
   assert.ok(
     vetoEvent.sequence < level27Event.sequence,
-    "Level 27 event must follow the Chapter 26 Celestial box veto event"
+    "Level 27 event follows the Chapter 26 Celestial box veto event in Chapter 26 epilogue"
   );
   assert.ok(
-    level27Event.sequence < floor4TransitionEvent.sequence,
-    "Level 27 event must precede the Floor 4 transition event so progression occurs before exiting Floor 3"
+    floor4TransitionEvent.sequence < level27Event.sequence,
+    "Floor 4 transition event (Ch 25) precedes the Chapter 26 epilogue Level 27 event in timeline order"
   );
 
   const stateBeforeLevel27 = projectState(compiledTimeline, level27Event.sequence - 1);
@@ -238,9 +252,6 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
 
   const stateAtLevel27 = projectState(compiledTimeline, level27Event.sequence);
   assert.equal(stateAtLevel27.crawler?.level, 27, "At Level 27 sequence, projected level must be 27");
-
-  const stateAtFloor4Exit = projectState(compiledTimeline, floor4TransitionEvent.sequence);
-  assert.equal(stateAtFloor4Exit.crawler?.level, 27, "At Floor 4 transition, projected level remains 27");
 
   // Backward scrubbing verification across Level 27
   const stateScrubbedBack = projectState(compiledTimeline, level27Event.sequence - 1);

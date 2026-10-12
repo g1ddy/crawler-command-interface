@@ -12,7 +12,7 @@
       }
     },
     "createdAt": "2026-09-28T00:55:16.404Z",
-    "updatedAt": "2026-10-12T03:16:48.794Z"
+    "updatedAt": "2026-10-12T04:18:26.373Z"
   },
   "floors": [
     {
@@ -4006,7 +4006,7 @@
       "evidence": [
         {
           "sourceId": "src-wiki-find-trap-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "skillId": "skill-find-trap",
@@ -4027,7 +4027,7 @@
       "evidence": [
         {
           "sourceId": "src-wiki-backfire-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "skillId": "skill-backfire",
@@ -5195,8 +5195,29 @@
       "kind": "other"
     },
     {
-      "id": "evt-f3-doomsday-scenario-created",
+      "id": "evt-f3-floor-4-transition",
       "sequence": 177,
+      "type": "NarrativeEvent",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 25
+      },
+      "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-third-floor",
+          "locator": {
+            "section": "Floor Exit"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "kind": "floor-exited"
+    },
+    {
+      "id": "evt-f3-doomsday-scenario-created",
+      "sequence": 178,
       "type": "ItemCrafted",
       "position": {
         "floor": 3,
@@ -5233,7 +5254,7 @@
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
-      "sequence": 178,
+      "sequence": 179,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5251,7 +5272,7 @@
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
-      "sequence": 179,
+      "sequence": 180,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5269,7 +5290,7 @@
     },
     {
       "id": "evt-f3-odette-epilogue",
-      "sequence": 180,
+      "sequence": 181,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5290,7 +5311,7 @@
     },
     {
       "id": "evt-f3-achievement-bandit",
-      "sequence": 181,
+      "sequence": 182,
       "type": "AchievementUnlocked",
       "position": {
         "floor": 3,
@@ -5322,7 +5343,7 @@
     },
     {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
-      "sequence": 182,
+      "sequence": 183,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5344,7 +5365,7 @@
     },
     {
       "id": "evt-f3-celestial-box-carl-acquired",
-      "sequence": 183,
+      "sequence": 184,
       "type": "ItemAcquired",
       "position": {
         "floor": 3,
@@ -5374,7 +5395,7 @@
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-acquired",
-      "sequence": 184,
+      "sequence": 185,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5392,7 +5413,7 @@
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-opened",
-      "sequence": 185,
+      "sequence": 186,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5410,7 +5431,7 @@
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
-      "sequence": 186,
+      "sequence": 187,
       "type": "NarrativeEvent",
       "position": {
         "floor": 3,
@@ -5428,7 +5449,7 @@
     },
     {
       "id": "evt-f3-carl-level-27",
-      "sequence": 187,
+      "sequence": 188,
       "type": "LevelChanged",
       "position": {
         "floor": 3,
@@ -5442,29 +5463,7 @@
           "confidence": "confirmed"
         }
       ],
-      "level": 27,
-      "previousLevel": 26
-    },
-    {
-      "id": "evt-f3-floor-4-transition",
-      "sequence": 188,
-      "type": "NarrativeEvent",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 26
-      },
-      "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-third-floor",
-          "locator": {
-            "section": "Floor Exit"
-          },
-          "confidence": "corroborated"
-        }
-      ],
-      "kind": "floor-exited"
+      "level": 27
     }
   ],
   "countdowns": [

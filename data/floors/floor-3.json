@@ -422,7 +422,7 @@
       "evidence": [
         {
           "sourceId": "src-wiki-find-trap-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 4
@@ -443,7 +443,7 @@
       "evidence": [
         {
           "sourceId": "src-wiki-backfire-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
       "order": 5
@@ -1521,6 +1521,27 @@
       "order": 53
     },
     {
+      "id": "evt-f3-floor-4-transition",
+      "type": "NarrativeEvent",
+      "kind": "floor-exited",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 25
+      },
+      "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-third-floor",
+          "locator": {
+            "section": "Floor Exit"
+          },
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 54
+    },
+    {
       "id": "evt-f3-doomsday-scenario-created",
       "type": "ItemCrafted",
       "position": {
@@ -1550,7 +1571,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 54
+      "order": 55
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
@@ -1568,7 +1589,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55
+      "order": 56
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
@@ -1586,7 +1607,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 56
+      "order": 57
     },
     {
       "id": "evt-f3-odette-epilogue",
@@ -1607,7 +1628,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 57
+      "order": 58
     },
     {
       "id": "evt-f3-achievement-bandit",
@@ -1633,7 +1654,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 58
+      "order": 59
     },
     {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
@@ -1655,7 +1676,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 59
+      "order": 60
     },
     {
       "id": "evt-f3-celestial-box-carl-acquired",
@@ -1680,7 +1701,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 60
+      "order": 61
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-acquired",
@@ -1698,7 +1719,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 61
+      "order": 62
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-opened",
@@ -1716,7 +1737,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 62
+      "order": 63
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
@@ -1734,13 +1755,12 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 63
+      "order": 64
     },
     {
       "id": "evt-f3-carl-level-27",
       "type": "LevelChanged",
       "level": 27,
-      "previousLevel": 26,
       "position": {
         "floor": 3,
         "book": 2,
@@ -1751,27 +1771,6 @@
         {
           "sourceId": "src-wiki-carl-f3",
           "confidence": "confirmed"
-        }
-      ],
-      "order": 64
-    },
-    {
-      "id": "evt-f3-floor-4-transition",
-      "type": "NarrativeEvent",
-      "kind": "floor-exited",
-      "position": {
-        "floor": 3,
-        "book": 2,
-        "chapter": 26
-      },
-      "summary": "Carl, Donut, Katia, and Mongo descend via the Red Line, Car 20 stairwell to Floor 4.",
-      "evidence": [
-        {
-          "sourceId": "src-wiki-third-floor",
-          "locator": {
-            "section": "Floor Exit"
-          },
-          "confidence": "corroborated"
         }
       ],
       "order": 65
