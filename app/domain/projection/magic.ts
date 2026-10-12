@@ -3,16 +3,19 @@ import type { CrawlerState } from '../types.ts';
 export function applySkillGranted(state: CrawlerState, event: Record<string, unknown>): void {
   const skillId = String(event.skillId);
   if (!state.skills.some((s) => s.skillId === skillId)) {
+    const category = event.category as 'combat' | 'utility' | 'passive' | undefined;
     state.skills.push({
       skillId,
       name: String(event.name || ''),
-      icon: String(event.icon || '✦'),
-      rank: String(event.rank || 'RANK 1'),
-      description: String(event.description || ''),
-      cooldown: String(event.cooldown || 'READY'),
-      category: (event.category as 'combat' | 'utility' | 'passive') || 'combat',
+      owner: (event.owner as 'carl' | 'donut') || undefined,
+      icon: typeof event.icon === 'string' ? event.icon : undefined,
+      rank: typeof event.rank === 'string' ? event.rank : undefined,
+      description: typeof event.description === 'string' ? event.description : undefined,
+      cooldown: typeof event.cooldown === 'string' ? event.cooldown : undefined,
+      category: category || undefined,
       cost: typeof event.cost === 'string' ? event.cost : undefined,
       synergies: Array.isArray(event.synergies) ? (event.synergies as string[]) : undefined,
+      modifier: typeof event.modifier === 'string' ? event.modifier : undefined,
     });
   }
 }

@@ -219,13 +219,15 @@ export interface ActiveEffect {
 export interface Skill {
   skillId: string;
   name: string;
-  icon: string;
-  rank: string;
-  description: string;
-  cooldown: string;
-  category: 'combat' | 'utility' | 'passive';
+  owner?: 'carl' | 'donut';
+  icon?: string;
+  rank?: string;
+  description?: string;
+  cooldown?: string;
+  category?: 'combat' | 'utility' | 'passive';
   cost?: string;
   synergies?: string[];
+  modifier?: string;
 }
 
 export interface Quest {

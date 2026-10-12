@@ -1286,7 +1286,6 @@
             "type",
             "skillId",
             "name",
-            "rank",
             "position",
             "summary",
             "evidence"
@@ -1304,6 +1303,12 @@
             "name": {
               "type": "string",
               "minLength": 1
+            },
+            "owner": {
+              "enum": [
+                "carl",
+                "donut"
+              ]
             },
             "rank": {
               "type": "string",
@@ -1324,6 +1329,96 @@
                 "utility",
                 "passive"
               ]
+            },
+            "modifier": {
+              "type": "string"
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "correlationId": {
+              "$ref": "#/$defs/id"
+            },
+            "causationId": {
+              "$ref": "#/$defs/id"
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/evidence"
+              }
+            },
+            "notificationDelivery": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "delivered",
+                "kind",
+                "severity"
+              ],
+              "properties": {
+                "delivered": {
+                  "const": true
+                },
+                "kind": {
+                  "enum": [
+                    "achievement",
+                    "progression",
+                    "skill",
+                    "quest",
+                    "reward",
+                    "system",
+                    "floor"
+                  ]
+                },
+                "severity": {
+                  "enum": [
+                    "info",
+                    "success",
+                    "warning",
+                    "critical"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type",
+            "position",
+            "summary",
+            "evidence"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/eventId"
+            },
+            "type": {
+              "const": "RaceClassSelected"
+            },
+            "crawlerId": {
+              "$ref": "#/$defs/id"
+            },
+            "race": {
+              "type": "string"
+            },
+            "class": {
+              "type": "string"
             },
             "position": {
               "$ref": "#/$defs/position"

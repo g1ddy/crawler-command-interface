@@ -65,12 +65,12 @@ export function SkillsView({
                 key={x.skillId}
                 onClick={() => setSelectedSkillId(x.skillId)}
               >
-                <i>{x.icon}</i>
+                <i>{x.icon || "✦"}</i>
                 <span>
                   <b>{x.name}</b>
-                  <small>{x.description}</small>
+                  <small>{x.description || "—"}</small>
                 </span>
-                <em>{x.cooldown}</em>
+                <em>{x.cooldown || "—"}</em>
               </button>
             ))}
           </div>
@@ -78,19 +78,33 @@ export function SkillsView({
 
         {selectedSkill && (
           <Panel title="SKILL INSPECTOR" className={styles.inspectorPanel}>
-            <div className={styles.hero}>{selectedSkill.icon}</div>
+            <div className={styles.hero}>{selectedSkill.icon || "✦"}</div>
             <h1 className={styles.inspectorTitle}>{selectedSkill.name.toUpperCase()}</h1>
-            <i className={styles.badge}>{selectedSkill.rank}</i>
-            <i className={`${styles.badge} ${styles.activeTag}`}>{selectedSkill.category.toUpperCase()} ABILITY</i>
+            <i className={styles.badge}>{selectedSkill.rank || "—"}</i>
+            <i className={`${styles.badge} ${styles.activeTag}`}>
+              {selectedSkill.category ? `${selectedSkill.category.toUpperCase()} ABILITY` : "UNSPECIFIED CATEGORY"}
+            </i>
             <dl className={styles.details}>
+              {selectedSkill.owner && (
+                <div>
+                  <dt>OWNER</dt>
+                  <dd>{selectedSkill.owner.toUpperCase()}</dd>
+                </div>
+              )}
               <div>
                 <dt>EFFECT</dt>
-                <dd>{selectedSkill.description}</dd>
+                <dd>{selectedSkill.description || "—"}</dd>
               </div>
               <div>
                 <dt>COOLDOWN</dt>
-                <dd>{selectedSkill.cooldown}</dd>
+                <dd>{selectedSkill.cooldown || "—"}</dd>
               </div>
+              {selectedSkill.modifier && (
+                <div>
+                  <dt>MODIFIER</dt>
+                  <dd>{selectedSkill.modifier}</dd>
+                </div>
+              )}
               {selectedSkill.cost && (
                 <div>
                   <dt>RESOURCE COST</dt>

@@ -38,20 +38,38 @@ const mockSkills = [
   },
 ];
 
-test("filterSkills filters skills by category correctly", () => {
-  assert.equal(filterSkills(mockSkills, "ALL SKILLS").length, 3);
-  assert.equal(filterSkills(mockSkills, "ACTIVE").length, 2);
-  assert.equal(filterSkills(mockSkills, "PASSIVE").length, 1);
-  assert.equal(filterSkills(mockSkills, "COMBAT").length, 1);
-  assert.equal(filterSkills(mockSkills, "UTILITY").length, 1);
+test("filterSkills filters skills by category correctly including unknown category", () => {
+  const skillsWithUnknownCategory = [
+    ...mockSkills,
+    {
+      skillId: "sk-4",
+      name: "Scutelliphily",
+      owner: "donut",
+    },
+  ];
+
+  assert.equal(filterSkills(skillsWithUnknownCategory, "ALL SKILLS").length, 4);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "ACTIVE").length, 2);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "PASSIVE").length, 1);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "COMBAT").length, 1);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "UTILITY").length, 1);
 });
 
-test("countCategorySkills returns accurate skill counts", () => {
-  assert.equal(countCategorySkills(mockSkills, "ALL SKILLS"), 3);
-  assert.equal(countCategorySkills(mockSkills, "ACTIVE"), 2);
-  assert.equal(countCategorySkills(mockSkills, "PASSIVE"), 1);
-  assert.equal(countCategorySkills(mockSkills, "COMBAT"), 1);
-  assert.equal(countCategorySkills(mockSkills, "UTILITY"), 1);
+test("countCategorySkills returns accurate skill counts with unknown category skills", () => {
+  const skillsWithUnknownCategory = [
+    ...mockSkills,
+    {
+      skillId: "sk-4",
+      name: "Scutelliphily",
+      owner: "donut",
+    },
+  ];
+
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "ALL SKILLS"), 4);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "ACTIVE"), 2);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "PASSIVE"), 1);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "COMBAT"), 1);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "UTILITY"), 1);
 });
 
 test("deriveHotlistPresentation maps hotlist slots to skills", () => {

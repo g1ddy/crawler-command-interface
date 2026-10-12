@@ -36,6 +36,15 @@ export function applyAttributeModified(state: CrawlerState, event: Record<string
   }
 }
 
+export function applyRaceClassSelected(state: CrawlerState, event: Record<string, unknown>): void {
+  if (typeof event.race === 'string' && event.race) {
+    state.crawler.race = event.race;
+  }
+  if (typeof event.class === 'string' && event.class) {
+    state.crawler.class = event.class;
+  }
+}
+
 export function applyLevelChanged(state: CrawlerState, event: Record<string, unknown>, sequence: number): void {
   const level = Number(event.level);
   if (Number.isInteger(level) && level > 0) {
