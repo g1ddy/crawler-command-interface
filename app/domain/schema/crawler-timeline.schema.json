@@ -782,6 +782,18 @@
           "items": {
             "$ref": "#/$defs/pet"
           }
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/activeEffect"
+          }
+        },
+        "effectStateAuthority": {
+          "enum": [
+            "unestablished",
+            "established"
+          ]
         }
       }
     },
@@ -1598,6 +1610,18 @@
                     "$ref": "#/$defs/evidence"
                   }
                 },
+                "effects": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/activeEffect"
+                  }
+                },
+                "effectStateAuthority": {
+                  "enum": [
+                    "unestablished",
+                    "established"
+                  ]
+                },
                 "kind": {
                   "enum": [
                     "floor-entered",
@@ -2027,6 +2051,18 @@
                     "other"
                   ]
                 },
+                "effects": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/activeEffect"
+                  }
+                },
+                "effectStateAuthority": {
+                  "enum": [
+                    "unestablished",
+                    "established"
+                  ]
+                },
                 "durationSeconds": {
                   "type": "number",
                   "minimum": 0
@@ -2440,6 +2476,51 @@
     "petId": {
       "type": "string",
       "pattern": "^pet-[a-z0-9][a-z0-9-]*$"
+    },
+    "activeEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "effectId",
+        "name",
+        "type",
+        "durationSeconds"
+      ],
+      "properties": {
+        "effectId": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "good",
+            "bad",
+            "injury",
+            "other"
+          ]
+        },
+        "icon": {
+          "type": "string"
+        },
+        "durationSeconds": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "appliedAtSequence": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "description": {
+          "type": "string"
+        },
+        "statModifiers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
     }
   }
 }

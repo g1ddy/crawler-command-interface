@@ -295,3 +295,82 @@ test("production Floor 3 projection keeps unobserved effects unknown and does no
   assert.equal(replayedBefore.effects.status, "unavailable");
   assert.equal(replayedBefore.effects.harmful.length, 0);
 });
+
+test("production path transitions effect authority upon explicit complete report and maintains replay determinism", () => {
+  const effectDoc = clone(rawFloor3);
+  appendRawEvent(effectDoc, { id: "evt-f3-test-pre", type: "NarrativeEvent", kind: "other", summary: "Pre-report event" });
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-test-report-empty",
+    type: "NarrativeEvent",
+    kind: "other",
+    summary: "Explicit scan reports no active status effects",
+    effects: [],
+  });
+  appendRawEvent(effectDoc, { id: "evt-f3-test-omitted-1", type: "NarrativeEvent", kind: "other", summary: "Event after empty report" });
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-test-applied",
+    type: "EffectApplied",
+    effectId: "eff-f3-shield",
+    name: "Arcane Shield",
+    effectType: "good",
+    durationSeconds: 60,
+    summary: "Shield activated",
+  });
+  appendRawEvent(effectDoc, { id: "evt-f3-test-omitted-2", type: "NarrativeEvent", kind: "other", summary: "Event while shield active" });
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-test-expired",
+    type: "EffectExpired",
+    effectId: "eff-f3-shield",
+    summary: "Shield wears off",
+  });
+
+  const timeline = compileRawFloorFiles([effectDoc]);
+  const sequenceOf = (id) => {
+    const event = timeline.events.find((entry) => entry.id === id);
+    assert.ok(event, `compiled timeline must contain ${id}`);
+    return event.sequence;
+  };
+
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+  const present = (sequence) => deriveCrawlerPresentation(projectState(timeline, sequence), emptyObs);
+
+  const preSeq = sequenceOf("evt-f3-test-pre");
+  const reportSeq = sequenceOf("evt-f3-test-report-empty");
+  const omitted1Seq = sequenceOf("evt-f3-test-omitted-1");
+  const appliedSeq = sequenceOf("evt-f3-test-applied");
+  const omitted2Seq = sequenceOf("evt-f3-test-omitted-2");
+  const expiredSeq = sequenceOf("evt-f3-test-expired");
+
+  // 1. Before report -> status: "unavailable"
+  const pre = present(preSeq);
+  assert.equal(pre.effects.status, "unavailable");
+
+  // 2. Explicit empty report -> status: "known-empty"
+  const reported = present(reportSeq);
+  assert.equal(reported.effects.status, "known-empty");
+  assert.equal(reported.effects.beneficial.length, 0);
+
+  // 3. Omitted payload carries "known-empty" forward
+  const omitted1 = present(omitted1Seq);
+  assert.equal(omitted1.effects.status, "known-empty");
+
+  // 4. EffectApplied while authority is established -> status: "established", 1 beneficial effect
+  const applied = present(appliedSeq);
+  assert.equal(applied.effects.status, "established");
+  assert.equal(applied.effects.beneficial.length, 1);
+  assert.equal(applied.effects.beneficial[0].effectId, "eff-f3-shield");
+
+  // 5. Omitted payload carries active effect forward
+  const omitted2 = present(omitted2Seq);
+  assert.equal(omitted2.effects.status, "established");
+  assert.equal(omitted2.effects.beneficial.length, 1);
+
+  // 6. EffectExpired while authority is established -> status: "known-empty" (0 active effects)
+  const expired = present(expiredSeq);
+  assert.equal(expired.effects.status, "known-empty");
+  assert.equal(expired.effects.beneficial.length, 0);
+
+  // 7. Replaying backward to pre-report position -> status: "unavailable" (no future leakage)
+  const replayedPre = present(preSeq);
+  assert.equal(replayedPre.effects.status, "unavailable");
+});

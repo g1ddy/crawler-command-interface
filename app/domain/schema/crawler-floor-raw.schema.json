@@ -772,6 +772,18 @@
                 "$ref": "#/$defs/evidence"
               }
             },
+            "effects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/activeEffect"
+              }
+            },
+            "effectStateAuthority": {
+              "enum": [
+                "unestablished",
+                "established"
+              ]
+            },
             "notificationDelivery": {
               "type": "object",
               "additionalProperties": false,
@@ -1431,6 +1443,18 @@
             "description": {
               "type": "string",
               "maxLength": 4000
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/activeEffect"
+              }
+            },
+            "effectStateAuthority": {
+              "enum": [
+                "unestablished",
+                "established"
+              ]
             },
             "statModifiers": {
               "type": "object",
@@ -4000,6 +4024,51 @@
     "entitlementId": {
       "type": "string",
       "pattern": "^entitlement-[a-z0-9][a-z0-9-]*$"
+    },
+    "activeEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "effectId",
+        "name",
+        "type",
+        "durationSeconds"
+      ],
+      "properties": {
+        "effectId": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "good",
+            "bad",
+            "injury",
+            "other"
+          ]
+        },
+        "icon": {
+          "type": "string"
+        },
+        "durationSeconds": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "appliedAtSequence": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "description": {
+          "type": "string"
+        },
+        "statModifiers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
     }
   }
 }
