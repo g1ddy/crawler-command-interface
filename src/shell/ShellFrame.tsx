@@ -5,7 +5,7 @@ import styles from "./ShellFrame.module.css";
 /** Layout only: no timeline, feature, controller, or persistence dependencies. */
 export function ShellFrame({ presentation, isLive, hud, navigation, replay, children, overlays, feedback }: {
   presentation: HudPresentation;
-  isLive: boolean;
+  isLive?: boolean;
   hud: ReactNode;
   navigation: ReactNode;
   replay: ReactNode;

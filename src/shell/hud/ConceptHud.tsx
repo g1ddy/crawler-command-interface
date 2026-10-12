@@ -20,7 +20,7 @@ export function ConceptHud({
   state: Pick<CrawlerState, "sequence" | "hotlist" | "skills" | "crawler">;
   countdown?: ProjectedCountdownState | null;
   floorTitle?: string;
-  isLive?: boolean;
+
   onInspectCountdown?: () => void;
   onOpenNotifications?: () => void;
 }) {

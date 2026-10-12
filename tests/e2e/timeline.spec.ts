@@ -65,7 +65,9 @@ test("scrubbing backward removes state that was introduced later", async ({ page
   await expect(hud).toContainText("LVL 13");
 
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
-  await expect(page.locator("[class*='item']")).toHaveCount(0);
+  await selectSequence(page, 1);
+  const inventoryList = page.getByRole("list", { name: "Inventory items" });
+  await expect(inventoryList.getByRole("listitem")).toHaveCount(0);
 });
 
 test("floor navigation selects derived floor endpoints", async ({ page }) => {
@@ -161,7 +163,7 @@ test("live interactions append events without rewriting historical state", async
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
 
   await page.getByRole("button", { name: "INVENTORY", exact: true }).click();
-  const firstItem = page.locator("[class*='item']").first();
+  const firstItem = page.getByRole("button", { name: /\(/ }).first();
   await firstItem.click();
   const itemName = (await firstItem.getAttribute("aria-label"))?.replace(/ \([^)]+\)$/, "") ?? "";
   await page.getByRole("button", { name: /^LOCK/ }).click();
@@ -172,7 +174,8 @@ test("live interactions append events without rewriting historical state", async
 
   await enterReplayByScrubbing(page);
   await selectSequence(page, floor1EndSequence);
-  await expect(page.getByRole("button", { name: /^LOCK/ })).toBeDisabled();
+  const lockBtn = page.getByRole("button", { name: /^LOCK/ });
+  await expect(lockBtn).toBeDisabled();
 
   await slider.fill(String(newMaxSeq));
   await expect(page.getByRole("button", { name: /UNLOCK/ })).toBeVisible();

@@ -34,7 +34,6 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
     projectedObservations: observations,
     activeCountdown: null,
     sequence: 0,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
   });
   assert.equal(composition.system.floorTitle, "FLOOR 1");
@@ -60,7 +59,6 @@ test("persistent level follows selected-sequence source observations without lea
     projectedObservations: observationsBefore,
     activeCountdown: null,
     sequence: beforeLevel13,
-    isLive: false,
     floorHudTitle: "Third Floor",
   });
   assert.equal(before.progression.valueDisplay, "LVL 12");
@@ -72,7 +70,6 @@ test("persistent level follows selected-sequence source observations without lea
     projectedObservations: observationsAt,
     activeCountdown: null,
     sequence: atLevel13,
-    isLive: false,
     floorHudTitle: "Third Floor",
   });
   assert.equal(at.progression.valueDisplay, "LVL 13");
@@ -84,7 +81,6 @@ test("persistent level follows selected-sequence source observations without lea
     projectedObservations: initialObservations,
     activeCountdown: null,
     sequence: 1,
-    isLive: false,
     floorHudTitle: "First Floor",
   });
   assert.equal(initial.progression.valueDisplay, "LVL —");
@@ -109,7 +105,6 @@ test("deriveHudComposition exposes active countdown state without inventing urge
     projectedObservations: observations,
     activeCountdown,
     sequence: 10,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
   });
   assert.deepEqual(composition.urgency.activeCountdown, activeCountdown);
@@ -127,7 +122,6 @@ test("deriveHudComposition exposes explicit command-driven attention motionInten
     projectedObservations: observations,
     activeCountdown: null,
     sequence: 0,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
   });
   assert.equal(c1.attention.motionIntent, undefined);
@@ -138,7 +132,6 @@ test("deriveHudComposition exposes explicit command-driven attention motionInten
     projectedObservations: observations,
     activeCountdown: null,
     sequence: 1,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
     attentionMotionIntent: "attention",
   });
@@ -175,7 +168,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs1,
     activeCountdown: null,
     sequence: 1,
-    isLive: false,
     floorHudTitle: "FLOOR 1",
     petSummary: petSummary1,
   });
@@ -200,7 +192,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs116,
     activeCountdown: null,
     sequence: 116,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary116Replay,
   });
@@ -236,7 +227,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs117,
     activeCountdown: null,
     sequence: 117,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary117,
   });
@@ -260,7 +250,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs118,
     activeCountdown: null,
     sequence: 118,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary118,
   });
@@ -285,7 +274,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs119,
     activeCountdown: null,
     sequence: 119,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary119,
   });
@@ -309,7 +297,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs124,
     activeCountdown: null,
     sequence: 124,
-    isLive: false,
     floorHudTitle: "FLOOR 3",
     petSummary: petSummary124,
   });

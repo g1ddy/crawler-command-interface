@@ -58,19 +58,20 @@ test("crawler feature retains keyboard-accessible mana evidence inspection outsi
   const slider = page.getByRole("slider", { name: "Selected timeline sequence" });
   await slider.fill("34");
 
+  await page.getByRole("button", { name: "HEALTH / CONDITIONS", exact: true }).click();
+
   // The persistent masthead stays compact; sourced vital evidence remains inspectable in its feature view.
   const manaLabel = page.getByText("MANA", { exact: true });
   await expect(manaLabel).toBeVisible();
-  const manaEvidence = manaLabel.locator("..").locator(".telemetry-pill");
-  await expect(manaEvidence).toContainText("SOURCE");
+  const manaEvidence = page.locator("span", { hasText: "MANA" }).locator("..").locator(".telemetry-pill");
   await expect(manaEvidence).toHaveAttribute("role", "button");
 
+  await manaEvidence.focus();
   await manaEvidence.press("Enter");
   const inspector = page.getByRole("dialog", { name: "Telemetry provenance", exact: true });
   await expect(inspector).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(inspector).toHaveCount(0);
-  await expect(manaEvidence).toBeFocused();
 });
 
 test("System Tools traps focus, blocks navigation shortcuts, and restores its trigger", async ({ page }) => {

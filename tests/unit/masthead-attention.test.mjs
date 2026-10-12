@@ -5,11 +5,17 @@ import {
   formatFloorDisplay,
 } from "../../src/shell/hud/hud-composition.ts";
 
-test("floor title display avoids repeating the ordinal as a title", () => {
+test("floor title display enforces exact floor title formatting rules", () => {
+  assert.equal(formatFloorDisplay("Overlook City", 3), "FLOOR 3 · OVERLOOK CITY");
+  assert.equal(formatFloorDisplay("Overlook City", undefined), "OVERLOOK CITY");
+  assert.equal(formatFloorDisplay("   ", 3), "FLOOR 3");
+  assert.equal(formatFloorDisplay("", undefined), "");
+  assert.equal(formatFloorDisplay(undefined, 3), "FLOOR 3");
+  assert.equal(formatFloorDisplay(undefined, undefined), "");
+
   assert.equal(formatFloorDisplay("Third Floor", 3), "FLOOR 3");
   assert.equal(formatFloorDisplay("Floor 3", 3), "FLOOR 3");
-  assert.equal(formatFloorDisplay("Over City", 3), "FLOOR 3 · OVER CITY");
-  assert.equal(formatFloorDisplay("", 3), "");
+  assert.equal(formatFloorDisplay("All Floors (Whole Story)", "all"), "ALL FLOORS (WHOLE STORY)");
 });
 
 test("notification accessible label reflects only current attention state", async (t) => {
