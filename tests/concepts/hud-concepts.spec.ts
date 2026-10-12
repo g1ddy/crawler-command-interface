@@ -19,11 +19,11 @@ test("concepts retain replay state, capability boundaries and device storage", a
   for (const name of ["Authority", "Tactical", "Theater"]) {
     await page.getByRole("button", { name, exact: true }).click();
     await expect(slider).toHaveValue(sequence);
-    await expect(page.getByTestId("hud-audience-mode")).toHaveAttribute("data-mode", "replay");
+    await expect(page.getByTestId("replay-status-badge")).toHaveAttribute("data-live", "false");
     await expect(menu.getByRole("button", { name: "MAGIC", exact: true })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "QUESTS", exact: true })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "PET", exact: true })).toHaveCount(0);
-    await expect(page.locator(".hud-reading[data-evidence=unknown]").first()).toContainText("Unknown");
+    await expect(page.locator('header[aria-label="Crawler HUD"]')).toContainText("LVL —");
     await page.screenshot({ path: testInfo.outputPath(`${name.toLowerCase()}-early.png`), fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }

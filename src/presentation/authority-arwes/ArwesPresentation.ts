@@ -1,11 +1,9 @@
 "use client";
 import { createElement } from "react";
 import { ArwesAuthorityComposition } from "./ArwesAuthorityComposition.ts";
-import type {
-  HudCompositionModel,
-  HudTelemetryKey,
-} from "../../shell/hud/public.ts";
+import type { HudCompositionModel } from "../../shell/hud/public.ts";
 import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
+
 /**
  * BOUNDARY RULE:
  * Renderer-neutral presentation describes semantic meaning and inspectability;
@@ -14,8 +12,8 @@ import type { AuthorityMotionMode } from "./primitives/AuthorityTransition.ts";
  */
 export interface ArwesPresentationProps {
   model: HudCompositionModel;
-  onInspectTelemetry?: (key: HudTelemetryKey) => void;
   onInspectCountdown?: () => void;
+  onOpenNotifications?: () => void;
   motionMode?: AuthorityMotionMode;
 }
 
@@ -36,8 +34,8 @@ function resolveMotionMode(explicitMode?: AuthorityMotionMode): AuthorityMotionM
 
 export function ArwesPresentation({
   model,
-  onInspectTelemetry,
   onInspectCountdown,
+  onOpenNotifications,
   motionMode,
 }: ArwesPresentationProps) {
   const activeMotionMode = resolveMotionMode(motionMode);
@@ -52,8 +50,8 @@ export function ArwesPresentation({
     },
     createElement(ArwesAuthorityComposition, {
       composition: model,
-      onInspectTelemetry,
       onInspectCountdown,
+      onOpenNotifications,
       motionMode: activeMotionMode,
     })
   );

@@ -10,9 +10,6 @@ import { deriveHudComposition } from "../hud/public.ts";
 import { projectNotifications } from "../../../app/domain/notifications.ts";
 import { deriveNotificationsPresentation } from "../../features/notifications/public.ts";
 import { derivePetPresentationSummary } from "../../features/pet/public.ts";
-import type {
-  PresentationMotionIntent,
-} from "../../presentation/semantic/public.ts";
 import {
   availableRootViews,
   deriveNavigationContract,
@@ -57,6 +54,7 @@ export function CrawlerWorkspace({
       | "activeCountdown"
       | "replayPresentation"
       | "floorHudTitle"
+      | "floorHudOrdinal"
     >;
     commands: Pick<
       CrawlerSession["commands"],
@@ -77,6 +75,7 @@ export function CrawlerWorkspace({
     events,
     sources,
     currentSeq,
+    selectedFloorOrdinal,
     isLive,
     projectedState,
     projectedObservations,
@@ -85,6 +84,7 @@ export function CrawlerWorkspace({
     activeCountdown,
     replayPresentation,
     floorHudTitle,
+    floorHudOrdinal,
   } = snapshot;
 
   const [presentationChoice, setPresentationChoice] = useHudPresentation(hudPresentation);
@@ -179,13 +179,6 @@ export function CrawlerWorkspace({
   // eslint-disable-next-line react-hooks/refs
   const prevSeq = prevSeqRef.current;
 
-  let temporalMotionIntent: PresentationMotionIntent | undefined = undefined;
-  if (prevIsLive === true && isLive === false) {
-    temporalMotionIntent = "enter-replay";
-  } else if (prevIsLive === false && isLive === true) {
-    temporalMotionIntent = "return-live";
-  }
-
   const isLivePetTransition = isLive && prevIsLive && currentSeq > prevSeq;
 
   const petSummary = useMemo(
@@ -208,42 +201,27 @@ export function CrawlerWorkspace({
     () =>
       deriveHudComposition({
         projectedObservations,
+        projectedState,
         activeCountdown,
         sequence: currentSeq,
-        isLive,
         floorHudTitle,
+        selectedFloorOrdinal: floorHudOrdinal ?? (selectedFloorOrdinal === "all" ? undefined : selectedFloorOrdinal),
         notificationsSummary,
         petSummary,
-        temporalMotionIntent,
         activeView: resolvedView,
       }),
     [
       projectedObservations,
+      projectedState,
       activeCountdown,
       currentSeq,
-      isLive,
       floorHudTitle,
+      selectedFloorOrdinal,
+      floorHudOrdinal,
       notificationsSummary,
       petSummary,
-      temporalMotionIntent,
       resolvedView,
-    ],
-  );
-
-  const handleInspectTelemetry = useCallback(
-    (key: string) => {
-      const observationsMap: Record<string, ProjectedObservationValue | undefined> = {
-        viewers: projectedObservations.broadcast.viewers,
-        health: projectedObservations.condition.currentHealth,
-        mana: projectedObservations.condition.currentMana,
-        level: projectedObservations.xpProgress.level,
-      };
-      const obs = observationsMap[key];
-      if (obs) {
-        setInspectObservation(obs);
-      }
-    },
-    [projectedObservations]
+    ]
   );
 
   const navigationContract = useMemo(
@@ -253,7 +231,7 @@ export function CrawlerWorkspace({
         activeView: view,
         notificationsSummary,
       }),
-    [capabilities, view, notificationsSummary],
+    [capabilities, view, notificationsSummary]
   );
 
   const handleExportJson = useCallback(() => {
@@ -311,39 +289,40 @@ export function CrawlerWorkspace({
       },
       inspectObservation: setInspectObservation,
     }),
-    [commands.replayCommands, commands.selectSequence, commands.returnToLive],
+    [commands.replayCommands, commands.selectSequence, commands.returnToLive]
   );
 
   return (
     <ShellFrame
       presentation={presentationChoice}
       isLive={isLive}
+
       hud={
         presentationChoice === "authority-arwes" ? (
           <ArwesPresentation
             model={composition}
-            onInspectTelemetry={handleInspectTelemetry}
             onInspectCountdown={() => setShowCountdownEvidence(true)}
+            onOpenNotifications={() => setView("notifications")}
           />
         ) : usesConceptHud ? (
           <ConceptHud
+            composition={composition}
             state={projectedState}
-            observations={projectedObservations}
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
-            isLive={isLive}
-            onInspectObservation={setInspectObservation}
+
             onInspectCountdown={() => setShowCountdownEvidence(true)}
+            onOpenNotifications={() => setView("notifications")}
           />
         ) : (
           <PersistentHud
             composition={composition}
             state={projectedState}
-            observations={projectedObservations}
             countdown={activeCountdown}
             floorTitle={floorHudTitle}
-            isLive={isLive}
+
             onInspectCountdown={() => setShowCountdownEvidence(true)}
+            onOpenNotifications={() => setView("notifications")}
           />
         )
       }
@@ -382,38 +361,38 @@ export function CrawlerWorkspace({
             </ModalBoundary>
           )}
           <WorkspaceOverlays
-          snapshot={snapshot}
-          commands={commands}
-          inspectStat={inspectStat}
-          closeStat={() => setInspectStat(null)}
-          inspectObservation={inspectObservation}
-          closeObservation={() => setInspectObservation(null)}
-          onInspectObservation={setInspectObservation}
-          showFloorRules={showFloorRules}
-          closeFloorRules={() => setShowFloorRules(false)}
-          showTimelineHistory={showTimelineHistory}
-          closeHistory={() => setShowTimelineHistory(false)}
-          showTimelineEvidence={showTimelineEvidence}
-          closeEvidence={() => setShowTimelineEvidence(false)}
-          showTimelinePanel={showTimelinePanel}
-          closeTimelinePanel={() => setShowTimelinePanel(false)}
-          replayCommands={replayCommandsWithInspect}
-          tools={
-            showJsonModal
-              ? {
-                  jsonText,
-                  importError,
-                  presentationChoice,
-                  onJsonTextChange: handleJsonTextChange,
-                  onSelectPresentation: setPresentationChoice,
-                  onImport: handleImportJson,
-                  onExport: handleExportJson,
-                  onReset: handleReset,
-                  onClose: () => setShowJsonModal(false),
-                }
-              : null
-          }
-        />
+            snapshot={snapshot}
+            commands={commands}
+            inspectStat={inspectStat}
+            closeStat={() => setInspectStat(null)}
+            inspectObservation={inspectObservation}
+            closeObservation={() => setInspectObservation(null)}
+            onInspectObservation={setInspectObservation}
+            showFloorRules={showFloorRules}
+            closeFloorRules={() => setShowFloorRules(false)}
+            showTimelineHistory={showTimelineHistory}
+            closeHistory={() => setShowTimelineHistory(false)}
+            showTimelineEvidence={showTimelineEvidence}
+            closeEvidence={() => setShowTimelineEvidence(false)}
+            showTimelinePanel={showTimelinePanel}
+            closeTimelinePanel={() => setShowTimelinePanel(false)}
+            replayCommands={replayCommandsWithInspect}
+            tools={
+              showJsonModal
+                ? {
+                    jsonText,
+                    importError,
+                    presentationChoice,
+                    onJsonTextChange: handleJsonTextChange,
+                    onSelectPresentation: setPresentationChoice,
+                    onImport: handleImportJson,
+                    onExport: handleExportJson,
+                    onReset: handleReset,
+                    onClose: () => setShowJsonModal(false),
+                  }
+                : null
+            }
+          />
         </>
       }
     >

@@ -10,11 +10,30 @@ import { projectState, projectObservations } from "../../app/domain/projection.t
 test("Floor 3 raw document loads cleanly and passes raw floor validation", () => {
   const rawFloor3 = loadRawFloorDocument("floor-3");
   assert.equal(rawFloor3.floor.ordinal, 3);
-  assert.equal(rawFloor3.floor.title, "Third Floor");
+  assert.equal(rawFloor3.floor.title, "Over City");
   assert.equal(rawFloor3.floor.book, 2);
 
   const rawValidation = validateRawCrawlerFloor(rawFloor3);
   assert.equal(rawValidation.valid, true, rawValidation.errors.join("; "));
+});
+
+
+test("Floor 3 display title has URL-backed corroborating evidence", () => {
+  const rawFloor3 = loadRawFloorDocument("floor-3");
+  assert.equal(rawFloor3.floor.title, "Over City");
+
+  const timeline = compileRawFloorFiles(loadAllRawFloorDocuments());
+  const titleEvidenceEvent = timeline.events.find((event) => event.id === "evt-f3-over-city-entered");
+  assert.ok(titleEvidenceEvent, "Expected the authored Over City entry event");
+  assert.ok(
+    titleEvidenceEvent.evidence?.some(
+      (evidence) => evidence.sourceId === "src-wiki-third-floor" && evidence.confidence === "corroborated",
+    ),
+    "Over City must remain tied to corroborating authored evidence",
+  );
+
+  const source = timeline.sources.find((candidate) => candidate.id === "src-wiki-third-floor");
+  assert.ok(source?.url?.startsWith("https://"), "Corroborating evidence must have a source URL");
 });
 
 test("Floor 3 raw document adapts into a valid CrawlerFloorDocument compatibility object", () => {
@@ -22,7 +41,7 @@ test("Floor 3 raw document adapts into a valid CrawlerFloorDocument compatibilit
   const adaptedFloor3 = adaptRawFloorDocument(rawFloor3);
 
   assert.equal(adaptedFloor3.floor.ordinal, 3);
-  assert.equal(adaptedFloor3.floor.title, "Third Floor");
+  assert.equal(adaptedFloor3.floor.title, "Over City");
 
   const adaptedValidation = validateCrawlerFloor(adaptedFloor3);
   assert.equal(adaptedValidation.valid, true, adaptedValidation.errors.join("; "));

@@ -1,8 +1,8 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-10-11
+**Last Updated:** 2026-10-12
 
-### 🏥 Repository Health Score: **47.0 / 100**
+### 🏥 Repository Health Score: **45.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 132
@@ -19,9 +19,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/inventory/ItemInspector.tsx` | **148.1** | 246 | 46 | 7 | 0.88 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **143.5** | 360 | 38 | 7 | 0.88 |
 | `app/domain/projection/helpers.ts` | **143** | 230 | 54 | 2 | 0.4 |
-| `src/shell/adapters/CrawlerWorkspace.tsx` | **139.7** | 445 | 15 | 23 | 0.96 |
 | `src/application/crawler-actions.ts` | **136.8** | 128 | 50 | 4 | 0.8 |
-| `src/presentation/authority-arwes/ArwesAuthorityComposition.ts` | **136** | 598 | 19 | 10 | 0.91 |
+| `src/shell/adapters/CrawlerWorkspace.tsx` | **135.5** | 424 | 15 | 22 | 0.96 |
+| `src/presentation/authority-arwes/ArwesAuthorityComposition.ts` | **133.5** | 595 | 19 | 9 | 0.9 |
 | `app/domain/compiler.ts` | **122.2** | 349 | 35 | 2 | 0.67 |
 | `app/domain/research-compiler.ts` | **121.8** | 318 | 33 | 2 | 1 |
 

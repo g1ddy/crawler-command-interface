@@ -126,11 +126,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       floorTitle: "FLOOR 1: DUNGEON ENTRANCE",
       sequence: 25,
     },
-    temporal: {
-      mode: "live",
-      sequence: 25,
-      isLive: true,
-    },
     urgency: {
       activeCountdown: {
         remainingSeconds: 240,
@@ -148,48 +143,10 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       latestNotificationTitle: "ITEM CRAFTED",
       latestNotificationMessage: "Created Light Bomb",
     },
-    vitals: {
-      health: { value: 84, sequence: 25 },
-      mana: { value: 50, sequence: 25 },
-      level: { value: 3, sequence: 20 },
+    progression: {
+      level: 3,
+      valueDisplay: "LVL 3",
     },
-    broadcast: {
-      viewers: { value: 120, sequence: 25 },
-    },
-    telemetryItems: [
-    {
-      key: "health",
-      label: "HEALTH",
-      valueDisplay: "84",
-      badgeLabel: "SOURCE",
-      evidence: { marker: "●", detailLabel: "Observed" },
-      semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-    },
-    {
-      key: "mana",
-      label: "MANA",
-      valueDisplay: "50",
-      badgeLabel: "SOURCE",
-      evidence: { marker: "●", detailLabel: "Observed" },
-      semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-    },
-    {
-      key: "level",
-      label: "LEVEL",
-      valueDisplay: "3",
-      badgeLabel: "LAST KNOWN · SEQ 20",
-      evidence: { marker: "◷", detailLabel: "Last known · sequence 20" },
-      semantics: { status: "present", temporal: "last-known", authority: "observed", affordance: "inspect" },
-    },
-    {
-      key: "viewers",
-      label: "AUDIENCE VIEWERS",
-      valueDisplay: "120",
-      badgeLabel: "SOURCE",
-      evidence: { marker: "●", detailLabel: "Observed" },
-      semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-    },
-    ],
   };
 
   const html = renderToString(
@@ -198,7 +155,6 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
       null,
       React.createElement(ArwesPresentation, {
         model: fullModel,
-        onInspectTelemetry: () => {},
       })
     )
   );
@@ -206,151 +162,18 @@ test("ArwesPresentation integrates HudCompositionModel into real composition fou
   assert.match(html, /data-presentation="authority-arwes"/);
   assert.match(html, /data-testid="arwes-authority-composition"/);
   assert.match(html, /FLOOR 1: DUNGEON ENTRANCE/);
-  assert.match(html, /data-mode="live"/);
   assert.match(html, /04:00/);
   assert.match(html, /ITEM CRAFTED/);
   assert.match(html, /Created Light Bomb/);
-  assert.match(html, /84/);
-  assert.match(html, /50/);
-  assert.match(html, /120/);
-  assert.match(html, /●/);
-  assert.match(html, /◷/);
-  assert.match(html, /aria-label="Inspect level evidence: last known · sequence 20"/);
-  assert.doesNotMatch(html, /LAST KNOWN · SEQ 20/);
-});
-
-test("ArwesPresentation directly exposes semantic attributes for current, last-known, estimated, and unknown states", () => {
-  const model = {
-    system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
-    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
-    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [
-    {
-      key: "health",
-      label: "HEALTH",
-      valueDisplay: "100",
-      badgeLabel: "SOURCE",
-      evidence: { marker: "●", detailLabel: "Observed" },
-      semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-    },
-    {
-      key: "mana",
-      label: "MANA",
-      valueDisplay: "50",
-      badgeLabel: "LAST KNOWN · SEQ 5",
-      evidence: { marker: "◷", detailLabel: "Last known · sequence 5" },
-      semantics: { status: "present", temporal: "last-known", authority: "observed", affordance: "inspect" },
-    },
-    {
-      key: "level",
-      label: "LEVEL",
-      valueDisplay: "4",
-      badgeLabel: "ESTIMATED",
-      evidence: { marker: "≈", detailLabel: "Estimated" },
-      semantics: { status: "present", temporal: "current", authority: "estimated", affordance: "inspect" },
-    },
-    {
-      key: "viewers",
-      label: "AUDIENCE VIEWERS",
-      valueDisplay: "— ABSENT",
-      badgeLabel: "— ABSENT",
-      evidence: { marker: "?", detailLabel: "Unknown" },
-      semantics: { status: "unknown", affordance: "none" },
-    },
-    ],
-  };
-
-  const html = renderToString(
-    React.createElement(ArwesPresentation, {
-      model,
-      onInspectTelemetry: () => {},
-    })
-  );
-
-  assert.match(html, /data-testid="telemetry-health"[^>]*data-status="present"[^>]*data-authority="observed"[^>]*data-temporal="current"/);
-  assert.match(html, /data-testid="telemetry-mana"[^>]*data-status="present"[^>]*data-authority="observed"[^>]*data-temporal="last-known"/);
-  assert.match(html, /data-testid="telemetry-level"[^>]*data-status="present"[^>]*data-authority="estimated"/);
-  assert.match(html, /data-testid="telemetry-viewers"[^>]*data-status="unknown"/);
-  assert.doesNotMatch(html, /data-testid="telemetry-viewers"[^>]*data-authority=/);
-  assert.doesNotMatch(html, /data-testid="telemetry-viewers"[^>]*data-temporal=/);
-
-  assert.match(html, /aria-label="Inspect health evidence: observed"[^>]*data-testid="telemetry-health-badge"/);
-  assert.match(html, /aria-label="audience viewers evidence: unknown"[^>]*data-testid="telemetry-viewers-badge"/);
-  assert.doesNotMatch(html, /LAST KNOWN · SEQ 5/);
-});
-
-test("ArwesPresentation keeps stable present telemetry motionIntent undefined", () => {
-  const model = {
-    system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
-    urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
-    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [
-      {
-        key: "health",
-        label: "HEALTH",
-        valueDisplay: "100",
-        badgeLabel: "SOURCE",
-        evidence: { marker: "●", detailLabel: "Observed" },
-        semantics: { status: "present", authority: "observed", affordance: "inspect" },
-      },
-      {
-        key: "mana",
-        label: "MANA",
-        valueDisplay: "50",
-        badgeLabel: "SOURCE",
-        evidence: { marker: "●", detailLabel: "Observed" },
-        semantics: { status: "present", motionIntent: "established", authority: "observed", affordance: "inspect" },
-      },
-      {
-        key: "level",
-        label: "LEVEL",
-        valueDisplay: "5",
-        badgeLabel: "SOURCE",
-        evidence: { marker: "●", detailLabel: "Observed" },
-        semantics: { status: "present", motionIntent: "changed", authority: "observed", affordance: "inspect" },
-      },
-    ],
-  };
-
-  const html = renderToString(
-    React.createElement(ArwesPresentation, {
-      model,
-      onInspectTelemetry: () => {},
-    })
-  );
-
-  // Stable present value has no motion intent
-  assert.doesNotMatch(html, /data-testid="telemetry-health"[^>]*data-motion-intent/);
-
-  // Explicit transition-driven intents survive directly
-  assert.match(html, /data-testid="telemetry-mana"[^>]*data-motion-intent="established"/);
-  assert.match(html, /data-testid="telemetry-level"[^>]*data-motion-intent="changed"/);
+  assert.match(html, /LVL 3/);
 });
 
 test("ArwesPresentation reduced motion produces semantically equivalent markup without physical animation dependency", () => {
   const model = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "replay", sequence: 10, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [
-      {
-        key: "health",
-        label: "HEALTH",
-        valueDisplay: "80",
-        badgeLabel: "SOURCE",
-        evidence: { marker: "●", detailLabel: "Observed" },
-        semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-      },
-    ],
+    progression: { level: 5, valueDisplay: "LVL 5" },
   };
 
   const enabledHtml = renderToString(
@@ -360,28 +183,20 @@ test("ArwesPresentation reduced motion produces semantically equivalent markup w
     React.createElement(ArwesPresentation, { model, motionMode: "reduced" })
   );
 
-  assert.match(enabledHtml, /data-mode="replay"/);
-  assert.match(reducedHtml, /data-mode="replay"/);
-  assert.match(reducedHtml, /data-status="present"/);
-  assert.match(reducedHtml, /data-authority="observed"/);
-  assert.match(reducedHtml, /data-temporal="current"/);
-  assert.match(reducedHtml, /80/);
+  assert.match(enabledHtml, /LVL 5/);
+  assert.match(reducedHtml, /LVL 5/);
 });
 
 test("ArwesPresentation ensures initial renders have no spurious transition motion intents", () => {
   const baseModel = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false, latestNotificationTitle: undefined },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [],
+    progression: { level: 1, valueDisplay: "LVL 1" },
   };
 
   const html = renderToString(React.createElement(ArwesPresentation, { model: baseModel }));
 
-  // Initial render: no spurious enter-replay, return-live, or attention motion intents
   assert.doesNotMatch(html, /data-motion-intent="return-live"/);
   assert.doesNotMatch(html, /data-motion-intent="enter-replay"/);
   assert.doesNotMatch(html, /data-motion-intent="attention"/);
@@ -390,12 +205,9 @@ test("ArwesPresentation ensures initial renders have no spurious transition moti
 test("ArwesPresentation directly consumes motionIntents from HudCompositionModel", () => {
   const modelWithIntent = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "replay", sequence: 10, isLive: false, motionIntent: "enter-replay" },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 1, hasActiveAlerts: true, latestNotificationTitle: "NEW ALERT", motionIntent: "attention" },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [],
+    progression: { level: 2, valueDisplay: "LVL 2" },
   };
 
   const html = renderToString(
@@ -405,46 +217,7 @@ test("ArwesPresentation directly consumes motionIntents from HudCompositionModel
     })
   );
 
-  assert.match(html, /data-motion-intent="enter-replay"/);
   assert.match(html, /data-motion-intent="attention"/);
-});
-
-test("Ticking countdowns and ordinary telemetry numeric value updates do not emit changed motion intents", () => {
-  const tickingModel = {
-    system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
-    urgency: {
-      activeCountdown: {
-        remainingSeconds: 239,
-        formattedTime: "03:59",
-        formattedLabel: "Level Collapse In 03:59",
-        lifecycleStatus: "active",
-        referencePoints: [],
-      },
-      formattedLabel: "Level Collapse In 03:59",
-      lifecycleStatus: "active",
-    },
-    attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [
-      {
-        key: "health",
-        label: "HEALTH",
-        valueDisplay: "84",
-        badgeLabel: "SOURCE",
-        evidence: { marker: "●", detailLabel: "Observed" },
-        semantics: { status: "present", temporal: "current", authority: "observed", affordance: "inspect" },
-      },
-    ],
-  };
-
-  const html = renderToString(
-    React.createElement(ArwesPresentation, { model: tickingModel })
-  );
-
-  assert.doesNotMatch(html, /data-testid="telemetry-health"[^>]*data-motion-intent="changed"/);
-  assert.match(html, /03:59/);
 });
 
 test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
@@ -452,11 +225,6 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
     system: {
       floorTitle: "FLOOR 3",
       sequence: 12,
-    },
-    temporal: {
-      mode: "replay",
-      sequence: 12,
-      isLive: false,
     },
     urgency: {
       activeCountdown: null,
@@ -466,9 +234,10 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
       totalNotificationsCount: 0,
       hasActiveAlerts: false,
     },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [],
+    progression: {
+      level: null,
+      valueDisplay: "LVL —",
+    },
   };
 
   const html = renderToString(
@@ -483,18 +252,16 @@ test("ArwesPresentation handles minimal HudCompositionModel gracefully", () => {
 
   assert.match(html, /data-presentation="authority-arwes"/);
   assert.match(html, /FLOOR 3/);
-  assert.match(html, /data-mode="replay"/);
+  assert.match(html, /LVL —/);
 });
 
 test("ArwesPresentation renders Pet domain surface across lifecycle states and motion modes", () => {
   // 1. Unestablished / not-established Pet state
   const unestablishedModel = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
+    progression: { level: 1, valueDisplay: "LVL 1" },
     pet: {
       hasPets: false,
       petCount: 0,
@@ -502,7 +269,6 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
       semantics: { status: "not-established", affordance: "none" },
     },
     activeView: "pet",
-    telemetryItems: [],
   };
 
   const htmlUnestablished = renderToString(
@@ -517,11 +283,9 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
   // 2. Established Pet state with newly-established change and motion intent
   const acquiredModel = {
     system: { floorTitle: "FLOOR 2", sequence: 116 },
-    temporal: { mode: "replay", sequence: 116, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
+    progression: { level: 13, valueDisplay: "LVL 13" },
     pet: {
       hasPets: true,
       petCount: 1,
@@ -542,7 +306,6 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
       motionIntent: "established",
     },
     activeView: "pet",
-    telemetryItems: [],
   };
 
   const htmlAcquired = renderToString(
@@ -557,11 +320,9 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
   // 3. Established Pet state after bonding (Mongo, Royal Steed) in deterministic mode
   const bondedModel = {
     system: { floorTitle: "FLOOR 2", sequence: 118 },
-    temporal: { mode: "replay", sequence: 118, isLive: false },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
+    progression: { level: 13, valueDisplay: "LVL 13" },
     pet: {
       hasPets: true,
       petCount: 1,
@@ -584,7 +345,6 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
       motionIntent: "changed",
     },
     activeView: "pet",
-    telemetryItems: [],
   };
 
   const htmlBonded = renderToString(
@@ -601,12 +361,9 @@ test("ArwesPresentation renders Pet domain surface across lifecycle states and m
 test("ArwesPresentation maintains renderer exclusivity without alternate HUD markers", () => {
   const model = {
     system: { floorTitle: "FLOOR 1", sequence: 10 },
-    temporal: { mode: "live", sequence: 10, isLive: true },
     urgency: { activeCountdown: null, formattedLabel: "Collapse time unavailable" },
     attention: { totalNotificationsCount: 0, hasActiveAlerts: false },
-    vitals: {},
-    broadcast: {},
-    telemetryItems: [],
+    progression: { level: 1, valueDisplay: "LVL 1" },
   };
 
   const html = renderToString(React.createElement(ArwesPresentation, { model }));

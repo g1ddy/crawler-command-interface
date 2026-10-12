@@ -1,10 +1,30 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { deriveHudComposition } from "../../src/shell/hud/public.ts";
+import { deriveHudComposition, formatFloorDisplay } from "../../src/shell/hud/public.ts";
 import { createInitialState, projectObservations, projectState } from "../../app/domain/projection.ts";
 import { derivePartyPresentation } from "../../src/features/party/public.ts";
 import { derivePetPresentation, derivePetPresentationSummary } from "../../src/features/pet/public.ts";
+
+test("formatFloorDisplay enforces exact floor title formatting rules", () => {
+  // Ordinal 3 plus title Third Floor -> FLOOR 3
+  assert.equal(formatFloorDisplay("Third Floor", 3), "FLOOR 3");
+
+  // Ordinal 3 plus title Floor 3 -> FLOOR 3
+  assert.equal(formatFloorDisplay("Floor 3", 3), "FLOOR 3");
+
+  // Ordinal 3 plus a distinct title Over City -> FLOOR 3 · OVER CITY
+  assert.equal(formatFloorDisplay("Over City", 3), "FLOOR 3 · OVER CITY");
+
+  // Title-only input -> uppercased title
+  assert.equal(formatFloorDisplay("Descent"), "DESCENT");
+
+  // Empty title -> empty output
+  assert.equal(formatFloorDisplay(""), "");
+
+  // The existing all-floors case
+  assert.equal(formatFloorDisplay("All Floors (Whole Story)", "all"), "ALL FLOORS (WHOLE STORY)");
+});
 
 test("deriveHudComposition compiles renderer-neutral model for initial live state", () => {
   const state = createInitialState();
@@ -14,20 +34,56 @@ test("deriveHudComposition compiles renderer-neutral model for initial live stat
     projectedObservations: observations,
     activeCountdown: null,
     sequence: 0,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
   });
-  assert.equal(composition.system.crawlerName, undefined);
   assert.equal(composition.system.floorTitle, "FLOOR 1");
-  assert.equal(composition.temporal.mode, "live");
-  assert.equal(composition.temporal.isLive, true);
   assert.equal(composition.urgency.activeCountdown, null);
   assert.equal(composition.urgency.formattedLabel, "");
   assert.doesNotMatch(composition.urgency.formattedLabel, /Collapse time unavailable|NO SOURCED COUNTDOWN|EXACT TIME/);
   assert.equal(composition.attention.totalNotificationsCount, 0);
   assert.equal(composition.attention.hasActiveAlerts, false);
-  assert.equal(composition.vitals.health, undefined);
-  assert.equal(composition.broadcast.viewers, undefined);
+  assert.equal(composition.progression.level, null);
+  assert.equal(composition.progression.valueDisplay, "LVL —");
+});
+
+
+test("persistent level follows selected-sequence source observations without leaking future levels", () => {
+  const rawTimeline = JSON.parse(fs.readFileSync("data/compiled-timeline.json", "utf8"));
+
+  const beforeLevel13 = 119;
+  const atLevel13 = 120;
+  const stateBefore = projectState(rawTimeline, beforeLevel13);
+  const observationsBefore = projectObservations(rawTimeline, beforeLevel13);
+  const before = deriveHudComposition({
+    projectedState: stateBefore,
+    projectedObservations: observationsBefore,
+    activeCountdown: null,
+    sequence: beforeLevel13,
+    floorHudTitle: "Third Floor",
+  });
+  assert.equal(before.progression.valueDisplay, "LVL 12");
+
+  const stateAt = projectState(rawTimeline, atLevel13);
+  const observationsAt = projectObservations(rawTimeline, atLevel13);
+  const at = deriveHudComposition({
+    projectedState: stateAt,
+    projectedObservations: observationsAt,
+    activeCountdown: null,
+    sequence: atLevel13,
+    floorHudTitle: "Third Floor",
+  });
+  assert.equal(at.progression.valueDisplay, "LVL 13");
+
+  const initialState = projectState(rawTimeline, 1);
+  const initialObservations = projectObservations(rawTimeline, 1);
+  const initial = deriveHudComposition({
+    projectedState: initialState,
+    projectedObservations: initialObservations,
+    activeCountdown: null,
+    sequence: 1,
+    floorHudTitle: "First Floor",
+  });
+  assert.equal(initial.progression.valueDisplay, "LVL —");
 });
 
 test("deriveHudComposition exposes active countdown state without inventing urgency policies", () => {
@@ -49,7 +105,6 @@ test("deriveHudComposition exposes active countdown state without inventing urge
     projectedObservations: observations,
     activeCountdown,
     sequence: 10,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
   });
   assert.deepEqual(composition.urgency.activeCountdown, activeCountdown);
@@ -57,7 +112,7 @@ test("deriveHudComposition exposes active countdown state without inventing urge
   assert.equal(composition.urgency.lifecycleStatus, "active");
 });
 
-test("deriveHudComposition exposes explicit command-driven temporal and attention motionIntents", () => {
+test("deriveHudComposition exposes explicit command-driven attention motionIntents", () => {
   const state = createInitialState();
   const observations = projectObservations({ observations: [], events: [] }, 0);
 
@@ -67,34 +122,9 @@ test("deriveHudComposition exposes explicit command-driven temporal and attentio
     projectedObservations: observations,
     activeCountdown: null,
     sequence: 0,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
   });
-  assert.equal(c1.temporal.motionIntent, undefined);
   assert.equal(c1.attention.motionIntent, undefined);
-
-  // Live -> Replay transition intent passed explicitly
-  const c2 = deriveHudComposition({
-    projectedState: state,
-    projectedObservations: observations,
-    activeCountdown: null,
-    sequence: 0,
-    isLive: false,
-    floorHudTitle: "FLOOR 1",
-    temporalMotionIntent: "enter-replay",
-  });
-  assert.equal(c2.temporal.motionIntent, "enter-replay");
-
-  // Subsequent replay render without transition intent -> undefined
-  const c3 = deriveHudComposition({
-    projectedState: state,
-    projectedObservations: observations,
-    activeCountdown: null,
-    sequence: 1,
-    isLive: false,
-    floorHudTitle: "FLOOR 1",
-  });
-  assert.equal(c3.temporal.motionIntent, undefined);
 
   // Explicit attention motion intent passed
   const c4 = deriveHudComposition({
@@ -102,7 +132,6 @@ test("deriveHudComposition exposes explicit command-driven temporal and attentio
     projectedObservations: observations,
     activeCountdown: null,
     sequence: 1,
-    isLive: true,
     floorHudTitle: "FLOOR 1",
     attentionMotionIntent: "attention",
   });
@@ -139,7 +168,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs1,
     activeCountdown: null,
     sequence: 1,
-    isLive: false,
     floorHudTitle: "FLOOR 1",
     petSummary: petSummary1,
   });
@@ -164,7 +192,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs116,
     activeCountdown: null,
     sequence: 116,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary116Replay,
   });
@@ -200,7 +227,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs117,
     activeCountdown: null,
     sequence: 117,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary117,
   });
@@ -224,7 +250,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs118,
     activeCountdown: null,
     sequence: 118,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary118,
   });
@@ -249,7 +274,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs119,
     activeCountdown: null,
     sequence: 119,
-    isLive: false,
     floorHudTitle: "FLOOR 2",
     petSummary: petSummary119,
   });
@@ -273,7 +297,6 @@ test("integration: deriveHudComposition with derivePetPresentationSummary across
     projectedObservations: obs124,
     activeCountdown: null,
     sequence: 124,
-    isLive: false,
     floorHudTitle: "FLOOR 3",
     petSummary: petSummary124,
   });

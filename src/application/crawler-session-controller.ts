@@ -33,6 +33,22 @@ export interface CreateCrawlerSessionOptions {
   onActionResult?: (result: ActionResult) => void;
 }
 
+function resolveFloorOrdinalAtSequence(
+  events: CrawlerEvent[],
+  floors: FloorSegment[] | undefined,
+  sequence: number,
+): number | undefined {
+  for (let i = events.length - 1; i >= 0; i--) {
+    const event = events[i];
+    if (event.sequence <= sequence && event.position?.floor !== undefined) {
+      return event.position.floor;
+    }
+  }
+  return floors?.find(
+    (floor) => sequence >= floor.startSequence && sequence <= floor.endSequence,
+  )?.ordinal;
+}
+
 export class CrawlerSessionController {
   private timelineDoc: CrawlerTimelineDocument;
   private storageAdapter: TimelinePersistenceAdapter | null;
@@ -111,22 +127,11 @@ export class CrawlerSessionController {
     if (this.isLive) {
       this.selectedFloorOrdinal = latestFloor;
     } else {
-      let derivedFloor: number | undefined;
-      for (let i = events.length - 1; i >= 0; i--) {
-        const ev = events[i];
-        if (ev.sequence <= sequence && ev.position?.floor !== undefined) {
-          derivedFloor = ev.position.floor;
-          break;
-        }
-      }
-      if (derivedFloor === undefined && this.timelineDoc.floors) {
-        for (const f of this.timelineDoc.floors) {
-          if (sequence >= f.startSequence && sequence <= f.endSequence) {
-            derivedFloor = f.ordinal;
-            break;
-          }
-        }
-      }
+      const derivedFloor = resolveFloorOrdinalAtSequence(
+        events,
+        this.timelineDoc.floors,
+        sequence,
+      );
       if (derivedFloor !== undefined) {
         this.selectedFloorOrdinal = derivedFloor;
       }
@@ -254,11 +259,27 @@ export class CrawlerSessionController {
       isLive: this.isLive,
     });
 
-    const floorHudTitle = currentFloorSegment
-      ? `FLOOR ${currentFloorSegment.ordinal}: ${currentFloorSegment.title}`
-      : this.selectedFloorOrdinal === "all"
-        ? "ALL FLOORS (WHOLE STORY)"
-        : `FLOOR ${this.selectedFloorOrdinal}`;
+    // Resolve floor context for the selected timeline position (currentSeq).
+    const positionFloorOrdinal = resolveFloorOrdinalAtSequence(
+      events,
+      this.timelineDoc.floors,
+      currentSeq,
+    );
+
+    const positionFloorSegment =
+      positionFloorOrdinal !== undefined
+        ? this.timelineDoc.floors?.find(
+            (floor: FloorSegment) => floor.ordinal === positionFloorOrdinal,
+          ) ?? null
+        : null;
+
+    const floorHudTitle = positionFloorSegment
+      ? positionFloorSegment.title
+      : positionFloorOrdinal !== undefined
+        ? `Floor ${positionFloorOrdinal}`
+        : "";
+
+    const floorHudOrdinal = positionFloorOrdinal;
 
     return {
       timelineDoc: this.timelineDoc,
@@ -278,6 +299,7 @@ export class CrawlerSessionController {
       activeCountdown,
       replayPresentation,
       floorHudTitle,
+      floorHudOrdinal,
     };
   }
 
