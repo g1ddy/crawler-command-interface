@@ -16,6 +16,7 @@ export function applySkillGranted(state: CrawlerState, event: Record<string, unk
       cost: typeof event.cost === 'string' ? event.cost : undefined,
       synergies: Array.isArray(event.synergies) ? (event.synergies as string[]) : undefined,
       modifier: typeof event.modifier === 'string' ? event.modifier : undefined,
+      levelsGained: typeof event.levelsGained === 'number' ? Number(event.levelsGained) : undefined,
     });
   }
 }

@@ -228,6 +228,7 @@ export interface Skill {
   cost?: string;
   synergies?: string[];
   modifier?: string;
+  levelsGained?: number;
 }
 
 export interface Quest {

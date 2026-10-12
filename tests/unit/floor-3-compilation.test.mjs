@@ -188,7 +188,8 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.ok(backfireSkill);
   assert.equal(backfireSkill.name, "Backfire");
   assert.equal(backfireSkill.owner, "carl");
-  assert.equal(backfireSkill.rank, "5 levels");
+  assert.equal(backfireSkill.levelsGained, 5);
+  assert.equal(backfireSkill.rank, undefined, "Backfire levelsGained must not be represented as an inferred rank");
 
   // 5. Before Chapter 5 hobby potion skill grants
   const stateBeforeCh5Potions = projectState(compiledTimeline, cestaPuntaEvent.sequence - 1);
@@ -212,12 +213,31 @@ test("Floor 3 skill grants and crawler progression project cleanly across replay
   assert.equal(scutelliphilySkill.name, "Scutelliphily");
   assert.equal(scutelliphilySkill.owner, "donut");
 
-  // 8. Level progression at Chapter 26
+  // 8. Level progression at Chapter 26 - Chronological position verification
+  const vetoEvent = compiledTimeline.events.find((e) => e.id === "evt-f3-celestial-boxes-vetoed");
+  assert.ok(vetoEvent, "Borant veto event exists");
+  assert.ok(
+    vetoEvent.sequence < level27Event.sequence,
+    "Level 27 event must be chronologically positioned at the end of Floor 3 (after Chapter 26 veto event)"
+  );
+
   const stateBeforeLevel27 = projectState(compiledTimeline, level27Event.sequence - 1);
-  assert.notEqual(stateBeforeLevel27.crawler?.level, 27);
+  assert.notEqual(
+    stateBeforeLevel27.crawler?.level,
+    27,
+    "Before Level 27 sequence, projected level must not be 27"
+  );
 
   const stateAtLevel27 = projectState(compiledTimeline, level27Event.sequence);
-  assert.equal(stateAtLevel27.crawler?.level, 27);
+  assert.equal(stateAtLevel27.crawler?.level, 27, "At and after Level 27 sequence, projected level must be 27");
+
+  // Backward scrubbing verification across Level 27
+  const stateScrubbedBack = projectState(compiledTimeline, level27Event.sequence - 1);
+  assert.equal(
+    stateScrubbedBack.crawler?.level,
+    stateBeforeLevel27.crawler?.level,
+    "Scrubbing backward across Level 27 restores the earlier level correctly"
+  );
 });
 
 test("Floor 3 end-of-floor events follow strict sequence order for Bandit achievement and Celestial box handling", () => {

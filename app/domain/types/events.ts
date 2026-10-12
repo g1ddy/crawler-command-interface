@@ -279,6 +279,7 @@ export interface SkillGrantedEvent extends TimelineEventBase {
   cost?: string;
   synergies?: string[];
   modifier?: string;
+  levelsGained?: number;
 }
 
 export interface RaceClassSelectedEvent extends TimelineEventBase {
@@ -467,6 +468,7 @@ interface FloorEventCommon {
   cooldown?: string;
   category?: 'combat' | 'utility' | 'passive';
   modifier?: string;
+  levelsGained?: number;
   race?: string;
   class?: string;
   crawlerId?: string;

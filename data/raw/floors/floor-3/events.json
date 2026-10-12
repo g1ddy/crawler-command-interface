@@ -92,7 +92,7 @@
     "skillId": "skill-backfire",
     "name": "Backfire",
     "owner": "carl",
-    "rank": "5 levels",
+    "levelsGained": 5,
     "position": {
       "floor": 3,
       "book": 2,
@@ -359,24 +359,6 @@
       {
         "sourceId": "src-abooklovers-summary",
         "confidence": "corroborated"
-      }
-    ]
-  },
-  {
-    "id": "evt-f3-carl-level-27",
-    "type": "LevelChanged",
-    "level": 27,
-    "previousLevel": 26,
-    "position": {
-      "floor": 3,
-      "book": 2,
-      "chapter": 26
-    },
-    "summary": "Carl reaches Level 27 by the end of Floor 3.",
-    "evidence": [
-      {
-        "sourceId": "src-wiki-carl-f3",
-        "confidence": "confirmed"
       }
     ]
   },
@@ -1371,6 +1353,24 @@
       {
         "sourceId": "src-sparknotes-ch-sum",
         "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-carl-level-27",
+    "type": "LevelChanged",
+    "level": 27,
+    "previousLevel": 26,
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "Carl reaches Level 27 by the end of Floor 3.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-f3",
+        "confidence": "confirmed"
       }
     ]
   }

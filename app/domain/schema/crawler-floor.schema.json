@@ -1307,6 +1307,10 @@
             "modifier": {
               "type": "string"
             },
+            "levelsGained": {
+              "type": "integer",
+              "minimum": 1
+            },
             "position": {
               "$ref": "#/$defs/position"
             },

@@ -105,6 +105,12 @@ export function SkillsView({
                   <dd>{selectedSkill.modifier}</dd>
                 </div>
               )}
+              {typeof selectedSkill.levelsGained === "number" && (
+                <div>
+                  <dt>PROGRESSION</dt>
+                  <dd>{selectedSkill.levelsGained} levels</dd>
+                </div>
+              )}
               {selectedSkill.cost && (
                 <div>
                   <dt>RESOURCE COST</dt>
