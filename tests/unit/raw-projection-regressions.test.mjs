@@ -374,3 +374,53 @@ test("production path transitions effect authority upon explicit complete report
   const replayedPre = present(preSeq);
   assert.equal(replayedPre.effects.status, "unavailable");
 });
+
+test("authority-only event without complete effects snapshot cannot establish authority or manufacture known-empty state", () => {
+  const effectDoc = clone(rawFloor3);
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-authority-only",
+    type: "NarrativeEvent",
+    kind: "other",
+    summary: "Event claiming authority without snapshot",
+    effectStateAuthority: "established",
+  });
+
+  const timeline = compileRawFloorFiles([effectDoc]);
+  const sequence = timeline.events.find((e) => e.id === "evt-f3-authority-only").sequence;
+  const state = projectState(timeline, sequence);
+
+  assert.equal(state.effectStateAuthority, "unestablished");
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+  const presentation = deriveCrawlerPresentation(state, emptyObs);
+  assert.equal(presentation.effects.status, "unavailable");
+});
+
+test("createInitialState initialization rules for legacy snapshots and explicit metadata", () => {
+  // B1. Legacy snapshot: effects: [] without effectStateAuthority
+  const b1 = createInitialState({ effects: [] });
+  assert.equal(b1.effectStateAuthority, "unestablished");
+
+  // B2. Legacy snapshot: non-empty effects without effectStateAuthority
+  const sampleEffect = { effectId: "eff-1", name: "Haste", type: "good", icon: "⚡", durationSeconds: 10, description: "Fast" };
+  const b2 = createInitialState({ effects: [sampleEffect] });
+  assert.equal(b2.effectStateAuthority, "unestablished");
+  assert.equal(b2.effects.length, 1);
+  assert.equal(b2.effects[0].effectId, "eff-1");
+
+  // B3. Legacy snapshot: no effects array and no effectStateAuthority
+  const b3 = createInitialState({});
+  assert.equal(b3.effectStateAuthority, "unestablished");
+
+  // C1. Explicit unestablished + effects: []
+  const c1 = createInitialState({ effectStateAuthority: "unestablished", effects: [] });
+  assert.equal(c1.effectStateAuthority, "unestablished");
+
+  // C2. Explicit established + supplied effects array
+  const c2 = createInitialState({ effectStateAuthority: "established", effects: [sampleEffect] });
+  assert.equal(c2.effectStateAuthority, "established");
+  assert.equal(c2.effects.length, 1);
+
+  // C3. Explicit established without effects array
+  const c3 = createInitialState({ effectStateAuthority: "established" });
+  assert.equal(c3.effectStateAuthority, "unestablished");
+});

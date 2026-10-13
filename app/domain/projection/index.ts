@@ -174,8 +174,6 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
       statModifiers: e.statModifiers as Record<string, number> | undefined,
     }));
     state.effectStateAuthority = 'established';
-  } else if (event.effectStateAuthority === 'established') {
-    state.effectStateAuthority = 'established';
   }
 
   return state;

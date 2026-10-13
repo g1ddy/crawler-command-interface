@@ -227,8 +227,9 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
         }))
       : [],
     effectStateAuthority:
-      timelineState?.effectStateAuthority ??
-      (Array.isArray(timelineState?.effects) ? 'established' : 'unestablished'),
+      timelineState?.effectStateAuthority === 'established' && Array.isArray(timelineState?.effects)
+        ? 'established'
+        : 'unestablished',
     skills,
     spells,
     party,

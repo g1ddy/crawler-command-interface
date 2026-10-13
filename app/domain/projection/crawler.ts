@@ -141,15 +141,9 @@ export function applyEffectApplied(state: CrawlerState, event: Record<string, un
     description: String(event.description || ''),
     statModifiers: event.statModifiers as Record<string, number> | undefined,
   });
-  if (event.effectStateAuthority === 'established') {
-    state.effectStateAuthority = 'established';
-  }
 }
 
 export function applyEffectExpired(state: CrawlerState, event: Record<string, unknown>): void {
   const effectId = String(event.effectId);
   state.effects = state.effects.filter((e) => e.effectId !== effectId);
-  if (event.effectStateAuthority === 'established') {
-    state.effectStateAuthority = 'established';
-  }
 }
