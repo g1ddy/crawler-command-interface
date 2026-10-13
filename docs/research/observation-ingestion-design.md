@@ -107,7 +107,44 @@ Keep the full chain `raw observation -> research claim ID -> source ID -> locato
 
 A compiler success means mechanically mapped, not beyond review. Normal raw schema validation and human/Jules curation remain required.
 
-## 7. Runtime/replay invariants
+## 7. Compiler-generated import coverage report
+
+The importer must produce a deterministic, versioned JSON report for every run, alongside normal outputs and diagnostics. It is generated from the exact research YAML, modeling decisions, existing raw records, and compiler result; it is never manually maintained.
+
+### Required metrics
+
+- **Input claims:** total parsed YAML claims and counts by claim kind (`event`, `observation`, `state`). Report validation failures and duplicate/invalid IDs rather than silently deduplicating them.
+- **Unknowns:** total entries in claim `unknowns`, counts by claim kind, and counts still unresolved after curation. Count entries per claim, not globally unique strings. Preserve claim ID and unknown-entry reference/text so totals are auditable.
+- **Event stubs:** newly generated event scaffolds, grouped by actual event type. Count reused/matched authored events separately.
+- **Observation stubs:** newly generated observation scaffolds, grouped by actual raw observation kind. Count reused/matched authored observations separately.
+- **Manual mappings:** valid explicit CCI modeling decisions grouped by resulting event type and observation kind. Do not infer manual mapping from claim kind or output shape. A manual mapping is distinct from a generated stub.
+- **Disposition/outcome:** counts by `promote`, `review`, `ledger_only`, missing/invalid disposition, and final outcome (compiled, reused/matched, unresolved, rejected/invalid, or not applicable).
+- **Diagnostics:** counts by stable diagnostic code and item-level diagnostics linked to claim and/or raw record IDs.
+
+### Definitions and correctness
+
+A YAML claim is one claim in the parsed input. A YAML unknown is one entry in a claim's `unknowns` list; identical wording under two claims counts twice. A stub is generated authoring scaffolding, not proof of canonical or fully curated runtime data. A manual mapping is an explicit, valid CCI-aware decision that selects the existing CCI representation and supplies required payload/anchor details. Missing mappings and failures must remain visible in report totals.
+
+Keep generated stubs, reused records, review-only/ledger-only claims, unresolved claims, and invalid claims as separate categories. Do not let a failed claim disappear from the report or count a review-only claim as runtime output. Unknowns and mapping errors are different concepts: an unknown is research uncertainty; a mapping error is an import problem.
+
+### Report structure
+
+Use a versioned schema such as `crawler-import-report/v1`, with summary counts, breakdowns by claim kind and output type, unknown entries/status, stubs, manual mappings, dispositions/outcomes, diagnostics, and item-level trace records. Exact property names may follow repository conventions, but every metric above must be explicit. Item-level records should connect claim ID/kind, disposition, resulting type/kind, output ID if any, and outcome. Preserve provenance through stable claim/source/locator references.
+
+Write the report to a predictable path using existing repository output conventions. Avoid machine-specific paths and incidental timestamps so identical inputs produce identical report output.
+
+### Required tests
+
+- Input claim totals reconcile to parsed claims, including countable invalid claims.
+- Unknown totals reconcile to per-claim unknown entries and unresolved-status breakdowns.
+- Event/observation stub counts reconcile to newly generated records and group by actual output type/kind.
+- Manual-mapping counts derive from valid explicit decisions and are not conflated with stubs or reused records.
+- Review/ledger-only, reused, unresolved, and invalid claims remain distinct.
+- Diagnostic counts reconcile to diagnostic items using stable codes.
+- Identical inputs yield identical reports; failed claims remain represented.
+- Reporting does not change raw output, schema validation, provenance, or replay behavior.
+
+## 8. Runtime/replay invariants
 
 Observations stay point-in-time readings through raw loading and timeline compilation. They are not causal transitions. Projection exposes only the payload's sourced fields at/after its anchor according to current observation semantics.
 
@@ -119,7 +156,7 @@ Observations stay point-in-time readings through raw loading and timeline compil
 - Existing interpolation and countdown phase-break behavior remains governed by current contracts.
 - Missing UI widgets are not a reason to rewrite observations as events.
 
-## 8. Required implementation sequence and tests
+## 9. Required implementation sequence and tests
 
 Implement in this order:
 
@@ -145,13 +182,13 @@ Required tests:
 - Observations remain point-in-time and do not leak backward in replay.
 - Existing event, raw schema, and floor compilation regressions remain green.
 
-## 9. Scope boundaries
+## 10. Scope boundaries
 
 This design does not authorize rewriting Stage 1/Stage 2 prompts in the compiler implementation, broad Floor 1–3 re-research, a UI coverage report or new widgets, a projection/countdown redesign, a new observation model, invented values/IDs/anchors/chronology, treating generated scaffolds as authoritative, or weakening validation to hide curation gaps.
 
 After the compiler work is merged, a separate data-research/curation task should use the improved pipeline to address source-backed observation gaps (especially Floor 3) and verify the result through replay.
 
-## 10. Repository references
+## 11. Repository references
 
 - [Research-to-CCI Ingestion Workflow](./research-to-cci-workflow.md) — overall process.
 - [Raw Observation Authoring Guide](../../RAW_OBSERVATIONS.md) — raw ownership and observation semantics.
