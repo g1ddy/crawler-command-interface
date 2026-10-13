@@ -5,6 +5,7 @@ import {
   deriveHotlistPresentation,
   filterSkills,
   countCategorySkills,
+  canAssignSkillToHotlist,
 } from "../../src/features/skills/skills-presentation.ts";
 
 const mockSkills = [
@@ -38,20 +39,38 @@ const mockSkills = [
   },
 ];
 
-test("filterSkills filters skills by category correctly", () => {
-  assert.equal(filterSkills(mockSkills, "ALL SKILLS").length, 3);
-  assert.equal(filterSkills(mockSkills, "ACTIVE").length, 2);
-  assert.equal(filterSkills(mockSkills, "PASSIVE").length, 1);
-  assert.equal(filterSkills(mockSkills, "COMBAT").length, 1);
-  assert.equal(filterSkills(mockSkills, "UTILITY").length, 1);
+test("filterSkills filters skills by category correctly including unknown category", () => {
+  const skillsWithUnknownCategory = [
+    ...mockSkills,
+    {
+      skillId: "sk-4",
+      name: "Scutelliphily",
+      owner: "donut",
+    },
+  ];
+
+  assert.equal(filterSkills(skillsWithUnknownCategory, "ALL SKILLS").length, 4);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "ACTIVE").length, 2);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "PASSIVE").length, 1);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "COMBAT").length, 1);
+  assert.equal(filterSkills(skillsWithUnknownCategory, "UTILITY").length, 1);
 });
 
-test("countCategorySkills returns accurate skill counts", () => {
-  assert.equal(countCategorySkills(mockSkills, "ALL SKILLS"), 3);
-  assert.equal(countCategorySkills(mockSkills, "ACTIVE"), 2);
-  assert.equal(countCategorySkills(mockSkills, "PASSIVE"), 1);
-  assert.equal(countCategorySkills(mockSkills, "COMBAT"), 1);
-  assert.equal(countCategorySkills(mockSkills, "UTILITY"), 1);
+test("countCategorySkills returns accurate skill counts with unknown category skills", () => {
+  const skillsWithUnknownCategory = [
+    ...mockSkills,
+    {
+      skillId: "sk-4",
+      name: "Scutelliphily",
+      owner: "donut",
+    },
+  ];
+
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "ALL SKILLS"), 4);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "ACTIVE"), 2);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "PASSIVE"), 1);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "COMBAT"), 1);
+  assert.equal(countCategorySkills(skillsWithUnknownCategory, "UTILITY"), 1);
 });
 
 test("deriveHotlistPresentation maps hotlist slots to skills", () => {
@@ -67,14 +86,30 @@ test("deriveHotlistPresentation maps hotlist slots to skills", () => {
   assert.equal(slots[2].skill?.name, "Tough Skin");
 });
 
-test("deriveSkillsPresentation compiles full presentation state", () => {
-  const hotlist = ["sk-2"];
-  const presentation = deriveSkillsPresentation(mockSkills, hotlist, "ACTIVE", "sk-2");
+test("deriveSkillsPresentation compiles full presentation state and exposes skill ownership without fabrication", () => {
+  const skillsWithOwnership = [
+    {
+      skillId: "sk-carl-1",
+      name: "Cesta Punta",
+      owner: "carl",
+    },
+    {
+      skillId: "sk-donut-1",
+      name: "Scutelliphily",
+      owner: "donut",
+    },
+    {
+      skillId: "sk-unknown-owner",
+      name: "Generic Utility",
+    },
+  ];
+
+  const presentation = deriveSkillsPresentation(skillsWithOwnership, [], "ALL SKILLS", "sk-carl-1");
 
   assert.equal(presentation.skills.length, 3);
-  assert.equal(presentation.filteredSkills.length, 2);
-  assert.equal(presentation.selectedSkill?.skillId, "sk-2");
-  assert.equal(presentation.hotlistSlots[0].skill?.skillId, "sk-2");
+  assert.equal(presentation.skills[0].owner, "carl");
+  assert.equal(presentation.skills[1].owner, "donut");
+  assert.equal(presentation.skills[2].owner, undefined);
 });
 
 test("isLive mutation gating disables hotlist assignment during replay", () => {
@@ -104,4 +139,12 @@ test("isLive mutation gating disables hotlist assignment during replay", () => {
   const replayResult = handleAssignHotlist(false, selectedSkill, 0);
   assert.equal(replayResult, false);
   assert.equal(assignedSlot, null);
+});
+
+
+test("hotlist assignment permits Carl and legacy skills but rejects Donut-owned skills", () => {
+  assert.equal(canAssignSkillToHotlist({ skillId: "carl-skill", name: "Cesta Punta", owner: "carl" }), true);
+  assert.equal(canAssignSkillToHotlist({ skillId: "legacy-skill", name: "Existing Skill" }), true);
+  assert.equal(canAssignSkillToHotlist({ skillId: "donut-skill", name: "Scutelliphily", owner: "donut" }), false);
+  assert.equal(canAssignSkillToHotlist(undefined), false);
 });

@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { test } from "node:test";
 import { compiledTimeline } from "../../app/domain/fixtures/compiled-timeline.ts";
 import { CrawlerSessionController } from "../../src/application/crawler-session-controller.ts";
+import { executeCrawlerCommand } from "../../src/application/crawler-actions.ts";
 
 test("CrawlerSessionController manages state and commands cleanly", () => {
   const controller = new CrawlerSessionController({
@@ -125,4 +126,26 @@ test("presentation choice and local UI state are decoupled from persistence and 
   const jsonDocument = JSON.stringify(compiledTimeline);
   assert.strictEqual(jsonDocument.includes("presentationChoice"), false);
   assert.strictEqual(jsonDocument.includes("hudPresentation"), false);
+});
+
+
+test("hotlist command rejects Donut-owned skills while preserving Carl skill assignment", () => {
+  const donutResult = executeCrawlerCommand(
+    compiledTimeline,
+    { type: "assign-hotlist-slot", slot: 0, skillId: "skill-scutelliphily" },
+    () => "evt-test-donut-hotlist",
+  );
+  assert.equal(donutResult.ok, false);
+  if (!donutResult.ok) assert.match(donutResult.error, /Donut-owned skills/);
+
+  const carlResult = executeCrawlerCommand(
+    compiledTimeline,
+    { type: "assign-hotlist-slot", slot: 0, skillId: "skill-cesta-punta" },
+    () => "evt-test-carl-hotlist",
+  );
+  assert.equal(carlResult.ok, true);
+  if (carlResult.ok) {
+    assert.equal(carlResult.event.type, "HotlistUpdated");
+    assert.equal(carlResult.event.skillId, "skill-cesta-punta");
+  }
 });

@@ -387,14 +387,32 @@
       "order": 2
     },
     {
+      "id": "evt-f3-carl-race-class-selected",
+      "type": "RaceClassSelected",
+      "crawlerId": "carl",
+      "race": "Primal",
+      "class": "Compensated Anarchist",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 1
+      },
+      "summary": "Carl selects Primal race and Compensated Anarchist class at the selection terminal.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-f3",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 3
+    },
+    {
       "id": "evt-f3-skill-find-trap-granted",
       "type": "SkillGranted",
       "skillId": "skill-find-trap",
       "name": "Find Trap",
-      "rank": "RANK 5",
-      "icon": "👁️",
-      "description": "Granted by Compensated Anarchist class selection (+5 to Find Trap). Improves trap detection capability.",
-      "category": "utility",
+      "owner": "carl",
+      "modifier": "+5",
       "position": {
         "floor": 3,
         "book": 2,
@@ -404,20 +422,18 @@
       "evidence": [
         {
           "sourceId": "src-wiki-find-trap-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 3
+      "order": 4
     },
     {
       "id": "evt-f3-skill-backfire-granted",
       "type": "SkillGranted",
       "skillId": "skill-backfire",
       "name": "Backfire",
-      "rank": "RANK 5",
-      "icon": "💥",
-      "description": "Granted by Compensated Anarchist class selection (5 levels of Backfire). Allows picking up, disassembling, and reusing trap components.",
-      "category": "utility",
+      "owner": "carl",
+      "levelsGained": 5,
       "position": {
         "floor": 3,
         "book": 2,
@@ -427,10 +443,10 @@
       "evidence": [
         {
           "sourceId": "src-wiki-backfire-skill",
-          "confidence": "confirmed"
+          "confidence": "corroborated"
         }
       ],
-      "order": 4
+      "order": 5
     },
     {
       "id": "evt-f3-manager-benefit-activated",
@@ -448,7 +464,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 5
+      "order": 6
     },
     {
       "id": "evt-f3-over-city-entered",
@@ -469,7 +485,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 6
+      "order": 7
     },
     {
       "id": "evt-f3-starter-village-departed",
@@ -490,7 +506,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 7
+      "order": 8
     },
     {
       "id": "evt-f3-show-must-go-on-triggered",
@@ -514,7 +530,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 8
+      "order": 9
     },
     {
       "id": "evt-f3-big-top-ticket-acquired",
@@ -542,7 +558,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 9
+      "order": 10
     },
     {
       "id": "evt-f3-mongo-consumes-terror-clown",
@@ -560,7 +576,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 10
+      "order": 11
     },
     {
       "id": "evt-f3-belly-rubbed-pug-reached",
@@ -581,7 +597,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 11
+      "order": 12
     },
     {
       "id": "evt-f3-mordecai-incapacitated-safe-room",
@@ -599,7 +615,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 12
+      "order": 13
     },
     {
       "id": "evt-f3-earth-hobby-potion-carl-consumed",
@@ -617,7 +633,27 @@
         }
       ],
       "kind": "other",
-      "order": 13
+      "order": 14
+    },
+    {
+      "id": "evt-f3-skill-cesta-punta-granted",
+      "type": "SkillGranted",
+      "skillId": "skill-cesta-punta",
+      "name": "Cesta Punta",
+      "owner": "carl",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 5
+      },
+      "summary": "Carl acquires the Cesta Punta skill from consuming an Earth Hobby Potion.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 15
     },
     {
       "id": "evt-f3-earth-hobby-potion-donut-consumed",
@@ -635,7 +671,27 @@
         }
       ],
       "kind": "other",
-      "order": 14
+      "order": 16
+    },
+    {
+      "id": "evt-f3-skill-scutelliphily-granted",
+      "type": "SkillGranted",
+      "skillId": "skill-scutelliphily",
+      "name": "Scutelliphily",
+      "owner": "donut",
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 5
+      },
+      "summary": "Princess Donut acquires the Scutelliphily skill from consuming an Earth Hobby Potion.",
+      "evidence": [
+        {
+          "sourceId": "src-abooklovers-summary",
+          "confidence": "corroborated"
+        }
+      ],
+      "order": 17
     },
     {
       "id": "evt-f3-louis-lamour-paperbacks-acquired",
@@ -659,7 +715,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 15
+      "order": 18
     },
     {
       "id": "evt-f3-home-depot-cactus-acquired",
@@ -684,7 +740,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 16
+      "order": 19
     },
     {
       "id": "evt-f3-cat-tree-acquired",
@@ -709,7 +765,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 17
+      "order": 20
     },
     {
       "id": "evt-f3-scented-candle-acquired",
@@ -734,7 +790,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 18
+      "order": 21
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-granted",
@@ -761,7 +817,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 19
+      "order": 22
     },
     {
       "id": "evt-f3-clockwork-triplicate-spell-used",
@@ -779,7 +835,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 20
+      "order": 23
     },
     {
       "id": "evt-f3-enchanted-anklet-acquired",
@@ -804,7 +860,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 21
+      "order": 24
     },
     {
       "id": "evt-f3-big-top-tickets-looted",
@@ -831,7 +887,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 22
+      "order": 25
     },
     {
       "id": "evt-f3-parasite-ice-cream-consumed",
@@ -849,7 +905,7 @@
         }
       ],
       "kind": "other",
-      "order": 23
+      "order": 26
     },
     {
       "id": "evt-f3-parasite-telepathic-link-established",
@@ -867,7 +923,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 24
+      "order": 27
     },
     {
       "id": "evt-f3-lottery-ticket-custard-consumed",
@@ -885,7 +941,7 @@
         }
       ],
       "kind": "other",
-      "order": 25
+      "order": 28
     },
     {
       "id": "evt-f3-heather-custard-healed",
@@ -907,7 +963,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 26
+      "order": 29
     },
     {
       "id": "evt-f3-wisp-armor-spell-granted",
@@ -934,7 +990,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 27
+      "order": 30
     },
     {
       "id": "evt-f3-show-must-go-on-completed",
@@ -962,7 +1018,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 28
+      "order": 31
     },
     {
       "id": "evt-f3-acute-ears-potion-acquired",
@@ -987,7 +1043,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 29
+      "order": 32
     },
     {
       "id": "evt-f3-fang-caps-acquired",
@@ -1012,7 +1068,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 30
+      "order": 33
     },
     {
       "id": "evt-f3-fang-caps-equipped",
@@ -1030,7 +1086,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 31
+      "order": 34
     },
     {
       "id": "evt-f3-scroll-of-upgrade-acquired",
@@ -1055,7 +1111,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 32
+      "order": 35
     },
     {
       "id": "evt-f3-casino-chip-acquired",
@@ -1080,7 +1136,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 33
+      "order": 36
     },
     {
       "id": "evt-f3-scroll-of-upgrade-applied",
@@ -1099,7 +1155,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 34
+      "order": 37
     },
     {
       "id": "evt-f3-medium-skyfowl-settlement-reached",
@@ -1120,7 +1176,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 35
+      "order": 38
     },
     {
       "id": "evt-f3-magical-pet-carrier-acquired",
@@ -1148,7 +1204,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 36
+      "order": 39
     },
     {
       "id": "evt-f3-desperado-club-reached",
@@ -1169,7 +1225,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 37
+      "order": 40
     },
     {
       "id": "evt-f3-sex-workers-quest-triggered",
@@ -1193,7 +1249,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 38
+      "order": 41
     },
     {
       "id": "evt-f3-achievement-one-quadrillion-views",
@@ -1216,7 +1272,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 39
+      "order": 42
     },
     {
       "id": "evt-f3-fan-box-carl-awarded",
@@ -1241,7 +1297,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 40
+      "order": 43
     },
     {
       "id": "evt-f3-fan-box-donut-awarded",
@@ -1266,7 +1322,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 41
+      "order": 44
     },
     {
       "id": "evt-f3-fan-box-carl-unlocked",
@@ -1284,7 +1340,7 @@
         }
       ],
       "kind": "other",
-      "order": 42
+      "order": 45
     },
     {
       "id": "evt-f3-fan-box-donut-unlocked",
@@ -1302,7 +1358,7 @@
         }
       ],
       "kind": "other",
-      "order": 43
+      "order": 46
     },
     {
       "id": "evt-f3-picture-of-beatrice-acquired",
@@ -1327,7 +1383,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 44
+      "order": 47
     },
     {
       "id": "evt-f3-xistera-acquired",
@@ -1352,7 +1408,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 45
+      "order": 48
     },
     {
       "id": "evt-f3-katia-joined",
@@ -1373,7 +1429,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 46
+      "order": 49
     },
     {
       "id": "evt-f3-magistrate-office-destroyed",
@@ -1394,7 +1450,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 47
+      "order": 50
     },
     {
       "id": "evt-f3-achievement-ultimate-extreme-power",
@@ -1420,7 +1476,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 48
+      "order": 51
     },
     {
       "id": "evt-f3-fools-who-broke-the-glass",
@@ -1444,7 +1500,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 49
+      "order": 52
     },
     {
       "id": "evt-f3-sepsis-crown-unequipped",
@@ -1462,7 +1518,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 50
+      "order": 53
     },
     {
       "id": "evt-f3-doomsday-scenario-created",
@@ -1494,7 +1550,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 51
+      "order": 54
     },
     {
       "id": "evt-f3-wild-magic-potions-autodrunk",
@@ -1512,7 +1568,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 52
+      "order": 55
     },
     {
       "id": "evt-f3-remote-detonator-transferred-katia",
@@ -1530,7 +1586,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 53
+      "order": 56
     },
     {
       "id": "evt-f3-floor-4-transition",
@@ -1551,7 +1607,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 54
+      "order": 57
     },
     {
       "id": "evt-f3-odette-epilogue",
@@ -1572,7 +1628,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 55
+      "order": 58
     },
     {
       "id": "evt-f3-achievement-bandit",
@@ -1598,7 +1654,7 @@
         "kind": "achievement",
         "severity": "success"
       },
-      "order": 56
+      "order": 59
     },
     {
       "id": "evt-f3-quest-boxes-upgraded-celestial",
@@ -1620,7 +1676,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 57
+      "order": 60
     },
     {
       "id": "evt-f3-celestial-box-carl-acquired",
@@ -1645,7 +1701,7 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 58
+      "order": 61
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-acquired",
@@ -1663,7 +1719,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 59
+      "order": 62
     },
     {
       "id": "evt-f3-celestial-box-quan-ch-opened",
@@ -1681,7 +1737,7 @@
           "confidence": "confirmed"
         }
       ],
-      "order": 60
+      "order": 63
     },
     {
       "id": "evt-f3-celestial-boxes-vetoed",
@@ -1699,7 +1755,25 @@
           "confidence": "corroborated"
         }
       ],
-      "order": 61
+      "order": 64
+    },
+    {
+      "id": "evt-f3-carl-level-27",
+      "type": "LevelChanged",
+      "level": 27,
+      "position": {
+        "floor": 3,
+        "book": 2,
+        "chapter": 26
+      },
+      "summary": "Carl reaches Level 27 by the end of Floor 3.",
+      "evidence": [
+        {
+          "sourceId": "src-wiki-carl-f3",
+          "confidence": "confirmed"
+        }
+      ],
+      "order": 65
     }
   ]
 }

@@ -49,7 +49,7 @@
   },
   "app/domain/types/events.ts": {
     "complexity": 1,
-    "loc": 532,
+    "loc": 564,
     "instability": 0.67,
     "fanIn": 2,
     "fanOut": 4,
@@ -73,7 +73,7 @@
   },
   "app/domain/types/state.ts": {
     "complexity": 1,
-    "loc": 308,
+    "loc": 311,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
@@ -129,7 +129,7 @@
   },
   "app/domain/projection/index.ts": {
     "complexity": 15,
-    "loc": 231,
+    "loc": 233,
     "instability": 0.92,
     "fanIn": 1,
     "fanOut": 12,
@@ -169,7 +169,7 @@
   },
   "app/domain/projection/crawler.ts": {
     "complexity": 22,
-    "loc": 150,
+    "loc": 159,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -184,8 +184,8 @@
     "scanned": true
   },
   "app/domain/projection/magic.ts": {
-    "complexity": 10,
-    "loc": 36,
+    "complexity": 13,
+    "loc": 40,
     "instability": 0.5,
     "fanIn": 1,
     "fanOut": 1,
@@ -784,16 +784,16 @@
     "scanned": true
   },
   "src/features/skills/SkillsView.tsx": {
-    "complexity": 4,
-    "loc": 127,
+    "complexity": 12,
+    "loc": 150,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
     "scanned": true
   },
   "src/features/skills/skills-presentation.ts": {
-    "complexity": 4,
-    "loc": 83,
+    "complexity": 5,
+    "loc": 88,
     "instability": 0.33,
     "fanIn": 2,
     "fanOut": 1,
@@ -992,8 +992,8 @@
     "scanned": true
   },
   "src/application/crawler-actions.ts": {
-    "complexity": 50,
-    "loc": 128,
+    "complexity": 51,
+    "loc": 129,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,

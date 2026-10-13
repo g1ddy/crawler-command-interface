@@ -18,6 +18,7 @@ import {
   applyEffectApplied,
   applyEffectExpired,
   applyLevelChanged,
+  applyRaceClassSelected,
   applyXPChanged,
 } from './crawler.ts';
 import {
@@ -84,6 +85,7 @@ const eventReducers: Record<ProjectedEventType, EventReducer> = {
   PermanentEntitlementGranted: (state, event) => applyPermanentEntitlementGranted(state, event),
   AttributeModified: (state, event, sequence) => applyAttributeModified(state, event, sequence),
   LevelChanged: (state, event, sequence) => applyLevelChanged(state, event, sequence),
+  RaceClassSelected: (state, event) => applyRaceClassSelected(state, event),
   XPChanged: (state, event, sequence) => applyXPChanged(state, event, sequence),
   HotlistUpdated: (state, event) => applyHotlistUpdated(state, event),
   EffectApplied: (state, event, sequence) => applyEffectApplied(state, event, sequence),

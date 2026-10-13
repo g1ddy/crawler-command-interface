@@ -1970,6 +1970,7 @@
                     "EffectApplied",
                     "EffectExpired",
                     "SkillGranted",
+                    "RaceClassSelected",
                     "QuestUpdated",
                     "BroadcastUpdated",
                     "ConditionChanged",
@@ -2021,6 +2022,12 @@
                 "name": {
                   "type": "string"
                 },
+                "owner": {
+                  "enum": [
+                    "carl",
+                    "donut"
+                  ]
+                },
                 "icon": {
                   "type": "string"
                 },
@@ -2039,6 +2046,22 @@
                     "utility",
                     "passive"
                   ]
+                },
+                "modifier": {
+                  "type": "string"
+                },
+                "levelsGained": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "crawlerId": {
+                  "$ref": "#/$defs/id"
+                },
+                "race": {
+                  "type": "string"
+                },
+                "class": {
+                  "type": "string"
                 },
                 "effectId": {
                   "$ref": "#/$defs/id"

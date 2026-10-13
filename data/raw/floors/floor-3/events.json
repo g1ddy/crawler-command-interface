@@ -48,14 +48,31 @@
     ]
   },
   {
+    "id": "evt-f3-carl-race-class-selected",
+    "type": "RaceClassSelected",
+    "crawlerId": "carl",
+    "race": "Primal",
+    "class": "Compensated Anarchist",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 1
+    },
+    "summary": "Carl selects Primal race and Compensated Anarchist class at the selection terminal.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-f3",
+        "confidence": "confirmed"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-skill-find-trap-granted",
     "type": "SkillGranted",
     "skillId": "skill-find-trap",
     "name": "Find Trap",
-    "rank": "RANK 5",
-    "icon": "👁️",
-    "description": "Granted by Compensated Anarchist class selection (+5 to Find Trap). Improves trap detection capability.",
-    "category": "utility",
+    "owner": "carl",
+    "modifier": "+5",
     "position": {
       "floor": 3,
       "book": 2,
@@ -65,7 +82,7 @@
     "evidence": [
       {
         "sourceId": "src-wiki-find-trap-skill",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
     ]
   },
@@ -74,10 +91,8 @@
     "type": "SkillGranted",
     "skillId": "skill-backfire",
     "name": "Backfire",
-    "rank": "RANK 5",
-    "icon": "💥",
-    "description": "Granted by Compensated Anarchist class selection (5 levels of Backfire). Allows picking up, disassembling, and reusing trap components.",
-    "category": "utility",
+    "owner": "carl",
+    "levelsGained": 5,
     "position": {
       "floor": 3,
       "book": 2,
@@ -87,7 +102,7 @@
     "evidence": [
       {
         "sourceId": "src-wiki-backfire-skill",
-        "confidence": "confirmed"
+        "confidence": "corroborated"
       }
     ]
   },
@@ -270,6 +285,25 @@
     "kind": "other"
   },
   {
+    "id": "evt-f3-skill-cesta-punta-granted",
+    "type": "SkillGranted",
+    "skillId": "skill-cesta-punta",
+    "name": "Cesta Punta",
+    "owner": "carl",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "Carl acquires the Cesta Punta skill from consuming an Earth Hobby Potion.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
+  },
+  {
     "id": "evt-f3-earth-hobby-potion-donut-consumed",
     "type": "NarrativeEvent",
     "position": {
@@ -285,6 +319,25 @@
       }
     ],
     "kind": "other"
+  },
+  {
+    "id": "evt-f3-skill-scutelliphily-granted",
+    "type": "SkillGranted",
+    "skillId": "skill-scutelliphily",
+    "name": "Scutelliphily",
+    "owner": "donut",
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 5
+    },
+    "summary": "Princess Donut acquires the Scutelliphily skill from consuming an Earth Hobby Potion.",
+    "evidence": [
+      {
+        "sourceId": "src-abooklovers-summary",
+        "confidence": "corroborated"
+      }
+    ]
   },
   {
     "id": "evt-f3-louis-lamour-paperbacks-acquired",
@@ -1300,6 +1353,23 @@
       {
         "sourceId": "src-sparknotes-ch-sum",
         "confidence": "corroborated"
+      }
+    ]
+  },
+  {
+    "id": "evt-f3-carl-level-27",
+    "type": "LevelChanged",
+    "level": 27,
+    "position": {
+      "floor": 3,
+      "book": 2,
+      "chapter": 26
+    },
+    "summary": "Carl reaches Level 27 by the end of Floor 3.",
+    "evidence": [
+      {
+        "sourceId": "src-wiki-carl-f3",
+        "confidence": "confirmed"
       }
     ]
   }

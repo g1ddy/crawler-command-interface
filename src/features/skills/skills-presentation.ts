@@ -26,6 +26,7 @@ export const SKILLS_CATEGORY_FILTERS = ["ALL SKILLS", "ACTIVE", "PASSIVE", "COMB
 export function filterSkills(skills: Skill[], filter: string): Skill[] {
   return skills.filter((s) => {
     if (filter === "ALL SKILLS") return true;
+    if (!s.category) return false;
     if (filter === "ACTIVE") return s.category !== "passive";
     if (filter === "PASSIVE") return s.category === "passive";
     return s.category.toUpperCase() === filter;
@@ -34,9 +35,13 @@ export function filterSkills(skills: Skill[], filter: string): Skill[] {
 
 export function countCategorySkills(skills: Skill[], filter: string): number {
   if (filter === "ALL SKILLS") return skills.length;
-  if (filter === "ACTIVE") return skills.filter((s) => s.category !== "passive").length;
+  if (filter === "ACTIVE") return skills.filter((s) => s.category && s.category !== "passive").length;
   if (filter === "PASSIVE") return skills.filter((s) => s.category === "passive").length;
-  return skills.filter((s) => s.category.toUpperCase() === filter).length;
+  return skills.filter((s) => s.category && s.category.toUpperCase() === filter).length;
+}
+
+export function canAssignSkillToHotlist(skill: Skill | undefined): boolean {
+  return skill !== undefined && skill.owner !== "donut";
 }
 
 export function deriveHotlistPresentation(hotlist: string[], skills: Skill[]): HotlistSlotPresentation[] {

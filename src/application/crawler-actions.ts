@@ -86,6 +86,7 @@ export function executeCrawlerCommand(
       if (!Number.isInteger(command.slot) || command.slot < 0 || command.slot >= 10) return failure("Hotlist slot must be between 0 and 9.");
       const skill = liveState.skills.find((candidate) => candidate.skillId === command.skillId);
       if (!skill) return failure("Skill is not available at the live endpoint.");
+      if (skill.owner === "donut") return failure("Donut-owned skills cannot be assigned to Carl’s hotlist.");
       fields = { type: "HotlistUpdated", index: command.slot, skillId: skill.skillId, summary: `Assigned ${skill.name} to hotlist slot #${command.slot + 1}` };
       break;
     }
