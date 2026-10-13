@@ -305,6 +305,7 @@ test("production path transitions effect authority upon explicit complete report
     kind: "other",
     summary: "Explicit scan reports no active status effects",
     effects: [],
+    effectStateAuthority: "established",
   });
   appendRawEvent(effectDoc, { id: "evt-f3-test-omitted-1", type: "NarrativeEvent", kind: "other", summary: "Event after empty report" });
   appendRawEvent(effectDoc, {
@@ -373,6 +374,89 @@ test("production path transitions effect authority upon explicit complete report
   // 7. Replaying backward to pre-report position -> status: "unavailable" (no future leakage)
   const replayedPre = present(preSeq);
   assert.equal(replayedPre.effects.status, "unavailable");
+});
+
+test("production path dual-condition complete snapshot contract and authority preservation", () => {
+  const effectDoc = clone(rawFloor3);
+
+  // 1. Pre-report event: unestablished state
+  appendRawEvent(effectDoc, { id: "evt-f3-dual-1", type: "NarrativeEvent", kind: "other", summary: "Initial event" });
+
+  // 2. Partial effects array without effectStateAuthority: 'established' -> rejected as snapshot
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-dual-partial-effects",
+    type: "NarrativeEvent",
+    kind: "other",
+    summary: "Partial effects observation without authority marker",
+    effects: [{ effectId: "eff-f3-partial", name: "Partial", type: "other", icon: "✦", durationSeconds: 10, description: "Not complete" }],
+  });
+
+  // 3. Authority-only marker without effects array -> rejected as snapshot
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-dual-authority-only",
+    type: "NarrativeEvent",
+    kind: "other",
+    summary: "Authority flag without effects snapshot",
+    effectStateAuthority: "established",
+  });
+
+  // 4. Non-empty complete snapshot (effects array + effectStateAuthority: 'established') -> establishes authority
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-dual-full-snapshot",
+    type: "NarrativeEvent",
+    kind: "other",
+    summary: "Complete authoritative active-effects scan",
+    effects: [{ effectId: "eff-f3-blessing", name: "Blessing", type: "good", icon: "✨", durationSeconds: 120, description: "Full scan" }],
+    effectStateAuthority: "established",
+  });
+
+  // 5. Unrelated event omitting effect payload -> preserves established state and authority
+  appendRawEvent(effectDoc, { id: "evt-f3-dual-unrelated", type: "NarrativeEvent", kind: "other", summary: "Unrelated story event" });
+
+  // 6. Explicit known-empty complete snapshot (effects: [] + effectStateAuthority: 'established')
+  appendRawEvent(effectDoc, {
+    id: "evt-f3-dual-known-empty",
+    type: "NarrativeEvent",
+    kind: "other",
+    summary: "Complete scan showing no active effects",
+    effects: [],
+    effectStateAuthority: "established",
+  });
+
+  const timeline = compileRawFloorFiles([effectDoc]);
+  const sequenceOf = (id) => timeline.events.find((e) => e.id === id).sequence;
+  const emptyObs = { xpProgress: {}, attributes: {}, condition: {} };
+  const presentAt = (id) => deriveCrawlerPresentation(projectState(timeline, sequenceOf(id)), emptyObs);
+
+  // 1. Initial event -> status: "unavailable"
+  assert.equal(presentAt("evt-f3-dual-1").effects.status, "unavailable");
+
+  // 2. Partial effects without authority -> rejected as snapshot (preserves unestablished authority)
+  const partial = presentAt("evt-f3-dual-partial-effects");
+  assert.equal(partial.effects.status, "unavailable");
+
+  // 3. Authority-only marker without effects array -> rejected as snapshot
+  const authOnly = presentAt("evt-f3-dual-authority-only");
+  assert.equal(authOnly.effects.status, "unavailable");
+
+  // 4. Complete non-empty snapshot -> establishes authority
+  const full = presentAt("evt-f3-dual-full-snapshot");
+  assert.equal(full.effects.status, "established");
+  assert.equal(full.effects.beneficial.length, 1);
+  assert.equal(full.effects.beneficial[0].effectId, "eff-f3-blessing");
+
+  // 5. Unrelated event -> carries established state forward
+  const unrelated = presentAt("evt-f3-dual-unrelated");
+  assert.equal(unrelated.effects.status, "established");
+  assert.equal(unrelated.effects.beneficial.length, 1);
+
+  // 6. Complete known-empty snapshot -> status: "known-empty"
+  const emptySnap = presentAt("evt-f3-dual-known-empty");
+  assert.equal(emptySnap.effects.status, "known-empty");
+  assert.equal(emptySnap.effects.beneficial.length, 0);
+
+  // Replay check: earlier sequence remains unavailable
+  assert.equal(presentAt("evt-f3-dual-1").effects.status, "unavailable");
 });
 
 test("authority-only event without complete effects snapshot cannot establish authority or manufacture known-empty state", () => {

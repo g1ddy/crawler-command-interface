@@ -162,7 +162,7 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     reducer(state, event, sequence);
   }
 
-  if (Array.isArray(event.effects)) {
+  if (Array.isArray(event.effects) && event.effectStateAuthority === 'established') {
     state.effects = event.effects.map((e: Record<string, unknown>) => ({
       effectId: String(e.effectId),
       name: String(e.name || ''),
