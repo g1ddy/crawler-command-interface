@@ -182,6 +182,16 @@ crawler Party members unless the source explicitly establishes a crawler roster
 membership. Do not infer levels, health, equipment, class, readiness, combat
 role, or later join/leave events from a formation payload.
 
+### Effect observations and state authority
+
+Active status effects and conditions are projected at runtime from source-backed events and snapshots:
+
+- **Complete active-effect snapshot:** Requires **both** an `effects` array representing the complete active-effect list at that point in the timeline AND `effectStateAuthority: "established"`.
+- **Known-empty state:** Represented by an explicit complete snapshot containing `effects: []` and `effectStateAuthority: "established"`.
+- **Individual effect transitions:** `EffectApplied` and `EffectExpired` update individual active effects in the projected list, but do not by themselves establish full-list authority or prove that no other active effects exist.
+- **Authority-only or snapshot-only fields:** An event containing `effectStateAuthority: "established"` without an `effects` array is not a complete snapshot and does not establish or clear effect state. An `effects` array without `effectStateAuthority: "established"` is not treated as a complete snapshot.
+- **State persistence:** Once effect authority is established, subsequent timeline events that omit effect information preserve both the active effect list and established authority.
+
 ## Countdown observations
 
 Countdowns have stable IDs. Every lifecycle event must identify the countdown it affects.

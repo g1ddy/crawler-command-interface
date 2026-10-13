@@ -214,8 +214,22 @@ export function createInitialState(timelineState?: TimelineState): CrawlerState 
       FEET: null,
       SPECIAL: null,
     },
-    effects: [],
-    effectStateAuthority: 'unestablished',
+    effects: Array.isArray(timelineState?.effects)
+      ? timelineState.effects.map((e) => ({
+          effectId: String(e.effectId),
+          name: String(e.name || ''),
+          type: (e.type as 'good' | 'bad' | 'injury' | 'other') || 'other',
+          icon: String(e.icon || '✦'),
+          durationSeconds: Number(e.durationSeconds || 0),
+          appliedAtSequence: Number(e.appliedAtSequence ?? 0),
+          description: String(e.description || ''),
+          statModifiers: e.statModifiers ? { ...e.statModifiers } : undefined,
+        }))
+      : [],
+    effectStateAuthority:
+      timelineState?.effectStateAuthority === 'established' && Array.isArray(timelineState?.effects)
+        ? 'established'
+        : 'unestablished',
     skills,
     spells,
     party,

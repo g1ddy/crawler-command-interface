@@ -49,10 +49,10 @@
   },
   "app/domain/types/events.ts": {
     "complexity": 1,
-    "loc": 564,
-    "instability": 0.67,
+    "loc": 568,
+    "instability": 0.71,
     "fanIn": 2,
-    "fanOut": 4,
+    "fanOut": 5,
     "scanned": true
   },
   "app/domain/types/observations.ts": {
@@ -63,20 +63,20 @@
     "fanOut": 1,
     "scanned": true
   },
+  "app/domain/types/state.ts": {
+    "complexity": 1,
+    "loc": 313,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
+    "scanned": true
+  },
   "app/domain/types/research.ts": {
     "complexity": 1,
     "loc": 108,
     "instability": 0,
     "fanIn": 4,
     "fanOut": 0,
-    "scanned": true
-  },
-  "app/domain/types/state.ts": {
-    "complexity": 1,
-    "loc": 311,
-    "instability": 0.8,
-    "fanIn": 1,
-    "fanOut": 4,
     "scanned": true
   },
   "app/domain/validation.ts": {
@@ -129,7 +129,7 @@
   },
   "app/domain/projection/index.ts": {
     "complexity": 15,
-    "loc": 233,
+    "loc": 247,
     "instability": 0.92,
     "fanIn": 1,
     "fanOut": 12,
@@ -152,8 +152,8 @@
     "scanned": true
   },
   "app/domain/projection/helpers.ts": {
-    "complexity": 54,
-    "loc": 231,
+    "complexity": 60,
+    "loc": 245,
     "instability": 0.4,
     "fanIn": 3,
     "fanOut": 2,

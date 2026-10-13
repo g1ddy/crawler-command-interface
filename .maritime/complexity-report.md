@@ -1,6 +1,6 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-10-12
+**Last Updated:** 2026-10-13
 
 ### 🏥 Repository Health Score: **43.0 / 100**
 
@@ -16,9 +16,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `app/domain/countdowns.ts` | **229.2** | 399 | 92 | 1 | 0.17 |
 | `app/domain/validation.ts` | **227.2** | 483 | 74 | 9 | 0.64 |
+| `app/domain/projection/helpers.ts` | **156.5** | 245 | 60 | 2 | 0.4 |
 | `src/features/inventory/ItemInspector.tsx` | **148.1** | 246 | 46 | 7 | 0.88 |
 | `src/features/inventory/equipment/EquipmentView.tsx` | **143.5** | 360 | 38 | 7 | 0.88 |
-| `app/domain/projection/helpers.ts` | **143.1** | 231 | 54 | 2 | 0.4 |
 | `src/application/crawler-actions.ts` | **138.9** | 129 | 51 | 4 | 0.8 |
 | `src/shell/adapters/CrawlerWorkspace.tsx` | **135.5** | 424 | 15 | 22 | 0.96 |
 | `src/presentation/authority-arwes/ArwesAuthorityComposition.ts` | **133.5** | 595 | 19 | 9 | 0.9 |
@@ -30,7 +30,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- |
 | `app/domain/countdowns.ts` | **92** | 399 |
 | `app/domain/validation.ts` | **74** | 483 |
-| `app/domain/projection/helpers.ts` | **54** | 231 |
+| `app/domain/projection/helpers.ts` | **60** | 245 |
 | `src/application/crawler-actions.ts` | **51** | 129 |
 | `src/features/inventory/ItemInspector.tsx` | **46** | 246 |
 | `src/features/crawler/crawler-presentation.ts` | **43** | 240 |

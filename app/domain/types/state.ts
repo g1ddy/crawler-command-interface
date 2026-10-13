@@ -98,6 +98,8 @@ export interface TimelineState {
   pets?: Pet[];
   quests?: Record<string, unknown>[];
   entitlements?: TimelineEntitlement[];
+  effects?: ActiveEffect[];
+  effectStateAuthority?: 'unestablished' | 'established';
   hotlist?: string[];
   broadcast?: {
     viewers?: number;

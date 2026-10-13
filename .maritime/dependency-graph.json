@@ -442,6 +442,40 @@
           "resolved": "app/domain/types/observations.ts",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": true,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./state.ts",
+          "resolved": "app/domain/types/state.ts",
+          "valid": true,
+          "cycle": [
+            {
+              "name": "app/domain/types/state.ts",
+              "dependencyTypes": [
+                "local",
+                "type-import"
+              ]
+            },
+            {
+              "name": "app/domain/types/events.ts",
+              "dependencyTypes": [
+                "local",
+                "type-only",
+                "import"
+              ]
+            }
+          ],
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -477,18 +511,6 @@
         "app/domain/types/index.ts",
         "app/domain/types/events.ts",
         "app/domain/types/state.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "app/domain/types/research.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "app/domain/types/index.ts",
-        "app/domain/research-compiler.ts",
-        "app/domain/research-validator.ts",
-        "app/domain/research-loader.ts"
       ],
       "orphan": false
     },
@@ -533,7 +555,7 @@
           "matchesDoNotFollow": false
         },
         {
-          "circular": false,
+          "circular": true,
           "coreModule": false,
           "couldNotResolve": false,
           "dependencyTypes": [
@@ -548,6 +570,23 @@
           "module": "./events.ts",
           "resolved": "app/domain/types/events.ts",
           "valid": true,
+          "cycle": [
+            {
+              "name": "app/domain/types/events.ts",
+              "dependencyTypes": [
+                "local",
+                "type-only",
+                "import"
+              ]
+            },
+            {
+              "name": "app/domain/types/state.ts",
+              "dependencyTypes": [
+                "local",
+                "type-import"
+              ]
+            }
+          ],
           "matchesDoNotFollow": false
         },
         {
@@ -570,7 +609,20 @@
         }
       ],
       "dependents": [
-        "app/domain/types/index.ts"
+        "app/domain/types/index.ts",
+        "app/domain/types/events.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "app/domain/types/research.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "app/domain/types/index.ts",
+        "app/domain/research-compiler.ts",
+        "app/domain/research-validator.ts",
+        "app/domain/research-loader.ts"
       ],
       "orphan": false
     },
@@ -10175,7 +10227,7 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 174,
-    "totalDependenciesCruised": 454,
+    "totalDependenciesCruised": 455,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

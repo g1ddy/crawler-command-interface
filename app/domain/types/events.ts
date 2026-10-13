@@ -98,6 +98,8 @@ export interface TimelineEventBase {
   /** Omitted for authored events; runtime actions never claim story evidence. */
   origin?: 'user-runtime';
   notificationDelivery?: NotificationDelivery;
+  effects?: import('./state.ts').ActiveEffect[];
+  effectStateAuthority?: 'unestablished' | 'established';
 }
 
 export interface AchievementUnlockedEvent extends TimelineEventBase {
@@ -474,6 +476,8 @@ interface FloorEventCommon {
   crawlerId?: string;
   effectId?: string;
   effectType?: 'good' | 'bad' | 'injury' | 'other';
+  effects?: import('./state.ts').ActiveEffect[];
+  effectStateAuthority?: 'unestablished' | 'established';
   notificationDelivery?: NotificationDelivery;
   durationSeconds?: number;
   statModifiers?: Record<string, number>;

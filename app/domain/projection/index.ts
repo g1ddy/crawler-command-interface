@@ -164,6 +164,20 @@ export function applyEvent(currentState: CrawlerState, rawEvent: unknown): Crawl
     reducer(state, event, sequence);
   }
 
+  if (Array.isArray(event.effects) && event.effectStateAuthority === 'established') {
+    state.effects = event.effects.map((e: Record<string, unknown>) => ({
+      effectId: String(e.effectId),
+      name: String(e.name || ''),
+      type: (e.type as 'good' | 'bad' | 'injury' | 'other') || (e.effectType as 'good' | 'bad' | 'injury' | 'other') || 'other',
+      icon: String(e.icon || '✦'),
+      durationSeconds: Number(e.durationSeconds || 0),
+      appliedAtSequence: Number(e.appliedAtSequence ?? sequence),
+      description: String(e.description || ''),
+      statModifiers: e.statModifiers as Record<string, number> | undefined,
+    }));
+    state.effectStateAuthority = 'established';
+  }
+
   return state;
 }
 
