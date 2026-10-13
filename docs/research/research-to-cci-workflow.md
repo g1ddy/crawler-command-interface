@@ -17,6 +17,8 @@ This document defines the practical handoff between:
 
 It is intended to be referenced by domain research issues such as #181 rather than repeating the entire workflow in every issue.
 
+For the detailed contract governing typed observation mapping, anchor resolution, deterministic compilation, provenance, and replay invariants, see [Observation Ingestion and Research-to-CCI Mapping Design](./observation-ingestion-design.md). Future implementation issues should reference that design rather than duplicate it.
+
 The workflow is deliberately conservative:
 
 > **LLMs discover and extract evidence. Deterministic code validates structure and internal consistency. CCI-aware modeling decides what the evidence means operationally. Existing raw-floor data remains authoritative.**
