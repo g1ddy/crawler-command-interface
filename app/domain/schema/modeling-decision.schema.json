@@ -69,6 +69,9 @@
         "rationale": {
           "type": "string",
           "minLength": 1
+        },
+        "observationMapping": {
+          "$ref": "#/$defs/observationMapping"
         }
       },
       "if": {
@@ -79,9 +82,80 @@
         }
       },
       "then": {
-        "required": [
-          "target"
+        "anyOf": [
+          {
+            "required": [
+              "target"
+            ]
+          },
+          {
+            "required": [
+              "observationMapping"
+            ]
+          }
         ]
+      }
+    },
+    "observationMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "anchor",
+        "payload"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "countdown-remaining",
+            "crawler-condition",
+            "crawler-attributes",
+            "xp-progress",
+            "broadcast-metrics",
+            "floor-metrics",
+            "inventory-state",
+            "equipment-state"
+          ]
+        },
+        "anchor": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "oneOf": [
+            {
+              "properties": {
+                "kind": {
+                  "const": "event-id"
+                },
+                "eventId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "eventId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "claim-id"
+                },
+                "claimId": {
+                  "$ref": "#/$defs/claimId"
+                }
+              },
+              "required": [
+                "claimId"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "payload": {
+          "type": "object"
+        }
       }
     }
   }

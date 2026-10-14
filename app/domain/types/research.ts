@@ -81,6 +81,19 @@ export interface ResearchClaim {
   contradictions?: ResearchClaimContradiction[];
 }
 
+
+export type ObservationMappingAnchor =
+  | { kind: 'event-id'; eventId: string }
+  | { kind: 'claim-id'; claimId: string };
+
+export type ObservationMappingPayload = Record<string, unknown>;
+
+export interface ObservationMapping {
+  kind: 'countdown-remaining' | 'crawler-condition' | 'crawler-attributes' | 'xp-progress' | 'broadcast-metrics' | 'floor-metrics' | 'inventory-state' | 'equipment-state';
+  anchor: ObservationMappingAnchor;
+  payload: ObservationMappingPayload;
+}
+
 export interface ModelingDecision {
   claimId: string;
   disposition: ModelingDisposition;
@@ -88,6 +101,7 @@ export interface ModelingDecision {
     domain: string;
     concept: string;
   };
+  observationMapping?: ObservationMapping;
   rationale: string;
 }
 
