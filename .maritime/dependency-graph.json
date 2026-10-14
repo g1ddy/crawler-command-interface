@@ -800,7 +800,8 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "app/domain/validation.ts"
+        "app/domain/validation.ts",
+        "app/domain/research-compiler.ts"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -852,6 +853,7 @@
       "dependencies": [],
       "dependents": [
         "app/domain/validation.ts",
+        "app/domain/research-compiler.ts",
         "app/domain/research-validator.ts"
       ],
       "coreModule": false,
@@ -871,6 +873,7 @@
       "dependencies": [],
       "dependents": [
         "app/domain/validation.ts",
+        "app/domain/research-compiler.ts",
         "app/domain/research-validator.ts"
       ],
       "coreModule": false,
@@ -889,6 +892,7 @@
       "dependencies": [],
       "dependents": [
         "app/domain/validation.ts",
+        "app/domain/research-compiler.ts",
         "app/domain/research-validator.ts"
       ],
       "coreModule": false,
@@ -1984,6 +1988,23 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "./schema/crawler-floor-raw.schema.json",
+          "resolved": "app/domain/schema/crawler-floor-raw.schema.json",
+          "valid": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "type-only",
             "import"
           ],
@@ -1995,6 +2016,57 @@
           "resolved": "app/domain/types/research.ts",
           "valid": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "ajv",
+          "resolved": "node_modules/ajv/dist/ajv.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "ajv-formats",
+          "resolved": "node_modules/ajv-formats/dist/index.js",
+          "valid": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "ajv/dist/2020.js",
+          "resolved": "node_modules/ajv/dist/2020.js",
+          "valid": true,
+          "matchesDoNotFollow": true
         }
       ],
       "dependents": [],
@@ -2229,7 +2301,7 @@
           "coreModule": false,
           "couldNotResolve": false,
           "dependencyTypes": [
-            "npm-dev",
+            "npm",
             "import"
           ],
           "dynamic": false,
@@ -2276,7 +2348,7 @@
       "followable": false,
       "matchesDoNotFollow": true,
       "dependencyTypes": [
-        "npm-dev",
+        "npm",
         "import"
       ]
     },
@@ -10227,11 +10299,11 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 174,
-    "totalDependenciesCruised": 455,
+    "totalDependenciesCruised": 459,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/home/runner/work/crawler-command-interface/crawler-command-interface",
+      "baseDir": "/app",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
