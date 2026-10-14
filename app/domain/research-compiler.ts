@@ -87,6 +87,8 @@ function hasSameResearchEvidence(
   );
 }
 
+import importReportSchema from './schema/import-report.schema.json' with { type: 'json' };
+
 function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
@@ -98,11 +100,20 @@ function getRawObservationValidator(): import('ajv').ValidateFunction {
     addFormats(ajv);
     ajv.addSchema(crawlerFloorRawSchema);
     rawObservationValidator = ajv.compile({
-      ...(crawlerFloorRawSchema as any).$defs.rawObservation, // eslint-disable-line @typescript-eslint/no-explicit-any
+      ...(crawlerFloorRawSchema as any).$defs.observation, // eslint-disable-line @typescript-eslint/no-explicit-any
       $defs: (crawlerFloorRawSchema as any).$defs // eslint-disable-line @typescript-eslint/no-explicit-any
     });
   }
   return rawObservationValidator;
+}
+
+let importReportValidator: import('ajv').ValidateFunction;
+function getImportReportValidator(): import('ajv').ValidateFunction {
+  if (!importReportValidator) {
+    const ajv = new Ajv2020({ allErrors: true, verbose: true });
+    importReportValidator = ajv.compile(importReportSchema);
+  }
+  return importReportValidator;
 }
 
 export function compileRawFloor(
@@ -226,6 +237,13 @@ export function compileRawFloor(
     }
 
     if (claim.kind === 'event') {
+      if (!decision) {
+        report.summary.outcomes.unresolved++;
+        report.outcomes.unresolved.push(claim.id);
+        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
+        continue;
+      }
+
       const eventId = generateResearchEventId(researchDoc.floor, claim.id);
 
       if (generatedIdToClaimId.has(eventId)) {
@@ -288,16 +306,17 @@ export function compileRawFloor(
       outputEventIdForClaim.set(claim.id, eventId);
       report.summary.generatedStubs.events++;
       report.eventStubs.push({ claimId: claim.id, recordId: eventId, typePopulated: false });
-      report.summary.outcomes.compiled++;
-      report.outcomes.compiled.push(claim.id);
 
       if (decision && decision.target) {
          report.summary.outcomes.unresolved++;
          report.outcomes.unresolved.push(claim.id);
          addDiagnostic('EVENT_MAPPING_UNRESOLVED', `Event mapping unresolved for claim ${claim.id}. Compiler generated a stub instead of a curated type.`, claim.id, eventId);
+         report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'unresolved', recordId: eventId });
+      } else {
+         report.summary.outcomes.compiled++;
+         report.outcomes.compiled.push(claim.id);
+         report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: eventId });
       }
-
-      report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: eventId });
     }
   }
 
@@ -472,6 +491,12 @@ export function compileRawFloor(
         ...(source.revision ? { revision: source.revision } : {}),
       });
     }
+  }
+
+  const reportValidator = getImportReportValidator();
+  if (!reportValidator(report)) {
+    const errors = reportValidator.errors?.map(e => `${e.instancePath} ${e.message}`).join(', ');
+    throw new Error(`Compiler error: Generated import report failed schema validation: ${errors}`);
   }
 
   return {
