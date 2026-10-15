@@ -9,7 +9,7 @@ const args = process.argv.slice(2);
 
 let researchPath = 'data/raw/research/floor-3/pet-research.yaml';
 let outputDirArg = 'data/raw/floors/floor-3';
-let modelingPath = 'data/raw/research/floor-3/pet-modeling-decisions.yaml';
+let modelingPath;
 
 // Parse CLI flags e.g. --research <path> --out <dir> or positional arguments
 for (let i = 0; i < args.length; i++) {
@@ -28,9 +28,9 @@ for (let i = 0; i < args.length; i++) {
   }
 }
 
-const resolvedModelingPath = path.isAbsolute(modelingPath)
+const resolvedModelingPath = modelingPath && path.isAbsolute(modelingPath)
   ? modelingPath
-  : path.resolve(process.cwd(), modelingPath);
+  : (modelingPath ? path.resolve(process.cwd(), modelingPath) : undefined);
 
 const resolvedResearchPath = path.isAbsolute(researchPath)
   ? researchPath
@@ -48,14 +48,14 @@ if (!fs.existsSync(resolvedResearchPath)) {
   process.exit(1);
 }
 
-if (!fs.existsSync(resolvedModelingPath)) {
+if (resolvedModelingPath && !fs.existsSync(resolvedModelingPath)) {
   console.error(`[Research Raw Compiler Error] Modeling decisions file not found: ${resolvedModelingPath}`);
   process.exit(1);
 }
 
 try {
   const researchDoc = loadResearchClaimDocument(resolvedResearchPath);
-  const modelingDoc = loadModelingDecisionDocument(resolvedModelingPath);
+  const modelingDoc = resolvedModelingPath && fs.existsSync(resolvedModelingPath) ? loadModelingDecisionDocument(resolvedModelingPath) : undefined;
 
 
   const eventsPath = path.join(resolvedOutputDir, 'events.json');

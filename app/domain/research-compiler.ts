@@ -93,6 +93,18 @@ function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
+function deepEqual(a: any, b: any): boolean { // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (a === b) return true;
+  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') return false;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
 let rawObservationValidator: import('ajv').ValidateFunction;
 function getRawObservationValidator(): import('ajv').ValidateFunction {
   if (!rawObservationValidator) {
@@ -225,6 +237,9 @@ export function compileRawFloor(
       (report.summary.dispositions as any)[disposition]++; // eslint-disable-line @typescript-eslint/no-explicit-any
       (report.dispositions as any)[disposition].push(claim.id); // eslint-disable-line @typescript-eslint/no-explicit-any
     } else {
+      if (!modelingDoc) {
+        disposition = 'promote';
+      }
       report.summary.dispositions.missing++;
       report.dispositions.missing.push(claim.id);
     }
@@ -232,15 +247,22 @@ export function compileRawFloor(
     if (claim.kind === 'state') {
       report.summary.outcomes.not_applicable++;
       report.outcomes.not_applicable.push(claim.id);
-      report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
       continue;
     }
 
     if (claim.kind === 'event') {
-      if (!decision) {
+      if (!decision && modelingDoc) {
         report.summary.outcomes.unresolved++;
         report.outcomes.unresolved.push(claim.id);
-        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
+        continue;
+      }
+
+      if (disposition === 'review' || disposition === 'ledger_only') {
+        report.summary.outcomes.not_applicable++;
+        report.outcomes.not_applicable.push(claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
         continue;
       }
 
@@ -286,7 +308,7 @@ export function compileRawFloor(
            report.summary.manualMappings.events++;
            report.manualMappings.events.push({ claimId: claim.id, recordId: existingEvent.id, mappedType: existingEvent.type });
         }
-        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: existingEvent.id });
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: existingEvent.id });
         continue;
       }
 
@@ -307,15 +329,16 @@ export function compileRawFloor(
       report.summary.generatedStubs.events++;
       report.eventStubs.push({ claimId: claim.id, recordId: eventId, typePopulated: false });
 
-      if (decision && decision.target) {
+      // If modelingDoc is provided but there is no decision target, it's unresolved
+      if (modelingDoc && decision && !decision.target) {
          report.summary.outcomes.unresolved++;
          report.outcomes.unresolved.push(claim.id);
          addDiagnostic('EVENT_MAPPING_UNRESOLVED', `Event mapping unresolved for claim ${claim.id}. Compiler generated a stub instead of a curated type.`, claim.id, eventId);
-         report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'unresolved', recordId: eventId });
+         report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved', recordId: eventId });
       } else {
          report.summary.outcomes.compiled++;
          report.outcomes.compiled.push(claim.id);
-         report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: eventId });
+         report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: eventId });
       }
     }
   }
@@ -326,12 +349,18 @@ export function compileRawFloor(
 
     const decision = decisionMap.get(claim.id);
     let disposition = 'missing';
-    if (decision) disposition = decision.disposition;
+    if (decision) {
+      disposition = decision.disposition;
+    } else {
+      if (!modelingDoc) {
+        disposition = 'promote';
+      }
+    }
 
     if (disposition === 'review' || disposition === 'ledger_only') {
       report.summary.outcomes.not_applicable++;
       report.outcomes.not_applicable.push(claim.id);
-      report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
       continue;
     }
 
@@ -339,15 +368,15 @@ export function compileRawFloor(
       report.summary.outcomes.rejected++;
       report.outcomes.rejected.push(claim.id);
       addDiagnostic('OBSERVATION_NOT_PROMOTED', `Observation claim ${claim.id} is missing a promote disposition.`, claim.id);
-      report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
       continue;
     }
 
     if (!decision || !decision.observationMapping) {
-      report.summary.outcomes.rejected++;
-      report.outcomes.rejected.push(claim.id);
+      report.summary.outcomes.unresolved++;
+      report.outcomes.unresolved.push(claim.id);
       addDiagnostic('OBSERVATION_MISSING_MAPPING', `Promoted observation claim ${claim.id} missing observationMapping.`, claim.id);
-      report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
       continue;
     }
 
@@ -359,7 +388,7 @@ export function compileRawFloor(
         report.summary.outcomes.rejected++;
         report.outcomes.rejected.push(claim.id);
         addDiagnostic('INVALID_ANCHOR', `Anchor event ID "${mapping.anchor.eventId}" does not exist.`, claim.id);
-        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
         continue;
       }
       anchorEventId = mapping.anchor.eventId;
@@ -369,14 +398,14 @@ export function compileRawFloor(
         report.summary.outcomes.rejected++;
         report.outcomes.rejected.push(claim.id);
         addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" does not exist.`, claim.id);
-        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
         continue;
       }
       if (anchorClaim.kind !== 'event') {
         report.summary.outcomes.rejected++;
         report.outcomes.rejected.push(claim.id);
         addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" is not an event claim.`, claim.id);
-        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
         continue;
       }
       anchorEventId = outputEventIdForClaim.get(mapping.anchor.claimId);
@@ -384,7 +413,7 @@ export function compileRawFloor(
         report.summary.outcomes.rejected++;
         report.outcomes.rejected.push(claim.id);
         addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" did not produce an event.`, claim.id);
-        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
         continue;
       }
     }
@@ -393,7 +422,7 @@ export function compileRawFloor(
       report.summary.outcomes.rejected++;
       report.outcomes.rejected.push(claim.id);
       addDiagnostic('INVALID_ANCHOR', `Could not resolve anchor for claim ${claim.id}.`, claim.id);
-      report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
       continue;
     }
 
@@ -416,6 +445,13 @@ export function compileRawFloor(
          throw new Error(`Compiler error: generated observation ID "${obsId}" collides with curated data or conflicting payload.`);
       }
 
+      // Payload conflict check
+      const mappedPayload = mapping.payload ? deepClone(mapping.payload) : {};
+      const { id: _id, kind: _kind, eventId: _eventId, evidence: _evidence, unknowns: _unknowns, ...existingPayload } = existingObs;
+      if (!deepEqual(mappedPayload, existingPayload)) {
+         throw new Error(`Compiler error: generated observation ID "${obsId}" collides with a curated record having a conflicting payload.`);
+      }
+
       const existingEvidence = Array.isArray(existingObs.evidence) ? existingObs.evidence : [];
       const mergedEvidence = new Map<string, Record<string, unknown>>();
       for (const evidence of [...existingEvidence, ...claim.evidence]) {
@@ -433,7 +469,7 @@ export function compileRawFloor(
       report.outcomes.reused.push(claim.id);
       report.summary.manualMappings.observations++;
       report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'success' });
-      report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: obsId });
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: obsId });
       continue;
     }
 
@@ -441,11 +477,22 @@ export function compileRawFloor(
         throw new Error(`Compiler error: generated observation ID "${obsId}" collides with curated data.`);
     }
 
+    // Ensure we do not override compiler-controlled fields
+    const payload = mapping.payload ? deepClone(mapping.payload) : {};
+    if (payload.id || payload.kind || payload.eventId || payload.evidence || payload.unknowns) {
+       report.summary.outcomes.rejected++;
+       report.outcomes.rejected.push(claim.id);
+       addDiagnostic('INVALID_PAYLOAD', `Mapping payload cannot override compiler-controlled fields like id, kind, eventId, evidence, or unknowns.`, claim.id);
+       report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+       report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'unresolved' });
+       continue;
+    }
+
     const newObs = {
       id: obsId,
       kind: mapping.kind,
       eventId: anchorEventId,
-      ...deepClone(mapping.payload),
+      ...payload,
       evidence: deepClone(claim.evidence),
       ...(claim.unknowns?.length ? { unknowns: [...claim.unknowns] } : {})
     };
@@ -456,7 +503,7 @@ export function compileRawFloor(
         report.outcomes.rejected.push(claim.id);
         const errStr = validator.errors?.map((e: any) => e.message).join(", ") || "Unknown error"; // eslint-disable-line @typescript-eslint/no-explicit-any
         addDiagnostic('INVALID_PAYLOAD', `Payload for ${obsId} failed schema validation: ${errStr}`, claim.id);
-        report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
         report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'unresolved' });
         continue;
     }
@@ -471,7 +518,7 @@ export function compileRawFloor(
 
     report.summary.outcomes.compiled++;
     report.outcomes.compiled.push(claim.id);
-    report.claims.push({ claimId: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: obsId });
+    report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: obsId });
   }
 
   const sourceMap = new Map<string, Record<string, unknown>>();

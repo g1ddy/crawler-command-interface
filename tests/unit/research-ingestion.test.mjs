@@ -332,8 +332,8 @@ test('Research Compiler: collision detection fails compilation when two differen
   const badDoc = deepClone(doc);
 
   // Inject two claims that will normalize to the same string (finding valid claim indexes based on fixture)
-  badDoc.claims[0].id = 'P3-PET-X';
-  badDoc.claims[1].id = 'p3-pet-x';
+  badDoc.claims[1].id = 'P3-PET-X';
+  badDoc.claims[3].id = 'p3-pet-x';
 
   assert.throws(
     () => compileRawFloor(badDoc),
@@ -576,8 +576,8 @@ test('Research Compiler: Valid xp-progress observation is compiled and mapped co
   const totalOutcomes = outcomes.compiled + outcomes.reused + outcomes.unresolved + outcomes.rejected + outcomes.not_applicable;
   assert.equal(report.summary.inputClaims.total, totalOutcomes, 'Total outcomes must equal total input claims');
 
-  assert.equal(report.summary.inputClaims.total, 1);
-  assert.equal(report.summary.outcomes.compiled, 1);
+  assert.equal(report.summary.inputClaims.total, 2);
+  assert.equal(report.summary.outcomes.compiled, 2);
 });
 
 test('Research Compiler: Generates valid import report with accurate counts', () => {
