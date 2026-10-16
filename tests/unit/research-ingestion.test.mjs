@@ -331,7 +331,7 @@ test('Research Compiler: collision detection fails compilation when two differen
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const badDoc = deepClone(doc);
 
-  // Inject two claims that will normalize to the same string
+  // Inject two claims that will normalize to the same string (finding valid claim indexes based on fixture)
   badDoc.claims[1].id = 'P3-PET-X';
   badDoc.claims[3].id = 'p3-pet-x';
 
@@ -570,8 +570,33 @@ test('Research Compiler: Valid xp-progress observation is compiled and mapped co
   // Check report
   const report = compiled.report;
   assert.ok(report);
+
+  // Total claims should equal total outcomes
+  const outcomes = report.summary.outcomes;
+  const totalOutcomes = outcomes.compiled + outcomes.reused + outcomes.unresolved + outcomes.rejected + outcomes.not_applicable;
+  assert.equal(report.summary.inputClaims.total, totalOutcomes, 'Total outcomes must equal total input claims');
+
   assert.equal(report.summary.inputClaims.total, 2);
   assert.equal(report.summary.outcomes.compiled, 2);
+});
+
+test('Research Compiler: Generates valid import report with accurate counts', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingPath = path.resolve(process.cwd(), 'data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const modelingDoc = loadModelingDecisionDocument(modelingPath);
+
+  const compiled = compileRawFloor(doc, undefined, modelingDoc);
+  const report = compiled.report;
+
+  assert.ok(report);
+  assert.equal(report.schemaVersion, 'crawler-import-report/v1');
+
+  // Total claims should equal total outcomes
+  const outcomes = report.summary.outcomes;
+  const totalOutcomes = outcomes.compiled + outcomes.reused + outcomes.unresolved + outcomes.rejected + outcomes.not_applicable;
+  assert.equal(report.summary.inputClaims.total, totalOutcomes, 'Total outcomes must equal total input claims');
+
+  assert.equal(report.claims.length, report.summary.inputClaims.total);
 });
 
 test('Research Compiler: Unresolvable claim-id anchor causes rejection and diagnostic', () => {
