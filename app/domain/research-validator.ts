@@ -197,8 +197,31 @@ export function validateSemanticModelingDecisions(
       continue;
     }
 
+
+
+    if (decision.disposition !== 'promote' && decision.observationMapping) {
+      errors.push(`MODELING_DECISION_INVALID_MAPPING: Claim "${claim.id}" is not promoted, but its modeling decision contains an observationMapping.`);
+    }
+
     if (decision.disposition === 'promote') {
+      if (claim.kind === 'observation') {
+        if (!decision.observationMapping) {
+          errors.push(`MODELING_DECISION_MISSING_MAPPING: Promoted observation claim "${claim.id}" requires an observationMapping.`);
+        }
+        if (decision.target) {
+          errors.push(`MODELING_DECISION_INVALID_TARGET: Promoted observation claim "${claim.id}" must not have a target.`);
+        }
+      } else {
+        if (decision.observationMapping) {
+          errors.push(`MODELING_DECISION_INVALID_MAPPING: Claim "${claim.id}" is not an observation, but its modeling decision contains an observationMapping.`);
+        }
+        if (!decision.target) {
+          errors.push(`MODELING_DECISION_MISSING_TARGET: Promoted claim "${claim.id}" requires a target.`);
+        }
+      }
+
       // Check confidence and evidence relationships
+
       for (const ev of claim.evidence) {
         if (ev.confidence === 'disputed') {
           errors.push(

@@ -4,6 +4,10 @@
 
 Living workflow documentation for the CCI research-ingestion pipeline.
 
+**Canonical end state for observation import and coverage reporting (#325):** the research ledger remains evidence-focused; CCI modeling decisions are explicit; one deterministic importer performs repeatable transformations into the existing raw-shaped files; and a deterministic report accounts for every claim, unknown, output, and unresolved condition. This document owns the end-to-end sequence. [Observation Ingestion and Research-to-CCI Mapping Design](./observation-ingestion-design.md) owns the detailed mapping, anchor, reconciliation, and report contract.
+
+The importer is a bulk mechanical transformer, not a second LLM and not an authority generator. Do not ask Jules to manually recreate routine transformations the script can perform deterministically. Jules/human curation should concentrate on genuinely semantic choices: final domain event IDs/types, payload correctness, ambiguous identity, and unresolved anchors. Missing or invalid decisions must remain visible; they must never be silently promoted or guessed.
+
 This document defines the practical handoff between:
 
 1. canon research;
@@ -27,42 +31,56 @@ The workflow is deliberately conservative:
 
 ## 1. End-to-end pipeline
 
+```text
+Stage 1 — Research LLM / researcher
+  evidence-rich report with URLs, locators, chronology, uncertainty
+       |
+       v
+Stage 2 — Extraction LLM
+  crawler-research/v1 YAML: atomic claims + evidence + unknowns
+       |
+       v
+Stage 2.5 — Deterministic ledger validation
+  parse + schema + IDs/references + semantic consistency
+       |
+       v
+Stage 3 — CCI-aware modeling / curation
+  crawler-modeling/v1 decisions: disposition + event target or typed
+  observationMapping (kind + payload + explicit anchor)
+       |
+       v
+Stage 4 — Deterministic importer (compileRawFloor)
+  existing raw-shaped outputs: events.json, observations.json,
+  catalog/sources as applicable + research-import-report.json
+       |
+       v
+Stage 5 — Jules / human reconciliation in the working tree
+  resolve semantic IDs/types, payload/anchor conflicts, unresolved items;
+  preserve unrelated authored records and inspect the diff
+       |
+       v
+Stage 6 — Deterministic acceptance checks
+  raw schema + domain invariants + fixture/timeline compilation
+  + projection/replay checks
+       |
+       v
+Curated decomposed raw floor files are authoritative;
+compiled runtime data is derived and must not be edited by hand.
 ```
-                 STAGE 1
-          Canon / Deep Research
-                  |
-                  v
-        human-readable report.md
-                  |
-                  |  evidence extraction
-                  v
-                 STAGE 2
-          Extraction LLM + schema
-                  |
-                  v
-             research.yaml
-                  |
-                  | YAML parse + schema validation
-                  v
-          validated research.yaml
-                  |
-                  | research compiler (compileRawFloor)
-                  v
-          direct raw JSON compilation
-         (data/raw/floors/<floor>/*)
-                  |
-                  | existing CCI raw JSON validation
-                  v
-          validation errors (missing CCI mappings)
-                  |
-                  | human / Jules working-tree curation
-                  v
-       data/raw/floors/<floor>/*
-                  |
-                  | existing CCI compiler
-                  v
-             runtime state
-```
+
+### Stage contract and exit conditions
+
+| Stage | Input | Responsible actor | Output | Exit condition |
+| --- | --- | --- | --- | --- |
+| 1. Research | Research scope and accessible online evidence | Researcher / research LLM | Evidence-rich report | Claims trace to identifiable sources; uncertainty and missing evidence are explicit. |
+| 2. Extraction | Report, extraction prompt, current research schema | Extraction LLM | `crawler-research/v1` YAML | Evidence ledger only; no invented URLs, CCI payloads, runtime IDs, or promotion decisions. |
+| 2.5. Ledger validation | Research YAML | Deterministic validators | Validated ledger or actionable errors | Schema, IDs, source/evidence references, and cross-record rules pass. |
+| 3. Modeling | Validated ledger, current CCI contracts, existing raw records | Modeling/curation LLM plus human review as needed | `crawler-modeling/v1` decisions | Disposition is explicit; promoted observations have typed payloads and explicit resolvable anchors. |
+| 4. Import | Validated ledger + modeling decisions + existing raw floor data | Deterministic importer | Raw-shaped outputs + `research-import-report.json` | Mechanical work is complete; every claim/unknown is accounted for; failures are itemized. |
+| 5. Reconciliation | Generated output, report, existing authored raw files | Jules / human | Curated authoritative raw JSON | Resolve semantic IDs/types, payload/anchor issues, and conflicts; preserve unrelated authored data. |
+| 6. Runtime acceptance | Curated raw JSON | Deterministic tests and human review | Compiled floor/timeline and verified replay | Raw schemas, semantic invariants, compiler output, and sequence-scoped behavior pass. |
+
+A stage may produce useful partial progress without declaring the floor complete. The importer must not hide an unresolved claim to keep output clean. The report distinguishes mechanical import success from curation readiness and runtime acceptance.
 
 ### Representation boundaries
 
