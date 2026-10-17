@@ -599,6 +599,118 @@ test('Research Compiler: Generates valid import report with accurate counts', ()
   assert.equal(report.claims.length, report.summary.inputClaims.total);
 });
 
+test('Research Compiler: Rejects attempt to supply compiler-controlled observation fields in payload', () => {
+  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const doc = deepClone(research);
+  doc.claims = [
+    {
+      id: 'F3-EVENT-001',
+      domain: 'crawler',
+      kind: 'event',
+      claim: { summary: 'An event happened.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    },
+    {
+      id: 'F3-OBS-001',
+      domain: 'crawler',
+      kind: 'observation',
+      claim: { summary: 'Carl is level 27.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    }
+  ];
+
+  const modeling = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'F3-EVENT-001',
+        disposition: 'promote',
+        target: { domain: 'crawler', concept: 'NarrativeEvent' },
+        rationale: 'Keep event'
+      },
+      {
+        claimId: 'F3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
+          payload: { id: 'obs-f3-invalid-id', level: 27 } // attempt to override 'id'
+        },
+        rationale: 'Obs mapping'
+      }
+    ]
+  };
+
+  const compiled = compileRawFloor(doc, undefined, modeling);
+  assert.equal(compiled.observations.length, 0);
+
+  const report = compiled.report;
+  assert.equal(report.summary.outcomes.rejected, 1);
+  assert.equal(report.summary.diagnostics.total, 1);
+  assert.ok(report.diagnostics[0].message.includes('Mapping payload cannot override compiler-controlled fields'));
+});
+
+test('Research Compiler: Conflicts with existing observations payloads fail visibly rather than being overwritten', () => {
+  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const doc = deepClone(research);
+  doc.claims = [
+    {
+      id: 'F3-EVENT-001',
+      domain: 'crawler',
+      kind: 'event',
+      claim: { summary: 'An event happened.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    },
+    {
+      id: 'F3-OBS-001',
+      domain: 'crawler',
+      kind: 'observation',
+      claim: { summary: 'Carl is level 27.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    }
+  ];
+
+  const modeling = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'F3-EVENT-001',
+        disposition: 'promote',
+        target: { domain: 'crawler', concept: 'NarrativeEvent' },
+        rationale: 'Keep event'
+      },
+      {
+        claimId: 'F3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
+          payload: { level: 27 } // level 27 payload
+        },
+        rationale: 'Obs mapping'
+      }
+    ]
+  };
+
+  const existingRaw = {
+    observations: [
+      {
+        id: 'obs-f3-research-f3-obs-001',
+        kind: 'xp-progress',
+        eventId: 'evt-f3-research-f3-event-001',
+        level: 28, // Conflict: 28 instead of 27
+        evidence: []
+      }
+    ]
+  };
+
+  assert.throws(
+    () => compileRawFloor(doc, existingRaw, modeling),
+    /Compiler error: generated observation ID "obs-f3-research-f3-obs-001" collides with a curated record having a conflicting payload\./,
+    'Conflicting existing payload must fail visibly'
+  );
+});
+
 test('Research Compiler: Unresolvable claim-id anchor causes rejection and diagnostic', () => {
   const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const doc = deepClone(research);
