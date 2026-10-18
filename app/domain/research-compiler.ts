@@ -277,16 +277,15 @@ export function compileRawFloor(
       generatedIdToClaimId.set(eventId, claim.id);
 
       const matchingIdIndex = events.findIndex((event) => String(event.id) === eventId);
-      if (matchingIdIndex >= 0 && !hasSameResearchEvidence(events[matchingIdIndex], claim)) {
-        throw new Error(`Compiler error: deterministic research event ID "${eventId}" collides with an unrelated authored event.`);
-      }
 
-      const existingIndex = matchingIdIndex >= 0
-        ? matchingIdIndex
-        : events.findIndex((event) => hasSameResearchEvidence(event, claim));
+      const existingIndex = matchingIdIndex;
 
       if (existingIndex >= 0) {
         const existingEvent = events[existingIndex];
+
+        if (!hasSameResearchEvidence(existingEvent, claim)) {
+          throw new Error(`Compiler error: deterministic research event ID "${eventId}" collides with an unrelated authored event.`);
+        }
         const existingEvidence = Array.isArray(existingEvent.evidence) ? existingEvent.evidence : [];
         const mergedEvidence = new Map<string, Record<string, unknown>>();
         for (const evidence of [...existingEvidence, ...claim.evidence]) {
