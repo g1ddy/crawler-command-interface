@@ -1,10 +1,8 @@
-import type { ResearchClaimDocument, ModelingDecisionDocument } from './types/research.ts';
-import {
-  validateResearchClaimDocument,
-  validateModelingDecisionDocument,
-  validateSemanticModelingDecisions,
-  validateTraceCompleteness,
-} from './research-validator.ts';
+import { validateResearchClaimDocument, validateModelingDecisionDocument, validateSemanticModelingDecisions, validateTraceCompleteness } from './research-validator.ts';
+import type { ResearchClaimDocument, ModelingDecisionDocument, ModelingDecision } from './types/research.ts';
+import Ajv2020 from 'ajv/dist/2020.js';
+import addFormats from 'ajv-formats';
+import crawlerFloorRawSchema from './schema/crawler-floor-raw.schema.json' with { type: 'json' };
 
 export interface ExistingRawFloorData {
   sources?: Array<Record<string, unknown>>;
@@ -13,6 +11,7 @@ export interface ExistingRawFloorData {
     achievements?: Array<Record<string, unknown> | string>;
   };
   events?: Array<Record<string, unknown>>;
+  observations?: Array<Record<string, unknown>>;
 }
 
 export interface RawFloorCompilation {
@@ -22,6 +21,8 @@ export interface RawFloorCompilation {
     achievements: Array<Record<string, unknown> | string>;
   };
   events: Array<Record<string, unknown>>;
+  observations: Array<Record<string, unknown>>;
+  report?: Record<string, unknown>;
 }
 
 export interface ResearchClaimTraceMapping {
@@ -56,20 +57,20 @@ export interface CompiledResearchOutput {
   claimMappings: ResearchClaimTraceMapping[];
 }
 
-/**
- * Compiles a validated research claim document directly into existing CCI raw JSON shapes
- * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
- * without intermediate candidate/scaffold models or manufactured floor metadata.
- */
 function generateResearchEventId(floor: number, claimId: string): string {
-  // Preserve claim-ID distinctions in the temporary curation key. The key is
-  // deliberately not a semantic/domain identity; Jules replaces it when the
-  // occurrence is curated into an authored event.
   const normalized = claimId
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
   return `evt-f${floor}-research-${normalized}`;
+}
+
+function generateResearchObservationId(floor: number, claimId: string): string {
+  const normalized = claimId
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `obs-f${floor}-research-${normalized}`;
 }
 
 function evidenceKey(evidence: unknown): string {
@@ -86,23 +87,51 @@ function hasSameResearchEvidence(
   );
 }
 
-/**
- * Compiles research into the existing CCI raw representation.
- *
- * This function deliberately performs only mechanical work:
- * - preserve existing authored data;
- * - preserve research ordering for newly emitted records;
- * - carry evidence/unknowns forward;
- * - use deterministic temporary research IDs;
- * - never choose CCI event types or payload semantics.
- *
- * Existing records are reconciled only by deterministic compiler identity or
- * an exact summary + complete evidence match. A shared locator alone is never
- * treated as record identity.
- */
+import importReportSchema from './schema/import-report.schema.json' with { type: 'json' };
+
+function deepClone<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function deepEqual(a: any, b: any): boolean { // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (a === b) return true;
+  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') return false;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
+let rawObservationValidator: import('ajv').ValidateFunction;
+function getRawObservationValidator(): import('ajv').ValidateFunction {
+  if (!rawObservationValidator) {
+    const ajv = new Ajv2020({ allErrors: true, verbose: true });
+    addFormats(ajv);
+    ajv.addSchema(crawlerFloorRawSchema);
+    rawObservationValidator = ajv.compile({
+      ...(crawlerFloorRawSchema as any).$defs.observation, // eslint-disable-line @typescript-eslint/no-explicit-any
+      $defs: (crawlerFloorRawSchema as any).$defs // eslint-disable-line @typescript-eslint/no-explicit-any
+    });
+  }
+  return rawObservationValidator;
+}
+
+let importReportValidator: import('ajv').ValidateFunction;
+function getImportReportValidator(): import('ajv').ValidateFunction {
+  if (!importReportValidator) {
+    const ajv = new Ajv2020({ allErrors: true, verbose: true });
+    importReportValidator = ajv.compile(importReportSchema);
+  }
+  return importReportValidator;
+}
+
 export function compileRawFloor(
   researchDoc: ResearchClaimDocument,
-  existingRaw?: ExistingRawFloorData
+  existingRaw?: ExistingRawFloorData,
+  modelingDoc?: ModelingDecisionDocument
 ): RawFloorCompilation {
   const researchVal = validateResearchClaimDocument(researchDoc);
   if (!researchVal.valid) {
@@ -111,100 +140,384 @@ export function compileRawFloor(
     );
   }
 
+  const decisionMap = new Map<string, ModelingDecision>();
+  if (modelingDoc) {
+    const modelingVal = validateModelingDecisionDocument(modelingDoc);
+    if (!modelingVal.valid) {
+      throw new Error(`Compiler error: Modeling decision document schema validation failed:\n  - ${modelingVal.errors.join('\n  - ')}`);
+    }
 
+    const semanticVal = validateSemanticModelingDecisions(researchDoc, modelingDoc);
+    if (!semanticVal.valid) {
+      throw new Error(`Compiler error: Semantic modeling decision validation failed:\n  - ${semanticVal.errors.join('\n  - ')}`);
+    }
 
-  const events: Array<Record<string, unknown>> = existingRaw?.events
-    ? JSON.parse(JSON.stringify(existingRaw.events))
-    : [];
+    for (const decision of modelingDoc.decisions) {
+      decisionMap.set(decision.claimId, decision);
+    }
+  }
 
-  const existingSources: Array<Record<string, unknown>> = existingRaw?.sources
-    ? JSON.parse(JSON.stringify(existingRaw.sources))
-    : [];
+  const events: Array<Record<string, unknown>> = existingRaw?.events ? deepClone(existingRaw.events) : [];
+  const observations: Array<Record<string, unknown>> = existingRaw?.observations ? deepClone(existingRaw.observations) : [];
+  const existingSources: Array<Record<string, unknown>> = existingRaw?.sources ? deepClone(existingRaw.sources) : [];
+  const existingCatalogItems: Array<Record<string, unknown> | string> = existingRaw?.catalog?.items ? deepClone(existingRaw.catalog.items) : [];
+  const existingCatalogAchievements: Array<Record<string, unknown> | string> = existingRaw?.catalog?.achievements ? deepClone(existingRaw.catalog.achievements) : [];
 
-  const existingCatalogItems: Array<Record<string, unknown> | string> =
-    existingRaw?.catalog?.items
-      ? JSON.parse(JSON.stringify(existingRaw.catalog.items))
-      : [];
-
-  const existingCatalogAchievements: Array<Record<string, unknown> | string> =
-    existingRaw?.catalog?.achievements
-      ? JSON.parse(JSON.stringify(existingRaw.catalog.achievements))
-      : [];
-
-  const usedEventIds = new Set<string>(
-    events.map((event) => String(event.id))
-  );
-
+  const usedEventIds = new Set<string>(events.map((e) => String(e.id)));
   const generatedIdToClaimId = new Map<string, string>();
 
-  for (const claim of researchDoc.claims) {
-    const eventId = generateResearchEventId(researchDoc.floor, claim.id);
+  const usedObservationIds = new Set<string>(observations.map((o) => String(o.id)));
+  const generatedObsIdToClaimId = new Map<string, string>();
 
-    if (generatedIdToClaimId.has(eventId)) {
-      const existingClaimId = generatedIdToClaimId.get(eventId);
-      if (existingClaimId !== claim.id) {
-        throw new Error(
-          `Compiler error: Normalization collision detected. Claims "${existingClaimId}" and "${claim.id}" both normalize to "${eventId}".`
-        );
+  // For report
+  const report = {
+    schemaVersion: "crawler-import-report/v1",
+    summary: {
+      inputClaims: { total: 0, event: 0, observation: 0, state: 0 },
+      unknowns: { total: 0, event: 0, observation: 0, state: 0, unresolved: 0 },
+      generatedStubs: { events: 0, observations: 0 },
+      reusedRecords: { events: 0, observations: 0 },
+      manualMappings: { events: 0, observations: 0 },
+      dispositions: { promote: 0, review: 0, ledger_only: 0, missing: 0 },
+      outcomes: { compiled: 0, reused: 0, unresolved: 0, rejected: 0, not_applicable: 0 },
+      diagnostics: { total: 0 }
+    },
+    unknowns: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
+    eventStubs: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
+    observationStubs: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
+    manualMappings: {
+      events: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
+      observations: [] as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+    },
+    dispositions: {
+      promote: [] as string[],
+      review: [] as string[],
+      ledger_only: [] as string[],
+      missing: [] as string[]
+    },
+    outcomes: {
+      compiled: [] as string[],
+      reused: [] as string[],
+      unresolved: [] as string[],
+      rejected: [] as string[],
+      not_applicable: [] as string[]
+    },
+    diagnostics: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
+    claims: [] as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+  };
+
+  const addDiagnostic = (code: string, message: string, claimId: string, recordId?: string) => {
+    report.diagnostics.push({ code, message, claimId, recordId });
+    report.summary.diagnostics.total++;
+  };
+
+  const claimMap = new Map<string, any>(); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const outputEventIdForClaim = new Map<string, string>();
+
+  for (const claim of researchDoc.claims) {
+    claimMap.set(claim.id, claim);
+    report.summary.inputClaims.total++;
+    (report.summary.inputClaims as any)[claim.kind]++; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+    if (claim.unknowns) {
+      for (const uk of claim.unknowns) {
+        report.summary.unknowns.total++;
+        (report.summary.unknowns as any)[claim.kind]++; // eslint-disable-line @typescript-eslint/no-explicit-any
+        report.unknowns.push({ claimId: claim.id, text: uk, status: 'unresolved' });
+        report.summary.unknowns.unresolved++;
       }
     }
-    generatedIdToClaimId.set(eventId, claim.id);
+  }
 
-    const matchingIdIndex = events.findIndex((event) => String(event.id) === eventId);
-    if (matchingIdIndex >= 0 && !hasSameResearchEvidence(events[matchingIdIndex], claim)) {
-      throw new Error(
-        `Compiler error: deterministic research event ID "${eventId}" collides with an unrelated authored event.`
-      );
+  for (const claim of researchDoc.claims) {
+    const decision = decisionMap.get(claim.id);
+    let disposition = 'missing';
+    if (decision) {
+      disposition = decision.disposition;
+      (report.summary.dispositions as any)[disposition]++; // eslint-disable-line @typescript-eslint/no-explicit-any
+      (report.dispositions as any)[disposition].push(claim.id); // eslint-disable-line @typescript-eslint/no-explicit-any
+    } else {
+      if (!modelingDoc) {
+        disposition = 'promote';
+      }
+      report.summary.dispositions.missing++;
+      report.dispositions.missing.push(claim.id);
     }
 
-    const existingIndex = matchingIdIndex >= 0
-      ? matchingIdIndex
-      : events.findIndex((event) => hasSameResearchEvidence(event, claim));
+    if (claim.kind === 'state') {
+      report.summary.outcomes.not_applicable++;
+      report.outcomes.not_applicable.push(claim.id);
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
+      continue;
+    }
 
-    if (existingIndex >= 0) {
-      const existingEvent = events[existingIndex];
+    if (claim.kind === 'event') {
+      if (!decision && modelingDoc) {
+        report.summary.outcomes.unresolved++;
+        report.outcomes.unresolved.push(claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
+        continue;
+      }
 
-      // Existing CCI semantics are authoritative. Only merge research evidence
-      // and explicit unknowns; never overwrite type, payload, position, or ID.
-      const existingEvidence = Array.isArray(existingEvent.evidence)
-        ? existingEvent.evidence
-        : [];
+      if (disposition === 'review' || disposition === 'ledger_only') {
+        report.summary.outcomes.not_applicable++;
+        report.outcomes.not_applicable.push(claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
+        continue;
+      }
+
+      const eventId = generateResearchEventId(researchDoc.floor, claim.id);
+
+      if (generatedIdToClaimId.has(eventId)) {
+        const existingClaimId = generatedIdToClaimId.get(eventId);
+        if (existingClaimId !== claim.id) {
+          throw new Error(`Compiler error: Normalization collision detected. Claims "${existingClaimId}" and "${claim.id}" both normalize to "${eventId}".`);
+        }
+      }
+      generatedIdToClaimId.set(eventId, claim.id);
+
+      const matchingIdIndex = events.findIndex((event) => String(event.id) === eventId);
+
+      const existingIndex = matchingIdIndex;
+
+      if (existingIndex >= 0) {
+        const existingEvent = events[existingIndex];
+
+        if (!hasSameResearchEvidence(existingEvent, claim)) {
+          throw new Error(`Compiler error: deterministic research event ID "${eventId}" collides with an unrelated authored event.`);
+        }
+        const existingEvidence = Array.isArray(existingEvent.evidence) ? existingEvent.evidence : [];
+        const mergedEvidence = new Map<string, Record<string, unknown>>();
+        for (const evidence of [...existingEvidence, ...claim.evidence]) {
+          mergedEvidence.set(evidenceKey(evidence), evidence);
+        }
+        existingEvent.evidence = Array.from(mergedEvidence.values());
+
+        if (claim.unknowns?.length) {
+          const existingUnknowns = Array.isArray(existingEvent.unknowns) ? existingEvent.unknowns.map(String) : [];
+          existingEvent.unknowns = Array.from(new Set([...existingUnknowns, ...claim.unknowns]));
+        }
+
+        outputEventIdForClaim.set(claim.id, String(existingEvent.id));
+        report.summary.reusedRecords.events++;
+        report.summary.outcomes.reused++;
+        report.outcomes.reused.push(claim.id);
+
+        if (existingEvent.type) {
+           report.summary.manualMappings.events++;
+           report.manualMappings.events.push({ claimId: claim.id, recordId: existingEvent.id, mappedType: existingEvent.type });
+        }
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: existingEvent.id });
+        continue;
+      }
+
+      if (usedEventIds.has(eventId)) {
+        throw new Error(`Compiler error: deterministic research event ID "${eventId}" is already used by an unrelated event.`);
+      }
+      usedEventIds.add(eventId);
+
+      events.push({
+        id: eventId,
+        summary: claim.claim.summary,
+        position: { floor: researchDoc.floor },
+        evidence: deepClone(claim.evidence) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+        ...(claim.unknowns?.length ? { unknowns: [...claim.unknowns] } : {}),
+      });
+
+      outputEventIdForClaim.set(claim.id, eventId);
+      report.summary.generatedStubs.events++;
+      report.eventStubs.push({ claimId: claim.id, recordId: eventId, typePopulated: false });
+
+      // If modelingDoc is provided but there is no decision target, it's unresolved
+      if (modelingDoc && decision && !decision.target) {
+         report.summary.outcomes.unresolved++;
+         report.outcomes.unresolved.push(claim.id);
+         addDiagnostic('EVENT_MAPPING_UNRESOLVED', `Event mapping unresolved for claim ${claim.id}. Compiler generated a stub instead of a curated type.`, claim.id, eventId);
+         report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved', recordId: eventId });
+      } else {
+         report.summary.outcomes.compiled++;
+         report.outcomes.compiled.push(claim.id);
+         report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: eventId });
+      }
+    }
+  }
+
+  // 2. Process Observation claims
+  for (const claim of researchDoc.claims) {
+    if (claim.kind !== 'observation') continue;
+
+    const decision = decisionMap.get(claim.id);
+    let disposition = 'missing';
+    if (decision) {
+      disposition = decision.disposition;
+    } else {
+      if (!modelingDoc) {
+        disposition = 'promote';
+      }
+    }
+
+    if (disposition === 'review' || disposition === 'ledger_only') {
+      report.summary.outcomes.not_applicable++;
+      report.outcomes.not_applicable.push(claim.id);
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
+      continue;
+    }
+
+    if (disposition !== 'promote') {
+      report.summary.outcomes.rejected++;
+      report.outcomes.rejected.push(claim.id);
+      addDiagnostic('OBSERVATION_NOT_PROMOTED', `Observation claim ${claim.id} is missing a promote disposition.`, claim.id);
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+      continue;
+    }
+
+    if (!decision || !decision.observationMapping) {
+      report.summary.outcomes.unresolved++;
+      report.outcomes.unresolved.push(claim.id);
+      addDiagnostic('OBSERVATION_MISSING_MAPPING', `Promoted observation claim ${claim.id} missing observationMapping.`, claim.id);
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
+      continue;
+    }
+
+    const mapping = decision.observationMapping;
+    let anchorEventId: string | undefined;
+
+    if (mapping.anchor.kind === 'event-id') {
+      if (!usedEventIds.has(mapping.anchor.eventId)) {
+        report.summary.outcomes.rejected++;
+        report.outcomes.rejected.push(claim.id);
+        addDiagnostic('INVALID_ANCHOR', `Anchor event ID "${mapping.anchor.eventId}" does not exist.`, claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        continue;
+      }
+      anchorEventId = mapping.anchor.eventId;
+    } else if (mapping.anchor.kind === 'claim-id') {
+      const anchorClaim = claimMap.get(mapping.anchor.claimId);
+      if (!anchorClaim) {
+        report.summary.outcomes.rejected++;
+        report.outcomes.rejected.push(claim.id);
+        addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" does not exist.`, claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        continue;
+      }
+      if (anchorClaim.kind !== 'event') {
+        report.summary.outcomes.rejected++;
+        report.outcomes.rejected.push(claim.id);
+        addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" is not an event claim.`, claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        continue;
+      }
+      anchorEventId = outputEventIdForClaim.get(mapping.anchor.claimId);
+      if (!anchorEventId) {
+        report.summary.outcomes.rejected++;
+        report.outcomes.rejected.push(claim.id);
+        addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" did not produce an event.`, claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        continue;
+      }
+    }
+
+    if (!anchorEventId) {
+      report.summary.outcomes.rejected++;
+      report.outcomes.rejected.push(claim.id);
+      addDiagnostic('INVALID_ANCHOR', `Could not resolve anchor for claim ${claim.id}.`, claim.id);
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+      continue;
+    }
+
+    const obsId = generateResearchObservationId(researchDoc.floor, claim.id);
+
+    if (generatedObsIdToClaimId.has(obsId)) {
+        const existingClaimId = generatedObsIdToClaimId.get(obsId);
+        if (existingClaimId !== claim.id) {
+          throw new Error(`Compiler error: Normalization collision detected. Claims "${existingClaimId}" and "${claim.id}" both normalize to "${obsId}".`);
+        }
+    }
+    generatedObsIdToClaimId.set(obsId, claim.id);
+
+    const matchingIdIndex = observations.findIndex((o) => String(o.id) === obsId);
+
+    let existingObs = null;
+    if (matchingIdIndex >= 0) {
+      existingObs = observations[matchingIdIndex];
+      if (existingObs.kind !== mapping.kind || existingObs.eventId !== anchorEventId) {
+         throw new Error(`Compiler error: generated observation ID "${obsId}" collides with curated data or conflicting payload.`);
+      }
+
+      // Payload conflict check
+      const mappedPayload = mapping.payload ? deepClone(mapping.payload) : {};
+      const { id: _id, kind: _kind, eventId: _eventId, evidence: _evidence, unknowns: _unknowns, ...existingPayload } = existingObs;
+      if (!deepEqual(mappedPayload, existingPayload)) {
+         throw new Error(`Compiler error: generated observation ID "${obsId}" collides with a curated record having a conflicting payload.`);
+      }
+
+      const existingEvidence = Array.isArray(existingObs.evidence) ? existingObs.evidence : [];
       const mergedEvidence = new Map<string, Record<string, unknown>>();
       for (const evidence of [...existingEvidence, ...claim.evidence]) {
         mergedEvidence.set(evidenceKey(evidence), evidence);
       }
-      existingEvent.evidence = Array.from(mergedEvidence.values());
+      existingObs.evidence = Array.from(mergedEvidence.values());
 
       if (claim.unknowns?.length) {
-        const existingUnknowns = Array.isArray(existingEvent.unknowns)
-          ? existingEvent.unknowns.map(String)
-          : [];
-        existingEvent.unknowns = Array.from(
-          new Set([...existingUnknowns, ...claim.unknowns])
-        );
+        const existingUnknowns = Array.isArray(existingObs.unknowns) ? existingObs.unknowns.map(String) : [];
+        existingObs.unknowns = Array.from(new Set([...existingUnknowns, ...claim.unknowns]));
       }
+
+      report.summary.reusedRecords.observations++;
+      report.summary.outcomes.reused++;
+      report.outcomes.reused.push(claim.id);
+      report.summary.manualMappings.observations++;
+      report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'success' });
+      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: obsId });
       continue;
     }
 
-    const newEventId = eventId;
-    if (usedEventIds.has(newEventId)) {
-      // This should only be reachable for an ID collision with an unrelated
-      // authored record. Do not silently invent an alternate semantic ID.
-      throw new Error(
-        `Compiler error: deterministic research event ID "${newEventId}" is already used by an unrelated event.`
-      );
+    if (usedObservationIds.has(obsId)) {
+        throw new Error(`Compiler error: generated observation ID "${obsId}" collides with curated data.`);
     }
-    usedEventIds.add(newEventId);
 
-    events.push({
-      id: newEventId,
-      summary: claim.claim.summary,
-      position: { floor: researchDoc.floor },
-      evidence: JSON.parse(JSON.stringify(claim.evidence)),
-      ...(claim.unknowns?.length
-        ? { unknowns: [...claim.unknowns] }
-        : {}),
-    });
+    // Ensure we do not override compiler-controlled fields
+    const payload = mapping.payload ? deepClone(mapping.payload) : {};
+    if (payload.id || payload.kind || payload.eventId || payload.evidence || payload.unknowns) {
+       report.summary.outcomes.rejected++;
+       report.outcomes.rejected.push(claim.id);
+       addDiagnostic('INVALID_PAYLOAD', `Mapping payload cannot override compiler-controlled fields like id, kind, eventId, evidence, or unknowns.`, claim.id);
+       report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+       report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'unresolved' });
+       continue;
+    }
+
+    const newObs = {
+      id: obsId,
+      kind: mapping.kind,
+      eventId: anchorEventId,
+      ...payload,
+      evidence: deepClone(claim.evidence),
+      ...(claim.unknowns?.length ? { unknowns: [...claim.unknowns] } : {})
+    };
+
+    const validator = getRawObservationValidator();
+    if (!validator(newObs)) {
+        report.summary.outcomes.rejected++;
+        report.outcomes.rejected.push(claim.id);
+        const errStr = validator.errors?.map((e: any) => e.message).join(", ") || "Unknown error"; // eslint-disable-line @typescript-eslint/no-explicit-any
+        addDiagnostic('INVALID_PAYLOAD', `Payload for ${obsId} failed schema validation: ${errStr}`, claim.id);
+        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
+        report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'unresolved' });
+        continue;
+    }
+
+    usedObservationIds.add(obsId);
+    observations.push(newObs);
+
+    report.summary.generatedStubs.observations++;
+    report.observationStubs.push({ claimId: claim.id, recordId: obsId, kind: mapping.kind, eventId: anchorEventId, outcome: 'compiled' });
+    report.summary.manualMappings.observations++;
+    report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'success' });
+
+    report.summary.outcomes.compiled++;
+    report.outcomes.compiled.push(claim.id);
+    report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: obsId });
   }
 
   const sourceMap = new Map<string, Record<string, unknown>>();
@@ -226,6 +539,12 @@ export function compileRawFloor(
     }
   }
 
+  const reportValidator = getImportReportValidator();
+  if (!reportValidator(report)) {
+    const errors = reportValidator.errors?.map(e => `${e.instancePath} ${e.message}`).join(', ');
+    throw new Error(`Compiler error: Generated import report failed schema validation: ${errors}`);
+  }
+
   return {
     sources: Array.from(sourceMap.values()),
     catalog: {
@@ -233,6 +552,8 @@ export function compileRawFloor(
       achievements: existingCatalogAchievements,
     },
     events,
+    observations,
+    report
   };
 }
 
@@ -281,7 +602,9 @@ export function compileResearchTrace(
 
     if (decision === 'promote') {
       if (!modelingDecision.target?.domain || !modelingDecision.target?.concept) {
-        throw new Error(`Compiler error: Promoted claim "${claim.id}" lacks target domain or concept.`);
+        if (!modelingDecision.observationMapping) {
+           throw new Error(`Compiler error: Promoted claim "${claim.id}" lacks target domain or concept.`);
+        }
       }
       promotedClaimCount++;
     } else if (decision === 'review') {
@@ -301,7 +624,7 @@ export function compileResearchTrace(
         rationale: modelingDecision.rationale
       },
       originatingClaimIds: [claim.id],
-      evidence: JSON.parse(JSON.stringify(claim.evidence)),
+      evidence: deepClone(claim.evidence) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
     });
   }

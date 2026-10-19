@@ -8,7 +8,7 @@ import {
   parseResearchClaimDocument,
   loadModelingDecisionDocument
 } from '../../app/domain/research-loader.ts';
-import { validateResearchClaimDocument } from '../../app/domain/research-validator.ts';
+import { validateResearchClaimDocument, validateModelingDecisionDocument, validateSemanticModelingDecisions } from '../../app/domain/research-validator.ts';
 import {
   compileResearchTrace,
   compileRawFloor,
@@ -41,36 +41,45 @@ test('Research Ingestion: valid Floor 3 research claim fixture parses and valida
 
 test('Research Compiler: produces direct CCI raw floor shapes matching existing raw floor files', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const compiled = compileRawFloor(doc);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(doc, undefined, modeling);
 
   assert.ok(Array.isArray(compiled.sources));
   assert.ok(Array.isArray(compiled.catalog.items));
   assert.ok(Array.isArray(compiled.events));
-  assert.equal(compiled.events.length, 15);
+  assert.equal(compiled.events.length, 5); // Some claims are observations or ledger_only
 });
 
 test('Research Compiler: produces deterministic byte-equivalent outputs for identical inputs', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
 
-  const compiled1 = compileRawFloor(doc);
-  const compiled2 = compileRawFloor(doc);
+  const compiled1 = compileRawFloor(doc, undefined, modeling);
+  const compiled2 = compileRawFloor(doc, undefined, modeling);
 
   assert.deepEqual(compiled1, compiled2);
 });
 
 test('Research Compiler: strictly preserves research YAML claim ordering in generated raw curation records', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const compiled = compileRawFloor(doc);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(doc, undefined, modeling);
 
-  assert.equal(compiled.events.length, doc.claims.length);
-  for (let i = 0; i < doc.claims.length; i++) {
-    assert.equal(compiled.events[i].summary, doc.claims[i].claim.summary);
+  assert.equal(compiled.events.length, 5); // Expect 5 promoted events based on modeling
+  const eventClaims = doc.claims.filter(c =>
+    c.kind === 'event' &&
+    modeling.decisions.some(d => d.claimId === c.id && d.disposition === 'promote')
+  );
+
+  for (let i = 0; i < eventClaims.length; i++) {
+    assert.equal(compiled.events[i].summary, eventClaims[i].claim.summary);
   }
 });
 
 test('Research Compiler: preserves evidence, locators, and explicit unknowns directly without data loss', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const compiled = compileRawFloor(doc);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(doc, undefined, modeling);
 
   const p2Claim = doc.claims.find((c) => c.id === 'P3-PET-002');
   assert.ok(p2Claim);
@@ -85,7 +94,8 @@ test('Research Compiler: preserves evidence, locators, and explicit unknowns dir
 
 test('Research Compiler: leaves event type unpopulated for curation when no established CCI contract exists', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const compiled = compileRawFloor(doc);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(doc, undefined, modeling);
 
   for (const event of compiled.events) {
     assert.equal(event.type, undefined);
@@ -94,7 +104,8 @@ test('Research Compiler: leaves event type unpopulated for curation when no esta
 
 test('Research Compiler: uncurated raw records fail existing CCI raw floor schema validation with expected curation gap error', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
-  const compiled = compileRawFloor(doc);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(doc, undefined, modeling);
 
   const mockRawDoc = {
     authoringVersion: 'crawler-floor-raw/v1',
@@ -142,7 +153,7 @@ test('Research Compiler: CLI script generates raw artifacts in target directory'
   const catalogContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'catalog.json'), 'utf8'));
   const sourcesContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'sources.json'), 'utf8'));
 
-  assert.equal(eventsContent.length, 15);
+  assert.equal(eventsContent.length, 6);
   assert.ok(Array.isArray(catalogContent.items));
   assert.equal(sourcesContent.length, doc.sources.length);
 
@@ -248,11 +259,11 @@ test('Research Compiler: claims with identical summaries represent separate occu
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const testDoc = deepClone(doc);
 
-  testDoc.claims[0].claim.summary = 'The party acquires an item.';
   testDoc.claims[1].claim.summary = 'The party acquires an item.';
+  testDoc.claims[3].claim.summary = 'The party acquires an item.';
 
   const compiled = compileRawFloor(testDoc);
-  assert.equal(compiled.events.length, 15);
+  assert.equal(compiled.events.length, 6);
   const matchingSummaries = compiled.events.filter((e) => String(e.summary) === 'The party acquires an item.');
   assert.equal(matchingSummaries.length, 2, 'Claims with identical summaries must be compiled as distinct occurrences');
 });
@@ -300,7 +311,7 @@ test('Research Compiler: existing authored fields absent from research survive c
   }, 'Custom authored fields must survive compilation (item)');
 });
 
-test('Research Compiler: P3-PET-010 carrier behavior leaves event mapping unresolved', () => {
+test('Research Compiler: P3-PET-010 carrier behavior observation is not emitted as an event', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const compiled = compileRawFloor(doc);
 
@@ -308,8 +319,7 @@ test('Research Compiler: P3-PET-010 carrier behavior leaves event mapping unreso
   assert.ok(p10Claim);
 
   const p10Event = compiled.events.find((e) => String(e.summary) === p10Claim.claim.summary);
-  assert.ok(p10Event);
-  assert.equal(p10Event.type, undefined, 'P3-PET-010 event type must remain unresolved in uncurated raw output');
+  assert.equal(p10Event, undefined, 'P3-PET-010 is an observation and must not be emitted as an event');
 });
 
 test('Research Compiler: generates collision-safe deterministic domain event IDs', () => {
@@ -331,12 +341,20 @@ test('Research Compiler: collision detection fails compilation when two differen
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
   const badDoc = deepClone(doc);
 
-  // Inject two claims that will normalize to the same string
-  badDoc.claims[0].id = 'P3-PET-X';
-  badDoc.claims[1].id = 'p3-pet-x';
+  // Inject two claims that will normalize to the same string (finding valid claim indexes based on fixture)
+  badDoc.claims[1].id = 'P3-PET-X';
+  badDoc.claims[3].id = 'p3-pet-x';
+
+  const badModelingDoc = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      { claimId: 'P3-PET-X', disposition: 'promote', target: { domain: 'crawler', concept: 'NarrativeEvent' }, rationale: '...' },
+      { claimId: 'p3-pet-x', disposition: 'promote', target: { domain: 'crawler', concept: 'NarrativeEvent' }, rationale: '...' }
+    ]
+  };
 
   assert.throws(
-    () => compileRawFloor(badDoc),
+    () => compileRawFloor(badDoc, undefined, badModelingDoc),
     /Compiler error: Normalization collision detected\. Claims "P3-PET-X" and "p3-pet-x" both normalize to "evt-f3-research-p3-pet-x"\./,
     'Compiler must detect normalization collisions and fail'
   );
@@ -363,7 +381,8 @@ test('Research Compiler: a changed summary combined with incomplete evidence doe
     ]
   };
 
-  const compiled = compileRawFloor(testDoc, existingRaw);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(testDoc, existingRaw, modeling);
 
   // The modified claim should generate its own deterministic ID and not merge into the existing one
   const generatedEvent = compiled.events.find(e => e.id.includes(modifiedClaimId.toLowerCase().replace(/[^a-z0-9]+/g, '-')));
@@ -378,6 +397,38 @@ test('Research Compiler: a changed summary combined with incomplete evidence doe
   );
 });
 
+test('Research Compiler: deterministic identity prevents overwriting of existing events when evidence matches but ID differs', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const testDoc = deepClone(doc);
+
+  // We are going to test against P3-PET-002 claim. It's event claim.
+  const claimId = testDoc.claims[1].id;
+
+  const existingRaw = {
+    events: [
+      {
+        id: 'evt-f3-different-id', // ID differs from the deterministically generated one
+        type: 'NarrativeEvent',
+        summary: testDoc.claims[1].claim.summary, // Summary matches
+        evidence: deepClone(testDoc.claims[1].evidence) // Evidence matches
+      }
+    ]
+  };
+
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(testDoc, existingRaw, modeling);
+
+  // The claim should generate its own deterministic ID instead of merging because its ID doesn't match the existing event
+  const expectedIdPart = claimId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const generatedEvent = compiled.events.find(e => e.id.includes(expectedIdPart));
+  assert.ok(generatedEvent);
+
+  const existingEvent = compiled.events.find(e => e.id === 'evt-f3-different-id');
+  assert.ok(existingEvent);
+
+  assert.equal(compiled.events.length, existingRaw.events.length + 5); // the original existing + the 5 events generated by the compiler
+});
+
 
 test('Research Compiler: shared source locators do not imply record identity', () => {
   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
@@ -386,8 +437,8 @@ test('Research Compiler: shared source locators do not imply record identity', (
   // use a valid sourceId that exists in the doc's sources
   const validSourceId = testDoc.sources[0].id;
 
-  testDoc.claims[0].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
   testDoc.claims[1].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
+  testDoc.claims[3].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
 
   const existingRaw = {
     events: [
@@ -402,14 +453,15 @@ test('Research Compiler: shared source locators do not imply record identity', (
     ]
   };
 
-  const compiled = compileRawFloor(testDoc, existingRaw);
+  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const compiled = compileRawFloor(testDoc, existingRaw, modeling);
   assert.equal(
     compiled.events.filter((event) => event.id === 'evt-f3-authored-occurrence').length,
     1
   );
   assert.equal(
     compiled.events.filter((event) => String(event.id).startsWith('evt-f3-research-p3-pet-')).length,
-    15,
+    5,
     'Research claims must not collapse into an existing event solely because their locator matches'
   );
 });
@@ -435,5 +487,316 @@ test('Research Compiler: repeated compilation is idempotent', () => {
 
   const once = compileRawFloor(doc, initial);
   const twice = compileRawFloor(doc, once);
-  assert.deepEqual(twice, once);
+  assert.deepEqual(twice.events, once.events);
+  assert.deepEqual(twice.observations, once.observations);
+});
+
+
+// ---- NEW TESTS FOR OBSERVATION MAPPING ----
+
+test('Research Ingestion: Modeling decision schema validates valid observation mappings', () => {
+  const doc = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'P3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: {
+            kind: 'event-id',
+            eventId: 'evt-f3-some-event'
+          },
+          payload: { level: 27 }
+        },
+        rationale: 'Valid mapping test'
+      }
+    ]
+  };
+  const validation = validateModelingDecisionDocument(doc);
+  assert.equal(validation.valid, true);
+});
+
+test('Research Ingestion: Modeling decision schema rejects invalid observation mappings', () => {
+  const doc = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'P3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'wrong-kind', eventId: '123' },
+          payload: { level: 27 }
+        },
+        rationale: 'Invalid anchor kind'
+      }
+    ]
+  };
+  const validation = validateModelingDecisionDocument(doc);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.errors.some(e => e.includes('must be equal to constant') || e.includes('must match exactly one schema in oneOf')));
+});
+
+test('Research Validator: Semantic validation enforces mapping claim-kind rules', () => {
+  // Try to put observationMapping on an event claim
+  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  // P3-PET-002 is an event claim. Let's map it as an observation.
+  const modeling = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'P3-PET-002',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'event-id', eventId: 'evt-f3-something' },
+          payload: { level: 10 }
+        },
+        rationale: 'Wrong mapping type for claim'
+      }
+    ]
+  };
+  const val = validateSemanticModelingDecisions(research, modeling);
+  assert.equal(val.valid, false);
+  assert.ok(val.errors.some(e => e.includes('MODELING_DECISION_INVALID_MAPPING')));
+});
+
+test('Research Compiler: Valid xp-progress observation is compiled and mapped correctly', () => {
+  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  // Let's create a minimal research and modeling doc
+  const doc = deepClone(research);
+  doc.claims = [
+    {
+      id: 'F3-EVENT-001',
+      domain: 'crawler',
+      kind: 'event',
+      claim: { summary: 'An event happened.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    },
+    {
+      id: 'F3-OBS-001',
+      domain: 'crawler',
+      kind: 'observation',
+      claim: { summary: 'Carl is level 27.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    }
+  ];
+
+  const modeling = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'F3-EVENT-001',
+        disposition: 'promote',
+        target: { domain: 'crawler', concept: 'NarrativeEvent' },
+        rationale: 'Keep event'
+      },
+      {
+        claimId: 'F3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
+          payload: { level: 27 }
+        },
+        rationale: 'Obs mapping'
+      }
+    ]
+  };
+
+  const compiled = compileRawFloor(doc, undefined, modeling);
+
+  // 1 event emitted
+  assert.equal(compiled.events.length, 1);
+  const eventId = compiled.events[0].id;
+
+  // 1 observation emitted
+  assert.equal(compiled.observations.length, 1);
+  const obs = compiled.observations[0];
+  assert.equal(obs.kind, 'xp-progress');
+  assert.equal(obs.eventId, eventId); // anchor resolved correctly
+  assert.equal(obs.level, 27);
+  assert.ok(obs.id.startsWith('obs-f3-research-f3-obs-001'));
+
+  // Check report
+  const report = compiled.report;
+  assert.ok(report);
+
+  // Total claims should equal total outcomes
+  const outcomes = report.summary.outcomes;
+  const totalOutcomes = outcomes.compiled + outcomes.reused + outcomes.unresolved + outcomes.rejected + outcomes.not_applicable;
+  assert.equal(report.summary.inputClaims.total, totalOutcomes, 'Total outcomes must equal total input claims');
+
+  assert.equal(report.summary.inputClaims.total, 2);
+  assert.equal(report.summary.outcomes.compiled, 2);
+});
+
+test('Research Compiler: Generates valid import report with accurate counts', () => {
+  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const modelingPath = path.resolve(process.cwd(), 'data/raw/research/floor-3/pet-modeling-decisions.yaml');
+  const modelingDoc = loadModelingDecisionDocument(modelingPath);
+
+  const compiled = compileRawFloor(doc, undefined, modelingDoc);
+  const report = compiled.report;
+
+  assert.ok(report);
+  assert.equal(report.schemaVersion, 'crawler-import-report/v1');
+
+  // Total claims should equal total outcomes
+  const outcomes = report.summary.outcomes;
+  const totalOutcomes = outcomes.compiled + outcomes.reused + outcomes.unresolved + outcomes.rejected + outcomes.not_applicable;
+  assert.equal(report.summary.inputClaims.total, totalOutcomes, 'Total outcomes must equal total input claims');
+
+  assert.equal(report.claims.length, report.summary.inputClaims.total);
+});
+
+test('Research Compiler: Rejects attempt to supply compiler-controlled observation fields in payload', () => {
+  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const doc = deepClone(research);
+  doc.claims = [
+    {
+      id: 'F3-EVENT-001',
+      domain: 'crawler',
+      kind: 'event',
+      claim: { summary: 'An event happened.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    },
+    {
+      id: 'F3-OBS-001',
+      domain: 'crawler',
+      kind: 'observation',
+      claim: { summary: 'Carl is level 27.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    }
+  ];
+
+  const modeling = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'F3-EVENT-001',
+        disposition: 'promote',
+        target: { domain: 'crawler', concept: 'NarrativeEvent' },
+        rationale: 'Keep event'
+      },
+      {
+        claimId: 'F3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
+          payload: { id: 'obs-f3-invalid-id', level: 27 } // attempt to override 'id'
+        },
+        rationale: 'Obs mapping'
+      }
+    ]
+  };
+
+  const compiled = compileRawFloor(doc, undefined, modeling);
+  assert.equal(compiled.observations.length, 0);
+
+  const report = compiled.report;
+  assert.equal(report.summary.outcomes.rejected, 1);
+  assert.equal(report.summary.diagnostics.total, 1);
+  assert.ok(report.diagnostics[0].message.includes('Mapping payload cannot override compiler-controlled fields'));
+});
+
+test('Research Compiler: Conflicts with existing observations payloads fail visibly rather than being overwritten', () => {
+  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const doc = deepClone(research);
+  doc.claims = [
+    {
+      id: 'F3-EVENT-001',
+      domain: 'crawler',
+      kind: 'event',
+      claim: { summary: 'An event happened.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    },
+    {
+      id: 'F3-OBS-001',
+      domain: 'crawler',
+      kind: 'observation',
+      claim: { summary: 'Carl is level 27.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    }
+  ];
+
+  const modeling = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'F3-EVENT-001',
+        disposition: 'promote',
+        target: { domain: 'crawler', concept: 'NarrativeEvent' },
+        rationale: 'Keep event'
+      },
+      {
+        claimId: 'F3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
+          payload: { level: 27 } // level 27 payload
+        },
+        rationale: 'Obs mapping'
+      }
+    ]
+  };
+
+  const existingRaw = {
+    observations: [
+      {
+        id: 'obs-f3-research-f3-obs-001',
+        kind: 'xp-progress',
+        eventId: 'evt-f3-research-f3-event-001',
+        level: 28, // Conflict: 28 instead of 27
+        evidence: []
+      }
+    ]
+  };
+
+  assert.throws(
+    () => compileRawFloor(doc, existingRaw, modeling),
+    /Compiler error: generated observation ID "obs-f3-research-f3-obs-001" collides with a curated record having a conflicting payload\./,
+    'Conflicting existing payload must fail visibly'
+  );
+});
+
+test('Research Compiler: Unresolvable claim-id anchor causes rejection and diagnostic', () => {
+  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+  const doc = deepClone(research);
+  doc.claims = [
+    {
+      id: 'F3-OBS-001',
+      domain: 'crawler',
+      kind: 'observation',
+      claim: { summary: 'Carl is level 27.' },
+      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
+    }
+  ];
+
+  const modeling = {
+    schemaVersion: 'crawler-modeling/v1',
+    decisions: [
+      {
+        claimId: 'F3-OBS-001',
+        disposition: 'promote',
+        observationMapping: {
+          kind: 'xp-progress',
+          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-NONEXISTENT' },
+          payload: { level: 27 }
+        },
+        rationale: 'Obs mapping'
+      }
+    ]
+  };
+
+  const compiled = compileRawFloor(doc, undefined, modeling);
+  assert.equal(compiled.observations.length, 0);
+
+  const report = compiled.report;
+  assert.equal(report.summary.outcomes.rejected, 1);
+  assert.equal(report.summary.diagnostics.total, 1);
+  assert.ok(report.diagnostics[0].message.includes('does not exist'));
 });

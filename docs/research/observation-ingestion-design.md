@@ -2,7 +2,9 @@
 
 ## Status and authority
 
-This is the living design contract for issue #318 and future work on observation ingestion. Implementation issues should link here and describe their specific deliverable instead of copying this full specification.
+This is the living design contract for observation ingestion and the implementation contract for [PR #325](https://github.com/g1ddy/crawler-command-interface/pull/325). Implementation issues should link here and describe their specific deliverable instead of copying this full specification.
+
+**End-state rule:** deterministic code performs the bulk mechanical transformation; LLMs and humans make explicit semantic decisions; validators and the import report expose omissions, conflicts, and unsupported mappings. The importer must never use a best guess as a fallback for missing decisions or anchors. Passing schema validation proves shape and internal consistency, not that a claim is true or that a source supports it.
 
 **Decision:** observations are researched in Stage 1 and extracted as evidence claims in Stage 2. CCI-specific payload and timeline-anchor mapping belongs in Stage 3 CCI-aware modeling/curation. The deterministic importer routes approved event claims to event output and approved observation claims to the existing `observations.json`. The decomposed raw-floor files remain authoritative after curation.
 
@@ -60,6 +62,19 @@ Extend the existing `crawler-modeling/v1` decision contract with a typed observa
 Use the existing raw observation schema and domain types as the payload authority. Do not create a second observation schema or hand-maintained parallel list of payload properties. Keep evidence on the research claim and carry its provenance through the existing compiler trace; map to raw evidence only through existing supported raw fields.
 
 Disposition rules: `promote` may compile only when the mapping and anchor validate. `review` and `ledger_only` never produce runtime-ready observations. Missing mapping on a promoted observation is a validation/curation error, not permission to guess.
+
+### Required disposition and routing behavior
+
+The canonical importer requires a modeling document; it must not silently fall back to a legacy mode that promotes every claim. Every research claim must be represented in the report even when its modeling decision is absent, invalid, or not applicable.
+
+- **Event claim:** the importer may generate a deterministic raw-shaped event scaffold to remove mechanical work. The scaffold is not runtime-ready until its event type/payload and final domain identity are curated. The report distinguishes a generated scaffold from an explicit valid mapping and flags missing/invalid decisions or unresolved type/payload.
+- **Observation claim:** emit a raw observation only when disposition is `promote`, typed `observationMapping` is present and valid, payload conforms to the existing raw observation schema, and the explicit anchor resolves to an event in the same floor. Never convert an observation into an event to make it import.
+- **`review` / `ledger_only` observation:** retain it in the claim trace/report and do not emit a runtime observation.
+- **State claim:** do not blindly convert it to an event or observation. Report it as not applicable to this importer route or unresolved for the existing state/catalog/curation path, with the reason explicit.
+- **Missing or invalid decision:** report it as missing/invalid and unresolved/rejected as appropriate. Do not infer `promote` from claim kind, target, output shape, or prior runs.
+- **Existing authored data:** preserve it. Reconcile deterministic identity matches only under explicit identity/payload/evidence rules; conflicting authored semantics fail visibly rather than being overwritten.
+
+The import report is the machine-readable reconciliation ledger for the run, not merely a summary of successfully emitted records. It accounts for claims that generate no output as well as claims that do.
 
 ## 4. Existing observation kinds and payloads
 
@@ -120,6 +135,21 @@ The importer must produce a deterministic, versioned JSON report for every run, 
 - **Manual mappings:** valid explicit CCI modeling decisions grouped by resulting event type and observation kind. Do not infer manual mapping from claim kind or output shape. A manual mapping is distinct from a generated stub.
 - **Disposition/outcome:** counts by `promote`, `review`, `ledger_only`, missing/invalid disposition, and final outcome (compiled, reused/matched, unresolved, rejected/invalid, or not applicable).
 - **Diagnostics:** counts by stable diagnostic code and item-level diagnostics linked to claim and/or raw record IDs.
+
+### Required accounting invariants
+
+The following identities must hold for each report, or the importer must emit a report-level validation failure:
+
+1. `summary.inputClaims.total` equals the number of parsed claim entries being accounted for; invalid/duplicate IDs are diagnosed, not silently deduplicated.
+2. Counts by claim kind reconcile to the total input-claim count.
+3. Every claim has exactly one item-level outcome and one disposition status (`promote`, `review`, `ledger_only`, missing, or invalid).
+4. Every claim unknown entry has an item-level report entry; identical wording on separate claims counts separately.
+5. Generated event/observation stub counts equal newly generated output records, grouped by actual output type/kind.
+6. Reused/matched records are counted separately from newly generated stubs; a reused record is not a new stub.
+7. Manual-mapping counts represent valid explicit CCI decisions, not merely a target, claim kind, or output record.
+8. Diagnostic totals equal the number of diagnostic entries and use stable machine-readable codes.
+9. Identical inputs and existing raw records produce deterministic report content with no machine paths, run timestamps, or nondeterministic ordering.
+10. No rejected or unresolved observation claim produces a runtime-ready observation; report accounting still includes it.
 
 ### Definitions and correctness
 
