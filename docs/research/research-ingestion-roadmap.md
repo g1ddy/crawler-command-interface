@@ -62,32 +62,32 @@ Update this table when work moves to `In progress` or `Complete`. Do not mark a 
 
 ### Tasks
 
-- [ ] **R0.1 — Require explicit modeling input in the canonical CLI.**
+- [x] **R0.1 — Require explicit modeling input in the canonical CLI.**
   - Update `scripts/compile-research-raw.mjs` to accept a documented `--modeling <path>` argument and load/validate that document.
   - Remove the unsafe default behavior that invokes the compiler without modeling decisions.
   - If modeling input is missing, unreadable, malformed, or schema-invalid, exit non-zero with an actionable error before writing any output.
   - Remove or document any positional-argument compatibility path that could accidentally omit modeling input. Do not retain a hidden fallback that changes the contract.
   - Add CLI tests for missing flag, missing file, malformed document, and valid invocation.
 
-- [ ] **R0.2 — Make missing and invalid decisions non-promoting.**
+- [x] **R0.2 — Make missing and invalid decisions non-promoting.**
   - In compiler and validator paths, distinguish at least: valid explicit disposition, missing decision, duplicate decision, decision for unknown claim, and invalid decision.
   - Never default missing disposition to `promote`.
   - A claim with no valid decision must emit no event, observation, catalog record, or other runtime-ready output on the strength of that claim.
   - Keep the claim in trace/report output with its real state and actionable reason.
   - Ensure a valid decision for one claim cannot mask an invalid or duplicate decision for another.
 
-- [ ] **R0.3 — Reconcile claim-level and aggregate disposition accounting.**
+- [x] **R0.3 — Reconcile claim-level and aggregate disposition accounting.**
   - Each input claim has exactly one final item-level outcome and one accurately represented disposition state.
   - Aggregate counts are derived from the item-level claim results rather than maintained independently.
   - Missing/invalid decisions are not reported as `promote` in one location and `missing` in another.
   - Add tests that compare aggregate totals with detailed claim records.
 
-- [ ] **R0.4 — Protect compiler-owned payload fields by property presence.**
+- [x] **R0.4 — Protect compiler-owned payload fields by property presence.**
   - Mapping payloads must reject user-supplied compiler-owned fields `id`, `kind`, `eventId`, `evidence`, and `unknowns` whenever those keys are present, including values `null`, `false`, `0`, or an empty string.
   - Compiler-owned identity, kind, anchor, and provenance must be written only by the compiler from validated inputs.
   - Add a test for each reserved key with both a normal value and a falsy value.
 
-- [ ] **R0.5 — Define the safe failure/write boundary.**
+- [x] **R0.5 — Define the safe failure/write boundary.**
   - Validation failures must not partially overwrite existing raw files.
   - Validate all inputs and build all outputs in memory before replacing any output file.
   - Write outputs using a safe temporary-file/replace strategy or an equivalent all-validation-before-write approach consistent with repository conventions.
@@ -199,19 +199,19 @@ Update this table when work moves to `In progress` or `Complete`. Do not mark a 
 
 ### Tasks
 
-- [ ] **R3.1 — Define deterministic reconciliation by identity.**
+- [x] **R3.1 — Define deterministic reconciliation by identity.**
   - Reconcile generated records by deterministic compiler identity and explicit field comparison—not by matching summaries or locators alone.
   - Preserve unrelated manually authored events, observations, catalog entries, and sources exactly.
   - Do not silently rewrite a curated ID, kind, payload, anchor, or other semantic field.
   - Document the exact deterministic evidence-merge rule. Evidence merging must not vary with run order and must not remove provenance.
 
-- [ ] **R3.2 — Distinguish generated, reused, and conflicting records.**
+- [x] **R3.2 — Distinguish generated, reused, and conflicting records.**
   - Same deterministic identity and equivalent compiler-owned semantic content: reuse the record.
   - Same identity but different kind, payload, anchor, or incompatible evidence semantics: fail with a conflict diagnostic.
   - Different identity: preserve the existing record and generate only if it does not collide with another identity.
   - A record must not be counted as both newly generated and reused.
 
-- [ ] **R3.3 — Add two-pass idempotency tests.**
+- [x] **R3.3 — Add two-pass idempotency tests.**
   - Compile the same research + modeling inputs once.
   - Feed the first compilation's output back as existing raw data and compile a second time.
   - Assert stable IDs, kinds, payloads, anchors, order, evidence, and unknowns.
@@ -219,7 +219,7 @@ Update this table when work moves to `In progress` or `Complete`. Do not mark a 
   - Assert unrelated authored records are byte/structurally unchanged.
   - Repeat the test for event and observation outputs.
 
-- [ ] **R3.4 — Add collision and conflict tests.**
+- [x] **R3.4 — Add collision and conflict tests.**
   - Normalized ID collision between different claim IDs fails.
   - Existing generated identity with a conflicting observation kind, payload, or anchor fails.
   - Falsy reserved fields fail (see R0.4).
