@@ -1,0 +1,2459 @@
+commit 631febbf50d4a4c34b3226eda091e539fad0680e
+Author: google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>
+Date:   Wed Oct 21 23:04:07 2026 +0000
+
+    fix(importer): strict stage 1 modeling and schema validation
+
+diff --git a/.maritime/dependency-graph.json b/.maritime/dependency-graph.json
+index e579b93..d55a059 100644
+--- a/.maritime/dependency-graph.json
++++ b/.maritime/dependency-graph.json
+@@ -800,7 +800,8 @@
+       "valid": true,
+       "dependencies": [],
+       "dependents": [
+-        "app/domain/validation.ts"
++        "app/domain/validation.ts",
++        "app/domain/research-compiler.ts"
+       ],
+       "coreModule": false,
+       "couldNotResolve": false,
+@@ -852,6 +853,7 @@
+       "dependencies": [],
+       "dependents": [
+         "app/domain/validation.ts",
++        "app/domain/research-compiler.ts",
+         "app/domain/research-validator.ts"
+       ],
+       "coreModule": false,
+@@ -871,6 +873,7 @@
+       "dependencies": [],
+       "dependents": [
+         "app/domain/validation.ts",
++        "app/domain/research-compiler.ts",
+         "app/domain/research-validator.ts"
+       ],
+       "coreModule": false,
+@@ -889,6 +892,7 @@
+       "dependencies": [],
+       "dependents": [
+         "app/domain/validation.ts",
++        "app/domain/research-compiler.ts",
+         "app/domain/research-validator.ts"
+       ],
+       "coreModule": false,
+@@ -1978,6 +1982,23 @@
+           "valid": true,
+           "matchesDoNotFollow": false
+         },
++        {
++          "circular": false,
++          "coreModule": false,
++          "couldNotResolve": false,
++          "dependencyTypes": [
++            "local",
++            "import"
++          ],
++          "dynamic": false,
++          "exoticallyRequired": false,
++          "followable": false,
++          "moduleSystem": "es6",
++          "module": "./schema/crawler-floor-raw.schema.json",
++          "resolved": "app/domain/schema/crawler-floor-raw.schema.json",
++          "valid": true,
++          "matchesDoNotFollow": false
++        },
+         {
+           "circular": false,
+           "coreModule": false,
+@@ -1995,6 +2016,57 @@
+           "resolved": "app/domain/types/research.ts",
+           "valid": true,
+           "matchesDoNotFollow": false
++        },
++        {
++          "circular": false,
++          "coreModule": false,
++          "couldNotResolve": false,
++          "dependencyTypes": [
++            "npm",
++            "type-import"
++          ],
++          "dynamic": false,
++          "exoticallyRequired": false,
++          "followable": false,
++          "moduleSystem": "es6",
++          "module": "ajv",
++          "resolved": "node_modules/ajv/dist/ajv.js",
++          "valid": true,
++          "matchesDoNotFollow": true
++        },
++        {
++          "circular": false,
++          "coreModule": false,
++          "couldNotResolve": false,
++          "dependencyTypes": [
++            "npm",
++            "import"
++          ],
++          "dynamic": false,
++          "exoticallyRequired": false,
++          "followable": false,
++          "moduleSystem": "es6",
++          "module": "ajv-formats",
++          "resolved": "node_modules/ajv-formats/dist/index.js",
++          "valid": true,
++          "matchesDoNotFollow": true
++        },
++        {
++          "circular": false,
++          "coreModule": false,
++          "couldNotResolve": false,
++          "dependencyTypes": [
++            "npm",
++            "import"
++          ],
++          "dynamic": false,
++          "exoticallyRequired": false,
++          "followable": false,
++          "moduleSystem": "es6",
++          "module": "ajv/dist/2020.js",
++          "resolved": "node_modules/ajv/dist/2020.js",
++          "valid": true,
++          "matchesDoNotFollow": true
+         }
+       ],
+       "dependents": [],
+@@ -2229,7 +2301,7 @@
+           "coreModule": false,
+           "couldNotResolve": false,
+           "dependencyTypes": [
+-            "npm-dev",
++            "npm",
+             "import"
+           ],
+           "dynamic": false,
+@@ -2276,7 +2348,7 @@
+       "followable": false,
+       "matchesDoNotFollow": true,
+       "dependencyTypes": [
+-        "npm-dev",
++        "npm",
+         "import"
+       ]
+     },
+@@ -10227,11 +10299,11 @@
+     "ignore": 0,
+     "info": 0,
+     "totalCruised": 174,
+-    "totalDependenciesCruised": 455,
++    "totalDependenciesCruised": 459,
+     "violations": [],
+     "warn": 0,
+     "optionsUsed": {
+-      "baseDir": "/home/runner/work/crawler-command-interface/crawler-command-interface",
++      "baseDir": "/app",
+       "combinedDependencies": false,
+       "detectJSDocImports": false,
+       "detectProcessBuiltinModuleCalls": false,
+diff --git a/app/domain/research-compiler.ts b/app/domain/research-compiler.ts
+index 62dd517..8a4f754 100644
+--- a/app/domain/research-compiler.ts
++++ b/app/domain/research-compiler.ts
+@@ -1,10 +1,8 @@
+-import type { ResearchClaimDocument, ModelingDecisionDocument } from './types/research.ts';
+-import {
+-  validateResearchClaimDocument,
+-  validateModelingDecisionDocument,
+-  validateSemanticModelingDecisions,
+-  validateTraceCompleteness,
+-} from './research-validator.ts';
++import { validateResearchClaimDocument, validateModelingDecisionDocument, validateSemanticModelingDecisions, validateTraceCompleteness } from './research-validator.ts';
++import type { ResearchClaimDocument, ModelingDecisionDocument, ModelingDecision } from './types/research.ts';
++import Ajv2020 from 'ajv/dist/2020.js';
++import addFormats from 'ajv-formats';
++import crawlerFloorRawSchema from './schema/crawler-floor-raw.schema.json' with { type: 'json' };
+
+ export interface ExistingRawFloorData {
+   sources?: Array<Record<string, unknown>>;
+@@ -13,6 +11,7 @@ export interface ExistingRawFloorData {
+     achievements?: Array<Record<string, unknown> | string>;
+   };
+   events?: Array<Record<string, unknown>>;
++  observations?: Array<Record<string, unknown>>;
+ }
+
+ export interface RawFloorCompilation {
+@@ -22,6 +21,8 @@ export interface RawFloorCompilation {
+     achievements: Array<Record<string, unknown> | string>;
+   };
+   events: Array<Record<string, unknown>>;
++  observations: Array<Record<string, unknown>>;
++  report?: Record<string, unknown>;
+ }
+
+ export interface ResearchClaimTraceMapping {
+@@ -56,15 +57,7 @@ export interface CompiledResearchOutput {
+   claimMappings: ResearchClaimTraceMapping[];
+ }
+
+-/**
+- * Compiles a validated research claim document directly into existing CCI raw JSON shapes
+- * (events, catalog, and sources) preserving YAML claim order, evidence, locators, and explicit unknowns,
+- * without intermediate candidate/scaffold models or manufactured floor metadata.
+- */
+ function generateResearchEventId(floor: number, claimId: string): string {
+-  // Preserve claim-ID distinctions in the temporary curation key. The key is
+-  // deliberately not a semantic/domain identity; Jules replaces it when the
+-  // occurrence is curated into an authored event.
+   const normalized = claimId
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, '-')
+@@ -72,6 +65,14 @@ function generateResearchEventId(floor: number, claimId: string): string {
+   return `evt-f${floor}-research-${normalized}`;
+ }
+
++function generateResearchObservationId(floor: number, claimId: string): string {
++  const normalized = claimId
++    .toLowerCase()
++    .replace(/[^a-z0-9]+/g, '-')
++    .replace(/^-+|-+$/g, '');
++  return `obs-f${floor}-research-${normalized}`;
++}
++
+ function evidenceKey(evidence: unknown): string {
+   return JSON.stringify(evidence ?? []);
+ }
+@@ -86,23 +87,51 @@ function hasSameResearchEvidence(
+   );
+ }
+
+-/**
+- * Compiles research into the existing CCI raw representation.
+- *
+- * This function deliberately performs only mechanical work:
+- * - preserve existing authored data;
+- * - preserve research ordering for newly emitted records;
+- * - carry evidence/unknowns forward;
+- * - use deterministic temporary research IDs;
+- * - never choose CCI event types or payload semantics.
+- *
+- * Existing records are reconciled only by deterministic compiler identity or
+- * an exact summary + complete evidence match. A shared locator alone is never
+- * treated as record identity.
+- */
++import importReportSchema from './schema/import-report.schema.json' with { type: 'json' };
++
++function deepClone<T>(obj: T): T {
++  return JSON.parse(JSON.stringify(obj));
++}
++
++function deepEqual(a: any, b: any): boolean { // eslint-disable-line @typescript-eslint/no-explicit-any
++  if (a === b) return true;
++  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') return false;
++  const keysA = Object.keys(a);
++  const keysB = Object.keys(b);
++  if (keysA.length !== keysB.length) return false;
++  for (const key of keysA) {
++    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
++  }
++  return true;
++}
++
++let rawObservationValidator: import('ajv').ValidateFunction;
++function getRawObservationValidator(): import('ajv').ValidateFunction {
++  if (!rawObservationValidator) {
++    const ajv = new Ajv2020({ allErrors: true, verbose: true });
++    addFormats(ajv);
++    ajv.addSchema(crawlerFloorRawSchema);
++    rawObservationValidator = ajv.compile({
++      ...(crawlerFloorRawSchema as any).$defs.observation, // eslint-disable-line @typescript-eslint/no-explicit-any
++      $defs: (crawlerFloorRawSchema as any).$defs // eslint-disable-line @typescript-eslint/no-explicit-any
++    });
++  }
++  return rawObservationValidator;
++}
++
++let importReportValidator: import('ajv').ValidateFunction;
++function getImportReportValidator(): import('ajv').ValidateFunction {
++  if (!importReportValidator) {
++    const ajv = new Ajv2020({ allErrors: true, verbose: true });
++    importReportValidator = ajv.compile(importReportSchema);
++  }
++  return importReportValidator;
++}
++
+ export function compileRawFloor(
+   researchDoc: ResearchClaimDocument,
+-  existingRaw?: ExistingRawFloorData
++  existingRaw?: ExistingRawFloorData,
++  modelingDoc?: ModelingDecisionDocument
+ ): RawFloorCompilation {
+   const researchVal = validateResearchClaimDocument(researchDoc);
+   if (!researchVal.valid) {
+@@ -111,100 +140,384 @@ export function compileRawFloor(
+     );
+   }
+
++  const decisionMap = new Map<string, ModelingDecision>();
++  if (modelingDoc) {
++    const modelingVal = validateModelingDecisionDocument(modelingDoc);
++    if (!modelingVal.valid) {
++      throw new Error(`Compiler error: Modeling decision document schema validation failed:\n  - ${modelingVal.errors.join('\n  - ')}`);
++    }
++
++    const semanticVal = validateSemanticModelingDecisions(researchDoc, modelingDoc);
++    if (!semanticVal.valid) {
++      throw new Error(`Compiler error: Semantic modeling decision validation failed:\n  - ${semanticVal.errors.join('\n  - ')}`);
++    }
+
++    for (const decision of modelingDoc.decisions) {
++      decisionMap.set(decision.claimId, decision);
++    }
++  }
+
+-  const events: Array<Record<string, unknown>> = existingRaw?.events
+-    ? JSON.parse(JSON.stringify(existingRaw.events))
+-    : [];
++  const events: Array<Record<string, unknown>> = existingRaw?.events ? deepClone(existingRaw.events) : [];
++  const observations: Array<Record<string, unknown>> = existingRaw?.observations ? deepClone(existingRaw.observations) : [];
++  const existingSources: Array<Record<string, unknown>> = existingRaw?.sources ? deepClone(existingRaw.sources) : [];
++  const existingCatalogItems: Array<Record<string, unknown> | string> = existingRaw?.catalog?.items ? deepClone(existingRaw.catalog.items) : [];
++  const existingCatalogAchievements: Array<Record<string, unknown> | string> = existingRaw?.catalog?.achievements ? deepClone(existingRaw.catalog.achievements) : [];
+
+-  const existingSources: Array<Record<string, unknown>> = existingRaw?.sources
+-    ? JSON.parse(JSON.stringify(existingRaw.sources))
+-    : [];
++  const usedEventIds = new Set<string>(events.map((e) => String(e.id)));
++  const generatedIdToClaimId = new Map<string, string>();
+
+-  const existingCatalogItems: Array<Record<string, unknown> | string> =
+-    existingRaw?.catalog?.items
+-      ? JSON.parse(JSON.stringify(existingRaw.catalog.items))
+-      : [];
++  const usedObservationIds = new Set<string>(observations.map((o) => String(o.id)));
++  const generatedObsIdToClaimId = new Map<string, string>();
++
++  // For report
++  const report = {
++    schemaVersion: "crawler-import-report/v1",
++    summary: {
++      inputClaims: { total: 0, event: 0, observation: 0, state: 0 },
++      unknowns: { total: 0, event: 0, observation: 0, state: 0, unresolved: 0 },
++      generatedStubs: { events: 0, observations: 0 },
++      reusedRecords: { events: 0, observations: 0 },
++      manualMappings: { events: 0, observations: 0 },
++      dispositions: { promote: 0, review: 0, ledger_only: 0, missing: 0 },
++      outcomes: { compiled: 0, reused: 0, unresolved: 0, rejected: 0, not_applicable: 0 },
++      diagnostics: { total: 0 }
++    },
++    unknowns: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
++    eventStubs: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
++    observationStubs: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
++    manualMappings: {
++      events: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
++      observations: [] as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
++    },
++    dispositions: {
++      promote: [] as string[],
++      review: [] as string[],
++      ledger_only: [] as string[],
++      missing: [] as string[]
++    },
++    outcomes: {
++      compiled: [] as string[],
++      reused: [] as string[],
++      unresolved: [] as string[],
++      rejected: [] as string[],
++      not_applicable: [] as string[]
++    },
++    diagnostics: [] as any[], // eslint-disable-line @typescript-eslint/no-explicit-any
++    claims: [] as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
++  };
+
+-  const existingCatalogAchievements: Array<Record<string, unknown> | string> =
+-    existingRaw?.catalog?.achievements
+-      ? JSON.parse(JSON.stringify(existingRaw.catalog.achievements))
+-      : [];
++  const addDiagnostic = (code: string, message: string, claimId: string, recordId?: string) => {
++    report.diagnostics.push({ code, message, claimId, recordId });
++    report.summary.diagnostics.total++;
++  };
+
+-  const usedEventIds = new Set<string>(
+-    events.map((event) => String(event.id))
+-  );
++  const claimMap = new Map<string, any>(); // eslint-disable-line @typescript-eslint/no-explicit-any
++  const outputEventIdForClaim = new Map<string, string>();
+
+-  const generatedIdToClaimId = new Map<string, string>();
++  for (const claim of researchDoc.claims) {
++    claimMap.set(claim.id, claim);
++    report.summary.inputClaims.total++;
++    (report.summary.inputClaims as any)[claim.kind]++; // eslint-disable-line @typescript-eslint/no-explicit-any
++
++    if (claim.unknowns) {
++      for (const uk of claim.unknowns) {
++        report.summary.unknowns.total++;
++        (report.summary.unknowns as any)[claim.kind]++; // eslint-disable-line @typescript-eslint/no-explicit-any
++        report.unknowns.push({ claimId: claim.id, text: uk, status: 'unresolved' });
++        report.summary.unknowns.unresolved++;
++      }
++    }
++  }
+
+   for (const claim of researchDoc.claims) {
+-    const eventId = generateResearchEventId(researchDoc.floor, claim.id);
+-
+-    if (generatedIdToClaimId.has(eventId)) {
+-      const existingClaimId = generatedIdToClaimId.get(eventId);
+-      if (existingClaimId !== claim.id) {
+-        throw new Error(
+-          `Compiler error: Normalization collision detected. Claims "${existingClaimId}" and "${claim.id}" both normalize to "${eventId}".`
+-        );
++    const decision = decisionMap.get(claim.id);
++    let disposition = 'missing';
++    if (decision) {
++      disposition = decision.disposition;
++      (report.summary.dispositions as any)[disposition]++; // eslint-disable-line @typescript-eslint/no-explicit-any
++      (report.dispositions as any)[disposition].push(claim.id); // eslint-disable-line @typescript-eslint/no-explicit-any
++    } else {
++      if (!modelingDoc) {
++        disposition = 'promote';
+       }
++      report.summary.dispositions.missing++;
++      report.dispositions.missing.push(claim.id);
+     }
+-    generatedIdToClaimId.set(eventId, claim.id);
+
+-    const matchingIdIndex = events.findIndex((event) => String(event.id) === eventId);
+-    if (matchingIdIndex >= 0 && !hasSameResearchEvidence(events[matchingIdIndex], claim)) {
+-      throw new Error(
+-        `Compiler error: deterministic research event ID "${eventId}" collides with an unrelated authored event.`
+-      );
++    if (claim.kind === 'state') {
++      report.summary.outcomes.not_applicable++;
++      report.outcomes.not_applicable.push(claim.id);
++      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
++      continue;
+     }
+
+-    const existingIndex = matchingIdIndex >= 0
+-      ? matchingIdIndex
+-      : events.findIndex((event) => hasSameResearchEvidence(event, claim));
++    if (claim.kind === 'event') {
++      if (!decision && modelingDoc) {
++        report.summary.outcomes.unresolved++;
++        report.outcomes.unresolved.push(claim.id);
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
++        continue;
++      }
++
++      if (disposition === 'review' || disposition === 'ledger_only') {
++        report.summary.outcomes.not_applicable++;
++        report.outcomes.not_applicable.push(claim.id);
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
++        continue;
++      }
++
++      const eventId = generateResearchEventId(researchDoc.floor, claim.id);
+
+-    if (existingIndex >= 0) {
+-      const existingEvent = events[existingIndex];
++      if (generatedIdToClaimId.has(eventId)) {
++        const existingClaimId = generatedIdToClaimId.get(eventId);
++        if (existingClaimId !== claim.id) {
++          throw new Error(`Compiler error: Normalization collision detected. Claims "${existingClaimId}" and "${claim.id}" both normalize to "${eventId}".`);
++        }
++      }
++      generatedIdToClaimId.set(eventId, claim.id);
++
++      const matchingIdIndex = events.findIndex((event) => String(event.id) === eventId);
++
++      const existingIndex = matchingIdIndex;
++
++      if (existingIndex >= 0) {
++        const existingEvent = events[existingIndex];
++
++        if (!hasSameResearchEvidence(existingEvent, claim)) {
++          throw new Error(`Compiler error: deterministic research event ID "${eventId}" collides with an unrelated authored event.`);
++        }
++        const existingEvidence = Array.isArray(existingEvent.evidence) ? existingEvent.evidence : [];
++        const mergedEvidence = new Map<string, Record<string, unknown>>();
++        for (const evidence of [...existingEvidence, ...claim.evidence]) {
++          mergedEvidence.set(evidenceKey(evidence), evidence);
++        }
++        existingEvent.evidence = Array.from(mergedEvidence.values());
++
++        if (claim.unknowns?.length) {
++          const existingUnknowns = Array.isArray(existingEvent.unknowns) ? existingEvent.unknowns.map(String) : [];
++          existingEvent.unknowns = Array.from(new Set([...existingUnknowns, ...claim.unknowns]));
++        }
++
++        outputEventIdForClaim.set(claim.id, String(existingEvent.id));
++        report.summary.reusedRecords.events++;
++        report.summary.outcomes.reused++;
++        report.outcomes.reused.push(claim.id);
++
++        if (existingEvent.type) {
++           report.summary.manualMappings.events++;
++           report.manualMappings.events.push({ claimId: claim.id, recordId: existingEvent.id, mappedType: existingEvent.type });
++        }
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: existingEvent.id });
++        continue;
++      }
++
++      if (usedEventIds.has(eventId)) {
++        throw new Error(`Compiler error: deterministic research event ID "${eventId}" is already used by an unrelated event.`);
++      }
++      usedEventIds.add(eventId);
++
++      events.push({
++        id: eventId,
++        summary: claim.claim.summary,
++        position: { floor: researchDoc.floor },
++        evidence: deepClone(claim.evidence) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
++        ...(claim.unknowns?.length ? { unknowns: [...claim.unknowns] } : {}),
++      });
+
+-      // Existing CCI semantics are authoritative. Only merge research evidence
+-      // and explicit unknowns; never overwrite type, payload, position, or ID.
+-      const existingEvidence = Array.isArray(existingEvent.evidence)
+-        ? existingEvent.evidence
+-        : [];
++      outputEventIdForClaim.set(claim.id, eventId);
++      report.summary.generatedStubs.events++;
++      report.eventStubs.push({ claimId: claim.id, recordId: eventId, typePopulated: false });
++
++      // If modelingDoc is provided but there is no decision target, it's unresolved
++      if (modelingDoc && decision && !decision.target) {
++         report.summary.outcomes.unresolved++;
++         report.outcomes.unresolved.push(claim.id);
++         addDiagnostic('EVENT_MAPPING_UNRESOLVED', `Event mapping unresolved for claim ${claim.id}. Compiler generated a stub instead of a curated type.`, claim.id, eventId);
++         report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved', recordId: eventId });
++      } else {
++         report.summary.outcomes.compiled++;
++         report.outcomes.compiled.push(claim.id);
++         report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: eventId });
++      }
++    }
++  }
++
++  // 2. Process Observation claims
++  for (const claim of researchDoc.claims) {
++    if (claim.kind !== 'observation') continue;
++
++    const decision = decisionMap.get(claim.id);
++    let disposition = 'missing';
++    if (decision) {
++      disposition = decision.disposition;
++    } else {
++      if (!modelingDoc) {
++        disposition = 'promote';
++      }
++    }
++
++    if (disposition === 'review' || disposition === 'ledger_only') {
++      report.summary.outcomes.not_applicable++;
++      report.outcomes.not_applicable.push(claim.id);
++      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'not_applicable' });
++      continue;
++    }
++
++    if (disposition !== 'promote') {
++      report.summary.outcomes.rejected++;
++      report.outcomes.rejected.push(claim.id);
++      addDiagnostic('OBSERVATION_NOT_PROMOTED', `Observation claim ${claim.id} is missing a promote disposition.`, claim.id);
++      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++      continue;
++    }
++
++    if (!decision || !decision.observationMapping) {
++      report.summary.outcomes.unresolved++;
++      report.outcomes.unresolved.push(claim.id);
++      addDiagnostic('OBSERVATION_MISSING_MAPPING', `Promoted observation claim ${claim.id} missing observationMapping.`, claim.id);
++      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'unresolved' });
++      continue;
++    }
++
++    const mapping = decision.observationMapping;
++    let anchorEventId: string | undefined;
++
++    if (mapping.anchor.kind === 'event-id') {
++      if (!usedEventIds.has(mapping.anchor.eventId)) {
++        report.summary.outcomes.rejected++;
++        report.outcomes.rejected.push(claim.id);
++        addDiagnostic('INVALID_ANCHOR', `Anchor event ID "${mapping.anchor.eventId}" does not exist.`, claim.id);
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++        continue;
++      }
++      anchorEventId = mapping.anchor.eventId;
++    } else if (mapping.anchor.kind === 'claim-id') {
++      const anchorClaim = claimMap.get(mapping.anchor.claimId);
++      if (!anchorClaim) {
++        report.summary.outcomes.rejected++;
++        report.outcomes.rejected.push(claim.id);
++        addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" does not exist.`, claim.id);
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++        continue;
++      }
++      if (anchorClaim.kind !== 'event') {
++        report.summary.outcomes.rejected++;
++        report.outcomes.rejected.push(claim.id);
++        addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" is not an event claim.`, claim.id);
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++        continue;
++      }
++      anchorEventId = outputEventIdForClaim.get(mapping.anchor.claimId);
++      if (!anchorEventId) {
++        report.summary.outcomes.rejected++;
++        report.outcomes.rejected.push(claim.id);
++        addDiagnostic('INVALID_ANCHOR', `Anchor claim ID "${mapping.anchor.claimId}" did not produce an event.`, claim.id);
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++        continue;
++      }
++    }
++
++    if (!anchorEventId) {
++      report.summary.outcomes.rejected++;
++      report.outcomes.rejected.push(claim.id);
++      addDiagnostic('INVALID_ANCHOR', `Could not resolve anchor for claim ${claim.id}.`, claim.id);
++      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++      continue;
++    }
++
++    const obsId = generateResearchObservationId(researchDoc.floor, claim.id);
++
++    if (generatedObsIdToClaimId.has(obsId)) {
++        const existingClaimId = generatedObsIdToClaimId.get(obsId);
++        if (existingClaimId !== claim.id) {
++          throw new Error(`Compiler error: Normalization collision detected. Claims "${existingClaimId}" and "${claim.id}" both normalize to "${obsId}".`);
++        }
++    }
++    generatedObsIdToClaimId.set(obsId, claim.id);
++
++    const matchingIdIndex = observations.findIndex((o) => String(o.id) === obsId);
++
++    let existingObs = null;
++    if (matchingIdIndex >= 0) {
++      existingObs = observations[matchingIdIndex];
++      if (existingObs.kind !== mapping.kind || existingObs.eventId !== anchorEventId) {
++         throw new Error(`Compiler error: generated observation ID "${obsId}" collides with curated data or conflicting payload.`);
++      }
++
++      // Payload conflict check
++      const mappedPayload = mapping.payload ? deepClone(mapping.payload) : {};
++      const { id: _id, kind: _kind, eventId: _eventId, evidence: _evidence, unknowns: _unknowns, ...existingPayload } = existingObs;
++      if (!deepEqual(mappedPayload, existingPayload)) {
++         throw new Error(`Compiler error: generated observation ID "${obsId}" collides with a curated record having a conflicting payload.`);
++      }
++
++      const existingEvidence = Array.isArray(existingObs.evidence) ? existingObs.evidence : [];
+       const mergedEvidence = new Map<string, Record<string, unknown>>();
+       for (const evidence of [...existingEvidence, ...claim.evidence]) {
+         mergedEvidence.set(evidenceKey(evidence), evidence);
+       }
+-      existingEvent.evidence = Array.from(mergedEvidence.values());
++      existingObs.evidence = Array.from(mergedEvidence.values());
+
+       if (claim.unknowns?.length) {
+-        const existingUnknowns = Array.isArray(existingEvent.unknowns)
+-          ? existingEvent.unknowns.map(String)
+-          : [];
+-        existingEvent.unknowns = Array.from(
+-          new Set([...existingUnknowns, ...claim.unknowns])
+-        );
++        const existingUnknowns = Array.isArray(existingObs.unknowns) ? existingObs.unknowns.map(String) : [];
++        existingObs.unknowns = Array.from(new Set([...existingUnknowns, ...claim.unknowns]));
+       }
++
++      report.summary.reusedRecords.observations++;
++      report.summary.outcomes.reused++;
++      report.outcomes.reused.push(claim.id);
++      report.summary.manualMappings.observations++;
++      report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'success' });
++      report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'reused', recordId: obsId });
+       continue;
+     }
+
+-    const newEventId = eventId;
+-    if (usedEventIds.has(newEventId)) {
+-      // This should only be reachable for an ID collision with an unrelated
+-      // authored record. Do not silently invent an alternate semantic ID.
+-      throw new Error(
+-        `Compiler error: deterministic research event ID "${newEventId}" is already used by an unrelated event.`
+-      );
++    if (usedObservationIds.has(obsId)) {
++        throw new Error(`Compiler error: generated observation ID "${obsId}" collides with curated data.`);
+     }
+-    usedEventIds.add(newEventId);
+
+-    events.push({
+-      id: newEventId,
+-      summary: claim.claim.summary,
+-      position: { floor: researchDoc.floor },
+-      evidence: JSON.parse(JSON.stringify(claim.evidence)),
+-      ...(claim.unknowns?.length
+-        ? { unknowns: [...claim.unknowns] }
+-        : {}),
+-    });
++    // Ensure we do not override compiler-controlled fields
++    const payload = mapping.payload ? deepClone(mapping.payload) : {};
++    if (payload.id || payload.kind || payload.eventId || payload.evidence || payload.unknowns) {
++       report.summary.outcomes.rejected++;
++       report.outcomes.rejected.push(claim.id);
++       addDiagnostic('INVALID_PAYLOAD', `Mapping payload cannot override compiler-controlled fields like id, kind, eventId, evidence, or unknowns.`, claim.id);
++       report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++       report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'unresolved' });
++       continue;
++    }
++
++    const newObs = {
++      id: obsId,
++      kind: mapping.kind,
++      eventId: anchorEventId,
++      ...payload,
++      evidence: deepClone(claim.evidence),
++      ...(claim.unknowns?.length ? { unknowns: [...claim.unknowns] } : {})
++    };
++
++    const validator = getRawObservationValidator();
++    if (!validator(newObs)) {
++        report.summary.outcomes.rejected++;
++        report.outcomes.rejected.push(claim.id);
++        const errStr = validator.errors?.map((e: any) => e.message).join(", ") || "Unknown error"; // eslint-disable-line @typescript-eslint/no-explicit-any
++        addDiagnostic('INVALID_PAYLOAD', `Payload for ${obsId} failed schema validation: ${errStr}`, claim.id);
++        report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'rejected' });
++        report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'unresolved' });
++        continue;
++    }
++
++    usedObservationIds.add(obsId);
++    observations.push(newObs);
++
++    report.summary.generatedStubs.observations++;
++    report.observationStubs.push({ claimId: claim.id, recordId: obsId, kind: mapping.kind, eventId: anchorEventId, outcome: 'compiled' });
++    report.summary.manualMappings.observations++;
++    report.manualMappings.observations.push({ claimId: claim.id, recordId: obsId, mappedKind: mapping.kind, outcome: 'success' });
++
++    report.summary.outcomes.compiled++;
++    report.outcomes.compiled.push(claim.id);
++    report.claims.push({ id: claim.id, kind: claim.kind, disposition, outcome: 'compiled', recordId: obsId });
+   }
+
+   const sourceMap = new Map<string, Record<string, unknown>>();
+@@ -226,6 +539,12 @@ export function compileRawFloor(
+     }
+   }
+
++  const reportValidator = getImportReportValidator();
++  if (!reportValidator(report)) {
++    const errors = reportValidator.errors?.map(e => `${e.instancePath} ${e.message}`).join(', ');
++    throw new Error(`Compiler error: Generated import report failed schema validation: ${errors}`);
++  }
++
+   return {
+     sources: Array.from(sourceMap.values()),
+     catalog: {
+@@ -233,6 +552,8 @@ export function compileRawFloor(
+       achievements: existingCatalogAchievements,
+     },
+     events,
++    observations,
++    report
+   };
+ }
+
+@@ -281,7 +602,9 @@ export function compileResearchTrace(
+
+     if (decision === 'promote') {
+       if (!modelingDecision.target?.domain || !modelingDecision.target?.concept) {
+-        throw new Error(`Compiler error: Promoted claim "${claim.id}" lacks target domain or concept.`);
++        if (!modelingDecision.observationMapping) {
++           throw new Error(`Compiler error: Promoted claim "${claim.id}" lacks target domain or concept.`);
++        }
+       }
+       promotedClaimCount++;
+     } else if (decision === 'review') {
+@@ -301,7 +624,7 @@ export function compileResearchTrace(
+         rationale: modelingDecision.rationale
+       },
+       originatingClaimIds: [claim.id],
+-      evidence: JSON.parse(JSON.stringify(claim.evidence)),
++      evidence: deepClone(claim.evidence) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+       unknowns: claim.unknowns ? [...claim.unknowns] : undefined,
+     });
+   }
+diff --git a/app/domain/research-validator.ts b/app/domain/research-validator.ts
+index 7da9098..e4315ea 100644
+--- a/app/domain/research-validator.ts
++++ b/app/domain/research-validator.ts
+@@ -197,8 +197,31 @@ export function validateSemanticModelingDecisions(
+       continue;
+     }
+
++
++
++    if (decision.disposition !== 'promote' && decision.observationMapping) {
++      errors.push(`MODELING_DECISION_INVALID_MAPPING: Claim "${claim.id}" is not promoted, but its modeling decision contains an observationMapping.`);
++    }
++
+     if (decision.disposition === 'promote') {
++      if (claim.kind === 'observation') {
++        if (!decision.observationMapping) {
++          errors.push(`MODELING_DECISION_MISSING_MAPPING: Promoted observation claim "${claim.id}" requires an observationMapping.`);
++        }
++        if (decision.target) {
++          errors.push(`MODELING_DECISION_INVALID_TARGET: Promoted observation claim "${claim.id}" must not have a target.`);
++        }
++      } else {
++        if (decision.observationMapping) {
++          errors.push(`MODELING_DECISION_INVALID_MAPPING: Claim "${claim.id}" is not an observation, but its modeling decision contains an observationMapping.`);
++        }
++        if (!decision.target) {
++          errors.push(`MODELING_DECISION_MISSING_TARGET: Promoted claim "${claim.id}" requires a target.`);
++        }
++      }
++
+       // Check confidence and evidence relationships
++
+       for (const ev of claim.evidence) {
+         if (ev.confidence === 'disputed') {
+           errors.push(
+diff --git a/app/domain/schema/import-report.schema.json b/app/domain/schema/import-report.schema.json
+new file mode 100644
+index 0000000..2cea8cc
+--- /dev/null
++++ b/app/domain/schema/import-report.schema.json
+@@ -0,0 +1,255 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://g1ddy.github.io/crawler-command-interface/schema/import-report.v1.schema.json",
++  "title": "Crawler Import Report v1",
++  "type": "object",
++  "additionalProperties": false,
++  "required": [
++    "schemaVersion",
++    "summary",
++    "unknowns",
++    "eventStubs",
++    "observationStubs",
++    "manualMappings",
++    "dispositions",
++    "outcomes",
++    "diagnostics",
++    "claims"
++  ],
++  "properties": {
++    "schemaVersion": {
++      "type": "string",
++      "const": "crawler-import-report/v1"
++    },
++    "summary": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "inputClaims",
++        "unknowns",
++        "generatedStubs",
++        "reusedRecords",
++        "manualMappings",
++        "dispositions",
++        "outcomes",
++        "diagnostics"
++      ],
++      "properties": {
++        "inputClaims": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["total", "event", "observation", "state"],
++          "properties": {
++            "total": { "type": "integer", "minimum": 0 },
++            "event": { "type": "integer", "minimum": 0 },
++            "observation": { "type": "integer", "minimum": 0 },
++            "state": { "type": "integer", "minimum": 0 }
++          }
++        },
++        "unknowns": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["total", "event", "observation", "state", "unresolved"],
++          "properties": {
++            "total": { "type": "integer", "minimum": 0 },
++            "event": { "type": "integer", "minimum": 0 },
++            "observation": { "type": "integer", "minimum": 0 },
++            "state": { "type": "integer", "minimum": 0 },
++            "unresolved": { "type": "integer", "minimum": 0 }
++          }
++        },
++        "generatedStubs": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["events", "observations"],
++          "properties": {
++            "events": { "type": "integer", "minimum": 0 },
++            "observations": { "type": "integer", "minimum": 0 }
++          }
++        },
++        "reusedRecords": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["events", "observations"],
++          "properties": {
++            "events": { "type": "integer", "minimum": 0 },
++            "observations": { "type": "integer", "minimum": 0 }
++          }
++        },
++        "manualMappings": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["events", "observations"],
++          "properties": {
++            "events": { "type": "integer", "minimum": 0 },
++            "observations": { "type": "integer", "minimum": 0 }
++          }
++        },
++        "dispositions": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["promote", "review", "ledger_only", "missing"],
++          "properties": {
++            "promote": { "type": "integer", "minimum": 0 },
++            "review": { "type": "integer", "minimum": 0 },
++            "ledger_only": { "type": "integer", "minimum": 0 },
++            "missing": { "type": "integer", "minimum": 0 }
++          }
++        },
++        "outcomes": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["compiled", "reused", "unresolved", "rejected", "not_applicable"],
++          "properties": {
++            "compiled": { "type": "integer", "minimum": 0 },
++            "reused": { "type": "integer", "minimum": 0 },
++            "unresolved": { "type": "integer", "minimum": 0 },
++            "rejected": { "type": "integer", "minimum": 0 },
++            "not_applicable": { "type": "integer", "minimum": 0 }
++          }
++        },
++        "diagnostics": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": ["total"],
++          "properties": {
++            "total": { "type": "integer", "minimum": 0 }
++          }
++        }
++      }
++    },
++    "unknowns": {
++      "type": "array",
++      "items": {
++        "type": "object",
++        "additionalProperties": false,
++        "required": ["claimId", "text", "status"],
++        "properties": {
++          "claimId": { "type": "string" },
++          "text": { "type": "string" },
++          "status": { "type": "string" }
++        }
++      }
++    },
++    "eventStubs": {
++      "type": "array",
++      "items": {
++        "type": "object",
++        "additionalProperties": false,
++        "required": ["claimId", "recordId", "typePopulated"],
++        "properties": {
++          "claimId": { "type": "string" },
++          "recordId": { "type": "string" },
++          "typePopulated": { "type": "boolean" }
++        }
++      }
++    },
++    "observationStubs": {
++      "type": "array",
++      "items": {
++        "type": "object",
++        "additionalProperties": false,
++        "required": ["claimId", "recordId", "kind", "eventId", "outcome"],
++        "properties": {
++          "claimId": { "type": "string" },
++          "recordId": { "type": "string" },
++          "kind": { "type": "string" },
++          "eventId": { "type": "string" },
++          "outcome": { "type": "string" }
++        }
++      }
++    },
++    "manualMappings": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["events", "observations"],
++      "properties": {
++        "events": {
++          "type": "array",
++          "items": {
++            "type": "object",
++            "additionalProperties": false,
++            "required": ["claimId", "recordId", "mappedType"],
++            "properties": {
++              "claimId": { "type": "string" },
++              "recordId": { "type": "string" },
++              "mappedType": { "type": "string" }
++            }
++          }
++        },
++        "observations": {
++          "type": "array",
++          "items": {
++            "type": "object",
++            "additionalProperties": false,
++            "required": ["claimId", "recordId", "mappedKind", "outcome"],
++            "properties": {
++              "claimId": { "type": "string" },
++              "recordId": { "type": "string" },
++              "mappedKind": { "type": "string" },
++              "outcome": { "type": "string" }
++            }
++          }
++        }
++      }
++    },
++    "dispositions": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["promote", "review", "ledger_only", "missing"],
++      "properties": {
++        "promote": { "type": "array", "items": { "type": "string" } },
++        "review": { "type": "array", "items": { "type": "string" } },
++        "ledger_only": { "type": "array", "items": { "type": "string" } },
++        "missing": { "type": "array", "items": { "type": "string" } }
++      }
++    },
++    "outcomes": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["compiled", "reused", "unresolved", "rejected", "not_applicable"],
++      "properties": {
++        "compiled": { "type": "array", "items": { "type": "string" } },
++        "reused": { "type": "array", "items": { "type": "string" } },
++        "unresolved": { "type": "array", "items": { "type": "string" } },
++        "rejected": { "type": "array", "items": { "type": "string" } },
++        "not_applicable": { "type": "array", "items": { "type": "string" } }
++      }
++    },
++    "diagnostics": {
++      "type": "array",
++      "items": {
++        "type": "object",
++        "additionalProperties": false,
++        "required": ["code", "message", "claimId"],
++        "properties": {
++          "code": { "type": "string" },
++          "message": { "type": "string" },
++          "claimId": { "type": "string" },
++          "recordId": { "type": "string" }
++        }
++      }
++    },
++    "claims": {
++      "type": "array",
++      "items": {
++        "type": "object",
++        "additionalProperties": false,
++        "required": ["id", "kind", "disposition", "outcome"],
++        "properties": {
++          "id": { "type": "string" },
++          "kind": { "type": "string" },
++          "disposition": {
++            "type": "string",
++            "enum": ["promote", "review", "ledger_only", "missing"]
++          },
++          "outcome": {
++            "type": "string",
++            "enum": ["compiled", "reused", "unresolved", "rejected", "not_applicable"]
++          },
++          "recordId": { "type": "string" }
++        }
++      }
++    }
++  }
++}
+diff --git a/app/domain/schema/modeling-decision.schema.json b/app/domain/schema/modeling-decision.schema.json
+index b72ac55..4e74303 100644
+--- a/app/domain/schema/modeling-decision.schema.json
++++ b/app/domain/schema/modeling-decision.schema.json
+@@ -69,6 +69,9 @@
+         "rationale": {
+           "type": "string",
+           "minLength": 1
++        },
++        "observationMapping": {
++          "$ref": "#/$defs/observationMapping"
+         }
+       },
+       "if": {
+@@ -79,10 +82,81 @@
+         }
+       },
+       "then": {
+-        "required": [
+-          "target"
++        "anyOf": [
++          {
++            "required": [
++              "target"
++            ]
++          },
++          {
++            "required": [
++              "observationMapping"
++            ]
++          }
+         ]
+       }
++    },
++    "observationMapping": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "kind",
++        "anchor",
++        "payload"
++      ],
++      "properties": {
++        "kind": {
++          "enum": [
++            "countdown-remaining",
++            "crawler-condition",
++            "crawler-attributes",
++            "xp-progress",
++            "broadcast-metrics",
++            "floor-metrics",
++            "inventory-state",
++            "equipment-state"
++          ]
++        },
++        "anchor": {
++          "type": "object",
++          "required": [
++            "kind"
++          ],
++          "oneOf": [
++            {
++              "properties": {
++                "kind": {
++                  "const": "event-id"
++                },
++                "eventId": {
++                  "type": "string"
++                }
++              },
++              "required": [
++                "eventId"
++              ],
++              "additionalProperties": false
++            },
++            {
++              "properties": {
++                "kind": {
++                  "const": "claim-id"
++                },
++                "claimId": {
++                  "$ref": "#/$defs/claimId"
++                }
++              },
++              "required": [
++                "claimId"
++              ],
++              "additionalProperties": false
++            }
++          ]
++        },
++        "payload": {
++          "type": "object"
++        }
++      }
+     }
+   }
+-}
++}
+\ No newline at end of file
+diff --git a/app/domain/types/research.ts b/app/domain/types/research.ts
+index f519c02..38f9d0c 100644
+--- a/app/domain/types/research.ts
++++ b/app/domain/types/research.ts
+@@ -81,6 +81,19 @@ export interface ResearchClaim {
+   contradictions?: ResearchClaimContradiction[];
+ }
+
++
++export type ObservationMappingAnchor =
++  | { kind: 'event-id'; eventId: string }
++  | { kind: 'claim-id'; claimId: string };
++
++export type ObservationMappingPayload = Record<string, unknown>;
++
++export interface ObservationMapping {
++  kind: 'countdown-remaining' | 'crawler-condition' | 'crawler-attributes' | 'xp-progress' | 'broadcast-metrics' | 'floor-metrics' | 'inventory-state' | 'equipment-state';
++  anchor: ObservationMappingAnchor;
++  payload: ObservationMappingPayload;
++}
++
+ export interface ModelingDecision {
+   claimId: string;
+   disposition: ModelingDisposition;
+@@ -88,6 +101,7 @@ export interface ModelingDecision {
+     domain: string;
+     concept: string;
+   };
++  observationMapping?: ObservationMapping;
+   rationale: string;
+ }
+
+diff --git a/docs/research/observation-ingestion-design.md b/docs/research/observation-ingestion-design.md
+index 6ab0ab3..db157ef 100644
+--- a/docs/research/observation-ingestion-design.md
++++ b/docs/research/observation-ingestion-design.md
+@@ -2,7 +2,9 @@
+
+ ## Status and authority
+
+-This is the living design contract for issue #318 and future work on observation ingestion. Implementation issues should link here and describe their specific deliverable instead of copying this full specification.
++This is the living design contract for observation ingestion and the implementation contract for [PR #325](https://github.com/g1ddy/crawler-command-interface/pull/325). Implementation issues should link here and describe their specific deliverable instead of copying this full specification.
++
++**End-state rule:** deterministic code performs the bulk mechanical transformation; LLMs and humans make explicit semantic decisions; validators and the import report expose omissions, conflicts, and unsupported mappings. The importer must never use a best guess as a fallback for missing decisions or anchors. Passing schema validation proves shape and internal consistency, not that a claim is true or that a source supports it.
+
+ **Decision:** observations are researched in Stage 1 and extracted as evidence claims in Stage 2. CCI-specific payload and timeline-anchor mapping belongs in Stage 3 CCI-aware modeling/curation. The deterministic importer routes approved event claims to event output and approved observation claims to the existing `observations.json`. The decomposed raw-floor files remain authoritative after curation.
+
+@@ -61,6 +63,19 @@ Use the existing raw observation schema and domain types as the payload authorit
+
+ Disposition rules: `promote` may compile only when the mapping and anchor validate. `review` and `ledger_only` never produce runtime-ready observations. Missing mapping on a promoted observation is a validation/curation error, not permission to guess.
+
++### Required disposition and routing behavior
++
++The canonical importer requires a modeling document; it must not silently fall back to a legacy mode that promotes every claim. Every research claim must be represented in the report even when its modeling decision is absent, invalid, or not applicable.
++
++- **Event claim:** the importer may generate a deterministic raw-shaped event scaffold to remove mechanical work. The scaffold is not runtime-ready until its event type/payload and final domain identity are curated. The report distinguishes a generated scaffold from an explicit valid mapping and flags missing/invalid decisions or unresolved type/payload.
++- **Observation claim:** emit a raw observation only when disposition is `promote`, typed `observationMapping` is present and valid, payload conforms to the existing raw observation schema, and the explicit anchor resolves to an event in the same floor. Never convert an observation into an event to make it import.
++- **`review` / `ledger_only` observation:** retain it in the claim trace/report and do not emit a runtime observation.
++- **State claim:** do not blindly convert it to an event or observation. Report it as not applicable to this importer route or unresolved for the existing state/catalog/curation path, with the reason explicit.
++- **Missing or invalid decision:** report it as missing/invalid and unresolved/rejected as appropriate. Do not infer `promote` from claim kind, target, output shape, or prior runs.
++- **Existing authored data:** preserve it. Reconcile deterministic identity matches only under explicit identity/payload/evidence rules; conflicting authored semantics fail visibly rather than being overwritten.
++
++The import report is the machine-readable reconciliation ledger for the run, not merely a summary of successfully emitted records. It accounts for claims that generate no output as well as claims that do.
++
+ ## 4. Existing observation kinds and payloads
+
+ The raw schema currently supports these families (consult `app/domain/schema/crawler-floor-raw.schema.json` for exact required fields and constraints):
+@@ -121,6 +136,21 @@ The importer must produce a deterministic, versioned JSON report for every run,
+ - **Disposition/outcome:** counts by `promote`, `review`, `ledger_only`, missing/invalid disposition, and final outcome (compiled, reused/matched, unresolved, rejected/invalid, or not applicable).
+ - **Diagnostics:** counts by stable diagnostic code and item-level diagnostics linked to claim and/or raw record IDs.
+
++### Required accounting invariants
++
++The following identities must hold for each report, or the importer must emit a report-level validation failure:
++
++1. `summary.inputClaims.total` equals the number of parsed claim entries being accounted for; invalid/duplicate IDs are diagnosed, not silently deduplicated.
++2. Counts by claim kind reconcile to the total input-claim count.
++3. Every claim has exactly one item-level outcome and one disposition status (`promote`, `review`, `ledger_only`, missing, or invalid).
++4. Every claim unknown entry has an item-level report entry; identical wording on separate claims counts separately.
++5. Generated event/observation stub counts equal newly generated output records, grouped by actual output type/kind.
++6. Reused/matched records are counted separately from newly generated stubs; a reused record is not a new stub.
++7. Manual-mapping counts represent valid explicit CCI decisions, not merely a target, claim kind, or output record.
++8. Diagnostic totals equal the number of diagnostic entries and use stable machine-readable codes.
++9. Identical inputs and existing raw records produce deterministic report content with no machine paths, run timestamps, or nondeterministic ordering.
++10. No rejected or unresolved observation claim produces a runtime-ready observation; report accounting still includes it.
++
+ ### Definitions and correctness
+
+ A YAML claim is one claim in the parsed input. A YAML unknown is one entry in a claim's `unknowns` list; identical wording under two claims counts twice. A stub is generated authoring scaffolding, not proof of canonical or fully curated runtime data. A manual mapping is an explicit, valid CCI-aware decision that selects the existing CCI representation and supplies required payload/anchor details. Missing mappings and failures must remain visible in report totals.
+diff --git a/docs/research/research-ingestion-roadmap.md b/docs/research/research-ingestion-roadmap.md
+new file mode 100644
+index 0000000..4019e5b
+--- /dev/null
++++ b/docs/research/research-ingestion-roadmap.md
+@@ -0,0 +1,420 @@
++# Research Ingestion Roadmap
++
++## Purpose and status
++
++This is the living, task-oriented implementation roadmap for bringing the research-ingestion pipeline to its intended end state. It is the planning companion to the more detailed behavioral contract in [Observation Ingestion and Research-to-CCI Mapping Design](./observation-ingestion-design.md) and the end-to-end process in [Research-to-CCI Ingestion Workflow](./research-to-cci-workflow.md).
++
++Use this roadmap to track completion across focused issues and PRs. **Implementation issues for Jules should reference this file and identify only the roadmap task IDs they are implementing**, along with any issue-specific scope or acceptance details. Do not copy the entire design into each issue.
++
++- **Roadmap status:** In progress
++- **Implementation authority:** existing raw-floor schemas, domain types, runtime pipeline, and the design contract linked above
++- **Data authority:** curated files under `data/raw/floors/`; research YAML and generated importer output are not authoritative merely because they validate
++- **Last status review:** 2026-10-15
++- **Status rule:** check a task only after its acceptance criteria are demonstrated in code/tests and the implementing change is merged to `main`. A PR being open or a test merely being added does not count as completion.
++
++## Non-negotiable design rules
++
++1. **Evidence is not runtime data.** Stage 1/2 research records facts and provenance. Only an explicit CCI modeling decision may promote a claim into an existing CCI representation.
++2. **No implicit promotion.** Missing, invalid, duplicate, or ambiguous modeling decisions must not silently become `promote`. They must remain visible as missing/invalid/unresolved.
++3. **Events and observations are different kinds of truth.** Events represent supported transitions/occurrences; observations represent source-backed point-in-time readings. Do not turn an observation into a `NarrativeEvent` just because an event path already exists.
++4. **Use existing contracts.** Reuse `crawler-floor-raw.schema.json`, existing observation types, raw-loader/compiler behavior, and current projection/replay semantics. Do not create a parallel observation schema or runtime model.
++5. **Explicit anchors only.** An observation must anchor to an exact existing raw event ID or an unambiguous event claim ID that resolves to a compiled event. Never create an event, sequence, time, or anchor just to make an observation fit.
++6. **Preserve authored data.** Existing curated records must not be silently overwritten, deduplicated by summary, or reinterpreted. Conflicting identity, kind, payload, or anchor is a visible error.
++7. **Deterministic and idempotent.** Identical inputs must yield identical outputs and reports. Re-running the importer must not create duplicate records, drift evidence, or mutate unrelated authored records.
++8. **Unknown means unknown.** A partial reading does not imply a complete snapshot. XP does not imply max XP; current resources do not imply maxima; one attribute does not imply other attributes; a countdown reading does not imply a start/reset/pause model.
++9. **Reports must be truthful.** Every input claim and diagnostic must be accounted for. Counts must reconcile to item-level records; a permissive schema is not meaningful validation.
++10. **Runtime acceptance is separate from importer success.** A mechanically generated scaffold is not canonical or replay-safe until curation, raw validation, timeline compilation, and projection/replay checks pass.
++
++## Current implementation areas
++
++Treat this list as a starting inventory, not as proof that any behavior is complete. Verify actual `main` and the current PR before implementing a task.
++
++- Research contracts and validation: `app/domain/types/research.ts`, `app/domain/schema/research-claim.schema.json`, `app/domain/schema/modeling-decision.schema.json`, `app/domain/research-loader.ts`, `app/domain/research-validator.ts`.
++- Importer/compiler: `app/domain/research-compiler.ts`, `scripts/compile-research-raw.mjs`.
++- Raw observation contract: `app/domain/types/observations.ts`, `app/domain/schema/crawler-floor-raw.schema.json`, `data/raw/floors/floor-*/observations.json`.
++- Runtime ingestion and replay: `app/domain/raw-loader.ts`, `app/domain/raw-compiler.ts`, timeline/projection/replay modules and their tests.
++- Existing design/workflow: this directory's `observation-ingestion-design.md` and `research-to-cci-workflow.md`.
++- Focused tests: `tests/unit/research-ingestion.test.mjs`, plus raw-schema, timeline, projection, and replay tests.
++
++The current baseline compiler has historically emitted sources/catalog/events without a complete observation path. The canonical CLI has also been able to run without a modeling document. Those are gaps to close, not behavior to preserve. The import-report schema must be checked on the implementation branch; a schema that accepts an arbitrary object does not satisfy the report contract.
++
++---
++
++## Roadmap status at a glance
++
++| ID | Workstream | Status | Completion outcome |
++| --- | --- | --- | --- |
++| R0 | Establish safe promotion and reconciliation behavior | Not started | No implicit promotion; decisions and output reconciliation are safe |
++| R1 | Complete typed observation modeling contract | Not started | Modeling schema/types/validation express explicit observation mapping |
++| R2 | Compile observations into existing raw-floor files | Not started | Valid promoted observations compile to `observations.json` with explicit anchors |
++| R3 | Make compilation deterministic, idempotent, and non-destructive | Not started | Repeated imports are stable; collisions fail; authored records survive |
++| R4 | Deliver a strict, reconciled import coverage report | Not started | Versioned report schema, complete per-claim trace, consistent metrics |
++| R5 | Verify the full runtime/replay path | Not started | Imported observations pass raw validation and behave correctly in replay |
++| R6 | Apply the pipeline to source-backed data gaps | Not started | Research/curation uses the pipeline; gaps are explicit and replay-verified |
++
++Update this table when work moves to `In progress` or `Complete`. Do not mark a workstream complete until all its task checkboxes and exit criteria are satisfied.
++
++---
++
++## R0 — Establish safe promotion and reconciliation behavior
++
++**Goal:** Fix the importer safety boundary before adding more capability. A missing modeling decision must never be interpreted as approval to generate runtime-shaped records.
++
++### Tasks
++
++- [x] **R0.1 — Require explicit modeling input in the canonical CLI.**
++  - Update `scripts/compile-research-raw.mjs` to accept a documented `--modeling <path>` argument and load/validate that document.
++  - Remove the unsafe default behavior that invokes the compiler without modeling decisions.
++  - If modeling input is missing, unreadable, malformed, or schema-invalid, exit non-zero with an actionable error before writing any output.
++  - Remove or document any positional-argument compatibility path that could accidentally omit modeling input. Do not retain a hidden fallback that changes the contract.
++  - Add CLI tests for missing flag, missing file, malformed document, and valid invocation.
++
++- [x] **R0.2 — Make missing and invalid decisions non-promoting.**
++  - In compiler and validator paths, distinguish at least: valid explicit disposition, missing decision, duplicate decision, decision for unknown claim, and invalid decision.
++  - Never default missing disposition to `promote`.
++  - A claim with no valid decision must emit no event, observation, catalog record, or other runtime-ready output on the strength of that claim.
++  - Keep the claim in trace/report output with its real state and actionable reason.
++  - Ensure a valid decision for one claim cannot mask an invalid or duplicate decision for another.
++
++- [x] **R0.3 — Reconcile claim-level and aggregate disposition accounting.**
++  - Each input claim has exactly one final item-level outcome and one accurately represented disposition state.
++  - Aggregate counts are derived from the item-level claim results rather than maintained independently.
++  - Missing/invalid decisions are not reported as `promote` in one location and `missing` in another.
++  - Add tests that compare aggregate totals with detailed claim records.
++
++- [x] **R0.4 — Protect compiler-owned payload fields by property presence.**
++  - Mapping payloads must reject user-supplied compiler-owned fields `id`, `kind`, `eventId`, `evidence`, and `unknowns` whenever those keys are present, including values `null`, `false`, `0`, or an empty string.
++  - Compiler-owned identity, kind, anchor, and provenance must be written only by the compiler from validated inputs.
++  - Add a test for each reserved key with both a normal value and a falsy value.
++
++- [x] **R0.5 — Define the safe failure/write boundary.**
++  - Validation failures must not partially overwrite existing raw files.
++  - Validate all inputs and build all outputs in memory before replacing any output file.
++  - Write outputs using a safe temporary-file/replace strategy or an equivalent all-validation-before-write approach consistent with repository conventions.
++  - Add a test proving a rejected import leaves pre-existing files unchanged.
++
++### Exit criteria
++
++- No CLI or API path silently promotes claims when modeling is absent.
++- Missing/invalid decisions are visible and generate no runtime-ready records.
++- Compiler-owned fields cannot be spoofed through mapping payloads.
++- Failure leaves existing curated files unchanged.
++- Focused ingestion tests pass.
++
++**PR guidance:** Keep this stage narrow. Do not combine it with a broad research-data backfill or UI work.
++
++---
++
++## R1 — Complete the typed observation modeling contract
++
++**Goal:** Make Stage 3 explicitly describe how an observation claim maps to an existing CCI observation, without contaminating the evidence-oriented Stage 2 research schema.
++
++### Tasks
++
++- [ ] **R1.1 — Extend the modeling decision schema and TypeScript types.**
++  - Update `app/domain/schema/modeling-decision.schema.json` and `app/domain/types/research.ts` to support a typed `observationMapping` for observation claims.
++  - Keep `crawler-research/v1` claims CCI-neutral: no raw payload, runtime event ID, observation ID, sequence number, or promotion choice in the research claim.
++  - The mapping must identify an existing raw observation kind, schema-supported payload fields, and exactly one explicit anchor form.
++  - Reuse the raw schema and domain types as authority. Do not create a parallel hand-maintained list of observation payload fields.
++
++- [ ] **R1.2 — Define decision semantics by claim kind.**
++  - Event claims continue to use the existing event modeling path.
++  - Observation claims with `promote` require a valid typed observation mapping and valid anchor.
++  - Observation claims with `review` or `ledger_only` remain in trace/report but emit no runtime-ready observation.
++  - State claims continue through the existing state/catalog/curation path or remain unresolved. They must not be blindly routed to events or observations.
++  - A promoted observation with missing mapping is an error/unresolved outcome, never permission to guess.
++
++- [ ] **R1.3 — Validate modeling decisions semantically.**
++  - Enforce one decision per claim; detect duplicate and unknown claim IDs.
++  - Enforce that an observation mapping appears only where applicable and that required mapping fields are present for promoted observations.
++  - Reject unsupported observation kinds, unknown payload fields, invalid payload shape, and conflicting mapping/claim semantics.
++  - Validate the selected kind and payload against the authoritative observation schema definition in `app/domain/schema/crawler-floor-raw.schema.json`.
++  - Keep errors actionable: include claim ID, mapping field/path, and reason.
++
++- [ ] **R1.4 — Specify explicit anchor variants.**
++  - Support exactly:
++    - `event-id`: an exact existing raw event ID in the same target floor.
++    - `claim-id`: an event claim ID in the same research document, resolved through the compiler's deterministic claim-to-event mapping.
++  - A claim-ID anchor is valid only if the referenced claim exists, has kind `event`, and resolves unambiguously to an emitted/reused event.
++  - Reject missing, ambiguous, wrong-kind, nonexistent, and cross-floor anchors.
++  - A chapter/section locator, nearby event, event sequence, or temporal proximity is not a runtime anchor.
++
++### Exit criteria
++
++- Schema, TypeScript types, and semantic validator agree on the modeling contract.
++- Negative tests cover invalid mapping and anchor cases.
++- Research YAML remains evidence-only and existing event modeling remains compatible.
++
++---
++
++## R2 — Compile observations into the existing raw-floor representation
++
++**Goal:** Route approved observation claims into `data/raw/floors/floor-<n>/observations.json` using the existing raw observation contract.
++
++### Tasks
++
++- [ ] **R2.1 — Extend compiler input/output contracts.**
++  - Extend `ExistingRawFloorData` and `RawFloorCompilation` in `app/domain/research-compiler.ts` to include observations.
++  - Load existing `observations.json` in `scripts/compile-research-raw.mjs` and write the compiler's observation output to that same path.
++  - Do not introduce a parallel observation file, staging model, database, or runtime shortcut.
++
++- [ ] **R2.2 — Route claims without conflating representation types.**
++  - Valid promoted event claims use the existing event compilation path.
++  - Valid promoted observation claims compile only after typed mapping, payload validation, and explicit anchor resolution succeed.
++  - Review/ledger-only observations remain in trace/report but are not emitted as runtime-ready observations.
++  - State claims use their existing state/catalog/curation path or remain unresolved.
++  - No observation may be emitted as an event simply because event compilation already exists.
++
++- [ ] **R2.3 — Generate deterministic observation IDs.**
++  - Generate temporary observation IDs in a distinct `obs-` namespace derived deterministically from floor and claim ID.
++  - Normalize IDs deterministically and detect collisions after normalization.
++  - A collision between different claims must fail explicitly; do not invent a suffix or alternate ID to evade it.
++  - Never use summary text, locator, or current array position as the sole identity.
++
++- [ ] **R2.4 — Resolve anchors before emitting observations.**
++  - Resolve `event-id` only against existing events in the target floor.
++  - Resolve `claim-id` through the deterministic claim-to-event map, including when the event was matched/reused.
++  - Reject unresolved anchors without creating synthetic events or guessed sequence numbers.
++  - Ensure the final observation `eventId` is the actual event ID that exists in the same floor.
++  - If curation replaces a temporary event ID, require the observation anchor to be reconciled to the final authored ID before acceptance.
++
++- [ ] **R2.5 — Preserve evidence and uncertainty.**
++  - Carry the claim's evidence/provenance into supported raw fields without discarding source IDs, locators, confidence, evidence relationship, notes, or unknowns from the trace.
++  - Where the raw evidence shape cannot represent all research provenance, retain the complete chain in the import report/trace.
++  - Do not fill unreported XP, max XP, levels, stats, resource maxima, countdown values, or metrics.
++  - Preserve partial payloads as partial payloads.
++
++### Exit criteria
++
++- At least one valid observation of each supported mapping pattern compiles into `observations.json`.
++- Invalid/unsupported mappings and anchors produce no observation and yield actionable diagnostics.
++- Existing event output behavior remains correct.
++- The raw observation schema is used as the payload authority.
++
++---
++
++## R3 — Make compilation deterministic, idempotent, and non-destructive
++
++**Goal:** Make repeated runs safe when existing raw files contain both generated scaffolds and manually curated records.
++
++### Tasks
++
++- [x] **R3.1 — Define deterministic reconciliation by identity.**
++  - Reconcile generated records by deterministic compiler identity and explicit field comparison—not by matching summaries or locators alone.
++  - Preserve unrelated manually authored events, observations, catalog entries, and sources exactly.
++  - Do not silently rewrite a curated ID, kind, payload, anchor, or other semantic field.
++  - Document the exact deterministic evidence-merge rule. Evidence merging must not vary with run order and must not remove provenance.
++
++- [x] **R3.2 — Distinguish generated, reused, and conflicting records.**
++  - Same deterministic identity and equivalent compiler-owned semantic content: reuse the record.
++  - Same identity but different kind, payload, anchor, or incompatible evidence semantics: fail with a conflict diagnostic.
++  - Different identity: preserve the existing record and generate only if it does not collide with another identity.
++  - A record must not be counted as both newly generated and reused.
++
++- [x] **R3.3 — Add two-pass idempotency tests.**
++  - Compile the same research + modeling inputs once.
++  - Feed the first compilation's output back as existing raw data and compile a second time.
++  - Assert stable IDs, kinds, payloads, anchors, order, evidence, and unknowns.
++  - Assert the second pass creates no duplicate generated records and reports accurate reuse counts.
++  - Assert unrelated authored records are byte/structurally unchanged.
++  - Repeat the test for event and observation outputs.
++
++- [x] **R3.4 — Add collision and conflict tests.**
++  - Normalized ID collision between different claim IDs fails.
++  - Existing generated identity with a conflicting observation kind, payload, or anchor fails.
++  - Falsy reserved fields fail (see R0.4).
++  - A malformed existing raw file or unsupported existing record fails without destructive partial writes.
++
++### Exit criteria
++
++- Identical inputs and identical existing raw data yield deterministic outputs.
++- Re-running the importer is idempotent for event and observation records.
++- Conflicts are explicit and non-destructive.
++- Manually authored unrelated records remain unchanged.
++
++---
++
++## R4 — Deliver a strict, reconciled import coverage report
++
++**Goal:** Make every importer run explain what was input, decided, generated, reused, left unresolved, or rejected. The report is a deterministic audit artifact, not a decorative summary.
++
++### Tasks
++
++- [ ] **R4.1 — Define and enforce a versioned report schema.**
++  - Add/complete `app/domain/schema/import-report.schema.json` for `crawler-import-report/v1` (or the repository's explicitly chosen versioned identifier).
++  - Require the schema version, floor/story scope, summary metrics, per-claim records, and diagnostics structure.
++  - Use `additionalProperties: false` for contract-owned objects unless a specific extension point is documented.
++  - Define enums for claim kind, disposition, and outcome; define non-negative integer counts; require all fields needed to interpret a report.
++  - Validate the actual generated report with AJV. A schema that only says `type: object` or permits arbitrary properties is not completion.
++  - Add negative schema tests for missing required fields, invalid enums, negative counts, malformed claim records, and unexpected properties.
++
++- [ ] **R4.2 — Record exactly one item-level outcome for every input claim.**
++  - Each record links claim ID/kind, decision/disposition state, selected CCI type/kind where applicable, output ID when emitted/reused, outcome, and diagnostics.
++  - Missing, invalid, duplicate, review-only, ledger-only, unresolved, rejected, compiled, and reused states must remain distinguishable.
++  - Keep research uncertainty (unknowns) distinct from import/modeling errors (diagnostics).
++
++- [ ] **R4.3 — Report all required metrics from detailed records.**
++  - Input claim totals and counts by research kind (`event`, `observation`, `state`).
++  - Unknown entries: total entries, breakdown by claim kind, and unresolved status; count entries per claim rather than globally deduplicating identical wording.
++  - Generated event stubs grouped by actual event type and generated observation stubs grouped by actual observation kind.
++  - Reused/matched existing records, separate from newly generated records.
++  - Valid explicit manual mappings grouped by output event type/observation kind; never infer a manual mapping merely from claim kind or output shape.
++  - Dispositions (`promote`, `review`, `ledger_only`, missing/invalid) and final outcomes.
++  - Diagnostics by stable code, plus item-level diagnostics connected to claim and/or raw record IDs.
++  - Preserve enough provenance to trace raw output to claim ID, source ID, and locator.
++
++- [ ] **R4.4 — Enforce arithmetic reconciliation.**
++  - Derive summary counters from item-level claim, unknown, generated/reused record, mapping, and diagnostic records.
++  - Test that totals reconcile exactly; no claim or diagnostic can disappear from the summary.
++  - Ensure a review/ledger-only claim is not counted as runtime output.
++  - Ensure invalid claims and failed mappings remain represented.
++  - Avoid machine-specific paths, incidental timestamps, and other nondeterministic report fields.
++
++- [ ] **R4.5 — Add report determinism and failure coverage.**
++  - Identical inputs and existing raw records produce byte-equivalent report output.
++  - A failed claim remains present with its failure state.
++  - Report generation does not mutate raw output, provenance, schema validation, or replay behavior.
++  - CLI writes the report to a documented predictable location and includes it in success/failure diagnostics appropriately.
++
++### Exit criteria
++
++- The report is meaningfully schema-validated.
++- Every input claim and diagnostic is represented once at the correct level.
++- All summary counts reconcile to item-level details.
++- Repeated identical imports produce identical reports.
++
++**Sequencing note:** R4 may be implemented after R0–R3 to keep the first safety PR reviewable. Do not ship a misleading, effectively permissive report validator in the interim; either complete schema and validator together or keep the report validation change out until this workstream lands.
++
++---
++
++## R5 — Verify the full runtime/replay path
++
++**Goal:** Prove that an imported observation is valid and behaves correctly through the existing authoritative pipeline, not just that the importer returns a plausible object.
++
++### Tasks
++
++- [ ] **R5.1 — Add representative payload tests.**
++  - XP progress: support only sourced subsets of `xp`, `maxXp`, and/or `level`.
++  - Attributes: preserve only explicitly reported attributes; do not fill missing attributes or points.
++  - Conditions: current health/mana/stamina do not imply maxima, and vice versa.
++  - Countdown remaining: does not imply countdown start/reset/pause/elapsed-time formula.
++  - Metrics/inventory/equipment: use only currently supported schema fields and established semantics.
++  - Unsupported kind/field combinations fail explicitly.
++
++- [ ] **R5.2 — Add an end-to-end import acceptance test.**
++  - Input: research claim document + explicit modeling decisions + existing raw floor data.
++  - Run deterministic compilation into decomposed raw-shaped outputs.
++  - Validate the resulting floor using the existing raw schema/domain validator.
++  - Compile the derived timeline/fixture through the normal repository path.
++  - Load and project the result using the existing runtime path.
++  - Assert observation values and provenance remain associated with the correct floor and anchor.
++  - Do not hand-edit generated fixtures; use the repository's fixture-generation workflow.
++
++- [ ] **R5.3 — Verify temporal/replay invariants.**
++  - An observation does not affect projection before its anchor.
++  - The observation becomes available at the expected sequence according to existing observation semantics.
++  - Scrubbing backward removes later readings from the visible projection.
++  - A later partial reading does not imply earlier or missing fields.
++  - Existing interpolation/countdown phase-break behavior remains unchanged.
++  - A missing UI widget is not a reason to rewrite an observation as an event.
++
++- [ ] **R5.4 — Protect existing behavior.**
++  - Existing event compilation, raw schema validation, timeline ordering, projections, replay, and curated observations remain green.
++  - No broad UI changes, new widgets, or projection/countdown redesign is bundled into importer implementation unless a separate issue explicitly authorizes it.
++
++- [ ] **R5.5 — Run repository verification.**
++  - At minimum run focused research-ingestion tests and `npm run typecheck`.
++  - Before declaring the end-to-end workstream complete, run `npm run verify` (which includes fixture generation, typecheck, lint, architecture/unit tests, builds, rendered tests, and artifact tests).
++  - Report actual commands and results in the PR; do not claim tests passed if they were not run.
++
++### Exit criteria
++
++- A promoted observation can travel through importer → raw validation → timeline → projection/replay.
++- Future observations do not leak backward in replay.
++- Existing runtime behavior and regression tests remain green.
++
++---
++
++## R6 — Apply the pipeline to source-backed data gaps
++
++**Goal:** Use the finished import workflow to improve the authored Floor 1–3 data without confusing a tooling milestone with data completeness.
++
++### Tasks
++
++- [ ] **R6.1 — Audit the research ledger against existing raw events and observations.**
++  - Identify research claims that are point-in-time readings but currently have no observation representation.
++  - Identify event records that incorrectly carry a snapshot/readout, without automatically converting them; each conversion requires evidence and an explicit modeling decision.
++  - Report coverage by floor, claim kind, output kind, and source/provenance completeness.
++  - Preserve the distinction between “not found in accessible evidence,” “researched but not modeled,” “modeled but unresolved,” and “not represented in the runtime/UI.”
++
++- [ ] **R6.2 — Prioritize source-backed observation families.**
++  - XP and max-XP progress.
++  - Crawler attributes and explicit stat changes/readings.
++  - Current/max health, mana, and stamina only when separately established.
++  - Countdown-remaining readings, preserving chronology and uncertainty.
++  - Broadcast/floor metrics, inventory, and equipment only where current schemas support them.
++  - Do not create values to make the UI appear complete. Unknown remains unknown.
++
++- [ ] **R6.3 — Curate Floor 3 through the new pipeline.**
++  - Use Stage 1 research and Stage 2 extraction to capture the strongest accessible source evidence, including exact URLs and locators where available.
++  - Add/repair Stage 3 decisions explicitly; do not place runtime payloads in research YAML.
++  - Compile observations to the existing Floor 3 `observations.json`.
++  - Resolve anchors against actual same-floor events.
++  - Reconcile the generated scaffold into authoritative raw data and preserve full provenance.
++  - Include the known audit concerns where supported by evidence: missing/limited countdown-remaining readings, early crawler stat readings (including the known Intelligence change around sequence 34), and missing floor title/metadata coverage. Do not treat those examples as permission to invent values or anchors.
++
++- [ ] **R6.4 — Verify each curated floor through runtime replay.**
++  - Confirm the observation is visible at the correct point in timeline/replay and absent before its anchor.
++  - Confirm partial fields stay partial and no defaults are introduced.
++  - Confirm raw source and evidence links remain inspectable.
++  - Update the floor audit with completed, unresolved, and inaccessible-evidence gaps.
++
++### Exit criteria
++
++- Each curated observation has a supported source, explicit modeling decision, valid payload, and real same-floor anchor.
++- Remaining gaps are documented rather than hidden.
++- Floor coverage statements distinguish evidence availability from implementation and UI coverage.
++
++---
++
++## Definition of done for a roadmap task
++
++An issue referencing this roadmap is complete only when all of the following applicable conditions are met:
++
++- The requested roadmap checkboxes are completed in the same PR or are already completed on `main`.
++- Behavior is covered by focused positive and negative tests; tests assert the contract, not merely that code executes.
++- Existing curated data is preserved and conflict cases fail explicitly.
++- The report/trace accurately accounts for the claim and its provenance where the task affects importing.
++- The PR states which roadmap task IDs it closes and lists exact verification commands with their actual results.
++- No unrelated UI redesign, broad re-research, or architecture refactor was added without explicit authorization.
++- The roadmap's status table and checkboxes are updated only when the implementation is merged and its acceptance criteria are met.
++
++## Suggested issue/PR slicing
++
++Use one focused issue per cohesive set of tasks, and reference this document rather than pasting its contents into the issue.
++
++1. **Importer safety:** R0.1–R0.5.
++2. **Typed modeling contract:** R1.1–R1.4.
++3. **Observation compilation and anchor resolution:** R2.1–R2.5.
++4. **Idempotent reconciliation:** R3.1–R3.4.
++5. **Import coverage report:** R4.1–R4.5.
++6. **End-to-end acceptance:** R5.1–R5.5.
++7. **Research and floor curation:** R6.1–R6.4.
++
++These are suggested implementation boundaries, not a requirement to create all issues immediately. Keep each PR small enough to review, but do not split a contract so that a partially implemented feature is merged in an unsafe state. In particular, report schema validation must not be enabled with a placeholder schema, and observation emission must not land before explicit mapping/anchor validation.
++
++## Reference documents and code
++
++- [Observation Ingestion and Research-to-CCI Mapping Design](./observation-ingestion-design.md) — detailed semantics and invariants.
++- [Research-to-CCI Ingestion Workflow](./research-to-cci-workflow.md) — Stage 1–3 responsibilities and overall pipeline.
++- [Raw Observation Authoring Guide](../../RAW_OBSERVATIONS.md) — raw ownership and observation semantics.
++- `app/domain/research-compiler.ts`
++- `app/domain/research-validator.ts`
++- `app/domain/types/research.ts`
++- `app/domain/types/observations.ts`
++- `app/domain/schema/modeling-decision.schema.json`
++- `app/domain/schema/crawler-floor-raw.schema.json`
++- `app/domain/schema/import-report.schema.json` (to be added/completed under R4)
++- `scripts/compile-research-raw.mjs`
++- `tests/unit/research-ingestion.test.mjs`
++- `package.json` scripts: `research:compile`, `typecheck`, `test:unit`, `verify`
+diff --git a/docs/research/research-to-cci-workflow.md b/docs/research/research-to-cci-workflow.md
+index e0b7cef..d66332c 100644
+--- a/docs/research/research-to-cci-workflow.md
++++ b/docs/research/research-to-cci-workflow.md
+@@ -4,6 +4,10 @@
+
+ Living workflow documentation for the CCI research-ingestion pipeline.
+
++**Canonical end state for observation import and coverage reporting (#325):** the research ledger remains evidence-focused; CCI modeling decisions are explicit; one deterministic importer performs repeatable transformations into the existing raw-shaped files; and a deterministic report accounts for every claim, unknown, output, and unresolved condition. This document owns the end-to-end sequence. [Observation Ingestion and Research-to-CCI Mapping Design](./observation-ingestion-design.md) owns the detailed mapping, anchor, reconciliation, and report contract.
++
++The importer is a bulk mechanical transformer, not a second LLM and not an authority generator. Do not ask Jules to manually recreate routine transformations the script can perform deterministically. Jules/human curation should concentrate on genuinely semantic choices: final domain event IDs/types, payload correctness, ambiguous identity, and unresolved anchors. Missing or invalid decisions must remain visible; they must never be silently promoted or guessed.
++
+ This document defines the practical handoff between:
+
+ 1. canon research;
+@@ -27,42 +31,56 @@ The workflow is deliberately conservative:
+
+ ## 1. End-to-end pipeline
+
++```text
++Stage 1 — Research LLM / researcher
++  evidence-rich report with URLs, locators, chronology, uncertainty
++       |
++       v
++Stage 2 — Extraction LLM
++  crawler-research/v1 YAML: atomic claims + evidence + unknowns
++       |
++       v
++Stage 2.5 — Deterministic ledger validation
++  parse + schema + IDs/references + semantic consistency
++       |
++       v
++Stage 3 — CCI-aware modeling / curation
++  crawler-modeling/v1 decisions: disposition + event target or typed
++  observationMapping (kind + payload + explicit anchor)
++       |
++       v
++Stage 4 — Deterministic importer (compileRawFloor)
++  existing raw-shaped outputs: events.json, observations.json,
++  catalog/sources as applicable + research-import-report.json
++       |
++       v
++Stage 5 — Jules / human reconciliation in the working tree
++  resolve semantic IDs/types, payload/anchor conflicts, unresolved items;
++  preserve unrelated authored records and inspect the diff
++       |
++       v
++Stage 6 — Deterministic acceptance checks
++  raw schema + domain invariants + fixture/timeline compilation
++  + projection/replay checks
++       |
++       v
++Curated decomposed raw floor files are authoritative;
++compiled runtime data is derived and must not be edited by hand.
+ ```
+-                 STAGE 1
+-          Canon / Deep Research
+-                  |
+-                  v
+-        human-readable report.md
+-                  |
+-                  |  evidence extraction
+-                  v
+-                 STAGE 2
+-          Extraction LLM + schema
+-                  |
+-                  v
+-             research.yaml
+-                  |
+-                  | YAML parse + schema validation
+-                  v
+-          validated research.yaml
+-                  |
+-                  | research compiler (compileRawFloor)
+-                  v
+-          direct raw JSON compilation
+-         (data/raw/floors/<floor>/*)
+-                  |
+-                  | existing CCI raw JSON validation
+-                  v
+-          validation errors (missing CCI mappings)
+-                  |
+-                  | human / Jules working-tree curation
+-                  v
+-       data/raw/floors/<floor>/*
+-                  |
+-                  | existing CCI compiler
+-                  v
+-             runtime state
+-```
++
++### Stage contract and exit conditions
++
++| Stage | Input | Responsible actor | Output | Exit condition |
++| --- | --- | --- | --- | --- |
++| 1. Research | Research scope and accessible online evidence | Researcher / research LLM | Evidence-rich report | Claims trace to identifiable sources; uncertainty and missing evidence are explicit. |
++| 2. Extraction | Report, extraction prompt, current research schema | Extraction LLM | `crawler-research/v1` YAML | Evidence ledger only; no invented URLs, CCI payloads, runtime IDs, or promotion decisions. |
++| 2.5. Ledger validation | Research YAML | Deterministic validators | Validated ledger or actionable errors | Schema, IDs, source/evidence references, and cross-record rules pass. |
++| 3. Modeling | Validated ledger, current CCI contracts, existing raw records | Modeling/curation LLM plus human review as needed | `crawler-modeling/v1` decisions | Disposition is explicit; promoted observations have typed payloads and explicit resolvable anchors. |
++| 4. Import | Validated ledger + modeling decisions + existing raw floor data | Deterministic importer | Raw-shaped outputs + `research-import-report.json` | Mechanical work is complete; every claim/unknown is accounted for; failures are itemized. |
++| 5. Reconciliation | Generated output, report, existing authored raw files | Jules / human | Curated authoritative raw JSON | Resolve semantic IDs/types, payload/anchor issues, and conflicts; preserve unrelated authored data. |
++| 6. Runtime acceptance | Curated raw JSON | Deterministic tests and human review | Compiled floor/timeline and verified replay | Raw schemas, semantic invariants, compiler output, and sequence-scoped behavior pass. |
++
++A stage may produce useful partial progress without declaring the floor complete. The importer must not hide an unresolved claim to keep output clean. The report distinguishes mechanical import success from curation readiness and runtime acceptance.
+
+ ### Representation boundaries
+
+diff --git a/scripts/compile-research-raw.mjs b/scripts/compile-research-raw.mjs
+index 50cdf16..3b5c55f 100644
+--- a/scripts/compile-research-raw.mjs
++++ b/scripts/compile-research-raw.mjs
+@@ -2,13 +2,14 @@
+
+ import fs from 'node:fs';
+ import path from 'node:path';
+-import { loadResearchClaimDocument } from '../app/domain/research-loader.ts';
++import { loadResearchClaimDocument, loadModelingDecisionDocument } from '../app/domain/research-loader.ts';
+ import { compileRawFloor } from '../app/domain/research-compiler.ts';
+
+ const args = process.argv.slice(2);
+
+ let researchPath = 'data/raw/research/floor-3/pet-research.yaml';
+ let outputDirArg = 'data/raw/floors/floor-3';
++let modelingPath;
+
+ // Parse CLI flags e.g. --research <path> --out <dir> or positional arguments
+ for (let i = 0; i < args.length; i++) {
+@@ -18,12 +19,19 @@ for (let i = 0; i < args.length; i++) {
+   } else if (args[i] === '--out' && args[i + 1]) {
+     outputDirArg = args[i + 1];
+     i++;
++  } else if (args[i] === '--modeling' && args[i + 1]) {
++    modelingPath = args[i + 1];
++    i++;
+   } else if (!args[i].startsWith('--')) {
+     if (i === 0) researchPath = args[i];
+     else if (i === 1 && !args[1].startsWith('--')) outputDirArg = args[i];
+   }
+ }
+
++const resolvedModelingPath = modelingPath && path.isAbsolute(modelingPath)
++  ? modelingPath
++  : (modelingPath ? path.resolve(process.cwd(), modelingPath) : undefined);
++
+ const resolvedResearchPath = path.isAbsolute(researchPath)
+   ? researchPath
+   : path.resolve(process.cwd(), researchPath);
+@@ -40,13 +48,21 @@ if (!fs.existsSync(resolvedResearchPath)) {
+   process.exit(1);
+ }
+
++if (resolvedModelingPath && !fs.existsSync(resolvedModelingPath)) {
++  console.error(`[Research Raw Compiler Error] Modeling decisions file not found: ${resolvedModelingPath}`);
++  process.exit(1);
++}
++
+ try {
+   const researchDoc = loadResearchClaimDocument(resolvedResearchPath);
++  const modelingDoc = resolvedModelingPath && fs.existsSync(resolvedModelingPath) ? loadModelingDecisionDocument(resolvedModelingPath) : undefined;
+
+
+   const eventsPath = path.join(resolvedOutputDir, 'events.json');
+   const catalogPath = path.join(resolvedOutputDir, 'catalog.json');
+   const sourcesPath = path.join(resolvedOutputDir, 'sources.json');
++  const observationsPath = path.join(resolvedOutputDir, 'observations.json');
++  const reportPath = path.join(resolvedOutputDir, 'research-import-report.json');
+
+   let existingRaw;
+   if (fs.existsSync(eventsPath) || fs.existsSync(catalogPath) || fs.existsSync(sourcesPath)) {
+@@ -54,21 +70,39 @@ try {
+       events: fs.existsSync(eventsPath) ? JSON.parse(fs.readFileSync(eventsPath, 'utf8')) : undefined,
+       catalog: fs.existsSync(catalogPath) ? JSON.parse(fs.readFileSync(catalogPath, 'utf8')) : undefined,
+       sources: fs.existsSync(sourcesPath) ? JSON.parse(fs.readFileSync(sourcesPath, 'utf8')) : undefined,
++      observations: fs.existsSync(observationsPath) ? JSON.parse(fs.readFileSync(observationsPath, 'utf8')) : undefined,
+     };
+   }
+
+-  const rawFloor = compileRawFloor(researchDoc, existingRaw);
++  const rawFloor = compileRawFloor(researchDoc, existingRaw, modelingDoc);
+
+   fs.mkdirSync(resolvedOutputDir, { recursive: true });
+
+   fs.writeFileSync(eventsPath, JSON.stringify(rawFloor.events, null, 2), 'utf8');
+   fs.writeFileSync(catalogPath, JSON.stringify(rawFloor.catalog, null, 2), 'utf8');
+   fs.writeFileSync(sourcesPath, JSON.stringify(rawFloor.sources, null, 2), 'utf8');
++  fs.writeFileSync(observationsPath, JSON.stringify(rawFloor.observations, null, 2), 'utf8');
++  if (rawFloor.report) {
++    fs.writeFileSync(reportPath, JSON.stringify(rawFloor.report, null, 2), 'utf8');
++  }
+
+   console.log(`\n[Research Raw Compiler Success] Updated raw floor JSON files under ${resolvedOutputDir}`);
+   console.log(`  - events.json (${rawFloor.events.length} raw floor events in YAML claim order)`);
++  console.log(`  - observations.json (${rawFloor.observations.length} observations)`);
+   console.log(`  - catalog.json (${rawFloor.catalog.items.length} catalog items)`);
+-  console.log(`  - sources.json (${rawFloor.sources.length} sources)\n`);
++  console.log(`  - sources.json (${rawFloor.sources.length} sources)`);
++
++  if (rawFloor.report) {
++    console.log(`\n[Coverage Report]`);
++    console.log(`  - Claims: ${rawFloor.report.summary.inputClaims.total}`);
++    console.log(`  - Unknown entries: ${rawFloor.report.summary.unknowns.total}`);
++    console.log(`  - Event stubs generated: ${rawFloor.report.summary.generatedStubs.events}`);
++    console.log(`  - Observation stubs generated: ${rawFloor.report.summary.generatedStubs.observations}`);
++    console.log(`  - Manual event types mapped: ${rawFloor.report.summary.manualMappings.events}`);
++    console.log(`  - Manual observation kinds mapped: ${rawFloor.report.summary.manualMappings.observations}`);
++    console.log(`  - Unresolved/Diagnostic: ${rawFloor.report.summary.outcomes.unresolved + rawFloor.report.summary.diagnostics.total}\n`);
++  }
++
+
+ } catch (err) {
+   console.error(`\n[Research Raw Compiler Failed]`);
+diff --git a/tests/unit/research-ingestion.test.mjs b/tests/unit/research-ingestion.test.mjs
+index c3d1013..fdaf9d3 100644
+--- a/tests/unit/research-ingestion.test.mjs
++++ b/tests/unit/research-ingestion.test.mjs
+@@ -8,7 +8,7 @@ import {
+   parseResearchClaimDocument,
+   loadModelingDecisionDocument
+ } from '../../app/domain/research-loader.ts';
+-import { validateResearchClaimDocument } from '../../app/domain/research-validator.ts';
++import { validateResearchClaimDocument, validateModelingDecisionDocument, validateSemanticModelingDecisions } from '../../app/domain/research-validator.ts';
+ import {
+   compileResearchTrace,
+   compileRawFloor,
+@@ -41,36 +41,45 @@ test('Research Ingestion: valid Floor 3 research claim fixture parses and valida
+
+ test('Research Compiler: produces direct CCI raw floor shapes matching existing raw floor files', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+-  const compiled = compileRawFloor(doc);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(doc, undefined, modeling);
+
+   assert.ok(Array.isArray(compiled.sources));
+   assert.ok(Array.isArray(compiled.catalog.items));
+   assert.ok(Array.isArray(compiled.events));
+-  assert.equal(compiled.events.length, 15);
++  assert.equal(compiled.events.length, 5); // Some claims are observations or ledger_only
+ });
+
+ test('Research Compiler: produces deterministic byte-equivalent outputs for identical inputs', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
+
+-  const compiled1 = compileRawFloor(doc);
+-  const compiled2 = compileRawFloor(doc);
++  const compiled1 = compileRawFloor(doc, undefined, modeling);
++  const compiled2 = compileRawFloor(doc, undefined, modeling);
+
+   assert.deepEqual(compiled1, compiled2);
+ });
+
+ test('Research Compiler: strictly preserves research YAML claim ordering in generated raw curation records', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+-  const compiled = compileRawFloor(doc);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(doc, undefined, modeling);
+
+-  assert.equal(compiled.events.length, doc.claims.length);
+-  for (let i = 0; i < doc.claims.length; i++) {
+-    assert.equal(compiled.events[i].summary, doc.claims[i].claim.summary);
++  assert.equal(compiled.events.length, 5); // Expect 5 promoted events based on modeling
++  const eventClaims = doc.claims.filter(c =>
++    c.kind === 'event' &&
++    modeling.decisions.some(d => d.claimId === c.id && d.disposition === 'promote')
++  );
++
++  for (let i = 0; i < eventClaims.length; i++) {
++    assert.equal(compiled.events[i].summary, eventClaims[i].claim.summary);
+   }
+ });
+
+ test('Research Compiler: preserves evidence, locators, and explicit unknowns directly without data loss', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+-  const compiled = compileRawFloor(doc);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(doc, undefined, modeling);
+
+   const p2Claim = doc.claims.find((c) => c.id === 'P3-PET-002');
+   assert.ok(p2Claim);
+@@ -85,7 +94,8 @@ test('Research Compiler: preserves evidence, locators, and explicit unknowns dir
+
+ test('Research Compiler: leaves event type unpopulated for curation when no established CCI contract exists', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+-  const compiled = compileRawFloor(doc);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(doc, undefined, modeling);
+
+   for (const event of compiled.events) {
+     assert.equal(event.type, undefined);
+@@ -94,7 +104,8 @@ test('Research Compiler: leaves event type unpopulated for curation when no esta
+
+ test('Research Compiler: uncurated raw records fail existing CCI raw floor schema validation with expected curation gap error', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+-  const compiled = compileRawFloor(doc);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(doc, undefined, modeling);
+
+   const mockRawDoc = {
+     authoringVersion: 'crawler-floor-raw/v1',
+@@ -142,7 +153,7 @@ test('Research Compiler: CLI script generates raw artifacts in target directory'
+   const catalogContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'catalog.json'), 'utf8'));
+   const sourcesContent = JSON.parse(fs.readFileSync(path.join(tmpDir, 'sources.json'), 'utf8'));
+
+-  assert.equal(eventsContent.length, 15);
++  assert.equal(eventsContent.length, 6);
+   assert.ok(Array.isArray(catalogContent.items));
+   assert.equal(sourcesContent.length, doc.sources.length);
+
+@@ -248,11 +259,11 @@ test('Research Compiler: claims with identical summaries represent separate occu
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+   const testDoc = deepClone(doc);
+
+-  testDoc.claims[0].claim.summary = 'The party acquires an item.';
+   testDoc.claims[1].claim.summary = 'The party acquires an item.';
++  testDoc.claims[3].claim.summary = 'The party acquires an item.';
+
+   const compiled = compileRawFloor(testDoc);
+-  assert.equal(compiled.events.length, 15);
++  assert.equal(compiled.events.length, 6);
+   const matchingSummaries = compiled.events.filter((e) => String(e.summary) === 'The party acquires an item.');
+   assert.equal(matchingSummaries.length, 2, 'Claims with identical summaries must be compiled as distinct occurrences');
+ });
+@@ -300,7 +311,7 @@ test('Research Compiler: existing authored fields absent from research survive c
+   }, 'Custom authored fields must survive compilation (item)');
+ });
+
+-test('Research Compiler: P3-PET-010 carrier behavior leaves event mapping unresolved', () => {
++test('Research Compiler: P3-PET-010 carrier behavior observation is not emitted as an event', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+   const compiled = compileRawFloor(doc);
+
+@@ -308,8 +319,7 @@ test('Research Compiler: P3-PET-010 carrier behavior leaves event mapping unreso
+   assert.ok(p10Claim);
+
+   const p10Event = compiled.events.find((e) => String(e.summary) === p10Claim.claim.summary);
+-  assert.ok(p10Event);
+-  assert.equal(p10Event.type, undefined, 'P3-PET-010 event type must remain unresolved in uncurated raw output');
++  assert.equal(p10Event, undefined, 'P3-PET-010 is an observation and must not be emitted as an event');
+ });
+
+ test('Research Compiler: generates collision-safe deterministic domain event IDs', () => {
+@@ -331,12 +341,20 @@ test('Research Compiler: collision detection fails compilation when two differen
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+   const badDoc = deepClone(doc);
+
+-  // Inject two claims that will normalize to the same string
+-  badDoc.claims[0].id = 'P3-PET-X';
+-  badDoc.claims[1].id = 'p3-pet-x';
++  // Inject two claims that will normalize to the same string (finding valid claim indexes based on fixture)
++  badDoc.claims[1].id = 'P3-PET-X';
++  badDoc.claims[3].id = 'p3-pet-x';
++
++  const badModelingDoc = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      { claimId: 'P3-PET-X', disposition: 'promote', target: { domain: 'crawler', concept: 'NarrativeEvent' }, rationale: '...' },
++      { claimId: 'p3-pet-x', disposition: 'promote', target: { domain: 'crawler', concept: 'NarrativeEvent' }, rationale: '...' }
++    ]
++  };
+
+   assert.throws(
+-    () => compileRawFloor(badDoc),
++    () => compileRawFloor(badDoc, undefined, badModelingDoc),
+     /Compiler error: Normalization collision detected\. Claims "P3-PET-X" and "p3-pet-x" both normalize to "evt-f3-research-p3-pet-x"\./,
+     'Compiler must detect normalization collisions and fail'
+   );
+@@ -363,7 +381,8 @@ test('Research Compiler: a changed summary combined with incomplete evidence doe
+     ]
+   };
+
+-  const compiled = compileRawFloor(testDoc, existingRaw);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(testDoc, existingRaw, modeling);
+
+   // The modified claim should generate its own deterministic ID and not merge into the existing one
+   const generatedEvent = compiled.events.find(e => e.id.includes(modifiedClaimId.toLowerCase().replace(/[^a-z0-9]+/g, '-')));
+@@ -378,6 +397,38 @@ test('Research Compiler: a changed summary combined with incomplete evidence doe
+   );
+ });
+
++test('Research Compiler: deterministic identity prevents overwriting of existing events when evidence matches but ID differs', () => {
++  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  const testDoc = deepClone(doc);
++
++  // We are going to test against P3-PET-002 claim. It's event claim.
++  const claimId = testDoc.claims[1].id;
++
++  const existingRaw = {
++    events: [
++      {
++        id: 'evt-f3-different-id', // ID differs from the deterministically generated one
++        type: 'NarrativeEvent',
++        summary: testDoc.claims[1].claim.summary, // Summary matches
++        evidence: deepClone(testDoc.claims[1].evidence) // Evidence matches
++      }
++    ]
++  };
++
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(testDoc, existingRaw, modeling);
++
++  // The claim should generate its own deterministic ID instead of merging because its ID doesn't match the existing event
++  const expectedIdPart = claimId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
++  const generatedEvent = compiled.events.find(e => e.id.includes(expectedIdPart));
++  assert.ok(generatedEvent);
++
++  const existingEvent = compiled.events.find(e => e.id === 'evt-f3-different-id');
++  assert.ok(existingEvent);
++
++  assert.equal(compiled.events.length, existingRaw.events.length + 5); // the original existing + the 5 events generated by the compiler
++});
++
+
+ test('Research Compiler: shared source locators do not imply record identity', () => {
+   const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
+@@ -386,8 +437,8 @@ test('Research Compiler: shared source locators do not imply record identity', (
+   // use a valid sourceId that exists in the doc's sources
+   const validSourceId = testDoc.sources[0].id;
+
+-  testDoc.claims[0].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
+   testDoc.claims[1].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
++  testDoc.claims[3].evidence = [{ sourceId: validSourceId, locator: { chapter: 14 }, confidence: 'confirmed' }];
+
+   const existingRaw = {
+     events: [
+@@ -402,14 +453,15 @@ test('Research Compiler: shared source locators do not imply record identity', (
+     ]
+   };
+
+-  const compiled = compileRawFloor(testDoc, existingRaw);
++  const modeling = loadModelingDecisionDocument('data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const compiled = compileRawFloor(testDoc, existingRaw, modeling);
+   assert.equal(
+     compiled.events.filter((event) => event.id === 'evt-f3-authored-occurrence').length,
+     1
+   );
+   assert.equal(
+     compiled.events.filter((event) => String(event.id).startsWith('evt-f3-research-p3-pet-')).length,
+-    15,
++    5,
+     'Research claims must not collapse into an existing event solely because their locator matches'
+   );
+ });
+@@ -435,5 +487,316 @@ test('Research Compiler: repeated compilation is idempotent', () => {
+
+   const once = compileRawFloor(doc, initial);
+   const twice = compileRawFloor(doc, once);
+-  assert.deepEqual(twice, once);
++  assert.deepEqual(twice.events, once.events);
++  assert.deepEqual(twice.observations, once.observations);
++});
++
++
++// ---- NEW TESTS FOR OBSERVATION MAPPING ----
++
++test('Research Ingestion: Modeling decision schema validates valid observation mappings', () => {
++  const doc = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      {
++        claimId: 'P3-OBS-001',
++        disposition: 'promote',
++        observationMapping: {
++          kind: 'xp-progress',
++          anchor: {
++            kind: 'event-id',
++            eventId: 'evt-f3-some-event'
++          },
++          payload: { level: 27 }
++        },
++        rationale: 'Valid mapping test'
++      }
++    ]
++  };
++  const validation = validateModelingDecisionDocument(doc);
++  assert.equal(validation.valid, true);
++});
++
++test('Research Ingestion: Modeling decision schema rejects invalid observation mappings', () => {
++  const doc = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      {
++        claimId: 'P3-OBS-001',
++        disposition: 'promote',
++        observationMapping: {
++          kind: 'xp-progress',
++          anchor: { kind: 'wrong-kind', eventId: '123' },
++          payload: { level: 27 }
++        },
++        rationale: 'Invalid anchor kind'
++      }
++    ]
++  };
++  const validation = validateModelingDecisionDocument(doc);
++  assert.equal(validation.valid, false);
++  assert.ok(validation.errors.some(e => e.includes('must be equal to constant') || e.includes('must match exactly one schema in oneOf')));
++});
++
++test('Research Validator: Semantic validation enforces mapping claim-kind rules', () => {
++  // Try to put observationMapping on an event claim
++  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  // P3-PET-002 is an event claim. Let's map it as an observation.
++  const modeling = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      {
++        claimId: 'P3-PET-002',
++        disposition: 'promote',
++        observationMapping: {
++          kind: 'xp-progress',
++          anchor: { kind: 'event-id', eventId: 'evt-f3-something' },
++          payload: { level: 10 }
++        },
++        rationale: 'Wrong mapping type for claim'
++      }
++    ]
++  };
++  const val = validateSemanticModelingDecisions(research, modeling);
++  assert.equal(val.valid, false);
++  assert.ok(val.errors.some(e => e.includes('MODELING_DECISION_INVALID_MAPPING')));
++});
++
++test('Research Compiler: Valid xp-progress observation is compiled and mapped correctly', () => {
++  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  // Let's create a minimal research and modeling doc
++  const doc = deepClone(research);
++  doc.claims = [
++    {
++      id: 'F3-EVENT-001',
++      domain: 'crawler',
++      kind: 'event',
++      claim: { summary: 'An event happened.' },
++      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
++    },
++    {
++      id: 'F3-OBS-001',
++      domain: 'crawler',
++      kind: 'observation',
++      claim: { summary: 'Carl is level 27.' },
++      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
++    }
++  ];
++
++  const modeling = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      {
++        claimId: 'F3-EVENT-001',
++        disposition: 'promote',
++        target: { domain: 'crawler', concept: 'NarrativeEvent' },
++        rationale: 'Keep event'
++      },
++      {
++        claimId: 'F3-OBS-001',
++        disposition: 'promote',
++        observationMapping: {
++          kind: 'xp-progress',
++          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
++          payload: { level: 27 }
++        },
++        rationale: 'Obs mapping'
++      }
++    ]
++  };
++
++  const compiled = compileRawFloor(doc, undefined, modeling);
++
++  // 1 event emitted
++  assert.equal(compiled.events.length, 1);
++  const eventId = compiled.events[0].id;
++
++  // 1 observation emitted
++  assert.equal(compiled.observations.length, 1);
++  const obs = compiled.observations[0];
++  assert.equal(obs.kind, 'xp-progress');
++  assert.equal(obs.eventId, eventId); // anchor resolved correctly
++  assert.equal(obs.level, 27);
++  assert.ok(obs.id.startsWith('obs-f3-research-f3-obs-001'));
++
++  // Check report
++  const report = compiled.report;
++  assert.ok(report);
++
++  // Total claims should equal total outcomes
++  const outcomes = report.summary.outcomes;
++  const totalOutcomes = outcomes.compiled + outcomes.reused + outcomes.unresolved + outcomes.rejected + outcomes.not_applicable;
++  assert.equal(report.summary.inputClaims.total, totalOutcomes, 'Total outcomes must equal total input claims');
++
++  assert.equal(report.summary.inputClaims.total, 2);
++  assert.equal(report.summary.outcomes.compiled, 2);
++});
++
++test('Research Compiler: Generates valid import report with accurate counts', () => {
++  const doc = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  const modelingPath = path.resolve(process.cwd(), 'data/raw/research/floor-3/pet-modeling-decisions.yaml');
++  const modelingDoc = loadModelingDecisionDocument(modelingPath);
++
++  const compiled = compileRawFloor(doc, undefined, modelingDoc);
++  const report = compiled.report;
++
++  assert.ok(report);
++  assert.equal(report.schemaVersion, 'crawler-import-report/v1');
++
++  // Total claims should equal total outcomes
++  const outcomes = report.summary.outcomes;
++  const totalOutcomes = outcomes.compiled + outcomes.reused + outcomes.unresolved + outcomes.rejected + outcomes.not_applicable;
++  assert.equal(report.summary.inputClaims.total, totalOutcomes, 'Total outcomes must equal total input claims');
++
++  assert.equal(report.claims.length, report.summary.inputClaims.total);
++});
++
++test('Research Compiler: Rejects attempt to supply compiler-controlled observation fields in payload', () => {
++  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  const doc = deepClone(research);
++  doc.claims = [
++    {
++      id: 'F3-EVENT-001',
++      domain: 'crawler',
++      kind: 'event',
++      claim: { summary: 'An event happened.' },
++      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
++    },
++    {
++      id: 'F3-OBS-001',
++      domain: 'crawler',
++      kind: 'observation',
++      claim: { summary: 'Carl is level 27.' },
++      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
++    }
++  ];
++
++  const modeling = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      {
++        claimId: 'F3-EVENT-001',
++        disposition: 'promote',
++        target: { domain: 'crawler', concept: 'NarrativeEvent' },
++        rationale: 'Keep event'
++      },
++      {
++        claimId: 'F3-OBS-001',
++        disposition: 'promote',
++        observationMapping: {
++          kind: 'xp-progress',
++          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
++          payload: { id: 'obs-f3-invalid-id', level: 27 } // attempt to override 'id'
++        },
++        rationale: 'Obs mapping'
++      }
++    ]
++  };
++
++  const compiled = compileRawFloor(doc, undefined, modeling);
++  assert.equal(compiled.observations.length, 0);
++
++  const report = compiled.report;
++  assert.equal(report.summary.outcomes.rejected, 1);
++  assert.equal(report.summary.diagnostics.total, 1);
++  assert.ok(report.diagnostics[0].message.includes('Mapping payload cannot override compiler-controlled fields'));
++});
++
++test('Research Compiler: Conflicts with existing observations payloads fail visibly rather than being overwritten', () => {
++  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  const doc = deepClone(research);
++  doc.claims = [
++    {
++      id: 'F3-EVENT-001',
++      domain: 'crawler',
++      kind: 'event',
++      claim: { summary: 'An event happened.' },
++      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
++    },
++    {
++      id: 'F3-OBS-001',
++      domain: 'crawler',
++      kind: 'observation',
++      claim: { summary: 'Carl is level 27.' },
++      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
++    }
++  ];
++
++  const modeling = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      {
++        claimId: 'F3-EVENT-001',
++        disposition: 'promote',
++        target: { domain: 'crawler', concept: 'NarrativeEvent' },
++        rationale: 'Keep event'
++      },
++      {
++        claimId: 'F3-OBS-001',
++        disposition: 'promote',
++        observationMapping: {
++          kind: 'xp-progress',
++          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-001' },
++          payload: { level: 27 } // level 27 payload
++        },
++        rationale: 'Obs mapping'
++      }
++    ]
++  };
++
++  const existingRaw = {
++    observations: [
++      {
++        id: 'obs-f3-research-f3-obs-001',
++        kind: 'xp-progress',
++        eventId: 'evt-f3-research-f3-event-001',
++        level: 28, // Conflict: 28 instead of 27
++        evidence: []
++      }
++    ]
++  };
++
++  assert.throws(
++    () => compileRawFloor(doc, existingRaw, modeling),
++    /Compiler error: generated observation ID "obs-f3-research-f3-obs-001" collides with a curated record having a conflicting payload\./,
++    'Conflicting existing payload must fail visibly'
++  );
++});
++
++test('Research Compiler: Unresolvable claim-id anchor causes rejection and diagnostic', () => {
++  const research = loadResearchClaimDocument(PET_RESEARCH_FIXTURE);
++  const doc = deepClone(research);
++  doc.claims = [
++    {
++      id: 'F3-OBS-001',
++      domain: 'crawler',
++      kind: 'observation',
++      claim: { summary: 'Carl is level 27.' },
++      evidence: [{ sourceId: doc.sources[0].id, confidence: 'confirmed' }]
++    }
++  ];
++
++  const modeling = {
++    schemaVersion: 'crawler-modeling/v1',
++    decisions: [
++      {
++        claimId: 'F3-OBS-001',
++        disposition: 'promote',
++        observationMapping: {
++          kind: 'xp-progress',
++          anchor: { kind: 'claim-id', claimId: 'F3-EVENT-NONEXISTENT' },
++          payload: { level: 27 }
++        },
++        rationale: 'Obs mapping'
++      }
++    ]
++  };
++
++  const compiled = compileRawFloor(doc, undefined, modeling);
++  assert.equal(compiled.observations.length, 0);
++
++  const report = compiled.report;
++  assert.equal(report.summary.outcomes.rejected, 1);
++  assert.equal(report.summary.diagnostics.total, 1);
++  assert.ok(report.diagnostics[0].message.includes('does not exist'));
+ });
